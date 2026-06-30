@@ -1604,3 +1604,2093 @@ brd_entries:
         data_change_mode: Append
         filter_logic: "created_at = {etl_date}"
         filter_note: "Vi phạm — append theo ngày ghi nhận vi phạm mới"
+
+  # ─── FMS.1 Quản trị phân hệ (bổ sung) ──────────────────────────────────────
+
+  - brd_id: BRD-SRC-FMS-DYNAMIC_COLUMNS
+    brd_name: "Design Atomic từ nguồn FMS bảng DYNAMIC_COLUMNS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình cột động cho các biểu mẫu"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: DYNAMIC_COLUMNS
+      related_tables:
+        - table: DYNAMIC_TABLES
+          relation: "FK cha — Cấu hình bảng động cho các biểu mẫu"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DYNAMIC_TABLES
+    brd_name: "Design Atomic từ nguồn FMS bảng DYNAMIC_TABLES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình bảng động cho các biểu mẫu"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: DYNAMIC_TABLES
+      related_tables:
+        - table: DYNAMIC_COLUMNS
+          relation: "1-N — Cấu hình cột động cho các biểu mẫu"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-ERROR_LOG
+    brd_name: "Design Atomic từ nguồn FMS bảng ERROR_LOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký lỗi hệ thống"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: ERROR_LOG
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-EVENT_TYPE
+    brd_name: "Design Atomic từ nguồn FMS bảng EVENT_TYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại sự kiện"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: EVENT_TYPE
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: ANNOUNCE
+          relation: "1-N — Danh sách thông báo/công bố thông tin"
+        - table: BANK_EMPLOY_HISTORY
+          relation: "1-N — Lịch sử thay đổi nhân sự ngân hàng LKGS"
+        - table: BANK_HISTORY
+          relation: "1-N — Lịch sử thông tin ngân hàng lưu ký giám sát"
+        - table: EVENT_TYPE_AGENCY_TYPE
+          relation: "1-N — Ánh xạ loại sự kiện và loại đại lý"
+        - table: EVENT_TYPE_DATA_PERIOD
+          relation: "1-N — Ánh xạ loại sự kiện và kỳ dữ liệu"
+        - table: FG_BR_HISTORY
+          relation: "1-N — Lịch sử VPĐD/CN công ty QLQ nước ngoài tại VN"
+        - table: FOR_BRCH
+          relation: "1-N — Danh sách VPĐD/CN công ty QLQ NN tại VN"
+        - table: PENSION_AGENT_HISTORY
+          relation: "1-N — Lịch sử thông tin đại lý quỹ hưu trí"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+        - table: SECURITIES
+          relation: "1-N — Danh sách công ty QLQ trong nước"
+        - table: STF_FG_BRCH_HISTORY
+          relation: "1-N — Lịch sử nhân sự VPĐD/CN công ty QLQ NN"
+        - table: STF_REP_OFFICE_HISTORY
+          relation: "1-N — Lịch sử nhân sự văn phòng đại diện"
+        - table: TL_PROFILES
+          relation: "1-N — Danh sách hồ sơ nhân sự công ty QLQ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-EVENT_TYPE_AGENCY_TYPE
+    brd_name: "Design Atomic từ nguồn FMS bảng EVENT_TYPE_AGENCY_TYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ánh xạ loại sự kiện và loại đại lý"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: EVENT_TYPE_AGENCY_TYPE
+      related_tables:
+        - table: AGENCY_TYPE
+          relation: "FK cha — Danh mục loại đại lý phân phối"
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-EVENT_TYPE_DATA_PERIOD
+    brd_name: "Design Atomic từ nguồn FMS bảng EVENT_TYPE_DATA_PERIOD"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ánh xạ loại sự kiện và kỳ dữ liệu"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: EVENT_TYPE_DATA_PERIOD
+      related_tables:
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FLAG_RUN_CF
+    brd_name: "Design Atomic từ nguồn FMS bảng FLAG_RUN_CF"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cờ kiểm soát tiến trình chạy cấu hình"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: FLAG_RUN_CF
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FMS_SHEDLOCK
+    brd_name: "Design Atomic từ nguồn FMS bảng FMS_SHEDLOCK"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quản lý khóa phân tán cho các tiến trình định kỳ"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: FMS_SHEDLOCK
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-GROUPS
+    brd_name: "Design Atomic từ nguồn FMS bảng GROUPS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách nhóm quyền chức năng"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: GROUPS
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: GROUP_ROLES
+          relation: "1-N — Phân quyền nhóm theo vai trò"
+        - table: GROUP_USERS
+          relation: "1-N — Phân quyền người dùng theo nhóm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-GROUP_ROLES
+    brd_name: "Design Atomic từ nguồn FMS bảng GROUP_ROLES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền nhóm theo vai trò"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: GROUP_ROLES
+      related_tables:
+        - table: GROUPS
+          relation: "FK cha — Danh sách nhóm quyền chức năng"
+        - table: ROLES
+          relation: "FK cha — Danh sách vai trò quyền chức năng"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-GROUP_USERS
+    brd_name: "Design Atomic từ nguồn FMS bảng GROUP_USERS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền người dùng theo nhóm"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: GROUP_USERS
+      related_tables:
+        - table: GROUPS
+          relation: "FK cha — Danh sách nhóm quyền chức năng"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INTEGRATION_CONFIG
+    brd_name: "Design Atomic từ nguồn FMS bảng INTEGRATION_CONFIG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình tích hợp hệ thống"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: INTEGRATION_CONFIG
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-USER_RPT_I
+    brd_name: "Design Atomic từ nguồn FMS bảng USER_RPT_I"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền người dùng với báo cáo đầu vào"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: USER_RPT_I
+      related_tables:
+        - table: RPT_TEMP
+          relation: "FK cha — Danh sách biểu mẫu báo cáo đầu vào"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-flyway_schema_history
+    brd_name: "Design Atomic từ nguồn FMS bảng flyway_schema_history"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử nâng cấp schema cơ sở dữ liệu (Flyway)"
+      functional_group: "FMS.1 Quản trị phân hệ"
+      scope_status: pending
+      scope_reason: null
+      table: flyway_schema_history
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.2 Danh mục dùng riêng (bổ sung) ───────────────────────────────────
+
+  - brd_id: BRD-SRC-FMS-BUSINESS_TYPE
+    brd_name: "Design Atomic từ nguồn FMS bảng BUSINESS_TYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại hình kinh doanh"
+      functional_group: "FMS.2 Danh mục dùng riêng"
+      scope_status: pending
+      scope_reason: null
+      table: BUSINESS_TYPE
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-COMPANY_TYPE
+    brd_name: "Design Atomic từ nguồn FMS bảng COMPANY_TYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại hình công ty"
+      functional_group: "FMS.2 Danh mục dùng riêng"
+      scope_status: pending
+      scope_reason: null
+      table: COMPANY_TYPE
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: SECURITIES
+          relation: "1-N — Danh sách công ty QLQ trong nước"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-JOBS
+    brd_name: "Design Atomic từ nguồn FMS bảng JOBS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chức danh/chức vụ"
+      functional_group: "FMS.2 Danh mục dùng riêng"
+      scope_status: pending
+      scope_reason: null
+      table: JOBS
+      related_tables:
+        - table: JOB_TYPE
+          relation: "FK cha — Danh mục loại chức vụ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: FMS_AGENT_MAPPING
+          relation: "1-N — Ánh xạ đại lý trong hệ thống FMS"
+        - table: JOB_TL_PRO
+          relation: "1-N — Bảng trung gian hồ sơ nhân sự và chức danh"
+        - table: REPRESENT
+          relation: "1-N — Danh sách ban đại diện/HĐQT Quỹ đầu tư"
+        - table: STF_FG_BRCH
+          relation: "1-N — Danh sách nhân sự VPĐD/CN công ty QLQ NN"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.3 Thông tin thành viên — Công ty QLQ (bổ sung) ──────────────────
+
+  - brd_id: BRD-SRC-FMS-BRANCHS
+    brd_name: "Design Atomic từ nguồn FMS bảng BRANCHS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách CN/VPĐD công ty QLQ trong nước"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: BRANCHS
+      related_tables:
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+        - table: TL_PROFILES
+          relation: "FK cha — Danh sách hồ sơ nhân sự công ty QLQ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: BRA_BUSINESS
+          relation: "1-N — Ngành nghề kinh doanh của CN/VPĐD công ty QLQ"
+        - table: SEC_HISTORY
+          relation: "1-N — Lịch sử thông tin công ty QLQ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-BRA_BUSINESS
+    brd_name: "Design Atomic từ nguồn FMS bảng BRA_BUSINESS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ngành nghề kinh doanh của CN/VPĐD công ty QLQ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: BRA_BUSINESS
+      related_tables:
+        - table: BRANCHS
+          relation: "FK cha — Danh sách CN/VPĐD công ty QLQ trong nước"
+        - table: BUSINESS
+          relation: "FK cha — Danh mục ngành nghề kinh doanh"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_SEC
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_SEC"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu công ty QLQ cho chuyên viên"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_SEC
+      related_tables:
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FG_BR_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng FG_BR_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử VPĐD/CN công ty QLQ nước ngoài tại VN"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: FG_BR_HISTORY
+      related_tables:
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: FOR_BRCH
+          relation: "FK cha — Danh sách VPĐD/CN công ty QLQ NN tại VN"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSDER_RELA
+    brd_name: "Design Atomic từ nguồn FMS bảng INSDER_RELA"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách mối quan hệ người nội bộ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: INSDER_RELA
+      related_tables:
+        - table: INSIDER
+          relation: "FK cha — Danh sách người nội bộ"
+        - table: RELATION
+          relation: "FK cha — Danh mục mối quan hệ giữa các bên"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: INSDER_RELA_CHG_LOG
+          relation: "1-N — Nhật ký thay đổi mối quan hệ người nội bộ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSDER_RELA_CHG_LOG
+    brd_name: "Design Atomic từ nguồn FMS bảng INSDER_RELA_CHG_LOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký thay đổi mối quan hệ người nội bộ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: INSDER_RELA_CHG_LOG
+      related_tables:
+        - table: INSDER_RELA
+          relation: "FK cha — Danh sách mối quan hệ người nội bộ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSDER_RPRST
+    brd_name: "Design Atomic từ nguồn FMS bảng INSDER_RPRST"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách người đại diện nội bộ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: INSDER_RPRST
+      related_tables:
+        - table: INSIDER
+          relation: "FK cha — Danh sách người nội bộ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSIDER
+    brd_name: "Design Atomic từ nguồn FMS bảng INSIDER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách người nội bộ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: INSIDER
+      related_tables:
+        - table: NATIONAL
+          relation: "FK cha — Danh sách quốc gia/quốc tịch"
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+        - table: TL_PROFILES
+          relation: "FK cha — Danh sách hồ sơ nhân sự công ty QLQ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: INSDER_RELA
+          relation: "1-N — Danh sách mối quan hệ người nội bộ"
+        - table: INSDER_RPRST
+          relation: "1-N — Danh sách người đại diện nội bộ"
+        - table: INSIDER_CHG_LOG
+          relation: "1-N — Nhật ký thay đổi thông tin người nội bộ"
+        - table: INSID_CHANGE
+          relation: "1-N — Lịch sử thay đổi thông tin người nội bộ"
+        - table: SEC_BUP
+          relation: "1-N — Lịch sử chi tiết công ty QLQ (2 bản ghi trước/sau)"
+        - table: TRS_FER_INDER
+          relation: "1-N — Danh sách giao dịch chuyển nhượng cổ phần nội bộ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSIDER_CHG_LOG
+    brd_name: "Design Atomic từ nguồn FMS bảng INSIDER_CHG_LOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký thay đổi thông tin người nội bộ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: INSIDER_CHG_LOG
+      related_tables:
+        - table: INSIDER
+          relation: "FK cha — Danh sách người nội bộ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSID_CHANGE
+    brd_name: "Design Atomic từ nguồn FMS bảng INSID_CHANGE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thay đổi thông tin người nội bộ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: INSID_CHANGE
+      related_tables:
+        - table: INSIDER
+          relation: "FK cha — Danh sách người nội bộ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-JOB_TL_PRO
+    brd_name: "Design Atomic từ nguồn FMS bảng JOB_TL_PRO"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian hồ sơ nhân sự và chức danh"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: JOB_TL_PRO
+      related_tables:
+        - table: JOBS
+          relation: "FK cha — Danh mục chức danh/chức vụ"
+        - table: TL_PROFILES
+          relation: "FK cha — Danh sách hồ sơ nhân sự công ty QLQ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-SEC_BUSINESS
+    brd_name: "Design Atomic từ nguồn FMS bảng SEC_BUSINESS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ngành nghề kinh doanh của công ty QLQ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: SEC_BUSINESS
+      related_tables:
+        - table: BUSINESS
+          relation: "FK cha — Danh mục ngành nghề kinh doanh"
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-SEC_FUND_MANAGER
+    brd_name: "Design Atomic từ nguồn FMS bảng SEC_FUND_MANAGER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ánh xạ người quản lý quỹ và công ty QLQ"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: SEC_FUND_MANAGER
+      related_tables:
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+        - table: TL_PROFILES
+          relation: "FK cha — Danh sách hồ sơ nhân sự công ty QLQ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-STF_FG_BRCH_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng STF_FG_BRCH_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử nhân sự VPĐD/CN công ty QLQ NN"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: STF_FG_BRCH_HISTORY
+      related_tables:
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: FOR_BRCH
+          relation: "FK cha — Danh sách VPĐD/CN công ty QLQ NN tại VN"
+        - table: STF_FG_BRCH
+          relation: "FK cha — Danh sách nhân sự VPĐD/CN công ty QLQ NN"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-STF_REP_OFFICE_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng STF_REP_OFFICE_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử nhân sự văn phòng đại diện"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: STF_REP_OFFICE_HISTORY
+      related_tables:
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: FOR_BRCH
+          relation: "FK cha — Danh sách VPĐD/CN công ty QLQ NN tại VN"
+        - table: STF_FG_BRCH
+          relation: "FK cha — Danh sách nhân sự VPĐD/CN công ty QLQ NN"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-TL_PRO_RELA
+    brd_name: "Design Atomic từ nguồn FMS bảng TL_PRO_RELA"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Mối quan hệ giữa các hồ sơ nhân sự"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: TL_PRO_RELA
+      related_tables:
+        - table: RELATION
+          relation: "FK cha — Danh mục mối quan hệ giữa các bên"
+        - table: TL_PROFILES
+          relation: "FK cha — Danh sách hồ sơ nhân sự công ty QLQ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-TRS_FER_INDER_CHG_LOG
+    brd_name: "Design Atomic từ nguồn FMS bảng TRS_FER_INDER_CHG_LOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký thay đổi giao dịch chuyển nhượng cổ phần"
+      functional_group: "FMS.3 Thông tin thành viên — Công ty QLQ"
+      scope_status: pending
+      scope_reason: null
+      table: TRS_FER_INDER_CHG_LOG
+      related_tables:
+        - table: TRS_FER_INDER
+          relation: "FK cha — Danh sách giao dịch chuyển nhượng cổ phần nội bộ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.4 Quỹ đầu tư chứng khoán (bổ sung) ────────────────────────────
+
+  - brd_id: BRD-SRC-FMS-AGEN_TF_MBF
+    brd_name: "Design Atomic từ nguồn FMS bảng AGEN_TF_MBF"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian ánh xạ đại lý và giao dịch CCQ"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: AGEN_TF_MBF
+      related_tables:
+        - table: AGENCIES
+          relation: "FK cha — Danh sách đại lý Quỹ đầu tư"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-BANK_EMPLOY
+    brd_name: "Design Atomic từ nguồn FMS bảng BANK_EMPLOY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách nhân sự ngân hàng lưu ký giám sát"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: BANK_EMPLOY
+      related_tables:
+        - table: BANK_MONI
+          relation: "FK cha — Danh sách ngân hàng lưu ký giám sát (LKGS)"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: BANK_EMPLOY_HISTORY
+          relation: "1-N — Lịch sử thay đổi nhân sự ngân hàng LKGS"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-BANK_EMPLOY_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng BANK_EMPLOY_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thay đổi nhân sự ngân hàng LKGS"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: BANK_EMPLOY_HISTORY
+      related_tables:
+        - table: BANK_EMPLOY
+          relation: "FK cha — Danh sách nhân sự ngân hàng lưu ký giám sát"
+        - table: BANK_MONI
+          relation: "FK cha — Danh sách ngân hàng lưu ký giám sát (LKGS)"
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-BANK_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng BANK_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thông tin ngân hàng lưu ký giám sát"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: BANK_HISTORY
+      related_tables:
+        - table: BANK_MONI
+          relation: "FK cha — Danh sách ngân hàng lưu ký giám sát (LKGS)"
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_AGENCY
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_AGENCY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu đại lý cho chuyên viên"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_AGENCY
+      related_tables:
+        - table: AGENCIES
+          relation: "FK cha — Danh sách đại lý Quỹ đầu tư"
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FUD_AG_AGT
+    brd_name: "Design Atomic từ nguồn FMS bảng FUD_AG_AGT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian quỹ đầu tư, đại lý và đại lý chuyển nhượng"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: FUD_AG_AGT
+      related_tables:
+        - table: AGENCIES
+          relation: "FK cha — Danh sách đại lý Quỹ đầu tư"
+        - table: AGENCY_TYPE
+          relation: "FK cha — Danh mục loại đại lý phân phối"
+        - table: FUNDS
+          relation: "FK cha — Danh sách quỹ đầu tư chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FUD_TAGT
+    brd_name: "Design Atomic từ nguồn FMS bảng FUD_TAGT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian quỹ đầu tư và đại lý chuyển nhượng"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: FUD_TAGT
+      related_tables:
+        - table: AGENCY_TYPE
+          relation: "FK cha — Danh mục loại đại lý phân phối"
+        - table: FUNDS
+          relation: "FK cha — Danh sách quỹ đầu tư chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FUND_BUP
+    brd_name: "Design Atomic từ nguồn FMS bảng FUND_BUP"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bản ghi chi tiết lịch sử quỹ đầu tư"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: FUND_BUP
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FUND_REPORT
+    brd_name: "Design Atomic từ nguồn FMS bảng FUND_REPORT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thiết lập hiển thị báo cáo quỹ đầu tư"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: FUND_REPORT
+      related_tables:
+        - table: FUNDS
+          relation: "FK cha — Danh sách quỹ đầu tư chứng khoán"
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FUND_TL_PRO
+    brd_name: "Design Atomic từ nguồn FMS bảng FUND_TL_PRO"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian quỹ đầu tư và hồ sơ nhân sự"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: FUND_TL_PRO
+      related_tables:
+        - table: FUNDS
+          relation: "FK cha — Danh sách quỹ đầu tư chứng khoán"
+        - table: TL_PROFILES
+          relation: "FK cha — Danh sách hồ sơ nhân sự công ty QLQ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FUND_TYPE
+    brd_name: "Design Atomic từ nguồn FMS bảng FUND_TYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại quỹ đầu tư"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: FUND_TYPE
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: FUNDS
+          relation: "1-N — Danh sách quỹ đầu tư chứng khoán"
+        - table: RPT_TEMP
+          relation: "1-N — Danh sách biểu mẫu báo cáo đầu vào"
+        - table: ST_TRGT_OUT
+          relation: "1-N — Cấu hình lấy dữ liệu báo cáo đầu ra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INVES_REPORT
+    brd_name: "Design Atomic từ nguồn FMS bảng INVES_REPORT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thiết lập hiển thị báo cáo nhà đầu tư"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: INVES_REPORT
+      related_tables:
+        - table: INVES
+          relation: "FK cha — Danh sách nhà đầu tư ủy thác"
+        - table: INVES_ACC
+          relation: "FK cha — Danh sách tài khoản nhà đầu tư ủy thác"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-OFFERING
+    brd_name: "Design Atomic từ nguồn FMS bảng OFFERING"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách đợt phát hành chứng chỉ quỹ"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: OFFERING
+      related_tables:
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: OFFERING_PLAN
+          relation: "1-N — Kế hoạch phát hành chứng chỉ quỹ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-OFFERING_PLAN
+    brd_name: "Design Atomic từ nguồn FMS bảng OFFERING_PLAN"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Kế hoạch phát hành chứng chỉ quỹ"
+      functional_group: "FMS.4 Quỹ đầu tư chứng khoán"
+      scope_status: pending
+      scope_reason: null
+      table: OFFERING_PLAN
+      related_tables:
+        - table: OFFERING
+          relation: "FK cha — Danh sách đợt phát hành chứng chỉ quỹ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.5 Quản lý báo cáo (bổ sung) ──────────────────────────────────────
+
+  - brd_id: BRD-SRC-FMS-DOCUMENT
+    brd_name: "Design Atomic từ nguồn FMS bảng DOCUMENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quản lý tài liệu đính kèm hồ sơ"
+      functional_group: "FMS.5 Quản lý báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: DOCUMENT
+      related_tables:
+        - table: FOLDER
+          relation: "FK cha — Danh sách thư mục tổ chức báo cáo"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FOLDER
+    brd_name: "Design Atomic từ nguồn FMS bảng FOLDER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách thư mục tổ chức báo cáo"
+      functional_group: "FMS.5 Quản lý báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: FOLDER
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: DOCUMENT
+          relation: "1-N — Quản lý tài liệu đính kèm hồ sơ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-GUIDE_FILE
+    brd_name: "Design Atomic từ nguồn FMS bảng GUIDE_FILE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách tài liệu hướng dẫn/biểu mẫu mẫu"
+      functional_group: "FMS.5 Quản lý báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: GUIDE_FILE
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-REPORT_ATTACHMENT
+    brd_name: "Design Atomic từ nguồn FMS bảng REPORT_ATTACHMENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "File đính kèm của báo cáo"
+      functional_group: "FMS.5 Quản lý báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_ATTACHMENT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-REPORT_FILE
+    brd_name: "Design Atomic từ nguồn FMS bảng REPORT_FILE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "File báo cáo đã tải lên"
+      functional_group: "FMS.5 Quản lý báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_FILE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-SHEET_CELL_CONFIG
+    brd_name: "Design Atomic từ nguồn FMS bảng SHEET_CELL_CONFIG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình ô dữ liệu trong sheet báo cáo"
+      functional_group: "FMS.5 Quản lý báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: SHEET_CELL_CONFIG
+      related_tables:
+        - table: SHEET
+          relation: "FK cha — Danh sách sheet biểu mẫu báo cáo đầu vào"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-SHEET_OUT_BAK_BMBCDR
+    brd_name: "Design Atomic từ nguồn FMS bảng SHEET_OUT_BAK_BMBCDR"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bản sao lưu sheet báo cáo đầu ra (BMBCDR)"
+      functional_group: "FMS.5 Quản lý báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: SHEET_OUT_BAK_BMBCDR
+      related_tables:
+        - table: RPT_TP_OUT
+          relation: "FK cha — Danh sách biểu mẫu báo cáo đầu ra"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.6 Đánh giá xếp loại và cảnh báo (bổ sung) ────────────────────
+
+  - brd_id: BRD-SRC-FMS-CDT_WARN
+    brd_name: "Design Atomic từ nguồn FMS bảng CDT_WARN"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách cảnh báo theo điều kiện"
+      functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
+      scope_status: pending
+      scope_reason: null
+      table: CDT_WARN
+      related_tables:
+        - table: PARA_WARN
+          relation: "FK cha — Danh sách tham số cảnh báo"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: VIOLT
+          relation: "1-N — Danh sách vi phạm đã ghi nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-CHART_OUT
+    brd_name: "Design Atomic từ nguồn FMS bảng CHART_OUT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình biểu đồ kết quả đánh giá xếp loại"
+      functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
+      scope_status: pending
+      scope_reason: null
+      table: CHART_OUT
+      related_tables:
+        - table: RPT_TP_OUT
+          relation: "FK cha — Danh sách biểu mẫu báo cáo đầu ra"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FACTOR
+    brd_name: "Design Atomic từ nguồn FMS bảng FACTOR"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách nhân tố đánh giá xếp loại"
+      functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
+      scope_status: pending
+      scope_reason: null
+      table: FACTOR
+      related_tables:
+        - table: FACTOR
+          relation: "FK cha — Danh sách nhân tố đánh giá xếp loại"
+        - table: GRP_FACTOR
+          relation: "FK cha — Bảng trung gian nhóm nhân tố đánh giá"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: FTOR_SCALE
+          relation: "1-N — Thang điểm đánh giá xếp loại theo nhân tố"
+        - table: MENUS
+          relation: "1-N — Danh mục quyền chức năng/menu hệ thống"
+        - table: RNK_FACTOR
+          relation: "1-N — Bảng chấm điểm đánh giá xếp loại (nhân tố cha/con)"
+        - table: SYS_EMAIL
+          relation: "1-N — Nội dung trao đổi thông tin qua email hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FACTOR_SNAPSHOT
+    brd_name: "Design Atomic từ nguồn FMS bảng FACTOR_SNAPSHOT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ảnh chụp kết quả nhân tố tại thời điểm đánh giá"
+      functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
+      scope_status: pending
+      scope_reason: null
+      table: FACTOR_SNAPSHOT
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FTOR_SCALE
+    brd_name: "Design Atomic từ nguồn FMS bảng FTOR_SCALE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thang điểm đánh giá xếp loại theo nhân tố"
+      functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
+      scope_status: pending
+      scope_reason: null
+      table: FTOR_SCALE
+      related_tables:
+        - table: FACTOR
+          relation: "FK cha — Danh sách nhân tố đánh giá xếp loại"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-GRP_FACTOR
+    brd_name: "Design Atomic từ nguồn FMS bảng GRP_FACTOR"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian nhóm nhân tố đánh giá"
+      functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
+      scope_status: pending
+      scope_reason: null
+      table: GRP_FACTOR
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: FACTOR
+          relation: "1-N — Danh sách nhân tố đánh giá xếp loại"
+        - table: RNK_GR_FTOR
+          relation: "1-N — Bảng trung gian xếp loại và nhóm nhân tố"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-RATING_PD_SNAPSHOT
+    brd_name: "Design Atomic từ nguồn FMS bảng RATING_PD_SNAPSHOT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ảnh chụp kết quả kỳ đánh giá xếp loại"
+      functional_group: "FMS.6 Đánh giá xếp loại và cảnh báo"
+      scope_status: pending
+      scope_reason: null
+      table: RATING_PD_SNAPSHOT
+      related_tables:
+        - table: RATING_PD
+          relation: "FK cha — Danh sách kỳ đánh giá xếp loại"
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.7 Tiện ích và hệ thống ──────────────────────────────────────────
+
+  - brd_id: BRD-SRC-FMS-ANNOUNCE
+    brd_name: "Design Atomic từ nguồn FMS bảng ANNOUNCE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách thông báo/công bố thông tin"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: ANNOUNCE
+      related_tables:
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: FOR_BRCH
+          relation: "FK cha — Danh sách VPĐD/CN công ty QLQ NN tại VN"
+        - table: FUNDS
+          relation: "FK cha — Danh sách quỹ đầu tư chứng khoán"
+        - table: PENSION_FUND
+          relation: "FK cha — Danh sách quỹ hưu trí"
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+        - table: STF_FG_BRCH
+          relation: "FK cha — Danh sách nhân sự VPĐD/CN công ty QLQ NN"
+        - table: TL_PROFILES
+          relation: "FK cha — Danh sách hồ sơ nhân sự công ty QLQ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-CONFIG
+    brd_name: "Design Atomic từ nguồn FMS bảng CONFIG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình chung của hệ thống"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: CONFIG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-CONFIG_CONVERT_DATA
+    brd_name: "Design Atomic từ nguồn FMS bảng CONFIG_CONVERT_DATA"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình chuyển đổi/migration dữ liệu"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: CONFIG_CONVERT_DATA
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FMS_AGENT_MAPPING
+    brd_name: "Design Atomic từ nguồn FMS bảng FMS_AGENT_MAPPING"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ánh xạ đại lý trong hệ thống FMS"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: FMS_AGENT_MAPPING
+      related_tables:
+        - table: AGENCIES
+          relation: "FK cha — Danh sách đại lý Quỹ đầu tư"
+        - table: AGENCY_TYPE
+          relation: "FK cha — Danh mục loại đại lý phân phối"
+        - table: JOBS
+          relation: "FK cha — Danh mục chức danh/chức vụ"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FMS_INDICATOR_CATALOG
+    brd_name: "Design Atomic từ nguồn FMS bảng FMS_INDICATOR_CATALOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chỉ tiêu của hệ thống FMS"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: FMS_INDICATOR_CATALOG
+      related_tables:
+        - table: FMS_REFERENCE_CATALOG
+          relation: "FK cha — Danh mục tham chiếu của hệ thống FMS"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-FMS_REFERENCE_CATALOG
+    brd_name: "Design Atomic từ nguồn FMS bảng FMS_REFERENCE_CATALOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục tham chiếu của hệ thống FMS"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: FMS_REFERENCE_CATALOG
+      related_tables:
+        - table: FMS_INDICATOR_CATALOG
+          relation: "1-N — Danh mục chỉ tiêu của hệ thống FMS"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-LOG_CONVERT_DATA
+    brd_name: "Design Atomic từ nguồn FMS bảng LOG_CONVERT_DATA"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký chuyển đổi dữ liệu"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: LOG_CONVERT_DATA
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-LOG_CONVERT_DATA_2
+    brd_name: "Design Atomic từ nguồn FMS bảng LOG_CONVERT_DATA_2"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký chuyển đổi dữ liệu (bổ sung)"
+      functional_group: "FMS.7 Tiện ích và hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: LOG_CONVERT_DATA_2
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.8 Kiểm toán và kiểm tra ────────────────────────────────────────
+
+  - brd_id: BRD-SRC-FMS-AUDITOR
+    brd_name: "Design Atomic từ nguồn FMS bảng AUDITOR"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách kiểm toán viên"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: AUDITOR
+      related_tables:
+        - table: AUDIT_FIRM
+          relation: "FK cha — Danh sách công ty kiểm toán"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: AUDIT_FIRM_REMINDER
+          relation: "1-N — Nhắc nhở/yêu cầu từ công ty kiểm toán"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-AUDIT_FIRM
+    brd_name: "Design Atomic từ nguồn FMS bảng AUDIT_FIRM"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách công ty kiểm toán"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: AUDIT_FIRM
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: AUDITOR
+          relation: "1-N — Danh sách kiểm toán viên"
+        - table: AUDIT_FIRM_REMINDER
+          relation: "1-N — Nhắc nhở/yêu cầu từ công ty kiểm toán"
+        - table: DT_SC_AUDIT_FIRM
+          relation: "1-N — Phân quyền dữ liệu công ty kiểm toán cho chuyên viên"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-AUDIT_FIRM_REMINDER
+    brd_name: "Design Atomic từ nguồn FMS bảng AUDIT_FIRM_REMINDER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhắc nhở/yêu cầu từ công ty kiểm toán"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: AUDIT_FIRM_REMINDER
+      related_tables:
+        - table: AUDITOR
+          relation: "FK cha — Danh sách kiểm toán viên"
+        - table: AUDIT_FIRM
+          relation: "FK cha — Danh sách công ty kiểm toán"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: AUDIT_FIRM_REMINDER_ATTACHMENT
+          relation: "1-N — File đính kèm của nhắc nhở kiểm toán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-AUDIT_FIRM_REMINDER_ATTACHMENT
+    brd_name: "Design Atomic từ nguồn FMS bảng AUDIT_FIRM_REMINDER_ATTACHMENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "File đính kèm của nhắc nhở kiểm toán"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: AUDIT_FIRM_REMINDER_ATTACHMENT
+      related_tables:
+        - table: AUDIT_FIRM_REMINDER
+          relation: "FK cha — Nhắc nhở/yêu cầu từ công ty kiểm toán"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_AUDIT_FIRM
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_AUDIT_FIRM"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu công ty kiểm toán cho chuyên viên"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_AUDIT_FIRM
+      related_tables:
+        - table: AUDIT_FIRM
+          relation: "FK cha — Danh sách công ty kiểm toán"
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSPECTION_PENALTY_DECISION
+    brd_name: "Design Atomic từ nguồn FMS bảng INSPECTION_PENALTY_DECISION"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quyết định xử phạt thanh tra"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: INSPECTION_PENALTY_DECISION
+      related_tables:
+        - table: INSPECTION_ROUND
+          relation: "FK cha — Đợt thanh tra, kiểm tra"
+        - table: INSPECTION_TARGET
+          relation: "FK cha — Đối tượng thanh tra, kiểm tra"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSPECTION_ROUND
+    brd_name: "Design Atomic từ nguồn FMS bảng INSPECTION_ROUND"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Đợt thanh tra, kiểm tra"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: INSPECTION_ROUND
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: INSPECTION_PENALTY_DECISION
+          relation: "1-N — Quyết định xử phạt thanh tra"
+        - table: INSPECTION_TARGET
+          relation: "1-N — Đối tượng thanh tra, kiểm tra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-INSPECTION_TARGET
+    brd_name: "Design Atomic từ nguồn FMS bảng INSPECTION_TARGET"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Đối tượng thanh tra, kiểm tra"
+      functional_group: "FMS.8 Kiểm toán và kiểm tra"
+      scope_status: pending
+      scope_reason: null
+      table: INSPECTION_TARGET
+      related_tables:
+        - table: INSPECTION_ROUND
+          relation: "FK cha — Đợt thanh tra, kiểm tra"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: INSPECTION_PENALTY_DECISION
+          relation: "1-N — Quyết định xử phạt thanh tra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── FMS.9 Đại lý và quỹ hưu trí ────────────────────────────────────────
+
+  - brd_id: BRD-SRC-FMS-DISTRIBUTOR_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng DISTRIBUTOR_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách đại lý phân phối"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DISTRIBUTOR_AGENT
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: DISTRIBUTOR_AGENT_HISTORY
+          relation: "1-N — Lịch sử thông tin đại lý phân phối"
+        - table: DISTRIBUTOR_LOCATION
+          relation: "1-N — Địa điểm hoạt động của đại lý phân phối"
+        - table: DT_SC_DISTRIBUTOR_AGENT
+          relation: "1-N — Phân quyền dữ liệu đại lý phân phối cho chuyên viên"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+        - table: VIOLT
+          relation: "1-N — Danh sách vi phạm đã ghi nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DISTRIBUTOR_AGENT_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng DISTRIBUTOR_AGENT_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thông tin đại lý phân phối"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DISTRIBUTOR_AGENT_HISTORY
+      related_tables:
+        - table: DISTRIBUTOR_AGENT
+          relation: "FK cha — Danh sách đại lý phân phối"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DISTRIBUTOR_LOCATION
+    brd_name: "Design Atomic từ nguồn FMS bảng DISTRIBUTOR_LOCATION"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Địa điểm hoạt động của đại lý phân phối"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DISTRIBUTOR_LOCATION
+      related_tables:
+        - table: DISTRIBUTOR_AGENT
+          relation: "FK cha — Danh sách đại lý phân phối"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: DISTRIBUTOR_PERSONNEL
+          relation: "1-N — Nhân sự của đại lý phân phối"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DISTRIBUTOR_PERSONNEL
+    brd_name: "Design Atomic từ nguồn FMS bảng DISTRIBUTOR_PERSONNEL"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhân sự của đại lý phân phối"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DISTRIBUTOR_PERSONNEL
+      related_tables:
+        - table: DISTRIBUTOR_LOCATION
+          relation: "FK cha — Địa điểm hoạt động của đại lý phân phối"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_DISTRIBUTOR_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_DISTRIBUTOR_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu đại lý phân phối cho chuyên viên"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_DISTRIBUTOR_AGENT
+      related_tables:
+        - table: DISTRIBUTOR_AGENT
+          relation: "FK cha — Danh sách đại lý phân phối"
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_OTHER_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_OTHER_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu đại lý khác cho chuyên viên"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_OTHER_AGENT
+      related_tables:
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+        - table: OTHER_AGENT
+          relation: "FK cha — Danh sách đại lý khác (ngoài phân phối và chuyển nhượng)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_PENSION_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_PENSION_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu đại lý quỹ hưu trí cho chuyên viên"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_PENSION_AGENT
+      related_tables:
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+        - table: PENSION_AGENT
+          relation: "FK cha — Danh sách đại lý quỹ hưu trí"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_PENSION_FUND
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_PENSION_FUND"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu quỹ hưu trí cho chuyên viên"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_PENSION_FUND
+      related_tables:
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+        - table: PENSION_FUND
+          relation: "FK cha — Danh sách quỹ hưu trí"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_PENSION_PROVIDER
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_PENSION_PROVIDER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu nhà cung cấp quỹ hưu trí cho chuyên viên"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_PENSION_PROVIDER
+      related_tables:
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+        - table: PENSION_PROVIDER
+          relation: "FK cha — Danh sách nhà cung cấp dịch vụ quỹ hưu trí"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-DT_SC_TRANSFER_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng DT_SC_TRANSFER_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Phân quyền dữ liệu đại lý chuyển nhượng cho chuyên viên"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: DT_SC_TRANSFER_AGENT
+      related_tables:
+        - table: DT_SCOPE
+          relation: "FK cha — Phân quyền dữ liệu – phạm vi truy cập"
+        - table: TRANSFER_AGENT
+          relation: "FK cha — Danh sách đại lý chuyển nhượng quỹ hưu trí"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-OTHER_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng OTHER_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách đại lý khác (ngoài phân phối và chuyển nhượng)"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: OTHER_AGENT
+      related_tables:
+        - table: AGENCY_TYPE
+          relation: "FK cha — Danh mục loại đại lý phân phối"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: DT_SC_OTHER_AGENT
+          relation: "1-N — Phân quyền dữ liệu đại lý khác cho chuyên viên"
+        - table: OTHER_AGENT_HISTORY
+          relation: "1-N — Lịch sử thông tin đại lý khác"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+        - table: VIOLT
+          relation: "1-N — Danh sách vi phạm đã ghi nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-OTHER_AGENT_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng OTHER_AGENT_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thông tin đại lý khác"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: OTHER_AGENT_HISTORY
+      related_tables:
+        - table: OTHER_AGENT
+          relation: "FK cha — Danh sách đại lý khác (ngoài phân phối và chuyển nhượng)"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-PENSION_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng PENSION_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách đại lý quỹ hưu trí"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: PENSION_AGENT
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: DT_SC_PENSION_AGENT
+          relation: "1-N — Phân quyền dữ liệu đại lý quỹ hưu trí cho chuyên viên"
+        - table: PENSION_AGENT_HISTORY
+          relation: "1-N — Lịch sử thông tin đại lý quỹ hưu trí"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+        - table: VIOLT
+          relation: "1-N — Danh sách vi phạm đã ghi nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-PENSION_AGENT_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng PENSION_AGENT_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thông tin đại lý quỹ hưu trí"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: PENSION_AGENT_HISTORY
+      related_tables:
+        - table: EVENT_TYPE
+          relation: "FK cha — Danh mục loại sự kiện"
+        - table: PENSION_AGENT
+          relation: "FK cha — Danh sách đại lý quỹ hưu trí"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-PENSION_FUND
+    brd_name: "Design Atomic từ nguồn FMS bảng PENSION_FUND"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách quỹ hưu trí"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: PENSION_FUND
+      related_tables:
+        - table: BANK_MONI
+          relation: "FK cha — Danh sách ngân hàng lưu ký giám sát (LKGS)"
+        - table: SECURITIES
+          relation: "FK cha — Danh sách công ty QLQ trong nước"
+        - table: STATUS
+          relation: "FK cha — Danh mục trạng thái hoạt động"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: ANNOUNCE
+          relation: "1-N — Danh sách thông báo/công bố thông tin"
+        - table: DT_SC_PENSION_FUND
+          relation: "1-N — Phân quyền dữ liệu quỹ hưu trí cho chuyên viên"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+        - table: VIOLT
+          relation: "1-N — Danh sách vi phạm đã ghi nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-PENSION_PROVIDER
+    brd_name: "Design Atomic từ nguồn FMS bảng PENSION_PROVIDER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách nhà cung cấp dịch vụ quỹ hưu trí"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: PENSION_PROVIDER
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: DT_SC_PENSION_PROVIDER
+          relation: "1-N — Phân quyền dữ liệu nhà cung cấp quỹ hưu trí cho chuyên viên"
+        - table: PENSION_PROVIDER_HISTORY
+          relation: "1-N — Lịch sử thông tin nhà cung cấp quỹ hưu trí"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+        - table: VIOLT
+          relation: "1-N — Danh sách vi phạm đã ghi nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-PENSION_PROVIDER_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng PENSION_PROVIDER_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thông tin nhà cung cấp quỹ hưu trí"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: PENSION_PROVIDER_HISTORY
+      related_tables:
+        - table: PENSION_PROVIDER
+          relation: "FK cha — Danh sách nhà cung cấp dịch vụ quỹ hưu trí"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-TRANSFER_AGENT
+    brd_name: "Design Atomic từ nguồn FMS bảng TRANSFER_AGENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách đại lý chuyển nhượng quỹ hưu trí"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: TRANSFER_AGENT
+      related_tables:
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+        - table: DT_SC_TRANSFER_AGENT
+          relation: "1-N — Phân quyền dữ liệu đại lý chuyển nhượng cho chuyên viên"
+        - table: RPT_MEMBER
+          relation: "1-N — Báo cáo định kỳ của thành viên thị trường"
+        - table: TRANSFER_AGENT_HISTORY
+          relation: "1-N — Lịch sử thông tin đại lý chuyển nhượng quỹ hưu trí"
+        - table: VIOLT
+          relation: "1-N — Danh sách vi phạm đã ghi nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-FMS-TRANSFER_AGENT_HISTORY
+    brd_name: "Design Atomic từ nguồn FMS bảng TRANSFER_AGENT_HISTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử thông tin đại lý chuyển nhượng quỹ hưu trí"
+      functional_group: "FMS.9 Đại lý và quỹ hưu trí"
+      scope_status: pending
+      scope_reason: null
+      table: TRANSFER_AGENT_HISTORY
+      related_tables:
+        - table: TRANSFER_AGENT
+          relation: "FK cha — Danh sách đại lý chuyển nhượng quỹ hưu trí"
+        - table: USERS
+          relation: "FK cha — Quản lý người dùng hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null

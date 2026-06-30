@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: SECURITIESACCOUNT
+brd_ref: BRD-SRC-FIMS-SECURITIESACCOUNT
+columns:
+- name: Id
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: InvesId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán"
+  key: FK
+  fk_note: "FK → INVESTOR"
+- name: SecId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: Account
+  data_type: "NVARCHAR2(200 CHAR)"
+  description: "Số tài khoản chứng khoán"
+  key: null
+  fk_note: null
+- name: OpenPlace
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Nơi mở tài khoản (tên công ty CK hoặc VSDC)"
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null

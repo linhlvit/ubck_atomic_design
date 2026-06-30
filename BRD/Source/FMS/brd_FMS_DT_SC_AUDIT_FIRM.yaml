@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: DT_SC_AUDIT_FIRM
+brd_ref: BRD-SRC-FMS-DT_SC_AUDIT_FIRM
+columns:
+- name: DTS_ID
+  data_type: RAW(16)
+  description: "FK -> DT_SCOPE: Cấu hình phân quyền dữ liệu của người dùng"
+  key: null
+  fk_note: "FK suy luận → DT_SCOPE.ID"
+- name: AUDIT_FIRM_ID
+  data_type: RAW(16)
+  description: "FK -> AUDIT_FIRM: Công ty kiểm toán"
+  key: null
+  fk_note: "FK suy luận → AUDIT_FIRM.ID"

@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPT_FIELD_CATALOG
+brd_ref: BRD-SRC-FIMS-RPT_FIELD_CATALOG
+columns:
+- name: ID
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi"
+  key: null
+  fk_note: null
+- name: MA_CHI_TIEU
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mã chỉ tiêu trong báo cáo đầu ra (mã định danh ngắn gọn)"
+  key: null
+  fk_note: null
+- name: TEN_CHI_TIEU
+  data_type: "VARCHAR2(500 CHAR)"
+  description: "Tên đầy đủ chỉ tiêu trong báo cáo đầu ra"
+  key: null
+  fk_note: null
+- name: MO_TA
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Mô tả ý nghĩa nghiệp vụ của trường dữ liệu trong báo cáo đầu ra"
+  key: null
+  fk_note: null
+- name: DATA_TYPE
+  data_type: "NUMBER(2,0)"
+  description: "Kiểu dữ liệu: TEXT/NUMBER/DATE/BOOLEAN/ENUM"
+  key: null
+  fk_note: null
+- name: REF_VALUE_CATALOG_ID
+  data_type: "NUMBER(18,0)"
+  description: "FK -> RPT_VALUE_CATALOG: Danh mục giá trị tham chiếu cho trường này"
+  key: null
+  fk_note: "FK suy luận → RPT_VALUE_CATALOG.ID"
+- name: CATALOG_ACTIVE
+  data_type: "NUMBER(1,0)"
+  description: "Cờ danh mục đang hoạt động: 1=Đang dùng, 0=Không dùng"
+  key: null
+  fk_note: null
+- name: IS_DELETED
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DATE_MODIFIED
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Username người tạo template báo cáo"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: MODIFY_BY
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tài khoản người cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: DROPDOWN_OPTION_SOURCE
+  data_type: "VARCHAR2(32 CHAR)"
+  description: "Nguồn lấy danh sách tùy chọn dropdown cho trường báo cáo đầu ra"
+  key: null
+  fk_note: null
+- name: DROPDOWN_REF_SOURCE
+  data_type: "NUMBER(1,0)"
+  description: "Bảng/trường tham chiếu khi trường là loại dropdown lookup"
+  key: null
+  fk_note: null

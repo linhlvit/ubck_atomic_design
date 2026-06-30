@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTVALUESMANAGERMENT
+brd_ref: BRD-SRC-FIMS-RPTVALUESMANAGERMENT
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: TableName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên bảng lưu trữ (RPTVALUES hoặc RPTVALUESx_yyyy partition)"
+  key: null
+  fk_note: null
+- name: TableYear
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Năm của bảng partition RPTVALUES_YYYY"
+  key: null
+  fk_note: null
+- name: TableSystemObject
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Loại đối tượng của bảng partition (1=QLQ, 2=CTCK...)"
+  key: null
+  fk_note: null

@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TL_PR_HISTORY
+brd_ref: BRD-SRC-FMS-TL_PR_HISTORY
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: TL_ID
+  data_type: RAW(16)
+  description: "FK -> TL_PROFILES: Người phụ trách/giám đốc chi nhánh"
+  key: null
+  fk_note: "FK suy luận → TL_PROFILES.ID"
+- name: DATE_CHANGE
+  data_type: DATE
+  description: "Thời điểm/ngày tháng liên quan"
+  key: null
+  fk_note: null
+- name: ACTION
+  data_type: NCLOB
+  description: "Hành động đang thực hiện khi xảy ra lỗi"
+  key: null
+  fk_note: null
+- name: ITEM_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: ID_NO
+  data_type: NVARCHAR2(300)
+  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
+  key: null
+  fk_note: null
+- name: PREV_VALUE
+  data_type: NCLOB
+  description: "Giá trị trước khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: VALUE_CHANGE
+  data_type: NCLOB
+  description: "Giá trị sau khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"

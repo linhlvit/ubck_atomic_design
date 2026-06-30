@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: AUDIT_FIRM_REMINDER
+brd_ref: BRD-SRC-FMS-AUDIT_FIRM_REMINDER
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: TARGET_TYPE
+  data_type: VARCHAR2(255)
+  description: "Loại đối tượng nhắc nhở: AUDIT_FIRM=Công ty kiểm toán, AUDITOR=Kiểm toán viên"
+  key: null
+  fk_note: null
+- name: AUDIT_FIRM_ID
+  data_type: RAW(16)
+  description: "FK -> AUDIT_FIRM: Công ty kiểm toán"
+  key: null
+  fk_note: "FK suy luận → AUDIT_FIRM.ID"
+- name: AUDITOR_ID
+  data_type: RAW(16)
+  description: "FK -> AUDITOR: Kiểm toán viên"
+  key: null
+  fk_note: "FK suy luận → AUDITOR.ID"
+- name: DOCUMENT_NO
+  data_type: VARCHAR2(255)
+  description: "Số văn bản/công văn nhắc nhở kiểm toán"
+  key: null
+  fk_note: null
+- name: DOCUMENT_DATE
+  data_type: DATE
+  description: "Ngày ban hành văn bản nhắc nhở"
+  key: null
+  fk_note: null
+- name: GCN_NO
+  data_type: VARCHAR2(255)
+  description: "Số GCN (giấy chứng nhận): hành nghề, chấp thuận kiểm toán, phân phối CCQ..."
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: VARCHAR2(255)
+  description: "Nội dung văn bản nhắc nhở kiểm toán"
+  key: null
+  fk_note: null
+- name: IMPLEMENTATION_STATUS
+  data_type: VARCHAR2(255)
+  description: "Trạng thái thực hiện nhắc nhở: PENDING=Chờ xử lý, DONE=Đã xử lý"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(255)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null

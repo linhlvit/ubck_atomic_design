@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TRS_FER_INDER_CHG_LOG
+brd_ref: BRD-SRC-FMS-TRS_FER_INDER_CHG_LOG
+columns:
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: MODIFY_REASON
+  data_type: VARCHAR2(255)
+  description: "Lý do sửa đổi bản ghi"
+  key: null
+  fk_note: null
+- name: CHANGE_SUMMARY
+  data_type: VARCHAR2(255)
+  description: "Tóm tắt nội dung thay đổi"
+  key: null
+  fk_note: null
+- name: SNAPSHOT_JSON
+  data_type: CLOB
+  description: "Snapshot toàn bộ dữ liệu tại thời điểm ghi log (JSON CLOB)"
+  key: null
+  fk_note: null
+- name: EVENT_TYPE
+  data_type: VARCHAR2(255)
+  description: "Loại sự vụ ghi nhận thay đổi giao dịch chuyển nhượng cổ phần nội bộ"
+  key: null
+  fk_note: null
+- name: PREV_VALUE
+  data_type: VARCHAR2(255)
+  description: "Giá trị trước khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: VALUE_CHANGE
+  data_type: VARCHAR2(255)
+  description: "Giá trị sau khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: GP_QD_NO
+  data_type: VARCHAR2(255)
+  description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ"
+  key: null
+  fk_note: null
+- name: APPROVAL_DATE
+  data_type: DATE
+  description: "Ngày chấp thuận/phê duyệt của UBCKNN"
+  key: null
+  fk_note: null
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: TRS_FER_INDER_ID
+  data_type: RAW(16)
+  description: "FK -> TRANSFER_AGENT_INSIDER: Cổ đông/người nội bộ đại lý chuyển nhượng"
+  key: null
+  fk_note: "FK suy luận → TRS_FER_INDER.ID"

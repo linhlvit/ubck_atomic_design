@@ -45,127 +45,242 @@ ECAT,BRD-SRC-ECAT-ECAT_43_EnterpriseType,ECAT_43_EnterpriseType,UID-05 Danh mụ
 ECAT,BRD-SRC-ECAT-ECAT_44_FundType,ECAT_44_FundType,UID-05 Danh mục nghiệp vụ & dịch vụ,in_scope,,Danh mục loại hình quỹ đầu tư,CV scheme: ECAT_FUND_TYPE,username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_45_OperatingStatus,ECAT_45_OperatingStatus,UID-11 Danh mục trạng thái & quy trình xử lý,in_scope,,Danh mục trạng thái hoạt động,"CV scheme: ECAT_OPERATING_STATUS (hoạt động, tạm dừng, giải thể...)",username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_46_ShareholderType,ECAT_46_ShareholderType,UID-06 Danh mục đối tượng tham gia thị trường,in_scope,,Danh mục loại hình cổ đông/nhà đầu tư,CV scheme: ECAT_SHAREHOLDER_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-ANNOUNCE,ANNOUNCE,FIMS_UID08 Công bố thông tin,in_scope,,Lưu danh sách các tin CB của thành viên thị trường,Atomic entity: Disclosure Announcement — tạo tự động từ BC của đại diện CBTT,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-ANNOUNCEINVES,ANNOUNCEINVES,FIMS_UID07 Ủy quyền,in_scope,,lưu danh sách NĐT NN ủy quyền CBTT,Denormalize vào Disclosure Authorization entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-ANNOUNCEINVESHIS,ANNOUNCEINVESHIS,FIMS_UID07 Ủy quyền,out_of_scope,"Snapshot nguồn — lịch sử NĐT NN ủy quyền, xử lý tại ETL",Lưu lịch sử danh sách NĐT NN ủy quyền CBTT,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-ANNOUNCETYPE,ANNOUNCETYPE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách loại CBTT,CV scheme: FIMS_ANNOUNCE_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-AUTHOANNOUNCE,AUTHOANNOUNCE,FIMS_UID07 Ủy quyền,in_scope,,Lưu danh sách ủy quyền CBTT.,Atomic entity: Disclosure Authorization — cả ủy quyền CBTT và ủy quyền giao dịch,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-AUTHOANNOUNCEHIS,AUTHOANNOUNCEHIS,FIMS_UID07 Ủy quyền,out_of_scope,"Snapshot nguồn — lịch sử ủy quyền, xử lý tại ETL",Lưu danh sách lịch sử ủy quyền CBTT.,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-BANKMONI,BANKMONI,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu,Shared entity Custodian Bank — bổ sung source từ FIMS (đồng bộ từ FMS),username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-BRANCHS,BRANCHS,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ,Atomic entity: Fund Management Company Organization Unit — CN CTQLQ nước ngoài tại VN,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-BRANCHSBUSINES,BRANCHSBUSINES,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách nghiệp vụ kinh doanh của CN công,Denormalize vào Fund Mgmt Co. Organization Unit entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-BUSINESS,BUSINESS,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,lưu danh sách danh mục nghiệp vụ kinh doanh.,CV scheme: FIMS_BUSINESS_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-CALENDAR,CALENDAR,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — lịch hệ thống FIMS,Lưu danh sách lịch hệ thống,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-CALENDARMANAGERMENT,CALENDARMANAGERMENT,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — log thay đổi lịch hệ thống,Lưu các thay đổi lịch hệ thống để phục vụ,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-CATEGORIESSTOCK,CATEGORIESSTOCK,FIMS_UID04 Nhà đầu tư nước ngoài,in_scope,,Lưu danh sách danh mục chứng khoán của NĐT NN.,Atomic entity: Foreign Investor Stock Portfolio Snapshot,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-CATEGORIESSTOCKHIS,CATEGORIESSTOCKHIS,FIMS_UID04 Nhà đầu tư nước ngoài,out_of_scope,"Snapshot nguồn — lịch sử sở hữu CK, xử lý tại ETL",Lưu danh sách danh mục lịch sử sở hữu chứng,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-CDTWARN,CDTWARN,FIMS_UID09 Cảnh báo,out_of_scope,Operational/system data — điều kiện ngưỡng cảnh báo cấu hình,Lưu danh sách điều kiện cảnh báo,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-CERTFCATE,CERTFCATE,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — chứng thư số ứng dụng,lưu danh sách chứng thư số,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-COMPANYTYPE,COMPANYTYPE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách danh mục loại hình doanh nghiệp,CV scheme: FIMS_COMPANY_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-CURRENCY,CURRENCY,FIMS_UID01 Quản lý danh mục dùng riêng,out_of_scope,Chờ thiết kế — danh mục tiền tệ thu thập từ ECAT (source authoritative),lưu danh sách danh mục tiền tệ.,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-DEGREE,DEGREE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,lưu danh sách danh mục trình độ,CV scheme: FIMS_DEGREE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-DEPARTMENT,DEPARTMENT,FIMS_UID01 Quản lý danh mục dùng riêng,out_of_scope,Operational/system data — danh mục phòng ban nội bộ FIMS,lưu danh sách danh mục phòng ban,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-DEPOSITORYCENTER,DEPOSITORYCENTER,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách đối tượng gửi báo cáo là Trung,Atomic entity: Depository Center (VSDC) — tiếp nhận dữ liệu NĐT NN từ VSDC qua LGSP,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-DOCUMENT,DOCUMENT,FIMS_UID10 Tiện ích,out_of_scope,Không có FK inbound từ bảng nghiệp vụ — tài liệu độc lập,Lưu danh sách tài liệu hệ thống.,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-EMAILSENTSYSTEM,EMAILSENTSYSTEM,FIMS_UID10 Tiện ích,out_of_scope,Operational/system data — trao đổi thông tin nội bộ hệ thống,Lưu danh sách trao đổi thông tin,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-ERRORLOG,ERRORLOG,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — error log ứng dụng,Lưu lịch sử lỗi hệ thống,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-FUNDCOMBUSINES,FUNDCOMBUSINES,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách nghiệp vụ kinh doanh của công ty,Denormalize vào Fund Management Company entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-FUNDCOMPANY,FUNDCOMPANY,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách đối tượng gửi báo cáo là Công ty,Shared entity Fund Management Company — bổ sung source từ FIMS (đồng bộ từ FMS),username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-FUNDCOMTYPE,FUNDCOMTYPE,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách loại hình công ty của công ty QLQ,Denormalize vào Fund Management Company entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-GROUPROLES,GROUPROLES,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — phân quyền nhóm,lưu danh sách các quyền được phân cho nhóm người,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-GROUPS,GROUPS,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — nhóm người dùng ứng dụng,Lưu danh sách nhóm người dùng,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-GROUPUSERS,GROUPUSERS,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — junction nhóm-người dùng,lưu danh sách người dùng được phân vào nhóm người,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-INDIREBUSINESS,INDIREBUSINESS,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách nghiệp vụ kinh doanh của người,Denormalize vào Disclosure Representative entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-INFODISCREPRES,INFODISCREPRES,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách đối tượng gửi báo cáo là người,Atomic entity: Disclosure Representative — người đại diện CBTT cho NĐT NN,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-INVESTOR,INVESTOR,FIMS_UID04 Nhà đầu tư nước ngoài,in_scope,,lưu danh sách danh mục nhà đầu tư,Atomic entity: Foreign Investor — phân biệt cá nhân (ObjectType=1) và tổ chức (ObjectType=2),username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-INVESTORHIS,INVESTORHIS,FIMS_UID04 Nhà đầu tư nước ngoài,out_of_scope,"Snapshot nguồn — SCD2 lịch sử NĐT, xử lý tại ETL",Lưu danh sách lịch sử của nhà đầu tư,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-INVESTORTYPE,INVESTORTYPE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,lưu danh sách danh mục loại nhà đầu tư,CV scheme: FIMS_INVESTOR_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-JOBTYPE,JOBTYPE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách chức vụ của người dùng trên hệ thống,CV scheme: FIMS_JOB_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-LOCATION,LOCATION,FIMS_UID01 Quản lý danh mục dùng riêng,out_of_scope,"Chờ thiết kế — reference data địa giới hành chính, sẽ thu thập từ ECAT",lưu danh sách tỉnh/ thành phố,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-MENUS,MENUS,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — danh sách menu/quyền giao diện,Lưu danh sách các quyền của hệ thống,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-NATIONAL,NATIONAL,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,lưu danh sách quốc tịch/ quốc gia,Shared entity Geographic Area — bổ sung source; dùng trong tất cả đối tượng UID03 và NĐT NN UID04,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-NOTIFICATION,NOTIFICATION,FIMS_UID10 Tiện ích,out_of_scope,Operational/system data — thông báo nội bộ ứng dụng FIMS,lưu danh sách thông báo,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-PARAWARN,PARAWARN,FIMS_UID09 Cảnh báo,out_of_scope,Operational/system data — tham số cấu hình cảnh báo hệ thống,Lưu danh sách tham số cảnh báo,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-REFRESHTOKEN,REFRESHTOKEN,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — session management,lưu danh sách các phiên làm việc của người dùng,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RELATEDPROPERTIES,RELATEDPROPERTIES,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách các danh muc hình thức liên,CV scheme: FIMS_RELATED_PROPERTIES — hình thức liên quan ủy quyền CBTT,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RELATIONSHIP,RELATIONSHIP,FIMS_UID01 Quản lý danh mục dùng riêng,out_of_scope,Chờ thiết kế — chưa có cấu trúc cột rõ ràng,Bảng quan hệ chờ thiết kế,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-REPORTTYPE,REPORTTYPE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách danh mục loại báo cáo.,CV scheme: FIMS_REPORT_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-ROLES,ROLES,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — nhóm quyền chức năng ứng dụng,lưu danh sách nhóm quyền,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTHTORY,RPTHTORY,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào,out_of_scope,"Snapshot nguồn — lịch sử thay đổi biểu mẫu, xử lý tại ETL",lưu lịch sử thay đổi biểu mẫu báo cáo đầu vào.,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTMEMBER,RPTMEMBER,FIMS_UID05 Báo cáo thành viên,in_scope,,lưu danh sách báo cáo của các thành viên thị trường,"Atomic entity: Member Regulatory Report — FK nullable đến các đối tượng gửi BC (FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, BRANCHS, INFODISCREPRES)",username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTOUTFILESAVE,RPTOUTFILESAVE,FIMS_UID06 Tổng hợp báo cáo,out_of_scope,Operational/system data — file output đã gen,Lưu danh sách file thống kê đã được gen tự động,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTOUTMANAGEMENT,RPTOUTMANAGEMENT,FIMS_UID06 Tổng hợp báo cáo,out_of_scope,Operational/system data — cấu hình gen file thống kê tự động,Lưu danh sách cấu hình gen file thống kê tự,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTPDSHT,RPTPDSHT,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào,out_of_scope,Operational/system data — junction nội bộ biểu mẫu,bảng trung gian giữa bảng SHEET và bảng RPTPERIOD,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTPERIOD,RPTPERIOD,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào,in_scope,,lưu danh sách kỳ của báo cáo đầu vào.,Shared entity Reporting Period — bổ sung source từ FIMS,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTPROCESS,RPTPROCESS,FIMS_UID05 Báo cáo thành viên,out_of_scope,Activity log nguồn — lịch sử trạng thái xử lý báo cáo,lưu danh sách lịch sử xử lý báo cáo,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTTEMP,RPTTEMP,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào,in_scope,,lưu danh sách biểu mẫu báo cáo đầu vào.,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTTPOUT,RPTTPOUT,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra,out_of_scope,Báo cáo đầu ra hệ thống — cấu hình nội bộ UBCKNN,lưu danh sách biểu mẫu báo cáo đầu ra,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTVALUES,RPTVALUES,FIMS_UID05 Báo cáo thành viên,in_scope,,"bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh",Atomic entity: Member Report Value,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-RPTVALUESMANAGERMENT,RPTVALUESMANAGERMENT,FIMS_UID05 Báo cáo thành viên,out_of_scope,Operational/system data — quản lý metadata bảng giá trị báo cáo,Lưu quản lý các bảng lưu giá trị của báo,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SECCOMBUSINES,SECCOMBUSINES,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách nghiệp vụ kinh doanh của công ty,Denormalize vào Securities Company entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SECCOMTYPE,SECCOMTYPE,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,lưu danh sách loại hình doanh nghiệp của công ty,Denormalize vào Securities Company entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SECURITIES,SECURITIES,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách danh mục chứng khoán.,CV scheme: FIMS_SECURITIES_CODE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SECURITIESACCOUNT,SECURITIESACCOUNT,FIMS_UID04 Nhà đầu tư nước ngoài,in_scope,,Lưu danh sách tài khoản giao dịch chứng,Atomic entity: Foreign Investor Securities Account,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SECURITIESACCOUNTHIS,SECURITIESACCOUNTHIS,FIMS_UID04 Nhà đầu tư nước ngoài,out_of_scope,"Snapshot nguồn — lịch sử tài khoản CK, xử lý tại ETL",Lưu danh sách lịch sử tài khoản khoản,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SECURITIESCOMPANY,SECURITIESCOMPANY,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách đối tượng gửi báo cáo là Công,Atomic entity: Securities Company — đồng bộ từ phân hệ SCMS,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SECURITIESTYPE,SECURITIESTYPE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách loại chứng khoán,CV scheme: FIMS_SECURITIES_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SELFSETPD,SELFSETPD,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào,out_of_scope,Operational/system data — cấu hình kỳ báo cáo bổ sung,Lưu danh sách cấu hình kỳ báo cáo do cán bộ UB tự,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SHEET,SHEET,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào,in_scope,,lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào,CV scheme: FIMS_REPORT_SHEET,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SHEETOUT,SHEETOUT,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra,out_of_scope,Báo cáo đầu ra hệ thống — cấu hình nội bộ UBCKNN,lưu danh sách sheet của báo cáo đầu ra.,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-STATUS,STATUS,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,lưu danh sách danh mục tình trạng hoạt động,CV scheme: LIFE_CYCLE_STATUS,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-STOCKEXCHANGE,STOCKEXCHANGE,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách đối tượng gửi báo cáo là Sở giao,Atomic entity: Stock Exchange — đồng bộ từ danh mục dùng chung,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-STOCKHOLDERTYPE,STOCKHOLDERTYPE,FIMS_UID01 Quản lý danh mục dùng riêng,in_scope,,Lưu danh sách danh mục loại cổ đông.,CV scheme: FIMS_STOCKHOLDER_TYPE,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SYSEMAIL,SYSEMAIL,FIMS_UID10 Tiện ích,out_of_scope,Operational/system data — email log hệ thống,lưu danh sách trao đổi thông tin gửi qua mail,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SYSTEMINTEGRATIONCONFIG,SYSTEMINTEGRATIONCONFIG,FIMS_UID02 Quản lý tích hợp,out_of_scope,Operational/system data — cấu hình kết nối API,Lưu danh sách cấu hình kết nối hệ,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SYSTEMINTEGRATIONDATA,SYSTEMINTEGRATIONDATA,FIMS_UID02 Quản lý tích hợp,out_of_scope,Operational/system data — dữ liệu tích hợp MSS nội bộ,Lưu dữ liệu kết nối MSS,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-SYSVAR,SYSVAR,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — tham số cấu hình ứng dụng,Bảng lưu danh sách các tham số hệ thống,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-TLPROFILES,TLPROFILES,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,lưu danh sách nhân sự của người đại diện CBTT.,Atomic entity: Disclosure Representative Key Person — nhân sự của đại diện CBTT,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-TLPROJOB,TLPROJOB,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,Lưu danh sách chức vụ của nhân sự,Denormalize vào Disclosure Rep. Key Person entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-TLPROSTOCKH,TLPROSTOCKH,FIMS_UID03 Đối tượng gửi báo cáo,in_scope,,lưu danh sách loại cổ đông của nhân sự,Denormalize vào Disclosure Rep. Key Person entity,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-TPOUTHTORY,TPOUTHTORY,FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra,out_of_scope,Snapshot nguồn — lịch sử thay đổi biểu mẫu đầu ra,lưu danh sách lịch sử thay đổi biểu mẫu báo cáo,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-UNIT,UNIT,FIMS_UID01 Quản lý danh mục dùng riêng,out_of_scope,Operational/system data — đơn vị đo lường nội bộ ứng dụng,lưu danh sách danh mục đơn vị,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-USERRPTO,USERRPTO,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — phân quyền xem báo cáo đầu ra,lưu danh sách phân quyền sử dụng báo cáo đầu ra,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-USERS,USERS,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — quản lý người dùng ứng dụng FIMS,lưu danh sách người dùng trên hệ thống,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-USERSESSIONS,USERSESSIONS,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — session tracking,Lưu danh sách theo dõi tài khoản đang truy cập,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-USERSMENUS,USERSMENUS,FIMS_UID01 Quản trị phân hệ,out_of_scope,Operational/system data — phân quyền người dùng,lưu danh sách quyền được phân cho người dùng,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-VIOLATIONTYPE,VIOLATIONTYPE,FIMS_UID01 Quản lý danh mục dùng riêng,out_of_scope,Chờ thiết kế — danh mục loại vi phạm chưa xác định scope,lưu danh sách danh mục loại vi phạm,,username@fssc.com.vn,username@ubck.com.vn
-FIMS,BRD-SRC-FIMS-VIOLT,VIOLT,FIMS_UID09 Cảnh báo,in_scope,,Lưu danh sách vi phạm,"Atomic entity: Member Conduct Violation — FK nullable đến các đối tượng gửi BC (FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, BRANCHS, INFODISCREPRES)",username@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-ANNOUNCE,ANNOUNCE,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu danh sách các tin CBTT của thành viên thị trường,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-ANNOUNCEINVES,ANNOUNCEINVES,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,lưu danh sách NĐT NN ủy quyền CBTT,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-ANNOUNCEINVESHIS,ANNOUNCEINVESHIS,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu lịch sử danh sách NĐT NN ủy quyền CBTT,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-ANNOUNCETYPE,ANNOUNCETYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách loại CBTT,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-API_MAPPINGS,API_MAPPINGS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu cấu hình ánh xạ API,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-AUDIT_LOGS,AUDIT_LOGS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu nhật ký kiểm toán hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-AUTHOANNOUNCE,AUTHOANNOUNCE,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu danh sách ủy quyền CBTT,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-AUTHOANNOUNCEHIS,AUTHOANNOUNCEHIS,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu danh sách lịch sử ủy quyền CBTT,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-BANKMONI,BANKMONI,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-BRANCHS,BRANCHS,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-BRANCHSBUSINES,BRANCHSBUSINES,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách nghiệp vụ kinh doanh của CN công ty QLQ NN,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-BUSINESS,BUSINESS,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục nghiệp vụ kinh doanh,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CALENDAR,CALENDAR,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách lịch hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CALENDARMANAGERMENT,CALENDARMANAGERMENT,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu các thay đổi lịch hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CATEGORIESSTOCK,CATEGORIESSTOCK,FIMS.6 Nhà đầu tư nước ngoài,out_of_scope,Chờ thiết kế LLD,Lưu danh sách danh mục chứng khoán của NĐT NN,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CATEGORIESSTOCKHIS,CATEGORIESSTOCKHIS,FIMS.6 Nhà đầu tư nước ngoài,out_of_scope,Chờ thiết kế LLD,Lưu danh sách lịch sử sở hữu chứng khoán của NĐT NN,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CDTWARN,CDTWARN,FIMS.9 Cảnh báo và vi phạm,out_of_scope,Chờ thiết kế LLD,Lưu danh sách điều kiện cảnh báo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CERTFCATE,CERTFCATE,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,lưu danh sách chứng thư số,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CLOSING_PRICE_SECURITIES,CLOSING_PRICE_SECURITIES,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu giá đóng cửa chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-COMPANYTYPE,COMPANYTYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách danh mục loại hình doanh nghiệp,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-CURRENCY,CURRENCY,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục tiền tệ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-DEGREE,DEGREE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục trình độ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-DEPARTMENT,DEPARTMENT,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục phòng ban,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-DEPOSITORYCENTER,DEPOSITORYCENTER,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-DOCUMENT,DOCUMENT,FIMS.11 Trao đổi thông tin,out_of_scope,Chờ thiết kế LLD,Lưu danh sách tài liệu hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-DYNAMICCOLUMNS,DYNAMICCOLUMNS,FIMS.4 Hệ thống động (Dynamic),out_of_scope,Operational/system data — hạ tầng IT ứng dụng,Lưu danh sách cột động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-DYNAMICCONNECTIONS,DYNAMICCONNECTIONS,FIMS.4 Hệ thống động (Dynamic),out_of_scope,Operational/system data — hạ tầng IT ứng dụng,Lưu danh sách kết nối động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-DYNAMICTABLES,DYNAMICTABLES,FIMS.4 Hệ thống động (Dynamic),out_of_scope,Operational/system data — hạ tầng IT ứng dụng,Lưu danh sách bảng động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-EMAILSENTSYSTEM,EMAILSENTSYSTEM,FIMS.11 Trao đổi thông tin,out_of_scope,Chờ thiết kế LLD,Lưu danh sách trao đổi thông tin,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-ERRORLOG,ERRORLOG,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu lịch sử lỗi hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-FORM_SCHEMAS,FORM_SCHEMAS,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,Lưu danh sách schema biểu mẫu động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-FORM_SCHEMA_VERSIONS,FORM_SCHEMA_VERSIONS,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,Lưu lịch sử phiên bản schema biểu mẫu động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-FUNDCOMBUSINES,FUNDCOMBUSINES,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách nghiệp vụ kinh doanh của công ty quản lý quỹ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-FUNDCOMPANY,FUNDCOMPANY,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-FUNDCOMTYPE,FUNDCOMTYPE,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách loại hình công ty của công ty QLQ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-GROUPROLES,GROUPROLES,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách các quyền được phân cho nhóm người dùng,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-GROUPS,GROUPS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,Lưu danh sách nhóm người dùng,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-GROUPUSERS,GROUPUSERS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách người dùng được phân vào nhóm người dùng,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-INDIREBUSINESS,INDIREBUSINESS,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách nghiệp vụ kinh doanh của người hành nghề,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-INFODISCREPRES,INFODISCREPRES,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-INVESTOR,INVESTOR,FIMS.6 Nhà đầu tư nước ngoài,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục nhà đầu tư,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-INVESTORHIS,INVESTORHIS,FIMS.6 Nhà đầu tư nước ngoài,out_of_scope,Chờ thiết kế LLD,Lưu danh sách lịch sử của nhà đầu tư,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-INVESTORTYPE,INVESTORTYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục loại nhà đầu tư,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-JOBTYPE,JOBTYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách chức vụ của người dùng trên hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-LOCATION,LOCATION,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách tỉnh / thành phố,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-MENUS,MENUS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,Lưu danh sách các quyền của hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-MENUS_BU,MENUS_BU,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu danh sách menu theo đơn vị,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-MENU_CLONE,MENU_CLONE,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu danh sách menu (clone),,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-MODULES,MODULES,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu danh sách module hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-NATIONAL,NATIONAL,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách quốc tịch / quốc gia,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-NOTIFICATION,NOTIFICATION,FIMS.11 Trao đổi thông tin,out_of_scope,Chờ thiết kế LLD,lưu danh sách thông báo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-PARAWARN,PARAWARN,FIMS.9 Cảnh báo và vi phạm,out_of_scope,Chờ thiết kế LLD,Lưu danh sách tham số cảnh báo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-PERMISSIONS,PERMISSIONS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu danh sách phân quyền chi tiết,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-REFRESHTOKEN,REFRESHTOKEN,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,lưu danh sách các phiên làm việc của người dùng,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RELATEDPROPERTIES,RELATEDPROPERTIES,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách các hình thức liên quan,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RELATIONSHIP,RELATIONSHIP,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách quan hệ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-REPORTTYPE,REPORTTYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách danh mục loại báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-REPORT_TEMPLATES,REPORT_TEMPLATES,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,Lưu danh sách mẫu báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-ROLES,ROLES,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách nhóm quyền,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-ROLESMENUS,ROLESMENUS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách quyền của nhóm quyền,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTHTORY,RPTHTORY,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,lưu lịch sử thay đổi biểu mẫu báo cáo đầu vào,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTMEMBER,RPTMEMBER,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,lưu danh sách báo cáo của các thành viên thị trường,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTOUTFILESAVE,RPTOUTFILESAVE,FIMS.3 Biểu mẫu báo cáo đầu ra,out_of_scope,Chờ thiết kế LLD,Lưu danh sách file thống kê đã được gen tự động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTOUTMANAGEMENT,RPTOUTMANAGEMENT,FIMS.3 Biểu mẫu báo cáo đầu ra,out_of_scope,Chờ thiết kế LLD,Lưu danh sách cấu hình gen file thống kê tự động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTPDSHT,RPTPDSHT,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,bảng trung gian giữa bảng SHEET và bảng RPTPERIOD,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTPERIOD,RPTPERIOD,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,lưu danh sách kỳ của báo cáo đầu vào,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTPROCESS,RPTPROCESS,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,lưu danh sách lịch sử xử lý báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTTEMP,RPTTEMP,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,lưu danh sách biểu mẫu báo cáo đầu vào,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTTPOUT,RPTTPOUT,FIMS.3 Biểu mẫu báo cáo đầu ra,out_of_scope,Chờ thiết kế LLD,lưu danh sách biểu mẫu báo cáo đầu ra,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTVALUES,RPTVALUES,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,"bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới",,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPTVALUESMANAGERMENT,RPTVALUESMANAGERMENT,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,Lưu quản lý các bảng lưu giá trị của báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPT_EVENT_TYPE,RPT_EVENT_TYPE,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,Lưu danh sách loại sự vụ báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPT_EVENT_TYPE_LEGAL_BASIS,RPT_EVENT_TYPE_LEGAL_BASIS,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,Lưu danh sách căn cứ pháp lý của loại sự vụ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPT_EVENT_TYPE_SCHEDULE,RPT_EVENT_TYPE_SCHEDULE,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,Lưu lịch nộp báo cáo theo loại sự vụ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPT_EVENT_TYPE_STATUS_LINK,RPT_EVENT_TYPE_STATUS_LINK,FIMS.8 Báo cáo thành viên,out_of_scope,Chờ thiết kế LLD,Lưu liên kết trạng thái loại sự vụ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPT_FIELD_CATALOG,RPT_FIELD_CATALOG,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,Lưu danh mục trường báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPT_FIELD_CATALOG_USAGE,RPT_FIELD_CATALOG_USAGE,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,Lưu thông tin sử dụng trường báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-RPT_VALUE_CATALOG,RPT_VALUE_CATALOG,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,Lưu danh mục giá trị báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SECCOMBUSINES,SECCOMBUSINES,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách nghiệp vụ kinh doanh của công ty chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SECCOMTYPE,SECCOMTYPE,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,lưu danh sách loại hình doanh nghiệp của công ty chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SECURITIES,SECURITIES,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách danh mục chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SECURITIESACCOUNT,SECURITIESACCOUNT,FIMS.6 Nhà đầu tư nước ngoài,out_of_scope,Chờ thiết kế LLD,Lưu danh sách tài khoản giao dịch chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SECURITIESACCOUNTHIS,SECURITIESACCOUNTHIS,FIMS.6 Nhà đầu tư nước ngoài,out_of_scope,Chờ thiết kế LLD,Lưu danh sách lịch sử tài khoản chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SECURITIESCOMPANY,SECURITIESCOMPANY,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SECURITIESTYPE,SECURITIESTYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách loại chứng khoán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SELFSETPD,SELFSETPD,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,Lưu danh sách cấu hình kỳ báo cáo do cán bộ UB tự thiết lập,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SHEDLOCK,SHEDLOCK,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Bảng khóa lịch tác vụ (distributed lock),,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SHEET,SHEET,FIMS.2 Biểu mẫu báo cáo đầu vào,out_of_scope,Chờ thiết kế LLD,lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SHEETOUT,SHEETOUT,FIMS.3 Biểu mẫu báo cáo đầu ra,out_of_scope,Chờ thiết kế LLD,lưu danh sách sheet của báo cáo đầu ra,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-STATUS,STATUS,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục tình trạng hoạt động,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-STOCKEXCHANGE,STOCKEXCHANGE,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-STOCKHOLDERTYPE,STOCKHOLDERTYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Lưu danh sách danh mục loại cổ đông,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SYSEMAIL,SYSEMAIL,FIMS.11 Trao đổi thông tin,out_of_scope,Chờ thiết kế LLD,lưu danh sách trao đổi thông tin gửi qua mail,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SYSTEMINTEGRATIONCONFIG,SYSTEMINTEGRATIONCONFIG,FIMS.12 Tích hợp hệ thống,out_of_scope,Chờ thiết kế LLD,Lưu danh sách cấu hình kết nối hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SYSTEMINTEGRATIONDATA,SYSTEMINTEGRATIONDATA,FIMS.12 Tích hợp hệ thống,out_of_scope,Chờ thiết kế LLD,Lưu dữ liệu kết nối MSS,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-SYSVAR,SYSVAR,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,Bảng lưu danh sách các tham số hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TLPROFILES,TLPROFILES,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,lưu danh sách nhân sự của người đại diện CBTT,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TLPROJOB,TLPROJOB,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,Lưu danh sách chức vụ của nhân sự,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TLPROSTOCKH,TLPROSTOCKH,FIMS.7 Thành viên thị trường,out_of_scope,Chờ thiết kế LLD,lưu danh sách loại cổ đông của nhân sự,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TPOUTHTORY,TPOUTHTORY,FIMS.3 Biểu mẫu báo cáo đầu ra,out_of_scope,Chờ thiết kế LLD,lưu danh sách lịch sử thay đổi biểu mẫu báo cáo đầu ra,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TRADINGAUTHORIZATION,TRADINGAUTHORIZATION,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu danh sách ủy quyền giao dịch,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TRADINGAUTHORIZATIONHIS,TRADINGAUTHORIZATIONHIS,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu lịch sử ủy quyền giao dịch,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVES,TRADINGAUTHORIZATIONINVES,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu danh sách NĐT NN trong ủy quyền giao dịch,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVESHIS,TRADINGAUTHORIZATIONINVESHIS,FIMS.10 Ủy quyền CBTT và giao dịch,out_of_scope,Chờ thiết kế LLD,Lưu lịch sử NĐT NN trong ủy quyền giao dịch,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-TRADINGREPRESENTATIVE,TRADINGREPRESENTATIVE,FIMS.6 Nhà đầu tư nước ngoài,out_of_scope,Chờ thiết kế LLD,Lưu danh sách đại diện giao dịch,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-UNIT,UNIT,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục đơn vị,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-USERRPTI,USERRPTI,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách phân quyền sử dụng báo cáo đầu vào,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-USERRPTO,USERRPTO,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách phân quyền sử dụng báo cáo đầu ra,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-USERS,USERS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách người dùng trên hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-USERSESSIONS,USERSESSIONS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu danh sách theo dõi tài khoản đang truy cập,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-USERSMENUS,USERSMENUS,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — hạ tầng IT ứng dụng,lưu danh sách quyền được phân cho người dùng,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-USERSMENUS_CLONE,USERSMENUS_CLONE,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,lưu danh sách quyền người dùng (clone),,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-USER_DATA_PERMISSION,USER_DATA_PERMISSION,FIMS.1 Quản trị phân hệ,out_of_scope,Operational/system data — không thiết kế Atomic,Lưu phân quyền dữ liệu của người dùng,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-VIOLATIONTYPE,VIOLATIONTYPE,FIMS.5 Danh mục dùng chung,out_of_scope,Chờ thiết kế LLD,lưu danh sách danh mục loại vi phạm,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FIMS,BRD-SRC-FIMS-VIOLT,VIOLT,FIMS.9 Cảnh báo và vi phạm,out_of_scope,Chờ thiết kế LLD,Lưu danh sách vi phạm,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-AGENCIES,AGENCIES,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách đại lý Quỹ đầu tư,Atomic entity: Fund Distribution Agent — bao gồm IP Postal Address (shared),username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-AGENCIESBRA,AGENCIESBRA,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách CN/PGD của đại lý Quỹ đầu tư,Atomic entity: Fund Distribution Agent Organization Unit — bao gồm IP Postal Address (shared),username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-AGENCYTYPE,AGENCYTYPE,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách loại đại lý,CV scheme: FMS_AGENCY_TYPE,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-AGENFUNDS,AGENFUNDS,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Bảng trung gian Map đại lý và quỹ đầu tư,Denormalize vào Investment Fund entity,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-AGEN_TF_MBF,AGEN_TF_MBF,FMS.4 Quỹ đầu tư chứng khoán,pending,,Bảng trung gian ánh xạ đại lý và giao dịch CCQ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-ANNOUNCE,ANNOUNCE,FMS.7 Tiện ích và hệ thống,pending,,Danh sách thông báo/công bố thông tin,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-AUDITOR,AUDITOR,FMS.8 Kiểm toán và kiểm tra,pending,,Danh sách kiểm toán viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-AUDIT_FIRM,AUDIT_FIRM,FMS.8 Kiểm toán và kiểm tra,pending,,Danh sách công ty kiểm toán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-AUDIT_FIRM_REMINDER,AUDIT_FIRM_REMINDER,FMS.8 Kiểm toán và kiểm tra,pending,,Nhắc nhở/yêu cầu từ công ty kiểm toán,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-AUDIT_FIRM_REMINDER_ATTACHMENT,AUDIT_FIRM_REMINDER_ATTACHMENT,FMS.8 Kiểm toán và kiểm tra,pending,,File đính kèm của nhắc nhở kiểm toán,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-BANKMONI,BANKMONI,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách ngân hàng lưu ký giám sát (LKGS),"Atomic entity: Custodian Bank — bao gồm IP Postal Address, IP Electronic Address (shared)",username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-BANK_EMPLOY,BANK_EMPLOY,FMS.4 Quỹ đầu tư chứng khoán,pending,,Danh sách nhân sự ngân hàng lưu ký giám sát,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-BANK_EMPLOY_HISTORY,BANK_EMPLOY_HISTORY,FMS.4 Quỹ đầu tư chứng khoán,pending,,Lịch sử thay đổi nhân sự ngân hàng LKGS,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-BANK_HISTORY,BANK_HISTORY,FMS.4 Quỹ đầu tư chứng khoán,pending,,Lịch sử thông tin ngân hàng lưu ký giám sát,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-BRANCHES,BRANCHES,FMS.3 Thông tin thành viên — Công ty QLQ,in_scope,,Danh sách CN/VPĐD công ty QLQ trong nước,"Atomic entity: Fund Management Company Organization Unit — bao gồm IP Postal Address, IP Electronic Address, IP Alt Identification (shared)",username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-BRANCHS,BRANCHS,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Danh sách CN/VPĐD công ty QLQ trong nước,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-BRA_BUSINESS,BRA_BUSINESS,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Ngành nghề kinh doanh của CN/VPĐD công ty QLQ,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-BRCHBUP,BRCHBUP,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Snapshot nguồn — lịch sử chi tiết CN/VPĐD,Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-BUSINESS,BUSINESS,FMS.2 Danh mục dùng riêng,in_scope,,Danh mục ngành nghề kinh doanh,CV scheme: FMS_BUSINESS_TYPE,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-BUSINESS_TYPE,BUSINESS_TYPE,FMS.2 Danh mục dùng riêng,pending,,Danh mục loại hình kinh doanh,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-CALENDAR,CALENDAR,FMS.1 Quản trị phân hệ,out_of_scope,Isolated — không có FK inbound từ bảng nghiệp vụ,Danh sách lịch làm việc và lịch nghỉ,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-CDT_WARN,CDT_WARN,FMS.6 Đánh giá xếp loại và cảnh báo,pending,,Danh sách cảnh báo theo điều kiện,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-CERTFCATE,CERTFCATE,FMS.1 Quản trị phân hệ,out_of_scope,Isolated — không có FK inbound từ bảng nghiệp vụ,Danh sách chứng thư số của thành viên thị trường,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-CHART_OUT,CHART_OUT,FMS.6 Đánh giá xếp loại và cảnh báo,pending,,Cấu hình biểu đồ kết quả đánh giá xếp loại,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-COMPANY_TYPE,COMPANY_TYPE,FMS.2 Danh mục dùng riêng,pending,,Danh mục loại hình công ty,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-CONFIG,CONFIG,FMS.7 Tiện ích và hệ thống,pending,,Cấu hình chung của hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-CONFIG_CONVERT_DATA,CONFIG_CONVERT_DATA,FMS.7 Tiện ích và hệ thống,pending,,Cấu hình chuyển đổi/migration dữ liệu,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DISTRIBUTOR_AGENT,DISTRIBUTOR_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Danh sách đại lý phân phối,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DISTRIBUTOR_AGENT_HISTORY,DISTRIBUTOR_AGENT_HISTORY,FMS.9 Đại lý và quỹ hưu trí,pending,,Lịch sử thông tin đại lý phân phối,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DISTRIBUTOR_LOCATION,DISTRIBUTOR_LOCATION,FMS.9 Đại lý và quỹ hưu trí,pending,,Địa điểm hoạt động của đại lý phân phối,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DISTRIBUTOR_PERSONNEL,DISTRIBUTOR_PERSONNEL,FMS.9 Đại lý và quỹ hưu trí,pending,,Nhân sự của đại lý phân phối,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DOCUMENT,DOCUMENT,FMS.5 Quản lý báo cáo,pending,,Quản lý tài liệu đính kèm hồ sơ,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-DTSCBMN,DTSCBMN,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Hạ tầng IT — phân quyền dữ liệu NH LKGS,Phân quyền dữ liệu ngân hàng LKGS cho chuyên viên QLQ,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-DTSCFND,DTSCFND,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Hạ tầng IT — phân quyền dữ liệu quỹ đầu tư,Phân quyền dữ liệu QĐT cho chuyên viên vụ QLQ,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-DTSCFR,DTSCFR,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Hạ tầng IT — phân quyền dữ liệu VPĐD/CN QLQ NN,Phân quyền dữ liệu VPĐD/CN công ty QLQ NN cho chuyên viên,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-DTSCOPE,DTSCOPE,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Hạ tầng IT — phân quyền dữ liệu theo đối tượng,Phân quyền dữ liệu – phạm vi,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_AGENCY,DT_SC_AGENCY,FMS.4 Quỹ đầu tư chứng khoán,pending,,Phân quyền dữ liệu đại lý cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_AUDIT_FIRM,DT_SC_AUDIT_FIRM,FMS.8 Kiểm toán và kiểm tra,pending,,Phân quyền dữ liệu công ty kiểm toán cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_DISTRIBUTOR_AGENT,DT_SC_DISTRIBUTOR_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Phân quyền dữ liệu đại lý phân phối cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_OTHER_AGENT,DT_SC_OTHER_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Phân quyền dữ liệu đại lý khác cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_PENSION_AGENT,DT_SC_PENSION_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Phân quyền dữ liệu đại lý quỹ hưu trí cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_PENSION_FUND,DT_SC_PENSION_FUND,FMS.9 Đại lý và quỹ hưu trí,pending,,Phân quyền dữ liệu quỹ hưu trí cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_PENSION_PROVIDER,DT_SC_PENSION_PROVIDER,FMS.9 Đại lý và quỹ hưu trí,pending,,Phân quyền dữ liệu nhà cung cấp quỹ hưu trí cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_SEC,DT_SC_SEC,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Phân quyền dữ liệu công ty QLQ cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DT_SC_TRANSFER_AGENT,DT_SC_TRANSFER_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Phân quyền dữ liệu đại lý chuyển nhượng cho chuyên viên,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DYNAMIC_COLUMNS,DYNAMIC_COLUMNS,FMS.1 Quản trị phân hệ,pending,,Cấu hình cột động cho các biểu mẫu,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-DYNAMIC_TABLES,DYNAMIC_TABLES,FMS.1 Quản trị phân hệ,pending,,Cấu hình bảng động cho các biểu mẫu,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-ERROR_LOG,ERROR_LOG,FMS.1 Quản trị phân hệ,pending,,Nhật ký lỗi hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-EVENT_TYPE,EVENT_TYPE,FMS.1 Quản trị phân hệ,pending,,Danh mục loại sự kiện,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-EVENT_TYPE_AGENCY_TYPE,EVENT_TYPE_AGENCY_TYPE,FMS.1 Quản trị phân hệ,pending,,Ánh xạ loại sự kiện và loại đại lý,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-EVENT_TYPE_DATA_PERIOD,EVENT_TYPE_DATA_PERIOD,FMS.1 Quản trị phân hệ,pending,,Ánh xạ loại sự kiện và kỳ dữ liệu,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FACTOR,FACTOR,FMS.6 Đánh giá xếp loại và cảnh báo,pending,,Danh sách nhân tố đánh giá xếp loại,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FACTOR_SNAPSHOT,FACTOR_SNAPSHOT,FMS.6 Đánh giá xếp loại và cảnh báo,pending,,Ảnh chụp kết quả nhân tố tại thời điểm đánh giá,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-FGBRBUP,FGBRBUP,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Audit Log nguồn — lịch sử VPĐD/CN QLQ NN,Lịch sử chi tiết VPĐD/CN công ty QLQ NN tại VN,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-FGBUSINESS,FGBUSINESS,FMS.3 Thông tin thành viên — Công ty QLQ,in_scope,,Ngành nghề kinh doanh VPĐD/CN công ty QLQ NN tại VN,Denormalize vào Foreign Fund Management Organization Unit entity,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FG_BR_HISTORY,FG_BR_HISTORY,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Lịch sử VPĐD/CN công ty QLQ nước ngoài tại VN,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FLAG_RUN_CF,FLAG_RUN_CF,FMS.1 Quản trị phân hệ,pending,,Cờ kiểm soát tiến trình chạy cấu hình,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FMS_AGENT_MAPPING,FMS_AGENT_MAPPING,FMS.7 Tiện ích và hệ thống,pending,,Ánh xạ đại lý trong hệ thống FMS,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FMS_INDICATOR_CATALOG,FMS_INDICATOR_CATALOG,FMS.7 Tiện ích và hệ thống,pending,,Danh mục chỉ tiêu của hệ thống FMS,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FMS_REFERENCE_CATALOG,FMS_REFERENCE_CATALOG,FMS.7 Tiện ích và hệ thống,pending,,Danh mục tham chiếu của hệ thống FMS,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FMS_SHEDLOCK,FMS_SHEDLOCK,FMS.1 Quản trị phân hệ,pending,,Quản lý khóa phân tán cho các tiến trình định kỳ,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-FNDBUP,FNDBUP,FMS.4 Quỹ đầu tư chứng khoán,out_of_scope,Snapshot nguồn — chi tiết lịch sử quỹ (chưa có cột),Bản ghi chi tiết lịch sử quỹ đầu tư,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-FNDSBMN,FNDSBMN,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Bảng trung gian FUNDS & BANKMONI,Denormalize vào Investment Fund entity,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FOLDER,FOLDER,FMS.5 Quản lý báo cáo,pending,,Danh sách thư mục tổ chức báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-FORBRCH,FORBRCH,FMS.3 Thông tin thành viên — Công ty QLQ,in_scope,,Danh sách VPĐD/CN công ty QLQ NN tại VN,"Atomic entity: Foreign Fund Management Organization Unit — bao gồm IP Postal Address, IP Electronic Address, IP Alt Identification (shared)",username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FTOR_SCALE,FTOR_SCALE,FMS.6 Đánh giá xếp loại và cảnh báo,pending,,Thang điểm đánh giá xếp loại theo nhân tố,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FUD_AG_AGT,FUD_AG_AGT,FMS.4 Quỹ đầu tư chứng khoán,pending,,"Bảng trung gian quỹ đầu tư, đại lý và đại lý chuyển nhượng",,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FUD_TAGT,FUD_TAGT,FMS.4 Quỹ đầu tư chứng khoán,pending,,Bảng trung gian quỹ đầu tư và đại lý chuyển nhượng,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-FUNDHISTORY,FUNDHISTORY,FMS.4 Quỹ đầu tư chứng khoán,out_of_scope,Audit Log nguồn — lịch sử thay đổi quỹ đầu tư,Lịch sử quỹ đầu tư,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-FUNDS,FUNDS,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách quỹ đầu tư chứng khoán,Atomic entity: Investment Fund,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FUND_BUP,FUND_BUP,FMS.4 Quỹ đầu tư chứng khoán,pending,,Bản ghi chi tiết lịch sử quỹ đầu tư,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FUND_REPORT,FUND_REPORT,FMS.4 Quỹ đầu tư chứng khoán,pending,,Thiết lập hiển thị báo cáo quỹ đầu tư,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FUND_TL_PRO,FUND_TL_PRO,FMS.4 Quỹ đầu tư chứng khoán,pending,,Bảng trung gian quỹ đầu tư và hồ sơ nhân sự,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-FUND_TYPE,FUND_TYPE,FMS.4 Quỹ đầu tư chứng khoán,pending,,Danh mục loại quỹ đầu tư,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-GROUPS,GROUPS,FMS.1 Quản trị phân hệ,pending,,Danh sách nhóm quyền chức năng,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-GROUP_ROLES,GROUP_ROLES,FMS.1 Quản trị phân hệ,pending,,Phân quyền nhóm theo vai trò,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-GROUP_USERS,GROUP_USERS,FMS.1 Quản trị phân hệ,pending,,Phân quyền người dùng theo nhóm,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-GRP_FACTOR,GRP_FACTOR,FMS.6 Đánh giá xếp loại và cảnh báo,pending,,Bảng trung gian nhóm nhân tố đánh giá,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-GUIDE_FILE,GUIDE_FILE,FMS.5 Quản lý báo cáo,pending,,Danh sách tài liệu hướng dẫn/biểu mẫu mẫu,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSDER_RELA,INSDER_RELA,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Danh sách mối quan hệ người nội bộ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSDER_RELA_CHG_LOG,INSDER_RELA_CHG_LOG,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Nhật ký thay đổi mối quan hệ người nội bộ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSDER_RPRST,INSDER_RPRST,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Danh sách người đại diện nội bộ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSIDER,INSIDER,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Danh sách người nội bộ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSIDER_CHG_LOG,INSIDER_CHG_LOG,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Nhật ký thay đổi thông tin người nội bộ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSID_CHANGE,INSID_CHANGE,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Lịch sử thay đổi thông tin người nội bộ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSPECTION_PENALTY_DECISION,INSPECTION_PENALTY_DECISION,FMS.8 Kiểm toán và kiểm tra,pending,,Quyết định xử phạt thanh tra,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSPECTION_ROUND,INSPECTION_ROUND,FMS.8 Kiểm toán và kiểm tra,pending,,"Đợt thanh tra, kiểm tra",,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INSPECTION_TARGET,INSPECTION_TARGET,FMS.8 Kiểm toán và kiểm tra,pending,,"Đối tượng thanh tra, kiểm tra",,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INTEGRATION_CONFIG,INTEGRATION_CONFIG,FMS.1 Quản trị phân hệ,pending,,Cấu hình tích hợp hệ thống,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-INVES,INVES,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách nhà đầu tư ủy thác,Atomic entity: Discretionary Investment Investor — bao gồm IP Alt Identification (shared),username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-INVESACC,INVESACC,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách tài khoản nhà đầu tư ủy thác,Atomic entity: Discretionary Investment Account,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-INVES_REPORT,INVES_REPORT,FMS.4 Quỹ đầu tư chứng khoán,pending,,Thiết lập hiển thị báo cáo nhà đầu tư,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-JOBS,JOBS,FMS.2 Danh mục dùng riêng,pending,,Danh mục chức danh/chức vụ,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-JOBTYPE,JOBTYPE,FMS.2 Danh mục dùng riêng,in_scope,,Danh sách loại chức vụ,CV scheme: FMS_JOB_TYPE,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-JOB_TL_PRO,JOB_TL_PRO,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Bảng trung gian hồ sơ nhân sự và chức danh,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-LOCATION,LOCATION,FMS.2 Danh mục dùng riêng,out_of_scope,Chưa phân loại — không có trong HLD và ref CSV; reference data địa giới thu thập từ ECAT,Danh sách tỉnh/thành phố,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-LOG_CONVERT_DATA,LOG_CONVERT_DATA,FMS.7 Tiện ích và hệ thống,pending,,Nhật ký chuyển đổi dữ liệu,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-LOG_CONVERT_DATA_2,LOG_CONVERT_DATA_2,FMS.7 Tiện ích và hệ thống,pending,,Nhật ký chuyển đổi dữ liệu (bổ sung),,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-MBCHANGE,MBCHANGE,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Lịch sử thay đổi vốn góp nhà đầu tư quỹ,Atomic entity: Investment Fund Investor Capital Change Log,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-MBFUND,MBFUND,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách nhà đầu tư quỹ,Atomic entity: Investment Fund Investor Membership — NĐT nắm giữ CCQ,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-MENUS,MENUS,FMS.1 Quản trị phân hệ,out_of_scope,Hạ tầng IT — menu/chức năng giao diện ứng dụng,Danh mục quyền chức năng,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-NATIONAL,NATIONAL,FMS.2 Danh mục dùng riêng,in_scope,,Danh sách quốc gia/quốc tịch,Shared entity Geographic Area — bổ sung source,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-NOTIFICATION,NOTIFICATION,FMS.7 Tiện ích và hệ thống,out_of_scope,Hạ tầng IT — thông báo nội bộ ứng dụng,Thông báo hệ thống,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-OFFERING,OFFERING,FMS.4 Quỹ đầu tư chứng khoán,pending,,Danh sách đợt phát hành chứng chỉ quỹ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-OFFERING_PLAN,OFFERING_PLAN,FMS.4 Quỹ đầu tư chứng khoán,pending,,Kế hoạch phát hành chứng chỉ quỹ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-OTHER_AGENT,OTHER_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Danh sách đại lý khác (ngoài phân phối và chuyển nhượng),,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-OTHER_AGENT_HISTORY,OTHER_AGENT_HISTORY,FMS.9 Đại lý và quỹ hưu trí,pending,,Lịch sử thông tin đại lý khác,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-PARAWARN,PARAWARN,FMS.6 Đánh giá xếp loại và cảnh báo,out_of_scope,Isolated — không có FK inbound từ bảng nghiệp vụ,Danh sách tham số cảnh báo,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-PARVALUE,PARVALUE,FMS.2 Danh mục dùng riêng,out_of_scope,Orphan — không có bảng nghiệp vụ nào FK đến,Danh sách mệnh giá cổ phần,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-PENSION_AGENT,PENSION_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Danh sách đại lý quỹ hưu trí,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-PENSION_AGENT_HISTORY,PENSION_AGENT_HISTORY,FMS.9 Đại lý và quỹ hưu trí,pending,,Lịch sử thông tin đại lý quỹ hưu trí,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-PENSION_FUND,PENSION_FUND,FMS.9 Đại lý và quỹ hưu trí,pending,,Danh sách quỹ hưu trí,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-PENSION_PROVIDER,PENSION_PROVIDER,FMS.9 Đại lý và quỹ hưu trí,pending,,Danh sách nhà cung cấp dịch vụ quỹ hưu trí,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-PENSION_PROVIDER_HISTORY,PENSION_PROVIDER_HISTORY,FMS.9 Đại lý và quỹ hưu trí,pending,,Lịch sử thông tin nhà cung cấp quỹ hưu trí,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-RANK,RANK,FMS.6 Đánh giá xếp loại và cảnh báo,in_scope,,Bảng xếp hạng theo kỳ đánh giá,Atomic entity: Member Rating,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-RATINGPD,RATINGPD,FMS.6 Đánh giá xếp loại và cảnh báo,in_scope,,Danh sách kỳ đánh giá xếp loại,Atomic entity: Member Rating Period,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-RATING_PD_SNAPSHOT,RATING_PD_SNAPSHOT,FMS.6 Đánh giá xếp loại và cảnh báo,pending,,Ảnh chụp kết quả kỳ đánh giá xếp loại,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-REFRESHTOKEN,REFRESHTOKEN,FMS.1 Quản trị phân hệ,out_of_scope,Hạ tầng IT — session token xác thực,Phiên làm việc (Token đăng nhập),,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-RELATION,RELATION,FMS.2 Danh mục dùng riêng,in_scope,,Mối quan hệ cổ đông,CV scheme: FMS_RELATION_TYPE,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-REPORT_ATTACHMENT,REPORT_ATTACHMENT,FMS.5 Quản lý báo cáo,pending,,File đính kèm của báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-REPORT_FILE,REPORT_FILE,FMS.5 Quản lý báo cáo,pending,,File báo cáo đã tải lên,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-REPRESENT,REPRESENT,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách ban đại diện/HĐQT Quỹ đầu tư,Atomic entity: Investment Fund Representative Board Member,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-RNKFACTHISTORY,RNKFACTHISTORY,FMS.6 Đánh giá xếp loại và cảnh báo,out_of_scope,Chờ thiết kế — chưa có cột,Lưu kết quả các lần lưu bảng tổng hợp đánh giá,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-RNKFACTOR,RNKFACTOR,FMS.6 Đánh giá xếp loại và cảnh báo,in_scope,,Bảng chấm điểm đánh giá xếp loại (nhân tố cha/con),Atomic entity: Rating Criterion — self-ref ParentId cho cấu trúc cha/con,username@fssc.com.vn,username@ubck.com.vn
@@ -186,12 +301,18 @@ FMS,BRD-SRC-FMS-SECBUSINES,SECBUSINES,FMS.3 Thông tin thành viên — Công ty
 FMS,BRD-SRC-FMS-SECHISTORY,SECHISTORY,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Audit Log nguồn — lịch sử thay đổi công ty QLQ,Lịch sử thông tin công ty QLQ,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-SECURITIES,SECURITIES,FMS.3 Thông tin thành viên — Công ty QLQ,in_scope,,Danh sách công ty QLQ trong nước,"Atomic entity: Fund Management Company — bao gồm IP Postal Address, IP Electronic Address, IP Alt Identification (shared)",username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-SECURITIESREPORT,SECURITIESREPORT,FMS.5 Quản lý báo cáo,out_of_scope,Cấu hình UI — thiết lập hiển thị báo cáo,Thiết lập hiển thị báo cáo công ty QLQ,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-SEC_BUSINESS,SEC_BUSINESS,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Ngành nghề kinh doanh của công ty QLQ,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-SEC_FUND_MANAGER,SEC_FUND_MANAGER,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Ánh xạ người quản lý quỹ và công ty QLQ,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-SELFSETPD,SELFSETPD,FMS.5 Quản lý báo cáo,out_of_scope,Chưa có cột — chờ thiết kế,Thành viên tự thiết lập gửi báo cáo,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-SHEET,SHEET,FMS.5 Quản lý báo cáo,out_of_scope,Chưa có cột — chờ thiết kế,Danh sách sheet báo cáo đầu vào,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-SHEETOUT,SHEETOUT,FMS.5 Quản lý báo cáo,out_of_scope,Chưa có cột — chờ thiết kế,Danh sách sheet báo cáo đầu ra,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-SHEET_CELL_CONFIG,SHEET_CELL_CONFIG,FMS.5 Quản lý báo cáo,pending,,Cấu hình ô dữ liệu trong sheet báo cáo,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-SHEET_OUT_BAK_BMBCDR,SHEET_OUT_BAK_BMBCDR,FMS.5 Quản lý báo cáo,pending,,Bản sao lưu sheet báo cáo đầu ra (BMBCDR),,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-STAKE,STAKE,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Chưa có cột — chờ thiết kế,Danh sách các bên liên quan,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-STATUS,STATUS,FMS.2 Danh mục dùng riêng,in_scope,,Danh sách trạng thái hoạt động,CV scheme: FMS_OPERATION_STATUS,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-STFFGBRCH,STFFGBRCH,FMS.3 Thông tin thành viên — Công ty QLQ,in_scope,,Danh sách nhân sự VPĐD/CN công ty QLQ NN,Atomic entity: Foreign Fund Management Organization Unit Staff,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-STF_FG_BRCH_HISTORY,STF_FG_BRCH_HISTORY,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Lịch sử nhân sự VPĐD/CN công ty QLQ NN,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-STF_REP_OFFICE_HISTORY,STF_REP_OFFICE_HISTORY,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Lịch sử nhân sự văn phòng đại diện,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-STOCKHOLDERTYPE,STOCKHOLDERTYPE,FMS.2 Danh mục dùng riêng,in_scope,,Danh sách loại hình NĐT/cổ đông,CV scheme: FMS_STOCKHOLDER_TYPE,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-STTRGTOUT,STTRGTOUT,FMS.5 Quản lý báo cáo,out_of_scope,Chưa có cột — chờ thiết kế,Cấu hình lấy dữ liệu báo cáo đầu ra,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-SYSEMAIL,SYSEMAIL,FMS.7 Tiện ích và hệ thống,out_of_scope,Hạ tầng IT — email log hệ thống,Nội dung trao đổi thông tin,,username@fssc.com.vn,username@ubck.com.vn
@@ -200,15 +321,21 @@ FMS,BRD-SRC-FMS-TABSINFO,TABSINFO,FMS.7 Tiện ích và hệ thống,out_of_scop
 FMS,BRD-SRC-FMS-TLPRHISTORY,TLPRHISTORY,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Audit Log nguồn — lịch sử nhân sự QLQ,Lịch sử nhân sự,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-TLPROBUP,TLPROBUP,FMS.3 Thông tin thành viên — Công ty QLQ,out_of_scope,Snapshot nguồn — chi tiết before/after nhân sự,Chi tiết lịch sử nhân sự (2 bản ghi trước/sau),,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-TLProfiles,TLProfiles,FMS.3 Thông tin thành viên — Công ty QLQ,in_scope,,Danh sách nhân sự công ty QLQ,Atomic entity: Fund Management Company Key Person — bao gồm IP Alt Identification (shared),username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-TL_PRO_RELA,TL_PRO_RELA,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Mối quan hệ giữa các hồ sơ nhân sự,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-TOTSTTG,TOTSTTG,FMS.5 Quản lý báo cáo,out_of_scope,Chưa có cột — chờ thiết kế,Bảng trung gian Cấu hình dữ liệu đầu ra với ô dữ liệu,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-TPOUTHTORY,TPOUTHTORY,FMS.5 Quản lý báo cáo,out_of_scope,Chưa có cột — chờ thiết kế,Lịch sử thay đổi báo cáo đầu ra,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-TRANSFERMBF,TRANSFERMBF,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách giao dịch chứng chỉ quỹ,Atomic entity: Investment Fund Certificate Transfer,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-TRANSFER_AGENT,TRANSFER_AGENT,FMS.9 Đại lý và quỹ hưu trí,pending,,Danh sách đại lý chuyển nhượng quỹ hưu trí,,huy.pham@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-TRANSFER_AGENT_HISTORY,TRANSFER_AGENT_HISTORY,FMS.9 Đại lý và quỹ hưu trí,pending,,Lịch sử thông tin đại lý chuyển nhượng quỹ hưu trí,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-TRSFERINDER,TRSFERINDER,FMS.4 Quỹ đầu tư chứng khoán,in_scope,,Danh sách giao dịch chuyển nhượng cổ phần,Atomic entity: Fund Management Company Share Transfer — GAP: mất FK bên mua/bán (InFrmId/InToId → INSIDER bị bỏ),username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-TRS_FER_INDER_CHG_LOG,TRS_FER_INDER_CHG_LOG,FMS.3 Thông tin thành viên — Công ty QLQ,pending,,Nhật ký thay đổi giao dịch chuyển nhượng cổ phần,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-USERRPTO,USERRPTO,FMS.1 Quản trị phân hệ,out_of_scope,Hạ tầng IT — phân quyền xem báo cáo đầu ra (chưa có cột),Phân quyền người dùng UBCK với báo cáo đầu ra,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-USERS,USERS,FMS.1 Quản trị phân hệ,out_of_scope,Hạ tầng IT — quản lý người dùng ứng dụng FMS,Quản lý người dùng hệ thống,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-USERSESSIONS,USERSESSIONS,FMS.1 Quản trị phân hệ,out_of_scope,Hạ tầng IT — session tracking,Quản lý tài khoản đang truy cập,,username@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-USERSMENUS,USERSMENUS,FMS.1 Quản trị phân hệ,out_of_scope,Hạ tầng IT — phân quyền cá nhân,Phân quyền chức năng cho người dùng,,username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-USER_RPT_I,USER_RPT_I,FMS.1 Quản trị phân hệ,pending,,Phân quyền người dùng với báo cáo đầu vào,,huy.pham@fssc.com.vn,username@ubck.com.vn
 FMS,BRD-SRC-FMS-VIOLT,VIOLT,FMS.7 Tiện ích và hệ thống,in_scope,,Danh sách vi phạm,"Atomic entity: Fund Management Conduct Violation — SecId/FndId nullable, không đồng thời cả hai",username@fssc.com.vn,username@ubck.com.vn
+FMS,BRD-SRC-FMS-flyway_schema_history,flyway_schema_history,FMS.1 Quản trị phân hệ,pending,,Lịch sử nâng cấp schema cơ sở dữ liệu (Flyway),,huy.pham@fssc.com.vn,username@ubck.com.vn
 GSGD,BRD-SRC-GSGD-abnormal_report,abnormal_report,UID1.4 Quản lý báo cáo (tuân thủ & bất thường),in_scope,,Báo cáo bất thường,"Atomic entity: Abnormal Trading Report — từ SGDCK/VSDC; CV: GSGD_ABNORMAL_REPORT_TYPE, GSGD_APPROVAL_STATUS, GSGD_PERIOD_TYPE, GSGD_SUBMITTER_TYPE",username@fssc.com.vn,username@ubck.com.vn
 GSGD,BRD-SRC-GSGD-abnormal_report_file,abnormal_report_file,UID1.4 Quản lý báo cáo (tuân thủ & bất thường),in_scope,,File đính kèm báo cáo bất thường,Atomic entity: Abnormal Trading Report File Attachment — CV: GSGD_FILE_TYPE,username@fssc.com.vn,username@ubck.com.vn
 GSGD,BRD-SRC-GSGD-account_authorization,account_authorization,UID1.1 Quản lý tài khoản nhà đầu tư,in_scope,,Thông tin ủy quyền tài khoản,Atomic entity: Investor Trading Account Authorization,username@fssc.com.vn,username@ubck.com.vn
@@ -256,58 +383,101 @@ GSGD,BRD-SRC-GSGD-system_user,system_user,UID3 Quản trị phân hệ & tiện 
 GSGD,BRD-SRC-GSGD-user_group,user_group,UID3 Quản trị phân hệ & tiện ích,out_of_scope,Operational/system data — nhóm người dùng ứng dụng,Nhóm người dùng,,username@fssc.com.vn,username@ubck.com.vn
 GSGD,BRD-SRC-GSGD-user_group_member,user_group_member,UID3 Quản trị phân hệ & tiện ích,out_of_scope,Operational/system data — junction nhóm-người dùng,Thành viên nhóm người dùng,,username@fssc.com.vn,username@ubck.com.vn
 GSGD,BRD-SRC-GSGD-user_table_config,user_table_config,UID3 Quản trị phân hệ & tiện ích,out_of_scope,Operational/system data — UI metadata cấu hình hiển thị,Cấu hình hiển thị bảng theo user,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-account_numbers,account_numbers,UID-04 Quản lý cổ đông giao dịch,in_scope,,Tài khoản giao dịch chứng khoán của cổ đông tại CTCK,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-af_approval,af_approval,UID-07 Quản lý công ty kiểm toán,in_scope,,Chấp thuận công ty kiểm toán (gộp BTC + SSC),,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-af_auditor_approval,af_auditor_approval,UID-07 Quản lý công ty kiểm toán,in_scope,,Kiểm toán viên được chấp thuận,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-af_legal_representative,af_legal_representative,UID-07 Quản lý công ty kiểm toán,in_scope,,Người đại diện pháp luật của công ty kiểm toán,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-af_profiles,af_profiles,UID-07 Quản lý công ty kiểm toán,in_scope,,Hồ sơ công ty kiểm toán được chấp thuận,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-af_sanctions,af_sanctions,UID-07 Quản lý công ty kiểm toán,in_scope,,Xử phạt hành chính đối với công ty KT hoặc kiểm toán viên,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-af_warning,af_warning,UID-07 Quản lý công ty kiểm toán,in_scope,,Nhắc nhở đối với công ty KT hoặc kiểm toán viên,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-capital_mobilization,capital_mobilization,UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC,in_scope,,Lưu thông tin về quá trình tăng vốn trước khi thành đại chúng,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-categories,categories,UID-09 Quản trị hệ thống và danh mục dùng chung,in_scope,,"Danh sách lĩnh vực hoạt động của doanh nghiệp (ngành nghề 2 cấp, self-ref)",,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_add_capital,company_add_capital,UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC,in_scope,,Lưu thông tin về quá trình tăng vốn,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_change_role_his,company_change_role_his,UID-08 Lịch sử thay đổi (SCD2 kỹ thuật),out_of_scope,Bảng lịch sử kỹ thuật — SCD2 Atomic tự track,Lưu thông tin thay đổi vai trò của người dùng,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_data,company_data,UID-05 Công bố thông tin và thông báo,in_scope,,Lần nộp báo cáo/tin CBTT của công ty (filter: news_status_cd = APPROVED),,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_detail,company_detail,UID-01 Quản lý hồ sơ công ty đại chúng,in_scope,,Thông tin chi tiết của doanh nghiệp,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_detail_his,company_detail_his,UID-08 Lịch sử thay đổi (SCD2 kỹ thuật),out_of_scope,Bảng lịch sử kỹ thuật — SCD2 Atomic tự track,Lưu thông tin lịch sử thay đổi của công ty đại chúng,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_inspection,company_inspection,UID-03 Giám sát và xử phạt CTĐC,in_scope,,"Lưu thông tin về thanh tra, kiểm tra",,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_penalize,company_penalize,UID-03 Giám sát và xử phạt CTĐC,in_scope,,Lưu thông tin về xử phạt hành chính,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_profiles,company_profiles,UID-01 Quản lý hồ sơ công ty đại chúng,in_scope,,Thông tin cơ bản của doanh nghiệp,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_profiles_his,company_profiles_his,UID-08 Lịch sử thay đổi (SCD2 kỹ thuật),out_of_scope,Bảng lịch sử kỹ thuật — SCD2 Atomic tự track,Thông tin lịch sử của hồ sơ doanh nghiệp,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_relationship,company_relationship,UID-01 Quản lý hồ sơ công ty đại chúng,in_scope,,Lưu thông tin về công ty mẹ/ công ty con/ công ty liên kết,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_securities_issuance,company_securities_issuance,UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC,in_scope,,"Lưu thông tin về hoạt động chào bán, phát hành chứng khoán",,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_tender_offer,company_tender_offer,UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC,in_scope,,Lưu thông tin về quá trình chào mua công khai,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-company_treasury_stocks,company_treasury_stocks,UID-02 Hoạt động kinh doanh / Corporate Actions của CTĐC,in_scope,,Lưu thông tin về cổ phiếu quỹ,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-countries,countries,UID-09 Quản trị hệ thống và danh mục dùng chung,out_of_scope,Reference data — map vào shared Geographic Area (COUNTRY),Lưu thông tin quốc gia,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-data,data,UID-05/06 Công bố thông tin và báo cáo tài chính,in_scope,,Dữ liệu hàng/cột báo cáo tài chính thực tế,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-data_values,data_values,UID-05 Công bố thông tin và thông báo,out_of_scope,"Field-level data động — cần map cả field_id + form_field_id, chưa có Gold requirement",Giá trị nhập ứng với form và fields,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-fields,fields,UID-05 Công bố thông tin và thông báo,out_of_scope,Field definition metadata — denormalized vào data_values khi anchor khôi phục,Định nghĩa trường của form CBTT,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-foreign_owner_limit,foreign_owner_limit,UID-01 Quản lý hồ sơ công ty đại chúng,in_scope,,Lưu thông tin về giới hạn tỷ lệ sở hữu nước ngoài,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-form_fields,form_fields,UID-05 Công bố thông tin và thông báo,out_of_scope,Field definition metadata — denormalized vào data_values,Bảng nối: danh sách fields trong một form,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-forms,forms,UID-05 Công bố thông tin và thông báo,in_scope,,Định nghĩa template form CBTT (self-ref qua parent_form_id),,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-holder_relationship,holder_relationship,UID-04 Quản lý cổ đông giao dịch,in_scope,,Mối quan hệ giữa các cổ đông giao dịch,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-identity,identity,UID-04 Quản lý cổ đông giao dịch,in_scope,,Giấy tờ định danh (CMND/CCCD/Hộ chiếu/ĐKKD) của cổ đông,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-legal_representative,legal_representative,UID-01 Quản lý hồ sơ công ty đại chúng,in_scope,,Lưu thông tin về người đại diện pháp luật và người công bố thông tin,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-logins,logins,UID-09 Quản trị hệ thống và danh mục dùng chung,out_of_scope,Bảng hệ thống — không có giá trị nghiệp vụ Atomic,Lưu thông tin đăng nhập,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-lookup_values,lookup_values,UID-09 Quản trị hệ thống và danh mục dùng chung,in_scope,,Danh sách các dữ liệu các giá trị dùng trong các form (30 lookup_group),LOV trung tâm — 30 Classification Value schemes,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-noti_config,noti_config,UID-05 Công bố thông tin và thông báo,in_scope,,Lưu thông tin về notification configuration,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-notifications,notifications,UID-05 Công bố thông tin và thông báo,in_scope,,Lưu thông tin về notifications,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-positions,positions,UID-04 Quản lý cổ đông giao dịch,out_of_scope,Chờ thiết kế — bảng chức vụ cổ đông không có trong HLD hiện tại,"Chức vụ của cổ đông (Chủ tịch HĐQT, Thành viên BGĐ...)",,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-provinces,provinces,UID-09 Quản trị hệ thống và danh mục dùng chung,out_of_scope,Reference data — map vào shared Geographic Area (PROVINCE),Lưu thông tin tỉnh thành,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-rcol,rcol,UID-06 Báo cáo tài chính và báo cáo định kỳ,in_scope,,Lưu thông tin của cột trong báo cáo tài chính,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-rep_column,rep_column,UID-06 Báo cáo tài chính và báo cáo định kỳ,in_scope,,Lưu thông tin cột trong báo cáo định kỳ,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-rep_forms,rep_forms,UID-06 Báo cáo tài chính và báo cáo định kỳ,in_scope,,Lưu thông tin báo cáo định kỳ (template),,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-rep_row,rep_row,UID-06 Báo cáo tài chính và báo cáo định kỳ,in_scope,,Lưu thông tin hàng của báo cáo định kỳ,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-report_approval,report_approval,UID-05 Công bố thông tin và thông báo,out_of_scope,Quy trình nội bộ hệ thống,Phê duyệt tin công bố thông tin,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-report_catalog,report_catalog,UID-06 Báo cáo tài chính và báo cáo định kỳ,in_scope,,Bảng chứa thông tin danh mục báo cáo,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-report_catalog_extra,report_catalog_extra,UID-05 Công bố thông tin và thông báo,out_of_scope,Pure junction table — không có business attribute,Junction: cấu hình thông báo áp dụng cho công ty cụ thể,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-report_extensions,report_extensions,UID-05 Công bố thông tin và thông báo,out_of_scope,Quy trình nội bộ hệ thống,Gia hạn nộp báo cáo,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-rrow,rrow,UID-06 Báo cáo tài chính và báo cáo định kỳ,in_scope,,Bảng chứa thông tin hàng của báo cáo tài chính,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-state_capital,state_capital,UID-01 Quản lý hồ sơ công ty đại chúng,in_scope,,Lưu thông tin về sở hữu nhà nước,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-stock_controls,stock_controls,UID-04 Quản lý cổ đông giao dịch,in_scope,,Chứng khoán vào diện kiểm soát / hạn chế chuyển nhượng,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-stock_holders,stock_holders,UID-04 Quản lý cổ đông giao dịch,in_scope,,Thông tin cổ đông giao dịch (grain = cổ đông × công ty),,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-stockholder_history,stockholder_history,UID-08 Lịch sử thay đổi (SCD2 kỹ thuật),out_of_scope,Bảng lịch sử kỹ thuật — SCD2 Atomic tự track,Lịch sử thay đổi cổ đông giao dịch,,username@fssc.com.vn,username@ubck.com.vn
-IDS,BRD-SRC-IDS-user_audit_log,user_audit_log,UID-09 Quản trị hệ thống và danh mục dùng chung,out_of_scope,Operational log — out-of-scope,Lưu thông tin log khi người dùng thao tác hệ thống,,username@fssc.com.vn,username@ubck.com.vn
+IAM,BRD-SRC-IAM-USERS,USERS,Quản lý người dùng,pending,,Người dùng hệ thống,Self-referencing FK trên CREATED_BY_ID và UPDATED_BY_ID. Keycloak integration qua KEY_CLOAK_ID. Hỗ trợ nhiều loại người dùng (USER_TYPE) và phân loại con (USER_SUB_TYPE).,nguyet.do@fssc.com.vn,username@ubck.com.vn
+IDS,BRD-SRC-IDS-ACCOUNT_NUMBERS,ACCOUNT_NUMBERS,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-AF_APPROVAL,AF_APPROVAL,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_AUDITOR_PROFILES,AF_AUDITOR_PROFILES,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_AUDITOR_STATUS_HISTORY,AF_AUDITOR_STATUS_HISTORY,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_INSPECTION,AF_INSPECTION,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_LEGAL_REPRESENTATIVE,AF_LEGAL_REPRESENTATIVE,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_PROFILES,AF_PROFILES,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_SANCTIONS,AF_SANCTIONS,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_STATUS_HISTORY,AF_STATUS_HISTORY,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_SUSPENSION,AF_SUSPENSION,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_TECHNICAL_AUDIT,AF_TECHNICAL_AUDIT,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-AF_WARNING,AF_WARNING,audit_firm,pending,,,,,
+IDS,BRD-SRC-IDS-BOND_LISTING_HISTORY,BOND_LISTING_HISTORY,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-CAPITAL_MOBILIZATION,CAPITAL_MOBILIZATION,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-CATEGORIES,CATEGORIES,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_ADD_CAPITAL,COMPANY_ADD_CAPITAL,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_CHANGE_ROLE_HIS,COMPANY_CHANGE_ROLE_HIS,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_DATA,COMPANY_DATA,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_DIGITAL_CERTIFICATES,COMPANY_DIGITAL_CERTIFICATES,document,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_ENTITY_ROLE,COMPANY_ENTITY_ROLE,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_INSPECTION,COMPANY_INSPECTION,inspection_penalty,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_PENALTIES,COMPANY_PENALTIES,inspection_penalty,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_PROFILES,COMPANY_PROFILES,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_RELATIONSHIP,COMPANY_RELATIONSHIP,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_SHAREHOLDING,COMPANY_SHAREHOLDING,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_SHARE_STATISTICS,COMPANY_SHARE_STATISTICS,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_TENDER_OFFER,COMPANY_TENDER_OFFER,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-COMPANY_TREASURY_STOCKS,COMPANY_TREASURY_STOCKS,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-COUNTRIES,COUNTRIES,master_data,pending,,,,,
+IDS,BRD-SRC-IDS-DATA,DATA,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-DATA_TYPES,DATA_TYPES,master_data,pending,,,,,
+IDS,BRD-SRC-IDS-DATA_VALUES,DATA_VALUES,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-DEPARTMENTS,DEPARTMENTS,master_data,pending,,,,,
+IDS,BRD-SRC-IDS-EVALUATIONS,EVALUATIONS,evaluation,pending,,,,,
+IDS,BRD-SRC-IDS-EVALUATION_CBONDS,EVALUATION_CBONDS,evaluation,pending,,,,,
+IDS,BRD-SRC-IDS-EVALUATION_CRITERIA,EVALUATION_CRITERIA,evaluation,pending,,,,,
+IDS,BRD-SRC-IDS-EVALUATION_DETAILS,EVALUATION_DETAILS,evaluation,pending,,,,,
+IDS,BRD-SRC-IDS-EVALUATION_GROUPS,EVALUATION_GROUPS,evaluation,pending,,,,,
+IDS,BRD-SRC-IDS-EVALUATION_PERIODS,EVALUATION_PERIODS,evaluation,pending,,,,,
+IDS,BRD-SRC-IDS-FIELDS,FIELDS,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-FIELDS_MGR,FIELDS_MGR,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-FILES,FILES,document,pending,,,,,
+IDS,BRD-SRC-IDS-FOREIGN_OWNER_LIMIT,FOREIGN_OWNER_LIMIT,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-FORMS,FORMS,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-FORM_FIELDS,FORM_FIELDS,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-FORM_FIELD_HISTORY,FORM_FIELD_HISTORY,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-HISTORY_CHANGE_LOG,HISTORY_CHANGE_LOG,document,pending,,,,,
+IDS,BRD-SRC-IDS-HOLDER_RELATIONSHIP,HOLDER_RELATIONSHIP,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-HOLIDAY_CALENDAR,HOLIDAY_CALENDAR,master_data,pending,,,,,
+IDS,BRD-SRC-IDS-HTE_VIOLATION_REPORT,HTE_VIOLATION_REPORT,inspection_penalty,pending,,,,,
+IDS,BRD-SRC-IDS-IDENTITY,IDENTITY,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-INTEGRATION_JOB_DEFINITION,INTEGRATION_JOB_DEFINITION,integration,pending,,,,,
+IDS,BRD-SRC-IDS-INTEGRATION_SYNC_LOG,INTEGRATION_SYNC_LOG,integration,pending,,,,,
+IDS,BRD-SRC-IDS-INTG_FINANCIAL_STATEMENT,INTG_FINANCIAL_STATEMENT,integration,pending,,,,,
+IDS,BRD-SRC-IDS-INTG_FORM_MAPPING,INTG_FORM_MAPPING,integration,pending,,,,,
+IDS,BRD-SRC-IDS-INTG_IMPORT_DATA_LOG,INTG_IMPORT_DATA_LOG,integration,pending,,,,,
+IDS,BRD-SRC-IDS-INTG_REPORT_CONFIG,INTG_REPORT_CONFIG,integration,pending,,,,,
+IDS,BRD-SRC-IDS-INTG_REPORT_FIELD,INTG_REPORT_FIELD,integration,pending,,,,,
+IDS,BRD-SRC-IDS-INTG_SIGNATURE_CONFIG,INTG_SIGNATURE_CONFIG,integration,pending,,,,,
+IDS,BRD-SRC-IDS-LEGAL_ENTITIES,LEGAL_ENTITIES,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-LEGAL_REPRESENTATIVE,LEGAL_REPRESENTATIVE,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-LOGINS,LOGINS,auth,pending,,,,,
+IDS,BRD-SRC-IDS-LOGIN_PERMISSION_BY_CODE,LOGIN_PERMISSION_BY_CODE,auth,pending,,,,,
+IDS,BRD-SRC-IDS-LOOKUP_VALUES,LOOKUP_VALUES,master_data,pending,,,,,
+IDS,BRD-SRC-IDS-MANUAL_DOCUMENT,MANUAL_DOCUMENT,document,pending,,,,,
+IDS,BRD-SRC-IDS-MIGRATION_EXECUTIONS,MIGRATION_EXECUTIONS,system,pending,,,,,
+IDS,BRD-SRC-IDS-MIGRATION_LOGS,MIGRATION_LOGS,system,pending,,,,,
+IDS,BRD-SRC-IDS-NOTIFICATIONS,NOTIFICATIONS,notification,pending,,,,,
+IDS,BRD-SRC-IDS-NOTIFICATIONS_DTL,NOTIFICATIONS_DTL,notification,pending,,,,,
+IDS,BRD-SRC-IDS-POSITIONS,POSITIONS,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-PROVINCES,PROVINCES,master_data,pending,,,,,
+IDS,BRD-SRC-IDS-PUB_COMPANY_CANCELLATION,PUB_COMPANY_CANCELLATION,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-PUB_COMPANY_REGISTRATION,PUB_COMPANY_REGISTRATION,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-RCOL,RCOL,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-REPORT_CATALOG,REPORT_CATALOG,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-REPORT_EXTENSIONS,REPORT_EXTENSIONS,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-REP_COLUMN,REP_COLUMN,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-REP_FORMS,REP_FORMS,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-REP_ROW,REP_ROW,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-RROW,RROW,reporting,pending,,,,,
+IDS,BRD-SRC-IDS-SECURITIES_OFFERING,SECURITIES_OFFERING,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-SECURITIES_OFFERING_PLAN,SECURITIES_OFFERING_PLAN,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-SECURITIES_OFFERING_RESULT,SECURITIES_OFFERING_RESULT,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-SMS_LOG,SMS_LOG,notification,pending,,,,,
+IDS,BRD-SRC-IDS-STATE_CAPITAL,STATE_CAPITAL,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-STOCK_CONTROLS,STOCK_CONTROLS,shareholder,pending,,,,,
+IDS,BRD-SRC-IDS-STOCK_LISTING_HISTORY,STOCK_LISTING_HISTORY,capital_activity,pending,,,,,
+IDS,BRD-SRC-IDS-SYS_PARAMETERS,SYS_PARAMETERS,master_data,pending,,,,,
+IDS,BRD-SRC-IDS-UBCK_SYNC_ITEM_LOG,UBCK_SYNC_ITEM_LOG,integration,pending,,,,,
+IDS,BRD-SRC-IDS-USER_AUDIT_LOG,USER_AUDIT_LOG,system,pending,,,,,
+IDS,BRD-SRC-IDS-VIOLATION_PENALTY_CONFIG,VIOLATION_PENALTY_CONFIG,inspection_penalty,pending,,,,,
+IDS,BRD-SRC-IDS-VIOLATION_REPORT,VIOLATION_REPORT,inspection_penalty,pending,,,,,
+IDS,BRD-SRC-IDS-VIOLATION_TEMPLATES,VIOLATION_TEMPLATES,inspection_penalty,pending,,,,,
+IDS,BRD-SRC-IDS-WARDS,WARDS,master_data,pending,,,,,
 KNT,BRD-SRC-KNT-CAU_HINH_GOI_TIN,CAU_HINH_GOI_TIN,KNT-SYS Quản trị hệ thống & truyền nhận,out_of_scope,System operational table — cấu hình kỹ thuật truyền nhận,Lưu các thông tin về cấu hình gói tin trao đổi giữa UBCKNN và Cục Thuế,,username@fssc.com.vn,username@ubck.com.vn
 KNT,BRD-SRC-KNT-CHUCNANG,CHUCNANG,KNT-SYS Quản trị hệ thống & truyền nhận,out_of_scope,UI metadata — danh sách menu/chức năng giao diện ứng dụng,Lưu các thông tin danh sách các menu hệ thống,,username@fssc.com.vn,username@ubck.com.vn
 KNT,BRD-SRC-KNT-CONG_TY_KIEM_TOAN,CONG_TY_KIEM_TOAN,KNT-OUT Dữ liệu UBCKNN gửi đi,out_of_scope,Thu thập tại source gốc — chờ thiết kế,Lưu các thông tin về công ty kiểm toán,,username@fssc.com.vn,username@ubck.com.vn

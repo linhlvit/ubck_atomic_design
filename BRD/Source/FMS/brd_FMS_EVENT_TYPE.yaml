@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: EVENT_TYPE
+brd_ref: BRD-SRC-FMS-EVENT_TYPE
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: CATEGORY
+  data_type: VARCHAR2(255)
+  description: "Danh mục phân nhóm sự vụ (VD: CBTT_CONG_TY_QLQ, CBTT_QUY_DAU_TU...)"
+  key: null
+  fk_note: null
+- name: ITEM_NAME
+  data_type: VARCHAR2(255)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(255)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: VARCHAR2(255)
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: METADATA
+  data_type: CLOB
+  description: "Metadata bổ sung của sự vụ (JSON CLOB: cấu hình form, tham số riêng)"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: EVENT_CODE
+  data_type: VARCHAR2(255)
+  description: "Mã sự vụ duy nhất (do hệ thống hoặc người dùng định nghĩa)"
+  key: null
+  fk_note: null
+- name: EVENT_CATEGORY
+  data_type: VARCHAR2(255)
+  description: "Phân loại sự vụ: DINH_KY=Định kỳ, BAT_THUONG=Bất thường, THEO_YEU_CAU=Theo yêu cầu, KHAC=Khác"
+  key: null
+  fk_note: null
+- name: OBLIGATION_TYPE
+  data_type: VARCHAR2(255)
+  description: "Nghĩa vụ: CHI_BAO_CAO=Chỉ báo cáo, CHI_CBTT=Chỉ CBTT, BAO_CAO_VA_CBTT=Cả hai, THAY_DOI=Thay đổi hồ sơ"
+  key: null
+  fk_note: null
+- name: DEADLINE_CALC_METHOD
+  data_type: VARCHAR2(255)
+  description: "Cách tính thời hạn nộp: DINH_KY=Định kỳ cố định, SU_KIEN=Tính từ sự kiện phát sinh"
+  key: null
+  fk_note: null
+- name: BUSINESS_RULE_CONFIG
+  data_type: CLOB
+  description: "Cấu hình nghiệp vụ bổ sung của sự vụ: điều kiện áp dụng, biểu mẫu, lịch gửi, tham số (JSON CLOB)"
+  key: null
+  fk_note: null

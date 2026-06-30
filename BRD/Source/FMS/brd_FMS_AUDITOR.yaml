@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: AUDITOR
+brd_ref: BRD-SRC-FMS-AUDITOR
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: AUDIT_FIRM_ID
+  data_type: RAW(16)
+  description: "FK -> AUDIT_FIRM: Công ty kiểm toán"
+  key: null
+  fk_note: "FK suy luận → AUDIT_FIRM.ID"
+- name: FULL_NAME
+  data_type: VARCHAR2(255)
+  description: "Họ và tên đầy đủ"
+  key: null
+  fk_note: null
+- name: CERT_NO
+  data_type: VARCHAR2(255)
+  description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư"
+  key: null
+  fk_note: null
+- name: CERT_DATE
+  data_type: DATE
+  description: "Ngày cấp chứng chỉ hành nghề"
+  key: null
+  fk_note: null
+- name: GCN_NO
+  data_type: VARCHAR2(255)
+  description: "Số GCN (giấy chứng nhận): hành nghề, chấp thuận kiểm toán, phân phối CCQ..."
+  key: null
+  fk_note: null
+- name: APPROVAL_DATE
+  data_type: DATE
+  description: "Ngày chấp thuận/phê duyệt của UBCKNN"
+  key: null
+  fk_note: null
+- name: REVOCATION_DATE
+  data_type: DATE
+  description: "Ngày hủy chấp thuận/thu hồi giấy phép"
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: VARCHAR2(255)
+  description: "Địa chỉ email"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: VARCHAR2(255)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null

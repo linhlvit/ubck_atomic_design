@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTPROCESS
+brd_ref: BRD-SRC-FIMS-RPTPROCESS
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: RpMbId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTMEMBER: Báo cáo thành viên được xử lý"
+  key: FK
+  fk_note: "FK → RPTMEMBER"
+- name: UserId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> USERS: Người thực hiện thao tác xử lý báo cáo"
+  key: FK
+  fk_note: "FK → USERS"
+- name: Status
+  data_type: "NUMBER(10,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: Comment
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Ghi chú của chuyên viên khi xử lý báo cáo (duyệt/từ chối/yêu cầu gửi lại)"
+  key: null
+  fk_note: null
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: DateChange
+  data_type: "DATE"
+  description: "Thời điểm thực hiện thao tác xử lý báo cáo"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: FileImport
+  data_type: "NCLOB"
+  description: "Tên file đính kèm khi xử lý báo cáo"
+  key: null
+  fk_note: null
+- name: DataFileImport
+  data_type: "BLOB"
+  description: "Dữ liệu file Excel đã import (BLOB)"
+  key: null
+  fk_note: null

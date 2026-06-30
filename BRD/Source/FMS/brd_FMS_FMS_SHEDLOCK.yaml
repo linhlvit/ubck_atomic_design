@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: FMS_SHEDLOCK
+brd_ref: BRD-SRC-FMS-FMS_SHEDLOCK
+columns:
+- name: NAME
+  data_type: VARCHAR2(255)
+  description: "null"
+  key: null
+  fk_note: null
+- name: LOCK_UNTIL
+  data_type: TIMESTAMP
+  description: "Thời điểm lock hết hạn (distributed lock cho scheduled job)"
+  key: null
+  fk_note: null
+- name: LOCKED_AT
+  data_type: TIMESTAMP
+  description: "Thời điểm lock được tạo bởi instance"
+  key: null
+  fk_note: null
+- name: LOCKED_BY
+  data_type: VARCHAR2(255)
+  description: "Tên node/instance đang giữ lock"
+  key: null
+  fk_note: null

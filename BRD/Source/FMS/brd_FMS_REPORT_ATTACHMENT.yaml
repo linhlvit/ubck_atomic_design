@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: REPORT_ATTACHMENT
+brd_ref: BRD-SRC-FMS-REPORT_ATTACHMENT
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DATECREATED
+  data_type: DATE
+  description: "Thời điểm/ngày tháng liên quan"
+  key: null
+  fk_note: null
+- name: REPORTNAME
+  data_type: NVARCHAR2(300)
+  description: "Tên báo cáo đính kèm (legacy field, không có dấu phân cách)"
+  key: null
+  fk_note: null
+- name: REPORTCODE
+  data_type: NVARCHAR2(300)
+  description: "Mã báo cáo đính kèm (legacy field)"
+  key: null
+  fk_note: null
+- name: PERIODTYPE
+  data_type: NUMBER(22)
+  description: "Loại kỳ báo cáo đính kèm (legacy field, không có dấu phân cách)"
+  key: null
+  fk_note: null
+- name: PERIODVALUE
+  data_type: NVARCHAR2(300)
+  description: "Giá trị kỳ báo cáo đính kèm (legacy field, không có dấu phân cách)"
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: NUMBER(22)
+  description: "Năm báo cáo (định dạng YYYY)"
+  key: null
+  fk_note: null
+- name: FILENAME
+  data_type: NVARCHAR2(300)
+  description: "Dữ liệu hoặc tên file đính kèm"
+  key: null
+  fk_note: null

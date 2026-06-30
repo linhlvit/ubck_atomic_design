@@ -1,0 +1,136 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: VIOLT
+brd_ref: BRD-SRC-FIMS-VIOLT
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: UserId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> USERS: Người thực hiện thao tác xử lý báo cáo"
+  key: FK
+  fk_note: "FK → USERS"
+- name: PrWId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> PARAWARN: Tham số cảnh báo chính bị vi phạm"
+  key: FK
+  fk_note: "FK → PARAWARN"
+- name: CdtWId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> CDTWARN: Điều kiện cảnh báo vi phạm phát hiện"
+  key: FK
+  fk_note: "FK → CDTWARN"
+- name: SystemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng áp dụng (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
+  key: null
+  fk_note: null
+- name: InvestorName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên NĐT NN vi phạm (tại thời điểm phát hiện)"
+  key: null
+  fk_note: null
+- name: YearValue
+  data_type: "NUMBER(18,2)"
+  description: "Năm của kỳ CBTT/báo cáo"
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: "NUMBER(18,2)"
+  description: "Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: PeriodValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ báo cáo cụ thể (VD: 2024-Q1, 2024-03)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái xử lý vi phạm: 1/true=Đã khắc phục, 0/false=Chưa khắc phục"
+  key: null
+  fk_note: null
+- name: Value
+  data_type: "NUMBER(18,2)"
+  description: "Giá trị thực tế vi phạm của tham số cảnh báo chính"
+  key: null
+  fk_note: null
+- name: DateCreatedViolt
+  data_type: "DATE"
+  description: "Thời điểm hệ thống phát hiện và tạo bản ghi vi phạm"
+  key: null
+  fk_note: null
+- name: FundComId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecComId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: DepCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → DEPOSITORYCENTER"
+- name: StockCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → STOCKEXCHANGE"
+- name: InDiRepCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INFODISCREPRES: Đối tượng gửi báo cáo mà NHNCK làm việc"
+  key: FK
+  fk_note: "FK → INFODISCREPRES"
+- name: BranchsId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
+  key: FK
+  fk_note: "FK → BRANCHS"
+- name: PeriodTypeOther
+  data_type: "NUMBER(10,0)"
+  description: "Loại kỳ của tham số cảnh báo thứ 2 (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: PeriodValueOther
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ của tham số cảnh báo thứ 2 (điều kiện kép)"
+  key: null
+  fk_note: null
+- name: ValueOther
+  data_type: "NUMBER(18,2)"
+  description: "Giá trị thực tế vi phạm của tham số cảnh báo thứ 2"
+  key: null
+  fk_note: null
+- name: ParaName
+  data_type: "VARCHAR2(500 BYTE)"
+  description: "Tên tham số cảnh báo bị vi phạm (snapshot tên)"
+  key: null
+  fk_note: null
+- name: ResolvedBy
+  data_type: "VARCHAR2(200 BYTE)"
+  description: "FK -> USERS: Chuyên viên xử lý/đóng cảnh báo vi phạm"
+  key: FK
+  fk_note: "FK → USERS"
+- name: ResolvedDate
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm xử lý/đóng cảnh báo vi phạm"
+  key: null
+  fk_note: null
+- name: InvestorCode
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Mã giao dịch NĐT NN vi phạm (tại thời điểm phát hiện)"
+  key: null
+  fk_note: null

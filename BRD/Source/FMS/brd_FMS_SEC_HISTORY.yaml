@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: SEC_HISTORY
+brd_ref: BRD-SRC-FMS-SEC_HISTORY
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: SEC_ID
+  data_type: RAW(16)
+  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  key: null
+  fk_note: "FK suy luận → SECURITIES.ID"
+- name: BR_ID
+  data_type: RAW(16)
+  description: "FK -> BRANCHS: Chi nhánh liên quan"
+  key: null
+  fk_note: "FK suy luận → BRANCHS.ID"
+- name: DATE_CHANGE
+  data_type: DATE
+  description: "Thời điểm/ngày tháng liên quan"
+  key: null
+  fk_note: null
+- name: ACTION
+  data_type: NCLOB
+  description: "Hành động đang thực hiện khi xảy ra lỗi"
+  key: null
+  fk_note: null
+- name: ADJUSTMENT_LICENSE
+  data_type: NVARCHAR2(300)
+  description: "Số GP/QĐ điều chỉnh khi thay đổi hồ sơ"
+  key: null
+  fk_note: null
+- name: LICENSE_DATE
+  data_type: DATE
+  description: "Ngày cấp giấy phép"
+  key: null
+  fk_note: null
+- name: VALUE_CHANGE
+  data_type: NCLOB
+  description: "Giá trị sau khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: REASON
+  data_type: NVARCHAR2(300)
+  description: "Lý do thay đổi/điều chỉnh"
+  key: null
+  fk_note: null
+- name: FILE_DATA
+  data_type: NCLOB
+  description: "Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: PREV_VALUE
+  data_type: NCLOB
+  description: "Giá trị trước khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: WORK_AREA
+  data_type: NVARCHAR2(300)
+  description: "Dữ liệu lịch sử cột WORK_AREA tại thời điểm backup"
+  key: null
+  fk_note: null

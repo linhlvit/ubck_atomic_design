@@ -1,0 +1,141 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPT_EVENT_TYPE
+brd_ref: BRD-SRC-FIMS-RPT_EVENT_TYPE
+columns:
+- name: ID
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi"
+  key: null
+  fk_note: null
+- name: MA_SU_VU
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Mã loại sự vụ/nghĩa vụ báo cáo"
+  key: null
+  fk_note: null
+- name: TEN_SU_VU
+  data_type: "VARCHAR2(500 CHAR)"
+  description: "Tên đầy đủ loại sự vụ/nghĩa vụ báo cáo"
+  key: null
+  fk_note: null
+- name: GHI_CHU
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Ghi chú bổ sung về loại sự vụ"
+  key: null
+  fk_note: null
+- name: SYSTEM_OBJECT
+  data_type: "NUMBER(10,0)"
+  description: "Loại đối tượng áp dụng sự vụ: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN"
+  key: null
+  fk_note: null
+- name: PHAN_LOAI_SU_VU
+  data_type: "NUMBER(2,0)"
+  description: "Phân loại sự vụ: 1=Định kỳ, 2=Bất thường, 3=Theo yêu cầu"
+  key: null
+  fk_note: null
+- name: LOAI_NGHIA_VU
+  data_type: "NUMBER(2,0)"
+  description: "Loại nghĩa vụ: 1=Báo cáo, 2=CBTT, 3=Hồ sơ, 4=Khác"
+  key: null
+  fk_note: null
+- name: CO_GIAY_PHEP
+  data_type: "NUMBER(1,0)"
+  description: "Cờ sự vụ cần giấy phép/văn bản chấp thuận: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: CACH_TINH_THOI_HAN
+  data_type: "NUMBER(2,0)"
+  description: "Cách tính thời hạn nộp: 1=Ngày làm việc, 2=Ngày lịch"
+  key: null
+  fk_note: null
+- name: CATALOG_ACTIVE
+  data_type: "NUMBER(1,0)"
+  description: "Cờ danh mục đang hoạt động: 1=Đang dùng, 0=Không dùng"
+  key: null
+  fk_note: null
+- name: IS_DELETED
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Chưa xóa"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DATE_MODIFIED
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Username người tạo template báo cáo"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: MODIFY_BY
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tài khoản người cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: CAN_CU_PHAP_LY
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Căn cứ pháp lý tổng hợp (tên/số văn bản áp dụng)"
+  key: null
+  fk_note: null
+- name: TU_THIET_LAP_KY_BC
+  data_type: "NUMBER(1,0)"
+  description: "Cờ cho phép tự thiết lập kỳ báo cáo: 1=Cho phép, 0=Không"
+  key: null
+  fk_note: null
+- name: BC_THAY_DOI_GTTS_RONG
+  data_type: "NUMBER(1,0)"
+  description: "Cờ báo cáo thay đổi giá trị tài sản ròng (NAV): 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: LOAI_HINH_QUY_ID
+  data_type: "NUMBER(10,0)"
+  description: "FK -> loại hình quỹ được áp dụng sự vụ này"
+  key: FK
+  fk_note: "FK → LO"
+- name: LOAI_DAI_LY_ID
+  data_type: "NUMBER(10,0)"
+  description: "FK -> loại đại lý được áp dụng sự vụ này"
+  key: FK
+  fk_note: "FK → LO"
+- name: RPT_MAU_BC_ID
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "FK -> RPTTEMP: Mã biểu mẫu báo cáo đầu vào tương ứng"
+  key: null
+  fk_note: "FK suy luận → RPTTEMP.ID"
+- name: RPT_MAU_CBTT_ID
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "FK -> RPTTEMP: Mã biểu mẫu CBTT tương ứng"
+  key: null
+  fk_note: "FK suy luận → RPTTEMP.ID"
+- name: RPT_MAU_HO_SO_ID
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "FK -> RPTTEMP: Mã biểu mẫu hồ sơ tương ứng"
+  key: null
+  fk_note: "FK suy luận → RPTTEMP.ID"
+- name: HOAT_DONG_CAP_PHEP
+  data_type: "NUMBER(1,0)"
+  description: "Cờ sự vụ liên quan hoạt động cấp phép: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: TH_SK_TRUOC_SAU
+  data_type: "NUMBER(1,0)"
+  description: "Thực hiện so với sự kiện: 0=Trước sự kiện, 1=Sau sự kiện"
+  key: null
+  fk_note: null
+- name: TH_SK_SO_NGAY
+  data_type: "NUMBER(10,0)"
+  description: "Số ngày trước/sau sự kiện để thực hiện sự vụ"
+  key: null
+  fk_note: null
+- name: TH_SK_DON_VI
+  data_type: "NUMBER(1,0)"
+  description: "Đơn vị tính ngày: 1=Ngày làm việc, 2=Ngày lịch"
+  key: null
+  fk_note: null

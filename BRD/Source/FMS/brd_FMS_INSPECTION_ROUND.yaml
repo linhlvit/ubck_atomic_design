@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: INSPECTION_ROUND
+brd_ref: BRD-SRC-FMS-INSPECTION_ROUND
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: OBJECT_TYPE
+  data_type: NUMBER(22)
+  description: "Loại đối tượng thanh tra: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=Khác"
+  key: null
+  fk_note: null
+- name: OTHER_OBJECT_NAME
+  data_type: VARCHAR2(255)
+  description: "Tên đối tượng thanh tra khác (khi OBJECT_TYPE=5=Khác)"
+  key: null
+  fk_note: null
+- name: INSPECTION_YEAR
+  data_type: NUMBER(22)
+  description: "Năm tiến hành thanh tra/kiểm tra"
+  key: null
+  fk_note: null
+- name: START_DATE
+  data_type: DATE
+  description: "Ngày bắt đầu"
+  key: null
+  fk_note: null
+- name: END_DATE
+  data_type: DATE
+  description: "Ngày kết thúc"
+  key: null
+  fk_note: null
+- name: DECISION_NO
+  data_type: VARCHAR2(255)
+  description: "Số quyết định thanh tra của cơ quan có thẩm quyền"
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: DATE
+  description: "Ngày ban hành quyết định thanh tra"
+  key: null
+  fk_note: null
+- name: PERIOD_FROM
+  data_type: DATE
+  description: "Thời kỳ kiểm tra từ ngày"
+  key: null
+  fk_note: null
+- name: PERIOD_TO
+  data_type: DATE
+  description: "Thời kỳ kiểm tra đến ngày"
+  key: null
+  fk_note: null
+- name: INSPECTION_KIND
+  data_type: NUMBER(22)
+  description: "Hình thức thanh tra: 1=Thanh tra định kỳ, 2=Đột xuất, 3=Kiểm tra"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null

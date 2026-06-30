@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: DISTRIBUTOR_PERSONNEL
+brd_ref: BRD-SRC-FMS-DISTRIBUTOR_PERSONNEL
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DISTRIBUTOR_LOCATION_ID
+  data_type: RAW(16)
+  description: "FK -> DISTRIBUTOR_LOCATION: Địa điểm giao dịch"
+  key: null
+  fk_note: "FK suy luận → DISTRIBUTOR_LOCATION.ID"
+- name: FULL_NAME
+  data_type: VARCHAR2(255)
+  description: "Họ và tên đầy đủ"
+  key: null
+  fk_note: null
+- name: CERT_NO
+  data_type: VARCHAR2(255)
+  description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư"
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: VARCHAR2(255)
+  description: "Chức vụ/vị trí công tác hiện tại"
+  key: null
+  fk_note: null
+- name: PHONE
+  data_type: VARCHAR2(255)
+  description: "Số điện thoại"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null

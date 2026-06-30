@@ -4,63 +4,73 @@ source: FMS
 table: MENUS
 brd_ref: BRD-SRC-FMS-MENUS
 columns:
-- name: Id
+- name: ID
   data_type: RAW(16)
-  description: Mã ID danh mục quyền. Mã hệ thống tự sinh (PK)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
   key: PK
   fk_note: null
-- name: Title
-  data_type: NVARCHAR2(1500)
-  description: Tên danh mục quyền
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
-- name: Url
-  data_type: NVARCHAR2(1500)
-  description: Điều hướng (URL)
-  key: null
-  fk_note: null
-- name: Icon
+- name: CREATED_BY
   data_type: NVARCHAR2(300)
-  description: Icon hiển thị
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
-- name: MenuType
-  data_type: NUMBER(22)
-  description: 'Loại menu: 1 = Quyền; 0 = Menu'
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
-- name: IsActive
-  data_type: NUMBER(22)
-  description: 'Trạng thái: 1 = Sử dụng; 0 = Không sử dụng'
+- name: TITLE
+  data_type: NVARCHAR2(300)
+  description: "Tiêu đề thông báo/CBTT (tiếng Việt)"
   key: null
   fk_note: null
-- name: SortOrder
-  data_type: NUMBER(22)
-  description: Thứ tự sắp xếp
+- name: ICON
+  data_type: NVARCHAR2(300)
+  description: "Icon hiển thị trên menu/giao diện (CSS class hoặc URL icon)"
   key: null
   fk_note: null
-- name: ParentId
+- name: URL
+  data_type: NVARCHAR2(300)
+  description: "Đường dẫn URL của menu/chức năng"
+  key: null
+  fk_note: null
+- name: PARENT_ID
   data_type: RAW(16)
-  description: Mã ID menu cha. FK → MENUS.Id
-  key: FK
-  fk_note: FK → MENUS.Id
-- name: CreatedBy
-  data_type: NVARCHAR2(300)
-  description: Người tạo
+  description: "FK -> FACTOR: Tiêu chí cha trong hệ thống phân cấp tiêu chí đánh giá"
+  key: null
+  fk_note: "FK suy luận → FACTOR.ID"
+- name: MENU_TYPE
+  data_type: NUMBER(22)
+  description: "Loại menu: 1=Module chính, 2=SubMenu, 3=Chức năng lá"
   key: null
   fk_note: null
-- name: DateCreated
-  data_type: DATE
-  description: Ngày tạo
+- name: SORT_ORDER
+  data_type: NUMBER(22)
+  description: "Thứ tự sắp xếp hiển thị menu trên giao diện (số nhỏ hơn hiển thị trước)"
   key: null
   fk_note: null
-- name: DateModified
-  data_type: DATE
-  description: Ngày sửa
+- name: ACCESS
+  data_type: NCLOB
+  description: "null"
   key: null
   fk_note: null
-- name: ModifyBy
-  data_type: NVARCHAR2(300)
-  description: Người sửa
+- name: ACTIVE
+  data_type: NUMBER(22)
+  description: "Cờ đang kích hoạt: 1=Đang hoạt động, 0=Vô hiệu"
+  key: null
+  fk_note: null
+- name: ACCESS_URL
+  data_type: CLOB
+  description: "Danh sách URL con được phép truy cập (JSON CLOB)"
   key: null
   fk_note: null

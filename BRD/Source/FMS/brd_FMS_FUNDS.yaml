@@ -4,93 +4,188 @@ source: FMS
 table: FUNDS
 brd_ref: BRD-SRC-FMS-FUNDS
 columns:
-- name: Id
+- name: ID
   data_type: RAW(16)
-  description: Mã ID quỹ đầu tư. Mã hệ thống tự sinh (PK)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
   key: PK
   fk_note: null
-- name: FundName
-  data_type: NVARCHAR2(3000)
-  description: Tên quỹ đầu tư
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
-- name: FundShortName
+- name: CREATED_BY
   data_type: NVARCHAR2(300)
-  description: Tên viết tắt quỹ đầu tư
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
-- name: FundEnName
-  data_type: NVARCHAR2(3000)
-  description: Tên tiếng Anh quỹ đầu tư
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
-- name: SecId
+- name: ITEM_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: ENAME
+  data_type: NVARCHAR2(300)
+  description: "Tên tiếng Anh đầy đủ"
+  key: null
+  fk_note: null
+- name: SHORT_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên viết tắt"
+  key: null
+  fk_note: null
+- name: ID_NO
+  data_type: NVARCHAR2(300)
+  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp"
+  key: null
+  fk_note: null
+- name: ID_DATE
+  data_type: DATE
+  description: "Ngày cấp CMND/CCCD/Hộ chiếu"
+  key: null
+  fk_note: null
+- name: CAPITAL
+  data_type: NUMBER(22)
+  description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)"
+  key: null
+  fk_note: null
+- name: TOTAL_QTTY
+  data_type: NUMBER(22)
+  description: "Tổng số lượng CCQ/cổ phiếu đang lưu hành"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(300)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: CER_CODE
+  data_type: NVARCHAR2(300)
+  description: "Mã chứng chỉ quỹ (ticker symbol trên sàn giao dịch)"
+  key: null
+  fk_note: null
+- name: TYPE_OF_FUND_NO
+  data_type: NVARCHAR2(300)
+  description: "Số quyết định về loại hình quỹ"
+  key: null
+  fk_note: null
+- name: TYPE_OF_FUND_MNP
+  data_type: NVARCHAR2(300)
+  description: "Mệnh giá CCQ theo loại quỹ"
+  key: null
+  fk_note: null
+- name: TYPE_OF_FUND_DENT
+  data_type: NVARCHAR2(300)
+  description: "Loại quỹ theo định danh nội bộ"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: TIME_OF_FUND
+  data_type: NVARCHAR2(300)
+  description: "Thời hạn hoạt động của quỹ (số năm hoặc 'Vô thời hạn')"
+  key: null
+  fk_note: null
+- name: FTYPE_ID
   data_type: RAW(16)
-  description: Mã ID công ty QLQ quản lý. FK → SECURITIES.Id
-  key: FK
-  fk_note: FK → SECURITIES.Id
-- name: FundCapital
-  data_type: NUMBER(22)
-  description: Vốn điều lệ quỹ
+  description: "FK -> FUND_TYPE: Loại quỹ đầu tư"
   key: null
-  fk_note: null
-- name: FundType
-  data_type: NUMBER(22)
-  description: Loại hình quỹ
-  key: null
-  fk_note: null
-- name: Status
+  fk_note: "FK suy luận → FUND_TYPE.ID"
+- name: SEC_ID
   data_type: RAW(16)
-  description: Mã ID trạng thái. FK → STATUS.Id
-  key: FK
-  fk_note: FK → STATUS.Id
-- name: DecisionDate
-  data_type: DATE
-  description: Ngày cấp phép thành lập
+  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  key: null
+  fk_note: "FK suy luận → SECURITIES.ID"
+- name: BANK_ID
+  data_type: RAW(16)
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan"
+  key: null
+  fk_note: "FK suy luận → BANK_MONI.ID"
+- name: STATUS_ID
+  data_type: RAW(16)
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)"
+  key: null
+  fk_note: "FK suy luận → STATUS.ID"
+- name: VOUCHER_NO
+  data_type: NVARCHAR2(300)
+  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)"
   key: null
   fk_note: null
-- name: ActiveDate
-  data_type: DATE
-  description: Ngày chính thức hoạt động
-  key: null
-  fk_note: null
-- name: StopDate
-  data_type: DATE
-  description: Ngày giải thể/đóng quỹ
-  key: null
-  fk_note: null
-- name: Deleted
+- name: NAV
   data_type: NUMBER(22)
-  description: 'Trạng thái bản ghi: 0 = Không bị xóa; 1 = Bị xóa'
+  description: "Giá trị tài sản ròng (NAV) của quỹ (đơn vị: VNĐ)"
   key: null
   fk_note: null
-- name: IsDataMigration
+- name: NAV_CCQ
   data_type: NUMBER(22)
-  description: 1 = Dữ liệu đổ từ hệ thống cũ; 0 = Dữ liệu mới
+  description: "NAV trên mỗi chứng chỉ quỹ - NAV/CCQ (đơn vị: VNĐ)"
   key: null
   fk_note: null
-- name: FileData
+- name: FILE_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên file hoặc danh sách tên file đính kèm"
+  key: null
+  fk_note: null
+- name: FILE_DATA
   data_type: NCLOB
-  description: File đính kèm
+  description: "Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)"
   key: null
   fk_note: null
-- name: CreatedBy
-  data_type: NVARCHAR2(300)
-  description: Người tạo
-  key: null
-  fk_note: null
-- name: DateCreated
+- name: DEC_DATE
   data_type: DATE
-  description: Ngày tạo
+  description: "Ngày ban hành quyết định/nghị quyết"
   key: null
   fk_note: null
-- name: DateModified
-  data_type: DATE
-  description: Ngày sửa
+- name: PAR_VALUE
+  data_type: NUMBER(22)
+  description: "Mệnh giá CCQ (đơn vị: VNĐ)"
   key: null
   fk_note: null
-- name: ModifyBy
+- name: INVES_STRATEGY
   data_type: NVARCHAR2(300)
-  description: Người sửa
+  description: "Chiến lược đầu tư của quỹ (mô tả)"
+  key: null
+  fk_note: null
+- name: DESCHANGE
+  data_type: NVARCHAR2(300)
+  description: "Mô tả thay đổi hồ sơ quỹ khi cập nhật"
+  key: null
+  fk_note: null
+- name: DATA_MIGRATION
+  data_type: NUMBER(22)
+  description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
+  key: null
+  fk_note: null
+- name: ID_DB_OLD
+  data_type: NVARCHAR2(300)
+  description: "ID trong hệ thống cũ (trước khi migration dữ liệu)"
+  key: null
+  fk_note: null
+- name: LISTING_DATE
+  data_type: DATE
+  description: "Ngày niêm yết CCQ trên sàn giao dịch chứng khoán"
+  key: null
+  fk_note: null
+- name: NUMBER_FUND_CER_FIRST
+  data_type: NUMBER(22)
+  description: "Số lượng CCQ phát hành lần đầu tiên"
+  key: null
+  fk_note: null
+- name: STOCK_EXCHANGE
+  data_type: NVARCHAR2(300)
+  description: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM"
   key: null
   fk_note: null

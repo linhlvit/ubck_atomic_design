@@ -1,0 +1,191 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: INVESTORHIS
+brd_ref: BRD-SRC-FIMS-INVESTORHIS
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: IdOld
+  data_type: "NUMBER(18,2)"
+  description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null
+- name: ObjectType
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức"
+  key: null
+  fk_note: null
+- name: TransactionCode
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Mã số giao dịch của NĐT NN do VSDC cấp"
+  key: null
+  fk_note: null
+- name: Name
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: EName
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Tên tiếng Anh"
+  key: null
+  fk_note: null
+- name: Sex
+  data_type: "NVARCHAR2(1 CHAR)"
+  description: "Giới tính: 1=Nam, 2=Nữ"
+  key: null
+  fk_note: null
+- name: DateOfBirth
+  data_type: "DATE"
+  description: "Ngày sinh (với NĐT cá nhân)"
+  key: null
+  fk_note: null
+- name: NaId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> NATIONAL: Quốc gia/quốc tịch"
+  key: FK
+  fk_note: "FK → NATIONAL"
+- name: Address
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Địa chỉ trụ sở/văn phòng"
+  key: null
+  fk_note: null
+- name: IdNo
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số CMND/CCCD/Hộ chiếu/Giấy phép"
+  key: null
+  fk_note: null
+- name: IdDate
+  data_type: "DATE"
+  description: "Ngày cấp giấy tờ định danh"
+  key: null
+  fk_note: null
+- name: IdAdd
+  data_type: "NVARCHAR2(200 CHAR)"
+  description: "Nơi cấp giấy tờ định danh"
+  key: null
+  fk_note: null
+- name: Telephone
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số điện thoại liên hệ"
+  key: null
+  fk_note: null
+- name: Fax
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số fax"
+  key: null
+  fk_note: null
+- name: Email
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Địa chỉ email liên hệ"
+  key: null
+  fk_note: null
+- name: Website
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Địa chỉ website"
+  key: null
+  fk_note: null
+- name: BusinessNumber
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số đăng ký kinh doanh/mã số doanh nghiệp"
+  key: null
+  fk_note: null
+- name: Director
+  data_type: "NVARCHAR2(200 CHAR)"
+  description: "Họ tên Giám đốc/Tổng giám đốc"
+  key: null
+  fk_note: null
+- name: InvestorTypeId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INVESTORTYPE: Loại nhà đầu tư nước ngoài"
+  key: FK
+  fk_note: "FK → INVESTORTYPE"
+- name: DepAccountNumber
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số tài khoản lưu ký tại VSDC"
+  key: null
+  fk_note: null
+- name: SysObjectType
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng trong hệ thống (phân biệt giữa các loại NĐT NN)"
+  key: null
+  fk_note: null
+- name: SecComAddId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankAddId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao dịch"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: AccountInvesCapital
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số tài khoản đầu tư vốn của NĐT NN"
+  key: null
+  fk_note: null
+- name: BankAddCapId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: CompanyTypeId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> COMPANYTYPE: Loại hình doanh nghiệp"
+  key: FK
+  fk_note: "FK → COMPANYTYPE"
+- name: StatusId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng"
+  key: FK
+  fk_note: "FK → STATUS"
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: IdDbOld
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "ID bản ghi trong database cũ (đối chiếu sau migration)"
+  key: null
+  fk_note: null

@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: DYNAMICCOLUMNS
+brd_ref: BRD-SRC-FIMS-DYNAMICCOLUMNS
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi"
+  key: null
+  fk_note: null
+- name: TABLECONFIGID
+  data_type: "NUMBER"
+  description: "FK -> DYNAMICTABLES: Bảng động chứa cột này"
+  key: FK
+  fk_note: "FK → DYNAMICTABLES"
+- name: COLUMNNAME
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tên cột trong bảng động (tương ứng tên field trong DB)"
+  key: null
+  fk_note: null
+- name: DATATYPE
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Kiểu dữ liệu của cột động: TEXT/NUMBER/DATE/BOOLEAN"
+  key: null
+  fk_note: null
+- name: ISNULLABLE
+  data_type: "NUMBER(1,0)"
+  description: "Cờ cột được phép NULL: 1=Có thể NULL, 0=Bắt buộc có giá trị"
+  key: null
+  fk_note: null
+- name: ISPRIMARYKEY
+  data_type: "NUMBER(1,0)"
+  description: "Cờ cột là khóa chính của bảng động: 1=Khóa chính, 0=Không"
+  key: null
+  fk_note: null
+- name: DEFAULTVALUE
+  data_type: "VARCHAR2(500 BYTE)"
+  description: "Giá trị mặc định của cột động khi không có dữ liệu"
+  key: null
+  fk_note: null
+- name: ORDERINDEX
+  data_type: "NUMBER"
+  description: "Số thứ tự hiển thị của cột trong bảng động"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: "CLOB"
+  description: "Mô tả/ghi chú về đại diện giao dịch"
+  key: null
+  fk_note: null
+- name: CREATEDAT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo cấu hình bảng/kết nối động"
+  key: null
+  fk_note: null

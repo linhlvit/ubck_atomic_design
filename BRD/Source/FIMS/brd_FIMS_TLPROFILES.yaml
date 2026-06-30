@@ -1,0 +1,186 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: TLPROFILES
+brd_ref: BRD-SRC-FIMS-TLPROFILES
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: FundComId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecComId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: DepCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → DEPOSITORYCENTER"
+- name: StockCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → STOCKEXCHANGE"
+- name: InDiRepCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INFODISCREPRES: Đối tượng gửi báo cáo mà NHNCK làm việc"
+  key: FK
+  fk_note: "FK → INFODISCREPRES"
+- name: Name
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: NaId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> NATIONAL: Quốc gia/quốc tịch"
+  key: FK
+  fk_note: "FK → NATIONAL"
+- name: Address
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Địa chỉ trụ sở/văn phòng"
+  key: null
+  fk_note: null
+- name: PlaceOfBirth
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Nơi sinh của người hành nghề chứng khoán"
+  key: null
+  fk_note: null
+- name: IdNo
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số CMND/CCCD/Hộ chiếu/Giấy phép"
+  key: null
+  fk_note: null
+- name: IdDate
+  data_type: "DATE"
+  description: "Ngày cấp giấy tờ định danh"
+  key: null
+  fk_note: null
+- name: IdAdd
+  data_type: "NVARCHAR2(200 CHAR)"
+  description: "Nơi cấp giấy tờ định danh"
+  key: null
+  fk_note: null
+- name: DateOfBirth
+  data_type: "DATE"
+  description: "Ngày sinh (với NĐT cá nhân)"
+  key: null
+  fk_note: null
+- name: Sex
+  data_type: "NVARCHAR2(1 CHAR)"
+  description: "Giới tính: 1=Nam, 2=Nữ"
+  key: null
+  fk_note: null
+- name: Telephone
+  data_type: "NVARCHAR2(30 CHAR)"
+  description: "Số điện thoại liên hệ"
+  key: null
+  fk_note: null
+- name: Email
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Địa chỉ email liên hệ"
+  key: null
+  fk_note: null
+- name: IsRepresentative
+  data_type: "NUMBER(1,0)"
+  description: "Cờ là đại diện pháp luật của tổ chức: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: EmailRepresentative
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Email đại diện liên lạc của người hành nghề"
+  key: null
+  fk_note: null
+- name: SWorkDTE
+  data_type: "DATE"
+  description: "Ngày bắt đầu làm việc tại đơn vị hiện tại"
+  key: null
+  fk_note: null
+- name: FWorkDTE
+  data_type: "DATE"
+  description: "Ngày kết thúc làm việc tại đơn vị hiện tại"
+  key: null
+  fk_note: null
+- name: CertNo
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Số chứng chỉ hành nghề chứng khoán (CCHN)"
+  key: null
+  fk_note: null
+- name: CertDate
+  data_type: "DATE"
+  description: "Ngày cấp chứng chỉ hành nghề chứng khoán"
+  key: null
+  fk_note: null
+- name: CertAdd
+  data_type: "NVARCHAR2(200 CHAR)"
+  description: "Nơi cấp chứng chỉ hành nghề chứng khoán"
+  key: null
+  fk_note: null
+- name: DegreeId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> DEGREE: Trình độ học vấn/bằng cấp cao nhất"
+  key: FK
+  fk_note: "FK → DEGREE"
+- name: StatusId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng"
+  key: FK
+  fk_note: "FK → STATUS"
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null

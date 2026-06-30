@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: INVES_REPORT
+brd_ref: BRD-SRC-FMS-INVES_REPORT
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: INVES_ACC_ID
+  data_type: RAW(16)
+  description: "FK -> INVES_ACC: Tài khoản nhà đầu tư ủy thác"
+  key: null
+  fk_note: "FK suy luận → INVES_ACC.ID"
+- name: INVES_ID
+  data_type: RAW(16)
+  description: "FK -> INVESTOR: Nhà đầu tư ủy thác"
+  key: null
+  fk_note: "FK suy luận → INVES.ID"
+- name: EXCUTION_DATE
+  data_type: TIMESTAMP
+  description: "Thời điểm thực hiện/nộp báo cáo"
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: NUMBER(22)
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
+  key: null
+  fk_note: null
+- name: AD_SCALE
+  data_type: NUMBER(22)
+  description: "Quy mô uỷ thác cam kết (đơn vị: VNĐ)"
+  key: null
+  fk_note: null
+- name: ACT_SCALE
+  data_type: NUMBER(22)
+  description: "Quy mô uỷ thác thực tế (đơn vị: VNĐ)"
+  key: null
+  fk_note: null
+- name: LIST_VALUE
+  data_type: NUMBER(22)
+  description: "Giá trị danh mục đầu tư (đơn vị: VNĐ)"
+  key: null
+  fk_note: null
+- name: MANAGER_FEE
+  data_type: NUMBER(22)
+  description: "Phí quản lý danh mục (%/năm)"
+  key: null
+  fk_note: null
+- name: PERIOD_REPORT
+  data_type: NVARCHAR2(300)
+  description: "Kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024)"
+  key: null
+  fk_note: null

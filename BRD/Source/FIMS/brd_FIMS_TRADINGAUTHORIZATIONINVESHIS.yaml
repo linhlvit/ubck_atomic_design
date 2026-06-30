@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: TRADINGAUTHORIZATIONINVESHIS
+brd_ref: BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVESHIS
+columns:
+- name: Id
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: TradingAuthorizationHisId
+  data_type: "NUMBER(18,0)"
+  description: "FK đến TRADINGAUTHORIZATIONHIS.Id — version cụ thể của hợp đồng ủy quyền"
+  key: null
+  fk_note: null
+- name: InvestorId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
+  key: FK
+  fk_note: "FK → INVESTOR"
+- name: InvestorName
+  data_type: "VARCHAR2(500 CHAR)"
+  description: "Tên NĐT NN vi phạm (tại thời điểm phát hiện)"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null

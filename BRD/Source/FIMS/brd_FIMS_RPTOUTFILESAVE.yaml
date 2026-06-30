@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTOUTFILESAVE
+brd_ref: BRD-SRC-FIMS-RPTOUTFILESAVE
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+  key: null
+  fk_note: null
+- name: RptOutId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra được xuất"
+  key: FK
+  fk_note: "FK → RPTTPOUT"
+- name: FileExport
+  data_type: "NCLOB"
+  description: "Tên file xuất báo cáo tổng hợp đầu ra"
+  key: null
+  fk_note: null
+- name: DataFileExport
+  data_type: "BLOB"
+  description: "Nội dung file xuất (BLOB/CLOB: Excel/PDF đã tạo)"
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: "NUMBER(10,0)"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Năm, 6=Bất thường"
+  key: null
+  fk_note: null
+- name: PeriodValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ báo cáo cụ thể (VD: 2024-Q1, 2024-03)"
+  key: null
+  fk_note: null
+- name: ReportYear
+  data_type: "NUMBER(10,0)"
+  description: "Năm của báo cáo tổng hợp đã xuất"
+  key: null
+  fk_note: null
+- name: RptOutManageId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTOUTMANAGEMENT: Lần chạy xuất báo cáo tạo ra file này"
+  key: FK
+  fk_note: "FK → RPTOUTMANAGEMENT"

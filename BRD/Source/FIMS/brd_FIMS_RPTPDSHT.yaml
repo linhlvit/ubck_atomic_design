@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTPDSHT
+brd_ref: BRD-SRC-FIMS-RPTPDSHT
+columns:
+- name: ShtId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SHEET: Sheet biểu mẫu liên quan đến kỳ báo cáo"
+  key: FK
+  fk_note: "FK → SHEET"
+- name: RptPdId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTPERIOD: Kỳ báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPTPERIOD"
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null

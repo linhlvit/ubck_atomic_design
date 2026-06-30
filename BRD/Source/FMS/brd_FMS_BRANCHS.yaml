@@ -1,0 +1,156 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: BRANCHS
+brd_ref: BRD-SRC-FMS-BRANCHS
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: SEC_ID
+  data_type: RAW(16)
+  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  key: null
+  fk_note: "FK suy luận → SECURITIES.ID"
+- name: ITEM_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: BR_TYPE
+  data_type: NUMBER(22)
+  description: "Loại chi nhánh: 1=Chi nhánh, 2=VPĐD"
+  key: null
+  fk_note: null
+- name: ADDRESS
+  data_type: NVARCHAR2(300)
+  description: "Địa chỉ trụ sở"
+  key: null
+  fk_note: null
+- name: TELEPHONE
+  data_type: NVARCHAR2(300)
+  description: "Số điện thoại"
+  key: null
+  fk_note: null
+- name: FAX
+  data_type: NVARCHAR2(300)
+  description: "Số fax"
+  key: null
+  fk_note: null
+- name: TL_ID
+  data_type: RAW(16)
+  description: "FK -> TL_PROFILES: Người phụ trách/giám đốc chi nhánh"
+  key: null
+  fk_note: "FK suy luận → TL_PROFILES.ID"
+- name: HOST_OFFICE
+  data_type: NUMBER(22)
+  description: "Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(300)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: NVARCHAR2(300)
+  description: "Nội dung/ghi chú bổ sung về chi nhánh"
+  key: null
+  fk_note: null
+- name: DORF
+  data_type: NUMBER(22)
+  description: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài"
+  key: null
+  fk_note: null
+- name: FILE_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên file hoặc danh sách tên file đính kèm"
+  key: null
+  fk_note: null
+- name: FILE_DATA
+  data_type: NCLOB
+  description: "Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: STOP_DATE
+  data_type: DATE
+  description: "Ngày ngừng/đình chỉ hoạt động"
+  key: null
+  fk_note: null
+- name: ACTIVE_DATE
+  data_type: DATE
+  description: "Ngày bắt đầu hoạt động chính thức"
+  key: null
+  fk_note: null
+- name: DECISION
+  data_type: NVARCHAR2(300)
+  description: "Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động"
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: DATE
+  description: "Ngày ban hành quyết định/giấy phép thành lập hoặc chấp thuận hoạt động"
+  key: null
+  fk_note: null
+- name: BR_IDOWNER
+  data_type: NVARCHAR2(300)
+  description: "Mã/ID cũ của chi nhánh trong hệ thống trước khi migrate"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: TL_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên người phụ trách chi nhánh (snapshot)"
+  key: null
+  fk_note: null
+- name: VOUCHER_NO
+  data_type: NVARCHAR2(300)
+  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)"
+  key: null
+  fk_note: null
+- name: VOUCHER_DATE
+  data_type: DATE
+  description: "Ngày ban hành văn bản điều chỉnh"
+  key: null
+  fk_note: null
+- name: DES_CHANGE
+  data_type: NVARCHAR2(300)
+  description: "Mô tả nội dung thay đổi khi cập nhật hồ sơ"
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: DATA_MIGRATION
+  data_type: NUMBER(22)
+  description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
+  key: null
+  fk_note: null

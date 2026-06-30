@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: USERRPTO
+brd_ref: BRD-SRC-FIMS-USERRPTO
+columns:
+- name: TpOutId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra người dùng được phép khai thác"
+  key: FK
+  fk_note: "FK → RPTTPOUT"
+- name: SsoUserId
+  data_type: "NVARCHAR2(36 CHAR)"
+  description: "ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)"
+  key: null
+  fk_note: null

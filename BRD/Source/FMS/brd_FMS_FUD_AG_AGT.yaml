@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: FUD_AG_AGT
+brd_ref: BRD-SRC-FMS-FUD_AG_AGT
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: FUD_ID
+  data_type: RAW(16)
+  description: "FK -> FUNDS: Quỹ đầu tư"
+  key: null
+  fk_note: "FK suy luận → FUNDS.ID"
+- name: AG_TY_ID
+  data_type: RAW(16)
+  description: "FK -> AGENCY_TYPE: Loại đại lý"
+  key: null
+  fk_note: "FK suy luận → AGENCY_TYPE.ID"
+- name: AGEN_ID
+  data_type: RAW(16)
+  description: "FK -> AGENCIES: Đại lý phân phối liên quan"
+  key: null
+  fk_note: "FK suy luận → AGENCIES.ID"
+- name: AGEN_ID_PARENT
+  data_type: RAW(16)
+  description: "FK -> AGENCIES: Đại lý phân phối cấp trên"
+  key: null
+  fk_note: "FK suy luận → AGENCIES.ID"

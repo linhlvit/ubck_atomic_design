@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: TLPROJOB
+brd_ref: BRD-SRC-FIMS-TLPROJOB
+columns:
+- name: JobId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> JOBTYPE: Loại công việc/chức danh của người hành nghề"
+  key: FK
+  fk_note: "FK → JOBTYPE"
+- name: TLProId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> TLPROFILES: Người hành nghề chứng khoán"
+  key: FK
+  fk_note: "FK → TLPROFILES"
+- name: SystemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+  key: null
+  fk_note: null

@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: CLOSING_PRICE_SECURITIES
+brd_ref: BRD-SRC-FIMS-CLOSING_PRICE_SECURITIES
+columns:
+- name: Id
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: SecCode
+  data_type: "VARCHAR2(32 BYTE)"
+  description: "Mã chứng khoán (ticker)"
+  key: null
+  fk_note: null
+- name: TradeDate
+  data_type: "DATE"
+  description: "Ngày giao dịch (ngày phiên có giá đóng cửa này)"
+  key: null
+  fk_note: null
+- name: ClosePrice
+  data_type: "NUMBER(20,6)"
+  description: "Giá đóng cửa của chứng khoán trong phiên giao dịch"
+  key: null
+  fk_note: null
+- name: Source
+  data_type: "VARCHAR2(128 BYTE)"
+  description: "Nguồn dữ liệu giá: HOSE/HNX/UPCOM/MANUAL"
+  key: null
+  fk_note: null
+- name: IsFake
+  data_type: "NUMBER(1,0)"
+  description: "Cờ giá giả định (dùng cho tính toán khi không có giá thực): 1=Giả định, 0=Thực tế"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null

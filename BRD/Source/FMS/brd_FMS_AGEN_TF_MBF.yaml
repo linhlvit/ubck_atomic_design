@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: AGEN_TF_MBF
+brd_ref: BRD-SRC-FMS-AGEN_TF_MBF
+columns:
+- name: AGEN_ID
+  data_type: RAW(16)
+  description: "FK -> AGENCIES: Đại lý phân phối liên quan"
+  key: null
+  fk_note: "FK suy luận → AGENCIES.ID"
+- name: TMB_ID
+  data_type: RAW(16)
+  description: "FK -> MB_FUND: Thành viên quỹ đầu tư liên quan (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null

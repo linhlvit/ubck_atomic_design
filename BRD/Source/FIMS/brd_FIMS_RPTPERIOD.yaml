@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTPERIOD
+brd_ref: BRD-SRC-FIMS-RPTPERIOD
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: RptId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPTTEMP"
+- name: SfPdId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> kỳ báo cáo cha (kỳ tự thiết lập tham chiếu)"
+  key: FK
+  fk_note: "FK → K"
+- name: PeriodType
+  data_type: "NUMBER(18,2)"
+  description: "Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: LatestSendDate
+  data_type: "TIMESTAMP(7)"
+  description: "Ngày nộp muộn nhất trong tháng"
+  key: null
+  fk_note: null
+- name: RepeatTime
+  data_type: "NUMBER(10,0)"
+  description: "Số kỳ lặp lại (tần suất xuất hiện)"
+  key: null
+  fk_note: null
+- name: LatestSendWeek
+  data_type: "NUMBER(10,0)"
+  description: "Tuần nộp muộn nhất trong kỳ"
+  key: null
+  fk_note: null
+- name: DateStartCount
+  data_type: "TIMESTAMP(7)"
+  description: "Ngày bắt đầu đếm/tính kỳ báo cáo"
+  key: null
+  fk_note: null
+- name: IsWorkingDay
+  data_type: "NUMBER(1,0)"
+  description: "Cờ tính hạn nộp theo ngày làm việc: 1=Ngày LV, 0=Ngày lịch"
+  key: null
+  fk_note: null
+- name: SendInDay
+  data_type: "NUMBER(10,0)"
+  description: "Ngày trong tháng/kỳ là hạn nộp báo cáo"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: SendPublicInDay
+  data_type: "NUMBER(10,0)"
+  description: "Ngày công khai kết quả báo cáo sau kỳ đóng"
+  key: null
+  fk_note: null

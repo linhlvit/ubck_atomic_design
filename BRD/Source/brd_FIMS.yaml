@@ -1,238 +1,600 @@
-﻿source: FIMS
-description: "Hệ thống quản lý giám sát nhà đầu tư nước ngoài"
+schema_type: brd_source
+schema_version: '1.0'
+source: FIMS
+description: "Hệ thống quản lý giám sát và công bố thông tin thành viên thị trường (FIMS)"
 brd_entries:
-  # ─── FIMS_UID01 Quản trị phân hệ ─────────────────────────────────────────
+  # ─── FIMS.1 Quản trị phân hệ ─────────────────────────────────────────
 
   - brd_id: BRD-SRC-FIMS-USERS
     brd_name: "Design Atomic từ nguồn FIMS bảng USERS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách người dùng trên hệ thống"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — quản lý người dùng ứng dụng FIMS"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: USERS
       related_tables:
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: CERTFCATE
+          relation: "1-N — lưu danh sách chứng thư số"
+        - table: DEPARTMENT
+          relation: "FK cha — lưu danh sách danh mục phòng ban"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: ERRORLOG
+          relation: "1-N — Lưu lịch sử lỗi hệ thống"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: GROUPUSERS
+          relation: "1-N — lưu danh sách người dùng được phân vào nhóm người dùng"
+        - table: INFODISCREPRES
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: JOBTYPE
+          relation: "FK cha — Lưu danh sách chức vụ của người dùng trên hệ thống"
+        - table: NOTIFICATION
+          relation: "1-N — lưu danh sách thông báo"
+        - table: REFRESHTOKEN
+          relation: "1-N — lưu danh sách các phiên làm việc của người dùng"
+        - table: RPTPROCESS
+          relation: "1-N — lưu danh sách lịch sử xử lý báo cáo"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+        - table: SYSEMAIL
+          relation: "1-N — lưu danh sách trao đổi thông tin gửi qua mail"
+        - table: TRADINGREPRESENTATIVE
+          relation: "FK cha — Lưu danh sách đại diện giao dịch"
+        - table: UNIT
+          relation: "FK cha — lưu danh sách danh mục đơn vị"
         - table: USERSMENUS
-          relation: "Bảng con — quyền phân cho người dùng"
-        - table: GROUPS
-          relation: "FK — nhóm người dùng"
+          relation: "1-N — lưu danh sách quyền được phân cho người dùng"
+        - table: USERSMENUS_CLONE
+          relation: "1-N — lưu danh sách quyền người dùng (clone)"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-USERSMENUS
     brd_name: "Design Atomic từ nguồn FIMS bảng USERSMENUS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách quyền được phân cho người dùng"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — phân quyền người dùng"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: USERSMENUS
       related_tables:
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
         - table: USERS
-          relation: "FK — người dùng"
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-USERSMENUS_CLONE
+    brd_name: "Design Atomic từ nguồn FIMS bảng USERSMENUS_CLONE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách quyền người dùng (clone)"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: USERSMENUS_CLONE
+      related_tables:
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-USERRPTI
+    brd_name: "Design Atomic từ nguồn FIMS bảng USERRPTI"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách phân quyền sử dụng báo cáo đầu vào"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
+      table: USERRPTI
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-USERRPTO
     brd_name: "Design Atomic từ nguồn FIMS bảng USERRPTO"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách phân quyền sử dụng báo cáo đầu ra"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — phân quyền xem báo cáo đầu ra"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: USERRPTO
       related_tables:
-        - table: USERS
-          relation: "FK — người dùng"
+        - table: RPTTPOUT
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu ra"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-REFRESHTOKEN
     brd_name: "Design Atomic từ nguồn FIMS bảng REFRESHTOKEN"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách các phiên làm việc của người dùng"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — session management"
+      scope_reason: "Operational/system data — không thiết kế Atomic"
       table: REFRESHTOKEN
-      related_tables: []
+      related_tables:
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-GROUPS
     brd_name: "Design Atomic từ nguồn FIMS bảng GROUPS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Lưu danh sách nhóm người dùng"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — nhóm người dùng ứng dụng"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: GROUPS
       related_tables:
-        - table: GROUPUSERS
-          relation: "Bảng con — người dùng trong nhóm"
         - table: GROUPROLES
-          relation: "Bảng con — quyền phân cho nhóm"
+          relation: "1-N — lưu danh sách các quyền được phân cho nhóm người dùng"
+        - table: GROUPUSERS
+          relation: "1-N — lưu danh sách người dùng được phân vào nhóm người dùng"
+        - table: UNIT
+          relation: "FK cha — lưu danh sách danh mục đơn vị"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-GROUPUSERS
     brd_name: "Design Atomic từ nguồn FIMS bảng GROUPUSERS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách người dùng được phân vào nhóm người"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      table_meaning: "lưu danh sách người dùng được phân vào nhóm người dùng"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — junction nhóm-người dùng"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: GROUPUSERS
       related_tables:
         - table: GROUPS
-          relation: "FK — nhóm người dùng"
+          relation: "FK cha — Lưu danh sách nhóm người dùng"
         - table: USERS
-          relation: "FK — người dùng"
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-GROUPROLES
     brd_name: "Design Atomic từ nguồn FIMS bảng GROUPROLES"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách các quyền được phân cho nhóm người"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      table_meaning: "lưu danh sách các quyền được phân cho nhóm người dùng"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — phân quyền nhóm"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: GROUPROLES
       related_tables:
         - table: GROUPS
-          relation: "FK — nhóm người dùng"
+          relation: "FK cha — Lưu danh sách nhóm người dùng"
         - table: ROLES
-          relation: "FK — nhóm quyền chức năng"
+          relation: "FK cha — lưu danh sách nhóm quyền"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-ROLES
     brd_name: "Design Atomic từ nguồn FIMS bảng ROLES"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách nhóm quyền"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — nhóm quyền chức năng ứng dụng"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: ROLES
-      related_tables: []
+      related_tables:
+        - table: GROUPROLES
+          relation: "1-N — lưu danh sách các quyền được phân cho nhóm người dùng"
+        - table: ROLESMENUS
+          relation: "1-N — lưu danh sách quyền của nhóm quyền"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-ROLESMENUS
+    brd_name: "Design Atomic từ nguồn FIMS bảng ROLESMENUS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách quyền của nhóm quyền"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
+      table: ROLESMENUS
+      related_tables:
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
+        - table: ROLES
+          relation: "FK cha — lưu danh sách nhóm quyền"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-MENUS
     brd_name: "Design Atomic từ nguồn FIMS bảng MENUS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Lưu danh sách các quyền của hệ thống"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — danh sách menu/quyền giao diện"
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
       table: MENUS
-      related_tables: []
+      related_tables:
+        - table: MENUS_BU
+          relation: "1-N — Lưu danh sách menu theo đơn vị"
+        - table: MENU_CLONE
+          relation: "1-N — Lưu danh sách menu (clone)"
+        - table: ROLESMENUS
+          relation: "1-N — lưu danh sách quyền của nhóm quyền"
+        - table: SECURITIESTYPE
+          relation: "1-N — Lưu danh sách loại chứng khoán"
+        - table: SYSEMAIL
+          relation: "1-N — lưu danh sách trao đổi thông tin gửi qua mail"
+        - table: UNIT
+          relation: "1-N — lưu danh sách danh mục đơn vị"
+        - table: USERSMENUS
+          relation: "1-N — lưu danh sách quyền được phân cho người dùng"
+        - table: USERSMENUS_CLONE
+          relation: "1-N — lưu danh sách quyền người dùng (clone)"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-MENUS_BU
+    brd_name: "Design Atomic từ nguồn FIMS bảng MENUS_BU"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách menu theo đơn vị"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: MENUS_BU
+      related_tables:
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-MENU_CLONE
+    brd_name: "Design Atomic từ nguồn FIMS bảng MENU_CLONE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách menu (clone)"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: MENU_CLONE
+      related_tables:
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-MODULES
+    brd_name: "Design Atomic từ nguồn FIMS bảng MODULES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách module hệ thống"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: MODULES
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-PERMISSIONS
+    brd_name: "Design Atomic từ nguồn FIMS bảng PERMISSIONS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách phân quyền chi tiết"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: PERMISSIONS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-CERTFCATE
     brd_name: "Design Atomic từ nguồn FIMS bảng CERTFCATE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách chứng thư số"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — chứng thư số ứng dụng"
+      scope_reason: "Operational/system data — không thiết kế Atomic"
       table: CERTFCATE
-      related_tables: []
+      related_tables:
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-ERRORLOG
     brd_name: "Design Atomic từ nguồn FIMS bảng ERRORLOG"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Lưu lịch sử lỗi hệ thống"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — error log ứng dụng"
+      scope_reason: "Operational/system data — không thiết kế Atomic"
       table: ERRORLOG
-      related_tables: []
+      related_tables:
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ"
 
   - brd_id: BRD-SRC-FIMS-USERSESSIONS
     brd_name: "Design Atomic từ nguồn FIMS bảng USERSESSIONS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Lưu danh sách theo dõi tài khoản đang truy cập"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      functional_group: "FIMS.1 Quản trị phân hệ"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — session tracking"
+      scope_reason: "Operational/system data — không thiết kế Atomic"
       table: USERSESSIONS
-      related_tables: []
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-AUDIT_LOGS
+    brd_name: "Design Atomic từ nguồn FIMS bảng AUDIT_LOGS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu nhật ký kiểm toán hệ thống"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: AUDIT_LOGS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-USER_DATA_PERMISSION
+    brd_name: "Design Atomic từ nguồn FIMS bảng USER_DATA_PERMISSION"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu phân quyền dữ liệu của người dùng"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: USER_DATA_PERMISSION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-API_MAPPINGS
+    brd_name: "Design Atomic từ nguồn FIMS bảng API_MAPPINGS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu cấu hình ánh xạ API"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: API_MAPPINGS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ"
+
+  - brd_id: BRD-SRC-FIMS-SHEDLOCK
+    brd_name: "Design Atomic từ nguồn FIMS bảng SHEDLOCK"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng khóa lịch tác vụ (distributed lock)"
+      functional_group: "FIMS.1 Quản trị phân hệ"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — không thiết kế Atomic"
+      table: SHEDLOCK
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── FIMS.2 Biểu mẫu báo cáo đầu vào ─────────────────────────────────
 
   - brd_id: BRD-SRC-FIMS-RPTTEMP
     brd_name: "Design Atomic từ nguồn FIMS bảng RPTTEMP"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách biểu mẫu báo cáo đầu vào."
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
-      scope_status: in_scope
-      scope_reason: null
+      table_meaning: "lưu danh sách biểu mẫu báo cáo đầu vào"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: RPTTEMP
       related_tables:
-        - table: SHEET
-          relation: "Bảng con — danh sách sheet trong biểu mẫu"
-        - table: RPTPERIOD
-          relation: "FK — kỳ báo cáo"
+        - table: REPORTTYPE
+          relation: "FK cha — Lưu danh sách danh mục loại báo cáo"
         - table: RPTHTORY
-          relation: "Bảng con — lịch sử thay đổi biểu mẫu (out of scope)"
+          relation: "1-N — lưu lịch sử thay đổi biểu mẫu báo cáo đầu vào"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTPERIOD
+          relation: "1-N — lưu danh sách kỳ của báo cáo đầu vào"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: SELFSETPD
+          relation: "1-N — Lưu danh sách cấu hình kỳ báo cáo do cán bộ UB tự thiết lập"
+        - table: SHEET
+          relation: "1-N — lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
@@ -244,18 +606,22 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-SHEET
     brd_name: "Design Atomic từ nguồn FIMS bảng SHEET"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào"
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
-      scope_status: in_scope
-      scope_reason: null
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: SHEET
       related_tables:
+        - table: RPTPDSHT
+          relation: "1-N — bảng trung gian giữa bảng SHEET và bảng RPTPERIOD"
         - table: RPTTEMP
-          relation: "Bảng cha — biểu mẫu báo cáo"
-      notes: "CV scheme: FIMS_REPORT_SHEET"
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu vào"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -266,20 +632,26 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-RPTPERIOD
     brd_name: "Design Atomic từ nguồn FIMS bảng RPTPERIOD"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách kỳ của báo cáo đầu vào."
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
-      scope_status: in_scope
-      scope_reason: null
+      table_meaning: "lưu danh sách kỳ của báo cáo đầu vào"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: RPTPERIOD
       related_tables:
-        - table: RPTTEMP
-          relation: "FK — biểu mẫu áp dụng cho kỳ này"
+        - table: K
+          relation: "FK cha — K"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
         - table: RPTPDSHT
-          relation: "Junction — SHEET–RPTPERIOD (out of scope)"
-      notes: "Shared entity Reporting Period — bổ sung source từ FIMS"
+          relation: "1-N — bảng trung gian giữa bảng SHEET và bảng RPTPERIOD"
+        - table: RPTTEMP
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu vào"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -290,318 +662,486 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-RPTPDSHT
     brd_name: "Design Atomic từ nguồn FIMS bảng RPTPDSHT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "bảng trung gian giữa bảng SHEET và bảng RPTPERIOD"
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — junction nội bộ biểu mẫu"
+      scope_reason: "Chờ thiết kế LLD"
       table: RPTPDSHT
       related_tables:
-        - table: SHEET
-          relation: "FK — sheet"
         - table: RPTPERIOD
-          relation: "FK — kỳ báo cáo"
+          relation: "FK cha — lưu danh sách kỳ của báo cáo đầu vào"
+        - table: SHEET
+          relation: "FK cha — lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-RPTHTORY
     brd_name: "Design Atomic từ nguồn FIMS bảng RPTHTORY"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu lịch sử thay đổi biểu mẫu báo cáo đầu vào."
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
+      table_meaning: "lưu lịch sử thay đổi biểu mẫu báo cáo đầu vào"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
-      scope_reason: "Snapshot nguồn — lịch sử thay đổi biểu mẫu, xử lý tại ETL"
+      scope_reason: "Chờ thiết kế LLD"
       table: RPTHTORY
       related_tables:
         - table: RPTTEMP
-          relation: "FK — biểu mẫu báo cáo"
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu vào"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-RPTTPOUT
-    brd_name: "Design Atomic từ nguồn FIMS bảng RPTTPOUT"
+  - brd_id: BRD-SRC-FIMS-REPORT_TEMPLATES
+    brd_name: "Design Atomic từ nguồn FIMS bảng REPORT_TEMPLATES"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách biểu mẫu báo cáo đầu ra"
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra"
+      table_meaning: "Lưu danh sách mẫu báo cáo"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
-      scope_reason: "Báo cáo đầu ra hệ thống — cấu hình nội bộ UBCKNN"
-      table: RPTTPOUT
-      related_tables:
-        - table: SHEETOUT
-          relation: "Bảng con — sheet báo cáo đầu ra"
+      scope_reason: "Chờ thiết kế LLD"
+      table: REPORT_TEMPLATES
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ"
 
-  - brd_id: BRD-SRC-FIMS-SHEETOUT
-    brd_name: "Design Atomic từ nguồn FIMS bảng SHEETOUT"
+  - brd_id: BRD-SRC-FIMS-FORM_SCHEMAS
+    brd_name: "Design Atomic từ nguồn FIMS bảng FORM_SCHEMAS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách sheet của báo cáo đầu ra."
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra"
+      table_meaning: "Lưu danh sách schema biểu mẫu động"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
-      scope_reason: "Báo cáo đầu ra hệ thống — cấu hình nội bộ UBCKNN"
-      table: SHEETOUT
-      related_tables:
-        - table: RPTTPOUT
-          relation: "FK — biểu mẫu đầu ra"
+      scope_reason: "Chờ thiết kế LLD"
+      table: FORM_SCHEMAS
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-TPOUTHTORY
-    brd_name: "Design Atomic từ nguồn FIMS bảng TPOUTHTORY"
+  - brd_id: BRD-SRC-FIMS-FORM_SCHEMA_VERSIONS
+    brd_name: "Design Atomic từ nguồn FIMS bảng FORM_SCHEMA_VERSIONS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách lịch sử thay đổi biểu mẫu báo cáo"
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu ra"
+      table_meaning: "Lưu lịch sử phiên bản schema biểu mẫu động"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
-      scope_reason: "Snapshot nguồn — lịch sử thay đổi biểu mẫu đầu ra"
-      table: TPOUTHTORY
-      related_tables:
-        - table: RPTTPOUT
-          relation: "FK — biểu mẫu đầu ra"
+      scope_reason: "Chờ thiết kế LLD"
+      table: FORM_SCHEMA_VERSIONS
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ"
+
+  - brd_id: BRD-SRC-FIMS-RPT_FIELD_CATALOG
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPT_FIELD_CATALOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh mục trường báo cáo"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPT_FIELD_CATALOG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-RPT_FIELD_CATALOG_USAGE
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPT_FIELD_CATALOG_USAGE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu thông tin sử dụng trường báo cáo"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPT_FIELD_CATALOG_USAGE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-RPT_VALUE_CATALOG
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPT_VALUE_CATALOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh mục giá trị báo cáo"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPT_VALUE_CATALOG
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-SELFSETPD
     brd_name: "Design Atomic từ nguồn FIMS bảng SELFSETPD"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách cấu hình kỳ báo cáo do cán bộ UB tự"
-      functional_group: "FIMS_UID01 Quản lý biểu mẫu báo cáo đầu vào"
+      table_meaning: "Lưu danh sách cấu hình kỳ báo cáo do cán bộ UB tự thiết lập"
+      functional_group: "FIMS.2 Biểu mẫu báo cáo đầu vào"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — cấu hình kỳ báo cáo bổ sung"
+      scope_reason: "Chờ thiết kế LLD"
       table: SELFSETPD
-      related_tables: []
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-FIMS-CALENDAR
-    brd_name: "Design Atomic từ nguồn FIMS bảng CALENDAR"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách lịch hệ thống"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — lịch hệ thống FIMS"
-      table: CALENDAR
       related_tables:
-        - table: CALENDARMANAGERMENT
-          relation: "Bảng con — thay đổi lịch hệ thống"
+        - table: BC_SU_VU
+          relation: "FK cha — BC_SU_VU"
+        - table: RPTTEMP
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu vào"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-CALENDARMANAGERMENT
-    brd_name: "Design Atomic từ nguồn FIMS bảng CALENDARMANAGERMENT"
+  # ─── FIMS.3 Biểu mẫu báo cáo đầu ra ──────────────────────────────────
+
+  - brd_id: BRD-SRC-FIMS-RPTTPOUT
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPTTPOUT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thay đổi lịch hệ thống để phục vụ"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      table_meaning: "lưu danh sách biểu mẫu báo cáo đầu ra"
+      functional_group: "FIMS.3 Biểu mẫu báo cáo đầu ra"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — log thay đổi lịch hệ thống"
-      table: CALENDARMANAGERMENT
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPTTPOUT
       related_tables:
-        - table: CALENDAR
-          relation: "FK — lịch hệ thống"
+        - table: RPTOUTFILESAVE
+          relation: "1-N — Lưu danh sách file thống kê đã được gen tự động"
+        - table: RPTOUTMANAGEMENT
+          relation: "1-N — Lưu danh sách cấu hình gen file thống kê tự động"
+        - table: SHEETOUT
+          relation: "FK cha — lưu danh sách sheet của báo cáo đầu ra"
+        - table: TPOUTHTORY
+          relation: "1-N — lưu danh sách lịch sử thay đổi biểu mẫu báo cáo đầu ra"
+        - table: USERRPTO
+          relation: "1-N — lưu danh sách phân quyền sử dụng báo cáo đầu ra"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-SYSVAR
-    brd_name: "Design Atomic từ nguồn FIMS bảng SYSVAR"
+  - brd_id: BRD-SRC-FIMS-SHEETOUT
+    brd_name: "Design Atomic từ nguồn FIMS bảng SHEETOUT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu danh sách các tham số hệ thống"
-      functional_group: "FIMS_UID01 Quản trị phân hệ"
+      table_meaning: "lưu danh sách sheet của báo cáo đầu ra"
+      functional_group: "FIMS.3 Biểu mẫu báo cáo đầu ra"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — tham số cấu hình ứng dụng"
-      table: SYSVAR
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: SHEETOUT
+      related_tables:
+        - table: RPTTPOUT
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu ra"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  # ─── FIMS_UID01 Danh mục dùng riêng ──────────────────────────────────────
+  - brd_id: BRD-SRC-FIMS-TPOUTHTORY
+    brd_name: "Design Atomic từ nguồn FIMS bảng TPOUTHTORY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách lịch sử thay đổi biểu mẫu báo cáo đầu ra"
+      functional_group: "FIMS.3 Biểu mẫu báo cáo đầu ra"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TPOUTHTORY
+      related_tables:
+        - table: RPTTPOUT
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu ra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ"
+
+  - brd_id: BRD-SRC-FIMS-RPTOUTMANAGEMENT
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPTOUTMANAGEMENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách cấu hình gen file thống kê tự động"
+      functional_group: "FIMS.3 Biểu mẫu báo cáo đầu ra"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPTOUTMANAGEMENT
+      related_tables:
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTOUTFILESAVE
+          relation: "1-N — Lưu danh sách file thống kê đã được gen tự động"
+        - table: RPTTPOUT
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu ra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-RPTOUTFILESAVE
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPTOUTFILESAVE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách file thống kê đã được gen tự động"
+      functional_group: "FIMS.3 Biểu mẫu báo cáo đầu ra"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPTOUTFILESAVE
+      related_tables:
+        - table: RPTOUTMANAGEMENT
+          relation: "FK cha — Lưu danh sách cấu hình gen file thống kê tự động"
+        - table: RPTTPOUT
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu ra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── FIMS.4 Hệ thống động (Dynamic) ──────────────────────────────────
+
+  - brd_id: BRD-SRC-FIMS-DYNAMICCOLUMNS
+    brd_name: "Design Atomic từ nguồn FIMS bảng DYNAMICCOLUMNS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách cột động"
+      functional_group: "FIMS.4 Hệ thống động (Dynamic)"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
+      table: DYNAMICCOLUMNS
+      related_tables:
+        - table: DYNAMICTABLES
+          relation: "FK cha — Lưu danh sách bảng động"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "createdat >= {{etl_date}} AND createdat < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột CREATEDAT — bảng chỉ append, không cập nhật dòng cũ"
+
+  - brd_id: BRD-SRC-FIMS-DYNAMICCONNECTIONS
+    brd_name: "Design Atomic từ nguồn FIMS bảng DYNAMICCONNECTIONS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách kết nối động"
+      functional_group: "FIMS.4 Hệ thống động (Dynamic)"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
+      table: DYNAMICCONNECTIONS
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-DYNAMICTABLES
+    brd_name: "Design Atomic từ nguồn FIMS bảng DYNAMICTABLES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách bảng động"
+      functional_group: "FIMS.4 Hệ thống động (Dynamic)"
+      scope_status: out_of_scope
+      scope_reason: "Operational/system data — hạ tầng IT ứng dụng"
+      table: DYNAMICTABLES
+      related_tables:
+        - table: DYNAMICCOLUMNS
+          relation: "1-N — Lưu danh sách cột động"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── FIMS.5 Danh mục dùng chung ──────────────────────────────────────
+
+  - brd_id: BRD-SRC-FIMS-LOCATION
+    brd_name: "Design Atomic từ nguồn FIMS bảng LOCATION"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách tỉnh / thành phố"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: LOCATION
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-NATIONAL
+    brd_name: "Design Atomic từ nguồn FIMS bảng NATIONAL"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách quốc tịch / quốc gia"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: NATIONAL
+      related_tables:
+        - table: BANKMONI
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: DEPOSITORYCENTER
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INFODISCREPRES
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: INVESTOR
+          relation: "1-N — lưu danh sách danh mục nhà đầu tư"
+        - table: INVESTORHIS
+          relation: "1-N — Lưu danh sách lịch sử của nhà đầu tư"
+        - table: RPTOUTMANAGEMENT
+          relation: "1-N — Lưu danh sách cấu hình gen file thống kê tự động"
+        - table: SECURITIESCOMPANY
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: TRADINGREPRESENTATIVE
+          relation: "1-N — Lưu danh sách đại diện giao dịch"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-STATUS
     brd_name: "Design Atomic từ nguồn FIMS bảng STATUS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách danh mục tình trạng hoạt động"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: STATUS
-      related_tables: []
-      notes: "CV scheme: LIFE_CYCLE_STATUS"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-INVESTORTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng INVESTORTYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "lưu danh sách danh mục loại nhà đầu tư"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: INVESTORTYPE
-      related_tables: []
-      notes: "CV scheme: FIMS_INVESTOR_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-REPORTTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng REPORTTYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách danh mục loại báo cáo."
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: REPORTTYPE
-      related_tables: []
-      notes: "CV scheme: FIMS_REPORT_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-SECURITIESTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIESTYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách loại chứng khoán"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECURITIESTYPE
-      related_tables: []
-      notes: "CV scheme: FIMS_SECURITIES_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-SECURITIES
-    brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIES"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách danh mục chứng khoán."
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECURITIES
-      related_tables: []
-      notes: "CV scheme: FIMS_SECURITIES_CODE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-COMPANYTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng COMPANYTYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách danh mục loại hình doanh nghiệp"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: COMPANYTYPE
-      related_tables: []
-      notes: "CV scheme: FIMS_COMPANY_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-BUSINESS
-    brd_name: "Design Atomic từ nguồn FIMS bảng BUSINESS"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "lưu danh sách danh mục nghiệp vụ kinh doanh."
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: BUSINESS
-      related_tables: []
-      notes: "CV scheme: FIMS_BUSINESS_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-STOCKHOLDERTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng STOCKHOLDERTYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách danh mục loại cổ đông."
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: STOCKHOLDERTYPE
-      related_tables: []
-      notes: "CV scheme: FIMS_STOCKHOLDER_TYPE"
+      related_tables:
+        - table: BANKMONI
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: DEPOSITORYCENTER
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INFODISCREPRES
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: INVESTOR
+          relation: "1-N — lưu danh sách danh mục nhà đầu tư"
+        - table: INVESTORHIS
+          relation: "1-N — Lưu danh sách lịch sử của nhà đầu tư"
+        - table: SECURITIESCOMPANY
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "1-N — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: TRADINGREPRESENTATIVE
+          relation: "1-N — Lưu danh sách đại diện giao dịch"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -612,16 +1152,158 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-JOBTYPE
     brd_name: "Design Atomic từ nguồn FIMS bảng JOBTYPE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Lưu danh sách chức vụ của người dùng trên hệ thống"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: JOBTYPE
-      related_tables: []
-      notes: "CV scheme: FIMS_JOB_TYPE"
+      related_tables:
+        - table: TLPROJOB
+          relation: "1-N — Lưu danh sách chức vụ của nhân sự"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-SECURITIESTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIESTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách loại chứng khoán"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: SECURITIESTYPE
+      related_tables:
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
+        - table: SECURITIES
+          relation: "1-N — Lưu danh sách danh mục chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-SECURITIES
+    brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách danh mục chứng khoán"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: SECURITIES
+      related_tables:
+        - table: SECURITIESTYPE
+          relation: "FK cha — Lưu danh sách loại chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-STOCKHOLDERTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng STOCKHOLDERTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách danh mục loại cổ đông"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: STOCKHOLDERTYPE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-COMPANYTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng COMPANYTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách danh mục loại hình doanh nghiệp"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: COMPANYTYPE
+      related_tables:
+        - table: INVESTOR
+          relation: "1-N — lưu danh sách danh mục nhà đầu tư"
+        - table: INVESTORHIS
+          relation: "1-N — Lưu danh sách lịch sử của nhà đầu tư"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-BUSINESS
+    brd_name: "Design Atomic từ nguồn FIMS bảng BUSINESS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách danh mục nghiệp vụ kinh doanh"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: BUSINESS
+      related_tables:
+        - table: BRANCHSBUSINES
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của CN công ty QLQ NN"
+        - table: FUNDCOMBUSINES
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của công ty quản lý quỹ"
+        - table: INDIREBUSINESS
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của người hành nghề"
+        - table: SECCOMBUSINES
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của công ty chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-CURRENCY
+    brd_name: "Design Atomic từ nguồn FIMS bảng CURRENCY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách danh mục tiền tệ"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: CURRENCY
+      related_tables: null
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -632,16 +1314,18 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-DEGREE
     brd_name: "Design Atomic từ nguồn FIMS bảng DEGREE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách danh mục trình độ"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: DEGREE
-      related_tables: []
-      notes: "CV scheme: FIMS_DEGREE"
+      related_tables:
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -649,19 +1333,119 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-ANNOUNCETYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng ANNOUNCETYPE"
+  - brd_id: BRD-SRC-FIMS-UNIT
+    brd_name: "Design Atomic từ nguồn FIMS bảng UNIT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách loại CBTT"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: ANNOUNCETYPE
-      related_tables: []
-      notes: "CV scheme: FIMS_ANNOUNCE_TYPE"
+      table_meaning: "lưu danh sách danh mục đơn vị"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: UNIT
+      related_tables:
+        - table: DEPARTMENT
+          relation: "1-N — lưu danh sách danh mục phòng ban"
+        - table: GROUPS
+          relation: "1-N — Lưu danh sách nhóm người dùng"
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-DEPARTMENT
+    brd_name: "Design Atomic từ nguồn FIMS bảng DEPARTMENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách danh mục phòng ban"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: DEPARTMENT
+      related_tables:
+        - table: UNIT
+          relation: "FK cha — lưu danh sách danh mục đơn vị"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-VIOLATIONTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng VIOLATIONTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách danh mục loại vi phạm"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: VIOLATIONTYPE
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-REPORTTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng REPORTTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách danh mục loại báo cáo"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: REPORTTYPE
+      related_tables:
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTTEMP
+          relation: "1-N — lưu danh sách biểu mẫu báo cáo đầu vào"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-INVESTORTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng INVESTORTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách danh mục loại nhà đầu tư"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: INVESTORTYPE
+      related_tables:
+        - table: INVESTOR
+          relation: "1-N — lưu danh sách danh mục nhà đầu tư"
+        - table: INVESTORHIS
+          relation: "1-N — Lưu danh sách lịch sử của nhà đầu tư"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -672,16 +1456,20 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-RELATEDPROPERTIES
     brd_name: "Design Atomic từ nguồn FIMS bảng RELATEDPROPERTIES"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách các danh muc hình thức liên"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
+      table_meaning: "Lưu danh sách các hình thức liên quan"
+      functional_group: "FIMS.5 Danh mục dùng chung"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: RELATEDPROPERTIES
-      related_tables: []
-      notes: "CV scheme: FIMS_RELATED_PROPERTIES — hình thức liên quan ủy quyền CBTT"
+      related_tables:
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -692,32 +1480,20 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-RELATIONSHIP
     brd_name: "Design Atomic từ nguồn FIMS bảng RELATIONSHIP"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng quan hệ chờ thiết kế"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
+      table_meaning: "Lưu danh sách quan hệ"
+      functional_group: "FIMS.5 Danh mục dùng chung"
       scope_status: out_of_scope
-      scope_reason: "Chờ thiết kế — chưa có cấu trúc cột rõ ràng"
+      scope_reason: "Chờ thiết kế LLD"
       table: RELATIONSHIP
-      related_tables: []
+      related_tables:
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
       notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-FIMS-NATIONAL
-    brd_name: "Design Atomic từ nguồn FIMS bảng NATIONAL"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "lưu danh sách quốc tịch/ quốc gia"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
-      scope_status: in_scope
-      scope_reason: null
-      table: NATIONAL
-      related_tables: []
-      notes: "Shared entity Geographic Area — bổ sung source; dùng trong tất cả đối tượng UID03 và NĐT NN UID04"
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -725,517 +1501,159 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-LOCATION
-    brd_name: "Design Atomic từ nguồn FIMS bảng LOCATION"
+  - brd_id: BRD-SRC-FIMS-ANNOUNCETYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng ANNOUNCETYPE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách tỉnh/ thành phố"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
+      table_meaning: "Lưu danh sách loại CBTT"
+      functional_group: "FIMS.5 Danh mục dùng chung"
       scope_status: out_of_scope
-      scope_reason: "Chờ thiết kế — reference data địa giới hành chính, sẽ thu thập từ ECAT"
-      table: LOCATION
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: ANNOUNCETYPE
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-CURRENCY
-    brd_name: "Design Atomic từ nguồn FIMS bảng CURRENCY"
+  - brd_id: BRD-SRC-FIMS-CALENDAR
+    brd_name: "Design Atomic từ nguồn FIMS bảng CALENDAR"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách danh mục tiền tệ."
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
+      table_meaning: "Lưu danh sách lịch hệ thống"
+      functional_group: "FIMS.5 Danh mục dùng chung"
       scope_status: out_of_scope
-      scope_reason: "Chờ thiết kế — danh mục tiền tệ thu thập từ ECAT (source authoritative)"
-      table: CURRENCY
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: CALENDAR
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-VIOLATIONTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng VIOLATIONTYPE"
+  - brd_id: BRD-SRC-FIMS-CALENDARMANAGERMENT
+    brd_name: "Design Atomic từ nguồn FIMS bảng CALENDARMANAGERMENT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách danh mục loại vi phạm"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
+      table_meaning: "Lưu các thay đổi lịch hệ thống"
+      functional_group: "FIMS.5 Danh mục dùng chung"
       scope_status: out_of_scope
-      scope_reason: "Chờ thiết kế — danh mục loại vi phạm chưa xác định scope"
-      table: VIOLATIONTYPE
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: CALENDARMANAGERMENT
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-UNIT
-    brd_name: "Design Atomic từ nguồn FIMS bảng UNIT"
+  - brd_id: BRD-SRC-FIMS-SYSVAR
+    brd_name: "Design Atomic từ nguồn FIMS bảng SYSVAR"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách danh mục đơn vị"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
+      table_meaning: "Bảng lưu danh sách các tham số hệ thống"
+      functional_group: "FIMS.5 Danh mục dùng chung"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — đơn vị đo lường nội bộ ứng dụng"
-      table: UNIT
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: SYSVAR
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-DEPARTMENT
-    brd_name: "Design Atomic từ nguồn FIMS bảng DEPARTMENT"
+  - brd_id: BRD-SRC-FIMS-CLOSING_PRICE_SECURITIES
+    brd_name: "Design Atomic từ nguồn FIMS bảng CLOSING_PRICE_SECURITIES"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách danh mục phòng ban"
-      functional_group: "FIMS_UID01 Quản lý danh mục dùng riêng"
+      table_meaning: "Lưu giá đóng cửa chứng khoán"
+      functional_group: "FIMS.5 Danh mục dùng chung"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — danh mục phòng ban nội bộ FIMS"
-      table: DEPARTMENT
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: CLOSING_PRICE_SECURITIES
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
-
-  # ─── FIMS_UID02 Quản lý tích hợp ─────────────────────────────────────────
-
-  - brd_id: BRD-SRC-FIMS-SYSTEMINTEGRATIONCONFIG
-    brd_name: "Design Atomic từ nguồn FIMS bảng SYSTEMINTEGRATIONCONFIG"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách cấu hình kết nối hệ"
-      functional_group: "FIMS_UID02 Quản lý tích hợp"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — cấu hình kết nối API"
-      table: SYSTEMINTEGRATIONCONFIG
-      related_tables: []
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-FIMS-SYSTEMINTEGRATIONDATA
-    brd_name: "Design Atomic từ nguồn FIMS bảng SYSTEMINTEGRATIONDATA"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu dữ liệu kết nối MSS"
-      functional_group: "FIMS_UID02 Quản lý tích hợp"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — dữ liệu tích hợp MSS nội bộ"
-      table: SYSTEMINTEGRATIONDATA
-      related_tables: []
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  # ─── FIMS_UID03 Đối tượng gửi báo cáo ────────────────────────────────────
-
-  - brd_id: BRD-SRC-FIMS-STOCKEXCHANGE
-    brd_name: "Design Atomic từ nguồn FIMS bảng STOCKEXCHANGE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Sở giao"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: STOCKEXCHANGE
-      related_tables:
-        - table: NATIONAL
-          relation: "FK — quốc gia của Sở GDCK"
-      notes: "Atomic entity: Stock Exchange — đồng bộ từ danh mục dùng chung"
-      data_volume_hint: null
-      refresh_frequency: null
       ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
+        data_change_mode: Append
+        filter_logic: "datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ"
 
-  - brd_id: BRD-SRC-FIMS-DEPOSITORYCENTER
-    brd_name: "Design Atomic từ nguồn FIMS bảng DEPOSITORYCENTER"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Trung"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: DEPOSITORYCENTER
-      related_tables:
-        - table: NATIONAL
-          relation: "FK — quốc gia của VSDC"
-      notes: "Atomic entity: Depository Center (VSDC) — tiếp nhận dữ liệu NĐT NN từ VSDC qua LGSP"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-FUNDCOMPANY
-    brd_name: "Design Atomic từ nguồn FIMS bảng FUNDCOMPANY"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Công ty"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: FUNDCOMPANY
-      related_tables:
-        - table: FUNDCOMBUSINES
-          relation: "Bảng con — NVKD của CTQLQ (denormalize)"
-        - table: FUNDCOMTYPE
-          relation: "Bảng con — loại hình DN của CTQLQ (denormalize)"
-        - table: NATIONAL
-          relation: "FK — quốc tịch/quốc gia"
-      notes: "Shared entity Fund Management Company — bổ sung source từ FIMS (đồng bộ từ FMS)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-FUNDCOMBUSINES
-    brd_name: "Design Atomic từ nguồn FIMS bảng FUNDCOMBUSINES"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của công ty"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: FUNDCOMBUSINES
-      related_tables:
-        - table: FUNDCOMPANY
-          relation: "FK — công ty QLQ"
-      notes: "Denormalize vào Fund Management Company entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-FUNDCOMTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng FUNDCOMTYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách loại hình công ty của công ty QLQ"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: FUNDCOMTYPE
-      related_tables:
-        - table: FUNDCOMPANY
-          relation: "FK — công ty QLQ"
-      notes: "Denormalize vào Fund Management Company entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-SECURITIESCOMPANY
-    brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIESCOMPANY"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Công"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECURITIESCOMPANY
-      related_tables:
-        - table: SECCOMBUSINES
-          relation: "Bảng con — NVKD của CTCK (denormalize)"
-        - table: SECCOMTYPE
-          relation: "Bảng con — loại hình DN của CTCK (denormalize)"
-        - table: NATIONAL
-          relation: "FK — quốc tịch/quốc gia"
-      notes: "Atomic entity: Securities Company — đồng bộ từ phân hệ SCMS"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-SECCOMBUSINES
-    brd_name: "Design Atomic từ nguồn FIMS bảng SECCOMBUSINES"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của công ty"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECCOMBUSINES
-      related_tables:
-        - table: SECURITIESCOMPANY
-          relation: "FK — công ty chứng khoán"
-      notes: "Denormalize vào Securities Company entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-SECCOMTYPE
-    brd_name: "Design Atomic từ nguồn FIMS bảng SECCOMTYPE"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "lưu danh sách loại hình doanh nghiệp của công ty"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: SECCOMTYPE
-      related_tables:
-        - table: SECURITIESCOMPANY
-          relation: "FK — công ty chứng khoán"
-      notes: "Denormalize vào Securities Company entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-BANKMONI
-    brd_name: "Design Atomic từ nguồn FIMS bảng BANKMONI"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: BANKMONI
-      related_tables:
-        - table: NATIONAL
-          relation: "FK — quốc tịch/quốc gia"
-      notes: "Shared entity Custodian Bank — bổ sung source từ FIMS (đồng bộ từ FMS)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-BRANCHS
-    brd_name: "Design Atomic từ nguồn FIMS bảng BRANCHS"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: BRANCHS
-      related_tables:
-        - table: BRANCHSBUSINES
-          relation: "Bảng con — NVKD của CN (denormalize)"
-        - table: NATIONAL
-          relation: "FK — quốc tịch/quốc gia"
-        - table: FUNDCOMPANY
-          relation: "Liên kết logic — CN thuộc CTQLQ NN này"
-      notes: "Atomic entity: Fund Management Company Organization Unit — CN CTQLQ nước ngoài tại VN"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-BRANCHSBUSINES
-    brd_name: "Design Atomic từ nguồn FIMS bảng BRANCHSBUSINES"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của CN công"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: BRANCHSBUSINES
-      related_tables:
-        - table: BRANCHS
-          relation: "FK — chi nhánh CTQLQ NN"
-      notes: "Denormalize vào Fund Mgmt Co. Organization Unit entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-INFODISCREPRES
-    brd_name: "Design Atomic từ nguồn FIMS bảng INFODISCREPRES"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là người"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: INFODISCREPRES
-      related_tables:
-        - table: INDIREBUSINESS
-          relation: "Bảng con — NVKD của đại diện CBTT (denormalize)"
-        - table: TLPROFILES
-          relation: "Bảng con — nhân sự đại diện CBTT"
-        - table: NATIONAL
-          relation: "FK — quốc tịch/quốc gia"
-      notes: "Atomic entity: Disclosure Representative — người đại diện CBTT cho NĐT NN"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-INDIREBUSINESS
-    brd_name: "Design Atomic từ nguồn FIMS bảng INDIREBUSINESS"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của người"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: INDIREBUSINESS
-      related_tables:
-        - table: INFODISCREPRES
-          relation: "FK — người đại diện CBTT"
-      notes: "Denormalize vào Disclosure Representative entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-TLPROFILES
-    brd_name: "Design Atomic từ nguồn FIMS bảng TLPROFILES"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "lưu danh sách nhân sự của người đại diện CBTT."
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: TLPROFILES
-      related_tables:
-        - table: INFODISCREPRES
-          relation: "FK — người đại diện CBTT"
-        - table: TLPROJOB
-          relation: "Bảng con — chức vụ nhân sự (denormalize)"
-        - table: TLPROSTOCKH
-          relation: "Bảng con — loại cổ đông nhân sự (denormalize)"
-      notes: "Atomic entity: Disclosure Representative Key Person — nhân sự của đại diện CBTT"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-TLPROJOB
-    brd_name: "Design Atomic từ nguồn FIMS bảng TLPROJOB"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách chức vụ của nhân sự"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: TLPROJOB
-      related_tables:
-        - table: TLPROFILES
-          relation: "FK — nhân sự đại diện CBTT"
-      notes: "Denormalize vào Disclosure Rep. Key Person entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-FIMS-TLPROSTOCKH
-    brd_name: "Design Atomic từ nguồn FIMS bảng TLPROSTOCKH"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "lưu danh sách loại cổ đông của nhân sự"
-      functional_group: "FIMS_UID03 Đối tượng gửi báo cáo"
-      scope_status: in_scope
-      scope_reason: null
-      table: TLPROSTOCKH
-      related_tables:
-        - table: TLPROFILES
-          relation: "FK — nhân sự đại diện CBTT"
-      notes: "Denormalize vào Disclosure Rep. Key Person entity"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # ─── FIMS_UID04 Nhà đầu tư nước ngoài ────────────────────────────────────
+  # ─── FIMS.6 Nhà đầu tư nước ngoài ────────────────────────────────────
 
   - brd_id: BRD-SRC-FIMS-INVESTOR
     brd_name: "Design Atomic từ nguồn FIMS bảng INVESTOR"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách danh mục nhà đầu tư"
-      functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
-      scope_status: in_scope
-      scope_reason: null
+      functional_group: "FIMS.6 Nhà đầu tư nước ngoài"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: INVESTOR
       related_tables:
-        - table: INVESTORHIS
-          relation: "Bảng con — lịch sử thay đổi NĐT (out of scope)"
-        - table: SECURITIESACCOUNT
-          relation: "Bảng con — tài khoản giao dịch CK"
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: ANNOUNCEINVES
+          relation: "1-N — lưu danh sách NĐT NN ủy quyền CBTT"
+        - table: ANNOUNCEINVESHIS
+          relation: "1-N — Lưu lịch sử danh sách NĐT NN ủy quyền CBTT"
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
         - table: CATEGORIESSTOCK
-          relation: "Bảng con — danh mục CK sở hữu"
+          relation: "1-N — Lưu danh sách danh mục chứng khoán của NĐT NN"
+        - table: CATEGORIESSTOCKHIS
+          relation: "1-N — Lưu danh sách lịch sử sở hữu chứng khoán của NĐT NN"
+        - table: COMPANYTYPE
+          relation: "FK cha — Lưu danh sách danh mục loại hình doanh nghiệp"
+        - table: INVESTORTYPE
+          relation: "FK cha — lưu danh sách danh mục loại nhà đầu tư"
         - table: NATIONAL
-          relation: "FK — quốc tịch"
-      notes: "Atomic entity: Foreign Investor — phân biệt cá nhân (ObjectType=1) và tổ chức (ObjectType=2)"
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: SECURITIESACCOUNT
+          relation: "1-N — Lưu danh sách tài khoản giao dịch chứng khoán"
+        - table: SECURITIESACCOUNTHIS
+          relation: "1-N — Lưu danh sách lịch sử tài khoản chứng khoán"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TRADINGAUTHORIZATION
+          relation: "1-N — Lưu danh sách ủy quyền giao dịch"
+        - table: TRADINGAUTHORIZATIONINVES
+          relation: "1-N — Lưu danh sách NĐT NN trong ủy quyền giao dịch"
+        - table: TRADINGAUTHORIZATIONINVESHIS
+          relation: "1-N — Lưu lịch sử NĐT NN trong ủy quyền giao dịch"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1246,38 +1664,52 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-INVESTORHIS
     brd_name: "Design Atomic từ nguồn FIMS bảng INVESTORHIS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Lưu danh sách lịch sử của nhà đầu tư"
-      functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
+      functional_group: "FIMS.6 Nhà đầu tư nước ngoài"
       scope_status: out_of_scope
-      scope_reason: "Snapshot nguồn — SCD2 lịch sử NĐT, xử lý tại ETL"
+      scope_reason: "Chờ thiết kế LLD"
       table: INVESTORHIS
       related_tables:
-        - table: INVESTOR
-          relation: "FK — nhà đầu tư"
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: COMPANYTYPE
+          relation: "FK cha — Lưu danh sách danh mục loại hình doanh nghiệp"
+        - table: INVESTORTYPE
+          relation: "FK cha — lưu danh sách danh mục loại nhà đầu tư"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-SECURITIESACCOUNT
     brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIESACCOUNT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách tài khoản giao dịch chứng"
-      functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
-      scope_status: in_scope
-      scope_reason: null
+      table_meaning: "Lưu danh sách tài khoản giao dịch chứng khoán"
+      functional_group: "FIMS.6 Nhà đầu tư nước ngoài"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: SECURITIESACCOUNT
       related_tables:
         - table: INVESTOR
-          relation: "FK — nhà đầu tư nước ngoài"
-        - table: SECURITIESACCOUNTHIS
-          relation: "Bảng con — lịch sử tài khoản (out of scope)"
-      notes: "Atomic entity: Foreign Investor Securities Account"
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1288,38 +1720,44 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-SECURITIESACCOUNTHIS
     brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIESACCOUNTHIS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách lịch sử tài khoản khoản"
-      functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
+      table_meaning: "Lưu danh sách lịch sử tài khoản chứng khoán"
+      functional_group: "FIMS.6 Nhà đầu tư nước ngoài"
       scope_status: out_of_scope
-      scope_reason: "Snapshot nguồn — lịch sử tài khoản CK, xử lý tại ETL"
+      scope_reason: "Chờ thiết kế LLD"
       table: SECURITIESACCOUNTHIS
       related_tables:
-        - table: SECURITIESACCOUNT
-          relation: "FK — tài khoản giao dịch CK"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-CATEGORIESSTOCK
     brd_name: "Design Atomic từ nguồn FIMS bảng CATEGORIESSTOCK"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách danh mục chứng khoán của NĐT NN."
-      functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
-      scope_status: in_scope
-      scope_reason: null
+      table_meaning: "Lưu danh sách danh mục chứng khoán của NĐT NN"
+      functional_group: "FIMS.6 Nhà đầu tư nước ngoài"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: CATEGORIESSTOCK
       related_tables:
         - table: INVESTOR
-          relation: "FK — nhà đầu tư nước ngoài"
-        - table: CATEGORIESSTOCKHIS
-          relation: "Bảng con — lịch sử sở hữu CK (out of scope)"
-      notes: "Atomic entity: Foreign Investor Stock Portfolio Snapshot"
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1330,164 +1768,1052 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-CATEGORIESSTOCKHIS
     brd_name: "Design Atomic từ nguồn FIMS bảng CATEGORIESSTOCKHIS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách danh mục lịch sử sở hữu chứng"
-      functional_group: "FIMS_UID04 Nhà đầu tư nước ngoài"
+      table_meaning: "Lưu danh sách lịch sử sở hữu chứng khoán của NĐT NN"
+      functional_group: "FIMS.6 Nhà đầu tư nước ngoài"
       scope_status: out_of_scope
-      scope_reason: "Snapshot nguồn — lịch sử sở hữu CK, xử lý tại ETL"
+      scope_reason: "Chờ thiết kế LLD"
       table: CATEGORIESSTOCKHIS
       related_tables:
-        - table: CATEGORIESSTOCK
-          relation: "FK — danh mục CK hiện tại"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  # ─── FIMS_UID05 Báo cáo thành viên ───────────────────────────────────────
+  - brd_id: BRD-SRC-FIMS-TRADINGREPRESENTATIVE
+    brd_name: "Design Atomic từ nguồn FIMS bảng TRADINGREPRESENTATIVE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đại diện giao dịch"
+      functional_group: "FIMS.6 Nhà đầu tư nước ngoài"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TRADINGREPRESENTATIVE
+      related_tables:
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TRADINGAUTHORIZATIONHIS
+          relation: "1-N — Lưu lịch sử ủy quyền giao dịch"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── FIMS.7 Thành viên thị trường ────────────────────────────────────
+
+  - brd_id: BRD-SRC-FIMS-STOCKEXCHANGE
+    brd_name: "Design Atomic từ nguồn FIMS bảng STOCKEXCHANGE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: STOCKEXCHANGE
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: TLPROSTOCKH
+          relation: "1-N — lưu danh sách loại cổ đông của nhân sự"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-DEPOSITORYCENTER
+    brd_name: "Design Atomic từ nguồn FIMS bảng DEPOSITORYCENTER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: DEPOSITORYCENTER
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-FUNDCOMPANY
+    brd_name: "Design Atomic từ nguồn FIMS bảng FUNDCOMPANY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: FUNDCOMPANY
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+        - table: FUNDCOMBUSINES
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của công ty quản lý quỹ"
+        - table: FUNDCOMTYPE
+          relation: "1-N — Lưu danh sách loại hình công ty của công ty QLQ"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: TRADINGAUTHORIZATION
+          relation: "1-N — Lưu danh sách ủy quyền giao dịch"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-FUNDCOMBUSINES
+    brd_name: "Design Atomic từ nguồn FIMS bảng FUNDCOMBUSINES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của công ty quản lý quỹ"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: FUNDCOMBUSINES
+      related_tables:
+        - table: BUSINESS
+          relation: "FK cha — lưu danh sách danh mục nghiệp vụ kinh doanh"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-FUNDCOMTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng FUNDCOMTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách loại hình công ty của công ty QLQ"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: FUNDCOMTYPE
+      related_tables:
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: LO
+          relation: "FK cha — LO"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-SECURITIESCOMPANY
+    brd_name: "Design Atomic từ nguồn FIMS bảng SECURITIESCOMPANY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: SECURITIESCOMPANY
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+        - table: CATEGORIESSTOCK
+          relation: "1-N — Lưu danh sách danh mục chứng khoán của NĐT NN"
+        - table: CATEGORIESSTOCKHIS
+          relation: "1-N — Lưu danh sách lịch sử sở hữu chứng khoán của NĐT NN"
+        - table: INVESTOR
+          relation: "1-N — lưu danh sách danh mục nhà đầu tư"
+        - table: INVESTORHIS
+          relation: "1-N — Lưu danh sách lịch sử của nhà đầu tư"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: SECCOMBUSINES
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của công ty chứng khoán"
+        - table: SECCOMTYPE
+          relation: "1-N — lưu danh sách loại hình doanh nghiệp của công ty chứng khoán"
+        - table: SECURITIESACCOUNT
+          relation: "1-N — Lưu danh sách tài khoản giao dịch chứng khoán"
+        - table: SECURITIESACCOUNTHIS
+          relation: "1-N — Lưu danh sách lịch sử tài khoản chứng khoán"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: TRADINGAUTHORIZATION
+          relation: "1-N — Lưu danh sách ủy quyền giao dịch"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-SECCOMBUSINES
+    brd_name: "Design Atomic từ nguồn FIMS bảng SECCOMBUSINES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của công ty chứng khoán"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: SECCOMBUSINES
+      related_tables:
+        - table: BUSINESS
+          relation: "FK cha — lưu danh sách danh mục nghiệp vụ kinh doanh"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-SECCOMTYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng SECCOMTYPE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách loại hình doanh nghiệp của công ty chứng khoán"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: SECCOMTYPE
+      related_tables:
+        - table: LO
+          relation: "FK cha — LO"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-BANKMONI
+    brd_name: "Design Atomic từ nguồn FIMS bảng BANKMONI"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: BANKMONI
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+        - table: INVESTOR
+          relation: "1-N — lưu danh sách danh mục nhà đầu tư"
+        - table: INVESTORHIS
+          relation: "1-N — Lưu danh sách lịch sử của nhà đầu tư"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-BRANCHS
+    brd_name: "Design Atomic từ nguồn FIMS bảng BRANCHS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: BRANCHS
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+        - table: BRANCHSBUSINES
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của CN công ty QLQ NN"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-BRANCHSBUSINES
+    brd_name: "Design Atomic từ nguồn FIMS bảng BRANCHSBUSINES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của CN công ty QLQ NN"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: BRANCHSBUSINES
+      related_tables:
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: BUSINESS
+          relation: "FK cha — lưu danh sách danh mục nghiệp vụ kinh doanh"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-INFODISCREPRES
+    brd_name: "Design Atomic từ nguồn FIMS bảng INFODISCREPRES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: INFODISCREPRES
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: AUTHOANNOUNCE
+          relation: "1-N — Lưu danh sách ủy quyền CBTT"
+        - table: AUTHOANNOUNCEHIS
+          relation: "1-N — Lưu danh sách lịch sử ủy quyền CBTT"
+        - table: INDIREBUSINESS
+          relation: "1-N — Lưu danh sách nghiệp vụ kinh doanh của người hành nghề"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: TLPROFILES
+          relation: "1-N — lưu danh sách nhân sự của người đại diện CBTT"
+        - table: USERS
+          relation: "1-N — lưu danh sách người dùng trên hệ thống"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-INDIREBUSINESS
+    brd_name: "Design Atomic từ nguồn FIMS bảng INDIREBUSINESS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách nghiệp vụ kinh doanh của người hành nghề"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: INDIREBUSINESS
+      related_tables:
+        - table: BUSINESS
+          relation: "FK cha — lưu danh sách danh mục nghiệp vụ kinh doanh"
+        - table: INFODISCREPRES
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-TLPROFILES
+    brd_name: "Design Atomic từ nguồn FIMS bảng TLPROFILES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách nhân sự của người đại diện CBTT"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TLPROFILES
+      related_tables:
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: DEGREE
+          relation: "FK cha — lưu danh sách danh mục trình độ"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INFODISCREPRES
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: NATIONAL
+          relation: "FK cha — lưu danh sách quốc tịch / quốc gia"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STATUS
+          relation: "FK cha — lưu danh sách danh mục tình trạng hoạt động"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+        - table: TLPROJOB
+          relation: "1-N — Lưu danh sách chức vụ của nhân sự"
+        - table: TLPROSTOCKH
+          relation: "1-N — lưu danh sách loại cổ đông của nhân sự"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-TLPROJOB
+    brd_name: "Design Atomic từ nguồn FIMS bảng TLPROJOB"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách chức vụ của nhân sự"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TLPROJOB
+      related_tables:
+        - table: JOBTYPE
+          relation: "FK cha — Lưu danh sách chức vụ của người dùng trên hệ thống"
+        - table: TLPROFILES
+          relation: "FK cha — lưu danh sách nhân sự của người đại diện CBTT"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-TLPROSTOCKH
+    brd_name: "Design Atomic từ nguồn FIMS bảng TLPROSTOCKH"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách loại cổ đông của nhân sự"
+      functional_group: "FIMS.7 Thành viên thị trường"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TLPROSTOCKH
+      related_tables:
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+        - table: TLPROFILES
+          relation: "FK cha — lưu danh sách nhân sự của người đại diện CBTT"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── FIMS.11 Trao đổi thông tin ──────────────────────────────────────
+
+  - brd_id: BRD-SRC-FIMS-NOTIFICATION
+    brd_name: "Design Atomic từ nguồn FIMS bảng NOTIFICATION"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách thông báo"
+      functional_group: "FIMS.11 Trao đổi thông tin"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: NOTIFICATION
+      related_tables:
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-DOCUMENT
+    brd_name: "Design Atomic từ nguồn FIMS bảng DOCUMENT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách tài liệu hệ thống"
+      functional_group: "FIMS.11 Trao đổi thông tin"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: DOCUMENT
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-EMAILSENTSYSTEM
+    brd_name: "Design Atomic từ nguồn FIMS bảng EMAILSENTSYSTEM"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách trao đổi thông tin"
+      functional_group: "FIMS.11 Trao đổi thông tin"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: EMAILSENTSYSTEM
+      related_tables: null
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-SYSEMAIL
+    brd_name: "Design Atomic từ nguồn FIMS bảng SYSEMAIL"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "lưu danh sách trao đổi thông tin gửi qua mail"
+      functional_group: "FIMS.11 Trao đổi thông tin"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: SYSEMAIL
+      related_tables:
+        - table: MENUS
+          relation: "FK cha — Lưu danh sách các quyền của hệ thống"
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── FIMS.8 Báo cáo thành viên ───────────────────────────────────────
 
   - brd_id: BRD-SRC-FIMS-RPTMEMBER
     brd_name: "Design Atomic từ nguồn FIMS bảng RPTMEMBER"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách báo cáo của các thành viên thị trường"
-      functional_group: "FIMS_UID05 Báo cáo thành viên"
-      scope_status: in_scope
-      scope_reason: null
+      functional_group: "FIMS.8 Báo cáo thành viên"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: RPTMEMBER
       related_tables:
-        - table: RPTVALUES
-          relation: "Bảng con — giá trị báo cáo nhập từ biểu mẫu"
-        - table: RPTTEMP
-          relation: "FK — biểu mẫu báo cáo đầu vào"
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INFODISCREPRES
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: REPORTTYPE
+          relation: "FK cha — Lưu danh sách danh mục loại báo cáo"
         - table: RPTPERIOD
-          relation: "FK — kỳ báo cáo"
+          relation: "FK cha — lưu danh sách kỳ của báo cáo đầu vào"
         - table: RPTPROCESS
-          relation: "Bảng con — lịch sử xử lý báo cáo (out of scope)"
-      notes: "Atomic entity: Member Regulatory Report — FK nullable đến các đối tượng gửi BC (FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, BRANCHS, INFODISCREPRES)"
+          relation: "1-N — lưu danh sách lịch sử xử lý báo cáo"
+        - table: RPTTEMP
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu vào"
+        - table: RPTVALUES
+          relation: "1-N — bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+        - table: RPT_EVENT_TYPE
+          relation: "FK cha — Lưu danh sách loại sự vụ báo cáo"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+        - table: TRADINGREPRESENTATIVE
+          relation: "FK cha — Lưu danh sách đại diện giao dịch"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Báo cáo thành viên — append khi có báo cáo mới nộp"
-
-  - brd_id: BRD-SRC-FIMS-RPTVALUES
-    brd_name: "Design Atomic từ nguồn FIMS bảng RPTVALUES"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh"
-      functional_group: "FIMS_UID05 Báo cáo thành viên"
-      scope_status: in_scope
-      scope_reason: null
-      table: RPTVALUES
-      related_tables:
-        - table: RPTMEMBER
-          relation: "FK — báo cáo thành viên"
-        - table: SHEET
-          relation: "FK — sheet trong biểu mẫu"
-      notes: "Atomic entity: Member Report Value"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Giá trị báo cáo — append theo báo cáo cha"
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-RPTVALUESMANAGERMENT
     brd_name: "Design Atomic từ nguồn FIMS bảng RPTVALUESMANAGERMENT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu quản lý các bảng lưu giá trị của báo"
-      functional_group: "FIMS_UID05 Báo cáo thành viên"
+      table_meaning: "Lưu quản lý các bảng lưu giá trị của báo cáo"
+      functional_group: "FIMS.8 Báo cáo thành viên"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — quản lý metadata bảng giá trị báo cáo"
+      scope_reason: "Chờ thiết kế LLD"
       table: RPTVALUESMANAGERMENT
-      related_tables: []
+      related_tables: null
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-RPTVALUES
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPTVALUES"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "bảng lưu giá trị của báo cáo. Mỗi năm, tự động sinh bảng mới"
+      functional_group: "FIMS.8 Báo cáo thành viên"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPTVALUES
+      related_tables:
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INFODISCREPRES
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: RPTMEMBER
+          relation: "FK cha — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPTPERIOD
+          relation: "FK cha — lưu danh sách kỳ của báo cáo đầu vào"
+        - table: RPTTEMP
+          relation: "FK cha — lưu danh sách biểu mẫu báo cáo đầu vào"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: SHEET
+          relation: "FK cha — lưu danh sách các sheet trong biểu mẫu báo cáo đầu vào"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-RPTPROCESS
     brd_name: "Design Atomic từ nguồn FIMS bảng RPTPROCESS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách lịch sử xử lý báo cáo"
-      functional_group: "FIMS_UID05 Báo cáo thành viên"
+      functional_group: "FIMS.8 Báo cáo thành viên"
       scope_status: out_of_scope
-      scope_reason: "Activity log nguồn — lịch sử trạng thái xử lý báo cáo"
+      scope_reason: "Chờ thiết kế LLD"
       table: RPTPROCESS
       related_tables:
         - table: RPTMEMBER
-          relation: "FK — báo cáo thành viên"
+          relation: "FK cha — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  # ─── FIMS_UID06 Tổng hợp báo cáo ─────────────────────────────────────────
-
-  - brd_id: BRD-SRC-FIMS-RPTOUTMANAGEMENT
-    brd_name: "Design Atomic từ nguồn FIMS bảng RPTOUTMANAGEMENT"
+  - brd_id: BRD-SRC-FIMS-RPT_EVENT_TYPE
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPT_EVENT_TYPE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách cấu hình gen file thống kê tự"
-      functional_group: "FIMS_UID06 Tổng hợp báo cáo"
+      table_meaning: "Lưu danh sách loại sự vụ báo cáo"
+      functional_group: "FIMS.8 Báo cáo thành viên"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — cấu hình gen file thống kê tự động"
-      table: RPTOUTMANAGEMENT
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPT_EVENT_TYPE
+      related_tables:
+        - table: ANNOUNCE
+          relation: "1-N — Lưu danh sách các tin CBTT của thành viên thị trường"
+        - table: LO
+          relation: "FK cha — LO"
+        - table: RPTMEMBER
+          relation: "1-N — lưu danh sách báo cáo của các thành viên thị trường"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-RPTOUTFILESAVE
-    brd_name: "Design Atomic từ nguồn FIMS bảng RPTOUTFILESAVE"
+  - brd_id: BRD-SRC-FIMS-RPT_EVENT_TYPE_LEGAL_BASIS
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPT_EVENT_TYPE_LEGAL_BASIS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách file thống kê đã được gen tự động"
-      functional_group: "FIMS_UID06 Tổng hợp báo cáo"
+      table_meaning: "Lưu danh sách căn cứ pháp lý của loại sự vụ"
+      functional_group: "FIMS.8 Báo cáo thành viên"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — file output đã gen"
-      table: RPTOUTFILESAVE
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPT_EVENT_TYPE_LEGAL_BASIS
+      related_tables:
+        - table: BC_SU_VU
+          relation: "FK cha — BC_SU_VU"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  # ─── FIMS_UID07 Ủy quyền ─────────────────────────────────────────────────
+  - brd_id: BRD-SRC-FIMS-RPT_EVENT_TYPE_SCHEDULE
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPT_EVENT_TYPE_SCHEDULE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu lịch nộp báo cáo theo loại sự vụ"
+      functional_group: "FIMS.8 Báo cáo thành viên"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPT_EVENT_TYPE_SCHEDULE
+      related_tables:
+        - table: BC_SU_VU
+          relation: "FK cha — BC_SU_VU"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-RPT_EVENT_TYPE_STATUS_LINK
+    brd_name: "Design Atomic từ nguồn FIMS bảng RPT_EVENT_TYPE_STATUS_LINK"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu liên kết trạng thái loại sự vụ"
+      functional_group: "FIMS.8 Báo cáo thành viên"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: RPT_EVENT_TYPE_STATUS_LINK
+      related_tables:
+        - table: BC_SU_VU
+          relation: "FK cha — BC_SU_VU"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── FIMS.9 Cảnh báo và vi phạm ──────────────────────────────────────
+
+  - brd_id: BRD-SRC-FIMS-PARAWARN
+    brd_name: "Design Atomic từ nguồn FIMS bảng PARAWARN"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách tham số cảnh báo"
+      functional_group: "FIMS.9 Cảnh báo và vi phạm"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: PARAWARN
+      related_tables:
+        - table: CDTWARN
+          relation: "1-N — Lưu danh sách điều kiện cảnh báo"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-CDTWARN
+    brd_name: "Design Atomic từ nguồn FIMS bảng CDTWARN"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách điều kiện cảnh báo"
+      functional_group: "FIMS.9 Cảnh báo và vi phạm"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: CDTWARN
+      related_tables:
+        - table: PARAWARN
+          relation: "FK cha — Lưu danh sách tham số cảnh báo"
+        - table: VIOLT
+          relation: "1-N — Lưu danh sách vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-VIOLT
+    brd_name: "Design Atomic từ nguồn FIMS bảng VIOLT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách vi phạm"
+      functional_group: "FIMS.9 Cảnh báo và vi phạm"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: VIOLT
+      related_tables:
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: CDTWARN
+          relation: "FK cha — Lưu danh sách điều kiện cảnh báo"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INFODISCREPRES
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: PARAWARN
+          relation: "FK cha — Lưu danh sách tham số cảnh báo"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+        - table: USERS
+          relation: "FK cha — lưu danh sách người dùng trên hệ thống"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "datecreatedviolt >= {{etl_date}} AND datecreatedviolt < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột DateCreatedViolt — bảng chỉ append, không cập nhật dòng cũ"
+
+  # ─── FIMS.10 Ủy quyền CBTT và giao dịch ──────────────────────────────
 
   - brd_id: BRD-SRC-FIMS-AUTHOANNOUNCE
     brd_name: "Design Atomic từ nguồn FIMS bảng AUTHOANNOUNCE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách ủy quyền CBTT."
-      functional_group: "FIMS_UID07 Ủy quyền"
-      scope_status: in_scope
-      scope_reason: null
+      table_meaning: "Lưu danh sách ủy quyền CBTT"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: AUTHOANNOUNCE
       related_tables:
-        - table: AUTHOANNOUNCEHIS
-          relation: "Bảng con — lịch sử ủy quyền (out of scope)"
         - table: ANNOUNCEINVES
-          relation: "Bảng con — NĐT NN được ủy quyền (denormalize)"
+          relation: "1-N — lưu danh sách NĐT NN ủy quyền CBTT"
+        - table: ANNOUNCEINVESHIS
+          relation: "1-N — Lưu lịch sử danh sách NĐT NN ủy quyền CBTT"
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
         - table: INFODISCREPRES
-          relation: "FK — người đại diện CBTT nhận ủy quyền"
-      notes: "Atomic entity: Disclosure Authorization — cả ủy quyền CBTT và ủy quyền giao dịch"
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: RELATEDPROPERTIES
+          relation: "FK cha — Lưu danh sách các hình thức liên quan"
+        - table: RELATIONSHIP
+          relation: "FK cha — Lưu danh sách quan hệ"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1498,40 +2824,58 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-AUTHOANNOUNCEHIS
     brd_name: "Design Atomic từ nguồn FIMS bảng AUTHOANNOUNCEHIS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách lịch sử ủy quyền CBTT."
-      functional_group: "FIMS_UID07 Ủy quyền"
+      table_meaning: "Lưu danh sách lịch sử ủy quyền CBTT"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
       scope_status: out_of_scope
-      scope_reason: "Snapshot nguồn — lịch sử ủy quyền, xử lý tại ETL"
+      scope_reason: "Chờ thiết kế LLD"
       table: AUTHOANNOUNCEHIS
       related_tables:
-        - table: AUTHOANNOUNCE
-          relation: "FK — ủy quyền CBTT"
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INFODISCREPRES
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: RELATEDPROPERTIES
+          relation: "FK cha — Lưu danh sách các hình thức liên quan"
+        - table: RELATIONSHIP
+          relation: "FK cha — Lưu danh sách quan hệ"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-ANNOUNCEINVES
     brd_name: "Design Atomic từ nguồn FIMS bảng ANNOUNCEINVES"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "lưu danh sách NĐT NN ủy quyền CBTT"
-      functional_group: "FIMS_UID07 Ủy quyền"
-      scope_status: in_scope
-      scope_reason: null
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: ANNOUNCEINVES
       related_tables:
         - table: AUTHOANNOUNCE
-          relation: "FK — hồ sơ ủy quyền CBTT"
+          relation: "FK cha — Lưu danh sách ủy quyền CBTT"
         - table: INVESTOR
-          relation: "FK — nhà đầu tư NN được ủy quyền"
-        - table: ANNOUNCEINVESHIS
-          relation: "Bảng con — lịch sử (out of scope)"
-      notes: "Denormalize vào Disclosure Authorization entity"
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -1542,165 +2886,213 @@ brd_entries:
   - brd_id: BRD-SRC-FIMS-ANNOUNCEINVESHIS
     brd_name: "Design Atomic từ nguồn FIMS bảng ANNOUNCEINVESHIS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Lưu lịch sử danh sách NĐT NN ủy quyền CBTT"
-      functional_group: "FIMS_UID07 Ủy quyền"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
       scope_status: out_of_scope
-      scope_reason: "Snapshot nguồn — lịch sử NĐT NN ủy quyền, xử lý tại ETL"
+      scope_reason: "Chờ thiết kế LLD"
       table: ANNOUNCEINVESHIS
       related_tables:
-        - table: ANNOUNCEINVES
-          relation: "FK — bản ghi NĐT NN ủy quyền"
+        - table: AUTHOANNOUNCE
+          relation: "FK cha — Lưu danh sách ủy quyền CBTT"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
-
-  # ─── FIMS_UID08 Công bố thông tin ────────────────────────────────────────
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
   - brd_id: BRD-SRC-FIMS-ANNOUNCE
     brd_name: "Design Atomic từ nguồn FIMS bảng ANNOUNCE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách các tin CB của thành viên thị trường"
-      functional_group: "FIMS_UID08 Công bố thông tin"
-      scope_status: in_scope
-      scope_reason: null
+      table_meaning: "Lưu danh sách các tin CBTT của thành viên thị trường"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
       table: ANNOUNCE
       related_tables:
+        - table: ANNOUNCETYPE
+          relation: "FK cha — Lưu danh sách loại CBTT"
+        - table: BANKMONI
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Ngân hàng lưu ký"
+        - table: BRANCHS
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là CN công ty QLQ nước ngoài"
+        - table: DEPOSITORYCENTER
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Trung tâm lưu ký"
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
         - table: INFODISCREPRES
-          relation: "FK — người đại diện CBTT đã gửi BC"
-      notes: "Atomic entity: Disclosure Announcement — tạo tự động từ BC của đại diện CBTT"
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là người hành nghề chứng khoán"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: RPTMEMBER
+          relation: "FK cha — lưu danh sách báo cáo của các thành viên thị trường"
+        - table: RPT_EVENT_TYPE
+          relation: "FK cha — Lưu danh sách loại sự vụ báo cáo"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: STOCKEXCHANGE
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Sở giao dịch"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-TRADINGAUTHORIZATION
+    brd_name: "Design Atomic từ nguồn FIMS bảng TRADINGAUTHORIZATION"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu danh sách ủy quyền giao dịch"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TRADINGAUTHORIZATION
+      related_tables:
+        - table: FUNDCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty quản lý quỹ"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: LO
+          relation: "FK cha — LO"
+        - table: SECURITIESCOMPANY
+          relation: "FK cha — Lưu danh sách đối tượng gửi báo cáo là Công ty chứng khoán"
+        - table: TRADINGAUTHORIZATIONHIS
+          relation: "1-N — Lưu lịch sử ủy quyền giao dịch"
+        - table: TRADINGAUTHORIZATIONINVES
+          relation: "1-N — Lưu danh sách NĐT NN trong ủy quyền giao dịch"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-FIMS-TRADINGAUTHORIZATIONHIS
+    brd_name: "Design Atomic từ nguồn FIMS bảng TRADINGAUTHORIZATIONHIS"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lưu lịch sử ủy quyền giao dịch"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TRADINGAUTHORIZATIONHIS
+      related_tables:
+        - table: TRADINGAUTHORIZATION
+          relation: "FK cha — Lưu danh sách ủy quyền giao dịch"
+        - table: TRADINGREPRESENTATIVE
+          relation: "FK cha — Lưu danh sách đại diện giao dịch"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Tin công bố thông tin — append theo ngày tạo thông báo mới"
+        filter_logic: "datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ"
 
-  # ─── FIMS_UID09 Cảnh báo ─────────────────────────────────────────────────
-
-  - brd_id: BRD-SRC-FIMS-PARAWARN
-    brd_name: "Design Atomic từ nguồn FIMS bảng PARAWARN"
+  - brd_id: BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVES
+    brd_name: "Design Atomic từ nguồn FIMS bảng TRADINGAUTHORIZATIONINVES"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách tham số cảnh báo"
-      functional_group: "FIMS_UID09 Cảnh báo"
+      table_meaning: "Lưu danh sách NĐT NN trong ủy quyền giao dịch"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — tham số cấu hình cảnh báo hệ thống"
-      table: PARAWARN
+      scope_reason: "Chờ thiết kế LLD"
+      table: TRADINGAUTHORIZATIONINVES
       related_tables:
-        - table: CDTWARN
-          relation: "Bảng con — điều kiện cảnh báo"
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
+        - table: TRADINGAUTHORIZATION
+          relation: "FK cha — Lưu danh sách ủy quyền giao dịch"
       notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-FIMS-CDTWARN
-    brd_name: "Design Atomic từ nguồn FIMS bảng CDTWARN"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách điều kiện cảnh báo"
-      functional_group: "FIMS_UID09 Cảnh báo"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — điều kiện ngưỡng cảnh báo cấu hình"
-      table: CDTWARN
-      related_tables:
-        - table: PARAWARN
-          relation: "FK — tham số cảnh báo"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-FIMS-VIOLT
-    brd_name: "Design Atomic từ nguồn FIMS bảng VIOLT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách vi phạm"
-      functional_group: "FIMS_UID09 Cảnh báo"
-      scope_status: in_scope
-      scope_reason: null
-      table: VIOLT
-      related_tables: []
-      notes: "Atomic entity: Member Conduct Violation — FK nullable đến các đối tượng gửi BC (FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE, BRANCHS, INFODISCREPRES)"
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Vi phạm — append theo ngày ghi nhận vi phạm mới"
+        filter_logic: "datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ"
 
-  # ─── FIMS_UID10 Tiện ích ─────────────────────────────────────────────────
-
-  - brd_id: BRD-SRC-FIMS-NOTIFICATION
-    brd_name: "Design Atomic từ nguồn FIMS bảng NOTIFICATION"
+  - brd_id: BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVESHIS
+    brd_name: "Design Atomic từ nguồn FIMS bảng TRADINGAUTHORIZATIONINVESHIS"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách thông báo"
-      functional_group: "FIMS_UID10 Tiện ích"
+      table_meaning: "Lưu lịch sử NĐT NN trong ủy quyền giao dịch"
+      functional_group: "FIMS.10 Ủy quyền CBTT và giao dịch"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — thông báo nội bộ ứng dụng FIMS"
-      table: NOTIFICATION
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: TRADINGAUTHORIZATIONINVESHIS
+      related_tables:
+        - table: INVESTOR
+          relation: "FK cha — lưu danh sách danh mục nhà đầu tư"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1"
+        filter_note: "Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ"
 
-  - brd_id: BRD-SRC-FIMS-EMAILSENTSYSTEM
-    brd_name: "Design Atomic từ nguồn FIMS bảng EMAILSENTSYSTEM"
+  # ─── FIMS.12 Tích hợp hệ thống ───────────────────────────────────────
+
+  - brd_id: BRD-SRC-FIMS-SYSTEMINTEGRATIONCONFIG
+    brd_name: "Design Atomic từ nguồn FIMS bảng SYSTEMINTEGRATIONCONFIG"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu danh sách trao đổi thông tin"
-      functional_group: "FIMS_UID10 Tiện ích"
+      table_meaning: "Lưu danh sách cấu hình kết nối hệ thống"
+      functional_group: "FIMS.12 Tích hợp hệ thống"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — trao đổi thông tin nội bộ hệ thống"
-      table: EMAILSENTSYSTEM
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: SYSTEMINTEGRATIONCONFIG
+      related_tables:
+        - table: SYSTEMINTEGRATIONDATA
+          relation: "1-N — Lưu dữ liệu kết nối MSS"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
 
-  - brd_id: BRD-SRC-FIMS-SYSEMAIL
-    brd_name: "Design Atomic từ nguồn FIMS bảng SYSEMAIL"
+  - brd_id: BRD-SRC-FIMS-SYSTEMINTEGRATIONDATA
+    brd_name: "Design Atomic từ nguồn FIMS bảng SYSTEMINTEGRATIONDATA"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "lưu danh sách trao đổi thông tin gửi qua mail"
-      functional_group: "FIMS_UID10 Tiện ích"
+      table_meaning: "Lưu dữ liệu kết nối MSS"
+      functional_group: "FIMS.12 Tích hợp hệ thống"
       scope_status: out_of_scope
-      scope_reason: "Operational/system data — email log hệ thống"
-      table: SYSEMAIL
-      related_tables: []
+      scope_reason: "Chờ thiết kế LLD"
+      table: SYSTEMINTEGRATIONDATA
+      related_tables:
+        - table: SYSTEMINTEGRATIONCONFIG
+          relation: "FK cha — Lưu danh sách cấu hình kết nối hệ thống"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
-
-  - brd_id: BRD-SRC-FIMS-DOCUMENT
-    brd_name: "Design Atomic từ nguồn FIMS bảng DOCUMENT"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu danh sách tài liệu hệ thống."
-      functional_group: "FIMS_UID10 Tiện ích"
-      scope_status: out_of_scope
-      scope_reason: "Không có FK inbound từ bảng nghiệp vụ — tài liệu độc lập"
-      table: DOCUMENT
-      related_tables: []
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null

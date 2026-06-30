@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: STOCKEXCHANGE
+brd_ref: BRD-SRC-FIMS-STOCKEXCHANGE
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: Name
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: EName
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Tên tiếng Anh"
+  key: null
+  fk_note: null
+- name: ShortName
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tên viết tắt của tổ chức"
+  key: null
+  fk_note: null
+- name: NaId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> NATIONAL: Quốc gia/quốc tịch"
+  key: FK
+  fk_note: "FK → NATIONAL"
+- name: Address
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Địa chỉ trụ sở/văn phòng"
+  key: null
+  fk_note: null
+- name: Telephone
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số điện thoại liên hệ"
+  key: null
+  fk_note: null
+- name: Fax
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Số fax"
+  key: null
+  fk_note: null
+- name: Email
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Địa chỉ email liên hệ"
+  key: null
+  fk_note: null
+- name: Website
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Địa chỉ website"
+  key: null
+  fk_note: null
+- name: Hotline
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Số điện thoại hotline hỗ trợ"
+  key: null
+  fk_note: null
+- name: StatusId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng"
+  key: FK
+  fk_note: "FK → STATUS"
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: IdOld
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null
+- name: IsDataMigration
+  data_type: "NUMBER(1,0)"
+  description: "Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: IsSynced
+  data_type: "NUMBER(1,0)"
+  description: "Cờ đã đồng bộ dữ liệu từ nguồn bên ngoài: 1=Đã đồng bộ, 0=Chưa"
+  key: null
+  fk_note: null
+- name: TaxCode
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: null

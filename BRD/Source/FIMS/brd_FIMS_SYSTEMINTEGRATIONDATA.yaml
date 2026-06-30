@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: SYSTEMINTEGRATIONDATA
+brd_ref: BRD-SRC-FIMS-SYSTEMINTEGRATIONDATA
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: Code
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mã biểu mẫu báo cáo (mã định danh ngắn gọn)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(18,2)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: DataIntegration
+  data_type: "NCLOB"
+  description: "Dữ liệu đã nhận/tích hợp từ hệ thống bên ngoài (JSON/XML raw)"
+  key: null
+  fk_note: null
+- name: SystemIntegrationConfigId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SYSTEMINTEGRATIONCONFIG: Cấu hình kết nối đã dùng"
+  key: FK
+  fk_note: "FK → SYSTEMINTEGRATIONCONFIG"
+- name: DataFileImport
+  data_type: "BLOB"
+  description: "Dữ liệu file Excel đã import (BLOB)"
+  key: null
+  fk_note: null

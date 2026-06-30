@@ -446,6 +446,144 @@ schemes:
     used_in_entities: []
     values: []
 
+  # ─── FMS schemes ─────────────────────────────────────────────────────────────
+
+  - scheme_code: "FMS_AGENCY_TYPE"
+    name: "Loại đại lý phân phối quỹ đầu tư"
+    source_type: "source_table"
+    source_table: "FMS.AGENCYTYPE"
+    used_in_entities:
+      - "Fund Distribution Agent"
+    values: []
+
+  - scheme_code: "FMS_BUSINESS_TYPE"
+    name: "Ngành nghề kinh doanh của công ty QLQ và VPĐD NN"
+    source_type: "source_table"
+    source_table: "FMS.BUSINESS"
+    used_in_entities:
+      - "Fund Management Company"
+      - "Foreign Fund Management Organization Unit"
+    values: []
+
+  - scheme_code: "FMS_CAPITAL_CHANGE_TYPE"
+    name: "Loại thay đổi vốn góp nhà đầu tư quỹ"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Investment Fund Investor Capital Change Log"
+    values:
+      - code: "SUBSCRIPTION"
+        name: "Góp vốn / mua CCQ"
+        source_table: null
+      - code: "REDEMPTION"
+        name: "Rút vốn / bán CCQ"
+        source_table: null
+      - code: "TRANSFER_IN"
+        name: "Nhận chuyển nhượng vốn góp"
+        source_table: null
+      - code: "TRANSFER_OUT"
+        name: "Chuyển nhượng vốn góp cho bên khác"
+        source_table: null
+
+  - scheme_code: "FMS_CERTIFICATE_TRANSFER_TYPE"
+    name: "Loại giao dịch chứng chỉ quỹ"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Investment Fund Certificate Transfer"
+    values:
+      - code: "BUY"
+        name: "Mua CCQ"
+        source_table: null
+      - code: "SELL"
+        name: "Bán CCQ"
+        source_table: null
+      - code: "TRANSFER"
+        name: "Chuyển nhượng CCQ"
+        source_table: null
+
+  - scheme_code: "FMS_FUND_TYPE"
+    name: "Loại quỹ đầu tư chứng khoán"
+    source_type: "source_table"
+    source_table: "FMS.FUND_TYPE"
+    used_in_entities:
+      - "Investment Fund"
+    values: []
+
+  - scheme_code: "FMS_JOB_TYPE"
+    name: "Loại chức vụ nhân sự công ty QLQ"
+    source_type: "source_table"
+    source_table: "FMS.JOBTYPE"
+    used_in_entities:
+      - "Fund Management Company Key Person"
+      - "Foreign Fund Management Organization Unit Staff"
+    values: []
+
+  - scheme_code: "FMS_OPERATION_STATUS"
+    name: "Trạng thái hoạt động của thành viên/quỹ/đại lý"
+    source_type: "source_table"
+    source_table: "FMS.STATUS"
+    used_in_entities:
+      - "Fund Management Company"
+      - "Investment Fund"
+      - "Custodian Bank"
+      - "Fund Distribution Agent"
+      - "Member Periodic Report"
+      - "Discretionary Investment Account"
+    values: []
+
+  - scheme_code: "FMS_ORG_TERRITORY_TYPE"
+    name: "Loại tổ chức theo địa giới (trong nước / nước ngoài)"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Fund Management Company"
+    values:
+      - code: "DOMESTIC"
+        name: "Tổ chức trong nước (BORF_FLAG=1)"
+        source_table: null
+      - code: "FOREIGN"
+        name: "Tổ chức nước ngoài (BORF_FLAG=0)"
+        source_table: null
+
+  - scheme_code: "FMS_RATING_PERIOD_TYPE"
+    name: "Loại kỳ xếp hạng: cuối năm / giữa năm"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Member Rating"
+    values:
+      - code: "YEAR_END"
+        name: "Xếp hạng cuối năm (RANK_TYPE=1)"
+        source_table: null
+      - code: "MID_YEAR"
+        name: "Xếp hạng giữa năm (RANK_TYPE=2)"
+        source_table: null
+
+  - scheme_code: "FMS_RELATION_TYPE"
+    name: "Loại quan hệ cổ đông"
+    source_type: "source_table"
+    source_table: "FMS.RELATION"
+    used_in_entities:
+      - "Investment Fund Investor Membership"
+    values: []
+
+  - scheme_code: "FMS_REPORT_STATUS"
+    name: "Trạng thái báo cáo thành viên (nộp/phê duyệt/từ chối...)"
+    source_type: "source_table"
+    source_table: "FMS.STATUS"
+    used_in_entities:
+      - "Member Periodic Report Status Log"
+    values: []
+
+  - scheme_code: "FMS_STOCKHOLDER_TYPE"
+    name: "Loại hình nhà đầu tư / cổ đông quỹ"
+    source_type: "source_table"
+    source_table: "FMS.STOCKHOLDERTYPE"
+    used_in_entities:
+      - "Investment Fund Investor Membership"
+    values: []
+
   - scheme_code: "RELATIONSHIP_TYPE"
     name: "Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà) — cần xác nhận từ data"
     source_type: "modeler_defined"

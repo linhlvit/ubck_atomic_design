@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: SHEET_OUT_BAK_BMBCDR
+brd_ref: BRD-SRC-FMS-SHEET_OUT_BAK_BMBCDR
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: TP_OUT_ID
+  data_type: RAW(16)
+  description: "FK -> RPT_TP_OUT: Báo cáo tổng hợp đầu ra"
+  key: null
+  fk_note: "FK suy luận → RPT_TP_OUT.ID"
+- name: ITEM_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: SHEET_INDEX
+  data_type: NUMBER(22)
+  description: "Thứ tự sheet trong biểu mẫu Excel (bắt đầu từ 0)"
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(300)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: CELLS_META
+  data_type: NCLOB
+  description: "Metadata cấu hình các ô trong sheet (JSON NCLOB: màu sắc, gộp ô, format...)"
+  key: null
+  fk_note: null
+- name: ROW_HEIGHTS
+  data_type: NCLOB
+  description: "Chiều cao từng hàng trong sheet (JSON NCLOB)"
+  key: null
+  fk_note: null
+- name: DATA_LABEL
+  data_type: NCLOB
+  description: "Nhãn dữ liệu hiển thị trong ô (JSON NCLOB)"
+  key: null
+  fk_note: null
+- name: MERGE_CELLS
+  data_type: NCLOB
+  description: "Cấu hình gộp ô trong sheet (NCLOB: danh sách dải ô được gộp)"
+  key: null
+  fk_note: null
+- name: COL_WIDTHS
+  data_type: NCLOB
+  description: "Độ rộng từng cột trong sheet (JSON NCLOB)"
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: NVARCHAR2(300)
+  description: "Mã định danh ngắn gọn"
+  key: null
+  fk_note: null

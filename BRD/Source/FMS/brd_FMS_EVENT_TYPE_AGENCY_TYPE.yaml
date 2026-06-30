@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: EVENT_TYPE_AGENCY_TYPE
+brd_ref: BRD-SRC-FMS-EVENT_TYPE_AGENCY_TYPE
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: EVENT_TYPE_ID
+  data_type: RAW(16)
+  description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng"
+  key: null
+  fk_note: "FK suy luận → EVENT_TYPE.ID"
+- name: AGENCY_TYPE_ID
+  data_type: RAW(16)
+  description: "FK -> AGENCY_TYPE: Loại đại lý"
+  key: null
+  fk_note: "FK suy luận → AGENCY_TYPE.ID"

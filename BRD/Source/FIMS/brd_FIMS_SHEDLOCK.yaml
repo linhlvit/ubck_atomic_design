@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: SHEDLOCK
+brd_ref: BRD-SRC-FIMS-SHEDLOCK
+columns:
+- name: NAME
+  data_type: "VARCHAR2(64 BYTE)"
+  description: "Tên khóa (key định danh scheduled job)"
+  key: null
+  fk_note: null
+- name: LOCK_UNTIL
+  data_type: "TIMESTAMP(3)"
+  description: "Thời điểm khóa hết hạn (lock tự động mở sau thời điểm này)"
+  key: null
+  fk_note: null
+- name: LOCKED_AT
+  data_type: "TIMESTAMP(3)"
+  description: "Thời điểm khóa được tạo"
+  key: null
+  fk_note: null
+- name: LOCKED_BY
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tên instance/node đang giữ khóa"
+  key: null
+  fk_note: null

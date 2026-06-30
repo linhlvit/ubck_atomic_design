@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: TRADINGAUTHORIZATIONHIS
+brd_ref: BRD-SRC-FIMS-TRADINGAUTHORIZATIONHIS
+columns:
+- name: Id
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: TradingAuthorizationId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> TRADINGAUTHORIZATION: Hợp đồng ủy quyền giao dịch"
+  key: FK
+  fk_note: "FK → TRADINGAUTHORIZATION"
+- name: ActionName
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tên hành động thực hiện trên hợp đồng ủy quyền (Tạo/Sửa/Hủy...)"
+  key: null
+  fk_note: null
+- name: Note
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: Version
+  data_type: "NUMBER(10,0)"
+  description: "Phiên bản (1, 2, 3, ...) — SRS §7.2 mục 8"
+  key: null
+  fk_note: null
+- name: TradingRepresentativeId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> TRADINGREPRESENTATIVE: Đại diện giao dịch liên kết với tài khoản người dùng"
+  key: FK
+  fk_note: "FK → TRADINGREPRESENTATIVE"
+- name: TradingRepresentativeName
+  data_type: "VARCHAR2(500 CHAR)"
+  description: "Tên đại diện giao dịch tại thời điểm lập hợp đồng (snapshot)"
+  key: null
+  fk_note: null
+- name: SDate
+  data_type: "DATE"
+  description: "Ngày bắt đầu hiệu lực hợp đồng ủy quyền"
+  key: null
+  fk_note: null
+- name: EDate
+  data_type: "DATE"
+  description: "Ngày kết thúc hiệu lực hợp đồng ủy quyền"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: InvestorIds
+  data_type: "VARCHAR2(4000 CHAR)"
+  description: "Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)"
+  key: null
+  fk_note: null
+- name: InvestorNames
+  data_type: "VARCHAR2(4000 CHAR)"
+  description: "Danh sách tên nhà đầu tư liên quan (lưu dạng text)"
+  key: null
+  fk_note: null
+- name: OldRecordJson
+  data_type: "CLOB"
+  description: "Snapshot JSON đầy đủ cho debug/diff"
+  key: null
+  fk_note: null
