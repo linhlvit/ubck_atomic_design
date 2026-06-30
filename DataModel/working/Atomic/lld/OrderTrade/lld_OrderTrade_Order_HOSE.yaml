@@ -1,0 +1,674 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: OrderTrade
+  source_table: HOSE_ORDER_BOOK
+  atomic_entity: Securities Order
+  entity_physical_name: scr_ordr
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Financial Market Order"
+  table_type: Fact Append
+  group: T1
+  design_status: approved
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Phản ánh 1-1 từ bảng nguồn HOSE_ORDER_BOOK. Entity dùng chung với HNX_ORDER_BOOK — cùng Atomic entity Securities Order. Fact Append: insert-only, không update."
+
+attributes:
+  # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
+  - attribute_name: Securities Order Id
+    physical_name: scr_ordr_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi Fact Append."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── BUSINESS KEY ────────────────────────────────────────────────────
+  - attribute_name: Securities Order Code
+    physical_name: scr_ordr_code
+    description: "Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_id
+    comment: "BK chính. PK nguồn HOSE_ORDER_BOOK."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. HOSE và HNX đều map vào Securities Order — src_stm_code phân biệt nguồn."
+    classification_context: SOURCE_SYSTEM=OrderTrade.HOSE_ORDER_BOOK
+    etl_derived_value: OrderTrade.HOSE_ORDER_BOOK
+
+  # ── TRADE DATE ──────────────────────────────────────────────────────
+  - attribute_name: Trade Date
+    physical_name: trd_dt
+    description: "Ngày giao dịch theo thị trường chứng khoán."
+    data_domain: Date
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.trade_date
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── MARKET ID ───────────────────────────────────────────────────────
+  - attribute_name: Market Id Code
+    physical_name: mkt_id_code
+    description: "Mã thị trường chứng khoán."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.market_id
+    comment: "Scheme: ORDERTRADE_MARKET_ID."
+    classification_context: ORDERTRADE_MARKET_ID
+    etl_derived_value: null
+
+  # ── SYMBOL ──────────────────────────────────────────────────────────
+  - attribute_name: Security Symbol Code
+    physical_name: scr_symb_code
+    description: "Mã chứng khoán."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.symbol
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  # ── CURRENCY ────────────────────────────────────────────────────────
+  - attribute_name: Currency Code
+    physical_name: ccy_code
+    description: "Đơn vị tiền tệ."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.currency
+    comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── BOARD TYPE ──────────────────────────────────────────────────────
+  - attribute_name: Board Type Code
+    physical_name: brd_tp_code
+    description: "Loại bảng giao dịch mà lệnh được phân loại vào."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.board_type
+    comment: "Scheme: ORDERTRADE_BOARD_TYPE."
+    classification_context: ORDERTRADE_BOARD_TYPE
+    etl_derived_value: null
+
+  # ── ORDER DATE / TIME ────────────────────────────────────────────────
+  - attribute_name: Order Date
+    physical_name: ordr_dt
+    description: "Ngày đặt lệnh của người thực hiện giao dịch."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_date
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Order Time
+    physical_name: ordr_tm
+    description: "Thời gian đặt lệnh của người thực hiện giao dịch."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_time
+    comment: "Nguồn lưu dạng varchar — ETL giữ nguyên định dạng HHMMSSsss từ KRX. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── SESSION ─────────────────────────────────────────────────────────
+  - attribute_name: Session Code
+    physical_name: ssn_code
+    description: "Phiên giao dịch của thị trường chứng khoán."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.session
+    comment: "Scheme: ORDERTRADE_SESSION."
+    classification_context: ORDERTRADE_SESSION
+    etl_derived_value: null
+
+  # ── ORDER ACTION TYPE (Modify/Cancel) ────────────────────────────────
+  - attribute_name: Order Action Type Code
+    physical_name: ordr_act_tp_code
+    description: "Loại hành động lệnh: N=Mới / M=Sửa / C=Hủy."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.modify_cancel
+    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. Nguồn HOSE dùng N/M/C; ETL normalize sang scheme chung."
+    classification_context: ORDERTRADE_ORDER_ACTION_TYPE
+    etl_derived_value: null
+
+  # ── ORDER ACCEPT NO (BK phụ) ─────────────────────────────────────────
+  - attribute_name: Order Accept Id
+    physical_name: ordr_acpt_id
+    description: "Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán (BK phụ)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_accept_no
+    comment: "BK phụ HOSE — dùng làm FK-BK target cho Securities Trade (buy/sell_scr_ordr_code)."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORIG ORDER ACCEPT NO ────────────────────────────────────────────
+  - attribute_name: Original Order Accept Id
+    physical_name: org_ordr_acpt_id
+    description: "Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ thống của Sàn."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.orig_order_accept_no
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORIG ORDER ID ───────────────────────────────────────────────────
+  - attribute_name: Original Order Code
+    physical_name: org_ordr_code
+    description: "Mã định danh của lệnh đặt trước khi chỉnh sửa."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.orig_order_id
+    comment: "Self-reference sang Securities Order Code của lệnh gốc."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── SIDE ────────────────────────────────────────────────────────────
+  - attribute_name: Side Indicator
+    physical_name: side_ind
+    description: "Loại lệnh: B=Buy / S=Sell."
+    data_domain: Indicator
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.side
+    comment: "Indicator domain — B/S. HNX nguồn dùng 1/2; ETL normalize sang B/S (quyết định D-08 HLD)."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── BROKER ──────────────────────────────────────────────────────────
+  - attribute_name: Broker Id
+    physical_name: bkr_id
+    description: "Mã/số công ty chứng khoán."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.brk_id
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Broker Name
+    physical_name: bkr_nm
+    description: "Tên công ty chứng khoán."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.brk_name
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── PIN ─────────────────────────────────────────────────────────────
+  - attribute_name: Account Pin Code
+    physical_name: acc_pin_code
+    description: "Mã PIN của tài khoản giao dịch."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.pin
+    comment: "Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ACCOUNT ─────────────────────────────────────────────────────────
+  - attribute_name: Account Number
+    physical_name: acc_nbr
+    description: "Mã/Số tài khoản giao dịch của nhà đầu tư."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.acct_no
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Account Holder Name
+    physical_name: acc_hldr_nm
+    description: "Tên nhà đầu tư/chủ tài khoản nhà đầu tư."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.acct_holder_name
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── MARKET MAKER ────────────────────────────────────────────────────
+  - attribute_name: Market Maker Order Indicator
+    physical_name: mkt_mkr_ordr_ind
+    description: "Lệnh đặt của nhà tạo lập thị trường."
+    data_domain: Indicator
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.market_maker_order
+    comment: "Y=Là lệnh market maker; N=Không phải. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── CLIENT/HOUSE ─────────────────────────────────────────────────────
+  - attribute_name: Client House Classification Code
+    physical_name: clnt_hs_cls_code
+    description: "Phân loại lệnh khách hàng/công ty tự doanh."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.client_house_cls_code
+    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+    classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
+    etl_derived_value: null
+
+  # ── INVESTOR TYPE ────────────────────────────────────────────────────
+  - attribute_name: Investor Type Code
+    physical_name: ivsr_tp_code
+    description: "Phân loại nhà đầu tư (raw từ HOSE)."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.investor_type
+    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+    classification_context: ORDERTRADE_INVESTOR_TYPE
+    etl_derived_value: null
+
+  # ── FOREIGN INVESTOR TYPE ────────────────────────────────────────────
+  - attribute_name: Foreign Investor Type Code
+    physical_name: frgn_ivsr_tp_code
+    description: "Phân loại đầu tư nước ngoài."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.foreign_investor_type
+    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
+    classification_context: ORDERTRADE_FOREIGN_INVESTOR_TYPE
+    etl_derived_value: null
+
+  # ── ORDER TYPE ───────────────────────────────────────────────────────
+  - attribute_name: Order Type Code
+    physical_name: ordr_tp_code
+    description: "Loại lệnh theo giá."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_type
+    comment: "Scheme: ORDERTRADE_ORDER_TYPE."
+    classification_context: ORDERTRADE_ORDER_TYPE
+    etl_derived_value: null
+
+  # ── ORDER PRICE ─────────────────────────────────────────────────────
+  - attribute_name: Order Price
+    physical_name: ordr_prc
+    description: "Giá đặt lệnh."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_price
+    comment: "Nguồn decimal(18,4). 0 nếu Market/Fixed price/Cancel."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORDER VOLUME ────────────────────────────────────────────────────
+  - attribute_name: Order Volume
+    physical_name: ordr_vol
+    description: "Khối lượng đặt lệnh."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_vol
+    comment: "Nguồn bigint."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORDER CONDITION ─────────────────────────────────────────────────
+  - attribute_name: Order Condition Code
+    physical_name: ordr_cd_code
+    description: "Điều kiện thực hiện lệnh."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_condition
+    comment: "Scheme: ORDERTRADE_ORDER_CONDITION."
+    classification_context: ORDERTRADE_ORDER_CONDITION
+    etl_derived_value: null
+
+  # ── LTP ─────────────────────────────────────────────────────────────
+  - attribute_name: Last Traded Price
+    physical_name: ltp
+    description: "Giá khớp gần nhất trên thị trường (LTP)."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.ltp
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── EXEC PRICE ──────────────────────────────────────────────────────
+  - attribute_name: Execution Price
+    physical_name: exec_prc
+    description: "Giá khớp lệnh thực tế."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.exec_price
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── IMM MATCHED VOL ─────────────────────────────────────────────────
+  - attribute_name: Immediate Matched Volume
+    physical_name: imm_mtch_vol
+    description: "Khối lượng khớp ngay khi hệ thống ghi nhận lệnh."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.imm_matched_vol
+    comment: "Nguồn bigint. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── MATCHED VOL ─────────────────────────────────────────────────────
+  - attribute_name: Matched Volume
+    physical_name: mtch_vol
+    description: "Tổng khối lượng đã khớp của lệnh."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.matched_vol
+    comment: "Nguồn bigint. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── RMAN VOL ────────────────────────────────────────────────────────
+  - attribute_name: Remaining Quantity
+    physical_name: rman_qty
+    description: "Khối lượng còn lại chưa khớp của lệnh."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.rman_vol
+    comment: "Nguồn bigint."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORDER PRICE VS LTP ───────────────────────────────────────────────
+  - attribute_name: Order Spread
+    physical_name: ordr_sprd
+    description: "Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_price_vs_ltp
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── MATCHED RATIO ────────────────────────────────────────────────────
+  - attribute_name: Matched Ratio
+    physical_name: mtch_rto
+    description: "Tỷ lệ khớp lệnh."
+    data_domain: Percentage
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.matched_rto
+    comment: "Nguồn decimal(10,4). Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── BUY UP / SELL DOWN AMOUNT ────────────────────────────────────────
+  - attribute_name: Price Change Amount
+    physical_name: prc_chg_amt
+    description: "Mức tăng/giảm giá so với tham chiếu theo giá trị."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.buy_up_sell_down_amt
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── BUY UP / SELL DOWN TICK ─────────────────────────────────────────
+  - attribute_name: Price Change Tick
+    physical_name: prc_chg_tick
+    description: "Mức tăng/giảm theo bước giá."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.buy_up_sell_down_tick
+    comment: "Nguồn int. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── NEW HIGH/LOW PRICE ───────────────────────────────────────────────
+  - attribute_name: New High Low Price Indicator
+    physical_name: new_high_low_prc_ind
+    description: "Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày."
+    data_domain: Indicator
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.new_high_low_price
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── ORDER STATUS ─────────────────────────────────────────────────────
+  - attribute_name: Order Status Code
+    physical_name: ordr_st_code
+    description: "Trạng thái của lệnh."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.order_status
+    comment: "Scheme: ORDERTRADE_ORDER_STATUS. HOSE có sẵn; HNX nullable — ETL pending derive (quyết định Q2 HLD)."
+    classification_context: ORDERTRADE_ORDER_STATUS
+    etl_derived_value: null
+
+  # ── ICD BUG QTY ─────────────────────────────────────────────────────
+  - attribute_name: Icd Bug Quantity
+    physical_name: icd_bug_qty
+    description: "Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.icd_bug_qty
+    comment: "Nguồn bigint. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── EXPECTED EXEC PRICE ─────────────────────────────────────────────
+  - attribute_name: Expected Execution Price
+    physical_name: expc_exec_prc
+    description: "Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.expc_exec_price
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── EXPECTED EXEC VOLUME ─────────────────────────────────────────────
+  - attribute_name: Expected Execution Volume
+    physical_name: expc_exec_vol
+    description: "Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.expc_exec_vol
+    comment: "Nguồn bigint. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── SHORT SELL INDICATOR ─────────────────────────────────────────────
+  - attribute_name: Short Sell Type Code
+    physical_name: shrt_sell_tp_code
+    description: "Phân loại lệnh bán khống."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.short_sell_indicator
+    comment: "Scheme: ORDERTRADE_SHORT_SELL_TYPE. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: ORDERTRADE_SHORT_SELL_TYPE
+    etl_derived_value: null
+
+  # ── TRADER ──────────────────────────────────────────────────────────
+  - attribute_name: Trader Number
+    physical_name: trdr_nbr
+    description: "Mã/số định danh người thực hiện giao dịch."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.trader_no
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Trader Name
+    physical_name: trdr_nm
+    description: "Tên người thực hiện giao dịch."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.trader_name
+    comment: "Chỉ có ở HOSE — HNX không có field này."
+    classification_context: null
+    etl_derived_value: null
+
+  # ── REFERENCE SEQUENCE NO ────────────────────────────────────────────
+  - attribute_name: Reference Sequence Number
+    physical_name: ref_seq_nbr
+    description: "Số tham chiếu theo thứ tự giao dịch."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - OrderTrade.HOSE_ORDER_BOOK.ref_seq_no
+    comment: "BK phụ HOSE — dùng làm FK-BK target tương ứng cho buy/sell_ref_seq_nbr trong Securities Trade (quyết định Q5 HLD)."
+    classification_context: null
+    etl_derived_value: null

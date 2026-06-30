@@ -1,0 +1,290 @@
+schema_type: brd_source_columns
+source: OrderTrade
+table: Order_HOSE
+bronze_table: ORDER_HOSE
+description: "Sổ lệnh HOSE — mỗi bản ghi là 1 event lệnh: mới/sửa/hủy trên sàn HOSE (cổ phiếu/trái phiếu/repo)"
+scope_status: in_scope
+
+columns:
+  - name: trade_date
+    data_type: "date"
+    nullable: false
+    key: null
+    description: "Ngày giao dịch theo thị trường chứng khoán"
+
+  - name: market_id
+    data_type: "varchar(10)"
+    nullable: false
+    key: null
+    description: "Mã thị trường chứng khoán"
+    values: "STO=HoSE Stock; BDO=HoSE Bond; RPO=HoSE Repo; STX=HNX Stock; UPX=HNX UPCOM; BDX=HNX Gov Bond; DVX=HNX Derivatives; HCX=HNX Corp Bond"
+
+  - name: symbol
+    data_type: "varchar(20)"
+    nullable: false
+    key: null
+    description: "Mã chứng khoán"
+
+  - name: currency
+    data_type: "varchar(10)"
+    nullable: true
+    key: null
+    description: "Đơn vị tiền tệ"
+
+  - name: board_type
+    data_type: "varchar(5)"
+    nullable: false
+    key: null
+    description: "Loại bảng giao dịch mà lệnh được phân loại vào"
+    values: "G1=Main; G2=Pre open (ATO); G3=Post closing (ATC); G4=Odd lot; G7=Buy-in; G8=Sell-out; T1=Negotiation regular; T2=Negotiation pre; T3=Negotiation post; T4=Negotiation regular odd lot; T6=Negotiation post odd lot; R1=Negotiation Repo"
+
+  - name: order_date
+    data_type: "date"
+    nullable: true
+    key: null
+    description: "Ngày đặt lệnh của người thực hiện giao dịch"
+
+  - name: order_time
+    data_type: "varchar(20)"
+    nullable: true
+    key: null
+    description: "Thời gian đặt lệnh của người thực hiện giao dịch"
+
+  - name: session
+    data_type: "varchar(5)"
+    nullable: true
+    key: null
+    description: "Phiên giao dịch của thị trường chứng khoán"
+    values: "00=Pre-market; 10=ATO; 11=ATO extension; 20=Continuous shifted; 21=Continuous extension; 25=Buy-In; 30=ATC; 40=Continuous; 50=Pre off-hour; 60=Post off-hour receipt; 65=Post off-hours; 70=Post off-hour call auction; 80=Unit trading; 90=Trading halt; 99=Market closing"
+
+  - name: modify_cancel
+    data_type: "varchar(1)"
+    nullable: true
+    key: null
+    description: "Loại hành động lệnh: N=Mới / M=Sửa / C=Hủy"
+    values: "N=No (lệnh mới); M=Modify; C=Cancel"
+
+  - name: order_accept_no
+    data_type: "varchar(20)"
+    nullable: true
+    key: null
+    description: "Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán (BK phụ)"
+
+  - name: orig_order_accept_no
+    data_type: "varchar(20)"
+    nullable: true
+    key: null
+    description: "Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ thống của Sàn"
+
+  - name: side
+    data_type: "varchar(1)"
+    nullable: false
+    key: null
+    description: "Loại lệnh: B=Buy / S=Sell"
+    values: "B=Buy; S=Sell"
+
+  - name: brk_id
+    data_type: "varchar(20)"
+    nullable: true
+    key: null
+    description: "Mã/số công ty chứng khoán"
+
+  - name: brk_name
+    data_type: "varchar(255)"
+    nullable: true
+    key: null
+    description: "Tên công ty chứng khoán"
+
+  - name: pin
+    data_type: "varchar(50)"
+    nullable: true
+    key: null
+    description: "Mã PIN của tài khoản giao dịch"
+
+  - name: acct_no
+    data_type: "varchar(50)"
+    nullable: true
+    key: null
+    description: "Mã/Số tài khoản giao dịch của nhà đầu tư"
+
+  - name: acct_holder_name
+    data_type: "varchar(255)"
+    nullable: true
+    key: null
+    description: "Tên nhà đầu tư/chủ tài khoản nhà đầu tư"
+
+  - name: market_maker_order
+    data_type: "varchar(1)"
+    nullable: true
+    key: null
+    description: "Lệnh đặt của nhà tạo lập thị trường"
+    values: "Y=Là lệnh market maker; N=Không phải"
+
+  - name: client_house_cls_code
+    data_type: "varchar(5)"
+    nullable: true
+    key: null
+    description: "Phân loại lệnh khách hàng/công ty tự doanh"
+    values: "10=Client trade; 30=House trade"
+
+  - name: investor_type
+    data_type: "varchar(10)"
+    nullable: true
+    key: null
+    description: "Phân loại nhà đầu tư (raw từ HOSE)"
+    values: "1000/8000=Cá nhân; 7000=NĐT nước ngoài; 3000=Quỹ đầu tư; 5000=CTCK; 4000=Ngân hàng; 6000=Tổ chức khác"
+
+  - name: foreign_investor_type
+    data_type: "varchar(5)"
+    nullable: true
+    key: null
+    description: "Phân loại đầu tư nước ngoài"
+    values: "00=Không phải NĐT NN; 10=NN cư trú; 20=NN không cư trú"
+
+  - name: order_type
+    data_type: "varchar(5)"
+    nullable: true
+    key: null
+    description: "Loại lệnh theo giá"
+    values: "1=Market; 2=Limit; 3=Stop Market; 4=Stop Limit"
+
+  - name: order_price
+    data_type: "decimal(18,4)"
+    nullable: true
+    key: null
+    description: "Giá đặt lệnh"
+
+  - name: order_vol
+    data_type: "bigint"
+    nullable: true
+    key: null
+    description: "Khối lượng đặt lệnh"
+
+  - name: order_condition
+    data_type: "varchar(5)"
+    nullable: true
+    key: null
+    description: "Điều kiện thực hiện lệnh"
+    values: "0=FAS; 1=GTC; 2=ATO; 3=FAK; 4=FOK; 6=GTD; 7=ATC; 9=MTL"
+
+  - name: ltp
+    data_type: "decimal(18,4)"
+    nullable: true
+    key: null
+    description: "Giá khớp gần nhất trên thị trường (Last Traded Price)"
+
+  - name: exec_price
+    data_type: "decimal(18,4)"
+    nullable: true
+    key: null
+    description: "Giá khớp lệnh thực tế"
+
+  - name: imm_matched_vol
+    data_type: "bigint"
+    nullable: true
+    key: null
+    description: "Khối lượng khớp ngay khi hệ thống ghi nhận lệnh"
+
+  - name: matched_vol
+    data_type: "bigint"
+    nullable: true
+    key: null
+    description: "Tổng khối lượng đã khớp của lệnh"
+
+  - name: rman_vol
+    data_type: "bigint"
+    nullable: true
+    key: null
+    description: "Khối lượng còn lại chưa khớp của lệnh"
+
+  - name: order_price_vs_ltp
+    data_type: "decimal(18,4)"
+    nullable: true
+    key: null
+    description: "Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất"
+
+  - name: matched_rto
+    data_type: "decimal(10,4)"
+    nullable: true
+    key: null
+    description: "Tỷ lệ khớp lệnh"
+
+  - name: buy_up_sell_down_amt
+    data_type: "decimal(18,4)"
+    nullable: true
+    key: null
+    description: "Mức tăng/giảm giá so với tham chiếu theo giá trị"
+
+  - name: buy_up_sell_down_tick
+    data_type: "int"
+    nullable: true
+    key: null
+    description: "Mức tăng/giảm theo bước giá"
+
+  - name: new_high_low_price
+    data_type: "varchar(10)"
+    nullable: true
+    key: null
+    description: "Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày"
+
+  - name: order_status
+    data_type: "varchar(5)"
+    nullable: true
+    key: null
+    description: "Trạng thái của lệnh"
+    values: "0=New/Accepted; 1=Partial Filled; 2=Filled; 3=Cancelled; 4=Rejected; 5=Expired; 6=Pending Cancel; 7=Pending Replace; 8=Replaced"
+
+  - name: icd_bug_qty
+    data_type: "bigint"
+    nullable: true
+    key: null
+    description: "Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch"
+
+  - name: expc_exec_price
+    data_type: "decimal(18,4)"
+    nullable: true
+    key: null
+    description: "Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày"
+
+  - name: expc_exec_vol
+    data_type: "bigint"
+    nullable: true
+    key: null
+    description: "Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày"
+
+  - name: short_sell_indicator
+    data_type: "varchar(5)"
+    nullable: true
+    key: null
+    description: "Phân loại lệnh bán khống"
+    values: "00=Không phải bán khống; 10=Lệnh bán khống"
+
+  - name: trader_no
+    data_type: "varchar(20)"
+    nullable: true
+    key: null
+    description: "Mã/số định danh người thực hiện giao dịch"
+
+  - name: trader_name
+    data_type: "varchar(255)"
+    nullable: true
+    key: null
+    description: "Tên người thực hiện giao dịch"
+
+  - name: ref_seq_no
+    data_type: "varchar(30)"
+    nullable: true
+    key: null
+    description: "Số tham chiếu theo thứ tự giao dịch"
+
+  - name: order_id
+    data_type: "varchar(50)"
+    nullable: false
+    key: PK
+    description: "Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính)"
+
+  - name: orig_order_id
+    data_type: "varchar(50)"
+    nullable: true
+    key: null
+    description: "Mã định danh của lệnh đặt trước khi chỉnh sửa"

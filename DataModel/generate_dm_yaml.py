@@ -198,7 +198,7 @@ def build_yaml(atomic_table, source_system, source_table, attrs, entity_meta, et
     lines.append(f"  physical_name: {physical_name}")
     lines.append("  layer: Atomic")
     lines.append('  version: "1.0"')
-    lines.append(f"  status: {status if status in ('draft','approved') else 'draft'}")
+    lines.append(f"  status: {status if status in ('draft','reviewed','approved') else 'draft'}")
     lines.append(f"  bcv_core_object: {yaml_str(bcv_core)}")
     lines.append(f"  bcv_concept: {yaml_str(bcv_concept)}")
     lines.append(f"  table_type: {yaml_str(table_type)}")
