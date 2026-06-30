@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: DYNAMIC_TABLES
+brd_ref: BRD-SRC-FMS-DYNAMIC_TABLES
+columns:
+- name: ID
+  data_type: NUMBER(22)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: TABLENAME
+  data_type: VARCHAR2(255)
+  description: "Tên bảng dữ liệu động trong Oracle"
+  key: null
+  fk_note: null
+- name: SCHEMANAME
+  data_type: VARCHAR2(255)
+  description: "Tên schema Oracle chứa bảng động"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: CLOB
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: CREATEDAT
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bảng/cột dữ liệu động"
+  key: null
+  fk_note: null
+- name: UPDATEDAT
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bảng/cột dữ liệu động"
+  key: null
+  fk_note: null
+- name: CREATEDBY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản tạo bảng/cột dữ liệu động"
+  key: null
+  fk_note: null

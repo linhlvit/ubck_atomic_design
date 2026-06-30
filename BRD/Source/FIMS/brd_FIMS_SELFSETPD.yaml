@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: SELFSETPD
+brd_ref: BRD-SRC-FIMS-SELFSETPD
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: RptId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPTTEMP"
+- name: IsSend
+  data_type: "NUMBER(1,0)"
+  description: "Cờ đã gửi báo cáo trong kỳ tự thiết lập: 1=Đã gửi, 0=Chưa"
+  key: null
+  fk_note: null
+- name: SysTemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng tự thiết lập kỳ báo cáo"
+  key: null
+  fk_note: null
+- name: LstMember
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách thành viên áp dụng kỳ tự thiết lập này (JSON/CSV ID)"
+  key: null
+  fk_note: null
+- name: BC_SU_VU_ID
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BC_SU_VU: Loại sự vụ báo cáo liên quan"
+  key: FK
+  fk_note: "FK → BC_SU_VU"

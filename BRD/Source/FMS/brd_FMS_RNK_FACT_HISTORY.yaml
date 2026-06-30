@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RNK_FACT_HISTORY
+brd_ref: BRD-SRC-FMS-RNK_FACT_HISTORY
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: NUMBER(22)
+  description: "Năm báo cáo (định dạng YYYY)"
+  key: null
+  fk_note: null
+- name: PERIOD
+  data_type: NUMBER(22)
+  description: "Kỳ đánh giá trong năm: 1=Giữa năm, 2=Cuối năm"
+  key: null
+  fk_note: null
+- name: DATA_LABEL
+  data_type: NCLOB
+  description: "Nhãn dữ liệu hiển thị trong ô (JSON NCLOB)"
+  key: null
+  fk_note: null
+- name: DATE_SAVE
+  data_type: DATE
+  description: "Thời điểm/ngày tháng liên quan"
+  key: null
+  fk_note: null
+- name: DATA_LABEL_FAC
+  data_type: NCLOB
+  description: "Nhãn dữ liệu chi tiết theo tiêu chí đánh giá (NCLOB: JSON)"
+  key: null
+  fk_note: null
+- name: SUPERVISOR_EDITED
+  data_type: NUMBER(22)
+  description: "Cờ lãnh đạo đã chỉnh sửa điểm đánh giá: 1=Đã sửa, 0=Chưa sửa"
+  key: null
+  fk_note: null
+- name: CELLS_META
+  data_type: NCLOB
+  description: "Metadata cấu hình các ô trong sheet (JSON NCLOB: màu sắc, gộp ô, format...)"
+  key: null
+  fk_note: null

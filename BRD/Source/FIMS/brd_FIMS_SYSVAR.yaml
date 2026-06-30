@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: SYSVAR
+brd_ref: BRD-SRC-FIMS-SYSVAR
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: GrName
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tên nhóm tham số hệ thống (nhóm các biến liên quan)"
+  key: null
+  fk_note: null
+- name: VarName
+  data_type: "NVARCHAR2(200 CHAR)"
+  description: "Tên/mã tham số hệ thống (key để tra cứu)"
+  key: null
+  fk_note: null
+- name: VarValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị hiện tại của tham số hệ thống"
+  key: null
+  fk_note: null
+- name: VarDesc
+  data_type: "NVARCHAR2(1000 CHAR)"
+  description: "Mô tả ý nghĩa của tham số hệ thống"
+  key: null
+  fk_note: null
+- name: TypeControl
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Kiểu control hiển thị: TEXT/NUMBER/DATE/BOOLEAN/SELECT"
+  key: null
+  fk_note: null

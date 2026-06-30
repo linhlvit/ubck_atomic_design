@@ -1,0 +1,111 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: CDTWARN
+brd_ref: BRD-SRC-FIMS-CDTWARN
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: PrWId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> PARAWARN: Tham số cảnh báo chính bị vi phạm"
+  key: FK
+  fk_note: "FK → PARAWARN"
+- name: Name
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: CompareType
+  data_type: "NUMBER(1,0)"
+  description: "Loại so sánh điều kiện cảnh báo: 1/true=So sánh với tham số cảnh báo thứ 2, 0/false=So sánh với giá trị số cố định"
+  key: null
+  fk_note: null
+- name: OtherWId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> PARAWARN: Tham số cảnh báo thứ 2 (điều kiện kép)"
+  key: FK
+  fk_note: "FK → PARAWARN"
+- name: OtherWIdCondition
+  data_type: "NUMBER(18,2)"
+  description: "Điều kiện kết hợp với tham số thứ 2 (AND/OR)"
+  key: null
+  fk_note: null
+- name: FromValue
+  data_type: "NUMBER(38,5)"
+  description: "Giá trị ngưỡng dưới của điều kiện cảnh báo"
+  key: null
+  fk_note: null
+- name: FromValueCondition
+  data_type: "NUMBER(10,0)"
+  description: "Điều kiện áp dụng cho ngưỡng dưới (AND/OR)"
+  key: null
+  fk_note: null
+- name: ToValue
+  data_type: "NUMBER(38,5)"
+  description: "Giá trị ngưỡng trên của điều kiện cảnh báo"
+  key: null
+  fk_note: null
+- name: ToValueCondition
+  data_type: "NUMBER(10,0)"
+  description: "Điều kiện áp dụng cho ngưỡng trên (AND/OR)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái điều kiện cảnh báo: 1/true=Kích hoạt, 0/false=Vô hiệu hóa"
+  key: null
+  fk_note: null
+- name: PrWPeriodType
+  data_type: "NUMBER(10,0)"
+  description: "Loại kỳ lấy dữ liệu của tham số cảnh báo chính (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: PrWPeriodValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ lấy dữ liệu của tham số cảnh báo chính"
+  key: null
+  fk_note: null
+- name: OtherWPeriodType
+  data_type: "NUMBER(10,0)"
+  description: "Loại kỳ lấy dữ liệu của tham số cảnh báo thứ 2 (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: OtherWPeriodValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ của tham số cảnh báo thứ 2"
+  key: null
+  fk_note: null
+- name: NumberDayRun
+  data_type: "NUMBER(38,0)"
+  description: "Số ngày liên tiếp vi phạm để kích hoạt cảnh báo"
+  key: null
+  fk_note: null

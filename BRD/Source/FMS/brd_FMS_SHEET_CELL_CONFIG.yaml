@@ -1,0 +1,151 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: SHEET_CELL_CONFIG
+brd_ref: BRD-SRC-FMS-SHEET_CELL_CONFIG
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: SHEET_ID
+  data_type: RAW(16)
+  description: "FK -> SHEET: Sheet biểu mẫu báo cáo"
+  key: null
+  fk_note: "FK suy luận → SHEET.ID"
+- name: ROW_INDEX
+  data_type: NUMBER(22)
+  description: "Chỉ số hàng của ô trong sheet (bắt đầu từ 0)"
+  key: null
+  fk_note: null
+- name: COL_INDEX
+  data_type: NUMBER(22)
+  description: "Chỉ số cột của ô trong sheet (bắt đầu từ 0)"
+  key: null
+  fk_note: null
+- name: CELL_KEY
+  data_type: VARCHAR2(255)
+  description: "Khóa duy nhất của ô trong sheet (VD: A1, B3...)"
+  key: null
+  fk_note: null
+- name: INDICATOR_TYPE
+  data_type: VARCHAR2(255)
+  description: "Loại chỉ tiêu trong ô: INPUT=nhập liệu, FORMULA=tính toán, LABEL=nhãn hiển thị"
+  key: null
+  fk_note: null
+- name: FORMAT_CODE
+  data_type: VARCHAR2(255)
+  description: "Mã định dạng hiển thị ô (số, %, tiền tệ, ngày...)"
+  key: null
+  fk_note: null
+- name: UNIT_SCALE
+  data_type: VARCHAR2(255)
+  description: "Đơn vị tính và hệ số quy đổi (VD: triệu đồng, tỷ đồng...)"
+  key: null
+  fk_note: null
+- name: TARGET_CODE_FLAG
+  data_type: NUMBER(22)
+  description: "Cờ ô là mã mục tiêu định danh hàng: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: IDENTIFIER_FLAG
+  data_type: NUMBER(22)
+  description: "Cờ ô là trường định danh bản ghi: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: IDENTIFIER_CODE
+  data_type: VARCHAR2(255)
+  description: "Mã định danh của ô trong sheet (dùng để ghép với bảng dữ liệu)"
+  key: null
+  fk_note: null
+- name: SECTION_ID
+  data_type: VARCHAR2(255)
+  description: "ID section (nhóm hàng/cột) chứa ô này"
+  key: null
+  fk_note: null
+- name: SECTION_TYPE
+  data_type: VARCHAR2(255)
+  description: "Loại section: HEADER=Tiêu đề nhóm, DATA=Dữ liệu, TOTAL=Tổng cộng"
+  key: null
+  fk_note: null
+- name: SECTION_ANCHOR
+  data_type: NUMBER(22)
+  description: "Cờ ô là điểm neo (anchor) của section: 1=Anchor, 0=Không"
+  key: null
+  fk_note: null
+- name: SECTION_END
+  data_type: NUMBER(22)
+  description: "Cờ ô đánh dấu kết thúc section: 1=Kết thúc, 0=Không"
+  key: null
+  fk_note: null
+- name: MAPPING_TARGET
+  data_type: VARCHAR2(255)
+  description: "Bảng đích khi ánh xạ dữ liệu từ ô sang cơ sở dữ liệu"
+  key: null
+  fk_note: null
+- name: MAPPING_FIELD
+  data_type: VARCHAR2(255)
+  description: "Tên field trong bảng đích khi ánh xạ ô"
+  key: null
+  fk_note: null
+- name: MAPPING_FIELD_TYPE
+  data_type: VARCHAR2(255)
+  description: "Kiểu dữ liệu của field ánh xạ (NUMBER, VARCHAR, DATE...)"
+  key: null
+  fk_note: null
+- name: MAPPING_LABEL
+  data_type: VARCHAR2(255)
+  description: "Nhãn hiển thị của field ánh xạ trên giao diện"
+  key: null
+  fk_note: null
+- name: REQUIRED_FIELD
+  data_type: NUMBER(22)
+  description: "Cờ ô bắt buộc nhập: 1=Bắt buộc, 0=Tùy chọn"
+  key: null
+  fk_note: null
+- name: MIN_VALUE
+  data_type: VARCHAR2(255)
+  description: "Giá trị tối thiểu cho phép nhập vào ô"
+  key: null
+  fk_note: null
+- name: MAX_VALUE
+  data_type: VARCHAR2(255)
+  description: "Giá trị tối đa cho phép nhập vào ô"
+  key: null
+  fk_note: null
+- name: DROPDOWN_DATA
+  data_type: NCLOB
+  description: "Danh sách giá trị dropdown cho ô (JSON NCLOB: [{value, label}...])"
+  key: null
+  fk_note: null
+- name: FORMULA
+  data_type: NCLOB
+  description: "Công thức tính toán tự động của ô (NCLOB: Excel-style formula)"
+  key: null
+  fk_note: null
+- name: CELL_META_JSON
+  data_type: NCLOB
+  description: "Metadata mở rộng của ô (JSON NCLOB: validation, conditional formatting...)"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null

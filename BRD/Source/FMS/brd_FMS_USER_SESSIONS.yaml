@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: USER_SESSIONS
+brd_ref: BRD-SRC-FMS-USER_SESSIONS
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: USER_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên đăng nhập (username) của tài khoản người dùng"
+  key: null
+  fk_note: null
+- name: DESTROY_USER_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên tài khoản bị xóa phiên/buộc đăng xuất"
+  key: null
+  fk_note: null
+- name: CLIENT_IP
+  data_type: NVARCHAR2(300)
+  description: "Địa chỉ IP máy khách đăng nhập"
+  key: null
+  fk_note: null
+- name: DNS_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên máy (DNS hostname) của máy khách"
+  key: null
+  fk_note: null
+- name: DATE_LOGINED
+  data_type: DATE
+  description: "Thời điểm đăng nhập lần cuối"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(300)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null

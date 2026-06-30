@@ -1,0 +1,191 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: USERS
+brd_ref: BRD-SRC-FIMS-USERS
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: UserName
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tên đăng nhập (username) của người được phân quyền dữ liệu"
+  key: null
+  fk_note: null
+- name: DisplayName
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Tên hiển thị của người dùng trên giao diện"
+  key: null
+  fk_note: null
+- name: Password
+  data_type: "NVARCHAR2(32 CHAR)"
+  description: "Mật khẩu hiện tại (đã mã hóa hash)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: DateLogined
+  data_type: "DATE"
+  description: "Thời điểm đăng nhập thành công lần cuối"
+  key: null
+  fk_note: null
+- name: DateChangePassword
+  data_type: "DATE"
+  description: "Thời điểm thay đổi mật khẩu lần cuối"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng áp dụng (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
+  key: null
+  fk_note: null
+- name: OrgPassword
+  data_type: "NVARCHAR2(32 CHAR)"
+  description: "Mật khẩu gốc (ban đầu được cấp, đã mã hóa) — dùng để reset"
+  key: null
+  fk_note: null
+- name: IsCer
+  data_type: "NUMBER(1,0)"
+  description: "Cờ người dùng dùng chứng thư số để đăng nhập: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: Email
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Địa chỉ email liên hệ"
+  key: null
+  fk_note: null
+- name: IsDataMigration
+  data_type: "NUMBER(1,0)"
+  description: "Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: UnitId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> UNIT: Đơn vị tổ chức cha của phòng/ban"
+  key: FK
+  fk_note: "FK → UNIT"
+- name: DepartmentId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> DEPARTMENT: Phòng/ban của người dùng nội bộ UBCKNN"
+  key: FK
+  fk_note: "FK → DEPARTMENT"
+- name: JobTypeId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> JOBTYPE: Loại công việc/chức danh của người dùng"
+  key: FK
+  fk_note: "FK → JOBTYPE"
+- name: AccountType
+  data_type: "NUMBER(18,2)"
+  description: "Loại tài khoản: 1=Nội bộ UBCKNN, 2=Đối tượng gửi báo cáo, 3=Đại diện giao dịch"
+  key: null
+  fk_note: null
+- name: FundComId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecComId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: DepCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → DEPOSITORYCENTER"
+- name: StockCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → STOCKEXCHANGE"
+- name: InDiRepCenId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INFODISCREPRES: Đối tượng gửi báo cáo mà NHNCK làm việc"
+  key: FK
+  fk_note: "FK → INFODISCREPRES"
+- name: BranchsId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
+  key: FK
+  fk_note: "FK → BRANCHS"
+- name: CountPassFail
+  data_type: "NUMBER(18,2)"
+  description: "Số lần nhập sai mật khẩu liên tiếp (khóa tài khoản khi đủ ngưỡng)"
+  key: null
+  fk_note: null
+- name: IsFirstLogin
+  data_type: "NUMBER(1,0)"
+  description: "Cờ đây là lần đăng nhập đầu tiên (yêu cầu đổi mật khẩu): 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: IdOld
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null
+- name: CodeOTP
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mã OTP hiện tại (đã mã hóa) gửi cho người dùng để xác thực"
+  key: null
+  fk_note: null
+- name: DateGenOTP
+  data_type: "TIMESTAMP(7)"
+  description: "Thời điểm sinh mã OTP hiện tại"
+  key: null
+  fk_note: null
+- name: PhoneNumber
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Số điện thoại của đơn vị/phòng ban"
+  key: null
+  fk_note: null
+- name: InvestorId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
+  key: FK
+  fk_note: "FK → INVESTOR"
+- name: TradingRepresentativeId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> TRADINGREPRESENTATIVE: Đại diện giao dịch liên kết với tài khoản người dùng"
+  key: FK
+  fk_note: "FK → TRADINGREPRESENTATIVE"

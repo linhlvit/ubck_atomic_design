@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RATING_PD_SNAPSHOT
+brd_ref: BRD-SRC-FMS-RATING_PD_SNAPSHOT
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: RT_PD_ID
+  data_type: RAW(16)
+  description: "FK -> RATING_PD: Kỳ đánh giá xếp loại"
+  key: null
+  fk_note: "FK suy luận → RATING_PD.ID"
+- name: SEC_ID
+  data_type: RAW(16)
+  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  key: null
+  fk_note: "FK suy luận → SECURITIES.ID"
+- name: TOTAL_SCORE
+  data_type: NUMBER(22)
+  description: "Tổng điểm đánh giá xếp loại của công ty QLQ trong kỳ"
+  key: null
+  fk_note: null
+- name: RANK_INDEX
+  data_type: NUMBER(22)
+  description: "Thứ hạng xếp loại trong nhóm cùng loại (1=Tốt nhất)"
+  key: null
+  fk_note: null
+- name: RANK_TYPE
+  data_type: NUMBER(22)
+  description: "Loại xếp hạng: 1=Xếp hạng cuối năm, 2=Xếp hạng giữa năm"
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: CLOB
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: SNAPSHOT_AT
+  data_type: TIMESTAMP
+  description: "Thời điểm chụp snapshot dữ liệu đánh giá"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: FACTORS_JSON
+  data_type: CLOB
+  description: "Chi tiết điểm từng tiêu chí trong snapshot đánh giá (JSON CLOB)"
+  key: null
+  fk_note: null

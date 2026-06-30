@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: NOTIFICATION
+brd_ref: BRD-SRC-FMS-NOTIFICATION
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: VIEWED
+  data_type: NUMBER(22)
+  description: "Cờ người nhận đã xem thông báo: 1=Đã xem, 0=Chưa xem"
+  key: null
+  fk_note: null
+- name: TITLE
+  data_type: NVARCHAR2(300)
+  description: "Tiêu đề thông báo/CBTT (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: LINK_TO_DETAIL
+  data_type: NVARCHAR2(300)
+  description: "Đường dẫn URL đến trang chi tiết của thông báo nội bộ"
+  key: null
+  fk_note: null
+- name: RECORD_TYPE
+  data_type: NUMBER(22)
+  description: "Loại/phân loại của bản ghi"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: UFROM_ID
+  data_type: RAW(16)
+  description: "FK -> USERS: Người gửi thông báo/email"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: UTO_ID
+  data_type: RAW(16)
+  description: "FK -> USERS: Người nhận thông báo/email"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: CONTENT
+  data_type: CLOB
+  description: "Nội dung thông báo chi tiết gửi đến người dùng hệ thống"
+  key: null
+  fk_note: null
+- name: FILE_DATA
+  data_type: CLOB
+  description: "Dữ liệu file đính kèm (base64 hoặc JSON danh sách file, NCLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: SEND_EMAIL
+  data_type: NUMBER(22)
+  description: "Cờ gửi kèm email: 1=Có gửi email, 0=Không gửi"
+  key: null
+  fk_note: null
+- name: SEND_SMS
+  data_type: NUMBER(22)
+  description: "Cờ gửi kèm SMS: 1=Có gửi SMS, 0=Không gửi"
+  key: null
+  fk_note: null
+- name: SEND_DATE
+  data_type: TIMESTAMP
+  description: "Ngày thành viên gửi thông báo/email"
+  key: null
+  fk_note: null
+- name: SEND_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản gửi thông báo/email"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null

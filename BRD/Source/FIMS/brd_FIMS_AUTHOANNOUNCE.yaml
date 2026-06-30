@@ -1,0 +1,121 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: AUTHOANNOUNCE
+brd_ref: BRD-SRC-FIMS-AUTHOANNOUNCE
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: InfoDiscRepresId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nhận ủy quyền"
+  key: FK
+  fk_note: "FK → INFODISCREPRES"
+- name: RelatedPropertiesId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RELATEDPROPERTIES: Loại tài sản liên quan trong hợp đồng ủy quyền"
+  key: FK
+  fk_note: "FK → RELATEDPROPERTIES"
+- name: RelationshipId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RELATIONSHIP: Mối quan hệ giữa NĐT NN và người đại diện"
+  key: FK
+  fk_note: "FK → RELATIONSHIP"
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: SDate
+  data_type: "TIMESTAMP(7)"
+  description: "Ngày bắt đầu hiệu lực hợp đồng ủy quyền"
+  key: null
+  fk_note: null
+- name: EDate
+  data_type: "TIMESTAMP(7)"
+  description: "Ngày kết thúc hiệu lực hợp đồng ủy quyền"
+  key: null
+  fk_note: null
+- name: IdOld
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null
+- name: InvestorIds
+  data_type: "VARCHAR2(4000 BYTE)"
+  description: "Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,0)"
+  description: "Loại đối tượng áp dụng (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
+  key: null
+  fk_note: null
+- name: FundComId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecComId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: DepCenId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → DEPOSITORYCENTER"
+- name: StockCenId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → STOCKEXCHANGE"
+- name: BranchsId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
+  key: FK
+  fk_note: "FK → BRANCHS"
+- name: IsTradingRep
+  data_type: "NUMBER(1,0)"
+  description: "Cờ là đại diện giao dịch: 1=Đại diện giao dịch, 0=Đại diện CBTT"
+  key: null
+  fk_note: null
+- name: ImportFileName
+  data_type: "VARCHAR2(1000 CHAR)"
+  description: "Tên file Excel dùng để import danh sách NĐT NN ủy quyền"
+  key: null
+  fk_note: null

@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: DYNAMICCONNECTIONS
+brd_ref: BRD-SRC-FIMS-DYNAMICCONNECTIONS
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi"
+  key: null
+  fk_note: null
+- name: TABLENAME
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tên bảng trong DB hoặc tên bảng động"
+  key: null
+  fk_note: null
+- name: SCHEMANAME
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tên schema DB chứa bảng động (Oracle schema name)"
+  key: null
+  fk_note: null
+- name: CONNECTIONNAME
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tên định danh kết nối dữ liệu động"
+  key: null
+  fk_note: null
+- name: MAPPINGCONFIG
+  data_type: "CLOB"
+  description: "Cấu hình ánh xạ field từ response API vào cột bảng động (JSON)"
+  key: null
+  fk_note: null
+- name: SOURCEAPIURL
+  data_type: "VARCHAR2(1000 BYTE)"
+  description: "URL endpoint API nguồn dữ liệu động"
+  key: null
+  fk_note: null
+- name: HTTPMETHOD
+  data_type: "VARCHAR2(10 BYTE)"
+  description: "Phương thức HTTP gọi API nguồn: GET/POST/PUT/DELETE"
+  key: null
+  fk_note: null
+- name: RESPONSETYPE
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Kiểu response từ API nguồn: JSON/XML/CSV"
+  key: null
+  fk_note: null
+- name: CUSTOMHEADERS
+  data_type: "CLOB"
+  description: "Header HTTP tùy chỉnh khi gọi API nguồn dữ liệu động (JSON)"
+  key: null
+  fk_note: null
+- name: REQUESTBODYTEMPLATE
+  data_type: "CLOB"
+  description: "Template body request gửi đến API nguồn (JSON template)"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: "CLOB"
+  description: "Mô tả/ghi chú về đại diện giao dịch"
+  key: null
+  fk_note: null
+- name: ISACTIVE
+  data_type: "NUMBER(1,0)"
+  description: "Cờ kết nối đang hoạt động: 1=Đang dùng, 0=Vô hiệu"
+  key: null
+  fk_note: null
+- name: CREATEDAT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo cấu hình bảng/kết nối động"
+  key: null
+  fk_note: null
+- name: UPDATEDAT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật cấu hình bảng/kết nối động lần cuối"
+  key: null
+  fk_note: null
+- name: CREATEDBY
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: SOURCEDATAPATH
+  data_type: "VARCHAR2(500 BYTE)"
+  description: "Đường dẫn JSON path lấy dữ liệu từ response API (VD: $.data.items)"
+  key: null
+  fk_note: null
+- name: POSTPROCESSHANDLER
+  data_type: "VARCHAR2(500 BYTE)"
+  description: "Tên handler xử lý sau khi nhận dữ liệu (class/function name)"
+  key: null
+  fk_note: null
+- name: POSTPROCESSSCRIPT
+  data_type: "CLOB"
+  description: "Script xử lý/transform dữ liệu sau khi nhận từ API nguồn"
+  key: null
+  fk_note: null

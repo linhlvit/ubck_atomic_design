@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: TRADINGAUTHORIZATION
+brd_ref: BRD-SRC-FIMS-TRADINGAUTHORIZATION
+columns:
+- name: Id
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,0)"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+  key: null
+  fk_note: null
+- name: FundComId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecComId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: InvestorId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
+  key: FK
+  fk_note: "FK → INVESTOR"
+- name: AuthorizationTypeId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> loại hình ủy quyền giao dịch"
+  key: FK
+  fk_note: "FK → LO"
+- name: Status
+  data_type: "NUMBER(18,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: SDate
+  data_type: "DATE"
+  description: "Ngày bắt đầu hiệu lực hợp đồng ủy quyền"
+  key: null
+  fk_note: null
+- name: EDate
+  data_type: "DATE"
+  description: "Ngày kết thúc hiệu lực hợp đồng ủy quyền"
+  key: null
+  fk_note: null
+- name: Note
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: InvestorIds
+  data_type: "VARCHAR2(4000 CHAR)"
+  description: "Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)"
+  key: null
+  fk_note: null
+- name: IdOld
+  data_type: "VARCHAR2(1000 CHAR)"
+  description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: TradingRepresentativeId
+  data_type: "NUMBER(18,0)"
+  description: "FK đến TRADINGREPRESENTATIVE.ID — Người đại diện giao dịch (SRS §7.2 mục II)"
+  key: null
+  fk_note: null

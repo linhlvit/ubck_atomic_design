@@ -4,48 +4,53 @@ source: FMS
 table: RANK
 brd_ref: BRD-SRC-FMS-RANK
 columns:
-- name: Id
+- name: ID
   data_type: RAW(16)
-  description: Mã ID bảng xếp hạng (PK)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
   key: PK
   fk_note: null
-- name: SecId
-  data_type: RAW(16)
-  description: Mã ID công ty QLQ. FK → SECURITIES.Id
-  key: FK
-  fk_note: FK → SECURITIES.Id
-- name: RatingPdId
-  data_type: RAW(16)
-  description: Mã ID kỳ đánh giá. FK → RATINGPD.Id
-  key: FK
-  fk_note: FK → RATINGPD.Id
-- name: TotalScore
-  data_type: NUMBER(22)
-  description: Tổng điểm đánh giá
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
-- name: RankValue
-  data_type: NUMBER(22)
-  description: Xếp hạng
-  key: null
-  fk_note: null
-- name: RankClass
+- name: CREATED_BY
   data_type: NVARCHAR2(300)
-  description: Xếp loại
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
-- name: Deleted
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: SEC_ID
+  data_type: RAW(16)
+  description: "FK -> SECURITIES: Công ty QLQ liên quan"
+  key: null
+  fk_note: "FK suy luận → SECURITIES.ID"
+- name: RT_PD_ID
+  data_type: RAW(16)
+  description: "FK -> RATING_PD: Kỳ đánh giá xếp loại"
+  key: null
+  fk_note: "FK suy luận → RATING_PD.ID"
+- name: TOTAL_SCORE
   data_type: NUMBER(22)
-  description: Trạng thái bản ghi
+  description: "Tổng điểm đánh giá xếp loại của công ty QLQ trong kỳ"
   key: null
   fk_note: null
-- name: DateCreated
-  data_type: DATE
-  description: Ngày tạo
+- name: RANK_INDEX
+  data_type: NUMBER(22)
+  description: "Thứ hạng xếp loại trong nhóm cùng loại (1=Tốt nhất)"
   key: null
   fk_note: null
-- name: DateModified
-  data_type: DATE
-  description: Ngày sửa
+- name: RANK_TYPE
+  data_type: NUMBER(22)
+  description: "Loại xếp hạng: 1=Xếp hạng cuối năm, 2=Xếp hạng giữa năm"
   key: null
   fk_note: null

@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: REPORT_TEMPLATES
+brd_ref: BRD-SRC-FIMS-REPORT_TEMPLATES
+columns:
+- name: ID
+  data_type: "VARCHAR2(36 BYTE)"
+  description: "UUID report"
+  key: null
+  fk_note: null
+- name: MODULE_ID
+  data_type: "VARCHAR2(36 BYTE)"
+  description: "FK module"
+  key: null
+  fk_note: null
+- name: REPORT_CODE
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Mã báo cáo"
+  key: null
+  fk_note: null
+- name: REPORT_NAME
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tên hiển thị"
+  key: null
+  fk_note: null
+- name: TEMPLATE_JSON
+  data_type: "CLOB"
+  description: "Cấu hình UI report"
+  key: null
+  fk_note: null
+- name: QUERY_CONFIG
+  data_type: "CLOB"
+  description: "SQL/API mapping"
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Ngày tạo"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "User tạo"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"

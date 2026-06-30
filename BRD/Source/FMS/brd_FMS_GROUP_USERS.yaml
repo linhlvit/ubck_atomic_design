@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: GROUP_USERS
+brd_ref: BRD-SRC-FMS-GROUP_USERS
+columns:
+- name: GROUPS_ID
+  data_type: RAW(16)
+  description: "FK -> GROUPS: Nhóm người dùng"
+  key: null
+  fk_note: "FK suy luận → GROUPS.ID"
+- name: USERS_ID
+  data_type: RAW(16)
+  description: "FK -> USERS: Tài khoản người dùng sở hữu token"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"

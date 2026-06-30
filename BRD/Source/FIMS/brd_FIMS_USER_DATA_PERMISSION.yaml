@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: USER_DATA_PERMISSION
+brd_ref: BRD-SRC-FIMS-USER_DATA_PERMISSION
+columns:
+- name: Id
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: UserId
+  data_type: "NUMBER(18,0)"
+  description: "ID người dùng được phân quyền"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,0)"
+  description: "Loại dữ liệu: 1=QLQ, 2=CtyCK, 3=NH Lưu ký, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN"
+  key: null
+  fk_note: null
+- name: MemberId
+  data_type: "NUMBER(18,0)"
+  description: "ID thành viên tương ứng với SystemObject"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: SsoUserId
+  data_type: "NVARCHAR2(36 CHAR)"
+  description: "ID người dùng trong hệ thống SSO (đăng nhập tập trung UBCKNN)"
+  key: null
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "1 = đã xóa mềm, 0 = đang hiệu lực"
+  key: null
+  fk_note: null
+- name: UserName
+  data_type: "NVARCHAR2(256 CHAR)"
+  description: "Tên đăng nhập (username) của người được phân quyền dữ liệu"
+  key: null
+  fk_note: null
+- name: UdpUkActiveKey
+  data_type: "VARCHAR2(400 CHAR)"
+  description: "Khóa active key phân quyền dữ liệu (unique key để quản lý phiên phân quyền)"
+  key: null
+  fk_note: null
+- name: SsoProfileUnavailable
+  data_type: "NUMBER(1,0)"
+  description: "Cờ hồ sơ SSO không khả dụng: 1=Không lấy được từ SSO, 0=Bình thường"
+  key: null
+  fk_note: null

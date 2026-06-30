@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TRANSFER_AGENT_HISTORY
+brd_ref: BRD-SRC-FMS-TRANSFER_AGENT_HISTORY
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: TRANSFER_AGENT_ID
+  data_type: RAW(16)
+  description: "FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan"
+  key: null
+  fk_note: "FK suy luận → TRANSFER_AGENT.ID"
+- name: EVENT_TYPE
+  data_type: VARCHAR2(255)
+  description: "Sự vụ — loại sự kiện ghi nhận thay đổi"
+  key: null
+  fk_note: null
+- name: LICENSE_AMEND_NO
+  data_type: VARCHAR2(255)
+  description: "Số GP/QĐ sửa đổi"
+  key: null
+  fk_note: null
+- name: APPROVAL_DATE
+  data_type: DATE
+  description: "Ngày chấp thuận/phê duyệt của UBCKNN"
+  key: null
+  fk_note: null
+- name: ADJUSTMENT_REASON
+  data_type: VARCHAR2(255)
+  description: "Dữ liệu lịch sử cột ADJUSTMENT_REASON tại thời điểm backup"
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: VARCHAR2(255)
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: CHANGE_DETAIL
+  data_type: CLOB
+  description: "\"JSON array diff các field thay đổi: [{field, label, oldValue, newValue}]\""
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null

@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: RNK_GR_FTOR
+brd_ref: BRD-SRC-FMS-RNK_GR_FTOR
+columns:
+- name: RK_ID
+  data_type: RAW(16)
+  description: "FK -> RANK: Kết quả xếp hạng liên quan"
+  key: null
+  fk_note: "FK suy luận → RANK.ID"
+- name: GR_FT_ID
+  data_type: RAW(16)
+  description: "FK -> GRP_FACTOR: Nhóm tiêu chí đánh giá liên quan"
+  key: null
+  fk_note: "FK suy luận → GRP_FACTOR.ID"
+- name: ITEM_VALUE
+  data_type: NUMBER(22)
+  description: "Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)"
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: NVARCHAR2(300)
+  description: "Mã định danh ngắn gọn"
+  key: null
+  fk_note: null
+- name: ITEM_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: WEIGHT
+  data_type: NUMBER(22)
+  description: "Trọng số của tiêu chí/nhóm tiêu chí trong đánh giá (%)"
+  key: null
+  fk_note: null

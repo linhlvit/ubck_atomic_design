@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: EMAILSENTSYSTEM
+brd_ref: BRD-SRC-FIMS-EMAILSENTSYSTEM
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: UFrom
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Username/email người gửi"
+  key: null
+  fk_note: null
+- name: UTo
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Username/email người nhận"
+  key: null
+  fk_note: null
+- name: Title
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tiêu đề thông báo"
+  key: null
+  fk_note: null
+- name: Body
+  data_type: "NCLOB"
+  description: "Nội dung email (HTML hoặc text thuần)"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: SendDate
+  data_type: "DATE"
+  description: "Thời điểm gửi email"
+  key: null
+  fk_note: null
+- name: DetailExcerpt
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Trích dẫn chi tiết nội dung email (tóm tắt ngắn để hiển thị trong danh sách)"
+  key: null
+  fk_note: null

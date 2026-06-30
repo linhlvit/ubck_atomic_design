@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: NOTIFICATION
+brd_ref: BRD-SRC-FIMS-NOTIFICATION
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: Type
+  data_type: "NUMBER(10,0)"
+  description: "Loại thông báo theo nguồn: 1=Thông báo hệ thống (system), 2=Thông báo từ người dùng (by user)"
+  key: null
+  fk_note: null
+- name: TypeEnum
+  data_type: "NUMBER(10,0)"
+  description: "Loại thông báo chi tiết (NotificationTypeEnum): 1=Thành viên thay đổi thông tin hồ sơ, 2=Thành viên gửi báo cáo, 3=Thành viên thực hiện CBTT, 4=Thành viên trao đổi tin nhắn, 5=Cảnh báo vi phạm tham số cảnh báo, 6=UBCK hủy báo cáo, 7=Cảnh báo hết hạn chứng thư số, 8=UBCK trao đổi, 9=UBCK kích hoạt biểu mẫu mới, 10=Thông báo từ UBCK gửi đến đối tượng, 11=Thông báo tài khoản người dùng"
+  key: null
+  fk_note: null
+- name: UToId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> USERS: Người nhận thông báo"
+  key: FK
+  fk_note: "FK → USERS"
+- name: UFromId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> USERS: Người gửi email"
+  key: FK
+  fk_note: "FK → USERS"
+- name: SystemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng áp dụng (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
+  key: null
+  fk_note: null
+- name: Title
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tiêu đề thông báo"
+  key: null
+  fk_note: null
+- name: LinkToDetail
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "URL đến trang chi tiết liên quan đến thông báo"
+  key: null
+  fk_note: null
+- name: ListMemberId
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách ID thành viên nhận thông báo (JSON/CSV)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(18,2)"
+  description: "Trạng thái thông báo: 0=Bản nháp (chưa gửi), 1=Đã gửi"
+  key: null
+  fk_note: null
+- name: IsSentMail
+  data_type: "NUMBER(18,2)"
+  description: "Cờ đã gửi email thông báo: 1=Đã gửi, 0=Chưa"
+  key: null
+  fk_note: null
+- name: Content
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Nội dung thông báo"
+  key: null
+  fk_note: null
+- name: DateSend
+  data_type: "DATE"
+  description: "Thời điểm gửi thông báo"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: IsView
+  data_type: "NUMBER(1,0)"
+  description: "Cờ người nhận đã xem thông báo: 1=Đã xem, 0=Chưa"
+  key: null
+  fk_note: null
+- name: IsSentSms
+  data_type: "NUMBER(18,0)"
+  description: "Cờ đã gửi SMS thông báo: 1=Đã gửi, 0=Chưa"
+  key: null
+  fk_note: null
+- name: UTOUSERNAME
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Username người nhận (uppercase)"
+  key: null
+  fk_note: null
+- name: UToUsername
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Username người nhận thông báo"
+  key: null
+  fk_note: null

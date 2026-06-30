@@ -1,0 +1,156 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTVALUES
+brd_ref: BRD-SRC-FIMS-RPTVALUES
+columns:
+- name: Id
+  data_type: "RAW"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: MebId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTMEMBER: Báo cáo thành viên chứa giá trị này"
+  key: FK
+  fk_note: "FK → RPTMEMBER"
+- name: PrdId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTPERIOD: Kỳ báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPTPERIOD"
+- name: SheetId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SHEET: Sheet biểu mẫu chứa giá trị này"
+  key: FK
+  fk_note: "FK → SHEET"
+- name: RptId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPTTEMP"
+- name: TgtId
+  data_type: "RAW"
+  description: "FK -> đối tượng target liên quan đến giá trị báo cáo"
+  key: null
+  fk_note: null
+- name: Type
+  data_type: "NUMBER(38,0)"
+  description: "Loại đối tượng nộp báo cáo (SystemObject, lấy từ RPTMEMBER.ObjectType): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN"
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: "NUMBER(10,0)"
+  description: "Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: PeriodValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ báo cáo cụ thể (VD: 2024-Q1, 2024-03)"
+  key: null
+  fk_note: null
+- name: YearValue
+  data_type: "NUMBER(18,2)"
+  description: "Năm của kỳ CBTT/báo cáo"
+  key: null
+  fk_note: null
+- name: Values
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị thực tế của ô trong báo cáo (lưu dạng chuỗi)"
+  key: null
+  fk_note: null
+- name: Code
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mã biểu mẫu báo cáo (mã định danh ngắn gọn)"
+  key: null
+  fk_note: null
+- name: FormatDataType
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Kiểu định dạng dữ liệu: TEXT/NUMBER/DATE/BOOLEAN"
+  key: null
+  fk_note: null
+- name: IsDynamic
+  data_type: "NUMBER(1,0)"
+  description: "Cờ giá trị thuộc dòng động (do NĐT thêm): 1=Dòng động, 0=Dòng cố định"
+  key: null
+  fk_note: null
+- name: RowDynamic
+  data_type: "NUMBER(10,0)"
+  description: "Số thứ tự dòng động do NĐT thêm (với IsDynamic=1)"
+  key: null
+  fk_note: null
+- name: TableName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên bảng lưu trữ (RPTVALUES hoặc RPTVALUESx_yyyy partition)"
+  key: null
+  fk_note: null
+- name: FieldName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên trường dữ liệu (cột trong sheet) lưu giá trị này"
+  key: null
+  fk_note: null
+- name: Identification
+  data_type: "NUMBER(1,0)"
+  description: "Định danh dòng/ô trong sheet (row-col key hoặc cell address)"
+  key: null
+  fk_note: null
+- name: FundId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> FUNDCOMPANY: Công ty QLQ liên quan"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: DepId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> DEPOSITORYCENTER: VSDC nộp báo cáo"
+  key: FK
+  fk_note: "FK → DEPOSITORYCENTER"
+- name: StockId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STOCKEXCHANGE: Sở GD liên kết với người hành nghề"
+  key: FK
+  fk_note: "FK → STOCKEXCHANGE"
+- name: InId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nộp báo cáo"
+  key: FK
+  fk_note: "FK → INFODISCREPRES"
+- name: BranId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BRANCHS: Chi nhánh QLQ NN nộp báo cáo"
+  key: FK
+  fk_note: "FK → BRANCHS"

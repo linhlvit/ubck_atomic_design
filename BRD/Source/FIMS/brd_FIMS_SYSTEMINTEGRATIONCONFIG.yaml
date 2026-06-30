@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: SYSTEMINTEGRATIONCONFIG
+brd_ref: BRD-SRC-FIMS-SYSTEMINTEGRATIONCONFIG
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: Name
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(18,2)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: Content
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Nội dung thông báo"
+  key: null
+  fk_note: null
+- name: AddressConnect
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Địa chỉ endpoint kết nối (URL/IP:Port)"
+  key: null
+  fk_note: null
+- name: PortConnect
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Cổng kết nối (port number)"
+  key: null
+  fk_note: null
+- name: UserConnect
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên đăng nhập xác thực kết nối hệ thống bên ngoài"
+  key: null
+  fk_note: null
+- name: PasswordConnect
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mật khẩu xác thực kết nối hệ thống (đã mã hóa)"
+  key: null
+  fk_note: null
+- name: DataType
+  data_type: "NUMBER(18,2)"
+  description: "Kiểu dữ liệu trao đổi: JSON/XML/CSV..."
+  key: null
+  fk_note: null
+- name: MethodType
+  data_type: "NUMBER(18,2)"
+  description: "Phương thức HTTP: GET/POST/PUT/DELETE"
+  key: null
+  fk_note: null
+- name: LanguageConnect
+  data_type: "NUMBER(18,2)"
+  description: "Ngôn ngữ/protocol kết nối: REST/SOAP/FTP..."
+  key: null
+  fk_note: null
+- name: TimeoutRequest
+  data_type: "NUMBER(18,2)"
+  description: "Thời gian chờ tối đa cho mỗi request (giây)"
+  key: null
+  fk_note: null
+- name: SystemCode
+  data_type: "NUMBER(10,0)"
+  description: "Mã hệ thống bên ngoài tích hợp (VSDC/HNX/HOSE...)"
+  key: null
+  fk_note: null

@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: BANK_EMPLOY_HISTORY
+brd_ref: BRD-SRC-FMS-BANK_EMPLOY_HISTORY
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: BANK_EMPLOY_ID
+  data_type: RAW(16)
+  description: "FK -> BANK_EMPLOY: Nhân sự ngân hàng lưu ký/giám sát"
+  key: null
+  fk_note: "FK suy luận → BANK_EMPLOY.ID"
+- name: BANK_ID
+  data_type: RAW(16)
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan"
+  key: null
+  fk_note: "FK suy luận → BANK_MONI.ID"
+- name: EVENT_TYPE_ID
+  data_type: RAW(16)
+  description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng"
+  key: null
+  fk_note: "FK suy luận → EVENT_TYPE.ID"
+- name: CHANGED_FIELD
+  data_type: VARCHAR2(255)
+  description: "Tên field bị thay đổi trong lần cập nhật"
+  key: null
+  fk_note: null
+- name: OLD_VALUE
+  data_type: NCLOB
+  description: "Giá trị trước khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: NEW_VALUE
+  data_type: NCLOB
+  description: "Giá trị sau khi thay đổi (NCLOB/JSON)"
+  key: null
+  fk_note: null
+- name: VOUCHER_NO
+  data_type: VARCHAR2(255)
+  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)"
+  key: null
+  fk_note: null
+- name: DEC_DATE
+  data_type: DATE
+  description: "Ngày ban hành quyết định/nghị quyết"
+  key: null
+  fk_note: null
+- name: DES_CHANGE
+  data_type: VARCHAR2(255)
+  description: "Mô tả nội dung thay đổi khi cập nhật hồ sơ"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: TIMESTAMP
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null

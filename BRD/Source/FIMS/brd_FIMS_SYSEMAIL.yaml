@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: SYSEMAIL
+brd_ref: BRD-SRC-FIMS-SYSEMAIL
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: UFromId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> USERS: Người gửi email"
+  key: FK
+  fk_note: "FK → USERS"
+- name: UToId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> USERS: Người nhận thông báo"
+  key: FK
+  fk_note: "FK → USERS"
+- name: ParentId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> MENUS: Menu cha trong cây phân cấp menu"
+  key: FK
+  fk_note: "FK → MENUS"
+- name: Title
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tiêu đề thông báo"
+  key: null
+  fk_note: null
+- name: Body
+  data_type: "NCLOB"
+  description: "Nội dung email (HTML hoặc text thuần)"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: IsSendEmail
+  data_type: "NUMBER(1,0)"
+  description: "Cờ đã gửi email thực tế: 1=Đã gửi, 0=Đang chờ/lỗi"
+  key: null
+  fk_note: null
+- name: SendDate
+  data_type: "DATE"
+  description: "Thời điểm gửi email"
+  key: null
+  fk_note: null
+- name: UFROMUSERNAME
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Username người gửi (uppercase)"
+  key: null
+  fk_note: null
+- name: UTOUSERNAME
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Username người nhận (uppercase)"
+  key: null
+  fk_note: null
+- name: UFromUsername
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Username người gửi email"
+  key: null
+  fk_note: null
+- name: UToUsername
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Username người nhận thông báo"
+  key: null
+  fk_note: null

@@ -1,0 +1,46 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: AUDIT_LOGS
+brd_ref: BRD-SRC-FIMS-AUDIT_LOGS
+columns:
+- name: ID
+  data_type: "VARCHAR2(36 BYTE)"
+  description: "UUID log"
+  key: null
+  fk_note: null
+- name: ENTITY
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Tên bảng"
+  key: null
+  fk_note: null
+- name: ENTITY_ID
+  data_type: "VARCHAR2(36 BYTE)"
+  description: "ID bản ghi"
+  key: null
+  fk_note: null
+- name: ACTION
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "CREATE/UPDATE/DELETE"
+  key: null
+  fk_note: null
+- name: OLD_VALUE
+  data_type: "CLOB"
+  description: "Giá trị trước"
+  key: null
+  fk_note: null
+- name: NEW_VALUE
+  data_type: "CLOB"
+  description: "Giá trị sau"
+  key: null
+  fk_note: null
+- name: CHANGED_BY
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "User"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: CHANGED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm"
+  key: null
+  fk_note: null

@@ -1,0 +1,27 @@
+schema_type: brd_source
+schema_version: '1.0'
+source: IAM
+description: "Quản lý danh tính và phân quyền người dùng hệ thống (Identity and Access Management)"
+brd_entries:
+
+  - brd_id: BRD-SRC-IAM-USERS
+    brd_name: "Design Atomic từ nguồn IAM bảng USERS"
+    type: Theo Source
+    ba_email: nguyet.do@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Người dùng hệ thống"
+      functional_group: "Quản lý người dùng"
+      scope_status: in_scope
+      scope_reason: null
+      table: USERS
+      related_tables:
+        - table: USERS
+          relation: "FK tự tham chiếu — CREATED_BY_ID và UPDATED_BY_ID trỏ về chính bảng USERS (audit người tạo/cập nhật)"
+      notes: "Self-referencing FK trên CREATED_BY_ID và UPDATED_BY_ID. Keycloak integration qua KEY_CLOAK_ID. Hỗ trợ nhiều loại người dùng (USER_TYPE) và phân loại con (USER_SUB_TYPE)."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null

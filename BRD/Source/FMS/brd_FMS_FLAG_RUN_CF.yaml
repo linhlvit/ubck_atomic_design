@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: FLAG_RUN_CF
+brd_ref: BRD-SRC-FMS-FLAG_RUN_CF
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: CONFIG_KEY
+  data_type: NVARCHAR2(300)
+  description: "Khóa cấu hình (key tra cứu trong FLAG_RUN_CF)"
+  key: null
+  fk_note: null
+- name: ITEM_VALUE
+  data_type: NVARCHAR2(300)
+  description: "Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: NVARCHAR2(300)
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
+  key: null
+  fk_note: null
+- name: PERIOD_VALUE
+  data_type: NVARCHAR2(300)
+  description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)"
+  key: null
+  fk_note: null
+- name: YEAR_VALUE
+  data_type: NVARCHAR2(300)
+  description: "Năm của kỳ báo cáo (định dạng YYYY)"
+  key: null
+  fk_note: null

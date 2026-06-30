@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: STOCKHOLDERTYPE
+brd_ref: BRD-SRC-FIMS-STOCKHOLDERTYPE
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: SName
+  data_type: "NVARCHAR2(20 CHAR)"
+  description: "Tên viết tắt / tên ngắn"
+  key: null
+  fk_note: null
+- name: Name
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: IsDataMigration
+  data_type: "NUMBER(1,0)"
+  description: "Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: Description
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: IdOld
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null

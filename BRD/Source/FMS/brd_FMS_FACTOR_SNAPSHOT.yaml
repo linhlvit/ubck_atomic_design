@@ -1,0 +1,36 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: FACTOR_SNAPSHOT
+brd_ref: BRD-SRC-FMS-FACTOR_SNAPSHOT
+columns:
+- name: ID
+  data_type: VARCHAR2(255)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: SNAPSHOT_JSON
+  data_type: CLOB
+  description: "Snapshot toàn bộ dữ liệu tại thời điểm ghi log (JSON CLOB)"
+  key: null
+  fk_note: null
+- name: NOTE
+  data_type: VARCHAR2(255)
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: SNAPSHOT_AT
+  data_type: TIMESTAMP
+  description: "Thời điểm chụp snapshot dữ liệu đánh giá"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: TIMESTAMP
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: VARCHAR2(255)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"

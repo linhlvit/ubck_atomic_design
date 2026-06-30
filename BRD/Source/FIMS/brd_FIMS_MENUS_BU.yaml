@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: MENUS_BU
+brd_ref: BRD-SRC-FIMS-MENUS_BU
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: Title
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Tiêu đề thông báo"
+  key: null
+  fk_note: null
+- name: Icon
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "CSS class icon hiển thị trạng thái"
+  key: null
+  fk_note: null
+- name: Url
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Đường dẫn URL của trang/chức năng tương ứng"
+  key: null
+  fk_note: null
+- name: ParentId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> MENUS: Menu cha trong cây phân cấp menu"
+  key: FK
+  fk_note: "FK → MENUS"
+- name: MenuType
+  data_type: "NUMBER(1,0)"
+  description: "Loại menu: 1=Menu chính, 2=Menu con, 3=Nút chức năng"
+  key: null
+  fk_note: null
+- name: SortOrder
+  data_type: "NUMBER(10,0)"
+  description: "Thứ tự sắp xếp hiển thị trong menu"
+  key: null
+  fk_note: null
+- name: Access
+  data_type: "NCLOB"
+  description: "Quyền truy cập menu (danh sách role được phép, JSON/CSV)"
+  key: null
+  fk_note: null
+- name: IsActive
+  data_type: "NUMBER(1,0)"
+  description: "Cờ menu đang hiển thị/hoạt động: 1=Hiển thị, 0=Ẩn"
+  key: null
+  fk_note: null

@@ -1,0 +1,171 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: ANNOUNCE
+brd_ref: BRD-SRC-FIMS-ANNOUNCE
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: InRepId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INFODISCREPRES: Đối tượng gửi báo cáo thực hiện CBTT này"
+  key: FK
+  fk_note: "FK → INFODISCREPRES"
+- name: YearValue
+  data_type: "NUMBER(18,2)"
+  description: "Năm của kỳ CBTT/báo cáo"
+  key: null
+  fk_note: null
+- name: PeriodValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ báo cáo cụ thể (VD: 2024-Q1, 2024-03)"
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: "NUMBER(18,2)"
+  description: "Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: AnnounceTypeId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> ANNOUNCETYPE: Loại hình công bố thông tin"
+  key: FK
+  fk_note: "FK → ANNOUNCETYPE"
+- name: Name
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: contentSummary
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tóm tắt nội dung CBTT (trích yếu)"
+  key: null
+  fk_note: null
+- name: DateAnnounce
+  data_type: "TIMESTAMP(7)"
+  description: "Ngày/giờ thực hiện công bố thông tin"
+  key: null
+  fk_note: null
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: FileName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên file đính kèm"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(18,2)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: SendAnnounceBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người thực hiện gửi CBTT"
+  key: null
+  fk_note: null
+- name: InvestorData
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Dữ liệu NĐT NN liên quan đến CBTT (lưu dạng JSON)"
+  key: null
+  fk_note: null
+- name: InvestorDataName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên NĐT NN liên quan đến CBTT"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,0)"
+  description: "Loại đối tượng áp dụng (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
+  key: null
+  fk_note: null
+- name: FundComId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecComId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: DepCenId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> DEPOSITORYCENTER: VSDC nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → DEPOSITORYCENTER"
+- name: StockCenId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> STOCKEXCHANGE: Sở GD nơi người hành nghề làm việc"
+  key: FK
+  fk_note: "FK → STOCKEXCHANGE"
+- name: BranchsId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BRANCHS: Chi nhánh QLQ NN liên quan"
+  key: FK
+  fk_note: "FK → BRANCHS"
+- name: InvestorId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
+  key: FK
+  fk_note: "FK → INVESTOR"
+- name: RptMemberId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> RPTMEMBER: Báo cáo thành viên liên quan đến CBTT này"
+  key: FK
+  fk_note: "FK → RPTMEMBER"
+- name: IncidentMatterType
+  data_type: "NUMBER(18,0)"
+  description: "Loại sự cố/sự vụ phát sinh (dùng khi CBTT là báo cáo sự vụ)"
+  key: null
+  fk_note: null
+- name: BcSuVuId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> RPT_EVENT_TYPE: Sự vụ/báo cáo sự vụ liên quan đến bản CBTT này (nếu có)"
+  key: FK
+  fk_note: "FK → RPT_EVENT_TYPE"
+- name: EformSubmissionJson
+  data_type: "NCLOB"
+  description: "Dữ liệu eform đã điền (JSON) khi NĐT nộp báo cáo qua form động"
+  key: null
+  fk_note: null

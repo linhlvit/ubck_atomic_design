@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: ST_TRGT_OUT
+brd_ref: BRD-SRC-FMS-ST_TRGT_OUT
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: TG_OUT_ID
+  data_type: RAW(16)
+  description: "FK -> nhóm đối tượng mục tiêu đầu ra"
+  key: null
+  fk_note: null
+- name: FTYPE_ID
+  data_type: RAW(16)
+  description: "FK -> FUND_TYPE: Loại quỹ đầu tư"
+  key: null
+  fk_note: "FK suy luận → FUND_TYPE.ID"
+- name: FORMULAS_INFO
+  data_type: NCLOB
+  description: "Công thức tính giá trị đầu ra theo mục tiêu (NCLOB JSON)"
+  key: null
+  fk_note: null
+- name: STR_FORMULA
+  data_type: NVARCHAR2(300)
+  description: "Công thức dạng chuỗi hiển thị cho đối tượng mục tiêu"
+  key: null
+  fk_note: null

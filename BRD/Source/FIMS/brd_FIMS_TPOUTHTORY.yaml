@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: TPOUTHTORY
+brd_ref: BRD-SRC-FIMS-TPOUTHTORY
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: TpOutId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra người dùng được phép khai thác"
+  key: FK
+  fk_note: "FK → RPTTPOUT"
+- name: Action
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Hành động thực hiện: DOWNLOAD=Tải xuống, VIEW=Xem, EXPORT=Xuất"
+  key: null
+  fk_note: null
+- name: Version
+  data_type: "NUMBER(18,2)"
+  description: "Số phiên bản hiện tại của biểu mẫu"
+  key: null
+  fk_note: null
+- name: IsDownload
+  data_type: "NUMBER(1,0)"
+  description: "Cờ thao tác là tải file: 1=Tải xuống, 0=Chỉ xem"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null

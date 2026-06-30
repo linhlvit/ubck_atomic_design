@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: INSID_CHANGE
+brd_ref: BRD-SRC-FMS-INSID_CHANGE
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: INSDR_ID
+  data_type: RAW(16)
+  description: "FK -> INSIDER: Cổ đông nội bộ liên quan"
+  key: null
+  fk_note: "FK suy luận → INSIDER.ID"
+- name: TX_DATE
+  data_type: TIMESTAMP
+  description: "Thời điểm giao dịch chuyển nhượng"
+  key: null
+  fk_note: null
+- name: TX_NUM
+  data_type: NVARCHAR2(300)
+  description: "Số hiệu giao dịch chuyển nhượng"
+  key: null
+  fk_note: null
+- name: AOORP
+  data_type: NVARCHAR2(300)
+  description: "Mua vào (A) hoặc Bán ra (O) hoặc Đăng ký (R/P) trong giao dịch"
+  key: null
+  fk_note: null
+- name: BUS_DATE
+  data_type: TIMESTAMP
+  description: "Ngày thanh toán/giải quyết giao dịch (business date)"
+  key: null
+  fk_note: null
+- name: PREPERCENT
+  data_type: NUMBER(22)
+  description: "Tỷ lệ sở hữu trước giao dịch (%)"
+  key: null
+  fk_note: null
+- name: AFT_PERCENT
+  data_type: NUMBER(22)
+  description: "Tỷ lệ sở hữu sau giao dịch (%)"
+  key: null
+  fk_note: null
+- name: PRE_QTTY
+  data_type: NUMBER(22)
+  description: "Số lượng CCQ/cổ phần trước giao dịch"
+  key: null
+  fk_note: null
+- name: AFT_QTTY
+  data_type: NUMBER(22)
+  description: "Số lượng CCQ/cổ phần sau giao dịch"
+  key: null
+  fk_note: null
+- name: PRECAPITAL
+  data_type: NUMBER(22)
+  description: "Vốn góp trước giao dịch (đơn vị: VNĐ)"
+  key: null
+  fk_note: null
+- name: AFT_CAPITAL
+  data_type: NUMBER(22)
+  description: "Vốn góp sau giao dịch (đơn vị: VNĐ)"
+  key: null
+  fk_note: null
+- name: DATA_MIGRATION
+  data_type: NUMBER(22)
+  description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
+  key: null
+  fk_note: null
+- name: TRANSFER_INSIDER
+  data_type: NUMBER(22)
+  description: "Cờ giao dịch chuyển nhượng từ người nội bộ: 1=Nội bộ, 0=Bên ngoài"
+  key: null
+  fk_note: null

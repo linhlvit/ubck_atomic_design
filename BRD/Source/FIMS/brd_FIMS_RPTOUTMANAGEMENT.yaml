@@ -1,0 +1,136 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTOUTMANAGEMENT
+brd_ref: BRD-SRC-FIMS-RPTOUTMANAGEMENT
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+  key: null
+  fk_note: null
+- name: RptOutId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTPOUT: Biểu mẫu báo cáo đầu ra được xuất"
+  key: FK
+  fk_note: "FK → RPTTPOUT"
+- name: IsMutiPeriod
+  data_type: "NUMBER(1,0)"
+  description: "Cờ báo cáo cho phép nhiều kỳ cùng lúc: 1=Nhiều kỳ, 0=Một kỳ"
+  key: null
+  fk_note: null
+- name: PeriodValueFrom
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Kỳ báo cáo bắt đầu (khi lọc nhiều kỳ)"
+  key: null
+  fk_note: null
+- name: PeriodValueTo
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Kỳ báo cáo kết thúc (khi lọc nhiều kỳ)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: "NUMBER(10,0)"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Năm, 6=Bất thường"
+  key: null
+  fk_note: null
+- name: dateStart
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Ngày bắt đầu khoảng thời gian lọc dữ liệu"
+  key: null
+  fk_note: null
+- name: dateEnd
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Ngày kết thúc khoảng thời gian lọc dữ liệu"
+  key: null
+  fk_note: null
+- name: Name
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: InvestorIds
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)"
+  key: null
+  fk_note: null
+- name: InvestorTypeIds
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách loại NĐT NN lọc khi xuất báo cáo (JSON/CSV)"
+  key: null
+  fk_note: null
+- name: MemberIds
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách ID thành viên lọc khi xuất báo cáo (JSON/CSV số)"
+  key: null
+  fk_note: null
+- name: MemberStrIds
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách mã thành viên lọc khi xuất báo cáo (JSON/CSV chuỗi)"
+  key: null
+  fk_note: null
+- name: NationId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> NATIONAL: Quốc gia lọc khi xuất báo cáo"
+  key: FK
+  fk_note: "FK → NATIONAL"
+- name: SecuritiesIds
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách mã CK lọc khi xuất báo cáo (JSON/CSV)"
+  key: null
+  fk_note: null
+- name: Unit
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Đơn vị hiển thị số liệu: 1=Đồng, 2=Nghìn đồng, 3=Triệu đồng, 4=Tỷ đồng"
+  key: null
+  fk_note: null
+- name: DateCompletion
+  data_type: "DATE"
+  description: "Thời điểm hoàn thành xuất báo cáo tổng hợp"
+  key: null
+  fk_note: null
+- name: IsRunNow
+  data_type: "NUMBER(18,2)"
+  description: "Cờ chạy ngay lập tức (không lên lịch): 1=Chạy ngay, 0=Lên lịch"
+  key: null
+  fk_note: null
+- name: IsSum
+  data_type: "NUMBER(1,0)"
+  description: "Cờ tổng hợp/cộng dồn dữ liệu: 1=Tổng hợp, 0=Chi tiết"
+  key: null
+  fk_note: null

@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: ERROR_LOG
+brd_ref: BRD-SRC-FMS-ERROR_LOG
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: USER_ID
+  data_type: RAW(16)
+  description: "FK -> USERS: Người dùng liên quan"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: MODULE_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên module phát sinh lỗi"
+  key: null
+  fk_note: null
+- name: ACTION
+  data_type: NVARCHAR2(300)
+  description: "Hành động đang thực hiện khi xảy ra lỗi"
+  key: null
+  fk_note: null
+- name: CONTENT
+  data_type: NVARCHAR2(300)
+  description: "Nội dung/mô tả ngắn của lỗi"
+  key: null
+  fk_note: null
+- name: EXCEPTION
+  data_type: NCLOB
+  description: "Chi tiết stack trace exception (NCLOB)"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: ACTION_FOR_END_USER
+  data_type: NVARCHAR2(300)
+  description: "Thông báo lỗi thân thiện hiển thị cho người dùng cuối"
+  key: null
+  fk_note: null
+- name: ERROR_FLAG
+  data_type: NUMBER(22)
+  description: "Cờ là bản ghi lỗi: 1=Lỗi, 0=Bình thường"
+  key: null
+  fk_note: null

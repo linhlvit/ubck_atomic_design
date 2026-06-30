@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: MODULES
+brd_ref: BRD-SRC-FIMS-MODULES
+columns:
+- name: ID
+  data_type: "VARCHAR2(36 BYTE)"
+  description: "UUID - khóa chính"
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Mã phân hệ: CRM, SALE, INV..."
+  key: null
+  fk_note: null
+- name: NAME
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Tên hiển thị phân hệ"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: "VARCHAR2(500 BYTE)"
+  description: "Mô tả nghiệp vụ"
+  key: null
+  fk_note: null
+- name: SERVICE_URL
+  data_type: "VARCHAR2(255 BYTE)"
+  description: "Base URL microservice"
+  key: null
+  fk_note: null
+- name: STATUS
+  data_type: "NUMBER(1,0)"
+  description: "1=Active, 0=Inactive"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm tạo"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "User tạo"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: UPDATED_AT
+  data_type: "TIMESTAMP(6)"
+  description: "Thời điểm cập nhật"
+  key: null
+  fk_note: null
+- name: UPDATED_BY
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "User cập nhật"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"

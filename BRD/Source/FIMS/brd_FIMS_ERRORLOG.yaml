@@ -1,0 +1,61 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: ERRORLOG
+brd_ref: BRD-SRC-FIMS-ERRORLOG
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: UserId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> USERS: Người thực hiện thao tác xử lý báo cáo"
+  key: FK
+  fk_note: "FK → USERS"
+- name: ModuleName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên module/controller phát sinh lỗi"
+  key: null
+  fk_note: null
+- name: Action
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Hành động thực hiện: DOWNLOAD=Tải xuống, VIEW=Xem, EXPORT=Xuất"
+  key: null
+  fk_note: null
+- name: ActionForEndUser
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Thông báo lỗi thân thiện hiển thị cho người dùng cuối"
+  key: null
+  fk_note: null
+- name: IsError
+  data_type: "NUMBER(1,0)"
+  description: "Cờ đây là lỗi nghiêm trọng: 1=Lỗi, 0=Cảnh báo/log thông thường"
+  key: null
+  fk_note: null
+- name: Content
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Nội dung thông báo"
+  key: null
+  fk_note: null
+- name: Exception
+  data_type: "NCLOB"
+  description: "Stack trace/exception đầy đủ từ hệ thống"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: ACTORUSERNAME
+  data_type: "VARCHAR2(200 BYTE)"
+  description: "Username người thực hiện gây ra lỗi (uppercase)"
+  key: null
+  fk_note: null
+- name: ActorUsername
+  data_type: "VARCHAR2(200 BYTE)"
+  description: "Username người thực hiện hành động gây lỗi"
+  key: null
+  fk_note: null

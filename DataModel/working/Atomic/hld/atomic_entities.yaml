@@ -126,7 +126,7 @@ entities:
   description: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ\
     \ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ\
     \ 1 nguồn."
-  source_table: "NHNCK.PROFESSIONALS"
+  source_table: "NHNCK.PROFESSIONALS, IAM.USERS"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -134,7 +134,8 @@ entities:
   table_type: "Fundamental"
   description: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email).\
     \ Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."
-  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.USERS, NHNCK.PROFESSIONALS"
+  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.USERS, NHNCK.PROFESSIONALS,\
+    \ IAM.USERS"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -142,7 +143,7 @@ entities:
   table_type: "Fundamental"
   description: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường\
     \ trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."
-  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS"
+  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS, IAM.USERS"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
@@ -319,6 +320,15 @@ entities:
   description: "Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại đơn vị/cá\
     \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
   source_table: "ThanhTra.EXAMINATION_TEAM_TARGET"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Identity and Access Management User"
+  table_type: ""
+  description: "Người dùng hệ thống IAM — thể nhân (cán bộ UBCK, cán bộ CTCK, chuyên\
+    \ gia) có tài khoản đăng nhập hệ thống nghiệp vụ, tích hợp Keycloak. Lưu thông\
+    \ tin danh tính, tổ chức, chứng chỉ hành nghề và người đại diện."
+  source_table: "IAM.USERS"
   status: "draft"
 - bcv_core_object: "Group"
   bcv_concept: "[Group] Share Index"

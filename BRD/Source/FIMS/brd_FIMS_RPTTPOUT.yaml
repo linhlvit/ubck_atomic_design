@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTTPOUT
+brd_ref: BRD-SRC-FIMS-RPTTPOUT
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ShtOtId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SHEETOUT: Sheet biểu mẫu đầu ra liên kết với báo cáo này"
+  key: FK
+  fk_note: "FK → SHEETOUT"
+- name: Name
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: LegalBasis
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Căn cứ pháp lý của biểu mẫu (tên thông tư/nghị định áp dụng)"
+  key: null
+  fk_note: null
+- name: Code
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mã biểu mẫu báo cáo (mã định danh ngắn gọn)"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(10,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: Description
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Mô tả chi tiết / ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: ReportGroup
+  data_type: "NUMBER(10,0)"
+  description: "Nhóm báo cáo (phân nhóm theo nghiệp vụ hoặc đối tượng)"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(10,0)"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+  key: null
+  fk_note: null
+- name: SystemObjectLst
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Danh sách loại đối tượng áp dụng (JSON/CSV)"
+  key: null
+  fk_note: null

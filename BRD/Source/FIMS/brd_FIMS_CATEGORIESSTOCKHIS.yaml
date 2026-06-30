@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: CATEGORIESSTOCKHIS
+brd_ref: BRD-SRC-FIMS-CATEGORIESSTOCKHIS
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: SecId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: InvesId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán"
+  key: FK
+  fk_note: "FK → INVESTOR"
+- name: Quantity
+  data_type: "NUMBER(18,2)"
+  description: "Số lượng chứng khoán nắm giữ"
+  key: null
+  fk_note: null
+- name: Rate
+  data_type: "NUMBER(18,2)"
+  description: "Tỷ lệ nắm giữ so với tổng số lượng lưu hành (%)"
+  key: null
+  fk_note: null

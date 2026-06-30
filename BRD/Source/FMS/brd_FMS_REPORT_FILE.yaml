@@ -1,0 +1,51 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: REPORT_FILE
+brd_ref: BRD-SRC-FMS-REPORT_FILE
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: REPORT_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên biểu mẫu báo cáo trong kho file mẫu"
+  key: null
+  fk_note: null
+- name: REPORT_CODE
+  data_type: NVARCHAR2(300)
+  description: "Mã biểu mẫu báo cáo trong kho file mẫu"
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: NUMBER(22)
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
+  key: null
+  fk_note: null
+- name: PERIOD_VALUE
+  data_type: NVARCHAR2(300)
+  description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)"
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: NUMBER(22)
+  description: "Năm báo cáo (định dạng YYYY)"
+  key: null
+  fk_note: null
+- name: FILE_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên file hoặc danh sách tên file đính kèm"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(300)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null

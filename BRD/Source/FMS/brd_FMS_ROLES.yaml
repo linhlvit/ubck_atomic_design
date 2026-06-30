@@ -4,48 +4,48 @@ source: FMS
 table: ROLES
 brd_ref: BRD-SRC-FMS-ROLES
 columns:
-- name: Id
+- name: ID
   data_type: RAW(16)
-  description: Mã ID nhóm quyền chức năng. Mã hệ thống tự sinh (PK)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
   key: PK
   fk_note: null
-- name: RoleName
-  data_type: NVARCHAR2(1500)
-  description: Tên nhóm quyền
-  key: null
-  fk_note: null
-- name: Description
-  data_type: NVARCHAR2(3000)
-  description: Mô tả nhóm quyền
-  key: null
-  fk_note: null
-- name: Status
-  data_type: NUMBER(22)
-  description: 'Trạng thái: 1 = Hoạt động; 0 = Khóa'
-  key: null
-  fk_note: null
-- name: Deleted
-  data_type: NUMBER(22)
-  description: 'Trạng thái bản ghi: 0 = Không bị xóa; 1 = Bị xóa'
-  key: null
-  fk_note: null
-- name: CreatedBy
-  data_type: NVARCHAR2(300)
-  description: Người tạo
-  key: null
-  fk_note: null
-- name: DateCreated
+- name: DATE_CREATED
   data_type: DATE
-  description: Ngày tạo
+  description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
-- name: DateModified
-  data_type: DATE
-  description: Ngày sửa
-  key: null
-  fk_note: null
-- name: ModifyBy
+- name: CREATED_BY
   data_type: NVARCHAR2(300)
-  description: Người sửa
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: ROLE_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên vai trò (role name) trong hệ thống FMS"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(300)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
   key: null
   fk_note: null

@@ -1,0 +1,211 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPTMEMBER
+brd_ref: BRD-SRC-FIMS-RPTMEMBER
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: RptId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTTEMP: Biểu mẫu báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPTTEMP"
+- name: PrdId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> RPTPERIOD: Kỳ báo cáo liên quan"
+  key: FK
+  fk_note: "FK → RPTPERIOD"
+- name: FundId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> FUNDCOMPANY: Công ty QLQ liên quan"
+  key: FK
+  fk_note: "FK → FUNDCOMPANY"
+- name: SecId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> SECURITIESCOMPANY: Công ty CK liên quan"
+  key: FK
+  fk_note: "FK → SECURITIESCOMPANY"
+- name: BankId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký liên quan"
+  key: FK
+  fk_note: "FK → BANKMONI"
+- name: DepId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> DEPOSITORYCENTER: VSDC nộp báo cáo"
+  key: FK
+  fk_note: "FK → DEPOSITORYCENTER"
+- name: StockId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> STOCKEXCHANGE: Sở GD liên kết với người hành nghề"
+  key: FK
+  fk_note: "FK → STOCKEXCHANGE"
+- name: InId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> INFODISCREPRES: Đại diện CBTT/giao dịch nộp báo cáo"
+  key: FK
+  fk_note: "FK → INFODISCREPRES"
+- name: BranId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> BRANCHS: Chi nhánh QLQ NN nộp báo cáo"
+  key: FK
+  fk_note: "FK → BRANCHS"
+- name: ReportTypeId
+  data_type: "NUMBER(18,2)"
+  description: "FK -> REPORTTYPE: Loại báo cáo"
+  key: FK
+  fk_note: "FK → REPORTTYPE"
+- name: ObjectType
+  data_type: "NUMBER(18,2)"
+  description: "Loại đối tượng nộp báo cáo (SystemObject): 0=UBCK, 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 6=Đại diện CBTT, 7=CN QLQ NN, 8=NĐT NN, 9=NĐT, 12=Đại diện GD"
+  key: null
+  fk_note: null
+- name: IsImport
+  data_type: "NUMBER(1,0)"
+  description: "Cờ báo cáo được nộp qua import Excel: 1=Import, 0=Nhập tay/eform"
+  key: null
+  fk_note: null
+- name: isWorkingDay
+  data_type: "NUMBER(1,0)"
+  description: "Cờ hạn nộp tính theo ngày làm việc: 1=Ngày LV, 0=Ngày lịch"
+  key: null
+  fk_note: null
+- name: SendInDay
+  data_type: "NUMBER(18,2)"
+  description: "Ngày trong tháng/kỳ là hạn nộp báo cáo"
+  key: null
+  fk_note: null
+- name: RptName
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên báo cáo tại thời điểm nộp (snapshot tên biểu mẫu)"
+  key: null
+  fk_note: null
+- name: YearValue
+  data_type: "NUMBER(18,2)"
+  description: "Năm của kỳ CBTT/báo cáo"
+  key: null
+  fk_note: null
+- name: PeriodValue
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Giá trị kỳ báo cáo cụ thể (VD: 2024-Q1, 2024-03)"
+  key: null
+  fk_note: null
+- name: DayReport
+  data_type: "DATE"
+  description: "Ngày chốt số liệu của báo cáo"
+  key: null
+  fk_note: null
+- name: DeadlineSend
+  data_type: "DATE"
+  description: "Hạn nộp báo cáo theo quy định"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(10,0)"
+  description: "Trạng thái kỳ báo cáo (RptMemberStatusEnum): 1=Chưa gửi, 2=Đã gửi, 3=Gửi muộn, 4=Bị hủy, 5=Đã gửi lại"
+  key: null
+  fk_note: null
+- name: DateSubmitted
+  data_type: "DATE"
+  description: "Thời điểm nộp báo cáo thực tế"
+  key: null
+  fk_note: null
+- name: FileData
+  data_type: "NCLOB"
+  description: "Nội dung file đính kèm (BLOB/CLOB)"
+  key: null
+  fk_note: null
+- name: FileImport
+  data_type: "NCLOB"
+  description: "Tên file đính kèm khi xử lý báo cáo"
+  key: null
+  fk_note: null
+- name: DataFileImport
+  data_type: "BLOB"
+  description: "Dữ liệu file Excel đã import (BLOB)"
+  key: null
+  fk_note: null
+- name: ContentSummary
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tóm tắt nội dung báo cáo (trích yếu)"
+  key: null
+  fk_note: null
+- name: Note
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: PeriodType
+  data_type: "NUMBER(38,0)"
+  description: "Loại kỳ báo cáo (PeriodTypeEnum): 1=Ngày, 2=Tuần, 3=Nửa tháng, 4=Tháng, 5=Quý, 6=Bán niên, 7=Năm"
+  key: null
+  fk_note: null
+- name: IdOld
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "ID trạng thái trong hệ thống cũ"
+  key: null
+  fk_note: null
+- name: IsDataMigration
+  data_type: "NUMBER(1,0)"
+  description: "Cờ dữ liệu được nhập từ hệ thống cũ (migration): 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: InvestorId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong phiên bản hợp đồng"
+  key: FK
+  fk_note: "FK → INVESTOR"
+- name: TradingRepresentativeId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> TRADINGREPRESENTATIVE: Đại diện giao dịch liên kết với tài khoản người dùng"
+  key: FK
+  fk_note: "FK → TRADINGREPRESENTATIVE"
+- name: BcSuVuId
+  data_type: "NUMBER(18,0)"
+  description: "FK -> RPT_EVENT_TYPE: Sự vụ/báo cáo sự vụ liên quan đến kỳ nộp báo cáo này (nếu có)"
+  key: FK
+  fk_note: "FK → RPT_EVENT_TYPE"
+- name: RptVersionAtSchedule
+  data_type: "NUMBER(38,0)"
+  description: "Phiên bản biểu mẫu áp dụng khi tạo kỳ báo cáo này"
+  key: null
+  fk_note: null
+- name: EformSubmissionJson
+  data_type: "NCLOB"
+  description: "Dữ liệu eform đã điền (JSON) khi NĐT nộp báo cáo qua form động"
+  key: null
+  fk_note: null
+- name: EformSchemaSnapshotJson
+  data_type: "NCLOB"
+  description: "Snapshot schema eform tại thời điểm nộp báo cáo (để render lại khi xem)"
+  key: null
+  fk_note: null

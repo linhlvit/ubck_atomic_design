@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: RPT_EVENT_TYPE_SCHEDULE
+brd_ref: BRD-SRC-FIMS-RPT_EVENT_TYPE_SCHEDULE
+columns:
+- name: ID
+  data_type: "NUMBER(18,0)"
+  description: "Khóa chính của bản ghi"
+  key: null
+  fk_note: null
+- name: BC_SU_VU_ID
+  data_type: "NUMBER(18,0)"
+  description: "FK -> BC_SU_VU: Loại sự vụ báo cáo liên quan"
+  key: FK
+  fk_note: "FK → BC_SU_VU"
+- name: STT
+  data_type: "NUMBER(10,0)"
+  description: "Số thứ tự trong danh sách"
+  key: null
+  fk_note: null
+- name: LOAI_KY
+  data_type: "NUMBER(2,0)"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Năm"
+  key: null
+  fk_note: null
+- name: GIA_TRI_NGAY
+  data_type: "DATE"
+  description: "Ngày cụ thể trong kỳ (VD: ngày 15 của tháng)"
+  key: null
+  fk_note: null
+- name: GIA_TRI_SO
+  data_type: "NUMBER(10,0)"
+  description: "Giá trị số của kỳ (VD: tháng 3, quý 1...)"
+  key: null
+  fk_note: null
+- name: GIO_GUI_MUON_NHAT
+  data_type: "VARCHAR2(8 CHAR)"
+  description: "Giờ/phút nộp muộn nhất trong ngày hạn chót (định dạng HH:mm)"
+  key: null
+  fk_note: null
+- name: LAP_LAI_SAU
+  data_type: "NUMBER(10,0)"
+  description: "Số đơn vị lặp lại sau khi kết thúc kỳ trước"
+  key: null
+  fk_note: null
+- name: DON_VI_TINH
+  data_type: "NUMBER(2,0)"
+  description: "Đơn vị tính lặp lại: 1=Ngày, 2=Tuần, 3=Tháng, 4=Năm"
+  key: null
+  fk_note: null
+- name: SU_DUNG
+  data_type: "NUMBER(1,0)"
+  description: "Cờ lịch đang áp dụng: 1=Đang dùng, 0=Không dùng"
+  key: null
+  fk_note: null
+- name: GHI_CHU_DONG
+  data_type: "VARCHAR2(2000 CHAR)"
+  description: "Ghi chú cho dòng lịch định kỳ này"
+  key: null
+  fk_note: null
+- name: GUI_TRONG_VONG
+  data_type: "NUMBER(10,0)"
+  description: "Thời hạn nộp trong vòng N đơn vị sau kỳ kết thúc"
+  key: null
+  fk_note: null

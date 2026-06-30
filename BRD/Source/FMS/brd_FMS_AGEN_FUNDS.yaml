@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: AGEN_FUNDS
+brd_ref: BRD-SRC-FMS-AGEN_FUNDS
+columns:
+- name: AGENCY_ID
+  data_type: RAW(16)
+  description: "FK -> AGENCIES: Đại lý phân phối liên quan"
+  key: null
+  fk_note: "FK suy luận → AGENCIES.ID"
+- name: FUND_ID
+  data_type: RAW(16)
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan"
+  key: null
+  fk_note: "FK suy luận → FUNDS.ID"
+- name: DATA_MIGRATION
+  data_type: NUMBER(22)
+  description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
+  key: null
+  fk_note: null

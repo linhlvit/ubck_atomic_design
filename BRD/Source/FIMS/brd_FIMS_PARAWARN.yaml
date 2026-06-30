@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FIMS
+table: PARAWARN
+brd_ref: BRD-SRC-FIMS-PARAWARN
+columns:
+- name: Id
+  data_type: "NUMBER(18,2)"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: Deleted
+  data_type: "NUMBER(1,0)"
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
+  key: null
+  fk_note: null
+- name: DateCreated
+  data_type: "DATE"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CreatedBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng tạo bản ghi"
+  key: null
+  fk_note: null
+- name: DateModified
+  data_type: "DATE"
+  description: "Thời điểm cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: ModifyBy
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tài khoản người dùng cập nhật lần cuối"
+  key: null
+  fk_note: null
+- name: Name
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Tên đầy đủ (tiếng Việt)"
+  key: null
+  fk_note: null
+- name: Note
+  data_type: "NVARCHAR2(2000 CHAR)"
+  description: "Ghi chú bổ sung"
+  key: null
+  fk_note: null
+- name: LegalCode
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Mã căn cứ pháp lý áp dụng cho tham số cảnh báo"
+  key: null
+  fk_note: null
+- name: FormulaInfo
+  data_type: "NCLOB"
+  description: "Công thức tính giá trị cảnh báo cho tổ chức (QLQ/NHLK/CTCK...)"
+  key: null
+  fk_note: null
+- name: FormulaInfoInvestor
+  data_type: "NCLOB"
+  description: "Công thức tính giá trị cảnh báo cho nhà đầu tư nước ngoài"
+  key: null
+  fk_note: null
+- name: Status
+  data_type: "NUMBER(1,0)"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)"
+  key: null
+  fk_note: null
+- name: SystemObject
+  data_type: "NUMBER(10,0)"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+  key: null
+  fk_note: null

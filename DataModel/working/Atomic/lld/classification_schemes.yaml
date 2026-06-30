@@ -2,6 +2,47 @@
 schema_version: "1.0"
 
 schemes:
+  - scheme_code: "IAM_GENDER"
+    name: "Giới tính người dùng IAM"
+    source_type: "etl_derived"
+    source_table: "IAM.USERS.GENDER"
+    used_in_entities:
+      - "Identity and Access Management User"
+    values:
+      - code: "MALE"
+        label: "Nam"
+        source_value: "1"
+      - code: "FEMALE"
+        label: "Nữ"
+        source_value: "2"
+      - code: "OTHER"
+        label: "Khác"
+        source_value: "3"
+
+  - scheme_code: "IAM_USER_TYPE"
+    name: "Loại người dùng IAM — cần profile values từ team IAM"
+    source_type: "modeler_defined"
+    source_table: "IAM.USERS.USER_TYPE"
+    used_in_entities:
+      - "Identity and Access Management User"
+    values: []
+
+  - scheme_code: "IAM_USER_SUB_TYPE"
+    name: "Phân loại người dùng IAM — lấy distinct từ USERS.USER_SUB_TYPE"
+    source_type: "source_table"
+    source_table: "IAM.USERS.USER_SUB_TYPE"
+    used_in_entities:
+      - "Identity and Access Management User"
+    values: []
+
+  - scheme_code: "IAM_PRACTICE_CERT_TYPE"
+    name: "Loại chứng chỉ hành nghề — cần xác nhận bảng tham chiếu"
+    source_type: "modeler_defined"
+    source_table: "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
+    used_in_entities:
+      - "Identity and Access Management User"
+    values: []
+
   - scheme_code: "APPLICATION_STATUS"
     name: "Trạng thái hồ sơ — values from ApplicationStatuses"
     source_type: "source_table"
@@ -135,35 +176,6 @@ schemes:
       - "Geographic Area"
     values: []
 
-  - scheme_code: "GEOGRAPHIC_AREA_TYPE"
-    name: null
-    source_type: "etl_derived"
-    source_table: null
-    used_in_entities:
-      - "Geographic Area"
-    values:
-      - code: "COUNTRY"
-        name: "Quốc gia / quốc tịch — từ FIMS.NATIONAL + FMS.NATIONAL + SCMS.DM_QUOC_TICH"
-        source_table: "FIMS.NATIONAL, FMS.NATIONAL, SCMS.DM_QUOC_TICH"
-      - code: "DISTRICT_OLD"
-        name: "Quận/Huyện (cũ — pre-2025) — từ ECAT_05_DistrictOld"
-        source_table: "ECAT.ECAT_05_DistrictOld"
-      - code: "PROVINCE"
-        name: "Tỉnh / thành phố trong nước — từ SCMS.DM_TINH_THANH"
-        source_table: "SCMS.DM_TINH_THANH"
-      - code: "PROVINCE_OLD"
-        name: "Tỉnh/Thành phố (cũ — pre-2025) — từ ECAT_03_ProvinceOld"
-        source_table: "ECAT.ECAT_03_ProvinceOld"
-      - code: "REGION"
-        name: "Vùng/miền Việt Nam (từ ECAT_02_Region)"
-        source_table: "ECAT.ECAT_02_Region"
-      - code: "WARD"
-        name: "Phường/Xã/Thị trấn (chuẩn — post-sáp nhập 2025) — từ ECAT_07_Ward"
-        source_table: "ECAT.ECAT_07_Ward"
-      - code: "WARD_OLD"
-        name: "Phường/Xã/Thị trấn (cũ — pre-2025) — từ ECAT_06_WardOld"
-        source_table: "ECAT.ECAT_06_WardOld"
-
   - scheme_code: "IDENTITY_DOCUMENT_TYPE"
     name: null
     source_type: "source_table"
@@ -231,6 +243,9 @@ schemes:
       - code: "PRACTITIONER_LICENSE"
         name: "Chứng chỉ hành nghề (CCHN)"
         source_table: null
+      - code: "TAX_ID"
+        name: "Mã số thuế"
+        source_table: null
 
   - scheme_code: "IP_ELEC_ADDR_TYPE"
     name: null
@@ -274,6 +289,9 @@ schemes:
         source_table: null
       - code: "WEBSITE"
         name: "Website tổ chức"
+        source_table: null
+      - code: "PHONE_OFFICE"
+        name: "Điện thoại cơ quan / văn phòng"
         source_table: null
 
   - scheme_code: "NHNCK_APPLICATION_STATUS"
@@ -444,6 +462,144 @@ schemes:
     source_type: "etl_derived"
     source_table: null
     used_in_entities: []
+    values: []
+
+  # ─── FMS schemes ─────────────────────────────────────────────────────────────
+
+  - scheme_code: "FMS_AGENCY_TYPE"
+    name: "Loại đại lý phân phối quỹ đầu tư"
+    source_type: "source_table"
+    source_table: "FMS.AGENCYTYPE"
+    used_in_entities:
+      - "Fund Distribution Agent"
+    values: []
+
+  - scheme_code: "FMS_BUSINESS_TYPE"
+    name: "Ngành nghề kinh doanh của công ty QLQ và VPĐD NN"
+    source_type: "source_table"
+    source_table: "FMS.BUSINESS"
+    used_in_entities:
+      - "Fund Management Company"
+      - "Foreign Fund Management Organization Unit"
+    values: []
+
+  - scheme_code: "FMS_CAPITAL_CHANGE_TYPE"
+    name: "Loại thay đổi vốn góp nhà đầu tư quỹ"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Investment Fund Investor Capital Change Log"
+    values:
+      - code: "SUBSCRIPTION"
+        name: "Góp vốn / mua CCQ"
+        source_table: null
+      - code: "REDEMPTION"
+        name: "Rút vốn / bán CCQ"
+        source_table: null
+      - code: "TRANSFER_IN"
+        name: "Nhận chuyển nhượng vốn góp"
+        source_table: null
+      - code: "TRANSFER_OUT"
+        name: "Chuyển nhượng vốn góp cho bên khác"
+        source_table: null
+
+  - scheme_code: "FMS_CERTIFICATE_TRANSFER_TYPE"
+    name: "Loại giao dịch chứng chỉ quỹ"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Investment Fund Certificate Transfer"
+    values:
+      - code: "BUY"
+        name: "Mua CCQ"
+        source_table: null
+      - code: "SELL"
+        name: "Bán CCQ"
+        source_table: null
+      - code: "TRANSFER"
+        name: "Chuyển nhượng CCQ"
+        source_table: null
+
+  - scheme_code: "FMS_FUND_TYPE"
+    name: "Loại quỹ đầu tư chứng khoán"
+    source_type: "source_table"
+    source_table: "FMS.FUND_TYPE"
+    used_in_entities:
+      - "Investment Fund"
+    values: []
+
+  - scheme_code: "FMS_JOB_TYPE"
+    name: "Loại chức vụ nhân sự công ty QLQ"
+    source_type: "source_table"
+    source_table: "FMS.JOBTYPE"
+    used_in_entities:
+      - "Fund Management Company Key Person"
+      - "Foreign Fund Management Organization Unit Staff"
+    values: []
+
+  - scheme_code: "FMS_OPERATION_STATUS"
+    name: "Trạng thái hoạt động của thành viên/quỹ/đại lý"
+    source_type: "source_table"
+    source_table: "FMS.STATUS"
+    used_in_entities:
+      - "Fund Management Company"
+      - "Investment Fund"
+      - "Custodian Bank"
+      - "Fund Distribution Agent"
+      - "Member Periodic Report"
+      - "Discretionary Investment Account"
+    values: []
+
+  - scheme_code: "FMS_ORG_TERRITORY_TYPE"
+    name: "Loại tổ chức theo địa giới (trong nước / nước ngoài)"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Fund Management Company"
+    values:
+      - code: "DOMESTIC"
+        name: "Tổ chức trong nước (BORF_FLAG=1)"
+        source_table: null
+      - code: "FOREIGN"
+        name: "Tổ chức nước ngoài (BORF_FLAG=0)"
+        source_table: null
+
+  - scheme_code: "FMS_RATING_PERIOD_TYPE"
+    name: "Loại kỳ xếp hạng: cuối năm / giữa năm"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Member Rating"
+    values:
+      - code: "YEAR_END"
+        name: "Xếp hạng cuối năm (RANK_TYPE=1)"
+        source_table: null
+      - code: "MID_YEAR"
+        name: "Xếp hạng giữa năm (RANK_TYPE=2)"
+        source_table: null
+
+  - scheme_code: "FMS_RELATION_TYPE"
+    name: "Loại quan hệ cổ đông"
+    source_type: "source_table"
+    source_table: "FMS.RELATION"
+    used_in_entities:
+      - "Investment Fund Investor Membership"
+    values: []
+
+  - scheme_code: "FMS_REPORT_STATUS"
+    name: "Trạng thái báo cáo thành viên (nộp/phê duyệt/từ chối...)"
+    source_type: "source_table"
+    source_table: "FMS.STATUS"
+    used_in_entities:
+      - "Member Periodic Report Status Log"
+    values: []
+
+  - scheme_code: "FMS_STOCKHOLDER_TYPE"
+    name: "Loại hình nhà đầu tư / cổ đông quỹ"
+    source_type: "source_table"
+    source_table: "FMS.STOCKHOLDERTYPE"
+    used_in_entities:
+      - "Investment Fund Investor Membership"
     values: []
 
   - scheme_code: "RELATIONSHIP_TYPE"
@@ -1918,3 +2074,321 @@ schemes:
         name: "Cancel On Disconnect"
       - code: "5"
         name: "Auto cancel after price limit"
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # FIMS — Quản lý giám sát và công bố thông tin thành viên thị trường
+  # Prefix: FIMS_
+  # Source: Oracle
+  # ─────────────────────────────────────────────────────────────────────────
+
+  - scheme_code: "FIMS_ACTIVITY_STATUS"
+    name: "Tình trạng hoạt động của đối tượng thành viên thị trường / NĐT NN"
+    source_type: "source_table"
+    source_table: "FIMS.STATUS"
+    used_in_entities:
+      - "Market Participant Organization"
+      - "Foreign Investor"
+      - "Foreign FM Branch Organization"
+      - "Info Disclosure Representative"
+      - "Market Participant Key Person"
+    values: []
+
+  - scheme_code: "FIMS_INVESTOR_TYPE"
+    name: "Loại nhà đầu tư nước ngoài"
+    source_type: "source_table"
+    source_table: "FIMS.INVESTORTYPE"
+    used_in_entities:
+      - "Foreign Investor"
+    values: []
+
+  - scheme_code: "FIMS_COMPANY_TYPE"
+    name: "Loại hình doanh nghiệp của tổ chức thành viên thị trường"
+    source_type: "source_table"
+    source_table: "FIMS.COMPANYTYPE"
+    used_in_entities:
+      - "Market Participant Organization"
+    values: []
+
+  - scheme_code: "FIMS_STOCKHOLDER_TYPE"
+    name: "Loại cổ đông của nhà đầu tư nước ngoài"
+    source_type: "source_table"
+    source_table: "FIMS.STOCKHOLDERTYPE"
+    used_in_entities:
+      - "Foreign Investor"
+    values: []
+
+  - scheme_code: "FIMS_SECURITIES_TYPE"
+    name: "Loại chứng khoán"
+    source_type: "source_table"
+    source_table: "FIMS.SECURITIESTYPE"
+    used_in_entities:
+      - "Foreign Investor Securities Account"
+    values: []
+
+  - scheme_code: "FIMS_SECURITIES_CODE"
+    name: "Danh mục mã chứng khoán mà NĐT NN được phép giao dịch — FK đến SECURITIESTYPE"
+    source_type: "source_table"
+    source_table: "FIMS.SECURITIES"
+    used_in_entities:
+      - "Foreign Investor Securities Account"
+    values: []
+
+  - scheme_code: "FIMS_BUSINESS_TYPE"
+    name: "Nghiệp vụ kinh doanh đăng ký của tổ chức thành viên thị trường"
+    source_type: "source_table"
+    source_table: "FIMS.BUSINESS"
+    used_in_entities:
+      - "Market Participant Organization"
+      - "Foreign FM Branch Organization"
+      - "Info Disclosure Representative"
+    values: []
+
+  - scheme_code: "FIMS_CURRENCY"
+    name: "Danh mục tiền tệ dùng trong báo cáo thành viên"
+    source_type: "source_table"
+    source_table: "FIMS.CURRENCY"
+    used_in_entities:
+      - "Member Periodic Report"
+      - "Report Import Value"
+    values: []
+
+  - scheme_code: "FIMS_DEGREE"
+    name: "Trình độ học vấn của nhân sự thành viên thị trường"
+    source_type: "source_table"
+    source_table: "FIMS.DEGREE"
+    used_in_entities:
+      - "Market Participant Key Person"
+    values: []
+
+  - scheme_code: "FIMS_VIOLATION_TYPE"
+    name: "Loại vi phạm điều kiện cảnh báo giám sát"
+    source_type: "source_table"
+    source_table: "FIMS.VIOLATIONTYPE"
+    used_in_entities:
+      - "Market Participant Conduct Violation"
+    values: []
+
+  - scheme_code: "FIMS_REPORT_TYPE"
+    name: "Loại báo cáo thành viên (định kỳ / bất thường / theo yêu cầu)"
+    source_type: "source_table"
+    source_table: "FIMS.REPORTTYPE"
+    used_in_entities:
+      - "Member Periodic Report"
+    values: []
+
+  - scheme_code: "FIMS_ANNOUNCEMENT_TYPE"
+    name: "Loại CBTT của thành viên thị trường"
+    source_type: "source_table"
+    source_table: "FIMS.ANNOUNCETYPE"
+    used_in_entities:
+      - "Info Disclosure Authorization"
+    values: []
+
+  - scheme_code: "FIMS_RELATED_PROPERTY"
+    name: "Hình thức liên quan trong ủy quyền CBTT/giao dịch"
+    source_type: "source_table"
+    source_table: "FIMS.RELATEDPROPERTIES"
+    used_in_entities:
+      - "Info Disclosure Authorization"
+      - "Trading Authorization"
+    values: []
+
+  - scheme_code: "FIMS_RELATIONSHIP_TYPE"
+    name: "Loại quan hệ giữa các đối tượng trong hệ thống FIMS"
+    source_type: "source_table"
+    source_table: "FIMS.RELATIONSHIP"
+    used_in_entities:
+      - "Info Disclosure Representative"
+    values: []
+
+  - scheme_code: "FIMS_JOB_TYPE"
+    name: "Chức vụ/loại công việc của nhân sự tại tổ chức thành viên thị trường"
+    source_type: "source_table"
+    source_table: "FIMS.JOBTYPE"
+    used_in_entities:
+      - "Market Participant Key Person"
+    values: []
+
+  - scheme_code: "FIMS_ORG_UNIT"
+    name: "Đơn vị nội bộ FIMS — phục vụ phân quyền người dùng hệ thống, không có giá trị nghiệp vụ ra ngoài"
+    source_type: "source_table"
+    source_table: "FIMS.UNIT"
+    used_in_entities: []
+    values: []
+
+  - scheme_code: "FIMS_MARKET_PARTICIPANT_TYPE"
+    name: "Loại thành viên thị trường (ETL-derived từ bảng nguồn): QLQ, CTCK, NHLK, VSDC, SỞ_GD, CN_QLQ_NN"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Market Participant Organization"
+    values:
+      - code: "FUND_MANAGEMENT_COMPANY"
+        name: "Công ty quản lý quỹ (FUNDCOMPANY)"
+        source_table: "FIMS.FUNDCOMPANY"
+      - code: "SECURITIES_COMPANY"
+        name: "Công ty chứng khoán (SECURITIESCOMPANY)"
+        source_table: "FIMS.SECURITIESCOMPANY"
+      - code: "CUSTODIAN_BANK"
+        name: "Ngân hàng lưu ký giám sát (BANKMONI)"
+        source_table: "FIMS.BANKMONI"
+      - code: "DEPOSITORY_CENTER"
+        name: "Trung tâm lưu ký chứng khoán - VSDC (DEPOSITORYCENTER)"
+        source_table: "FIMS.DEPOSITORYCENTER"
+      - code: "STOCK_EXCHANGE"
+        name: "Sở giao dịch chứng khoán (STOCKEXCHANGE)"
+        source_table: "FIMS.STOCKEXCHANGE"
+
+  - scheme_code: "FIMS_REPORTING_OBLIGATION_CATEGORY"
+    name: "Phân loại nghĩa vụ của loại sự vụ: 1=Báo cáo, 2=CBTT, 3=Hồ sơ, 4=Khác"
+    source_type: "etl_derived"
+    source_table: "FIMS.RPT_EVENT_TYPE"
+    used_in_entities:
+      - "Reporting Obligation Type"
+    values:
+      - code: "REPORT"
+        name: "Báo cáo"
+        source_value: "1"
+      - code: "DISCLOSURE"
+        name: "Công bố thông tin"
+        source_value: "2"
+      - code: "DOCUMENT"
+        name: "Hồ sơ"
+        source_value: "3"
+      - code: "OTHER"
+        name: "Khác"
+        source_value: "4"
+
+  - scheme_code: "FIMS_REPORTING_EVENT_CATEGORY"
+    name: "Phân loại sự vụ: 1=Định kỳ, 2=Bất thường, 3=Theo yêu cầu"
+    source_type: "etl_derived"
+    source_table: "FIMS.RPT_EVENT_TYPE"
+    used_in_entities:
+      - "Reporting Obligation Type"
+    values:
+      - code: "PERIODIC"
+        name: "Định kỳ"
+        source_value: "1"
+      - code: "ADHOC"
+        name: "Bất thường"
+        source_value: "2"
+      - code: "ON_REQUEST"
+        name: "Theo yêu cầu"
+        source_value: "3"
+
+  - scheme_code: "FIMS_REPORT_SUBMISSION_STATUS"
+    name: "Trạng thái nộp báo cáo của thành viên thị trường"
+    source_type: "etl_derived"
+    source_table: "FIMS.RPTMEMBER"
+    used_in_entities:
+      - "Member Periodic Report"
+    values:
+      - code: "NOT_SUBMITTED"
+        name: "Chưa gửi"
+        source_value: "1"
+      - code: "SUBMITTED"
+        name: "Đã gửi"
+        source_value: "2"
+      - code: "LATE_SUBMITTED"
+        name: "Gửi muộn"
+        source_value: "3"
+      - code: "CANCELLED"
+        name: "Bị hủy"
+        source_value: "4"
+      - code: "RESUBMITTED"
+        name: "Đã gửi lại"
+        source_value: "5"
+
+  - scheme_code: "FIMS_SYSTEM_OBJECT_TYPE"
+    name: "Loại đối tượng hệ thống — 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN"
+    source_type: "etl_derived"
+    source_table: "FIMS.TLPROFILES"
+    used_in_entities:
+      - "Market Participant Key Person"
+      - "Warning Parameter"
+    values:
+      - code: "FUND_MANAGEMENT_COMPANY"
+        name: "Công ty quản lý quỹ"
+        source_value: "1"
+      - code: "SECURITIES_COMPANY"
+        name: "Công ty chứng khoán"
+        source_value: "2"
+      - code: "CUSTODIAN_BANK"
+        name: "Ngân hàng lưu ký"
+        source_value: "3"
+      - code: "DEPOSITORY_CENTER"
+        name: "Trung tâm lưu ký (VSDC)"
+        source_value: "4"
+      - code: "STOCK_EXCHANGE"
+        name: "Sở giao dịch chứng khoán"
+        source_value: "5"
+      - code: "FOREIGN_FM_BRANCH"
+        name: "Chi nhánh công ty QLQ nước ngoài"
+        source_value: "7"
+
+  - scheme_code: "FIMS_PROFILE_KIND"
+    name: "Phân loại đối tượng đại diện CBTT/giao dịch (INFODISCREPRES.ProfileKind)"
+    source_type: "etl_derived"
+    source_table: "FIMS.INFODISCREPRES"
+    used_in_entities:
+      - "Info Disclosure Representative"
+    values:
+      - code: "STOCK_EXCHANGE"
+        name: "Sở giao dịch chứng khoán"
+        source_value: "1"
+      - code: "DEPOSITORY_CENTER"
+        name: "Trung tâm lưu ký (VSDC)"
+        source_value: "2"
+      - code: "FOREIGN_FM_BRANCH"
+        name: "Chi nhánh công ty QLQ nước ngoài"
+        source_value: "3"
+      - code: "SECURITIES_COMPANY"
+        name: "Công ty chứng khoán"
+        source_value: "4"
+      - code: "CUSTODIAN_BANK"
+        name: "Ngân hàng lưu ký"
+        source_value: "5"
+      - code: "TRADING_REPRESENTATIVE"
+        name: "Đại diện giao dịch"
+        source_value: "6"
+      - code: "DISCLOSURE_REPRESENTATIVE"
+        name: "Đại diện công bố thông tin"
+        source_value: "7"
+      - code: "BRANCH"
+        name: "Chi nhánh"
+        source_value: "8"
+      - code: "ORGANIZATION"
+        name: "Tổ chức khác"
+        source_value: "9"
+      - code: "INDIVIDUAL"
+        name: "Cá nhân"
+        source_value: "10"
+
+  - scheme_code: "GEOGRAPHIC_AREA_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Geographic Area"
+    values:
+      - code: "COUNTRY"
+        name: "Quốc gia / quốc tịch — từ FIMS.NATIONAL + FMS.NATIONAL + SCMS.DM_QUOC_TICH"
+        source_table: "FIMS.NATIONAL, FMS.NATIONAL, SCMS.DM_QUOC_TICH"
+      - code: "PROVINCE"
+        name: "Tỉnh / thành phố trong nước — từ FIMS.LOCATION + SCMS.DM_TINH_THANH"
+        source_table: "FIMS.LOCATION, SCMS.DM_TINH_THANH"
+      - code: "DISTRICT_OLD"
+        name: "Quận/Huyện (cũ — pre-2025) — từ ECAT_05_DistrictOld"
+        source_table: "ECAT.ECAT_05_DistrictOld"
+      - code: "PROVINCE_OLD"
+        name: "Tỉnh/Thành phố (cũ — pre-2025) — từ ECAT_03_ProvinceOld"
+        source_table: "ECAT.ECAT_03_ProvinceOld"
+      - code: "REGION"
+        name: "Vùng/miền Việt Nam (từ ECAT_02_Region)"
+        source_table: "ECAT.ECAT_02_Region"
+      - code: "WARD"
+        name: "Phường/Xã/Thị trấn (chuẩn — post-sáp nhập 2025) — từ ECAT_07_Ward"
+        source_table: "ECAT.ECAT_07_Ward"
+      - code: "WARD_OLD"
+        name: "Phường/Xã/Thị trấn (cũ — pre-2025) — từ ECAT_06_WardOld"
+        source_table: "ECAT.ECAT_06_WardOld"

@@ -4,58 +4,113 @@ source: FMS
 table: AGENCIES
 brd_ref: BRD-SRC-FMS-AGENCIES
 columns:
-- name: Id
+- name: ID
   data_type: RAW(16)
-  description: Mã ID đại lý quỹ đầu tư (PK)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
   key: PK
   fk_note: null
-- name: Name
-  data_type: NVARCHAR2(3000)
-  description: Tên đại lý
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
   key: null
   fk_note: null
-- name: ShortName
+- name: CREATED_BY
   data_type: NVARCHAR2(300)
-  description: Tên viết tắt
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
-- name: AgencyTypeId
-  data_type: RAW(16)
-  description: Mã ID loại đại lý. FK → AGENCYTYPE.Id
-  key: FK
-  fk_note: FK → AGENCYTYPE.Id
-- name: Address
-  data_type: NVARCHAR2(3000)
-  description: Địa chỉ
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
   key: null
   fk_note: null
-- name: Status
-  data_type: RAW(16)
-  description: Mã ID trạng thái. FK → STATUS.Id
-  key: FK
-  fk_note: FK → STATUS.Id
-- name: Deleted
+- name: ITEM_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: SHORT_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên viết tắt"
+  key: null
+  fk_note: null
+- name: ENAME
+  data_type: NVARCHAR2(300)
+  description: "Tên tiếng Anh đầy đủ"
+  key: null
+  fk_note: null
+- name: DECISION
+  data_type: NVARCHAR2(300)
+  description: "Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động"
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: DATE
+  description: "Ngày ban hành quyết định/giấy phép chấp thuận hoạt động đại lý"
+  key: null
+  fk_note: null
+- name: DECISION_PLACE
+  data_type: NVARCHAR2(300)
+  description: "Nơi ban hành quyết định/giấy phép"
+  key: null
+  fk_note: null
+- name: ADDRESS
+  data_type: NVARCHAR2(300)
+  description: "Địa chỉ trụ sở"
+  key: null
+  fk_note: null
+- name: TELEPHONE
+  data_type: NVARCHAR2(300)
+  description: "Số điện thoại"
+  key: null
+  fk_note: null
+- name: FAX
+  data_type: NVARCHAR2(300)
+  description: "Số fax"
+  key: null
+  fk_note: null
+- name: RECORD_STATUS
   data_type: NUMBER(22)
-  description: Trạng thái bản ghi
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
   key: null
   fk_note: null
-- name: CreatedBy
+- name: DELETED
+  data_type: NUMBER(22)
+  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  key: null
+  fk_note: null
+- name: CONTENT
   data_type: NVARCHAR2(300)
-  description: Người tạo
+  description: "Nội dung/ghi chú chi tiết về đại lý phân phối"
   key: null
   fk_note: null
-- name: DateCreated
+- name: STOP_DATE
   data_type: DATE
-  description: Ngày tạo
+  description: "Ngày ngừng/đình chỉ hoạt động"
   key: null
   fk_note: null
-- name: DateModified
+- name: ACTIVE_DATE
   data_type: DATE
-  description: Ngày sửa
+  description: "Ngày bắt đầu hoạt động chính thức"
   key: null
   fk_note: null
-- name: ModifyBy
+- name: DATA_MIGRATION
+  data_type: NUMBER(22)
+  description: "Cờ dữ liệu từ hệ thống cũ (legacy migration): 1=Dữ liệu cũ, 0=Dữ liệu mới"
+  key: null
+  fk_note: null
+- name: LIST_DISTRIBUTION_STAFF
   data_type: NVARCHAR2(300)
-  description: Người sửa
+  description: "Danh sách nhân sự phân phối CCQ của đại lý (JSON hoặc danh sách ID người hành nghề)"
+  key: null
+  fk_note: null
+- name: NUMBER_REG_FUND_CER
+  data_type: NVARCHAR2(300)
+  description: "Số lượng quỹ đầu tư đăng ký hoạt động phân phối CCQ tại đại lý này"
   key: null
   fk_note: null

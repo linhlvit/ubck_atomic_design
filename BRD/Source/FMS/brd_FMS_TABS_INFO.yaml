@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: FMS
+table: TABS_INFO
+brd_ref: BRD-SRC-FMS-TABS_INFO
+columns:
+- name: ID
+  data_type: RAW(16)
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  key: PK
+  fk_note: null
+- name: DATE_CREATED
+  data_type: DATE
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: CREATED_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người tạo bản ghi"
+  key: null
+  fk_note: "FK suy luận → USERS.ID"
+- name: DATE_MODIFIED
+  data_type: DATE
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: MODIFY_BY
+  data_type: NVARCHAR2(300)
+  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  key: null
+  fk_note: null
+- name: TP_OUT_ID
+  data_type: RAW(16)
+  description: "FK -> RPT_TP_OUT: Báo cáo tổng hợp đầu ra"
+  key: null
+  fk_note: "FK suy luận → RPT_TP_OUT.ID"
+- name: TAB_GROUPS
+  data_type: NUMBER(22)
+  description: "Nhóm tab trong báo cáo tổng hợp đầu ra: phân nhóm các tab liên quan"
+  key: null
+  fk_note: null
+- name: TAB_CODE
+  data_type: NUMBER(22)
+  description: "Mã tab trong báo cáo tổng hợp đầu ra (số thứ tự hoặc mã định danh)"
+  key: null
+  fk_note: null
+- name: ITEM_NAME
+  data_type: NVARCHAR2(300)
+  description: "Tên hiển thị chính"
+  key: null
+  fk_note: null
+- name: DESCRIPTION
+  data_type: NVARCHAR2(300)
+  description: "Mô tả chi tiết"
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: NUMBER(22)
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng"
+  key: null
+  fk_note: null
+- name: CELL_META
+  data_type: NCLOB
+  description: "Metadata cấu hình ô/tab (JSON NCLOB)"
+  key: null
+  fk_note: null
+- name: TAB_COLUMN
+  data_type: NUMBER(22)
+  description: "Số cột của tab trong báo cáo tổng hợp đầu ra"
+  key: null
+  fk_note: null
+- name: REPORT_INPUT_TAB
+  data_type: NUMBER(22)
+  description: "Cờ tab hiển thị dữ liệu báo cáo đầu vào: 1=Có, 0=Không"
+  key: null
+  fk_note: null
+- name: RPT_ID
+  data_type: RAW(16)
+  description: "FK -> RPT_TEMP: Biểu mẫu báo cáo"
+  key: null
+  fk_note: "FK suy luận → RPT_TEMP.ID"
+- name: RECORD_STATUS
+  data_type: NUMBER(22)
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  key: null
+  fk_note: null
+- name: TAB_ROW
+  data_type: NUMBER(22)
+  description: "Số hàng của tab trong báo cáo tổng hợp đầu ra"
+  key: null
+  fk_note: null
