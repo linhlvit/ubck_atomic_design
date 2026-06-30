@@ -5,12 +5,12 @@ metadata:
   source_system: MDDS
   source_table: JAD_CORBONDINFOR
   atomic_entity: Corporate Bond Trading Snapshot
-  entity_physical_name: cbnd_trd_snpst
+  entity_physical_name: corp_bond_trd_snpst
   bcv_core_object: Product
   bcv_concept: "[Product] Financial Market Instrument"
   table_type: Fact Snapshot
   group: T1
-  design_status: draft
+  design_status: approved
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -23,7 +23,7 @@ metadata:
 attributes:
   # ── PRIMARY KEY ──────────────────────────────────────────────────────
   - attribute_name: Corporate Bond Trading Snapshot Id
-    physical_name: cbnd_trd_snpst_id
+    physical_name: corp_bond_trd_snpst_id
     description: "Khóa đại diện (surrogate key)."
     data_domain: Surrogate Key
     nullable: false
@@ -36,14 +36,14 @@ attributes:
 
   # ── BUSINESS KEY ─────────────────────────────────────────────────────
   - attribute_name: Corporate Bond Trading Snapshot Code
-    physical_name: cbnd_trd_snpst_code
+    physical_name: corp_bond_trd_snpst_code
     description: "ID mã do jadapter sinh. BK của Snapshot entity."
     data_domain: Text
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.kid
+      - MDDS.JAD_CORBONDINFOR.kid
     comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với nguồn."
     classification_context: null
     etl_derived_value: null
@@ -63,682 +63,682 @@ attributes:
 
   # ── CORE IDENTIFIERS ─────────────────────────────────────────────────
   - attribute_name: Symbol
-    physical_name: cbnd_trd_snpst_symb
+    physical_name: symb
     description: "Mã chứng khoán trái phiếu."
     data_domain: Text
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.symbol
+      - MDDS.JAD_CORBONDINFOR.symbol
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Trading Date
-    physical_name: cbnd_trd_snpst_trd_dt
+    physical_name: trd_dt
     description: "Ngày giao dịch format dd/mm/yyyy."
     data_domain: Date
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.tradingdate
+      - MDDS.JAD_CORBONDINFOR.tradingdate
     comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Bond Full Name
-    physical_name: cbnd_trd_snpst_bond_full_nm
+    physical_name: bond_full_nm
     description: "Tên đầy đủ của trái phiếu."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.fullname
+      - MDDS.JAD_CORBONDINFOR.fullname
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Trading Time
-    physical_name: cbnd_trd_snpst_trd_time
+    physical_name: trd_tm
     description: "Thời gian giao dịch."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.tradingtime
+      - MDDS.JAD_CORBONDINFOR.tradingtime
     comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa."
     classification_context: null
     etl_derived_value: null
 
   # ── CLASSIFICATION VALUES ─────────────────────────────────────────────
   - attribute_name: Floor Code
-    physical_name: cbnd_trd_snpst_flr_code
+    physical_name: flr_code
     description: "Mã sàn: 06 (corp-bond HNX)."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.floorcode
+      - MDDS.JAD_CORBONDINFOR.floorcode
     comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
     classification_context: MDDS_FLOOR_CODE
     etl_derived_value: null
 
   - attribute_name: Stock Type Code
-    physical_name: cbnd_trd_snpst_stk_tp_code
+    physical_name: stk_tp_code
     description: "Loại CK: 12 (trái phiếu DN)."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.stocktype
+      - MDDS.JAD_CORBONDINFOR.stocktype
     comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường = 12 cho TPDN."
     classification_context: MDDS_STOCK_TYPE
     etl_derived_value: null
 
   - attribute_name: Trading Session Status Code
-    physical_name: cbnd_trd_snpst_trd_ssn_st_code
+    physical_name: trd_ssn_st_code
     description: "Trạng thái phiên giao dịch HNX."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.tradingsessionid
+      - MDDS.JAD_CORBONDINFOR.tradingsessionid
     comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
     classification_context: MDDS_TRADING_SESSION_STATUS
     etl_derived_value: null
 
   - attribute_name: Security Trading Status Code
-    physical_name: cbnd_trd_snpst_sec_trd_st_code
+    physical_name: scr_trd_st_code
     description: "Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn chế)."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.securitytradingstatus
+      - MDDS.JAD_CORBONDINFOR.securitytradingstatus
     comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
     classification_context: MDDS_SECURITY_TRADING_STATUS
     etl_derived_value: null
 
   - attribute_name: Trading Session Status 2 Code
-    physical_name: cbnd_trd_snpst_trd_ssn_st2_code
+    physical_name: trd_ssn_st2_code
     description: "Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2)."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.tradsesstatus
+      - MDDS.JAD_CORBONDINFOR.tradsesstatus
     comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid — cần profile sự khác biệt giữa 2 trường này."
     classification_context: MDDS_TRADING_SESSION_STATUS
     etl_derived_value: null
 
   - attribute_name: Period Unit Code
-    physical_name: cbnd_trd_snpst_prd_unit_code
+    physical_name: prd_unit_code
     description: "Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm)."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.period_unit
+      - MDDS.JAD_CORBONDINFOR.period_unit
     comment: "Scheme: MDDS_PERIOD_UNIT."
     classification_context: MDDS_PERIOD_UNIT
     etl_derived_value: null
 
   - attribute_name: Interest Period Unit Code
-    physical_name: cbnd_trd_snpst_int_prd_unit_code
+    physical_name: int_prd_unit_code
     description: "Đơn vị kỳ hạn trả lãi."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.interest_period_unit
+      - MDDS.JAD_CORBONDINFOR.interest_period_unit
     comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
     classification_context: MDDS_PERIOD_UNIT
     etl_derived_value: null
 
   - attribute_name: Coupon Type Code
-    physical_name: cbnd_trd_snpst_cpn_tp_code
+    physical_name: cpn_tp_code
     description: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.interest_coupon_type
+      - MDDS.JAD_CORBONDINFOR.interest_coupon_type
     comment: "Scheme: MDDS_COUPON_TYPE."
     classification_context: MDDS_COUPON_TYPE
     etl_derived_value: null
 
   - attribute_name: Interest Rate Type Code
-    physical_name: cbnd_trd_snpst_int_rate_tp_code
+    physical_name: int_rate_tp_code
     description: "Loại lãi suất: Cố định/Thả nổi/Khác."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.interestrate_type
+      - MDDS.JAD_CORBONDINFOR.interestrate_type
     comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
     classification_context: MDDS_INTEREST_RATE_TYPE
     etl_derived_value: null
 
   - attribute_name: Interest Type Code
-    physical_name: cbnd_trd_snpst_int_tp_code
+    physical_name: int_tp_code
     description: "Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác)."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.interest_type
+      - MDDS.JAD_CORBONDINFOR.interest_type
     comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
     classification_context: MDDS_INTEREST_TYPE
     etl_derived_value: null
 
   - attribute_name: Interest Payment Type Code
-    physical_name: cbnd_trd_snpst_int_pymt_tp_code
+    physical_name: int_pymt_tp_code
     description: "Phương thức trả lãi."
     data_domain: Classification Value
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.interest_payment_type
+      - MDDS.JAD_CORBONDINFOR.interest_payment_type
     comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
     classification_context: MDDS_INTEREST_PAYMENT_TYPE
     etl_derived_value: null
 
   # ── PRICE FIELDS ──────────────────────────────────────────────────────
   - attribute_name: Ceiling Price
-    physical_name: cbnd_trd_snpst_ceil_prc
+    physical_name: ceiling_prc
     description: "Giá trần khớp lệnh."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.ceiling
+      - MDDS.JAD_CORBONDINFOR.ceiling
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Floor Price
-    physical_name: cbnd_trd_snpst_flr_prc
+    physical_name: flr_prc
     description: "Giá sàn khớp lệnh."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.floor
+      - MDDS.JAD_CORBONDINFOR.floor
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Reference Price
-    physical_name: cbnd_trd_snpst_refr_prc
+    physical_name: ref_prc
     description: "Giá tham chiếu."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.reference
+      - MDDS.JAD_CORBONDINFOR.reference
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Close Price
-    physical_name: cbnd_trd_snpst_cls_prc
+    physical_name: cls_prc
     description: "Giá đóng cửa ngày."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.closeprice
+      - MDDS.JAD_CORBONDINFOR.closeprice
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Close Volume
-    physical_name: cbnd_trd_snpst_cls_vol
+    physical_name: cls_vol
     description: "Khối lượng đóng cửa."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.closevol
+      - MDDS.JAD_CORBONDINFOR.closevol
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Price Change
-    physical_name: cbnd_trd_snpst_prc_chg
+    physical_name: prc_chg
     description: "Thay đổi giá khớp gần nhất so với giá tham chiếu."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.change
+      - MDDS.JAD_CORBONDINFOR.change
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Open Price
-    physical_name: cbnd_trd_snpst_opn_prc
+    physical_name: opn_prc
     description: "Giá mở cửa."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.open
+      - MDDS.JAD_CORBONDINFOR.open
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: High Price
-    physical_name: cbnd_trd_snpst_high_prc
+    physical_name: high_prc
     description: "Giá thực hiện cao nhất GD khớp lệnh."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.high
+      - MDDS.JAD_CORBONDINFOR.high
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Low Price
-    physical_name: cbnd_trd_snpst_low_prc
+    physical_name: low_prc
     description: "Giá thực hiện thấp nhất GD khớp lệnh."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.low
+      - MDDS.JAD_CORBONDINFOR.low
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Average Price
-    physical_name: cbnd_trd_snpst_av_prc
+    physical_name: avg_prc
     description: "Giá trung bình."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.averageprice
+      - MDDS.JAD_CORBONDINFOR.averageprice
     comment: null
     classification_context: null
     etl_derived_value: null
 
   # ── VOLUME & VALUE ────────────────────────────────────────────────────
   - attribute_name: Total Trading Volume
-    physical_name: cbnd_trd_snpst_tot_trd_vol
+    physical_name: tot_mtch_vol
     description: "Tổng khối lượng giao dịch."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.totaltrading
+      - MDDS.JAD_CORBONDINFOR.totaltrading
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Total Trading Value
-    physical_name: cbnd_trd_snpst_tot_trd_val
+    physical_name: tot_mtch_val
     description: "Tổng giá trị giao dịch."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.totaltradingvalue
+      - MDDS.JAD_CORBONDINFOR.totaltradingvalue
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Total Listing Volume
-    physical_name: cbnd_trd_snpst_tot_list_vol
+    physical_name: tot_listing_vol
     description: "Khối lượng niêm yết."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.totallistingqtty
+      - MDDS.JAD_CORBONDINFOR.totallistingqtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Foreign Remain Volume
-    physical_name: cbnd_trd_snpst_frgn_rem_vol
+    physical_name: frgn_rman_room
     description: "Room NĐTNN còn lại."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.foreignremain
+      - MDDS.JAD_CORBONDINFOR.foreignremain
     comment: null
     classification_context: null
     etl_derived_value: null
 
   # ── PUT-THROUGH OUTRIGHT ──────────────────────────────────────────────
   - attribute_name: PT Match Volume
-    physical_name: cbnd_trd_snpst_pt_mtch_vol
+    physical_name: pt_mtch_vol
     description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_match_qtty
+      - MDDS.JAD_CORBONDINFOR.pt_match_qtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Match Price
-    physical_name: cbnd_trd_snpst_pt_mtch_prc
+    physical_name: pt_mtch_prc
     description: "Giá thực hiện gần nhất GD thỏa thuận Outright."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_match_price
+      - MDDS.JAD_CORBONDINFOR.pt_match_price
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Total Traded Volume
-    physical_name: cbnd_trd_snpst_pt_tot_trd_vol
+    physical_name: pt_tot_mtch_vol
     description: "Tổng khối lượng GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_total_traded_qtty
+      - MDDS.JAD_CORBONDINFOR.pt_total_traded_qtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Total Traded Value
-    physical_name: cbnd_trd_snpst_pt_tot_trd_val
+    physical_name: pt_tot_mtch_val
     description: "Tổng giá trị GD thỏa thuận Outright."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_total_traded_value
+      - MDDS.JAD_CORBONDINFOR.pt_total_traded_value
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Best Bid Volume
-    physical_name: cbnd_trd_snpst_pt_best_bid_vol
+    physical_name: pt_best_bid_vol
     description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_bestbidqtty
+      - MDDS.JAD_CORBONDINFOR.pt_bestbidqtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Best Bid Price
-    physical_name: cbnd_trd_snpst_pt_best_bid_prc
+    physical_name: pt_best_bid_prc
     description: "Giá chào mua cao nhất GD thỏa thuận Outright."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_bestbidprice
+      - MDDS.JAD_CORBONDINFOR.pt_bestbidprice
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Best Offer Volume
-    physical_name: cbnd_trd_snpst_pt_best_ofr_vol
+    physical_name: pt_best_ofr_vol
     description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_bestofferqtty
+      - MDDS.JAD_CORBONDINFOR.pt_bestofferqtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Best Offer Price
-    physical_name: cbnd_trd_snpst_pt_best_ofr_prc
+    physical_name: pt_best_ofr_prc
     description: "Giá chào bán thấp nhất GD thỏa thuận Outright."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_bestofferprice
+      - MDDS.JAD_CORBONDINFOR.pt_bestofferprice
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Total Bid Volume
-    physical_name: cbnd_trd_snpst_pt_tot_bid_vol
+    physical_name: pt_tot_bid_vol
     description: "Tổng KL chào mua GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_totalbidqtty
+      - MDDS.JAD_CORBONDINFOR.pt_totalbidqtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Total Offer Volume
-    physical_name: cbnd_trd_snpst_pt_tot_ofr_vol
+    physical_name: pt_tot_ofr_vol
     description: "Tổng KL chào bán GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_totalofferqtty
+      - MDDS.JAD_CORBONDINFOR.pt_totalofferqtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Max Volume
-    physical_name: cbnd_trd_snpst_pt_max_vol
+    physical_name: pt_max_vol
     description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_maxqtty
+      - MDDS.JAD_CORBONDINFOR.pt_maxqtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Max Price
-    physical_name: cbnd_trd_snpst_pt_max_prc
+    physical_name: pt_max_prc
     description: "Giá thực hiện cao nhất GD thỏa thuận Outright."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_maxprice
+      - MDDS.JAD_CORBONDINFOR.pt_maxprice
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Min Volume
-    physical_name: cbnd_trd_snpst_pt_min_vol
+    physical_name: pt_min_vol
     description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright."
     data_domain: Small Counter
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_minqtty
+      - MDDS.JAD_CORBONDINFOR.pt_minqtty
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: PT Min Price
-    physical_name: cbnd_trd_snpst_pt_min_prc
+    physical_name: pt_min_prc
     description: "Giá thực hiện thấp nhất GD thỏa thuận Outright."
     data_domain: Currency Amount
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.pt_minprice
+      - MDDS.JAD_CORBONDINFOR.pt_minprice
     comment: null
     classification_context: null
     etl_derived_value: null
 
   # ── BOND-SPECIFIC ATTRIBUTES ─────────────────────────────────────────
   - attribute_name: Issuer Name
-    physical_name: cbnd_trd_snpst_issur_nm
+    physical_name: issu_nm
     description: "Tên tổ chức phát hành."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.issuername
+      - MDDS.JAD_CORBONDINFOR.issuername
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Issue Date
-    physical_name: cbnd_trd_snpst_issu_dt
+    physical_name: issu_dt
     description: "Ngày phát hành trái phiếu."
     data_domain: Date
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.issuedate
+      - MDDS.JAD_CORBONDINFOR.issuedate
     comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Maturity Date
-    physical_name: cbnd_trd_snpst_mat_dt
+    physical_name: mat_dt
     description: "Ngày đáo hạn trái phiếu."
     data_domain: Date
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.maturitydate
+      - MDDS.JAD_CORBONDINFOR.maturitydate
     comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Par Value
-    physical_name: cbnd_trd_snpst_par_val
+    physical_name: par_val
     description: "Mệnh giá trái phiếu."
     data_domain: Currency Amount
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.parvalue
+      - MDDS.JAD_CORBONDINFOR.parvalue
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Bond Period
-    physical_name: cbnd_trd_snpst_bond_prd
+    physical_name: bond_prd
     description: "Kỳ hạn trái phiếu."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.bond_period
+      - MDDS.JAD_CORBONDINFOR.bond_period
     comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Period Remain Days
-    physical_name: cbnd_trd_snpst_prd_rem_days
+    physical_name: prd_rman_days
     description: "Kỳ hạn còn lại tính bằng ngày."
     data_domain: Small Counter
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.period_remain
+      - MDDS.JAD_CORBONDINFOR.period_remain
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Interest Period
-    physical_name: cbnd_trd_snpst_int_prd
+    physical_name: int_prd
     description: "Kỳ hạn trả lãi."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.interest_period
+      - MDDS.JAD_CORBONDINFOR.interest_period
     comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Interest Rate
-    physical_name: cbnd_trd_snpst_int_rate
+    physical_name: int_rate
     description: "Lãi suất danh nghĩa."
     data_domain: Interest Rate
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.interest_rate
+      - MDDS.JAD_CORBONDINFOR.interest_rate
     comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Bond Characteristics
-    physical_name: cbnd_trd_snpst_bond_char
+    physical_name: bond_char
     description: "Đặc điểm trái phiếu."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_CORBONDINFOR.characteristics
+      - MDDS.JAD_CORBONDINFOR.characteristics
     comment: null
     classification_context: null
     etl_derived_value: null

@@ -226,15 +226,6 @@ entities:
   source_table: "NHNCK.COUNTRIES, NHNCK.PROVINCES, NHNCK.DISTRICTS"
   status: "approved"
 - bcv_core_object: "Transaction"
-  bcv_concept: "[Transaction] Financial Market Transaction"
-  atomic_entity: "Security Match Log"
-  table_type: "Fact Append"
-  description: "Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong\
-    \ ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động,\
-    \ và lũy kế khối lượng/giá trị từ đầu ngày."
-  source_table: "MDDS.JAD_TRANSLOG"
-  status: "draft"
-- bcv_core_object: "Transaction"
   bcv_concept: "[Event] Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
   table_type: "Fundamental"
@@ -243,6 +234,15 @@ entities:
     \ với Examination Assessment Fee (Condition)."
   source_table: "NHNCK.APPLICATION_FEES"
   status: "approved"
+- bcv_core_object: "Transaction"
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  atomic_entity: "Security Match Log"
+  table_type: "Fact Append"
+  description: "Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong\
+    \ ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động,\
+    \ và lũy kế khối lượng/giá trị từ đầu ngày."
+  source_table: "MDDS.TransLog"
+  status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
   atomic_entity: "Citizen Reception"
@@ -250,6 +250,16 @@ entities:
   description: "Ghi nhận buổi tiếp công dân tại UBCKNN: ngày tiếp, cán bộ tiếp, loại\
     \ đối tượng, nội dung tóm tắt, liên kết hồ sơ đơn thư nếu có."
   source_table: "ThanhTra.CITIZEN_RECEPTION"
+  status: "draft"
+- bcv_core_object: "Product"
+  bcv_concept: "[Product] Financial Market Instrument"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  table_type: "Fact Snapshot"
+  description: "Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm yết\
+    \ tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright,\
+    \ thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát\
+    \ hành/đáo hạn)."
+  source_table: "MDDS.CorpBondInfor"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -291,6 +301,15 @@ entities:
   description: "Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại đơn vị/cá\
     \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
   source_table: "ThanhTra.EXAMINATION_TEAM_TARGET"
+  status: "draft"
+- bcv_core_object: "Group"
+  bcv_concept: "[Group] Share Index"
+  atomic_entity: "Index Constituent Snapshot"
+  table_type: "Fact Snapshot"
+  description: "Snapshot thành phần rổ chỉ số thị trường theo ngày giao dịch — mỗi\
+    \ dòng ghi nhận một cặp mã chỉ số và mã chứng khoán có mặt trong rổ chỉ số tại\
+    \ ngày giao dịch tương ứng."
+  source_table: "MDDS.CSIDXInfor"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -342,25 +361,6 @@ entities:
     \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
   source_table: "ThanhTra.INSPECTION_TEAM_TARGET"
   status: "draft"
-- bcv_core_object: "Product"
-  bcv_concept: "[Product] Financial Market Instrument"
-  atomic_entity: "Corporate Bond Trading Snapshot"
-  table_type: "Fact Snapshot"
-  description: "Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm yết\
-    \ tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright,\
-    \ thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát\
-    \ hành/đáo hạn)."
-  source_table: "MDDS.JAD_CORBONDINFOR"
-  status: "draft"
-- bcv_core_object: "Group"
-  bcv_concept: "[Group] Share Index"
-  atomic_entity: "Index Constituent Snapshot"
-  table_type: "Fact Snapshot"
-  description: "Snapshot thành phần rổ chỉ số thị trường theo ngày giao dịch — mỗi\
-    \ dòng ghi nhận một cặp mã chỉ số và mã chứng khoán có mặt trong rổ chỉ số tại\
-    \ ngày giao dịch tương ứng."
-  source_table: "MDDS.JAD_CSIDXINFOR"
-  status: "draft"
 - bcv_core_object: "Group"
   bcv_concept: "[Group] Share Index"
   atomic_entity: "Market Index Snapshot"
@@ -368,16 +368,7 @@ entities:
   description: "Snapshot trạng thái của một chỉ số thị trường (VNINDEX, HNX-Index,\
     \ UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá\
     \ trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch."
-  source_table: "MDDS.JAD_MARKETINFOR"
-  status: "draft"
-- bcv_core_object: "Product"
-  bcv_concept: "[Product] Financial Market Instrument"
-  atomic_entity: "Security Trading Snapshot"
-  table_type: "Fact Snapshot"
-  description: "Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu,\
-    \ chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày\
-    \ giao dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument."
-  source_table: "MDDS.JAD_STOCKINFOR"
+  source_table: "MDDS.MarketInfor"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -451,6 +442,15 @@ entities:
   description: "Theo dõi kết quả thực thi quyết định biện pháp ngăn chặn: người báo\
     \ cáo, ngày báo cáo, kết quả (đã thực hiện đầy đủ/đang thực hiện/chưa thực hiện)."
   source_table: "ThanhTra.SECURITY_MEASURE_EXECUTION"
+  status: "draft"
+- bcv_core_object: "Product"
+  bcv_concept: "[Product] Financial Market Instrument"
+  atomic_entity: "Security Trading Snapshot"
+  table_type: "Fact Snapshot"
+  description: "Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu,\
+    \ chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày\
+    \ giao dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument."
+  source_table: "MDDS.StockInfor"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""

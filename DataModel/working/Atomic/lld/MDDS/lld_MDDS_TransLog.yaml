@@ -10,7 +10,7 @@ metadata:
   bcv_concept: "[Transaction] Financial Market Transaction"
   table_type: Fact Append
   group: T2
-  design_status: draft
+  design_status: approved
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -23,7 +23,7 @@ metadata:
 attributes:
   # ── PRIMARY KEY ──────────────────────────────────────────────────────
   - attribute_name: Security Match Log Id
-    physical_name: sec_mtch_log_id
+    physical_name: scr_mtch_log_id
     description: "Khóa đại diện (surrogate key)."
     data_domain: Surrogate Key
     nullable: false
@@ -36,14 +36,14 @@ attributes:
 
   # ── BUSINESS KEY ─────────────────────────────────────────────────────
   - attribute_name: Security Match Log Code
-    physical_name: sec_mtch_log_code
+    physical_name: scr_mtch_log_code
     description: "ID unique cho từng lần khớp — PK bảng nguồn. BK."
     data_domain: Text
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.Id
+      - MDDS.JAD_TRANSLOG.Id
     comment: "BK chính. PK nguồn Id — unique per lần khớp lệnh."
     classification_context: null
     etl_derived_value: null
@@ -63,174 +63,174 @@ attributes:
 
   # ── CORE FIELDS ───────────────────────────────────────────────────────
   - attribute_name: Symbol
-    physical_name: sec_mtch_log_symb
+    physical_name: symb
     description: "Mã chứng khoán."
     data_domain: Text
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.symbol
+      - MDDS.JAD_TRANSLOG.symbol
     comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định không tạo FK surrogate."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Trading Date
-    physical_name: sec_mtch_log_trd_dt
+    physical_name: trd_dt
     description: "Ngày giao dịch."
     data_domain: Date
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.tradingdate
+      - MDDS.JAD_TRANSLOG.tradingdate
     comment: "Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join key với Security Trading Snapshot."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Match Time
-    physical_name: sec_mtch_log_mtch_time
+    physical_name: mtch_tm
     description: "Thời gian khớp."
     data_domain: Text
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.formattedTime
+      - MDDS.JAD_TRANSLOG.formattedTime
     comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Sequence Message
-    physical_name: sec_mtch_log_seq_msg
+    physical_name: seq_msg
     description: "Sequence tín hiệu của sở."
     data_domain: Text
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.sequenceMsg
+      - MDDS.JAD_TRANSLOG.sequenceMsg
     comment: "Metadata kỹ thuật từ Sở — giữ để traceability và deduplication."
     classification_context: null
     etl_derived_value: null
 
   # ── CLASSIFICATION VALUES ─────────────────────────────────────────────
   - attribute_name: Trade Direction Code
-    physical_name: sec_mtch_log_trd_drc_code
+    physical_name: trd_drc_code
     description: "Chiều mua/bán chủ động."
     data_domain: Classification Value
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.lastColor
+      - MDDS.JAD_TRANSLOG.lastColor
     comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
     classification_context: MDDS_TRADE_DIRECTION
     etl_derived_value: null
 
   - attribute_name: Change Color Code
-    physical_name: sec_mtch_log_chg_color_code
+    physical_name: chg_color_code
     description: "Indicator tăng/giảm so với giá tham chiếu."
     data_domain: Classification Value
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.changeColor
+      - MDDS.JAD_TRANSLOG.changeColor
     comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng pattern với lastColor (MDDS_TRADE_DIRECTION) — indicator chiều giá so với tham chiếu."
     classification_context: MDDS_PRICE_CHANGE_COLOR
     etl_derived_value: null
 
   # ── MATCH PRICE & VOLUME ──────────────────────────────────────────────
   - attribute_name: Match Price
-    physical_name: sec_mtch_log_mtch_prc
+    physical_name: mtch_prc
     description: "Giá khớp."
     data_domain: Currency Amount
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.formattedMatchPrice
+      - MDDS.JAD_TRANSLOG.formattedMatchPrice
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Match Volume
-    physical_name: sec_mtch_log_mtch_vol
+    physical_name: mtch_vol
     description: "Khối lượng khớp."
     data_domain: Small Counter
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.formattedVol
+      - MDDS.JAD_TRANSLOG.formattedVol
     comment: null
     classification_context: null
     etl_derived_value: null
 
   # ── ACCUMULATED ───────────────────────────────────────────────────────
   - attribute_name: Accumulated Volume
-    physical_name: sec_mtch_log_acm_vol
+    physical_name: acm_vol
     description: "Tổng khối lượng khớp lũy kế trong ngày (lô chẵn)."
     data_domain: Small Counter
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.formattedAccVol
+      - MDDS.JAD_TRANSLOG.formattedAccVol
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Accumulated Value
-    physical_name: sec_mtch_log_acm_val
+    physical_name: acm_val
     description: "Tổng giá trị khớp lũy kế trong ngày (lô chẵn)."
     data_domain: Currency Amount
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.formattedAccVal
+      - MDDS.JAD_TRANSLOG.formattedAccVal
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Total Buy Volume
-    physical_name: sec_mtch_log_tot_buy_vol
+    physical_name: tot_buy_vol
     description: "Tổng khối lượng mua chủ động."
     data_domain: Small Counter
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.totalBuyVol
+      - MDDS.JAD_TRANSLOG.totalBuyVol
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - attribute_name: Total Sell Volume
-    physical_name: sec_mtch_log_tot_sell_vol
+    physical_name: tot_sell_vol
     description: "Tổng khối lượng bán chủ động."
     data_domain: Small Counter
     nullable: false
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.totalSellVol
+      - MDDS.JAD_TRANSLOG.totalSellVol
     comment: null
     classification_context: null
     etl_derived_value: null
 
   # ── BOARD ─────────────────────────────────────────────────────────────
   - attribute_name: Board Id
-    physical_name: sec_mtch_log_brd_id
+    physical_name: brd_id
     description: "Board của mã, mặc định G1."
     data_domain: Text
     nullable: true
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.public.JAD_TRANSLOG.boardID
+      - MDDS.JAD_TRANSLOG.boardID
     comment: null
     classification_context: null
     etl_derived_value: null

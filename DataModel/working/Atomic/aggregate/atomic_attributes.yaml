@@ -9301,6 +9301,267 @@ attributes:
   atomic_table: "scr_prac_license_ap_fee"
   atomic_column: "udt_by_ofcr_code"
   data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Security Match Log Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: null
+  comment: "PK surrogate. BCV: [Transaction] Financial Market Transaction. 1 tick\
+    \ khớp lệnh CK."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "scr_mtch_log_id"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Security Match Log Code"
+  description: "ID unique cho từng lần khớp — PK bảng nguồn. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.Id"
+  comment: "BK chính. PK nguồn Id — unique per lần khớp lệnh."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "scr_mtch_log_code"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: "MDDS.TransLog"
+  atomic_table: "scr_mtch_log"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Symbol"
+  description: "Mã chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.symbol"
+  comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định\
+    \ không tạo FK surrogate."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "symb"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Trading Date"
+  description: "Ngày giao dịch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.tradingdate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join key\
+    \ với Security Trading Snapshot."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "tdg_dt"
+  data_type: "date"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Match Time"
+  description: "Thời gian khớp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.formattedTime"
+  comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile\
+    \ trước khi convert sang Timestamp."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "mtch_tm"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Sequence Message"
+  description: "Sequence tín hiệu của sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.sequenceMsg"
+  comment: "Metadata kỹ thuật từ Sở — giữ để traceability và deduplication."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "seq_msg"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Trade Direction Code"
+  description: "Chiều mua/bán chủ động."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.lastColor"
+  comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "trd_drc_code"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Change Color Code"
+  description: "Indicator tăng/giảm so với giá tham chiếu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.changeColor"
+  comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng pattern với lastColor (MDDS_TRADE_DIRECTION)\
+    \ — indicator chiều giá so với tham chiếu."
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "chg_color_code"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Match Price"
+  description: "Giá khớp."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.formattedMatchPrice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "mtch_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Match Volume"
+  description: "Khối lượng khớp."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.formattedVol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "mtch_vol"
+  data_type: "int"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Accumulated Volume"
+  description: "Tổng khối lượng khớp lũy kế trong ngày (lô chẵn)."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.formattedAccVol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "acm_vol"
+  data_type: "int"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Accumulated Value"
+  description: "Tổng giá trị khớp lũy kế trong ngày (lô chẵn)."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.formattedAccVal"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "acm_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Total Buy Volume"
+  description: "Tổng khối lượng mua chủ động."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.totalBuyVol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "tot_buy_vol"
+  data_type: "int"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Total Sell Volume"
+  description: "Tổng khối lượng bán chủ động."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.totalSellVol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "tot_sell_vol"
+  data_type: "int"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Security Match Log"
+  atomic_attribute: "Board Id"
+  description: "Board của mã, mặc định G1."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "TransLog"
+  source_column: "MDDS.JAD_TRANSLOG.boardID"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_TransLog'"
+  etl_derived_value: null
+  atomic_table: "scr_mtch_log"
+  atomic_column: "board_id"
+  data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Citizen Reception"
   atomic_attribute: "Citizen Reception Id"
@@ -9664,6 +9925,895 @@ attributes:
   etl_derived_value: null
   atomic_table: "ctzn_rcptn"
   atomic_column: "udt_by_ofcr_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Corporate Bond Trading Snapshot Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: null
+  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot TPDN\
+    \ tại 1 thời điểm."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "corp_bond_tdg_snpst_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Corporate Bond Trading Snapshot Code"
+  description: "ID mã do jadapter sinh. BK của Snapshot entity."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.kid"
+  comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực sự là\
+    \ (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với nguồn."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "corp_bond_tdg_snpst_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: "MDDS.CorpBondInfor"
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Symbol"
+  description: "Mã chứng khoán trái phiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.symbol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "symb"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Trading Date"
+  description: "Ngày giao dịch format dd/mm/yyyy."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.tradingdate"
+  comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "tdg_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Bond Full Name"
+  description: "Tên đầy đủ của trái phiếu."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.fullname"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "bond_full_nm"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Trading Time"
+  description: "Thời gian giao dịch."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.tradingtime"
+  comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "tdg_tm"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Floor Code"
+  description: "Mã sàn: 06 (corp-bond HNX)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.floorcode"
+  comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "flr_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Stock Type Code"
+  description: "Loại CK: 12 (trái phiếu DN)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.stocktype"
+  comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường\
+    \ = 12 cho TPDN."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "stk_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Trading Session Status Code"
+  description: "Trạng thái phiên giao dịch HNX."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.tradingsessionid"
+  comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "tdg_ssn_st_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Security Trading Status Code"
+  description: "Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn chế)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.securitytradingstatus"
+  comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "scr_tdg_st_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Trading Session Status 2 Code"
+  description: "Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.tradsesstatus"
+  comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid\
+    \ — cần profile sự khác biệt giữa 2 trường này."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "tdg_ssn_st_2_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Period Unit Code"
+  description: "Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.period_unit"
+  comment: "Scheme: MDDS_PERIOD_UNIT."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "prd_unit_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Interest Period Unit Code"
+  description: "Đơn vị kỳ hạn trả lãi."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.interest_period_unit"
+  comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "int_prd_unit_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Coupon Type Code"
+  description: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.interest_coupon_type"
+  comment: "Scheme: MDDS_COUPON_TYPE."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "cpn_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Interest Rate Type Code"
+  description: "Loại lãi suất: Cố định/Thả nổi/Khác."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.interestrate_type"
+  comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "int_rate_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Interest Type Code"
+  description: "Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.interest_type"
+  comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type — danh\
+    \ mục cố định của HNX."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "int_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Interest Payment Type Code"
+  description: "Phương thức trả lãi."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.interest_payment_type"
+  comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type\
+    \ — danh mục cố định của HNX."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "int_pymt_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Ceiling Price"
+  description: "Giá trần khớp lệnh."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.ceiling"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "ceiling_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Floor Price"
+  description: "Giá sàn khớp lệnh."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.floor"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "flr_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Reference Price"
+  description: "Giá tham chiếu."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.reference"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "refr_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Close Price"
+  description: "Giá đóng cửa ngày."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.closeprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "cls_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Close Volume"
+  description: "Khối lượng đóng cửa."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.closevol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "cls_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Price Change"
+  description: "Thay đổi giá khớp gần nhất so với giá tham chiếu."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.change"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "prc_chg"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Open Price"
+  description: "Giá mở cửa."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.open"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "opn_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "High Price"
+  description: "Giá thực hiện cao nhất GD khớp lệnh."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.high"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "high_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Low Price"
+  description: "Giá thực hiện thấp nhất GD khớp lệnh."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.low"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "low_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Average Price"
+  description: "Giá trung bình."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.averageprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "av_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Total Trading Volume"
+  description: "Tổng khối lượng giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.totaltrading"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "tot_tdg_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Total Trading Value"
+  description: "Tổng giá trị giao dịch."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.totaltradingvalue"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "tot_tdg_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Total Listing Volume"
+  description: "Khối lượng niêm yết."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.totallistingqtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "tot_listing_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Foreign Remain Volume"
+  description: "Room NĐTNN còn lại."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.foreignremain"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "frgn_rman_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Match Volume"
+  description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_match_qtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_mtch_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Match Price"
+  description: "Giá thực hiện gần nhất GD thỏa thuận Outright."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_match_price"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_mtch_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Total Traded Volume"
+  description: "Tổng khối lượng GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_total_traded_qtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_tot_trdd_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Total Traded Value"
+  description: "Tổng giá trị GD thỏa thuận Outright."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_total_traded_value"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_tot_trdd_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Best Bid Volume"
+  description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_bestbidqtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_best_bid_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Best Bid Price"
+  description: "Giá chào mua cao nhất GD thỏa thuận Outright."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_bestbidprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_best_bid_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Best Offer Volume"
+  description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_bestofferqtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_best_ofr_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Best Offer Price"
+  description: "Giá chào bán thấp nhất GD thỏa thuận Outright."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_bestofferprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_best_ofr_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Total Bid Volume"
+  description: "Tổng KL chào mua GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_totalbidqtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_tot_bid_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Total Offer Volume"
+  description: "Tổng KL chào bán GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_totalofferqtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_tot_ofr_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Max Volume"
+  description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_maxqtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_max_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Max Price"
+  description: "Giá thực hiện cao nhất GD thỏa thuận Outright."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_maxprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_max_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Min Volume"
+  description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_minqtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_min_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "PT Min Price"
+  description: "Giá thực hiện thấp nhất GD thỏa thuận Outright."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.pt_minprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "pt_min_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Issuer Name"
+  description: "Tên tổ chức phát hành."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.issuername"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "issur_nm"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Issue Date"
+  description: "Ngày phát hành trái phiếu."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.issuedate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "issu_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Maturity Date"
+  description: "Ngày đáo hạn trái phiếu."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.maturitydate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "mat_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Par Value"
+  description: "Mệnh giá trái phiếu."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.parvalue"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "par_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Bond Period"
+  description: "Kỳ hạn trái phiếu."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.bond_period"
+  comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "bond_prd"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Period Remain Days"
+  description: "Kỳ hạn còn lại tính bằng ngày."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.period_remain"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "prd_rman_dys"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Interest Period"
+  description: "Kỳ hạn trả lãi."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.interest_period"
+  comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "int_prd"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Interest Rate"
+  description: "Lãi suất danh nghĩa."
+  data_domain: "Interest Rate"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.interest_rate"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "int_rate"
+  data_type: "decimal(8,5)"
+- bcv_core_object: "Product"
+  atomic_entity: "Corporate Bond Trading Snapshot"
+  atomic_attribute: "Bond Characteristics"
+  description: "Đặc điểm trái phiếu."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CorpBondInfor"
+  source_column: "MDDS.JAD_CORBONDINFOR.characteristics"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_CorpBondInfor'"
+  etl_derived_value: null
+  atomic_table: "corp_bond_tdg_snpst"
+  atomic_column: "bond_char"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Examination Annual Plan Target"
@@ -11110,6 +12260,173 @@ attributes:
   atomic_table: "exam_tm_trgt"
   atomic_column: "udt_by_ofcr_code"
   data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Index Constituent Snapshot Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: null
+  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ số\
+    \ tại 1 ngày."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "indx_constituent_snpst_id"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Index Constituent Snapshot Code"
+  description: "GUID — PK của bảng nguồn. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.id"
+  comment: "BK chính. PK nguồn id — GUID unique."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "indx_constituent_snpst_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: "MDDS.CSIDXInfor"
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Index Code"
+  description: "Mã chỉ số (FK đến MarketInfor / IDXInfor)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.indexcode"
+  comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không tạo\
+    \ FK surrogate ở Atomic — join tại Gold layer qua index_code."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "indx_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Index Id"
+  description: "ID nội bộ của chỉ số."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.indexid"
+  comment: "Nguồn lưu dạng int — ETL cần convert sang string. Giữ nguyên leading zeros\
+    \ nếu có."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "indx_id"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Symbol"
+  description: "Mã chứng khoán trong rổ (FK đến StockInfor)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.symbol"
+  comment: "Denormalized join key với Security Trading Snapshot. Join tại Gold layer\
+    \ qua (symbol, trading_date)."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "symb"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Trading Date"
+  description: "Ngày giao dịch dạng dd/MM/yyyy."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.tradingdate"
+  comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Grain key:\
+    \ mỗi ngày 1 snapshot."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "tdg_dt"
+  data_type: "date"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Add Date"
+  description: "Ngày thêm vào chỉ số."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.adddate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "add_dt"
+  data_type: "date"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Floor Code"
+  description: "Mã sở giao dịch CK."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.floorcode"
+  comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "flr_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Index Constituent Snapshot"
+  atomic_attribute: "Total Match Volume"
+  description: "Tổng khối lượng khớp lệnh lô chẵn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "CSIDXInfor"
+  source_column: "MDDS.JAD_CSIDXINFOR.totalqtty"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate\
+    \ không có giá trị non-numeric. HLD note T2-03: cân nhắc bỏ nếu trùng StockInfor.totaltrading,\
+    \ giữ nguyên theo nguyên tắc mapping 1-1."
+  classification_context: "Source System Code = 'MDDS_CSIDXInfor'"
+  etl_derived_value: null
+  atomic_table: "indx_constituent_snpst"
+  atomic_column: "tot_mtch_vol"
+  data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Inspection Annual Plan Target"
   atomic_attribute: "Inspection Annual Plan Target Id"
@@ -12917,6 +14234,572 @@ attributes:
   etl_derived_value: null
   atomic_table: "insp_tm_trgt"
   atomic_column: "udt_by_ofcr_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Market Index Snapshot Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: null
+  comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ số thị\
+    \ trường tại 1 thời điểm."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "mkt_indx_snpst_id"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Market Index Snapshot Code"
+  description: "ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.historyid"
+  comment: "BK chính. PK nguồn historyid — unique per lần chụp chỉ số."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "mkt_indx_snpst_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: "MDDS.MarketInfor"
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Market Code"
+  description: "Mã thị trường — FSS tự quy định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.marketcode"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "mkt_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Market Id"
+  description: "ID thị trường — FSS tự quy định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.marketid"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "mkt_id"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Jadapter Id"
+  description: "ID jadapter sinh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.id"
+  comment: "Metadata kỹ thuật jadapter — giữ để traceability."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "jadapter_id"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Trading Date"
+  description: "Ngày giao dịch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.tradingdate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "tdg_dt"
+  data_type: "date"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Index Time"
+  description: "Thời gian ghi nhận chỉ số."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.indextime"
+  comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile\
+    \ trước khi convert sang Timestamp."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "indx_tm"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Index Type Code"
+  description: "Loại index — mã Sở quy định."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.indextypecode"
+  comment: "Scheme: MDDS_INDEX_TYPE."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "indx_tp_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Market Status Code"
+  description: "Trạng thái phiên giao dịch."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.marketstatus"
+  comment: "Scheme: MDDS_MARKET_STATUS."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "mkt_st_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Index Color Code"
+  description: "Indicator index đang tăng/giảm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.indexcolor"
+  comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor\
+    \ — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "indx_color_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Halt Reason Code"
+  description: "Lý do thị trường bị halt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.haltrsncode"
+  comment: "Cần profile giá trị — có thể promote sang Classification Value sau khi\
+    \ profile."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "halt_rsn_code"
+  data_type: "string"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Market Index Value"
+  description: "Giá trị index tại thời điểm ghi nhận."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.marketindex"
+  comment: "Domain Currency Amount vì đây là điểm số tài chính. Nguồn double precision\
+    \ — không mất dữ liệu."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "mkt_indx_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Index Change"
+  description: "Giá trị index thay đổi so với index cuối ngày hôm trước."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.indexchange"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "indx_chg"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Index Percent Change"
+  description: "% index thay đổi so với index cuối ngày hôm trước."
+  data_domain: "Percentage"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.indexpercentchange"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "indx_pct_chg"
+  data_type: "decimal(5,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Open Index"
+  description: "Index mở cửa."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.open"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "opn_indx"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "High Index"
+  description: "Index cao nhất tính đến thời điểm hiện tại."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.high"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "high_indx"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Low Index"
+  description: "Index thấp nhất tính đến thời điểm hiện tại."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.low"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "low_indx"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Prior Index"
+  description: "Index cuối cùng của phiên trước đó."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.prv_prior_market_index"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "prev_indx"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Total Volume"
+  description: "Tổng khối lượng đã khớp."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.totalvolume"
+  comment: "Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số lượng\
+    \ CK, cùng pattern với advancesvolumn/declinesvolumn."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "tot_vol"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Total Value"
+  description: "Tổng giá trị đã khớp."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.totalvalue"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "tval"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Advances Count"
+  description: "Số lượng mã tăng."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.advances"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "advances_cnt"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Declines Count"
+  description: "Số lượng mã giảm."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.declines"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "declines_cnt"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "No Change Count"
+  description: "Số lượng mã không tăng/giảm."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.nochange"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "no_chg_cnt"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Ceiling Count"
+  description: "Số lượng mã đang trần."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.numberofce"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "ceiling_cnt"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Floor Count"
+  description: "Số lượng mã đang sàn."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.numberoffl"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "flr_cnt"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Advances Volume"
+  description: "Tổng khối lượng đã khớp của các mã tăng."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.advancesvolumn"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "advances_vol"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Declines Volume"
+  description: "Tổng khối lượng đã khớp của các mã giảm."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.declinesvolumn"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "declines_vol"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "No Change Volume"
+  description: "Khối lượng khớp mã không tăng/giảm."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.nochangevolumn"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "no_chg_vol"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Odd Lot Total Value"
+  description: "Giá trị khớp lô lẻ."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.oddlottotalvalue"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "odd_lot_tval"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "Odd Lot Total Volume"
+  description: "Khối lượng khớp lô lẻ."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.oddlottotalvolume"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "odd_lot_tot_vol"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "PT Total Volume"
+  description: "Tổng khối lượng giao dịch thỏa thuận."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.pt_total_qtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "pt_tot_vol"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "PT Total Value"
+  description: "Tổng giá trị giao dịch thỏa thuận."
+  data_domain: "Currency Amount"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.pt_total_value"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "pt_tval"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "PT Total Trade Count"
+  description: "Tổng số giao dịch thỏa thuận."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.pt_total_trade"
+  comment: "Nguồn double precision — widening, không mất dữ liệu."
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "pt_tot_trd_cnt"
+  data_type: "int"
+- bcv_core_object: "Group"
+  atomic_entity: "Market Index Snapshot"
+  atomic_attribute: "TSC Product Group Id"
+  description: "Mã sản phẩm giao dịch (hose/hnx/upcom)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "MarketInfor"
+  source_column: "MDDS.JAD_MARKETINFOR.tscprodgrpid"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_MarketInfor'"
+  etl_derived_value: null
+  atomic_table: "mkt_indx_snpst"
+  atomic_column: "tsc_pd_grp_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Penalty Decision"
@@ -16128,6 +18011,1226 @@ attributes:
   atomic_table: "scr_msr_exec"
   atomic_column: "udt_by_ofcr_code"
   data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Security Trading Snapshot Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: null
+  comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot trạng\
+    \ thái giao dịch của 1 mã CK tại 1 thời điểm."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "scr_tdg_snpst_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Security Trading Snapshot Code"
+  description: "ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.historyid"
+  comment: "BK chính. PK nguồn historyid — unique per lần chụp."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "scr_tdg_snpst_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: "MDDS.StockInfor"
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Symbol"
+  description: "Mã chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.symbol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "symb"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Trading Date"
+  description: "Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.tradingdate"
+  comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate\
+    \ format nhất quán."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tdg_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Security Full Name"
+  description: "Tên chứng khoán (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.fullname"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "scr_full_nm"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Security Id"
+  description: "ID của chứng khoán trong hệ thống Sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.stockid"
+  comment: "Mã nội bộ Sở — giữ dạng text denormalized."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "scr_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Jadapter Id"
+  description: "ID của mã do jadapter tự sinh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.kid"
+  comment: "Metadata kỹ thuật jadapter — giữ để traceability."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "jadapter_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Stock Type Code"
+  description: "Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.stocktype"
+  comment: "Scheme: MDDS_STOCK_TYPE."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "stk_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Floor Code"
+  description: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.floorcode"
+  comment: "Scheme: MDDS_FLOOR_CODE."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "flr_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Trading Session Status Code"
+  description: "Trạng thái phiên tại thời điểm chụp."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.tradingsessionid"
+  comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tdg_ssn_st_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Trade Direction Code"
+  description: "Chiều mua/bán chủ động gần nhất."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.lastcolor"
+  comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "trd_drc_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Symbol Status Code"
+  description: "Trạng thái mã CK."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.symbolstatuscode"
+  comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "symb_st_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Ceiling Price"
+  description: "Giá trần."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.ceiling"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ceiling_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Floor Price"
+  description: "Giá sàn."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.floor"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "flr_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Reference Price"
+  description: "Giá tham chiếu."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.reference"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "refr_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Close Price"
+  description: "Giá khớp gần nhất."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.closeprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "cls_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Close Volume"
+  description: "Khối lượng khớp gần nhất."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.closevol"
+  comment: "Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất\
+    \ dữ liệu."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "cls_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Price Change"
+  description: "Thay đổi giữa giá khớp gần nhất và giá tham chiếu."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.change"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "prc_chg"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Open Price"
+  description: "Giá mở cửa."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.open"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "opn_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "High Price"
+  description: "Giá khớp cao nhất tính đến thời điểm."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.high"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "high_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Low Price"
+  description: "Giá khớp thấp nhất tính đến thời điểm."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.low"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "low_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Average Price"
+  description: "Giá khớp trung bình."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.averageprice"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "av_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Bid Price 1"
+  description: "Giá mua top 1."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.bidprice1"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "bid_prc_1"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Bid Volume 1"
+  description: "Khối lượng mua top 1."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.bidvol1"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "bid_vol_1"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Bid Price 2"
+  description: "Giá mua top 2."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.bidprice2"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "bid_prc_2"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Bid Volume 2"
+  description: "Khối lượng mua top 2."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.bidvol2"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "bid_vol_2"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Bid Price 3"
+  description: "Giá mua top 3."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.bidprice3"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "bid_prc_3"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Bid Volume 3"
+  description: "Khối lượng mua top 3."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.bidvol3"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "bid_vol_3"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Offer Price 1"
+  description: "Giá bán top 1."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.offerprice1"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ofr_prc_1"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Offer Volume 1"
+  description: "Khối lượng bán top 1."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.offervol1"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ofr_vol_1"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Offer Price 2"
+  description: "Giá bán top 2."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.offerprice2"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ofr_prc_2"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Offer Volume 2"
+  description: "Khối lượng bán top 2."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.offervol2"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ofr_vol_2"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Offer Price 3"
+  description: "Giá bán top 3."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.offerprice3"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ofr_prc_3"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Offer Volume 3"
+  description: "Khối lượng bán top 3."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.offervol3"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ofr_vol_3"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Total Trading Volume"
+  description: "Tổng khối lượng khớp từ đầu ngày."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.totaltrading"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tot_tdg_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Total Trading Value"
+  description: "Tổng giá trị khớp từ đầu ngày."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.totaltradingvalue"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tot_tdg_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Total Offer Volume"
+  description: "Tổng khối lượng dư bán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.total_offer_qtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tot_ofr_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Total Bid Volume"
+  description: "Tổng khối lượng dư mua."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.total_bid_qtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tot_bid_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Foreign Buy Volume"
+  description: "Khối lượng NĐTNN mua."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.foreignbuy"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "frgn_buy_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Foreign Sell Volume"
+  description: "Khối lượng NĐTNN bán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.foreignsell"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "frgn_sell_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Foreign Remain Volume"
+  description: "Room còn lại cho NĐTNN."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.foreignremain"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "frgn_rman_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Foreign Room Volume"
+  description: "Tổng room NĐTNN."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.foreignroom"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "frgn_room_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "PT Match Volume"
+  description: "Khối lượng khớp thỏa thuận gần nhất."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.pt_match_qtty"
+  comment: "PT = Put-Through (giao dịch thỏa thuận)."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "pt_mtch_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "PT Match Price"
+  description: "Giá khớp thỏa thuận gần nhất."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.pt_match_price"
+  comment: "Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "pt_mtch_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "PT Total Traded Volume"
+  description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.pt_total_traded_qtty"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "pt_tot_trdd_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "PT Total Traded Value"
+  description: "Tổng giá trị khớp thỏa thuận từ đầu ngày."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.pt_total_traded_value"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "pt_tot_trdd_val"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Security Event Status Code"
+  description: "Trạng thái sự kiện quyền của CK."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.status"
+  comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn\
+    \ để xác định danh sách enum đầy đủ trước khi finalize scheme."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "scr_ev_st_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "ISIN Code"
+  description: "Mã ISIN của CK."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.symbolisin"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "isin_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Listed Share Count"
+  description: "Khối lượng CK niêm yết."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.listedshare"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "list_shr_cnt"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Total Listing Volume"
+  description: "Khối lượng CK niêm yết."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.totallistingqtty"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tot_listing_vol"
+  data_type: "int"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Market Id"
+  description: "Mã sàn theo Sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.marketid"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "mkt_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Board Id"
+  description: "Board của mã CK (mặc định G1)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.boardid"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "board_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Product Group Id"
+  description: "Mã sản phẩm của CK theo Sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.productgrpid"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "pd_grp_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Product Id"
+  description: "Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.productid"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "pd_id"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Trading Time"
+  description: "Thời gian ghi nhận snapshot."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.tradingtime"
+  comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile\
+    \ trước khi convert sang Timestamp."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "tdg_tm"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Fund Type Code"
+  description: "Loại quỹ — FSS quy định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.fundtype"
+  comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá\
+    \ trị."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "fnd_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Open Interest"
+  description: "Khối lượng mở OI — dành cho phái sinh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.openinterest"
+  comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype\
+    \ = FU/OP."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "opn_int"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "First Trading Date"
+  description: "Ngày giao dịch đầu tiên — dành cho phái sinh/CW."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.firsttradingdate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "frst_tdg_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Last Trading Date"
+  description: "Ngày giao dịch cuối cùng — dành cho phái sinh/CW."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.lasttradingdate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "last_tdg_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Underlying Symbol"
+  description: "Chứng khoán cơ sở — dành cho CW/phái sinh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.underlyingsymbol"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ulyg_symb"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Issuer Name"
+  description: "Tổ chức phát hành."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.issuername"
+  comment: null
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "issur_nm"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Covered Warrant Type Code"
+  description: "Kiểu chứng quyền."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.coveredwarranttype"
+  comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần\
+    \ thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize\
+    \ scheme."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "cvrd_wrnt_tp_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Maturity Date"
+  description: "Ngày đáo hạn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.maturitydate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "mat_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Exercise Price"
+  description: "Giá thực hiện CW."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.exerciseprice"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "exrc_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Exercise Ratio"
+  description: "Tỉ lệ thực hiện CW."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.exerciseratio"
+  comment: "Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay\
+    \ decimal."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "exrc_rto"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Settlement Price"
+  description: "Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.settlementprice"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "setl_prc"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Maturity Month Year"
+  description: "Năm tháng đáo hạn HĐTL."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.maturitymonthyear"
+  comment: "Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn\
+    \ hóa format."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "mat_mo_yr"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Listing Date"
+  description: "Ngày niêm yết sản phẩm phái sinh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.listingdate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "listing_dt"
+  data_type: "date"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Contract Multiplier"
+  description: "Hệ số nhân HĐTL."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.contractmultiplier"
+  comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype\
+    \ = FU."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "ctr_multiplier"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Put Or Call Code"
+  description: "Loại quyền phái sinh: P/C."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.putorcall"
+  comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị\
+    \ khi stocktype = OP."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "put_or_call_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Exercise Style Code"
+  description: "Kiểu thực hiện phái sinh: A/E/B/Z."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.exercisestyle"
+  comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other\
+    \ — chuẩn quốc tế, tập cố định."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "exrc_stl_code"
+  data_type: "string"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Coupon Rate"
+  description: "Lãi suất trái phiếu."
+  data_domain: "Interest Rate"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.couponrate"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "cpn_rate"
+  data_type: "decimal(8,5)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Yield"
+  description: "YTM (Yield to Maturity)."
+  data_domain: "Interest Rate"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.yield"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "yld"
+  data_type: "decimal(8,5)"
+- bcv_core_object: "Product"
+  atomic_entity: "Security Trading Snapshot"
+  atomic_attribute: "Issue Date"
+  description: "Ngày phát hành."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "MDDS"
+  source_table: "StockInfor"
+  source_column: "MDDS.JAD_STOCKINFOR.issuedate"
+  comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+  classification_context: "Source System Code = 'MDDS_StockInfor'"
+  etl_derived_value: null
+  atomic_table: "scr_tdg_snpst"
+  atomic_column: "issu_dt"
+  data_type: "date"
 - bcv_core_object: null
   atomic_entity: "VPHC Process Official Letter"
   atomic_attribute: "VPHC Process Official Letter Id"
