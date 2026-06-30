@@ -10,7 +10,7 @@ metadata:
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -190,15 +190,15 @@ attributes:
 
   - attribute_name: "Electronic Address Type Code"
     physical_name: "elc_adr_tp_code"
-    description: "Loại địa chỉ điện tử — điện thoại văn phòng."
+    description: "Loại địa chỉ điện tử — điện thoại cơ quan."
     data_domain: "Classification Value"
     nullable: false
     is_primary_key: false
     status: "draft"
     source_columns: []
     comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=WORK_PHONE"
-    etl_derived_value: "WORK_PHONE"
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE_OFFICE"
+    etl_derived_value: "PHONE_OFFICE"
 
   - attribute_name: "Electronic Address Value"
     physical_name: "elc_adr_val"
@@ -210,5 +210,5 @@ attributes:
     source_columns:
       - "IAM.IAM.USERS.OFFICE_PHONE"
     comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=WORK_PHONE"
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE_OFFICE"
     etl_derived_value: null
