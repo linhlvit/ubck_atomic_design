@@ -1,0 +1,85 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "IAM"
+  source_table: "USERS"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_pst_adr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Shared entity — extend từ IAM.USERS. Nguồn chỉ có cột ADDRESS không phân loại loại địa chỉ → hardcode IP_ADDR_TYPE=PERMANENT."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Identity and Access Management User."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.ID"
+    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã người dùng IAM."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.ID"
+    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=IAM.USERS"
+    etl_derived_value: "IAM.USERS"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "adr_tp_code"
+    description: "Loại địa chỉ — thường trú."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 cột ADDRESS không phân loại — hardcode PERMANENT."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: "PERMANENT"
+
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
+    description: "Địa chỉ người dùng."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.ADDRESS"
+    comment: null
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null

@@ -1,0 +1,150 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "IAM"
+  source_table: "USERS"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alt_identn"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Shared entity — extend từ IAM.USERS. 2 loại giấy tờ: CITIZEN_ID (căn cước công dân) và TAX_ID (mã số thuế). Mỗi loại = 1 block."
+
+attributes:
+  # --- CITIZEN_ID block ---
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Identity and Access Management User."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.ID"
+    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã người dùng IAM."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.ID"
+    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=IAM.USERS"
+    etl_derived_value: "IAM.USERS"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "identn_tp_code"
+    description: "Loại giấy tờ định danh — căn cước công dân."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CCCD vì nguồn chỉ có cột CITIZEN_ID_NUMBER không có cột type."
+    classification_context: "IP_ALT_ID_TYPE=CCCD"
+    etl_derived_value: "CCCD"
+
+  - attribute_name: "Identification Number"
+    physical_name: "identn_nbr"
+    description: "Số căn cước công dân."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.CITIZEN_ID_NUMBER"
+    comment: "BK của shared entity cùng với Involved Party Id + Identification Type Code."
+    classification_context: null
+    etl_derived_value: null
+
+  # --- TAX_ID block ---
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Identity and Access Management User."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.ID"
+    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã người dùng IAM."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.ID"
+    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=IAM.USERS"
+    etl_derived_value: "IAM.USERS"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "identn_tp_code"
+    description: "Loại giấy tờ định danh — mã số thuế."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
+    classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+    etl_derived_value: "TAX_ID"
+
+  - attribute_name: "Identification Number"
+    physical_name: "identn_nbr"
+    description: "Mã số thuế của người dùng."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IAM.IAM.USERS.TAX_ID_NUMBER"
+    comment: "BK của shared entity cùng với Involved Party Id + Identification Type Code."
+    classification_context: null
+    etl_derived_value: null

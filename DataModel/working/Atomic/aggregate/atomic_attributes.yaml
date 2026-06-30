@@ -12260,6 +12260,452 @@ attributes:
   atomic_table: "exam_tm_trgt"
   atomic_column: "udt_by_ofcr_code"
   data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Identity and Access Management User Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity\
+    \ and Access Management User' theo HLD IAM Tier 1."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "id_and_acs_mgt_usr_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Identity and Access Management User Code"
+  description: "Khóa chính (UUIDv7). BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "BK chính. PK nguồn dạng UUIDv7."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "id_and_acs_mgt_usr_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: "IAM.USERS"
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Full Name"
+  description: "Tên đầy đủ người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.FULL_NAME"
+  comment: "BCV: Full Name (Involved Party)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "full_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Username"
+  description: "Username đăng nhập hệ thống."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.USERNAME"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "username"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Date Of Birth"
+  description: "Ngày sinh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.DATE_OF_BIRTH"
+  comment: "BCV: Date Of Birth (Individual). Nguồn: Oracle DATE."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "dob"
+  data_type: "date"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Individual Gender Code"
+  description: "Giới tính (1: Nam, 2: Nữ, 3: Khác)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.GENDER"
+  comment: "Scheme: IAM_GENDER. Nguồn NUMBER(1): 1=MALE, 2=FEMALE, 3=OTHER — ETL map\
+    \ sang string code. Nguồn lưu dạng số — ETL cần convert sang string."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "idv_gnd_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Involved Party Type Code"
+  description: "Loại người dùng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.USER_TYPE"
+  comment: "Scheme: IAM_USER_TYPE. Nguồn NUMBER(1) — cần profile values từ team IAM.\
+    \ Nguồn lưu dạng số — ETL cần convert sang string code."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "ip_tp_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Involved Party Sub Type Code"
+  description: "Phân loại người dùng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.USER_SUB_TYPE"
+  comment: "Scheme: IAM_USER_SUB_TYPE. Nguồn VARCHAR50 — lấy distinct values từ USERS.USER_SUB_TYPE."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "ip_sub_tp_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Super Admin Indicator"
+  description: "Super admin flag (1: Yes, 0: No)."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.IS_SUPER_ADMIN"
+  comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag Yes/No. Nguồn\
+    \ NUMBER(1)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "sup_admin_ind"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Keycloak Id"
+  description: "Keycloak user ID — định danh người dùng trên hệ thống IAM Keycloak."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.KEY_CLOAK_ID"
+  comment: "BCV: không có term riêng. Giữ lại để trace cross-system — xem T1-05 HLD."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "keycloak_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Organization Code"
+  description: "Mã tổ chức người dùng thuộc về."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ORGANIZATION_CODE"
+  comment: "Denormalized text — chưa xác nhận FK đến bảng tổ chức nào (xem T1-04 HLD).\
+    \ Giữ dạng Text cho đến khi xác nhận cross-source FK."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "org_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Organization Name"
+  description: "Tên tổ chức người dùng thuộc về."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ORGANIZATION_NAME"
+  comment: "Denormalized text — cặp với Organization Code."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "org_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Department Id"
+  description: "Phòng ban người dùng thuộc về — chưa xác định FK target."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.DEPARTMENT_ID"
+  comment: "Nguồn VARCHAR2(36) — chưa có FK constraint rõ. Giữ dạng Text; nếu xác\
+    \ nhận FK đến bảng entity → đổi sang Surrogate Key và tạo cặp Id+Code (xem T1-01\
+    \ HLD)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "dept_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Position Id"
+  description: "Chức vụ người dùng — chưa xác định FK target."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.POSTION_ID"
+  comment: "Nguồn VARCHAR2(36). Tên cột nguồn có typo 'POSTION_ID'. Chưa có FK constraint\
+    \ rõ — giữ dạng Text (xem T1-01 HLD)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "pos_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Stock Code"
+  description: "Mã chứng khoán (mã giao dịch của tổ chức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.STOCK_CODE"
+  comment: "BCV: không có term riêng. VARCHAR2(3) — mã CK 3 ký tự của tổ chức nơi\
+    \ người dùng làm việc."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "stk_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Practice Certificate Type Code"
+  description: "Chứng chỉ hành nghề — loại chứng chỉ của người dùng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
+  comment: "Scheme: IAM_PRACTICE_CERT_TYPE. Nguồn VARCHAR2(36) — chưa rõ ref table\
+    \ gốc (xem T1-02 HLD). Nếu xác nhận FK cross-source NHNCK → cần review lại scheme."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "practice_ctf_tp_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Avatar Path"
+  description: "Đường dẫn avatar của người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.AVATAR_PATH"
+  comment: "BCV: không có term riêng. Lưu đường dẫn file ảnh đại diện."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "avatar_path"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Status Reason"
+  description: "Lý do trạng thái người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.STATUS_REASON"
+  comment: "BCV: không có term riêng. Mô tả lý do trạng thái hiện tại (STATUS đã loại\
+    \ khỏi scope)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "st_rsn"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Login Failure Count"
+  description: "Số lần đăng nhập thất bại."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.COUNT_LOGIN_FALSE"
+  comment: "BCV: không có term riêng. Nguồn NUMBER(1) — đếm số lần login fail, domain\
+    \ Small Counter phù hợp."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "login_failure_cnt"
+  data_type: "int"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Lock Expiry Timestamp"
+  description: "Thời gian hết khóa tài khoản."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.EXPIRE_LOCK_USER"
+  comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "lock_expiry_tms"
+  data_type: "timestamp"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Last Login Timestamp"
+  description: "Lần đăng nhập cuối cùng."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.LAST_LOGIN"
+  comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "last_login_tms"
+  data_type: "timestamp"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Representative Name"
+  description: "Tên người đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.REPRESENTATIVE_NAME"
+  comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD (người đại diện có phải\
+    \ Involved Party độc lập không)."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "rprs_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Representative Citizen Id Number"
+  description: "Số căn cước người đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.REPRESENTATIVE_CITIZEN_ID"
+  comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "rprs_ctzn_id_nbr"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Representative Phone"
+  description: "Số điện thoại người đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.REPRESENTATIVE_PHONE"
+  comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "rprs_ph"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Representative Email"
+  description: "Email người đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.REPRESENTATIVE_EMAIL"
+  comment: "Tên cột nguồn có typo 'REPRESENTATIVE _EMAIL' (dấu cách thừa) — ETL cần\
+    \ dùng tên thực tế trên DB. Denormalized — giữ đến khi xác nhận T1-03 HLD."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "rprs_email"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Identity and Access Management User"
+  atomic_attribute: "Representative Position Id"
+  description: "Chức vụ người đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.REPRESENTATIVE_POSITION_ID"
+  comment: "Denormalized VARCHAR2(255) — giữ dạng Text đến khi xác nhận T1-03 HLD."
+  classification_context: "Source System Code = 'IAM_USERS'"
+  etl_derived_value: null
+  atomic_table: "id_and_acs_mgt_usr"
+  atomic_column: "rprs_pos_id"
+  data_type: "string"
 - bcv_core_object: "Group"
   atomic_entity: "Index Constituent Snapshot"
   atomic_attribute: "Index Constituent Snapshot Id"
@@ -22126,6 +22572,287 @@ attributes:
   atomic_column: "prev_identn_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Involved Party Id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "ip_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Involved Party Code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "ip_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: "IAM.USERS"
+  atomic_table: "ip_alt_identn"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Number"
+  description: "Số căn cước công dân."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.CITIZEN_ID_NUMBER"
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Issue Date"
+  description: "Ngày cấp giấy tờ định danh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_issu_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Issue Place"
+  description: "Nơi cấp giấy tờ định danh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_issu_plc"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Previous Identification Number"
+  description: "Số CMND cũ (trước khi đổi sang CCCD)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Lưu lại để tra cứu lịch sử giấy tờ."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "prev_identn_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Type Code"
+  description: "Loại giấy tờ định danh — căn cước công dân."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CCCD vì nguồn chỉ có cột CITIZEN_ID_NUMBER\
+    \ không có cột type."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'CCCD'"
+  etl_derived_value: "CCCD"
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Involved Party Id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "ip_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Involved Party Code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "ip_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: "IAM.USERS"
+  atomic_table: "ip_alt_identn"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Number"
+  description: "Số căn cước công dân."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.CITIZEN_ID_NUMBER"
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Issue Date"
+  description: "Ngày cấp giấy tờ định danh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_issu_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Issue Place"
+  description: "Nơi cấp giấy tờ định danh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_issu_plc"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Previous Identification Number"
+  description: "Số CMND cũ (trước khi đổi sang CCCD)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Lưu lại để tra cứu lịch sử giấy tờ."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: null
+  atomic_table: "ip_alt_identn"
+  atomic_column: "prev_identn_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Alternative Identification"
+  atomic_attribute: "Identification Type Code"
+  description: "Loại giấy tờ định danh — mã số thuế."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
+  classification_context: "Source System Code = 'IAM_USERS' | Identification Type\
+    \ Code = 'TAX_ID'"
+  etl_derived_value: "TAX_ID"
+  atomic_table: "ip_alt_identn"
+  atomic_column: "identn_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Id"
   description: "FK đến Regulatory Authority Organization Unit"
@@ -23265,6 +23992,272 @@ attributes:
   atomic_column: "elc_adr_val"
   data_type: "string"
 - bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Involved Party Id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'EMAIL'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "ip_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Involved Party Code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'EMAIL'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "ip_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'EMAIL'"
+  etl_derived_value: "IAM.USERS"
+  atomic_table: "ip_elc_adr"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Electronic Address Type Code"
+  description: "Loại địa chỉ điện tử — email."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'EMAIL'"
+  etl_derived_value: "EMAIL"
+  atomic_table: "ip_elc_adr"
+  atomic_column: "elc_adr_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Electronic Address Value"
+  description: "Địa chỉ email người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.EMAIL"
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'EMAIL'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "elc_adr_val"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Involved Party Id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'MOBILE'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "ip_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Involved Party Code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'MOBILE'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "ip_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'MOBILE'"
+  etl_derived_value: "IAM.USERS"
+  atomic_table: "ip_elc_adr"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Electronic Address Type Code"
+  description: "Loại địa chỉ điện tử — điện thoại di động."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'MOBILE'"
+  etl_derived_value: "MOBILE"
+  atomic_table: "ip_elc_adr"
+  atomic_column: "elc_adr_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Electronic Address Value"
+  description: "Số điện thoại di động của người dùng. DIAL_NUMBER (mã vùng) ghép với\
+    \ PHONE để tạo số đầy đủ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.PHONE"
+  comment: "ETL ghép DIAL_NUMBER (mã vùng VARCHAR2(4)) + PHONE thành số đầy đủ nếu\
+    \ cần."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'MOBILE'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "elc_adr_val"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Involved Party Id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'WORK_PHONE'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "ip_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Involved Party Code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'WORK_PHONE'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "ip_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'WORK_PHONE'"
+  etl_derived_value: "IAM.USERS"
+  atomic_table: "ip_elc_adr"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Electronic Address Type Code"
+  description: "Loại địa chỉ điện tử — điện thoại văn phòng."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'WORK_PHONE'"
+  etl_derived_value: "WORK_PHONE"
+  atomic_table: "ip_elc_adr"
+  atomic_column: "elc_adr_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Electronic Address"
+  atomic_attribute: "Electronic Address Value"
+  description: "Số điện thoại văn phòng của người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.OFFICE_PHONE"
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
+    \ Code = 'WORK_PHONE'"
+  etl_derived_value: null
+  atomic_table: "ip_elc_adr"
+  atomic_column: "elc_adr_val"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Postal Address"
   atomic_attribute: "Involved Party Id"
   description: "FK đến Regulatory Authority Organization Unit"
@@ -23631,6 +24624,202 @@ attributes:
     \ Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type\
     \ Code = 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "dstc_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Involved Party Id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "ip_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Involved Party Code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "ip_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: "IAM.USERS"
+  atomic_table: "ip_pst_adr"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Address Type Code"
+  description: "Loại địa chỉ — thường trú."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 cột ADDRESS không phân loại — hardcode\
+    \ PERMANENT."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: "PERMANENT"
+  atomic_table: "ip_pst_adr"
+  atomic_column: "adr_tp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Address Value"
+  description: "Địa chỉ người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: "IAM.IAM.USERS.ADDRESS"
+  comment: null
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "adr_val"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Country Id"
+  description: "FK đến Geographic Area — quốc gia."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.COUNTRIES',\
+    \ PERMANENT_COUNTRY_ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "cty_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Country Code"
+  description: "Mã quốc gia."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Country Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "cty_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Province Id"
+  description: "FK đến Geographic Area — tỉnh/thành."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.PROVINCES',\
+    \ PERMANENT_PROVINCE_ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "prov_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "Province Code"
+  description: "Mã tỉnh/thành."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province\
+    \ Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "prov_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "District Id"
+  description: "FK đến Geographic Area — quận/huyện."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.DISTRICTS',\
+    \ PERMANENT_DISTRICT_ID)."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
+  etl_derived_value: null
+  atomic_table: "ip_pst_adr"
+  atomic_column: "dstc_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Involved Party Postal Address"
+  atomic_attribute: "District Code"
+  description: "Mã quận/huyện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IAM"
+  source_table: "USERS"
+  source_column: null
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with District\
+    \ Id."
+  classification_context: "Source System Code = 'IAM_USERS' | Address Type Code =\
+    \ 'PERMANENT'"
   etl_derived_value: null
   atomic_table: "ip_pst_adr"
   atomic_column: "dstc_code"
