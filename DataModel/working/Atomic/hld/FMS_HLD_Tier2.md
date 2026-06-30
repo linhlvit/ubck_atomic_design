@@ -1,13 +1,14 @@
-# FMS HLD — Tier 2
+# FMS — HLD Tier 2: Phụ thuộc Tier 1
 
-**Source system:** FMS (Hệ thống quản lý giám sát công ty chứng khoán và quỹ đầu tư chứng khoán)
-**Tier 2:** FK đến Tier 1 — các entity phụ thuộc trực tiếp vào Fund Management Company (SECURITIES), Custodian Bank (BANKMONI), Fund Distribution Agent (AGENCIES), hoặc Member Rating Period (RATINGPD). Bao gồm: CN/VPĐD trong nước, VPĐD QLQ nước ngoài, Nhân sự QLQ, Quỹ đầu tư, Nhà đầu tư ủy thác, Chi nhánh đại lý, Kết quả xếp hạng, Báo cáo định kỳ thành viên.
+> **Phụ thuộc Tier 1:** Fund Management Company, Custodian Bank, Fund Distribution Agent, Member Rating Period, Reporting Period
+>
+> **Thiết kế theo:** [FMS_HLD_Overview.md](FMS_HLD_Overview.md)
 
 ---
 
 ## 6a. Bảng tổng quan BCV Concept
 
-| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | table_type | BCV Term |
+| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
 | Involved Party | [Involved Party] Organization | Organization | BRANCHES | Update | Danh sách CN/VPĐD của công ty QLQ trong nước | Fund Management Company Organization Unit | Fundamental | (1) Term candidate: `Organization` — BCV mô tả đơn vị thuộc tổ chức, FK đến entity cha là Fund Management Company. (2) Cấu trúc trường: BRANCHES có tên, địa chỉ, phone, email, FK đến SECURITIES (SEC_ID) → entity con của Fund Management Company. Grain = 1 CN/VPĐD. (3) Chọn `Organization` — đơn vị địa lý trực thuộc CTQLQ trong nước. |
 | Involved Party | [Involved Party] Organization | Organization | FORBRCH | Update | Danh sách VPĐD/CN công ty QLQ nước ngoài tại VN | Foreign Fund Management Organization Unit | Fundamental | (1) Term candidate: `Organization` — BCV mô tả đơn vị tổ chức nước ngoài có pháp nhân tại VN. (2) Cấu trúc trường: FORBRCH có tên, địa chỉ, phone, FK tự quản, không FK đến SECURITIES → entity độc lập tuy nhiên có STFFGBRCH (nhân sự) và FGBUSINESS (ngành nghề) phụ thuộc. (3) Chọn `Organization` — tổ chức QLQ nước ngoài có hiện diện tại VN. Lưu ý: FORBRCH không có FK đến SECURITIES → ở Tier 1 xét về độc lập; tuy nhiên vì nhóm nghiệp vụ thành viên QLQ → đặt Tier 2 cùng BRANCHES để gộp phân tích. |
@@ -15,7 +16,7 @@
 | Arrangement | [Arrangement] Investment Fund | Investment Fund | FUNDS | Update | Danh sách quỹ đầu tư chứng khoán | Investment Fund | Fundamental | (1) Term candidate: `Investment Fund` — BCV mô tả quỹ đầu tư được thành lập và quản lý bởi công ty QLQ. (2) Cấu trúc trường: FUNDS có tên quỹ, mã CCQ (CER_CODE), loại quỹ (FTYPE_ID), vốn điều lệ, NAV, NAV/CCQ, ngày niêm yết, FK đến SECURITIES (công ty QLQ) + BANKMONI (NH LKGS) → arrangement giữa CTQLQ và NĐT. (3) Chọn `Investment Fund`. |
 | Involved Party | [Involved Party] Individual | Individual | INVES | Update | Danh sách nhà đầu tư ủy thác | Discretionary Investment Investor | Fundamental | (1) Term candidate: `Individual` — BCV mô tả cá nhân/tổ chức là nhà đầu tư ủy thác. (2) Cấu trúc trường: INVES có họ tên, CCCD, địa chỉ, FK đến SECURITIES (công ty QLQ nhận ủy thác) → entity NĐT ủy thác với thông tin cá nhân đầy đủ; tách IP Alt Identification. (3) Chọn `Individual`. |
 | Involved Party | [Involved Party] Organization | Organization | AGENCIESBRA | Update | Danh sách CN/PGD của đại lý quỹ đầu tư | Fund Distribution Agent Organization Unit | Fundamental | (1) Term candidate: `Organization` — đơn vị trực thuộc Fund Distribution Agent. (2) Cấu trúc trường: AGENCIESBRA có tên, địa chỉ, FK đến AGENCIES (đại lý cha) → entity con của Fund Distribution Agent. Có trường địa chỉ → tách IP Postal Address. (3) Chọn `Organization`. |
-| Business Activity | [Business Activity] Conduct Violation | Conduct Violation | RANK | Append | Bảng xếp hạng theo kỳ đánh giá (1 dòng = 1 kết quả xếp hạng/kỳ) | Member Rating | Fact Append | (1) Term candidate: `Conduct Violation` không phù hợp. Tra lại: kết quả xếp hạng = outcome của một đợt đánh giá — gần `Assessment Result` hơn. (2) Cấu trúc trường: RANK có SEC_ID (FK SECURITIES), RT_PD_ID (FK kỳ đánh giá), TOTAL_SCORE, RANK_INDEX, RANK_TYPE → mỗi dòng = 1 kết quả xếp hạng của 1 CTQLQ trong 1 kỳ, append theo kỳ. (3) Chọn `Business Activity` → Table Type `Fact Append`. |
+| Business Activity | [Business Activity] Business Activity | Business Activity | RANK | Append | Bảng xếp hạng theo kỳ đánh giá (1 dòng = 1 kết quả xếp hạng/kỳ) | Member Rating | Fact Append | (1) Term candidate: `Conduct Violation` không phù hợp. Tra lại: kết quả xếp hạng = outcome của một đợt đánh giá — gần `Assessment Result` hơn. (2) Cấu trúc trường: RANK có SEC_ID (FK SECURITIES), RT_PD_ID (FK kỳ đánh giá), TOTAL_SCORE, RANK_INDEX, RANK_TYPE → mỗi dòng = 1 kết quả xếp hạng của 1 CTQLQ trong 1 kỳ, append theo kỳ. (3) Chọn `Business Activity` → Table Type `Fact Append`. |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTMEMBER | Append | Báo cáo định kỳ của thành viên thị trường nộp lên UBCK | Member Periodic Report | Fact Append | (1) Term candidate: `Gov. Registration Document` — báo cáo thành viên nộp theo quy định là tài liệu pháp lý bắt buộc. (2) Cấu trúc trường: RPTMEMBER có FK đến SECURITIES/FUNDS/BANKMONI/FORBRCH (thành viên nộp), FK RPTPERIOD (kỳ báo cáo), trạng thái, ngày nộp → mỗi lần nộp là 1 event insert-only. (3) Chọn `Gov. Registration Document` → Fact Append. |
 
 ---
@@ -23,115 +24,37 @@
 ## 6b. Diagram Source (Mermaid)
 
 ```mermaid
-erDiagram
-    SECURITIES {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-    }
+graph LR
+    classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
+    classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    BRANCHES {
-        raw ID PK
-        nvarchar ITEM_NAME
-        nvarchar ADDRESS
-        nvarchar TELEPHONE
-        nvarchar EMAIL
-        raw SEC_ID FK
-    }
+    BRANCHES["**BRANCHES**\nCN/VPĐD công ty QLQ trong nước"]:::src
+    FORBRCH["**FORBRCH**\nVPĐD/CN QLQ nước ngoài tại VN"]:::src
+    TLProfiles["**TLProfiles**\nNhân sự chủ chốt QLQ"]:::src
+    FUNDS["**FUNDS**\nQuỹ đầu tư chứng khoán"]:::src
+    INVES["**INVES**\nNhà đầu tư ủy thác"]:::src
+    AGENCIESBRA["**AGENCIESBRA**\nCN/PGD đại lý quỹ"]:::src
+    RANK["**RANK**\nKết quả xếp hạng"]:::src
+    RPTMEMBER["**RPTMEMBER**\nBáo cáo định kỳ thành viên"]:::src
 
-    FORBRCH {
-        raw ID PK
-        nvarchar ITEM_NAME
-        nvarchar ADDRESS
-        nvarchar TELEPHONE
-        nvarchar EMAIL
-    }
+    SECURITIES["**SECURITIES** (Tier 1)"]:::outscope
+    BANKMONI["**BANKMONI** (Tier 1)"]:::outscope
+    AGENCIES["**AGENCIES** (Tier 1)"]:::outscope
+    RATINGPD["**RATINGPD** (Tier 1)"]:::outscope
+    RPTPERIOD["**RPTPERIOD** (Tier 1)"]:::outscope
 
-    TLProfiles {
-        raw ID PK
-        nvarchar ITEM_NAME
-        nvarchar ID_NO
-        raw SEC_ID FK
-        raw JOBTYPE_ID FK
-    }
-
-    FUNDS {
-        raw ID PK
-        nvarchar ITEM_NAME
-        nvarchar CER_CODE
-        raw SEC_ID FK
-        raw BANK_ID FK
-        raw FTYPE_ID FK
-        raw STATUS_ID FK
-        number CAPITAL
-        number NAV
-        number NAV_CCQ
-    }
-
-    BANKMONI {
-        raw ID PK
-        nvarchar ITEM_NAME
-    }
-
-    INVES {
-        raw ID PK
-        nvarchar ITEM_NAME
-        nvarchar ID_NO
-        raw SEC_ID FK
-    }
-
-    AGENCIES {
-        raw ID PK
-        nvarchar ITEM_NAME
-    }
-
-    AGENCIESBRA {
-        raw ID PK
-        nvarchar ITEM_NAME
-        nvarchar ADDRESS
-        raw AGENCIES_ID FK
-    }
-
-    RATINGPD {
-        raw ID PK
-        nvarchar ITEM_NAME
-    }
-
-    RANK {
-        raw ID PK
-        raw SEC_ID FK
-        raw RT_PD_ID FK
-        number TOTAL_SCORE
-        number RANK_INDEX
-        number RANK_TYPE
-    }
-
-    RPTPERIOD {
-        raw ID PK
-        nvarchar ITEM_NAME
-    }
-
-    RPTMEMBER {
-        raw ID PK
-        raw SEC_ID FK
-        raw FUND_ID FK
-        raw BANK_ID FK
-        raw RPT_PD_ID FK
-        date SUBMIT_DATE
-    }
-
-    BRANCHES }o--|| SECURITIES : "SEC_ID"
-    TLProfiles }o--|| SECURITIES : "SEC_ID"
-    FUNDS }o--|| SECURITIES : "SEC_ID"
-    FUNDS }o--|| BANKMONI : "BANK_ID"
-    INVES }o--|| SECURITIES : "SEC_ID"
-    AGENCIESBRA }o--|| AGENCIES : "AGENCIES_ID"
-    RANK }o--|| SECURITIES : "SEC_ID"
-    RANK }o--|| RATINGPD : "RT_PD_ID"
-    RPTMEMBER }o--o| SECURITIES : "SEC_ID"
-    RPTMEMBER }o--o| FUNDS : "FUND_ID"
-    RPTMEMBER }o--o| BANKMONI : "BANK_ID"
-    RPTMEMBER }o--|| RPTPERIOD : "RPT_PD_ID"
+    BRANCHES -->|"SEC_ID"| SECURITIES
+    TLProfiles -->|"SEC_ID"| SECURITIES
+    FUNDS -->|"SEC_ID"| SECURITIES
+    FUNDS -->|"BANK_ID"| BANKMONI
+    INVES -->|"SEC_ID"| SECURITIES
+    AGENCIESBRA -->|"AGENCIES_ID"| AGENCIES
+    RANK -->|"SEC_ID"| SECURITIES
+    RANK -->|"RT_PD_ID"| RATINGPD
+    RPTMEMBER -->|"SEC_ID (nullable)"| SECURITIES
+    RPTMEMBER -->|"FUND_ID (nullable)"| FUNDS
+    RPTMEMBER -->|"BANK_ID (nullable)"| BANKMONI
+    RPTMEMBER -->|"RPT_PD_ID"| RPTPERIOD
 ```
 
 ---
@@ -139,125 +62,63 @@ erDiagram
 ## 6c. Diagram Atomic (Mermaid)
 
 ```mermaid
-erDiagram
-    Fund_Management_Company {
-        bigint ds_fund_management_company_id PK
-        string fund_management_company_code
-    }
+graph TD
+    classDef atomic fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
+    classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
+    classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    Custodian_Bank {
-        bigint ds_custodian_bank_id PK
-        string custodian_bank_code
-    }
+    FMCOU["**Fund Management Company Organization Unit**\n[Involved Party] Organization\nBRANCHES"]:::atomic
+    FFMOU["**Foreign Fund Management Organization Unit**\n[Involved Party] Organization\nFORBRCH"]:::atomic
+    KP["**Fund Management Company Key Person**\n[Involved Party] Individual Employment Status\nTLProfiles"]:::atomic
+    IF["**Investment Fund**\n[Arrangement] Investment Fund\nFUNDS"]:::atomic
+    DII["**Discretionary Investment Investor**\n[Involved Party] Individual\nINVES"]:::atomic
+    FDAOU["**Fund Distribution Agent Organization Unit**\n[Involved Party] Organization\nAGENCIESBRA"]:::atomic
+    MR["**Member Rating**\n[Business Activity] Business Activity\nRANK"]:::pattern
+    MPR["**Member Periodic Report**\n[Documentation] Gov. Registration Document\nRPTMEMBER"]:::pattern
 
-    Fund_Distribution_Agent {
-        bigint ds_fund_distribution_agent_id PK
-        string fund_distribution_agent_code
-    }
+    FMC["**Fund Management Company** (Tier 1)"]:::outscope
+    CB["**Custodian Bank** (Tier 1)"]:::outscope
+    FDA["**Fund Distribution Agent** (Tier 1)"]:::outscope
+    MRP_ENT["**Member Rating Period** (Tier 1)"]:::outscope
+    RP["**Reporting Period** (Tier 1)"]:::outscope
 
-    Member_Rating_Period {
-        bigint ds_member_rating_period_id PK
-        string member_rating_period_code
-    }
+    ADDR["IP Postal Address"]:::shared
+    EADDR["IP Electronic Address"]:::shared
+    ALTID["IP Alt Identification"]:::shared
 
-    Reporting_Period {
-        bigint ds_reporting_period_id PK
-        string reporting_period_code
-    }
-
-    Fund_Management_Company_Organization_Unit {
-        bigint ds_fund_management_company_organization_unit_id PK
-        string organization_unit_code
-        bigint fund_management_company_id FK
-        string fund_management_company_code
-    }
-
-    Foreign_Fund_Management_Organization_Unit {
-        bigint ds_foreign_fund_management_organization_unit_id PK
-        string organization_unit_code
-        string organization_unit_name
-    }
-
-    Fund_Management_Company_Key_Person {
-        bigint ds_fund_management_company_key_person_id PK
-        string key_person_code
-        bigint fund_management_company_id FK
-        string fund_management_company_code
-        string job_type_code
-    }
-
-    Investment_Fund {
-        bigint ds_investment_fund_id PK
-        string investment_fund_code
-        string investment_fund_certificate_code
-        bigint fund_management_company_id FK
-        string fund_management_company_code
-        bigint custodian_bank_id FK
-        string custodian_bank_code
-        string fund_type_code
-        string operation_status_code
-        number net_asset_value
-        number net_asset_value_per_certificate
-    }
-
-    Discretionary_Investment_Investor {
-        bigint ds_discretionary_investment_investor_id PK
-        string investor_code
-        bigint fund_management_company_id FK
-        string fund_management_company_code
-    }
-
-    Fund_Distribution_Agent_Organization_Unit {
-        bigint ds_fund_distribution_agent_organization_unit_id PK
-        string organization_unit_code
-        bigint fund_distribution_agent_id FK
-        string fund_distribution_agent_code
-    }
-
-    Member_Rating {
-        bigint ds_member_rating_id PK
-        bigint fund_management_company_id FK
-        string fund_management_company_code
-        bigint member_rating_period_id FK
-        string member_rating_period_code
-        number total_score
-        number rank_index
-        string rating_period_type_code
-    }
-
-    Member_Periodic_Report {
-        bigint ds_member_periodic_report_id PK
-        bigint fund_management_company_id FK
-        bigint investment_fund_id FK
-        bigint custodian_bank_id FK
-        bigint reporting_period_id FK
-        string reporting_period_code
-        date submission_date
-    }
-
-    Fund_Management_Company_Organization_Unit }o--|| Fund_Management_Company : "fund_management_company_id"
-    Fund_Management_Company_Key_Person }o--|| Fund_Management_Company : "fund_management_company_id"
-    Investment_Fund }o--|| Fund_Management_Company : "fund_management_company_id"
-    Investment_Fund }o--|| Custodian_Bank : "custodian_bank_id"
-    Discretionary_Investment_Investor }o--|| Fund_Management_Company : "fund_management_company_id"
-    Fund_Distribution_Agent_Organization_Unit }o--|| Fund_Distribution_Agent : "fund_distribution_agent_id"
-    Member_Rating }o--|| Fund_Management_Company : "fund_management_company_id"
-    Member_Rating }o--|| Member_Rating_Period : "member_rating_period_id"
-    Member_Periodic_Report }o--o| Fund_Management_Company : "fund_management_company_id"
-    Member_Periodic_Report }o--o| Investment_Fund : "investment_fund_id"
-    Member_Periodic_Report }o--o| Custodian_Bank : "custodian_bank_id"
-    Member_Periodic_Report }o--|| Reporting_Period : "reporting_period_id"
+    FMCOU -->|"Fund Management Company FK"| FMC
+    ADDR -.->|"shared"| FMCOU
+    EADDR -.->|"shared"| FMCOU
+    ALTID -.->|"shared"| FMCOU
+    ADDR -.->|"shared"| FFMOU
+    EADDR -.->|"shared"| FFMOU
+    ALTID -.->|"shared"| FFMOU
+    KP -->|"Fund Management Company FK"| FMC
+    ALTID -.->|"shared"| KP
+    IF -->|"Fund Management Company FK"| FMC
+    IF -->|"Custodian Bank FK"| CB
+    DII -->|"Fund Management Company FK"| FMC
+    ALTID -.->|"shared"| DII
+    FDAOU -->|"Fund Distribution Agent FK"| FDA
+    ADDR -.->|"shared"| FDAOU
+    MR -->|"Fund Management Company FK"| FMC
+    MR -->|"Member Rating Period FK"| MRP_ENT
+    MPR -->|"Fund Management Company FK (nullable)"| FMC
+    MPR -->|"Investment Fund FK (nullable)"| IF
+    MPR -->|"Custodian Bank FK (nullable)"| CB
+    MPR -->|"Reporting Period FK"| RP
 ```
 
 ---
 
-## 6d. Mục Danh mục & Tham chiếu (Reference Data)
+## 6d. Danh mục & Tham chiếu
 
-| Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
-|---|---|---|---|---|
-| FUNDS.FTYPE_ID → FUND_TYPE | Loại quỹ đầu tư | `FMS_FUND_TYPE` | source_table | Values load từ FUND_TYPE.CODE + ITEM_NAME; bảng FUND_TYPE status=pending |
-| RANK.RANK_TYPE | Loại xếp hạng: 1=Cuối năm, 2=Giữa năm | `FMS_RATING_PERIOD_TYPE` | etl_derived | Đã đăng ký Tier 1; tham chiếu lại |
-| RPTMEMBER.STATUS_ID | Trạng thái báo cáo thành viên | `FMS_REPORT_STATUS` | source_table | FK đến STATUS; dùng chung scheme FMS_OPERATION_STATUS hoặc tạo riêng FMS_REPORT_STATUS |
+| Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
+|---|---|---|---|
+| FUNDS.FTYPE_ID → FUND_TYPE | Loại quỹ đầu tư | `FMS_FUND_TYPE` | source_table — Values load từ FUND_TYPE.CODE + ITEM_NAME; bảng FUND_TYPE status=pending. |
+| RANK.RANK_TYPE | Loại xếp hạng: 1=Cuối năm, 2=Giữa năm | `FMS_RATING_PERIOD_TYPE` | etl_derived — Đã đăng ký Tier 1; tham chiếu lại. |
+| RPTMEMBER.STATUS_ID | Trạng thái báo cáo thành viên | `FMS_REPORT_STATUS` | source_table — FK đến STATUS; dùng chung scheme FMS_OPERATION_STATUS hoặc tạo riêng FMS_REPORT_STATUS. |
 
 ---
 
@@ -271,7 +132,7 @@ erDiagram
 
 ## 6f. Điểm cần xác nhận
 
-| # | Câu hỏi | Kết quả |
+| # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
 | T2-01 | FORBRCH — thực tế không có FK đến SECURITIES trong BRD per-table. FORBRCH là entity độc lập (VPĐD/CN QLQ nước ngoài tại VN, không có quan hệ pháp lý FK với SECURITIES trong nước). Xác nhận có nên chuyển lên Tier 1 không? | **Chờ xác nhận.** Nếu FORBRCH hoàn toàn không FK đến SECURITIES → chuyển Tier 1. Thiết kế hiện tại giữ Tier 2 để gộp phân tích nhóm thành viên QLQ. |
 | T2-02 | RPTMEMBER FK đến SECURITIES (CTQLQ), FUNDS (quỹ), BANKMONI (NH LKGS), FORBRCH (VPĐD NN) — xác nhận chỉ 1 trong 4 FK này not-null tại 1 thời điểm hay có thể nhiều not-null? | **Chờ xác nhận.** Thiết kế hiện tại cho phép nullable FK để linh hoạt — cần xác nhận nghiệp vụ. |

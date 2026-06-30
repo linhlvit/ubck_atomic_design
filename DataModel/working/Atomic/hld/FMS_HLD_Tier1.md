@@ -1,13 +1,14 @@
-# FMS HLD — Tier 1
+# FMS — HLD Tier 1: Independent Entities (Reference Data)
 
-**Source system:** FMS (Hệ thống quản lý giám sát công ty chứng khoán và quỹ đầu tư chứng khoán)
-**Tier 1:** Independent Entities — các entity không có FK đến entity nghiệp vụ khác (chỉ FK đến danh mục hoặc self-ref). Bao gồm: Fund Management Company, Custodian Bank, Fund Distribution Agent, Member Rating Period, Rating Criterion, Reporting Period. Các bảng danh mục (Classification Value) cũng xử lý ở tầng này.
+> **Phụ thuộc:** Không phụ thuộc Tier nào — là nền tảng cho tất cả Tier sau.
+>
+> **Thiết kế theo:** [FMS_HLD_Overview.md](FMS_HLD_Overview.md)
 
 ---
 
 ## 6a. Bảng tổng quan BCV Concept
 
-| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | table_type | BCV Term |
+| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
 | Involved Party | [Involved Party] Portfolio Fund Management Company | Organization | SECURITIES | Update | Danh sách công ty quản lý quỹ (QLQ) trong nước và nước ngoài tại VN | Fund Management Company | Fundamental | (1) Term candidate: `Portfolio Fund Management Company` — BCV mô tả tổ chức quản lý quỹ đầu tư được UBCK giám sát. (2) Cấu trúc trường: SECURITIES có mã công ty (CODE), tên VN/EN/viết tắt, địa chỉ, phone, fax, email, website, vốn điều lệ (CAPITAL), ngày đăng ký, trạng thái hoạt động (STATUS_ID), mã định danh doanh nghiệp (ID_NO) → entity tổ chức độc lập, lifecycle riêng, có địa chỉ + liên lạc → tách IP Postal Address + IP Electronic Address + IP Alt Identification. (3) Chọn `Portfolio Fund Management Company`. |
 | Location | [Location] Geographic Area | Geographic Area | NATIONAL | Update | Danh sách quốc gia/quốc tịch | Geographic Area | Fundamental | (1) Term candidate: `Geographic Area` — BCV ngoại lệ: dù chỉ có Code+Name vẫn là Atomic entity Location, không phải Classification Value. (2) Cấu trúc trường: NATIONAL lưu mã quốc gia và tên quốc gia → phục vụ FK từ các entity nghiệp vụ (SECURITIES, INVES...). Đây là nguồn bổ sung thêm `source_table` vào entity Geographic Area đã có từ NHNCK (locked). (3) Shared entity `Geographic Area` — bổ sung source FMS.NATIONAL, không tạo entity mới. |
@@ -16,94 +17,30 @@
 | Event | [Event] Assessment Period | Period | RATINGPD | Update | Danh sách kỳ đánh giá xếp loại công ty QLQ | Member Rating Period | Fundamental | (1) Term candidate: `Assessment Period` — BCV mô tả một chu kỳ đánh giá có ngày bắt đầu/kết thúc, tên kỳ, trạng thái. (2) Cấu trúc trường: RATINGPD có tên kỳ, thời gian kỳ đánh giá, trạng thái → master entity kỳ đánh giá, được FK từ RANK. (3) Chọn `Assessment Period` — xác nhận cần tra thêm. |
 | Condition | [Condition] Scoring Criterion | Scoring Criterion | RNKFACTOR | Update | Bảng nhân tố chấm điểm đánh giá xếp loại (self-ref cha/con) | Rating Criterion | Fundamental | (1) Term candidate: `Scoring Criterion` — BCV mô tả nhân tố/tiêu chí dùng để tính điểm đánh giá. (2) Cấu trúc trường: RNKFACTOR self-ref ParentId (cấu trúc cây nhân tố cha/con), trọng số điểm → cấu hình tiêu chí chấm điểm, không phải kết quả → Condition. (3) Chọn `Scoring Criterion`. |
 | Event | [Event] Business Activity | Period | RPTPERIOD | Update | Kỳ báo cáo định kỳ của thành viên | Reporting Period | Fundamental | (1) Term candidate: `Business Activity` — BCV mô tả kỳ thời gian được định nghĩa để thu thập báo cáo. (2) Cấu trúc trường: RPTPERIOD có tên kỳ, ngày bắt đầu/kết thúc, trạng thái → master entity kỳ báo cáo, FK từ RPTMEMBER. (3) Chọn `Business Activity` — đây là kỳ thời gian nghiệp vụ. |
-| Involved Party | [Involved Party] Conduct Violation | Conduct Violation | VIOLT | Update | Danh sách vi phạm của thành viên thị trường | Member Conduct Violation | Fundamental | (1) Term candidate: `Conduct Violation` — BCV mô tả sự kiện vi phạm quy định của thành viên thị trường. (2) Cấu trúc trường: VIOLT lưu thông tin vi phạm của các thành viên (SECURITIES, FUNDS...), loại vi phạm, quyết định xử lý → entity vi phạm của thành viên, có FK đến nhiều entity Tier 1. (3) Chọn `Conduct Violation`. |
+| Business Activity | [Business Activity] Conduct Violation | Conduct Violation | VIOLT | Update | Danh sách vi phạm của thành viên thị trường | Member Conduct Violation | Fundamental | (1) Term candidate: `Conduct Violation` — BCV mô tả sự kiện vi phạm quy định của thành viên thị trường. (2) Cấu trúc trường: VIOLT lưu thông tin vi phạm của các thành viên (SECURITIES, FUNDS...), loại vi phạm, quyết định xử lý → entity vi phạm của thành viên, có FK đến nhiều entity Tier 1. (3) Chọn `Conduct Violation`. |
 
 ---
 
 ## 6b. Diagram Source (Mermaid)
 
 ```mermaid
-erDiagram
-    SECURITIES {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-        nvarchar ADDRESS
-        nvarchar TELEPHONE
-        nvarchar EMAIL
-        nvarchar ID_NO
-        number CAPITAL
-        raw STATUS_ID FK
-        raw CT_ID FK
-        date FR_DATE
-        date TO_DATE
-    }
+graph LR
+    classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
 
-    NATIONAL {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-    }
+    SECURITIES["**SECURITIES**\nCông ty quản lý quỹ"]:::src
+    NATIONAL["**NATIONAL**\nDanh mục quốc gia"]:::src
+    BANKMONI["**BANKMONI**\nNgân hàng lưu ký giám sát"]:::src
+    AGENCIES["**AGENCIES**\nĐại lý phân phối quỹ"]:::src
+    RATINGPD["**RATINGPD**\nKỳ đánh giá xếp loại"]:::src
+    RNKFACTOR["**RNKFACTOR**\nNhân tố chấm điểm xếp loại"]:::src
+    RPTPERIOD["**RPTPERIOD**\nKỳ báo cáo định kỳ"]:::src
+    VIOLT["**VIOLT**\nVi phạm thành viên thị trường"]:::src
+    AGENCYTYPE["**AGENCYTYPE**\nLoại đại lý (Classification Value)"]:::src
+    STATUS["**STATUS**\nTrạng thái (Classification Value)"]:::src
 
-    BANKMONI {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-        nvarchar ADDRESS
-        nvarchar TELEPHONE
-        nvarchar EMAIL
-    }
-
-    AGENCIES {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-        nvarchar ADDRESS
-        raw AGENCYTYPE_ID FK
-    }
-
-    AGENCYTYPE {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-    }
-
-    RATINGPD {
-        raw ID PK
-        nvarchar ITEM_NAME
-        date FR_DATE
-        date TO_DATE
-    }
-
-    RNKFACTOR {
-        raw ID PK
-        nvarchar ITEM_NAME
-        number WEIGHT
-        raw PARENT_ID FK
-    }
-
-    RPTPERIOD {
-        raw ID PK
-        nvarchar ITEM_NAME
-        date FR_DATE
-        date TO_DATE
-    }
-
-    STATUS {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-    }
-
-    BUSINESS {
-        raw ID PK
-        nvarchar CODE
-        nvarchar ITEM_NAME
-    }
-
-    AGENCIES }o--|| AGENCYTYPE : "AGENCYTYPE_ID"
-    RNKFACTOR }o--o| RNKFACTOR : "PARENT_ID (self-ref)"
-    SECURITIES }o--o| STATUS : "STATUS_ID"
+    AGENCIES -->|"AGENCYTYPE_ID"| AGENCYTYPE
+    RNKFACTOR -->|"PARENT_ID (self-ref)"| RNKFACTOR
+    SECURITIES -->|"STATUS_ID"| STATUS
 ```
 
 ---
@@ -111,82 +48,45 @@ erDiagram
 ## 6c. Diagram Atomic (Mermaid)
 
 ```mermaid
-erDiagram
-    Fund_Management_Company {
-        bigint ds_fund_management_company_id PK
-        string fund_management_company_code
-        string fund_management_company_name
-        string operation_status_code
-        date registration_date
-        number registered_capital
-    }
+graph TD
+    classDef atomic fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
 
-    Custodian_Bank {
-        bigint ds_custodian_bank_id PK
-        string custodian_bank_code
-        string custodian_bank_name
-    }
+    FMC["**Fund Management Company**\n[Involved Party] Portfolio Fund Management Company\nSECURITIES"]:::atomic
+    GEO["**Geographic Area** (shared, locked từ NHNCK)\n[Location] Geographic Area\nNATIONAL → bổ sung source_table"]:::shared
+    CB["**Custodian Bank**\n[Involved Party] Organization\nBANKMONI"]:::atomic
+    FDA["**Fund Distribution Agent**\n[Involved Party] Organization\nAGENCIES"]:::atomic
+    MRP["**Member Rating Period**\n[Event] Assessment Period\nRATINGPD"]:::atomic
+    RC["**Rating Criterion**\n[Condition] Scoring Criterion\nRNKFACTOR"]:::atomic
+    RP["**Reporting Period**\n[Event] Business Activity\nRPTPERIOD"]:::atomic
+    MCV["**Member Conduct Violation**\n[Business Activity] Conduct Violation\nVIOLT"]:::atomic
+    ADDR["IP Postal Address"]:::shared
+    EADDR["IP Electronic Address"]:::shared
+    ALTID["IP Alt Identification"]:::shared
 
-    Fund_Distribution_Agent {
-        bigint ds_fund_distribution_agent_id PK
-        string fund_distribution_agent_code
-        string fund_distribution_agent_name
-        string agency_type_code
-    }
-
-    Member_Rating_Period {
-        bigint ds_member_rating_period_id PK
-        string member_rating_period_code
-        string member_rating_period_name
-        date period_from_date
-        date period_to_date
-    }
-
-    Rating_Criterion {
-        bigint ds_rating_criterion_id PK
-        string rating_criterion_code
-        string rating_criterion_name
-        bigint parent_rating_criterion_id FK
-    }
-
-    Reporting_Period {
-        bigint ds_reporting_period_id PK
-        string reporting_period_code
-        string reporting_period_name
-        date period_from_date
-        date period_to_date
-    }
-
-    Geographic_Area {
-        bigint ds_geographic_area_id PK
-        string geographic_area_code
-        string geographic_area_name
-        string geographic_area_type_code
-    }
-
-    Member_Conduct_Violation {
-        bigint ds_member_conduct_violation_id PK
-        string violation_code
-        string violation_type_code
-    }
-
-    Rating_Criterion }o--o| Rating_Criterion : "parent_rating_criterion_id"
+    RC -->|"Parent Rating Criterion FK (self-ref)"| RC
+    ADDR -.->|"shared"| FMC
+    EADDR -.->|"shared"| FMC
+    ALTID -.->|"shared"| FMC
+    ADDR -.->|"shared"| CB
+    EADDR -.->|"shared"| CB
+    ADDR -.->|"shared"| FDA
 ```
 
 ---
 
-## 6d. Mục Danh mục & Tham chiếu (Reference Data)
+## 6d. Danh mục & Tham chiếu
 
-| Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
-|---|---|---|---|---|
-| BUSINESS | Danh mục ngành nghề kinh doanh của công ty QLQ | `FMS_BUSINESS_TYPE` | source_table | Values load từ BUSINESS.CODE + ITEM_NAME |
-| JOBTYPE | Danh sách loại chức vụ nhân sự | `FMS_JOB_TYPE` | source_table | Values load từ JOBTYPE.CODE + ITEM_NAME |
-| RELATION | Danh mục loại quan hệ cổ đông | `FMS_RELATION_TYPE` | source_table | Values load từ RELATION.CODE + ITEM_NAME |
-| STATUS | Danh sách trạng thái hoạt động | `FMS_OPERATION_STATUS` | source_table | Dùng chung cho SECURITIES, FUNDS, BANKMONI, AGENCIES... |
-| STOCKHOLDERTYPE | Danh sách loại hình NĐT/cổ đông | `FMS_STOCKHOLDER_TYPE` | source_table | Values load từ STOCKHOLDERTYPE.CODE + ITEM_NAME |
-| AGENCYTYPE | Danh sách loại đại lý quỹ | `FMS_AGENCY_TYPE` | source_table | Values load từ AGENCYTYPE.CODE + ITEM_NAME |
-| SECURITIES.BORF_FLAG | Loại tổ chức theo địa giới: 1=Trong nước, 0=Nước ngoài | `FMS_ORG_TERRITORY_TYPE` | etl_derived | ETL derived: DOMESTIC / FOREIGN |
-| RANK.RANK_TYPE | Loại xếp hạng: 1=Cuối năm, 2=Giữa năm | `FMS_RATING_PERIOD_TYPE` | etl_derived | ETL derived: YEAR_END / MID_YEAR |
+| Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
+|---|---|---|---|
+| BUSINESS | Danh mục ngành nghề kinh doanh của công ty QLQ | `FMS_BUSINESS_TYPE` | source_table — Values load từ BUSINESS.CODE + ITEM_NAME. |
+| JOBTYPE | Danh sách loại chức vụ nhân sự | `FMS_JOB_TYPE` | source_table — Values load từ JOBTYPE.CODE + ITEM_NAME. |
+| RELATION | Danh mục loại quan hệ cổ đông | `FMS_RELATION_TYPE` | source_table — Values load từ RELATION.CODE + ITEM_NAME. |
+| STATUS | Danh sách trạng thái hoạt động | `FMS_OPERATION_STATUS` | source_table — Dùng chung cho SECURITIES, FUNDS, BANKMONI, AGENCIES... |
+| STOCKHOLDERTYPE | Danh sách loại hình NĐT/cổ đông | `FMS_STOCKHOLDER_TYPE` | source_table — Values load từ STOCKHOLDERTYPE.CODE + ITEM_NAME. |
+| AGENCYTYPE | Danh sách loại đại lý quỹ | `FMS_AGENCY_TYPE` | source_table — Values load từ AGENCYTYPE.CODE + ITEM_NAME. |
+| SECURITIES.BORF_FLAG | Loại tổ chức theo địa giới: 1=Trong nước, 0=Nước ngoài | `FMS_ORG_TERRITORY_TYPE` | etl_derived — ETL derived: DOMESTIC / FOREIGN. |
+| RANK.RANK_TYPE | Loại xếp hạng: 1=Cuối năm, 2=Giữa năm | `FMS_RATING_PERIOD_TYPE` | etl_derived — ETL derived: YEAR_END / MID_YEAR. |
 
 ---
 
@@ -196,13 +96,11 @@ erDiagram
 |---|---|---|
 | VIOLT | Danh sách vi phạm thành viên | BCV Concept cần xác nhận thêm — VIOLT có FK đến SECURITIES, FUNDS, BANKMONI, FORBRCH → cần đọc cấu trúc cột đầy đủ trước khi xác định tier chính xác. Tạm đưa vào Tier 1 chờ xác nhận. |
 
-*(Các bảng pending (FMS.8, FMS.9) chưa có đủ thông tin cột → chờ khảo sát bổ sung)*
-
 ---
 
 ## 6f. Điểm cần xác nhận
 
-| # | Câu hỏi | Kết quả |
+| # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
 | T1-01 | SECURITIES dùng chung 1 bảng cho cả công ty QLQ trong nước (BORF_FLAG=1) và VPĐD/CN nước ngoài (BORF_FLAG=0) — xác nhận grain của entity Fund Management Company có bao gồm cả 2 loại không, hay chỉ bao gồm loại trong nước? | **Chờ xác nhận.** BRD notes ghi FORBRCH là entity riêng cho VPĐD/CN QLQ nước ngoài — SECURITIES chỉ cho công ty QLQ trong nước. Cần kiểm tra BORF_FLAG thực tế. |
 | T1-02 | RATINGPD — BCV Concept `Assessment Period` cần tra lại nếu BCV dự án dùng term khác. | **Chờ xác nhận.** Tạm dùng `Assessment Period` — sẽ cập nhật nếu BCV Term chính xác hơn. |

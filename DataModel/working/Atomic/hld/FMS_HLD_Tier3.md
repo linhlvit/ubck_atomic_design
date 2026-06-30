@@ -1,13 +1,15 @@
-# FMS HLD — Tier 3
+# FMS — HLD Tier 3: Phụ thuộc Tier 2
 
-**Source system:** FMS (Hệ thống quản lý giám sát công ty chứng khoán và quỹ đầu tư chứng khoán)
-**Tier 3:** FK đến Tier 2 — các entity phụ thuộc vào Investment Fund, Fund Management Company Key Person, Discretionary Investment Investor, Member Periodic Report. Bao gồm: Nhân sự VPĐD QLQ NN, Ban đại diện quỹ, Nhà đầu tư quỹ, Tài khoản NĐT ủy thác, Dữ liệu import báo cáo, Lịch sử trạng thái báo cáo.
+> **Phụ thuộc Tier 1:** Fund Management Company, Custodian Bank, Fund Distribution Agent, Reporting Period
+> **Phụ thuộc Tier 2:** Foreign Fund Management Organization Unit, Fund Management Company Key Person, Investment Fund, Discretionary Investment Investor, Member Periodic Report
+>
+> **Thiết kế theo:** [FMS_HLD_Overview.md](FMS_HLD_Overview.md)
 
 ---
 
 ## 6a. Bảng tổng quan BCV Concept
 
-| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | table_type | BCV Term |
+| BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | STFFGBRCH | Update | Danh sách nhân sự của VPĐD/CN công ty QLQ nước ngoài tại VN | Foreign Fund Management Organization Unit Staff | Fundamental | (1) Term candidate: `Individual Employment Status` — cá nhân giữ vị trí trong tổ chức. (2) Cấu trúc trường: STFFGBRCH có FK đến FORBRCH (tổ chức) + FK đến TLProfiles (nhân sự kiêm nhiệm), họ tên, chức vụ, ngày bổ nhiệm → entity vai trò nhân sự trong tổ chức VPĐD NN. (3) Chọn `Individual Employment Status`. |
 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | REPRESENT | Update | Danh sách ban đại diện/HĐQT quỹ đầu tư | Investment Fund Representative Board Member | Fundamental | (1) Term candidate: `Individual Employment Status` — thành viên ban đại diện là cá nhân đang giữ vị trí trong cơ cấu quản trị quỹ. (2) Cấu trúc trường: REPRESENT có FK đến FUNDS (quỹ) + FK đến TLProfiles (nhân sự QLQ), chức vụ trong BĐD, ngày bổ nhiệm/thôi chức → giao giữa nhân sự và quỹ. (3) Chọn `Individual Employment Status`. |
@@ -21,93 +23,31 @@
 ## 6b. Diagram Source (Mermaid)
 
 ```mermaid
-erDiagram
-    FORBRCH {
-        raw ID PK
-        nvarchar ITEM_NAME
-    }
+graph LR
+    classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a5f
+    classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    TLProfiles {
-        raw ID PK
-        nvarchar ITEM_NAME
-        raw SEC_ID FK
-    }
+    STFFGBRCH["**STFFGBRCH**\nNhân sự VPĐD QLQ NN"]:::src
+    REPRESENT["**REPRESENT**\nBan đại diện/HĐQT quỹ"]:::src
+    MBFUND["**MBFUND**\nNĐT nắm giữ CCQ"]:::src
+    INVESACC["**INVESACC**\nTài khoản NĐT ủy thác"]:::src
+    RPTVALUES["**RPTVALUES**\nDữ liệu import báo cáo (cell)"]:::src
+    RPTMBHS["**RPTMBHS**\nLịch sử trạng thái báo cáo"]:::src
 
-    STFFGBRCH {
-        raw ID PK
-        raw FORBRCH_ID FK
-        raw TL_ID FK
-        nvarchar ITEM_NAME
-        nvarchar JOBTYPE_ID FK
-        date FR_DATE
-        date TO_DATE
-    }
+    FORBRCH["**FORBRCH** (Tier 2)"]:::outscope
+    TLProfiles["**TLProfiles** (Tier 2)"]:::outscope
+    FUNDS["**FUNDS** (Tier 2)"]:::outscope
+    INVES["**INVES** (Tier 2)"]:::outscope
+    RPTMEMBER["**RPTMEMBER** (Tier 2)"]:::outscope
 
-    FUNDS {
-        raw ID PK
-        nvarchar ITEM_NAME
-    }
-
-    REPRESENT {
-        raw ID PK
-        raw FUND_ID FK
-        raw TL_ID FK
-        nvarchar POSITION
-        date FR_DATE
-        date TO_DATE
-    }
-
-    MBFUND {
-        raw ID PK
-        raw FUND_ID FK
-        nvarchar INVESTOR_NAME
-        nvarchar ID_NO
-        raw STOCKHOLDERTYPE_ID FK
-        number QUANTITY
-    }
-
-    INVES {
-        raw ID PK
-        nvarchar ITEM_NAME
-        raw SEC_ID FK
-    }
-
-    INVESACC {
-        raw ID PK
-        raw INVES_ID FK
-        nvarchar ACC_CODE
-        date OPEN_DATE
-        raw STATUS_ID FK
-    }
-
-    RPTMEMBER {
-        raw ID PK
-        raw RPT_PD_ID FK
-    }
-
-    RPTVALUES {
-        raw ID PK
-        raw RPT_ID FK
-        nvarchar SHEET_NAME
-        nvarchar CELL_CODE
-        nvarchar VALUE
-    }
-
-    RPTMBHS {
-        raw ID PK
-        raw RPT_ID FK
-        raw STATUS_ID FK
-        date CHANGE_DATE
-    }
-
-    STFFGBRCH }o--|| FORBRCH : "FORBRCH_ID"
-    STFFGBRCH }o--o| TLProfiles : "TL_ID (kiêm nhiệm)"
-    REPRESENT }o--|| FUNDS : "FUND_ID"
-    REPRESENT }o--|| TLProfiles : "TL_ID"
-    MBFUND }o--|| FUNDS : "FUND_ID"
-    INVESACC }o--|| INVES : "INVES_ID"
-    RPTVALUES }o--|| RPTMEMBER : "RPT_ID"
-    RPTMBHS }o--|| RPTMEMBER : "RPT_ID"
+    STFFGBRCH -->|"FORBRCH_ID"| FORBRCH
+    STFFGBRCH -->|"TL_ID (kiêm nhiệm, nullable)"| TLProfiles
+    REPRESENT -->|"FUND_ID"| FUNDS
+    REPRESENT -->|"TL_ID"| TLProfiles
+    MBFUND -->|"FUND_ID"| FUNDS
+    INVESACC -->|"INVES_ID"| INVES
+    RPTVALUES -->|"RPT_ID"| RPTMEMBER
+    RPTMBHS -->|"RPT_ID"| RPTMEMBER
 ```
 
 ---
@@ -115,118 +55,55 @@ erDiagram
 ## 6c. Diagram Atomic (Mermaid)
 
 ```mermaid
-erDiagram
-    Foreign_Fund_Management_Organization_Unit {
-        bigint ds_foreign_fund_management_organization_unit_id PK
-        string organization_unit_code
-    }
+graph TD
+    classDef atomic fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
+    classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    Fund_Management_Company_Key_Person {
-        bigint ds_fund_management_company_key_person_id PK
-        string key_person_code
-    }
+    FFMS["**Foreign Fund Management Organization Unit Staff**\n[Involved Party] Individual Employment Status\nSTFFGBRCH"]:::atomic
+    RBM["**Investment Fund Representative Board Member**\n[Involved Party] Individual Employment Status\nREPRESENT"]:::atomic
+    IFIM["**Investment Fund Investor Membership**\n[Arrangement] Investment Fund\nMBFUND"]:::atomic
+    DIA["**Discretionary Investment Account**\n[Arrangement] Investment Account\nINVESACC"]:::atomic
+    RIV["**Report Import Value**\n[Documentation] Gov. Registration Document\nRPTVALUES"]:::pattern
+    MPRSL["**Member Periodic Report Status Log**\n[Business Activity] Status Log\nRPTMBHS"]:::pattern
 
-    Investment_Fund {
-        bigint ds_investment_fund_id PK
-        string investment_fund_code
-    }
+    FFMOU["**Foreign Fund Management Organization Unit** (Tier 2)"]:::outscope
+    KP["**Fund Management Company Key Person** (Tier 2)"]:::outscope
+    IF["**Investment Fund** (Tier 2)"]:::outscope
+    DII["**Discretionary Investment Investor** (Tier 2)"]:::outscope
+    MPR["**Member Periodic Report** (Tier 2)"]:::outscope
 
-    Discretionary_Investment_Investor {
-        bigint ds_discretionary_investment_investor_id PK
-        string investor_code
-    }
-
-    Member_Periodic_Report {
-        bigint ds_member_periodic_report_id PK
-    }
-
-    Foreign_Fund_Management_Organization_Unit_Staff {
-        bigint ds_foreign_fund_management_organization_unit_staff_id PK
-        bigint foreign_fund_management_organization_unit_id FK
-        string foreign_fund_management_organization_unit_code
-        bigint fund_management_company_key_person_id FK
-        string key_person_code
-        string job_type_code
-        date appointment_date
-        date resignation_date
-    }
-
-    Investment_Fund_Representative_Board_Member {
-        bigint ds_investment_fund_representative_board_member_id PK
-        bigint investment_fund_id FK
-        string investment_fund_code
-        bigint fund_management_company_key_person_id FK
-        string key_person_code
-        string board_position_code
-        date appointment_date
-        date resignation_date
-    }
-
-    Investment_Fund_Investor_Membership {
-        bigint ds_investment_fund_investor_membership_id PK
-        bigint investment_fund_id FK
-        string investment_fund_code
-        string investor_name
-        string investor_id_number
-        string stockholder_type_code
-        number certificate_quantity
-    }
-
-    Discretionary_Investment_Account {
-        bigint ds_discretionary_investment_account_id PK
-        bigint discretionary_investment_investor_id FK
-        string discretionary_investment_investor_code
-        string account_code
-        date account_open_date
-        string operation_status_code
-    }
-
-    Report_Import_Value {
-        bigint ds_report_import_value_id PK
-        bigint member_periodic_report_id FK
-        string sheet_name
-        string cell_code
-        string cell_value
-    }
-
-    Member_Periodic_Report_Status_Log {
-        bigint ds_member_periodic_report_status_log_id PK
-        bigint member_periodic_report_id FK
-        string operation_status_code
-        timestamp status_change_timestamp
-    }
-
-    Foreign_Fund_Management_Organization_Unit_Staff }o--|| Foreign_Fund_Management_Organization_Unit : "foreign_fund_management_organization_unit_id"
-    Foreign_Fund_Management_Organization_Unit_Staff }o--o| Fund_Management_Company_Key_Person : "fund_management_company_key_person_id"
-    Investment_Fund_Representative_Board_Member }o--|| Investment_Fund : "investment_fund_id"
-    Investment_Fund_Representative_Board_Member }o--|| Fund_Management_Company_Key_Person : "fund_management_company_key_person_id"
-    Investment_Fund_Investor_Membership }o--|| Investment_Fund : "investment_fund_id"
-    Discretionary_Investment_Account }o--|| Discretionary_Investment_Investor : "discretionary_investment_investor_id"
-    Report_Import_Value }o--|| Member_Periodic_Report : "member_periodic_report_id"
-    Member_Periodic_Report_Status_Log }o--|| Member_Periodic_Report : "member_periodic_report_id"
+    FFMS -->|"Foreign Fund Management Organization Unit FK"| FFMOU
+    FFMS -->|"Key Person FK (nullable)"| KP
+    RBM -->|"Investment Fund FK"| IF
+    RBM -->|"Key Person FK"| KP
+    IFIM -->|"Investment Fund FK"| IF
+    DIA -->|"Discretionary Investment Investor FK"| DII
+    RIV -->|"Member Periodic Report FK"| MPR
+    MPRSL -->|"Member Periodic Report FK"| MPR
 ```
 
 ---
 
-## 6d. Mục Danh mục & Tham chiếu (Reference Data)
+## 6d. Danh mục & Tham chiếu
 
-| Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
-|---|---|---|---|---|
-| MBFUND.STOCKHOLDERTYPE_ID | Loại hình NĐT/cổ đông nắm giữ CCQ | `FMS_STOCKHOLDER_TYPE` | source_table | Đã đăng ký Tier 1; tham chiếu lại |
-| STFFGBRCH.JOBTYPE_ID | Loại chức vụ nhân sự VPĐD NN | `FMS_JOB_TYPE` | source_table | Đã đăng ký Tier 1; tham chiếu lại |
-| RPTMBHS.STATUS_ID | Trạng thái báo cáo tại thời điểm thay đổi | `FMS_REPORT_STATUS` | source_table | Dùng chung FMS_OPERATION_STATUS hoặc tạo riêng |
+| Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
+|---|---|---|---|
+| MBFUND.STOCKHOLDERTYPE_ID | Loại hình NĐT/cổ đông nắm giữ CCQ | `FMS_STOCKHOLDER_TYPE` | source_table — Đã đăng ký Tier 1; tham chiếu lại. |
+| STFFGBRCH.JOBTYPE_ID | Loại chức vụ nhân sự VPĐD NN | `FMS_JOB_TYPE` | source_table — Đã đăng ký Tier 1; tham chiếu lại. |
+| RPTMBHS.STATUS_ID | Trạng thái báo cáo tại thời điểm thay đổi | `FMS_REPORT_STATUS` | source_table — Dùng chung FMS_OPERATION_STATUS hoặc tạo riêng. |
 
 ---
 
 ## 6e. Bảng chờ thiết kế
 
-*(Không có)*
+Không có bảng nào trong Tier 3 chưa đủ thông tin cột.
 
 ---
 
 ## 6f. Điểm cần xác nhận
 
-| # | Câu hỏi | Kết quả |
+| # | Câu hỏi | Ảnh hưởng |
 |---|---|---|
 | T3-01 | STFFGBRCH.TL_ID (FK đến TLProfiles) nullable — nhân sự VPĐD NN có thể không phải nhân sự QLQ trong nước. Xác nhận: TL_ID là nullable OK? | **Chờ xác nhận.** Thiết kế hiện tại TL_ID nullable. |
 | T3-02 | MBFUND — 1 NĐT có thể nắm giữ CCQ của nhiều quỹ → grain là (FUND_ID, INVESTOR_ID) hay chỉ FUND_ID? | **Chờ xác nhận.** Tạm thiết kế grain = 1 dòng NĐT per quỹ (FUND_ID + investor_id_number). |

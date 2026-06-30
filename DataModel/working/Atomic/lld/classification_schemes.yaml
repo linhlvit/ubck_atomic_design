@@ -2,6 +2,47 @@
 schema_version: "1.0"
 
 schemes:
+  - scheme_code: "IAM_GENDER"
+    name: "Giới tính người dùng IAM"
+    source_type: "etl_derived"
+    source_table: "IAM.USERS.GENDER"
+    used_in_entities:
+      - "IAM System User"
+    values:
+      - code: "MALE"
+        label: "Nam"
+        source_value: "1"
+      - code: "FEMALE"
+        label: "Nữ"
+        source_value: "2"
+      - code: "OTHER"
+        label: "Khác"
+        source_value: "3"
+
+  - scheme_code: "IAM_USER_TYPE"
+    name: "Loại người dùng IAM — cần profile values từ team IAM"
+    source_type: "modeler_defined"
+    source_table: "IAM.USERS.USER_TYPE"
+    used_in_entities:
+      - "IAM System User"
+    values: []
+
+  - scheme_code: "IAM_USER_SUB_TYPE"
+    name: "Phân loại người dùng IAM — lấy distinct từ USERS.USER_SUB_TYPE"
+    source_type: "source_table"
+    source_table: "IAM.USERS.USER_SUB_TYPE"
+    used_in_entities:
+      - "IAM System User"
+    values: []
+
+  - scheme_code: "IAM_PRACTICE_CERT_TYPE"
+    name: "Loại chứng chỉ hành nghề — cần xác nhận bảng tham chiếu"
+    source_type: "modeler_defined"
+    source_table: "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
+    used_in_entities:
+      - "IAM System User"
+    values: []
+
   - scheme_code: "APPLICATION_STATUS"
     name: "Trạng thái hồ sơ — values from ApplicationStatuses"
     source_type: "source_table"
