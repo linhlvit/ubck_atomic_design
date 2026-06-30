@@ -1,0 +1,491 @@
+﻿Bảng;STT;Logical Name;Physical Name;Trường;Định nghĩa;Giá trị
+HOSE Order Book;1;Trade Date;;Trade Date;Ngày giao dịch theo thị trường chứng khoán;
+HOSE Order Book;2;Market ID;;Market ID;Mã thị trường chứng khoán;"STO : HoSE Stock Market là giao dịch Cổ phiếu niêm yết trên HOSE
+BDO : HoSE Bond Market là giao dịch trái phiếu (thường là doanh nghiệp hoặc một số loại đặc biệt) trên HOSE
+RPO : HoSE Repo Market là giao dịch mua bán có cam kết mua lại trên thị trường HOSE.
+STX : HNX Listed Stock Market là giao dịch Cổ phiếu niêm yết trên HNX
+UPX : HNX UPCOM Stock Market là cổ phiếu chưa niêm yết chính thức (UPCOM) trên HNX
+BDX : HNX Government Bond Market là giao dịch Trái phiếu Chính phủ trên HNX
+DVX : HNX Derivatives Market là Thị trường phái sinh trên HNX
+HCX : HNX Corporate Bond Market là giao dịch trái phiếu doanh nghiệp riêng lẻ trên HNX"
+HOSE Order Book;3;Symbol;;Symbol;Mã chứng khoán;
+HOSE Order Book;4;Currency;;Currency;Đơn vị tiền tệ;
+HOSE Order Book;5;Board Type;;Board Type;Loại bảng giao dịch mà lệnh được phân loại vào;"G1 : Main => Phiên giao dịch chính khớp lệnh liên tục
+Ví dụ: Có người mua CP giá 25 và có người bán CP đó giá 25 thì sẽ khớp lệnh ngay
+90% giao dịch ở dạng G1
+G2 : Pre open => Phiên định kỳ mở cửa (ATO), Khớp 1 lần để xác định giá mở cửa
+Ví dụ: Giống như đứng xếp hàng trước khi chợ mở cửa, bạn đặt lệnh trước nhưng chưa mua bán được, phải đợi đến giờ mở cửa hệ thống sẽ chọn 1 giá chung để khớp. 
+Mục tiêu: tìm giá mở cửa hợp lý
+G3 : Post closing => Phiên sau đóng cửa (ATC / after-market) dùng để xác định giá đóng cửa
+G4 : Odd lot => Giao dịch lô lẻ (< 100 cổ phiếu)
+Ví dụ: Bình thường phải mua từ 100 CP, nhưng chỉ mua 23 cổ phiếu thì vào khu này
+G7 : Buy-in => Giao dịch mua bắt buộc (Xảy ra trong tình huống có lỗi)
+Ví dụ: Bạn đã bán cổ phiếu nhưng đến ngày giao hàng → bạn không có hàng để giao. Hệ thống bắt bạn đi mua lại bằng mọi giá để trả
+G8 : Sell-out => Bán giải chấp / bán bắt buộc (Ngược với G7)
+Ví dụ: Bạn vay tiền để đầu tư (margin) nhưng thua lỗ quá nhiều. Công ty chứng khoán sẽ tự động bán cổ phiếu của bạn để thu hồi tiền
+T1 : Negotiation (regular) => Hai bên tự deal giá + khối lượng, không cần theo giá thị trường, không vào hệ thống khớp lệnh
+Ví dụ: Bạn bán cho bạn mình 1 triệu cổ phiếu thì 2 bên tự deal giá
+T4 : Negotiation (regular for Odd lot) => giống T1 nhưng cho lô lẻ (odd lot)
+T2 : Negotiation (pre) => Giống T1 nhưng thỏa thuận trước giờ mở cửa
+T3 : Negotiation (post) => Giống T1 nhưng thỏa thuận sau giờ giao dịch
+T6 : Negotiation (post for Odd lot) => Giống T1 nhưng thỏa thuận sau giờ cho lô lẻ
+R1 : Negotiation (Repo) => Giao dịch repo (mua bán có cam kết mua lại)
+Ví dụ: Bán CP cho người khác nhưng vài ngày sau sẽ mua lại với giá cao hơn"
+HOSE Order Book;6;Order Date;;Order Date;Ngày đặt lệnh của người thực hiện giao dịch;
+HOSE Order Book;7;Order Time;;Order Time;Thời gian đặt lệnh của người thực hiện giao dịch;
+HOSE Order Book;8;Session;;Session;Phiên giao dịch của thị trường chứng khoán;"00 — Pre-market opening session: Trước giờ mở cửa, Nhận lệnh nhưng chưa khớp
+10 — Opening call auction session: Phiên khớp lệnh định kỳ mở cửa (ATO)
+11 — Extension of opening call auction: Phiên gia hạn ATO, Dùng khi Cần thêm thời gian xác định giá Hoặc tránh thao túng phút cuối
+20 — Continuous shifted auction session: Khớp lệnh liên tục (có điều chỉnh), Bắt đầu trading thực sự
+21 — Extension of continuous session: Gia hạn phiên liên tục
+25 — Buy-In: Phiên xử lý bắt buộc mua lại
+30 — Closing single price auction session: Phiên ATC (đóng cửa)
+40 — Continuous auction session: Khớp lệnh liên tục (chuẩn)
+50 — Pre-market off-hour: Trước phiên ngoài giờ
+60 — Post-market off-hour order receipt: Nhận lệnh ngoài giờ
+65 — Post-market off-hours session: Giao dịch ngoài giờ
+70 — Post-market off-hour (Call Auction): Đấu giá ngoài giờ
+80 — Unit trading: Giao dịch lô lẻ
+90 — Trading halt: Tạm dừng giao dịch
+99 — Market closing: Đóng thị trường hoàn toàn"
+HOSE Order Book;9;Modify/Cancel;;Modify/Cancel;Sửa/Hủy lệnh;"C - Cancel: Là lệnh hủy
+M - Modify: Là lệnh sửa đổi
+N - No: Không hủy/sửa đổi"
+HOSE Order Book;10;Order Accept ID;;Order Accept #;Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán;
+HOSE Order Book;11;Orig Order Accept ID;;Orig Order Accept #;Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán;
+HOSE Order Book;12;Side;;Side;Loại lệnh;"S: Sell - Bán
+B: Buy - Mua"
+HOSE Order Book;13;BRK ID;;BRK #;Mã/số công ty chứng khoán;
+HOSE Order Book;14;BRK;;BRK;Tên công ty chứng khoán;
+HOSE Order Book;15;PIN;;PIN;Mã PIN của tài khoản giao dịch;
+HOSE Order Book;16;Acct No;;Acct No;Mã/Số tài khoản giao dịch của nhà đầu tư;
+HOSE Order Book;17;Name;;Name;Tên nhà đầu tư/chủ tài khoản nhà đầu tư;
+HOSE Order Book;18;Market Maker Order;;Market Maker Order;Lệnh đặt của nhà tạo lập thị trường;"Y - Yes: Là lệnh đặt của nhà tạo lập thị trường
+N - No: Không phải là lệnh đặt của nhà tạo lập thị trường"
+HOSE Order Book;19;Client/House Classification Code;;Client/House Classification Code;Phân loại lệnh khách hàng/công ty;"10 Client trade: Khách hàng
+30 House trade: Tự doanh công ty chứng khoán"
+HOSE Order Book;20;Invest Type;;Invest Type;"Phân loại nhà đầu tư
+Theo dữ liệu, có 4 loại: 1000, 7000, 7100, 8000";"1000 / 8000: Cá nhân (Individual)
+1100: Cá nhân trong nước
+1200: Cá nhân chuyên nghiệp
+2000: Công ty bảo hiểm
+2100: Công ty bảo hiểm nhân thọ
+2200: Bảo hiểm phi nhân thọ
+3000: Quỹ đầu tư
+3100: Quỹ cụ thể (mutual fund)
+3200: ETF
+3300: Hedge fund
+4000: Ngân hàng
+5000: Công ty chứng khoán
+5100: CTCK tự doanh
+5200: CTCK môi giới
+6000: Tổ chức khác
+7000: Nhà đầu tư nước ngoài
+7100: Tổ chức nước ngoài
+7200: Cá nhân nước ngoài
+9000: Không xác định / khác"
+HOSE Order Book;21;Foreigner Investor type;;Foreigner Investor type;Phân loại đầu tư nước ngoài;"00 Not Foreigner: Không phải NĐT nước ngoài
+10 Foreigner(Residence): NĐT nước ngoài cư trú
+20 Foreigner(Nonresidence): NĐT nước ngoài không cư trú"
+HOSE Order Book;22;Order Type;;Order Type;"Loại lệnh theo giá
+Theo dữ liệu, có 2 loại
++ Limit: người giao dịch tự đặt giá
++ Market: thị trường chỉ định giá";"1 - Market: Lệnh thị trường
+Ý nghĩa: Khớp ngay với giá tốt nhất trên thị trường (Mua bằng mọi giá, Có thể bị khớp giá xấu nếu thanh khoản thấp)
+2 - Limit: Lệnh giới hạn
+Ý nghĩa: Mua/bán với giá xác định hoặc tốt hơn, Đây là loại phổ biến nhất (Ví dụ: Mua FPT giá 100 → chỉ khớp ≤ 100)
+3 - Stop Market: Lệnh dừng - thị trường
+Ý nghĩa: Khi đạt giá kích hoạt → biến thành Market Order (Ví dụ: Giá ≥ 105 → bán ngay)
+4 - Stop Limit: Lệnh dừng - giới hạn
+Ý nghĩa: Khi đạt giá kích hoạt → biến thành Limit Order"
+HOSE Order Book;23;Order Price;;Order Price;Giá đặt lệnh;
+HOSE Order Book;24;Order Volume;;Order VOL;Khối lượng đặt lệnh;
+HOSE Order Book;25;Order Condition;;Order Condition;Điều kiện thực hiện lệnh - lệnh được khớp như thế nào;"0 FAS (Fill And Store): Khớp được bao nhiêu thì khớp, phần còn lại được giữ lại trong sổ lệnh
+1: Lệnh thường, có thể khớp dần, phần chưa khớp sẽ nằm lại trong order book
+2 ATO (At The Open): Lệnh khớp tại giá mở cửa
+3 FAK (Fill And Kill): Khớp được bao nhiêu sẽ khớp ngay, Phần còn lại sẽ hủy
+4 FOK (Fill Or Kill): Phải khớp toàn bộ ngay, Không thì hủy toàn bộ
+6 GTD (Good Till Date): Lệnh có hiệu lực đến một ngày cụ thể, sau đó tự động hết hiệu lực
+7 ATC (At The Close): Lệnh khớp tại giá đóng cửa
+9 MTL (Market To Limit)"
+HOSE Order Book;26;Last Traded Price;;LTP;Giá khớp gần nhất trên thị trường (Last Traded Price);
+HOSE Order Book;27;Execution Price;;Execution Price;Giá khớp lệnh thực tế;
+HOSE Order Book;28;Immedidate Matched Volume;;Immed. Matched VOL;Khối lượng khớp ngay khi hệ thống ghi nhận lệnh;
+HOSE Order Book;29;Matched Volume;;Matched VOL;Tổng khối lượng đã khớp của lệnh;
+HOSE Order Book;30;Order remaining quantity;;Order Rqty;Khối lượng còn lại chưa khớp của lệnh (Order remaining quantity);
+HOSE Order Book;31;Order Spread;;Order Price-LTP;Chênh lệnh giữa giá đặt lệnh và giá khớp gần nhất;
+HOSE Order Book;32;Matched Ratio;;Matched Ratio;Tỷ lệ khớp lệnh;
+HOSE Order Book;33;Price Change;;Buy Up/Sell Down Amt;Mức tăng/giảm giá so với tham chiếu theo giá trị;
+HOSE Order Book;34;Tick Change;;Buy Up/Sell Down Tick;Mức tăng/giảm theo bước giá;
+HOSE Order Book;35;New High/Low Price;;New High/Low Price;"Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày, theo từng mã chứng khoán
+- New High: Giá mới cao nhất tính đến thời điểm khớp lệnh
+- New Low: Giá mới thấp nhất tính đến thời điểm khớp lệnh";
+HOSE Order Book;36;Order Status;;Order Status;"Trạng thái của lệnh
+Theo dữ liệu, có 3 loại: 0, 4, 5";"0 - New / Accepted: Lệnh đã được sàn chấp nhận vào hệ thống nhưng chưa khớp.
+1 - Partially Filled: Lệnh đã khớp một phần.
+2 - Filled: Lệnh đã khớp toàn bộ.
+3 - Cancelled: Lệnh đã bị hủy.
+4 - Rejected: Lệnh bị từ chối bởi hệ thống sàn.
+5 - Expired: Lệnh hết hiệu lực (ví dụ hết phiên giao dịch).
+6 - Pending Cancel: Đang chờ xử lý hủy lệnh.
+7 - Pending Replace: Đang chờ sửa lệnh.
+8 - Replaced: Lệnh đã được sửa thành công."
+HOSE Order Book;37;Icd-Bug Qty;;Icd-Bug Qty;Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch;
+HOSE Order Book;38;Expected execution price;;Expected execution price;Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày;
+HOSE Order Book;39;Expected execution volume;;Expected execution volume;Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày;
+HOSE Order Book;40;Short Sell Indicator;;Short Sell Indicator;Phân loại lệnh bán khống;"00 - Không phải lệnh bán khống
+10 - Là lệnh bán khống"
+HOSE Order Book;41;Trader No;;Trader No;Mã/số định danh người thực hiện giao dịch;
+HOSE Order Book;42;Trader Name;;Trader Name;Tên người thực hiện giao dịch;
+HOSE Order Book;43;Reference Sequence No.;;Reference Sequence No.;Số tham chiếu theo thứ tự giao dịch;
+HOSE Order Book;44;Order ID;;Order ID;Mã định danh của lệnh đặt;
+HOSE Order Book;45;Orig Order ID;;Orig Order ID;Mã định danh của lệnh đặt trước khi chỉnh sửa;
+HOSE Trade Book;1;Trade Date;;Trade Date;Ngày giao dịch theo thị trường chứng khoán;
+HOSE Trade Book;2;Market ID;;Market ID;Mã thị trường chứng khoán;"STO : HoSE Stock Market là giao dịch Cổ phiếu  niêm yết trên HOSE
+BDO : HoSE Bond Market là giao dịch trái phiếu (thường là doanh nghiệp hoặc một số loại đặc biệt) trên HOSE
+RPO : HoSE Repo Market là giao dịch mua bán có cam kết mua lại trên thị trường HOSE.
+STX : HNX Listed Stock Market là giao dịch Cổ phiếu niêm yết trên HNX
+UPX : HNX UPCOM Stock Market là cổ phiếu chưa niêm yết chính thức (UPCOM) trên HNX
+BDX : HNX Government Bond Market là giao dịch Trái phiếu Chính phủ trên HNX
+DVX : HNX Derivatives Market là Thị trường phái sinh trên HNX
+HCX : HNX Corporate Bond Market là giao dịch trái phiếu doanh nghiệp niêm yết trên HNX"
+HOSE Trade Book;3;Symbol;;Symbol;Mã chứng khoán;
+HOSE Trade Book;4;Currency;;Currency;Đơn vị tiền tệ;
+HOSE Trade Book;5;Board Type;;Board Type;Loại bảng giao dịch mà lệnh được phân loại vào;"G1 : Main => Phiên giao dịch chính khớp lệnh liên tục
+Ví dụ: Có người mua CP giá 25 và có người bán CP đó giá 25 thì sẽ khớp lệnh ngay
+90% giao dịch ở dạng G1
+G2 : Pre open => Phiên định kỳ mở cửa (ATO), Khớp 1 lần để xác định giá mở cửa
+Ví dụ: Giống như đứng xếp hàng trước khi chợ mở cửa, bạn đặt lệnh trước nhưng chưa mua bán được, phải đợi đến giờ mở cửa hệ thống sẽ chọn 1 giá chung để khớp. 
+Mục tiêu: tìm giá mở cửa hợp lý
+G3 : Post closing => Phiên sau đóng cửa (ATC / after-market) dùng để xác định giá đóng cửa
+G4 : Odd lot => Giao dịch lô lẻ (< 100 cổ phiếu)
+Ví dụ: Bình thường phải mua từ 100 CP, nhưng chỉ mua 23 cổ phiếu thì vào khu này
+G7 : Buy-in => Giao dịch mua bắt buộc (Xảy ra trong tình huống có lỗi)
+Ví dụ: Bạn đã bán cổ phiếu nhưng đến ngày giao hàng → bạn không có hàng để giao. Hệ thống bắt bạn đi mua lại bằng mọi giá để trả
+G8 : Sell-out => Bán giải chấp / bán bắt buộc (Ngược với G7)
+Ví dụ: Bạn vay tiền để đầu tư (margin) nhưng thua lỗ quá nhiều. Công ty chứng khoán sẽ tự động bán cổ phiếu của bạn để thu hồi tiền
+T1 : Negotiation (regular) => Hai bên tự deal giá + khối lượng, không cần theo giá thị trường, không vào hệ thống khớp lệnh
+Ví dụ: Bạn bán cho bạn mình 1 triệu cổ phiếu thì 2 bên tự deal giá
+T4 : Negotiation (regular for Odd lot) => giống T1 nhưng cho lô lẻ (odd lot)
+T2 : Negotiation (pre) => Giống T1 nhưng thỏa thuận trước giờ mở cửa
+T3 : Negotiation (post) => Giống T1 nhưng thỏa thuận sau giờ giao dịch
+T6 : Negotiation (post for Odd lot) => Giống T1 nhưng thỏa thuận sau giờ cho lô lẻ
+R1 : Negotiation (Repo) => Giao dịch repo (mua bán có cam kết mua lại)
+Ví dụ: Bán CP cho người khác nhưng vài ngày sau sẽ mua lại với giá cao hơn"
+HOSE Trade Book;6;Trade ID;;Trade #;Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán;
+HOSE Trade Book;7;Time;;Time;Thời gian diễn ra giao dịch khớp lệnh;
+HOSE Trade Book;8;Session;;Session;Phiên giao dịch của thị trường chứng khoán;"00 — Pre-market opening session: Trước giờ mở cửa, Nhận lệnh nhưng chưa khớp
+10 — Opening call auction session: Phiên khớp lệnh định kỳ mở cửa (ATO)
+11 — Extension of opening call auction: Phiên gia hạn ATO, Dùng khi Cần thêm thời gian xác định giá Hoặc tránh thao túng phút cuối
+20 — Continuous shifted auction session: Khớp lệnh liên tục (có điều chỉnh), Bắt đầu trading thực sự
+21 — Extension of continuous session: Gia hạn phiên liên tục
+25 — Buy-In: Phiên xử lý bắt buộc mua lại
+30 — Closing single price auction session: Phiên ATC (đóng cửa)
+40 — Continuous auction session: Khớp lệnh liên tục (chuẩn)
+50 — Pre-market off-hour: Trước phiên ngoài giờ
+60 — Post-market off-hour order receipt: Nhận lệnh ngoài giờ
+65 — Post-market off-hours session: Giao dịch ngoài giờ
+70 — Post-market off-hour (Call Auction): Đấu giá ngoài giờ
+80 — Unit trading: Giao dịch lô lẻ
+90 — Trading halt: Tạm dừng giao dịch
+99 — Market closing: Đóng thị trường hoàn toàn"
+HOSE Trade Book;9;Execution Price;;Execution - Exec Price;Giá khớp lệnh thực tế của giao dịch;
+HOSE Trade Book;10;Execution Gap;;Execution - Exec Price - LTP;Chênh lệnh giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán;
+HOSE Trade Book;11;Execution - Volume;;Execution - Volume;Khối lượng khớp lệnh;
+HOSE Trade Book;12;Execution - Value;;Execution - Value;Tổng giá trị giao dịch của lệnh khớp;
+HOSE Trade Book;13;Execution - Last Traded Price;;Execution - LTP;Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price);
+HOSE Trade Book;14;Execution - New High/Low Price;;Execution - New High/Low Price;Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày, theo từng mã chứng khoán;"- New High: Giá mới cao nhất tính đến thời điểm khớp lệnh
+- New Low: Giá mới thấp nhất tính đến thời điểm khớp lệnh"
+HOSE Trade Book;15;Buy - Order Date;;Buy - Order Date;Ngày đặt lệnh mua;
+HOSE Trade Book;16;Buy - Order Time;;Buy - Order Time;Thời gian đặt lệnh mua;
+HOSE Trade Book;17;Buy - Order Accept ID;;Buy - Order Accept #;Số thứ tự của lệnh mua được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán;
+HOSE Trade Book;18;Buy - BRK ID;;Buy - BRK #;Mã/số công ty chứng khoán thực hiện giao dịch mua;
+HOSE Trade Book;19;Buy - BRK;;Buy - BRK;Tên công ty chứng khoán thực hiện giao dịch mua;
+HOSE Trade Book;20;Buy - PIN;;Buy - PIN;Mã PIN của tài khoản mua;
+HOSE Trade Book;21;Buy - Acct No;;Buy - Acct No;Mã/Số tài khoản giao dịch mua của nhà đầu tư;
+HOSE Trade Book;22;Buy - Name;;Buy - Name;Tên tài khoản giao dịch mua của nhà đầu tư;
+HOSE Trade Book;23;Buy - Client/House Classification Code;;Buy - Client/House Classification Code;"Phân loại lệnh khách hàng/công ty của lệnh mua
+Theo dữ liệu, có 2 loại dữ liệu: 10, 30";"10 Client trade
+30 House trade"
+HOSE Trade Book;24;Buy - Invest Type;;Buy - Invest Type;"Phân loại nhà đầu tư của lệnh mua
+Theo dữ liệu, có 4 loại: 1000, 3000, 7000, 7100, 8000";"1000 / 8000: Cá nhân (Individual)
+1100: Cá nhân trong nước
+1200: Cá nhân chuyên nghiệp
+2000: Công ty bảo hiểm
+2100: Công ty bảo hiểm nhân thọ
+2200: Bảo hiểm phi nhân thọ
+3000: Quỹ đầu tư
+3100: Quỹ cụ thể (mutual fund)
+3200: ETF
+3300: Hedge fund
+4000: Ngân hàng
+5000: Công ty chứng khoán
+5100: CTCK tự doanh
+5200: CTCK môi giới
+6000: Tổ chức khác
+7000: Nhà đầu tư nước ngoài
+7100: Tổ chức nước ngoài
+7200: Cá nhân nước ngoài
+9000: Không xác định / khác"
+HOSE Trade Book;25;Buy - Foreigner Investor type;;Buy - Foreigner Investor type;Phân loại đầu tư nước ngoài của lệnh mua;"00 Not Foreigner: Không phải NĐT nước ngoài
+10 Foreigner(Residence): NĐT nước ngoài cư trú
+20 Foreigner(Nonresidence): NĐT nước ngoài không cư trú"
+HOSE Trade Book;26;Buy - Order Price;;Buy - Order Price;Giá đặt mua;
+HOSE Trade Book;27;Buy - Order Volume;;Buy - Order VOL;Khối lượng đặt mua;
+HOSE Trade Book;28;Buy - Trader No;;Buy - Trader No;Mã/số định danh người thực hiện đặt mua;
+HOSE Trade Book;29;Buy - Trader Name;;Buy - Trader Name;Tên người thực hiện đặt mua;
+HOSE Trade Book;30;Buy - Reference Sequence No.;;Buy - Reference Sequence No.;Số tham chiếu theo thứ tự đặt mua trong ngày;
+HOSE Trade Book;31;Sell - Order Date;;Sell - Order Date;Ngày đặt lệnh bán;
+HOSE Trade Book;32;Sell - Order Time;;Sell - Order Time;Thời gian đặt lệnh bán;
+HOSE Trade Book;33;Sell - Order Accept ID;;Sell - Order Accept #;Số thứ tự của lệnh bán được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán;
+HOSE Trade Book;34;Sell - BRK ID;;Sell - BRK #;Mã/số công ty chứng khoán thực hiện giao dịch bán;
+HOSE Trade Book;35;Sell - BRK;;Sell - BRK;Tên công ty chứng khoán thực hiện giao dịch bán;
+HOSE Trade Book;36;Sell - PIN;;Sell - PIN;Mã PIN của tài khoản bán;
+HOSE Trade Book;37;Sell - Acct No;;Sell - Acct No;Mã/Số tài khoản giao dịch bán của nhà đầu tư;
+HOSE Trade Book;38;Sell - Name;;Sell - Name;Tên tài khoản giao dịch bán của nhà đầu tư;
+HOSE Trade Book;39;Sell - Client/House Classification Code;;Sell - Client/House Classification Code;"Phân loại lệnh khách hàng/công ty của lệnh bán
+Theo dữ liệu, có 2 loại dữ liệu: 10, 30";"10 Client trade
+30 House trade"
+HOSE Trade Book;40;Sell - Invest Type;;Sell - Invest Type;"Phân loại nhà đầu tư
+Theo dữ liệu, có 4 loại: 1000, 7000, 7100, 8000";"1000 / 8000: Cá nhân (Individual); 
+1100: Cá nhân trong nước
+1200: Cá nhân chuyên nghiệp
+2000: Công ty bảo hiểm
+2100: Công ty bảo hiểm nhân thọ
+2200: Bảo hiểm phi nhân thọ
+3000: Quỹ đầu tư
+3100: Quỹ cụ thể (mutual fund)
+3200: ETF
+3300: Hedge fund
+4000: Ngân hàng
+5000: Công ty chứng khoán
+5100: CTCK tự doanh
+5200: CTCK môi giới
+6000: Tổ chức khác
+7000: Nhà đầu tư nước ngoài
+7100: Tổ chức nước ngoài
+7200: Cá nhân nước ngoài
+9000: Không xác định / khác"
+HOSE Trade Book;41;Sell - Foreigner Investor type;;Sell - Foreigner Investor type;"Phân loại đầu tư nước ngoài của lệnh bán (00 - không; 10 - có)";"00 Not Foreigner: Không phải NĐT nước ngoài
+10 Foreigner(Residence): NĐT nước ngoài cư trú
+20 Foreigner(Nonresidence): NĐT nước ngoài không cư trú"
+HOSE Trade Book;42;Sell - Order Price;;Sell - Order Price;Giá đặt bán;
+HOSE Trade Book;43;Sell - Order Volume;;Sell - Order VOL;Khối lượng đặt bán;
+HOSE Trade Book;44;Sell - Trader No;;Sell - Trader No;Mã/số định danh người thực hiện đặt bán;
+HOSE Trade Book;45;Sell - Trader Name;;Sell - Trader Name;Tên người thực hiện đặt bán;
+HOSE Trade Book;46;Sell - Reference Sequence No.;;Sell - Reference Sequence No.;Số tham chiếu theo thứ tự đặt bán trong ngày;
+HNX Order Book;1;Trade date;;Trade date;Ngày giao dịch;yyyymmdd
+HNX Order Book;2;Market ID;;Market ID;Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng;"ID for identifying the market
+STO : HoSE Stock Market
+BDO : HoSE Bond Market
+RPO : HoSE Repo Market
+STX : HNX Listed Stock Market
+UPX : HNX UPCOM Stock Market
+BDX : HNX Government Bond Market
+DVX : HNX Derivatives Market
+HCX : HNX Corporate Bond Market"
+HNX Order Book;3;Board ID;;Board ID;Loại bảng: Xác định kiểm mua bán trong thị trường;"ID to identify boards where products are traded
+G1 : Main
+G2 : Pre open
+G3 : Post closing
+G4 : Odd lot
+G7 : Buy-in
+G8 : Sell-out
+T1 : Negotiation (regular)
+T4 : Negotiation (regular for Odd lot)
+T2 : Negotiation (pre)
+T3 : Negotiation (post)
+T6 : Negotiation (post for Odd lot)
+R1 : Negotiation (Repo)"
+HNX Order Book;4;Issue Code;;Issue Code;Mã định danh của loại chứng khoán đang được giao dịch. Mã này là duy nhất.;The unique code of an issue (a.k.a. instrument or symbol). Generally it is ISIN code but in case of Repo market it is defined as the exchange staffs want
+HNX Order Book;5;order accept time;;order accept time;"Thời điểm chính xác mà lệnh được hệ thống giao dịch (matching engine) chấp nhận hợp lệ và đưa vào sổ lệnh.
+Lưu ý: Giá trị này:
+- Không phải lúc người dùng bấm “đặt lệnh”
+- Không phải lúc công ty chứng khoán nhận lệnh 
+- Mà là lúc KRX core system ghi nhận lệnh
+- Dùng để xếp thứ tự ưu tiên và khớp lệnh";hh24misss
+HNX Order Book;6;Member ID;;Member ID;"Mã định danh thành viên giao dịch trên thị trường – thường là công ty chứng khoán hoặc tổ chức được phép gửi lệnh vào hệ thống KRX.
+Member ID là mã duy nhất do Sở giao dịch cấp";Member code
+HNX Order Book;7;Sell/Buy Classification Code;;Sell/Buy Classification Code;Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán;"1 Sell
+2 Buy
+3 Sell/Buy
+* Replaced order should be input with same value of original order
+* Cancelled order will be input with SPACE"
+HNX Order Book;8;Account Number;;Account Number;"Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng khoán (Member). Dùng để xác định chủ sở hữu lệnh, phục vụ quản lý rủi ro, thanh toán và giám sát thị trường.
+- Member ID → công ty chứng khoán
+- Account Number → khách hàng cụ thể trong công ty đó
+- Account Number + Member ID = xác định duy nhất một nhà đầu tư";
+HNX Order Book;9;Order Type Code;;Order Type Code;Trường dữ liệu xác định loại lệnh (order type) — tức là cách hệ thống matching engine xử lý lệnh đó.;"1 Market
+2 Limit
+3 Stop Market
+4 Stop Limit
+X Same side limit
+Y Contrary side limit
+* ATO/ATC will process with the condition of (order type) Market + (order condition)ATO/ATC
+* Cancelled order will be input with SPACE"
+HNX Order Book;10;Order Condition Code;;Order Condition Code;Trường xác định điều kiện thực hiện lệnh — tức là lệnh được khớp khi nào, như thế nào, và có được giữ lại hay không.;"0 FAS
+1 GTC
+2 ATO
+3 FAK
+4 FOK
+6 GTD
+7 ATC
+9 MTL
+* Cancelled order will be input whit SPACE"
+HNX Order Book;11;Client/House Classification Code;;Client/House Classification Code;Lệnh này là của khách hàng (client) hay của chính công ty chứng khoán (house);"10 Client trade
+30 House trade
+* Replaced/Cancelled order will be input with SPACE"
+HNX Order Book;12;Investor Classification Code;;Investor Classification Code;"Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường.
+Trả lời câu hỏi: Nhà đầu tư đứng sau lệnh này thuộc loại nào trong nền kinh tế?
+Investor Classification Code có cấu trúc ABCD, trong đó:
+- A (hàng nghìn) → Nhóm lớn (sector)
+- B/C/D → Nhóm con chi tiết hơn
+Ví dụ: 
+- 3000 là Quỹ
+- 3100: Quỹ cụ thể (mutual fund)
+- 3200: ETF";"1000 Securities company and Futures company
+2000 Insurance company
+3000 Asset management company and Investment company
+3100 Private fund
+4000 Bank (Trust asset of Asset management company will be 
+         classified into Asset management company)
+5000 General finance company, Mutual saving bank
+6000 Pension, Fund and Mutual aid
+7000 Country, Self-governing body and international organization
+7100 Misc coorporation
+8000 Individual
+* Replaced/Cancelled order will be input with SPACE"
+HNX Order Book;13;Order Date;;Order Date;"Ngày mà lệnh được ghi nhận (được tạo/nhận) theo ngày giao dịch của hệ thống
+Không phải thời gian chi tiết (không có giờ/phút/giây)";* In case of GT order Replace/cancel confirm, initial order date will be the value
+HNX Order Book;14;Order Reject Reason Code;;Order Reject Reason Code;"Mã lý do giải thích vì sao lệnh bị từ chối (reject) bởi hệ thống.
+Trả lời câu hỏi: Tại sao một lệnh KHÔNG được chấp nhận vào hệ thống KRX";Refer to order reject reason code
+HNX Order Book;15;Order Quantity;;Order Quantity;Số lượng chứng khoán mà nhà đầu tư muốn mua hoặc bán trong một lệnh;Order quantity
+HNX Order Book;16;Order Price;;Order Price;Mức giá mà nhà đầu tư sẵn sàng mua hoặc bán chứng khoán;"* For order type whose price is not available, 0 will be input
+* For Fixed price board order, 0 will be input
+* For cancel order, 0 will be input"
+HNX Order Book;17;Public quantity;;Public quantity;"Phần khối lượng của lệnh được hiển thị công khai trên sổ lệnh (order book).
+Public Quantity ≤ Order Quantity
+Vai trò (ý nghĩa):
+1. Ẩn ý định giao dịch lớn để Tránh làm thị trường:
+- Biết bạn muốn mua/bán nhiều
+- Di chuyển giá bất lợi
+2. Giảm market impact, Nếu đặt full thì giá có thể: Tăng mạnh (buy) hoặc Giảm mạnh (sell)
+3. Tối ưu execution: Khớp dần dần giá tốt hơn";Public quantity of Iceberg order
+HNX Order Book;18;Condition price;;Condition price;Mức giá điều kiện dùng để kích hoạt một lệnh (thường là stop order hoặc conditional order);Condition prcie of Stop order
+HNX Order Book;19;Order Reception Number;;Order Reception Number;"Số định danh của lệnh tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh. Đặc điểm:
+- Duy nhất trong ngày giao dịch
+- Thường tăng dần
+- Do hệ thống sinh ra
+- Độ dài: Theo spec (ví dụ 10–12 ký tự số)";"Order number by issue given by ME
+*  Sequqntial number given to order message received by ME
+  -  Given by market + board + issue
+  -  Given to valid orders passed duplication check at the moment
+     of reception
+  -  Given to orders to be  invalidated at  the moment of SC 
+     activation"
+HNX Order Book;20;Original Order Reception Number;;Original Order Reception Number;Số Order Reception Number của lệnh gốc mà một yêu cầu (sửa/hủy) đang tham chiếu tới;Original order reception number
+HNX Order Book;21;Original Order Type Code;;Original Order Type Code;"Loại lệnh (Order Type) của lệnh GỐC trước khi bị sửa (amend) hoặc hủy (cancel)
+Bạn đã biết: Order Type Code → loại lệnh hiện tại (Limit, Market, Stop…) nhưng khi có thay đổi Hệ thống vẫn cần biết Ban đầu lệnh này là loại gì? Đó chính là: Original Order Type Code";
+HNX Order Book;22;Session ID;;Session ID;"Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về.
+Bản chất: Một ngày giao dịch không phải là một khối liên tục, mà được chia thành nhiều phiên nên Session ID cho biết “Lệnh này đang ở phiên nào?”";"00 Pre-market opening session
+10 Opening call auction session
+11 Extension of opening call auction session
+20 Continuous shifted auction session
+21 Extension of continuous shifted auction session
+25 Buy-In
+30 Closing single price auction session
+40 Continuous auction session
+50 Pre-market off-hour
+60 Post-market off-hour order receipt
+65 Post-market off-hours session
+70 Post-market off-hour(Call Auction)
+80 Unit trading
+90 Trading halt
+99 Market closing"
+HNX Order Book;23;Order Remaining Quantity;;Order Remaining Quantity;"Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy.
+Khi một lệnh được gửi vào thị trường có thể:
+- Khớp một phần
+- Khớp hết
+- Bị hủy một phần
+Vì vậy Order Quantity = Executed Quantity + Remaining Quantity + Cancelled Quantity";
+HNX Order Book;24;Message Sequence;;Message Sequence;Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự.;Sequential number of message given to the records of data in incremental order starting from number 1
+HNX Order Book;25;Replace/cancel classification code;;Replace/cancel classification code;"Mã xác định loại hành động đối với lệnh hiện tại, cụ thể là:
+- Sửa lệnh (Replace/Amend)
+- Hủy lệnh (Cancel)";"1 New
+2 Replace
+3 Cancel"
+HNX Order Book;26;Quote Request Type;;Quote Request Type;"Mã xác định loại yêu cầu báo giá (Request For Quote – RFQ) mà một bên gửi tới thị trường hoặc đối tác.
+Khác với order thông thường: Order → đặt trực tiếp vào order book
+Quote flow sẽ là: Request Quote → Nhận báo giá → Quyết định giao dịch
+=> Quote Request Type = loại yêu cầu báo giá";"1 Request (Initiator)
+2 Cancel(Initiator)
+3 Confirm(Counterparty)
+4 Reject(Counterparty)"
+HNX Order Book;27;Automated Cancel Processing Classification;;Automated Cancel Processing Classification;"Mã xác định việc hủy lệnh có được thực hiện tự động bởi hệ thống hay không, và nếu có thì do cơ chế nào.
+Giúp trả lời câu hỏi: “Lệnh này bị hủy vì người dùng hay vì hệ thống?”
+Trong các giá trị thì 0 là không phải auto, từ 1 - 5 đều là auto";"0 n/a
+1 Cancel of condition order
+2 Batch cancel processing
+3 Kill Switch trigger
+4 Cancel On Disconnect trigger
+5 Auto cancel after release of dynamic price limit action"
+HNX Order Book;28;order ID ;;order ID ;"Mã định danh của một lệnh giao dịch, dùng để nhận diện lệnh đó trong toàn bộ hệ thống.
+Phân biệt một số loại ID ở trên:
++ Client Order ID: Do client/broker tạo
++ Order ID: ID logic của lệnh
++ Order Reception Number: ID khi vào KRX
++ Trade ID: ID khi khớp";order ID 
+HNX Order Book;29;Original order ID ;;Original order ID ;"Order ID của lệnh GỐC mà một lệnh sửa (replace) hoặc hủy (cancel) đang tham chiếu tới
+Ví dụ:
+Bước 1: Đặt lệnh Order ID = A123
+Bước 2: Sửa lệnh Order ID = A124 và Original Order ID = A123";Original order ID 
+HNX Order Book;30;Foreign Investor Type Code;;Foreign Investor Type Code;Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch.;"00 Not Foreigner
+10 Foreigner(Residence)
+20 Foreigner(Nonresidence)
+"
+HNX Trade Book;1;Trade date;;Trade date;Ngày giao dịch của trade;
+HNX Trade Book;2;Market ID;;Market ID;Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng;
+HNX Trade Book;3;Board ID;;Board ID;Loại bảng: Xác định kiểm mua bán trong thị trường;
+HNX Trade Book;4;Issue Code;;Issue Code;Mã định danh của loại chứng khoán đang được giao dịch. Mã này là duy nhất.;
+HNX Trade Book;5;Trade number;;Trade number;ID của giao dịch. Dùng để: Unique key, Audit, Tracking trade;
+HNX Trade Book;6;Trade time;;Trade time;Thời điểm giao dịch xảy ra;
+HNX Trade Book;7;Trade price;;Trade price;"Giá khớp của giao dịch
+Ví dụ: 10000 → 10,000 VND";
+HNX Trade Book;8;Trade quantity;;Trade quantity;Khối lượng giao dịch;
+HNX Trade Book;9;Session ID;;Session ID;"Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về.
+Bản chất: Một ngày giao dịch không phải là một khối liên tục, mà được chia thành nhiều phiên nên Session ID cho biết “Lệnh này đang ở phiên nào?”";
+HNX Trade Book;10;Sell Replace/cancel classification code;;Sell Replace/cancel classification code;Mã xác định hành động sửa hoặc hủy của lệnh bên BÁN (Sell order) liên quan đến giao dịch hoặc message hiện tại.;
+HNX Trade Book;11;Sell  member number;;Sell  member number;Mã định danh của công ty chứng khoán (broker) thực hiện lệnh bán;
+HNX Trade Book;12;Sell account number;;Sell account number;Số tài khoản giao dịch của khách hàng thực hiện lệnh bán;
+HNX Trade Book;13;Sell order type code;;Sell order type code;Mã xác định loại lệnh của phía BÁN, tức là lệnh bán sẽ được xử lý theo cơ chế nào khi vào thị trường.;
+HNX Trade Book;14;Sell order condition code;;Sell order condition code;Là mã xác định điều kiện hiệu lực và cách xử lý của lệnh bán theo thời gian và trạng thái khớp.;
+HNX Trade Book;15;Sell client/house classification;;Sell client/house classification;Mã phân loại lệnh bán thuộc về khách hàng (client) hay tự doanh (house) của công ty chứng khoán;
+HNX Trade Book;16;Sell investor classification code;;Sell investor classification code;"Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường.
+Trả lời câu hỏi: Nhà đầu tư đứng sau lệnh này thuộc loại nào trong nền kinh tế?
+Investor Classification Code có cấu trúc ABCD, trong đó:
+- A (hàng nghìn) → Nhóm lớn (sector)
+- B/C/D → Nhóm con chi tiết hơn
+Ví dụ: 
+- 3000 là Quỹ
+- 3100: Quỹ cụ thể (mutual fund)
+- 3200: ETF";
+HNX Trade Book;17;Sell order quantity;;Sell order quantity;Khối lượng đặt bán;
+HNX Trade Book;18;Sell order price;;Sell order price;Giá đặt bán;
+HNX Trade Book;19;Buy  member number;;Buy  member number;Mã/số công ty chứng khoán thực hiện giao dịch mua;
+HNX Trade Book;20;Buy Replace/cancel classification code;;Buy Replace/cancel classification code;Loại hành động đối với lệnh mua hiện tại;
+HNX Trade Book;21;Buy account number;;Buy account number;Mã tài khoản thực hiện giao dịch mua;
+HNX Trade Book;22;Buy order type code;;Buy order type code;Loại lệnh mua;
+HNX Trade Book;23;Buy order condition code;;Buy order condition code;Điều kiện thực hiện lệnh mua;
+HNX Trade Book;24;Buy client/house classification;;Buy client/house classification;Lệnh mua của khách hàng (client) hay của chính công ty chứng khoán (house);
+HNX Trade Book;25;Buy investor classification code;;Buy investor classification code;Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân;
+HNX Trade Book;26;Buy order quantity;;Buy order quantity;Khối lượng đặt mua;
+HNX Trade Book;27;Buy order price;;Buy order price;Giá đặt mua;
+HNX Trade Book;28;Message Sequence;;Message Sequence;Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự.;
+HNX Trade Book;29;Sell Order Reception Number;;Sell Order Reception Number;Số định danh của lệnh mua tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh;
+HNX Trade Book;30;Buy Order Reception Number;;Buy Order Reception Number;Số định danh của lệnh bán tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh;
+HNX Trade Book;31;Sell Quote Request Code;;Sell Quote Request Code;Mã xác định loại yêu cầu báo giá của bên bán;
+HNX Trade Book;32;Buy Quote Request Code;;Buy Quote Request Code;Mã xác định loại yêu cầu báo giá của bên mua;
+HNX Trade Book;33;Execution Price of Spread First;;Execution Price of Spread First;Giá khớp của leg thứ nhất (First leg) trong spread;
+HNX Trade Book;34;Execution Price of Spread Second;;Execution Price of Spread Second;Giá khớp của leg thứ hai (Second leg);
+HNX Trade Book;35;Sell Foreign Investor Type Code;;Sell Foreign Investor Type Code;Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán.;
+HNX Trade Book;36;Buy Foreign Investor Type Code;;Buy Foreign Investor Type Code;Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua.;

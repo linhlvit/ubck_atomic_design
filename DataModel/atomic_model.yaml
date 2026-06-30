@@ -9,15 +9,14 @@ entities:
     version_1st: "1.0"
     status_1st: approved
     description_1st: Vi phạm pháp luật hoặc hành chính của người hành nghề chứng khoán
-      được ghi nhận kèm quyết định xử lý. Mỗi dòng = 1 sự kiện vi phạm insert-only.
-      FK đến Practitioner và Decision.
+      được ghi nhận kèm quyết định xử lý. FK đến Practitioner và Decision.
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Business Activity
     bcv_concept_most: "[Business Activity] Conduct Violation"
-    table_type_most: Fact Append
-    etl_pattern_most: Fact Append
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
     conflict_review: null
     sources:
     - NHNCK
@@ -216,8 +215,7 @@ entities:
   - name: Violation Record Date
     physical_name: vln_rcrd_dt
     business_meaning_1st: Ngày ghi nhận vi phạm (business event date).
-    comment_1st: Business event date của Fact Append — thời điểm vi phạm được ghi
-      nhận vào hệ thống.
+    comment_1st: Ngày ghi nhận vi phạm vào hệ thống.
     data_domain_most: Timestamp
     data_type_most: timestamp
     nullable_most: false
@@ -230,8 +228,7 @@ entities:
       - source_table: VIOLATIONS
         source_column: NHNCK.VIOLATIONS.CREATED_AT
         business_meaning: Ngày ghi nhận vi phạm (business event date).
-        comment: Business event date của Fact Append — thời điểm vi phạm được ghi
-          nhận vào hệ thống.
+        comment: Ngày ghi nhận vi phạm vào hệ thống.
   - name: Note
     physical_name: note
     business_meaning_1st: Ghi chú vi phạm.
@@ -1048,7 +1045,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.SESSION_NUMBER
+        source_column: NHNCK.EXAM_SESSIONS.SESSION_
         business_meaning: Kỳ thi trong năm (1, 2…)
         comment: null
   - name: Organizing Unit Name
@@ -5334,6 +5331,847 @@ entities:
         business_meaning: Mã cán bộ cập nhật bản ghi
         comment: "Lookup pair: reg_ahr_ofcr.reg_ahr_ofcr_code. Pair with Updated By\
           \ Officer Id."
+- ldm:
+    id: ATM-indx_constituent_snpst
+    logical_name_1st: Index Constituent Snapshot
+    physical_name_1st: indx_constituent_snpst
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Snapshot thành phần rổ chỉ số thị trường theo ngày giao dịch
+      — mỗi dòng ghi nhận một cặp mã chỉ số và mã chứng khoán có mặt trong rổ chỉ
+      số tại ngày giao dịch tương ứng.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Group
+    bcv_concept_most: "[Group] Share Index"
+    table_type_most: Fact Snapshot
+    etl_pattern_most: Fact Snapshot
+    conflict_review: null
+    sources:
+    - MDDS
+    references:
+      brd:
+      - BRD-SRC-MDDS-CSIDXInfor
+  attributes:
+  - name: Index Constituent Snapshot Id
+    physical_name: indx_constituent_snpst_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ\
+      \ số tại 1 ngày."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ\
+          \ số tại 1 ngày."
+  - name: Index Constituent Snapshot Code
+    physical_name: indx_constituent_snpst_code
+    business_meaning_1st: GUID — PK của bảng nguồn. BK.
+    comment_1st: BK chính. PK nguồn id — GUID unique.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.id
+        business_meaning: GUID — PK của bảng nguồn. BK.
+        comment: BK chính. PK nguồn id — GUID unique.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: MDDS.CSIDXInfor
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Index Code
+    physical_name: indx_code
+    business_meaning_1st: Mã chỉ số (FK đến MarketInfor / IDXInfor).
+    comment_1st: "Denormalized join key với Market Index Snapshot. D-02 pattern: không\
+      \ tạo FK surrogate ở Atomic — join tại Gold layer qua index_code."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.indexcode
+        business_meaning: Mã chỉ số (FK đến MarketInfor / IDXInfor).
+        comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không\
+          \ tạo FK surrogate ở Atomic — join tại Gold layer qua index_code."
+  - name: Index Id
+    physical_name: indx_id
+    business_meaning_1st: ID nội bộ của chỉ số.
+    comment_1st: Nguồn lưu dạng int — ETL cần convert sang string. Giữ nguyên leading
+      zeros nếu có.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.indexid
+        business_meaning: ID nội bộ của chỉ số.
+        comment: Nguồn lưu dạng int — ETL cần convert sang string. Giữ nguyên leading
+          zeros nếu có.
+  - name: Symbol
+    physical_name: symb
+    business_meaning_1st: Mã chứng khoán trong rổ (FK đến StockInfor).
+    comment_1st: Denormalized join key với Security Trading Snapshot. Join tại Gold
+      layer qua (symbol, trading_date).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.symbol
+        business_meaning: Mã chứng khoán trong rổ (FK đến StockInfor).
+        comment: Denormalized join key với Security Trading Snapshot. Join tại Gold
+          layer qua (symbol, trading_date).
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning_1st: Ngày giao dịch dạng dd/MM/yyyy.
+    comment_1st: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Grain\
+      \ key: mỗi ngày 1 snapshot."
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.tradingdate
+        business_meaning: Ngày giao dịch dạng dd/MM/yyyy.
+        comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Grain\
+          \ key: mỗi ngày 1 snapshot."
+  - name: Add Date
+    physical_name: add_dt
+    business_meaning_1st: Ngày thêm vào chỉ số.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.adddate
+        business_meaning: Ngày thêm vào chỉ số.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Floor Code
+    physical_name: flr_code
+    business_meaning_1st: Mã sở giao dịch CK.
+    comment_1st: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.floorcode
+        business_meaning: Mã sở giao dịch CK.
+        comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
+  - name: Total Match Volume
+    physical_name: tot_mtch_vol
+    business_meaning_1st: Tổng khối lượng khớp lệnh lô chẵn.
+    comment_1st: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate\
+      \ không có giá trị non-numeric. HLD note T2-03: cân nhắc bỏ nếu trùng StockInfor.totaltrading,\
+      \ giữ nguyên theo nguyên tắc mapping 1-1."
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CSIDXInfor
+        source_column: MDDS.JAD_CSIDXINFOR.totalqtty
+        business_meaning: Tổng khối lượng khớp lệnh lô chẵn.
+        comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate\
+          \ không có giá trị non-numeric. HLD note T2-03: cân nhắc bỏ nếu trùng StockInfor.totaltrading,\
+          \ giữ nguyên theo nguyên tắc mapping 1-1."
+- ldm:
+    id: ATM-mkt_indx_snpst
+    logical_name_1st: Market Index Snapshot
+    physical_name_1st: mkt_indx_snpst
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Snapshot trạng thái của một chỉ số thị trường (VNINDEX, HNX-Index,
+      UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá
+      trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Group
+    bcv_concept_most: "[Group] Share Index"
+    table_type_most: Fact Snapshot
+    etl_pattern_most: Fact Snapshot
+    conflict_review: null
+    sources:
+    - MDDS
+    references:
+      brd:
+      - BRD-SRC-MDDS-MarketInfor
+  attributes:
+  - name: Market Index Snapshot Id
+    physical_name: mkt_indx_snpst_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ\
+      \ số thị trường tại 1 thời điểm."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ\
+          \ số thị trường tại 1 thời điểm."
+  - name: Market Index Snapshot Code
+    physical_name: mkt_indx_snpst_code
+    business_meaning_1st: ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot
+      entity.
+    comment_1st: BK chính. PK nguồn historyid — unique per lần chụp chỉ số.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.historyid
+        business_meaning: ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot
+          entity.
+        comment: BK chính. PK nguồn historyid — unique per lần chụp chỉ số.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: MDDS.MarketInfor
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Market Code
+    physical_name: mkt_code
+    business_meaning_1st: Mã thị trường — FSS tự quy định.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.marketcode
+        business_meaning: Mã thị trường — FSS tự quy định.
+        comment: null
+  - name: Market Id
+    physical_name: mkt_id
+    business_meaning_1st: ID thị trường — FSS tự quy định.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.marketid
+        business_meaning: ID thị trường — FSS tự quy định.
+        comment: null
+  - name: Jadapter Id
+    physical_name: jadapter_id
+    business_meaning_1st: ID jadapter sinh.
+    comment_1st: Metadata kỹ thuật jadapter — giữ để traceability.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.id
+        business_meaning: ID jadapter sinh.
+        comment: Metadata kỹ thuật jadapter — giữ để traceability.
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning_1st: Ngày giao dịch.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.tradingdate
+        business_meaning: Ngày giao dịch.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Index Time
+    physical_name: indx_tm
+    business_meaning_1st: Thời gian ghi nhận chỉ số.
+    comment_1st: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
+      trước khi convert sang Timestamp.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.indextime
+        business_meaning: Thời gian ghi nhận chỉ số.
+        comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
+          trước khi convert sang Timestamp.
+  - name: Index Type Code
+    physical_name: indx_tp_code
+    business_meaning_1st: Loại index — mã Sở quy định.
+    comment_1st: "Scheme: MDDS_INDEX_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.indextypecode
+        business_meaning: Loại index — mã Sở quy định.
+        comment: "Scheme: MDDS_INDEX_TYPE."
+  - name: Market Status Code
+    physical_name: mkt_st_code
+    business_meaning_1st: Trạng thái phiên giao dịch.
+    comment_1st: "Scheme: MDDS_MARKET_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.marketstatus
+        business_meaning: Trạng thái phiên giao dịch.
+        comment: "Scheme: MDDS_MARKET_STATUS."
+  - name: Index Color Code
+    physical_name: indx_color_code
+    business_meaning_1st: Indicator index đang tăng/giảm.
+    comment_1st: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor\
+      \ — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.indexcolor
+        business_meaning: Indicator index đang tăng/giảm.
+        comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor\
+          \ — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
+  - name: Halt Reason Code
+    physical_name: halt_rsn_code
+    business_meaning_1st: Lý do thị trường bị halt.
+    comment_1st: Cần profile giá trị — có thể promote sang Classification Value sau
+      khi profile.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.haltrsncode
+        business_meaning: Lý do thị trường bị halt.
+        comment: Cần profile giá trị — có thể promote sang Classification Value sau
+          khi profile.
+  - name: Market Index Value
+    physical_name: mkt_indx_val
+    business_meaning_1st: Giá trị index tại thời điểm ghi nhận.
+    comment_1st: Domain Currency Amount vì đây là điểm số tài chính. Nguồn double
+      precision — không mất dữ liệu.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.marketindex
+        business_meaning: Giá trị index tại thời điểm ghi nhận.
+        comment: Domain Currency Amount vì đây là điểm số tài chính. Nguồn double
+          precision — không mất dữ liệu.
+  - name: Index Change
+    physical_name: indx_chg
+    business_meaning_1st: Giá trị index thay đổi so với index cuối ngày hôm trước.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.indexchange
+        business_meaning: Giá trị index thay đổi so với index cuối ngày hôm trước.
+        comment: null
+  - name: Index Percent Change
+    physical_name: indx_pct_chg
+    business_meaning_1st: "% index thay đổi so với index cuối ngày hôm trước."
+    comment_1st: null
+    data_domain_most: Percentage
+    data_type_most: decimal(5,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.indexpercentchange
+        business_meaning: "% index thay đổi so với index cuối ngày hôm trước."
+        comment: null
+  - name: Open Index
+    physical_name: opn_indx
+    business_meaning_1st: Index mở cửa.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.open
+        business_meaning: Index mở cửa.
+        comment: null
+  - name: High Index
+    physical_name: high_indx
+    business_meaning_1st: Index cao nhất tính đến thời điểm hiện tại.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.high
+        business_meaning: Index cao nhất tính đến thời điểm hiện tại.
+        comment: null
+  - name: Low Index
+    physical_name: low_indx
+    business_meaning_1st: Index thấp nhất tính đến thời điểm hiện tại.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.low
+        business_meaning: Index thấp nhất tính đến thời điểm hiện tại.
+        comment: null
+  - name: Prior Index
+    physical_name: prev_indx
+    business_meaning_1st: Index cuối cùng của phiên trước đó.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.prv_prior_market_index
+        business_meaning: Index cuối cùng của phiên trước đó.
+        comment: null
+  - name: Total Volume
+    physical_name: tot_vol
+    business_meaning_1st: Tổng khối lượng đã khớp.
+    comment_1st: Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số
+      lượng CK, cùng pattern với advancesvolumn/declinesvolumn.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.totalvolume
+        business_meaning: Tổng khối lượng đã khớp.
+        comment: Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số
+          lượng CK, cùng pattern với advancesvolumn/declinesvolumn.
+  - name: Total Value
+    physical_name: tval
+    business_meaning_1st: Tổng giá trị đã khớp.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.totalvalue
+        business_meaning: Tổng giá trị đã khớp.
+        comment: null
+  - name: Advances Count
+    physical_name: advances_cnt
+    business_meaning_1st: Số lượng mã tăng.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.advances
+        business_meaning: Số lượng mã tăng.
+        comment: null
+  - name: Declines Count
+    physical_name: declines_cnt
+    business_meaning_1st: Số lượng mã giảm.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.declines
+        business_meaning: Số lượng mã giảm.
+        comment: null
+  - name: No Change Count
+    physical_name: no_chg_cnt
+    business_meaning_1st: Số lượng mã không tăng/giảm.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.nochange
+        business_meaning: Số lượng mã không tăng/giảm.
+        comment: null
+  - name: Ceiling Count
+    physical_name: ceiling_cnt
+    business_meaning_1st: Số lượng mã đang trần.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.numberofce
+        business_meaning: Số lượng mã đang trần.
+        comment: null
+  - name: Floor Count
+    physical_name: flr_cnt
+    business_meaning_1st: Số lượng mã đang sàn.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.numberoffl
+        business_meaning: Số lượng mã đang sàn.
+        comment: null
+  - name: Advances Volume
+    physical_name: advances_vol
+    business_meaning_1st: Tổng khối lượng đã khớp của các mã tăng.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.advancesvolumn
+        business_meaning: Tổng khối lượng đã khớp của các mã tăng.
+        comment: null
+  - name: Declines Volume
+    physical_name: declines_vol
+    business_meaning_1st: Tổng khối lượng đã khớp của các mã giảm.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.declinesvolumn
+        business_meaning: Tổng khối lượng đã khớp của các mã giảm.
+        comment: null
+  - name: No Change Volume
+    physical_name: no_chg_vol
+    business_meaning_1st: Khối lượng khớp mã không tăng/giảm.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.nochangevolumn
+        business_meaning: Khối lượng khớp mã không tăng/giảm.
+        comment: null
+  - name: Odd Lot Total Value
+    physical_name: odd_lot_tval
+    business_meaning_1st: Giá trị khớp lô lẻ.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.oddlottotalvalue
+        business_meaning: Giá trị khớp lô lẻ.
+        comment: null
+  - name: Odd Lot Total Volume
+    physical_name: odd_lot_tot_vol
+    business_meaning_1st: Khối lượng khớp lô lẻ.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.oddlottotalvolume
+        business_meaning: Khối lượng khớp lô lẻ.
+        comment: null
+  - name: PT Total Volume
+    physical_name: pt_tot_vol
+    business_meaning_1st: Tổng khối lượng giao dịch thỏa thuận.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.pt_total_qtty
+        business_meaning: Tổng khối lượng giao dịch thỏa thuận.
+        comment: null
+  - name: PT Total Value
+    physical_name: pt_tval
+    business_meaning_1st: Tổng giá trị giao dịch thỏa thuận.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.pt_total_value
+        business_meaning: Tổng giá trị giao dịch thỏa thuận.
+        comment: null
+  - name: PT Total Trade Count
+    physical_name: pt_tot_trd_cnt
+    business_meaning_1st: Tổng số giao dịch thỏa thuận.
+    comment_1st: Nguồn double precision — widening, không mất dữ liệu.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.pt_total_trade
+        business_meaning: Tổng số giao dịch thỏa thuận.
+        comment: Nguồn double precision — widening, không mất dữ liệu.
+  - name: TSC Product Group Id
+    physical_name: tsc_pd_grp_id
+    business_meaning_1st: Mã sản phẩm giao dịch (hose/hnx/upcom).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: MarketInfor
+        source_column: MDDS.JAD_MARKETINFOR.tscprodgrpid
+        business_meaning: Mã sản phẩm giao dịch (hose/hnx/upcom).
+        comment: null
 - ldm:
     id: ATM-ip_alt_identn
     logical_name_1st: Involved Party Alternative Identification
@@ -10155,6 +10993,2636 @@ entities:
         source_column: NHNCK.PROVINCES.RECORD_STATUS
         business_meaning: Trạng thái bản ghi
         comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
+- ldm:
+    id: ATM-corp_bond_tdg_snpst
+    logical_name_1st: Corporate Bond Trading Snapshot
+    physical_name_1st: corp_bond_tdg_snpst
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm
+      yết tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright,
+      thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát
+      hành/đáo hạn).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Product
+    bcv_concept_most: "[Product] Financial Market Instrument"
+    table_type_most: Fact Snapshot
+    etl_pattern_most: Fact Snapshot
+    conflict_review: null
+    sources:
+    - MDDS
+    references:
+      brd:
+      - BRD-SRC-MDDS-CorpBondInfor
+  attributes:
+  - name: Corporate Bond Trading Snapshot Id
+    physical_name: corp_bond_tdg_snpst_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot\
+      \ TPDN tại 1 thời điểm."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot\
+          \ TPDN tại 1 thời điểm."
+  - name: Corporate Bond Trading Snapshot Code
+    physical_name: corp_bond_tdg_snpst_code
+    business_meaning_1st: ID mã do jadapter sinh. BK của Snapshot entity.
+    comment_1st: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực\
+      \ sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với nguồn."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.kid
+        business_meaning: ID mã do jadapter sinh. BK của Snapshot entity.
+        comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực\
+          \ sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với\
+          \ nguồn."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: MDDS.CorpBondInfor
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Symbol
+    physical_name: symb
+    business_meaning_1st: Mã chứng khoán trái phiếu.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.symbol
+        business_meaning: Mã chứng khoán trái phiếu.
+        comment: null
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning_1st: Ngày giao dịch format dd/mm/yyyy.
+    comment_1st: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.tradingdate
+        business_meaning: Ngày giao dịch format dd/mm/yyyy.
+        comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date.
+  - name: Bond Full Name
+    physical_name: bond_full_nm
+    business_meaning_1st: Tên đầy đủ của trái phiếu.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.fullname
+        business_meaning: Tên đầy đủ của trái phiếu.
+        comment: null
+  - name: Trading Time
+    physical_name: tdg_tm
+    business_meaning_1st: Thời gian giao dịch.
+    comment_1st: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.tradingtime
+        business_meaning: Thời gian giao dịch.
+        comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa.
+  - name: Floor Code
+    physical_name: flr_code
+    business_meaning_1st: "Mã sàn: 06 (corp-bond HNX)."
+    comment_1st: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.floorcode
+        business_meaning: "Mã sàn: 06 (corp-bond HNX)."
+        comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
+  - name: Stock Type Code
+    physical_name: stk_tp_code
+    business_meaning_1st: "Loại CK: 12 (trái phiếu DN)."
+    comment_1st: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường\
+      \ = 12 cho TPDN."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.stocktype
+        business_meaning: "Loại CK: 12 (trái phiếu DN)."
+        comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường\
+          \ = 12 cho TPDN."
+  - name: Trading Session Status Code
+    physical_name: tdg_ssn_st_code
+    business_meaning_1st: Trạng thái phiên giao dịch HNX.
+    comment_1st: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.tradingsessionid
+        business_meaning: Trạng thái phiên giao dịch HNX.
+        comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
+  - name: Security Trading Status Code
+    physical_name: scr_tdg_st_code
+    business_meaning_1st: Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn
+      chế).
+    comment_1st: "Scheme: MDDS_SECURITY_TRADING_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.securitytradingstatus
+        business_meaning: Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn
+          chế).
+        comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
+  - name: Trading Session Status 2 Code
+    physical_name: tdg_ssn_st_2_code
+    business_meaning_1st: Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2).
+    comment_1st: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid\
+      \ — cần profile sự khác biệt giữa 2 trường này."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.tradsesstatus
+        business_meaning: Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2).
+        comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid\
+          \ — cần profile sự khác biệt giữa 2 trường này."
+  - name: Period Unit Code
+    physical_name: prd_unit_code
+    business_meaning_1st: Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm).
+    comment_1st: "Scheme: MDDS_PERIOD_UNIT."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.period_unit
+        business_meaning: Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm).
+        comment: "Scheme: MDDS_PERIOD_UNIT."
+  - name: Interest Period Unit Code
+    physical_name: int_prd_unit_code
+    business_meaning_1st: Đơn vị kỳ hạn trả lãi.
+    comment_1st: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.interest_period_unit
+        business_meaning: Đơn vị kỳ hạn trả lãi.
+        comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
+  - name: Coupon Type Code
+    physical_name: cpn_tp_code
+    business_meaning_1st: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon."
+    comment_1st: "Scheme: MDDS_COUPON_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.interest_coupon_type
+        business_meaning: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon."
+        comment: "Scheme: MDDS_COUPON_TYPE."
+  - name: Interest Rate Type Code
+    physical_name: int_rate_tp_code
+    business_meaning_1st: "Loại lãi suất: Cố định/Thả nổi/Khác."
+    comment_1st: "Scheme: MDDS_INTEREST_RATE_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.interestrate_type
+        business_meaning: "Loại lãi suất: Cố định/Thả nổi/Khác."
+        comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
+  - name: Interest Type Code
+    physical_name: int_tp_code
+    business_meaning_1st: Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác).
+    comment_1st: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type\
+      \ — danh mục cố định của HNX."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.interest_type
+        business_meaning: Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác).
+        comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type\
+          \ — danh mục cố định của HNX."
+  - name: Interest Payment Type Code
+    physical_name: int_pymt_tp_code
+    business_meaning_1st: Phương thức trả lãi.
+    comment_1st: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type\
+      \ — danh mục cố định của HNX."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.interest_payment_type
+        business_meaning: Phương thức trả lãi.
+        comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type\
+          \ — danh mục cố định của HNX."
+  - name: Ceiling Price
+    physical_name: ceiling_prc
+    business_meaning_1st: Giá trần khớp lệnh.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.ceiling
+        business_meaning: Giá trần khớp lệnh.
+        comment: null
+  - name: Floor Price
+    physical_name: flr_prc
+    business_meaning_1st: Giá sàn khớp lệnh.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.floor
+        business_meaning: Giá sàn khớp lệnh.
+        comment: null
+  - name: Reference Price
+    physical_name: refr_prc
+    business_meaning_1st: Giá tham chiếu.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.reference
+        business_meaning: Giá tham chiếu.
+        comment: null
+  - name: Close Price
+    physical_name: cls_prc
+    business_meaning_1st: Giá đóng cửa ngày.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.closeprice
+        business_meaning: Giá đóng cửa ngày.
+        comment: null
+  - name: Close Volume
+    physical_name: cls_vol
+    business_meaning_1st: Khối lượng đóng cửa.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.closevol
+        business_meaning: Khối lượng đóng cửa.
+        comment: null
+  - name: Price Change
+    physical_name: prc_chg
+    business_meaning_1st: Thay đổi giá khớp gần nhất so với giá tham chiếu.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.change
+        business_meaning: Thay đổi giá khớp gần nhất so với giá tham chiếu.
+        comment: null
+  - name: Open Price
+    physical_name: opn_prc
+    business_meaning_1st: Giá mở cửa.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.open
+        business_meaning: Giá mở cửa.
+        comment: null
+  - name: High Price
+    physical_name: high_prc
+    business_meaning_1st: Giá thực hiện cao nhất GD khớp lệnh.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.high
+        business_meaning: Giá thực hiện cao nhất GD khớp lệnh.
+        comment: null
+  - name: Low Price
+    physical_name: low_prc
+    business_meaning_1st: Giá thực hiện thấp nhất GD khớp lệnh.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.low
+        business_meaning: Giá thực hiện thấp nhất GD khớp lệnh.
+        comment: null
+  - name: Average Price
+    physical_name: av_prc
+    business_meaning_1st: Giá trung bình.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.averageprice
+        business_meaning: Giá trung bình.
+        comment: null
+  - name: Total Trading Volume
+    physical_name: tot_tdg_vol
+    business_meaning_1st: Tổng khối lượng giao dịch.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.totaltrading
+        business_meaning: Tổng khối lượng giao dịch.
+        comment: null
+  - name: Total Trading Value
+    physical_name: tot_tdg_val
+    business_meaning_1st: Tổng giá trị giao dịch.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.totaltradingvalue
+        business_meaning: Tổng giá trị giao dịch.
+        comment: null
+  - name: Total Listing Volume
+    physical_name: tot_listing_vol
+    business_meaning_1st: Khối lượng niêm yết.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.totallistingqtty
+        business_meaning: Khối lượng niêm yết.
+        comment: null
+  - name: Foreign Remain Volume
+    physical_name: frgn_rman_vol
+    business_meaning_1st: Room NĐTNN còn lại.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.foreignremain
+        business_meaning: Room NĐTNN còn lại.
+        comment: null
+  - name: PT Match Volume
+    physical_name: pt_mtch_vol
+    business_meaning_1st: Khối lượng thực hiện gần nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_match_qtty
+        business_meaning: Khối lượng thực hiện gần nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Match Price
+    physical_name: pt_mtch_prc
+    business_meaning_1st: Giá thực hiện gần nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_match_price
+        business_meaning: Giá thực hiện gần nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Total Traded Volume
+    physical_name: pt_tot_trdd_vol
+    business_meaning_1st: Tổng khối lượng GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_total_traded_qtty
+        business_meaning: Tổng khối lượng GD thỏa thuận Outright.
+        comment: null
+  - name: PT Total Traded Value
+    physical_name: pt_tot_trdd_val
+    business_meaning_1st: Tổng giá trị GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_total_traded_value
+        business_meaning: Tổng giá trị GD thỏa thuận Outright.
+        comment: null
+  - name: PT Best Bid Volume
+    physical_name: pt_best_bid_vol
+    business_meaning_1st: Tổng KL chào mua cao nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_bestbidqtty
+        business_meaning: Tổng KL chào mua cao nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Best Bid Price
+    physical_name: pt_best_bid_prc
+    business_meaning_1st: Giá chào mua cao nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_bestbidprice
+        business_meaning: Giá chào mua cao nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Best Offer Volume
+    physical_name: pt_best_ofr_vol
+    business_meaning_1st: Tổng KL chào bán thấp nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_bestofferqtty
+        business_meaning: Tổng KL chào bán thấp nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Best Offer Price
+    physical_name: pt_best_ofr_prc
+    business_meaning_1st: Giá chào bán thấp nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_bestofferprice
+        business_meaning: Giá chào bán thấp nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Total Bid Volume
+    physical_name: pt_tot_bid_vol
+    business_meaning_1st: Tổng KL chào mua GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_totalbidqtty
+        business_meaning: Tổng KL chào mua GD thỏa thuận Outright.
+        comment: null
+  - name: PT Total Offer Volume
+    physical_name: pt_tot_ofr_vol
+    business_meaning_1st: Tổng KL chào bán GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_totalofferqtty
+        business_meaning: Tổng KL chào bán GD thỏa thuận Outright.
+        comment: null
+  - name: PT Max Volume
+    physical_name: pt_max_vol
+    business_meaning_1st: KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_maxqtty
+        business_meaning: KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Max Price
+    physical_name: pt_max_prc
+    business_meaning_1st: Giá thực hiện cao nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_maxprice
+        business_meaning: Giá thực hiện cao nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Min Volume
+    physical_name: pt_min_vol
+    business_meaning_1st: KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_minqtty
+        business_meaning: KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright.
+        comment: null
+  - name: PT Min Price
+    physical_name: pt_min_prc
+    business_meaning_1st: Giá thực hiện thấp nhất GD thỏa thuận Outright.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.pt_minprice
+        business_meaning: Giá thực hiện thấp nhất GD thỏa thuận Outright.
+        comment: null
+  - name: Issuer Name
+    physical_name: issur_nm
+    business_meaning_1st: Tên tổ chức phát hành.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.issuername
+        business_meaning: Tên tổ chức phát hành.
+        comment: null
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning_1st: Ngày phát hành trái phiếu.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.issuedate
+        business_meaning: Ngày phát hành trái phiếu.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Maturity Date
+    physical_name: mat_dt
+    business_meaning_1st: Ngày đáo hạn trái phiếu.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.maturitydate
+        business_meaning: Ngày đáo hạn trái phiếu.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Par Value
+    physical_name: par_val
+    business_meaning_1st: Mệnh giá trái phiếu.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.parvalue
+        business_meaning: Mệnh giá trái phiếu.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+          không có giá trị non-numeric.
+  - name: Bond Period
+    physical_name: bond_prd
+    business_meaning_1st: Kỳ hạn trái phiếu.
+    comment_1st: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.bond_period
+        business_meaning: Kỳ hạn trái phiếu.
+        comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit.
+  - name: Period Remain Days
+    physical_name: prd_rman_dys
+    business_meaning_1st: Kỳ hạn còn lại tính bằng ngày.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.period_remain
+        business_meaning: Kỳ hạn còn lại tính bằng ngày.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate
+          không có giá trị non-numeric.
+  - name: Interest Period
+    physical_name: int_prd
+    business_meaning_1st: Kỳ hạn trả lãi.
+    comment_1st: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.interest_period
+        business_meaning: Kỳ hạn trả lãi.
+        comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit.
+  - name: Interest Rate
+    physical_name: int_rate
+    business_meaning_1st: Lãi suất danh nghĩa.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Interest Rate
+    data_type_most: decimal(8,5)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.interest_rate
+        business_meaning: Lãi suất danh nghĩa.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+          không có giá trị non-numeric.
+  - name: Bond Characteristics
+    physical_name: bond_char
+    business_meaning_1st: Đặc điểm trái phiếu.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: CorpBondInfor
+        source_column: MDDS.JAD_CORBONDINFOR.characteristics
+        business_meaning: Đặc điểm trái phiếu.
+        comment: null
+- ldm:
+    id: ATM-scr_tdg_snpst
+    logical_name_1st: Security Trading Snapshot
+    physical_name_1st: scr_tdg_snpst
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu,
+      chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày
+      giao dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Product
+    bcv_concept_most: "[Product] Financial Market Instrument"
+    table_type_most: Fact Snapshot
+    etl_pattern_most: Fact Snapshot
+    conflict_review: null
+    sources:
+    - MDDS
+    references:
+      brd:
+      - BRD-SRC-MDDS-StockInfor
+  attributes:
+  - name: Security Trading Snapshot Id
+    physical_name: scr_tdg_snpst_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot\
+      \ trạng thái giao dịch của 1 mã CK tại 1 thời điểm."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot\
+          \ trạng thái giao dịch của 1 mã CK tại 1 thời điểm."
+  - name: Security Trading Snapshot Code
+    physical_name: scr_tdg_snpst_code
+    business_meaning_1st: ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của
+      Snapshot entity.
+    comment_1st: BK chính. PK nguồn historyid — unique per lần chụp.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.historyid
+        business_meaning: ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của
+          Snapshot entity.
+        comment: BK chính. PK nguồn historyid — unique per lần chụp.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: MDDS.StockInfor
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Symbol
+    physical_name: symb
+    business_meaning_1st: Mã chứng khoán.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.symbol
+        business_meaning: Mã chứng khoán.
+        comment: null
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning_1st: Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date.
+    comment_1st: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate
+      format nhất quán.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.tradingdate
+        business_meaning: Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date.
+        comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate
+          format nhất quán.
+  - name: Security Full Name
+    physical_name: scr_full_nm
+    business_meaning_1st: Tên chứng khoán (tiếng Việt).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.fullname
+        business_meaning: Tên chứng khoán (tiếng Việt).
+        comment: null
+  - name: Security Id
+    physical_name: scr_id
+    business_meaning_1st: ID của chứng khoán trong hệ thống Sở.
+    comment_1st: Mã nội bộ Sở — giữ dạng text denormalized.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.stockid
+        business_meaning: ID của chứng khoán trong hệ thống Sở.
+        comment: Mã nội bộ Sở — giữ dạng text denormalized.
+  - name: Jadapter Id
+    physical_name: jadapter_id
+    business_meaning_1st: ID của mã do jadapter tự sinh.
+    comment_1st: Metadata kỹ thuật jadapter — giữ để traceability.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.kid
+        business_meaning: ID của mã do jadapter tự sinh.
+        comment: Metadata kỹ thuật jadapter — giữ để traceability.
+  - name: Stock Type Code
+    physical_name: stk_tp_code
+    business_meaning_1st: Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...).
+    comment_1st: "Scheme: MDDS_STOCK_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.stocktype
+        business_meaning: Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...).
+        comment: "Scheme: MDDS_STOCK_TYPE."
+  - name: Floor Code
+    physical_name: flr_code
+    business_meaning_1st: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
+    comment_1st: "Scheme: MDDS_FLOOR_CODE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.floorcode
+        business_meaning: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
+        comment: "Scheme: MDDS_FLOOR_CODE."
+  - name: Trading Session Status Code
+    physical_name: tdg_ssn_st_code
+    business_meaning_1st: Trạng thái phiên tại thời điểm chụp.
+    comment_1st: "Scheme: MDDS_TRADING_SESSION_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.tradingsessionid
+        business_meaning: Trạng thái phiên tại thời điểm chụp.
+        comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
+  - name: Trade Direction Code
+    physical_name: trd_drc_code
+    business_meaning_1st: Chiều mua/bán chủ động gần nhất.
+    comment_1st: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.lastcolor
+        business_meaning: Chiều mua/bán chủ động gần nhất.
+        comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
+  - name: Symbol Status Code
+    physical_name: symb_st_code
+    business_meaning_1st: Trạng thái mã CK.
+    comment_1st: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile\
+      \ giá trị."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.symbolstatuscode
+        business_meaning: Trạng thái mã CK.
+        comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile\
+          \ giá trị."
+  - name: Ceiling Price
+    physical_name: ceiling_prc
+    business_meaning_1st: Giá trần.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.ceiling
+        business_meaning: Giá trần.
+        comment: null
+  - name: Floor Price
+    physical_name: flr_prc
+    business_meaning_1st: Giá sàn.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.floor
+        business_meaning: Giá sàn.
+        comment: null
+  - name: Reference Price
+    physical_name: refr_prc
+    business_meaning_1st: Giá tham chiếu.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.reference
+        business_meaning: Giá tham chiếu.
+        comment: null
+  - name: Close Price
+    physical_name: cls_prc
+    business_meaning_1st: Giá khớp gần nhất.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.closeprice
+        business_meaning: Giá khớp gần nhất.
+        comment: null
+  - name: Close Volume
+    physical_name: cls_vol
+    business_meaning_1st: Khối lượng khớp gần nhất.
+    comment_1st: Nguồn lưu dạng bigint — widening conversion sang int/bigint không
+      mất dữ liệu.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.closevol
+        business_meaning: Khối lượng khớp gần nhất.
+        comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không
+          mất dữ liệu.
+  - name: Price Change
+    physical_name: prc_chg
+    business_meaning_1st: Thay đổi giữa giá khớp gần nhất và giá tham chiếu.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.change
+        business_meaning: Thay đổi giữa giá khớp gần nhất và giá tham chiếu.
+        comment: null
+  - name: Open Price
+    physical_name: opn_prc
+    business_meaning_1st: Giá mở cửa.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.open
+        business_meaning: Giá mở cửa.
+        comment: null
+  - name: High Price
+    physical_name: high_prc
+    business_meaning_1st: Giá khớp cao nhất tính đến thời điểm.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.high
+        business_meaning: Giá khớp cao nhất tính đến thời điểm.
+        comment: null
+  - name: Low Price
+    physical_name: low_prc
+    business_meaning_1st: Giá khớp thấp nhất tính đến thời điểm.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.low
+        business_meaning: Giá khớp thấp nhất tính đến thời điểm.
+        comment: null
+  - name: Average Price
+    physical_name: av_prc
+    business_meaning_1st: Giá khớp trung bình.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.averageprice
+        business_meaning: Giá khớp trung bình.
+        comment: null
+  - name: Bid Price 1
+    physical_name: bid_prc_1
+    business_meaning_1st: Giá mua top 1.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.bidprice1
+        business_meaning: Giá mua top 1.
+        comment: null
+  - name: Bid Volume 1
+    physical_name: bid_vol_1
+    business_meaning_1st: Khối lượng mua top 1.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.bidvol1
+        business_meaning: Khối lượng mua top 1.
+        comment: null
+  - name: Bid Price 2
+    physical_name: bid_prc_2
+    business_meaning_1st: Giá mua top 2.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.bidprice2
+        business_meaning: Giá mua top 2.
+        comment: null
+  - name: Bid Volume 2
+    physical_name: bid_vol_2
+    business_meaning_1st: Khối lượng mua top 2.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.bidvol2
+        business_meaning: Khối lượng mua top 2.
+        comment: null
+  - name: Bid Price 3
+    physical_name: bid_prc_3
+    business_meaning_1st: Giá mua top 3.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.bidprice3
+        business_meaning: Giá mua top 3.
+        comment: null
+  - name: Bid Volume 3
+    physical_name: bid_vol_3
+    business_meaning_1st: Khối lượng mua top 3.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.bidvol3
+        business_meaning: Khối lượng mua top 3.
+        comment: null
+  - name: Offer Price 1
+    physical_name: ofr_prc_1
+    business_meaning_1st: Giá bán top 1.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.offerprice1
+        business_meaning: Giá bán top 1.
+        comment: null
+  - name: Offer Volume 1
+    physical_name: ofr_vol_1
+    business_meaning_1st: Khối lượng bán top 1.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.offervol1
+        business_meaning: Khối lượng bán top 1.
+        comment: null
+  - name: Offer Price 2
+    physical_name: ofr_prc_2
+    business_meaning_1st: Giá bán top 2.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.offerprice2
+        business_meaning: Giá bán top 2.
+        comment: null
+  - name: Offer Volume 2
+    physical_name: ofr_vol_2
+    business_meaning_1st: Khối lượng bán top 2.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.offervol2
+        business_meaning: Khối lượng bán top 2.
+        comment: null
+  - name: Offer Price 3
+    physical_name: ofr_prc_3
+    business_meaning_1st: Giá bán top 3.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.offerprice3
+        business_meaning: Giá bán top 3.
+        comment: null
+  - name: Offer Volume 3
+    physical_name: ofr_vol_3
+    business_meaning_1st: Khối lượng bán top 3.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.offervol3
+        business_meaning: Khối lượng bán top 3.
+        comment: null
+  - name: Total Trading Volume
+    physical_name: tot_tdg_vol
+    business_meaning_1st: Tổng khối lượng khớp từ đầu ngày.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.totaltrading
+        business_meaning: Tổng khối lượng khớp từ đầu ngày.
+        comment: null
+  - name: Total Trading Value
+    physical_name: tot_tdg_val
+    business_meaning_1st: Tổng giá trị khớp từ đầu ngày.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.totaltradingvalue
+        business_meaning: Tổng giá trị khớp từ đầu ngày.
+        comment: null
+  - name: Total Offer Volume
+    physical_name: tot_ofr_vol
+    business_meaning_1st: Tổng khối lượng dư bán.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.total_offer_qtty
+        business_meaning: Tổng khối lượng dư bán.
+        comment: null
+  - name: Total Bid Volume
+    physical_name: tot_bid_vol
+    business_meaning_1st: Tổng khối lượng dư mua.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.total_bid_qtty
+        business_meaning: Tổng khối lượng dư mua.
+        comment: null
+  - name: Foreign Buy Volume
+    physical_name: frgn_buy_vol
+    business_meaning_1st: Khối lượng NĐTNN mua.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.foreignbuy
+        business_meaning: Khối lượng NĐTNN mua.
+        comment: null
+  - name: Foreign Sell Volume
+    physical_name: frgn_sell_vol
+    business_meaning_1st: Khối lượng NĐTNN bán.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.foreignsell
+        business_meaning: Khối lượng NĐTNN bán.
+        comment: null
+  - name: Foreign Remain Volume
+    physical_name: frgn_rman_vol
+    business_meaning_1st: Room còn lại cho NĐTNN.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.foreignremain
+        business_meaning: Room còn lại cho NĐTNN.
+        comment: null
+  - name: Foreign Room Volume
+    physical_name: frgn_room_vol
+    business_meaning_1st: Tổng room NĐTNN.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.foreignroom
+        business_meaning: Tổng room NĐTNN.
+        comment: null
+  - name: PT Match Volume
+    physical_name: pt_mtch_vol
+    business_meaning_1st: Khối lượng khớp thỏa thuận gần nhất.
+    comment_1st: PT = Put-Through (giao dịch thỏa thuận).
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.pt_match_qtty
+        business_meaning: Khối lượng khớp thỏa thuận gần nhất.
+        comment: PT = Put-Through (giao dịch thỏa thuận).
+  - name: PT Match Price
+    physical_name: pt_mtch_prc
+    business_meaning_1st: Giá khớp thỏa thuận gần nhất.
+    comment_1st: Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.pt_match_price
+        business_meaning: Giá khớp thỏa thuận gần nhất.
+        comment: Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount.
+  - name: PT Total Traded Volume
+    physical_name: pt_tot_trdd_vol
+    business_meaning_1st: Tổng khối lượng khớp thỏa thuận từ đầu ngày.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.pt_total_traded_qtty
+        business_meaning: Tổng khối lượng khớp thỏa thuận từ đầu ngày.
+        comment: null
+  - name: PT Total Traded Value
+    physical_name: pt_tot_trdd_val
+    business_meaning_1st: Tổng giá trị khớp thỏa thuận từ đầu ngày.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.pt_total_traded_value
+        business_meaning: Tổng giá trị khớp thỏa thuận từ đầu ngày.
+        comment: null
+  - name: Security Event Status Code
+    physical_name: scr_ev_st_code
+    business_meaning_1st: Trạng thái sự kiện quyền của CK.
+    comment_1st: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ\
+      \ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.status
+        business_meaning: Trạng thái sự kiện quyền của CK.
+        comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ\
+          \ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
+  - name: ISIN Code
+    physical_name: isin_code
+    business_meaning_1st: Mã ISIN của CK.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.symbolisin
+        business_meaning: Mã ISIN của CK.
+        comment: null
+  - name: Listed Share Count
+    physical_name: list_shr_cnt
+    business_meaning_1st: Khối lượng CK niêm yết.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.listedshare
+        business_meaning: Khối lượng CK niêm yết.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate
+          không có giá trị non-numeric.
+  - name: Total Listing Volume
+    physical_name: tot_listing_vol
+    business_meaning_1st: Khối lượng CK niêm yết.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.totallistingqtty
+        business_meaning: Khối lượng CK niêm yết.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate
+          không có giá trị non-numeric.
+  - name: Market Id
+    physical_name: mkt_id
+    business_meaning_1st: Mã sàn theo Sở.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.marketid
+        business_meaning: Mã sàn theo Sở.
+        comment: null
+  - name: Board Id
+    physical_name: board_id
+    business_meaning_1st: Board của mã CK (mặc định G1).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.boardid
+        business_meaning: Board của mã CK (mặc định G1).
+        comment: null
+  - name: Product Group Id
+    physical_name: pd_grp_id
+    business_meaning_1st: Mã sản phẩm của CK theo Sở.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.productgrpid
+        business_meaning: Mã sản phẩm của CK theo Sở.
+        comment: null
+  - name: Product Id
+    physical_name: pd_id
+    business_meaning_1st: Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.productid
+        business_meaning: Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào.
+        comment: null
+  - name: Trading Time
+    physical_name: tdg_tm
+    business_meaning_1st: Thời gian ghi nhận snapshot.
+    comment_1st: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
+      trước khi convert sang Timestamp.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.tradingtime
+        business_meaning: Thời gian ghi nhận snapshot.
+        comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
+          trước khi convert sang Timestamp.
+  - name: Fund Type Code
+    physical_name: fnd_tp_code
+    business_meaning_1st: Loại quỹ — FSS quy định.
+    comment_1st: Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile
+      giá trị.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.fundtype
+        business_meaning: Loại quỹ — FSS quy định.
+        comment: Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile
+          giá trị.
+  - name: Open Interest
+    physical_name: opn_int
+    business_meaning_1st: Khối lượng mở OI — dành cho phái sinh.
+    comment_1st: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
+      = FU/OP.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.openinterest
+        business_meaning: Khối lượng mở OI — dành cho phái sinh.
+        comment: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
+          = FU/OP.
+  - name: First Trading Date
+    physical_name: frst_tdg_dt
+    business_meaning_1st: Ngày giao dịch đầu tiên — dành cho phái sinh/CW.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.firsttradingdate
+        business_meaning: Ngày giao dịch đầu tiên — dành cho phái sinh/CW.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Last Trading Date
+    physical_name: last_tdg_dt
+    business_meaning_1st: Ngày giao dịch cuối cùng — dành cho phái sinh/CW.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.lasttradingdate
+        business_meaning: Ngày giao dịch cuối cùng — dành cho phái sinh/CW.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Underlying Symbol
+    physical_name: ulyg_symb
+    business_meaning_1st: Chứng khoán cơ sở — dành cho CW/phái sinh.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.underlyingsymbol
+        business_meaning: Chứng khoán cơ sở — dành cho CW/phái sinh.
+        comment: null
+  - name: Issuer Name
+    physical_name: issur_nm
+    business_meaning_1st: Tổ chức phát hành.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.issuername
+        business_meaning: Tổ chức phát hành.
+        comment: null
+  - name: Covered Warrant Type Code
+    physical_name: cvrd_wrnt_tp_code
+    business_meaning_1st: Kiểu chứng quyền.
+    comment_1st: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype\
+      \ = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ\
+      \ trước khi finalize scheme."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.coveredwarranttype
+        business_meaning: Kiểu chứng quyền.
+        comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype\
+          \ = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy\
+          \ đủ trước khi finalize scheme."
+  - name: Maturity Date
+    physical_name: mat_dt
+    business_meaning_1st: Ngày đáo hạn.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.maturitydate
+        business_meaning: Ngày đáo hạn.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Exercise Price
+    physical_name: exrc_prc
+    business_meaning_1st: Giá thực hiện CW.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.exerciseprice
+        business_meaning: Giá thực hiện CW.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+          không có giá trị non-numeric.
+  - name: Exercise Ratio
+    physical_name: exrc_rto
+    business_meaning_1st: Tỉ lệ thực hiện CW.
+    comment_1st: Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5
+      hay decimal.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.exerciseratio
+        business_meaning: Tỉ lệ thực hiện CW.
+        comment: Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5
+          hay decimal.
+  - name: Settlement Price
+    physical_name: setl_prc
+    business_meaning_1st: Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.settlementprice
+        business_meaning: Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+          không có giá trị non-numeric.
+  - name: Maturity Month Year
+    physical_name: mat_mo_yr
+    business_meaning_1st: Năm tháng đáo hạn HĐTL.
+    comment_1st: Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn
+      hóa format.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.maturitymonthyear
+        business_meaning: Năm tháng đáo hạn HĐTL.
+        comment: Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn
+          hóa format.
+  - name: Listing Date
+    physical_name: listing_dt
+    business_meaning_1st: Ngày niêm yết sản phẩm phái sinh.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.listingdate
+        business_meaning: Ngày niêm yết sản phẩm phái sinh.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  - name: Contract Multiplier
+    physical_name: ctr_multiplier
+    business_meaning_1st: Hệ số nhân HĐTL.
+    comment_1st: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
+      = FU.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.contractmultiplier
+        business_meaning: Hệ số nhân HĐTL.
+        comment: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
+          = FU.
+  - name: Put Or Call Code
+    physical_name: put_or_call_code
+    business_meaning_1st: "Loại quyền phái sinh: P/C."
+    comment_1st: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có\
+      \ giá trị khi stocktype = OP."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.putorcall
+        business_meaning: "Loại quyền phái sinh: P/C."
+        comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có\
+          \ giá trị khi stocktype = OP."
+  - name: Exercise Style Code
+    physical_name: exrc_stl_code
+    business_meaning_1st: "Kiểu thực hiện phái sinh: A/E/B/Z."
+    comment_1st: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan,\
+      \ Z=Other — chuẩn quốc tế, tập cố định."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.exercisestyle
+        business_meaning: "Kiểu thực hiện phái sinh: A/E/B/Z."
+        comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan,\
+          \ Z=Other — chuẩn quốc tế, tập cố định."
+  - name: Coupon Rate
+    physical_name: cpn_rate
+    business_meaning_1st: Lãi suất trái phiếu.
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Interest Rate
+    data_type_most: decimal(8,5)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.couponrate
+        business_meaning: Lãi suất trái phiếu.
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+          không có giá trị non-numeric.
+  - name: Yield
+    physical_name: yld
+    business_meaning_1st: YTM (Yield to Maturity).
+    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+      không có giá trị non-numeric.
+    data_domain_most: Interest Rate
+    data_type_most: decimal(8,5)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.yield
+        business_meaning: YTM (Yield to Maturity).
+        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
+          không có giá trị non-numeric.
+  - name: Issue Date
+    physical_name: issu_dt
+    business_meaning_1st: Ngày phát hành.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: StockInfor
+        source_column: MDDS.JAD_STOCKINFOR.issuedate
+        business_meaning: Ngày phát hành.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date.
+- ldm:
+    id: ATM-scr_mtch_log
+    logical_name_1st: Security Match Log
+    physical_name_1st: scr_mtch_log
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong
+      ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động,
+      và lũy kế khối lượng/giá trị từ đầu ngày.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Transaction
+    bcv_concept_most: "[Transaction] Financial Market Transaction"
+    table_type_most: Fact Append
+    etl_pattern_most: Fact Append
+    conflict_review: null
+    sources:
+    - MDDS
+    references:
+      brd:
+      - BRD-SRC-MDDS-TransLog
+  attributes:
+  - name: Security Match Log Id
+    physical_name: scr_mtch_log_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Transaction] Financial Market Transaction. 1\
+      \ tick khớp lệnh CK."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Transaction] Financial Market Transaction. 1\
+          \ tick khớp lệnh CK."
+  - name: Security Match Log Code
+    physical_name: scr_mtch_log_code
+    business_meaning_1st: ID unique cho từng lần khớp — PK bảng nguồn. BK.
+    comment_1st: BK chính. PK nguồn Id — unique per lần khớp lệnh.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.Id
+        business_meaning: ID unique cho từng lần khớp — PK bảng nguồn. BK.
+        comment: BK chính. PK nguồn Id — unique per lần khớp lệnh.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: MDDS.TransLog
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Symbol
+    physical_name: symb
+    business_meaning_1st: Mã chứng khoán.
+    comment_1st: Denormalized join key với Security Trading Snapshot — D-02 quyết
+      định không tạo FK surrogate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.symbol
+        business_meaning: Mã chứng khoán.
+        comment: Denormalized join key với Security Trading Snapshot — D-02 quyết
+          định không tạo FK surrogate.
+  - name: Trading Date
+    physical_name: tdg_dt
+    business_meaning_1st: Ngày giao dịch.
+    comment_1st: Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join
+      key với Security Trading Snapshot.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.tradingdate
+        business_meaning: Ngày giao dịch.
+        comment: Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join
+          key với Security Trading Snapshot.
+  - name: Match Time
+    physical_name: mtch_tm
+    business_meaning_1st: Thời gian khớp.
+    comment_1st: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
+      trước khi convert sang Timestamp.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.formattedTime
+        business_meaning: Thời gian khớp.
+        comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
+          trước khi convert sang Timestamp.
+  - name: Sequence Message
+    physical_name: seq_msg
+    business_meaning_1st: Sequence tín hiệu của sở.
+    comment_1st: Metadata kỹ thuật từ Sở — giữ để traceability và deduplication.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.sequenceMsg
+        business_meaning: Sequence tín hiệu của sở.
+        comment: Metadata kỹ thuật từ Sở — giữ để traceability và deduplication.
+  - name: Trade Direction Code
+    physical_name: trd_drc_code
+    business_meaning_1st: Chiều mua/bán chủ động.
+    comment_1st: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.lastColor
+        business_meaning: Chiều mua/bán chủ động.
+        comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
+  - name: Change Color Code
+    physical_name: chg_color_code
+    business_meaning_1st: Indicator tăng/giảm so với giá tham chiếu.
+    comment_1st: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng pattern với lastColor (MDDS_TRADE_DIRECTION)\
+      \ — indicator chiều giá so với tham chiếu."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.changeColor
+        business_meaning: Indicator tăng/giảm so với giá tham chiếu.
+        comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng pattern với lastColor (MDDS_TRADE_DIRECTION)\
+          \ — indicator chiều giá so với tham chiếu."
+  - name: Match Price
+    physical_name: mtch_prc
+    business_meaning_1st: Giá khớp.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.formattedMatchPrice
+        business_meaning: Giá khớp.
+        comment: null
+  - name: Match Volume
+    physical_name: mtch_vol
+    business_meaning_1st: Khối lượng khớp.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.formattedVol
+        business_meaning: Khối lượng khớp.
+        comment: null
+  - name: Accumulated Volume
+    physical_name: acm_vol
+    business_meaning_1st: Tổng khối lượng khớp lũy kế trong ngày (lô chẵn).
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.formattedAccVol
+        business_meaning: Tổng khối lượng khớp lũy kế trong ngày (lô chẵn).
+        comment: null
+  - name: Accumulated Value
+    physical_name: acm_val
+    business_meaning_1st: Tổng giá trị khớp lũy kế trong ngày (lô chẵn).
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.formattedAccVal
+        business_meaning: Tổng giá trị khớp lũy kế trong ngày (lô chẵn).
+        comment: null
+  - name: Total Buy Volume
+    physical_name: tot_buy_vol
+    business_meaning_1st: Tổng khối lượng mua chủ động.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.totalBuyVol
+        business_meaning: Tổng khối lượng mua chủ động.
+        comment: null
+  - name: Total Sell Volume
+    physical_name: tot_sell_vol
+    business_meaning_1st: Tổng khối lượng bán chủ động.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.totalSellVol
+        business_meaning: Tổng khối lượng bán chủ động.
+        comment: null
+  - name: Board Id
+    physical_name: board_id
+    business_meaning_1st: Board của mã, mặc định G1.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: MDDS
+      source_tables:
+      - source_table: TransLog
+        source_column: MDDS.JAD_TRANSLOG.boardID
+        business_meaning: Board của mã, mặc định G1.
+        comment: null
 - ldm:
     id: ATM-scr_prac_license_ap_fee
     logical_name_1st: Securities Practitioner License Application Fee

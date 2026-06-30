@@ -241,8 +241,14 @@ VD: entity cha = `Securities Company` → entity con phải là `Securities Comp
 |---|---|
 | Entity cha là shared entity từ source khác (VD: `Geographic Area`, `Securities Practitioner`) | Tên cha LOCKED, entity con không nhất thiết embed |
 | Entity con FK đến cha nhưng grain entity con là **instance riêng biệt** (không phải sub-record của cha) | VD: entity cha là entity tổ chức (Firm/Branch), entity con là người (Auditor/Personnel) — grain khác loại hoàn toàn; tên entity con không cần embed tên tổ chức cha nếu đã rõ domain qua prefix |
+| Entity có **2 FK bình đẳng đến 2 entity ở Tier khác nhau** (multi-parent) và KHÔNG phải pure junction (có nhiều attribute nghiệp vụ riêng) | Quy tắc 2c được thiết kế cho quan hệ 1 cha rõ ràng. Khi entity giao cắt 2 domain bình đẳng, không thể xác định "cha chính" theo cách thông thường → không flag Lỗi |
 
 > **Lưu ý ngoại lệ thứ 2:** Áp dụng khi tên entity con đã có prefix domain rõ ràng phân biệt được cha (VD: `Securities Company Audit Firm Auditor` — vẫn phải embed `Audit Firm` vì không có prefix nào khác phân biệt auditor thuộc firm nào). Nếu không có prefix tường minh → vẫn bắt buộc embed tên cha.
+
+> **Lưu ý ngoại lệ thứ 3 (multi-parent):** Kiểm tra 2 điều kiện trước khi áp dụng:
+> 1. Đọc BRD bảng nguồn — entity phải có **ít nhất 2 FK riêng biệt** trỏ đến 2 entity ở Tier khác nhau.
+> 2. Entity phải có **attribute nghiệp vụ riêng** ngoài 2 FK (không phải pure junction). Pure junction (chỉ có 2 FK) → xử lý theo TC-06, không vào scope 2c.
+> Nếu thỏa cả 2 → đánh giá `Cần xác nhận` (không phải `Lỗi`), ghi chú "Entity giao cắt 2 domain — cần người thiết kế xác nhận cha chính hoặc chấp nhận tên hiện tại".
 
 Lỗi: tên entity con không chứa tên entity cha **và** không thỏa ngoại lệ nào ở trên.
 
@@ -252,6 +258,9 @@ Lỗi: tên entity con không chứa tên entity cha **và** không thỏa ngo�
 > 2. Áp quy tắc: cha = entity mà **tên entity con mô tả trực tiếp** (định nghĩa grain).
 > 3. Nếu entity con chứa tên bất kỳ cha nào trong chuỗi dependency → không flag.
 > 4. Tên chứa prefix cấp cao (VD: `Securities Company`) là đủ nếu không có cha cấp trung rõ ràng hơn định nghĩa grain.
+> 5. **Nếu entity có 2 FK bình đẳng và nhiều attribute riêng (multi-parent, không phải junction):** Kiểm tra BRD bảng nguồn để xác nhận cấu trúc. Nếu không thể xác định cha chính từ tên và ngữ nghĩa → áp dụng ngoại lệ thứ 3, đánh giá `Cần xác nhận` thay vì `Lỗi`.
+
+> **Bài học từ TC-02/2c (IDS):** `Company Shareholding` và `Company Entity Role` đều có FK đến `Public Company` VÀ `Legal Entities` (2 FK bình đẳng) kèm nhiều attribute nghiệp vụ riêng. Ban đầu flag Lỗi 2c vì tên không embed đầy đủ `Public Company`. Cross-check với skill HLD: skill chỉ định nghĩa quy tắc 2c cho 1 cha rõ ràng — **không có quy tắc cho multi-parent entity không phải junction**. Kết luận đúng: đây là gap của skill, không phải lỗi thiết kế → không flag Lỗi.
 
 **2d — BCV Concept format và BCV Core Object hợp lệ**
 
@@ -658,6 +667,8 @@ Candidate = bảng có đúng 2 cột nghiệp vụ đều là FK (`key: FK` ho�
 > 2. **Lớp 3 — Bảng pure junction đã check cả 7f (group Junction) chưa?** — Con đường B: bảng junction được phép ngoài scope Atomic nếu ở 7f với group `Junction`. Không flag `Bỏ sót hoàn toàn` nếu đã có ở 7f.
 > 3. **Lớp 3 — Bảng có đúng 2 cột nghiệp vụ đều là FK không?** — Bảng có thêm attribute nghiệp vụ riêng (timestamp, status, amount...) → không phải pure junction → không thuộc scope Lớp 3 TC-06.
 > 4. **Lớp 2/2c — Cột `Entity chính` đã chỉ rõ entity nhận chưa?** — Nếu cột `Entity chính` trong cùng dòng đã ghi tên Atomic entity nhận ARRAY → không flag `Cần xác nhận`, dù cột `Xử lý trên Atomic` không lặp lại tên đó. Chỉ flag khi cả 2 cột đều không chỉ rõ entity nhận.
+> 5. **Lớp 2/2b — Entry trong 7d đã "quyết định denormalize" hay còn "pending xác nhận"?** — Quy tắc 2b (phải có `ARRAY<...>`) chỉ áp dụng khi cột `Xử lý trên Atomic` đã ghi quyết định rõ ràng (VD: "denormalize vào X dưới dạng ARRAY"). Nếu cột ghi trạng thái pending (VD: "cần xem cấu trúc cột", "đưa vào 7e để xác nhận", "xem xét denormalize") → chưa quyết định → **không flag lỗi 2b**, chỉ ghi `Cần xem xét`. Bài học từ TC-06/IDS: `VIOLATION_PENALTY_CONFIG` có cột `Xử lý trên Atomic` dạng placeholder chưa quyết định — flag 2b sai khi bỏ qua bước đọc trạng thái entry.
+> 6. **Lớp 2/2b — Bảng trong 7d có thực sự là junction không?** — Trước khi flag 2b, đọc BRD per-table để xác nhận cấu trúc cột. Nếu bảng có nhiều attribute nghiệp vụ riêng (không chỉ FK) → **không phải junction** → lỗi thực sự là phân loại nhầm vào 7d (phải chuyển vào 7a), không phải lỗi 2b. Ưu tiên phát hiện "phân loại sai 7d" trước khi áp quy tắc 2b.
 
 #### Output TC-08
 
@@ -827,6 +838,7 @@ Lỗi: tồn tại term chi tiết hơn phù hợp với cấu trúc cột nhưn
 
 > Trước khi flag lỗi BCV Concept, tự hỏi:
 > 1. **Term không tìm thấy — đã thử các keyword khác nhau chưa?** — BCV term có thể có nhiều cách viết. Thử grep với từ khóa ngắn hơn (VD: thay vì "Ownership Constraint" thử "Ownership", "Constraint") trước khi kết luận term không tồn tại.
+> 0. **Đọc đúng BCV Term cần tra trước khi grep** — BCV Concept trong 7a có format `[Core Object] Term`. Phần cần tra trong `terms.csv` là **toàn bộ tên term** (`[Core Object]` + `Term`), không chỉ phần sau dấu `]`. VD: `[Involved Party] Alternative Identification` → grep `Involved Party Alternative Identification`, không grep `Alternative Identification`. Bài học từ TC-08/IDS: grep thiếu prefix `Involved Party` → không tìm thấy term đang tồn tại → flag nhầm "không tồn tại".
 > 2. **Core Object lệch category — đã đọc nội dung description của term chưa?** — Skill HLD quy định: Core Object xác định từ **nội dung** term, không từ `category` trong terms.csv. Đọc `description_vi` trước khi flag Core Object sai.
 > 3. **Term chi tiết hơn — có thực sự phù hợp với cấu trúc cột không?** — Term chi tiết hơn chỉ tốt hơn khi cấu trúc cột của bảng nguồn khớp. Không flag "có term tốt hơn" nếu term đó mô tả scope hẹp hơn mà bảng nguồn lại có nhiều loại instance.
 > 4. **Shared entity — BCV Concept ghi "Shared Entity" là hợp lệ.** Không cần tra term cho shared entity, không flag.
