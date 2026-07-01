@@ -1,10 +1,10 @@
-# OrderTrade — Tài liệu khảo sát nguồn và ánh xạ Atomic
+# ORDERTRADE — Tài liệu khảo sát nguồn và ánh xạ Atomic
 
-**Phân hệ:** OrderTrade (Sổ lệnh & Sổ khớp — HOSE & HNX)  
+**Phân hệ:** ORDERTRADE (Sổ lệnh & Sổ khớp — HOSE & HNX)  
 **Mục đích:** Tài liệu tham chiếu thiết kế Atomic layer — tổng hợp nghiệp vụ nguồn, quan hệ bảng, và ánh xạ Atomic entity  
 **Nguồn tài liệu:**
 - Spec: `order_trade_hose_hnx_spec.xlsx` — 4 feeds: Order_HOSE, Trade_HOSE, Order_HNX, Trade_HNX
-- HLD: `OrderTrade_HLD_Overview.md`
+- HLD: `ORDERTRADE_HLD_Overview.md`
 - CV registry: `ref_shared_entity_classifications.csv`
 - Atomic attributes: `atomic_attributes.csv`
 
@@ -196,7 +196,7 @@ Ghi nhận từng sự kiện khớp lệnh thành công. Mỗi bản ghi `Trade
 
 ## Phụ lục: Classification Value dùng chung
 
-Các CV scheme sau được tham chiếu bởi cả Securities Order và Securities Trade, và đã được đăng ký trong `ref_shared_entity_classifications.csv` với `source_table` chứa `OrderTrade.`:
+Các CV scheme sau được tham chiếu bởi cả Securities Order và Securities Trade, và đã được đăng ký trong `ref_shared_entity_classifications.csv` với `source_table` chứa `ORDERTRADE.`:
 
 | CV Scheme | Bảng nguồn | Sử dụng bởi | Ghi chú |
 |---|---|---|---|

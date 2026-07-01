@@ -1,7 +1,7 @@
-# OrderTrade HLD — Overview
+# ORDERTRADE HLD — Overview
 
-**Source system:** OrderTrade (Sổ lệnh và Sổ khớp — HOSE & HNX)
-**Mô tả:** OrderTrade cung cấp dữ liệu giao dịch chứng khoán từ hệ thống KRX của hai sàn giao dịch HOSE và HNX. Bao gồm toàn bộ lifecycle của từng lệnh giao dịch (new/modify/cancel) và từng lần khớp lệnh thành công, phủ mọi loại chứng khoán: cổ phiếu, trái phiếu, repo, phái sinh, UPCOM.
+**Source system:** ORDERTRADE (Sổ lệnh và Sổ khớp — HOSE & HNX)
+**Mô tả:** ORDERTRADE cung cấp dữ liệu giao dịch chứng khoán từ hệ thống KRX của hai sàn giao dịch HOSE và HNX. Bao gồm toàn bộ lifecycle của từng lệnh giao dịch (new/modify/cancel) và từng lần khớp lệnh thành công, phủ mọi loại chứng khoán: cổ phiếu, trái phiếu, repo, phái sinh, UPCOM.
 
 ---
 
@@ -9,8 +9,8 @@
 
 | Tier | Atomic Entity | BCV Core Object | BCV Concept | Table Type | Source Table(s) | Ghi chú |
 |---|---|---|---|---|---|---|
-| T1 | Securities Order | Communication | [Communication] Financial Market Order | Fact Append | OrderTrade.HOSE_ORDER_BOOK + OrderTrade.HNX_ORDER_BOOK | Mỗi dòng = 1 event lệnh (new/modify/cancel). Phân biệt sàn qua `market_id_code` |
-| T2 | Securities Trade | Transaction | [Transaction] Financial Market Transaction | Fact Append | OrderTrade.HOSE_TRADE_BOOK + OrderTrade.HNX_TRADE_BOOK | Mỗi dòng = 1 lần khớp lệnh thành công. Lưu đồng thời Buy side + Sell side. FK BK về Securities Order |
+| T1 | Securities Order | Communication | [Communication] Financial Market Order | Fact Append | ORDERTRADE.ORDER_BOOK_HOSE + ORDERTRADE.ORDER_BOOK_HNX | Mỗi dòng = 1 event lệnh (new/modify/cancel). Phân biệt sàn qua `market_id_code` |
+| T2 | Securities Trade | Transaction | [Transaction] Financial Market Transaction | Fact Append | ORDERTRADE.TRADE_BOOK_HOSE + ORDERTRADE.TRADE_BOOK_HNX | Mỗi dòng = 1 lần khớp lệnh thành công. Lưu đồng thời Buy side + Sell side. FK BK về Securities Order |
 
 **Tổng: 2 Atomic entities** (1 Tier 1, 1 Tier 2)
 *(Trong đó: 0 shared entities)*
@@ -22,11 +22,11 @@
 ```mermaid
 graph TD
     subgraph T1["Tier 1 — Independent Entities"]
-        E1["Securities Order\n(Fact Append)\nHOSE_ORDER_BOOK + HNX_ORDER_BOOK"]
+        E1["Securities Order\n(Fact Append)\nORDER_BOOK_HOSE + ORDER_BOOK_HNX"]
     end
 
     subgraph T2["Tier 2 — FK to Tier 1"]
-        E2["Securities Trade\n(Fact Append)\nHOSE_TRADE_BOOK + HNX_TRADE_BOOK"]
+        E2["Securities Trade\n(Fact Append)\nTRADE_BOOK_HOSE + TRADE_BOOK_HNX"]
     end
 
     E1 -->|"buy_scr_ordr_code\n(Trade Date + Symbol + Order Accept #)"| E2
@@ -39,15 +39,15 @@ graph TD
 
 | # | Quyết định | Lý do |
 |---|---|---|
-| D-01 | Gộp HOSE_ORDER_BOOK + HNX_ORDER_BOOK → 1 entity `Securities Order` | Grain giống nhau (1 event lệnh). Phân biệt sàn qua `market_id_code` (STO/BDO/RPO = HOSE; STX/UPX/BDX/DVX/HCX = HNX) và `src_stm_code`. Các field HNX-only (`pub_vol`, `cond_prc`, `auto_cncl_rsn_code`…) để nullable |
-| D-02 | Gộp HOSE_TRADE_BOOK + HNX_TRADE_BOOK → 1 entity `Securities Trade` | Tương tự D-01. HNX có thêm 2 field Spread legs (`exec_prc_sprd_frst`, `exec_prc_sprd_scd`) để nullable |
+| D-01 | Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX → 1 entity `Securities Order` | Grain giống nhau (1 event lệnh). Phân biệt sàn qua `market_id_code` (STO/BDO/RPO = HOSE; STX/UPX/BDX/DVX/HCX = HNX) và `src_stm_code`. Các field HNX-only (`pub_vol`, `cond_prc`, `auto_cncl_rsn_code`…) để nullable |
+| D-02 | Gộp TRADE_BOOK_HOSE + TRADE_BOOK_HNX → 1 entity `Securities Trade` | Tương tự D-01. HNX có thêm 2 field Spread legs (`exec_prc_sprd_frst`, `exec_prc_sprd_scd`) để nullable |
 | D-03 | `Securities Trade` lưu Buy side + Sell side trong cùng 1 row | Giữ đúng grain nguồn: 1 Trade ID = 1 cặp khớp. Tách thành 2 row/side sẽ mất thông tin "ai khớp với ai" |
 | D-04 | FK từ `Securities Trade` → `Securities Order` dùng BK, không tạo surrogate FK | Volume cao (hàng triệu row/ngày). Join BK qua cặp `(trd_dt, symb_code, buy/sell_scr_ordr_code)`. Surrogate FK resolve tại Gold layer nếu cần |
 | D-05 | Business Key của `Securities Order` = `Securities Order Code` (Order ID 17 ký tự) | Order ID ổn định qua toàn bộ lifecycle (new/modify/cancel). Order Accept # reset mỗi ngày → chỉ dùng làm BK phụ |
 | D-06 | Member Code/Name không tạo FK surrogate sang `Securities Organization Reference` | BRK ID/Member ID từ sàn ≠ `org_code` trong NHNCK — hai hệ thống mã khác nhau. Pattern nhất quán với IDS, GSGD: denormalized Text. Cross-source join tại Gold layer |
 | D-07 | `Investor Type Code` giữ raw value từng sàn, dùng chung scheme `ORDERTRADE_INVESTOR_TYPE` | HOSE và HNX dùng cùng cấu trúc 4 số nhưng mapping nghĩa sector khác nhau. Phân biệt qua `src_stm_code`. ETL normalize tại Gold nếu cần report cross-market |
 | D-08 | `Side Code` dùng domain `Indicator` (không phải Classification Value) | Giá trị tường minh B/S — ETL chuẩn hóa HNX (1/2) → B/S. Không cần scheme lookup |
-| D-09 | Không dùng prefix `OrderTrade` trong tên entity | Tên entity dùng trực tiếp BCV Term |
+| D-09 | Không dùng prefix `ORDERTRADE` trong tên entity | Tên entity dùng trực tiếp BCV Term |
 
 ---
 
@@ -55,10 +55,10 @@ graph TD
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| T1 | Communication | [Communication] Financial Market Order | Financial Markets Trading | OrderTrade.HOSE_ORDER_BOOK | Append | Sổ lệnh HOSE — mỗi bản ghi là 1 event lệnh: mới/sửa/hủy trên sàn HOSE (cổ phiếu/trái phiếu/repo) | Securities Order | Fact Append | Financial Market Order — Communication ghi nhận ý định giao dịch của NĐT. Gộp HOSE + HNX, phân biệt qua market_id_code. |
-| T1 | Communication | [Communication] Financial Market Order | Financial Markets Trading | OrderTrade.HNX_ORDER_BOOK | Append | Sổ lệnh HNX — tương đương HOSE_ORDER_BOOK cho sàn HNX (CP/UPCOM/TPCP/TPDN/phái sinh). Bổ sung Iceberg order và Stop order theo chuẩn KRX | Securities Order | Fact Append | (gộp chung với HOSE_ORDER_BOOK) |
-| T2 | Transaction | [Transaction] Financial Market Transaction | Financial Markets Trading | OrderTrade.HOSE_TRADE_BOOK | Append | Sổ khớp HOSE — mỗi bản ghi là 1 lần khớp thành công, chứa đồng thời thông tin bên mua và bên bán | Securities Trade | Fact Append | Financial Market Transaction — Transaction ghi nhận giao dịch khớp lệnh thực tế. Gộp HOSE + HNX, phân biệt qua market_id_code. |
-| T2 | Transaction | [Transaction] Financial Market Transaction | Financial Markets Trading | OrderTrade.HNX_TRADE_BOOK | Append | Sổ khớp HNX — tương đương HOSE_TRADE_BOOK cho sàn HNX. Bổ sung Spread legs (Exec Price Spread First/Second) cho phái sinh/repo | Securities Trade | Fact Append | (gộp chung với HOSE_TRADE_BOOK) |
+| T1 | Communication | [Communication] Financial Market Order | Financial Markets Trading | ORDERTRADE.ORDER_BOOK_HOSE | Append | Sổ lệnh HOSE — mỗi bản ghi là 1 event lệnh: mới/sửa/hủy trên sàn HOSE (cổ phiếu/trái phiếu/repo) | Securities Order | Fact Append | Financial Market Order — Communication ghi nhận ý định giao dịch của NĐT. Gộp HOSE + HNX, phân biệt qua market_id_code. |
+| T1 | Communication | [Communication] Financial Market Order | Financial Markets Trading | ORDERTRADE.ORDER_BOOK_HNX | Append | Sổ lệnh HNX — tương đương ORDER_BOOK_HOSE cho sàn HNX (CP/UPCOM/TPCP/TPDN/phái sinh). Bổ sung Iceberg order và Stop order theo chuẩn KRX | Securities Order | Fact Append | (gộp chung với ORDER_BOOK_HOSE) |
+| T2 | Transaction | [Transaction] Financial Market Transaction | Financial Markets Trading | ORDERTRADE.TRADE_BOOK_HOSE | Append | Sổ khớp HOSE — mỗi bản ghi là 1 lần khớp thành công, chứa đồng thời thông tin bên mua và bên bán | Securities Trade | Fact Append | Financial Market Transaction — Transaction ghi nhận giao dịch khớp lệnh thực tế. Gộp HOSE + HNX, phân biệt qua market_id_code. |
+| T2 | Transaction | [Transaction] Financial Market Transaction | Financial Markets Trading | ORDERTRADE.TRADE_BOOK_HNX | Append | Sổ khớp HNX — tương đương TRADE_BOOK_HOSE cho sàn HNX. Bổ sung Spread legs (Exec Price Spread First/Second) cho phái sinh/repo | Securities Trade | Fact Append | (gộp chung với TRADE_BOOK_HOSE) |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
@@ -133,7 +133,7 @@ erDiagram
 
 #### 7d. Junction Tables
 
-*(Không có junction table trong scope OrderTrade)*
+*(Không có junction table trong scope ORDERTRADE)*
 
 #### 7e. Điểm cần xác nhận
 
@@ -162,16 +162,16 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
 ### 1. Securities Order
-**Tier:** 1 | **Source:** `OrderTrade.HOSE_ORDER_BOOK, OrderTrade.HNX_ORDER_BOOK` | **BCV Concept:** [Communication] Financial Market Order | **BCO:** Communication | **Table Type:** Fact Append
-**Description:** Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp HOSE_ORDER_BOOK + HNX_ORDER_BOOK, phân biệt qua market_id_code và src_stm_code. Lưu thông tin lệnh, thông tin thị trường tại thời điểm event, thông tin thành viên và tài khoản NĐT.
+**Tier:** 1 | **Source:** `ORDERTRADE.ORDER_BOOK_HOSE, ORDERTRADE.ORDER_BOOK_HNX` | **BCV Concept:** [Communication] Financial Market Order | **BCO:** Communication | **Table Type:** Fact Append
+**Description:** Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX, phân biệt qua market_id_code và src_stm_code. Lưu thông tin lệnh, thông tin thị trường tại thời điểm event, thông tin thành viên và tài khoản NĐT.
 
 **Grain:** 1 dòng = 1 event lệnh (mỗi lần đặt, sửa, hoặc hủy lệnh tạo ra 1 bản ghi mới).
 
 **Attributes chính:** scr_ordr_id (PK surrogate), scr_ordr_code (BK = Order ID 17 ký tự), ordr_acpt_nbr (BK phụ = Order Accept # / Order Reception Number), src_stm_code, trd_dt, ordr_dt, ordr_tm, mkt_id_code (ORDERTRADE_MARKET_ID), symb_code, ccy_code, board_tp_code (ORDERTRADE_BOARD_TYPE), ssn_code (ORDERTRADE_SESSION), ordr_actn_tp_code (ORDERTRADE_ORDER_ACTION_TYPE), side_code (Indicator: B/S), ordr_tp_code (ORDERTRADE_ORDER_TYPE), ordr_cd_code (ORDERTRADE_ORDER_CONDITION), ordr_st_code (ORDERTRADE_ORDER_STATUS), ordr_prc, ordr_vol, matched_vol, rman_vol, imm_matched_vol, exec_prc, last_trdd_prc, ordr_prc_vs_ltp, buy_up_sell_down_amt, buy_up_sell_down_tick, matched_rto, new_high_low_prc_ind, expc_exec_prc, expc_exec_vol, icd_bug_qty, clnt_hs_tp_code (ORDERTRADE_CLIENT_HOUSE_TYPE), ivsr_tp_code (ORDERTRADE_INVESTOR_TYPE), frgn_ivsr_tp_code (ORDERTRADE_FOREIGN_INVESTOR_TYPE), shrt_sell_tp_code (ORDERTRADE_SHORT_SELL_TYPE), mkt_maker_ordr_ind (Indicator), mbr_code, mbr_nm, ac_nbr, ac_hldr_nm, ac_pin_code, trdr_code, trdr_nm, orig_scr_ordr_code, orig_ordr_acpt_nbr, refr_seq_nbr, ordr_rjct_rsn_code (HNX-only), pub_vol (HNX Iceberg), cond_prc (HNX Stop), orig_ordr_tp_code (HNX-only), qte_rqs_tp_code (HNX RFQ), auto_cncl_rsn_code (HNX-only).
 
 ### 2. Securities Trade
-**Tier:** 2 | **Source:** `OrderTrade.HOSE_TRADE_BOOK, OrderTrade.HNX_TRADE_BOOK` | **BCV Concept:** [Transaction] Financial Market Transaction | **BCO:** Transaction | **Table Type:** Fact Append
-**Description:** Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade ID. Lưu đồng thời thông tin bên mua và bên bán trong cùng 1 row. FK-BK về Securities Order qua buy/sell_scr_ordr_code (không tạo surrogate FK — join tại Gold). Gộp HOSE_TRADE_BOOK + HNX_TRADE_BOOK, phân biệt qua market_id_code và src_stm_code.
+**Tier:** 2 | **Source:** `ORDERTRADE.TRADE_BOOK_HOSE, ORDERTRADE.TRADE_BOOK_HNX` | **BCV Concept:** [Transaction] Financial Market Transaction | **BCO:** Transaction | **Table Type:** Fact Append
+**Description:** Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade ID. Lưu đồng thời thông tin bên mua và bên bán trong cùng 1 row. FK-BK về Securities Order qua buy/sell_scr_ordr_code (không tạo surrogate FK — join tại Gold). Gộp TRADE_BOOK_HOSE + TRADE_BOOK_HNX, phân biệt qua market_id_code và src_stm_code.
 
 **Grain:** 1 dòng = 1 lần khớp lệnh thành công (1 Trade ID từ KRX).
 

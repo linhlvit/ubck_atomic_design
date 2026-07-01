@@ -1788,7 +1788,7 @@ schemes:
   - scheme_code: "ORDERTRADE_MARKET_ID"
     name: "Mã thị trường chứng khoán KRX (HOSE + HNX)"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -1813,7 +1813,7 @@ schemes:
   - scheme_code: "ORDERTRADE_BOARD_TYPE"
     name: "Loại bảng giao dịch KRX"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -1846,7 +1846,7 @@ schemes:
   - scheme_code: "ORDERTRADE_SESSION"
     name: "Mã phiên giao dịch KRX"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -1885,7 +1885,7 @@ schemes:
   - scheme_code: "ORDERTRADE_ORDER_ACTION_TYPE"
     name: "Loại hành động lệnh — Mới/Sửa/Hủy (normalize từ HOSE N/M/C và HNX 1/2/3)"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -1900,7 +1900,7 @@ schemes:
   - scheme_code: "ORDERTRADE_ORDER_TYPE"
     name: "Loại lệnh theo giá"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -1921,7 +1921,7 @@ schemes:
   - scheme_code: "ORDERTRADE_ORDER_CONDITION"
     name: "Điều kiện thực hiện lệnh"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -1946,7 +1946,7 @@ schemes:
   - scheme_code: "ORDERTRADE_ORDER_STATUS"
     name: "Trạng thái lệnh chứng khoán (HOSE trực tiếp; HNX pending derive)"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE"
     used_in_entities:
       - "Securities Order"
     values:
@@ -1972,7 +1972,7 @@ schemes:
   - scheme_code: "ORDERTRADE_CLIENT_HOUSE_TYPE"
     name: "Phân loại lệnh khách hàng / tự doanh"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -1985,7 +1985,7 @@ schemes:
   - scheme_code: "ORDERTRADE_INVESTOR_TYPE"
     name: "Phân loại nhà đầu tư (raw — HOSE và HNX dùng cùng scheme, phân biệt qua src_stm_code)"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -2014,7 +2014,7 @@ schemes:
   - scheme_code: "ORDERTRADE_FOREIGN_INVESTOR_TYPE"
     name: "Phân loại loại hình nhà đầu tư nước ngoài"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK / ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE / ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -2029,7 +2029,7 @@ schemes:
   - scheme_code: "ORDERTRADE_SHORT_SELL_TYPE"
     name: "Phân loại lệnh bán khống (HOSE-only)"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HOSE_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HOSE"
     used_in_entities:
       - "Securities Order"
     values:
@@ -2041,7 +2041,7 @@ schemes:
   - scheme_code: "ORDERTRADE_QUOTE_REQUEST_TYPE"
     name: "Loại yêu cầu báo giá RFQ (HNX-only)"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HNX_ORDER_BOOK / ORDERTRADE.HNX_TRADE_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HNX / ORDERTRADE.TRADE_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
       - "Securities Trade"
@@ -2058,7 +2058,7 @@ schemes:
   - scheme_code: "ORDERTRADE_AUTO_CANCEL_REASON"
     name: "Lý do hủy lệnh tự động (HNX-only)"
     source_type: "source_table"
-    source_table: "ORDERTRADE.HNX_ORDER_BOOK"
+    source_table: "ORDERTRADE.ORDER_BOOK_HNX"
     used_in_entities:
       - "Securities Order"
     values:

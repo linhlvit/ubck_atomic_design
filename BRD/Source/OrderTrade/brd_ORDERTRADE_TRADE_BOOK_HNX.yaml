@@ -1,7 +1,7 @@
 schema_type: brd_source_columns
 source: ORDERTRADE
-table: HNX_TRADE_BOOK
-bronze_table: HNX_TRADE_BOOK
+table: TRADE_BOOK_HNX
+bronze_table: TRADE_BOOK_HNX
 description: "Sổ khớp HNX — mỗi bản ghi là 1 lần khớp lệnh thành công trên HNX. Tương đương Trade_HOSE nhưng bổ sung Spread trade legs (Exec Price Spread First/Second) cho phái sinh/repo có 2 vế, và Quote Request Code cho RFQ"
 scope_status: in_scope
 
@@ -189,14 +189,14 @@ columns:
     data_type: "varchar(20)"
     nullable: true
     key: FK
-    fk_note: "FK-BK → HNX_ORDER_BOOK.order_reception_no (Sell side)"
+    fk_note: "FK-BK → ORDER_BOOK_HNX.order_reception_no (Sell side)"
     description: "Số định danh của lệnh bán tại thời điểm hệ thống KRX tiếp nhận"
 
   - name: BUY_ORDER_RECEPTION_NO
     data_type: "varchar(20)"
     nullable: true
     key: FK
-    fk_note: "FK-BK → HNX_ORDER_BOOK.order_reception_no (Buy side)"
+    fk_note: "FK-BK → ORDER_BOOK_HNX.order_reception_no (Buy side)"
     description: "Số định danh của lệnh mua tại thời điểm hệ thống KRX tiếp nhận"
 
   - name: SELL_QUOTE_REQUEST_CODE

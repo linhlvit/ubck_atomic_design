@@ -1,7 +1,7 @@
-# OrderTrade HLD — Tier 1
+# ORDERTRADE HLD — Tier 1
 
-**Tier:** 1 — Independent Entities (không FK đến entity nghiệp vụ khác trong scope OrderTrade)
-**Source system:** OrderTrade
+**Tier:** 1 — Independent Entities (không FK đến entity nghiệp vụ khác trong scope ORDERTRADE)
+**Source system:** ORDERTRADE
 **Entities trong Tier này:** Securities Order
 
 ---
@@ -10,7 +10,7 @@
 
 | Entity | BCV Core Object | BCV Concept | Table Type | Source Table(s) |
 |---|---|---|---|---|
-| Securities Order | Communication | [Communication] Financial Market Order | Fact Append | OrderTrade.HOSE_ORDER_BOOK, OrderTrade.HNX_ORDER_BOOK |
+| Securities Order | Communication | [Communication] Financial Market Order | Fact Append | ORDERTRADE.ORDER_BOOK_HOSE, ORDERTRADE.ORDER_BOOK_HNX |
 
 ---
 
@@ -18,7 +18,7 @@
 
 ### Securities Order
 
-**Mô tả:** Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp HOSE_ORDER_BOOK + HNX_ORDER_BOOK, phân biệt qua `market_id_code` và `src_stm_code`.
+**Mô tả:** Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX, phân biệt qua `market_id_code` và `src_stm_code`.
 
 **Grain:** 1 dòng = 1 event lệnh — mỗi lần đặt mới, sửa, hoặc hủy lệnh tạo ra 1 bản ghi mới (Fact Append, insert-only).
 

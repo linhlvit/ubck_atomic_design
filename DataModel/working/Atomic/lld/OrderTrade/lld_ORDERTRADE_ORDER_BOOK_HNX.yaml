@@ -3,7 +3,7 @@ schema_version: "2.0"
 
 metadata:
   source_system: ORDERTRADE
-  source_table: HNX_ORDER_BOOK
+  source_table: ORDER_BOOK_HNX
   atomic_entity: Securities Order
   entity_physical_name: scr_ordr
   bcv_core_object: Communication
@@ -18,7 +18,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Phản ánh 1-1 từ bảng nguồn HNX_ORDER_BOOK. Entity dùng chung với HOSE_ORDER_BOOK — cùng Atomic entity Securities Order. Fact Append: insert-only, không update. Bổ sung Iceberg (pub_qty), Stop order (cond_price), RFQ (quote_request_type), Auto-cancel (auto_cancel_cls)."
+  notes: "Phản ánh 1-1 từ bảng nguồn ORDER_BOOK_HNX. Entity dùng chung với ORDER_BOOK_HOSE — cùng Atomic entity Securities Order. Fact Append: insert-only, không update. Bổ sung Iceberg (pub_qty), Stop order (cond_price), RFQ (quote_request_type), Auto-cancel (auto_cancel_cls)."
 
 attributes:
   # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
@@ -43,7 +43,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_ID    comment: "BK chính. PK nguồn HNX_ORDER_BOOK."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_ID    comment: "BK chính. PK nguồn ORDER_BOOK_HNX."
     classification_context: null
     etl_derived_value: null
 
@@ -57,8 +57,8 @@ attributes:
     status: draft
     source_columns: []
     comment: "Scheme: SOURCE_SYSTEM. HOSE và HNX đều map vào Securities Order — src_stm_code phân biệt nguồn."
-    classification_context: SOURCE_SYSTEM=ORDERTRADE.HNX_ORDER_BOOK
-    etl_derived_value: ORDERTRADE.HNX_ORDER_BOOK
+    classification_context: SOURCE_SYSTEM=ORDERTRADE.ORDER_BOOK_HNX
+    etl_derived_value: ORDERTRADE.ORDER_BOOK_HNX
 
   # ── TRADE DATE ──────────────────────────────────────────────────────
   - attribute_name: Trade Date
@@ -69,7 +69,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.TRADE_DATE    comment: null
+      - ORDERTRADE.ORDER_BOOK_HNX.TRADE_DATE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -82,7 +82,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.MARKET_ID    comment: "Scheme: ORDERTRADE_MARKET_ID."
+      - ORDERTRADE.ORDER_BOOK_HNX.MARKET_ID    comment: "Scheme: ORDERTRADE_MARKET_ID."
     classification_context: ORDERTRADE_MARKET_ID
     etl_derived_value: null
 
@@ -95,7 +95,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.BOARD_ID    comment: "Scheme: ORDERTRADE_BOARD_TYPE. Nguồn HNX dùng tên cột board_id; cùng scheme với HOSE board_type."
+      - ORDERTRADE.ORDER_BOOK_HNX.BOARD_ID    comment: "Scheme: ORDERTRADE_BOARD_TYPE. Nguồn HNX dùng tên cột board_id; cùng scheme với HOSE board_type."
     classification_context: ORDERTRADE_BOARD_TYPE
     etl_derived_value: null
 
@@ -108,7 +108,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ISSUE_CODE    comment: "Nguồn HNX dùng tên cột issue_code; HLD mapping chung vào Security Symbol."
+      - ORDERTRADE.ORDER_BOOK_HNX.ISSUE_CODE    comment: "Nguồn HNX dùng tên cột issue_code; HLD mapping chung vào Security Symbol."
     classification_context: null
     etl_derived_value: null
 
@@ -121,7 +121,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_ACCEPT_TIME    comment: "HNX-only — HOSE không có field tương đương (HOSE có order_time riêng)."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_ACCEPT_TIME    comment: "HNX-only — HOSE không có field tương đương (HOSE có order_time riêng)."
     classification_context: null
     etl_derived_value: null
 
@@ -134,7 +134,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.MEMBER_ID    comment: "Nguồn HNX dùng member_id; HLD mapping chung vào Broker Id."
+      - ORDERTRADE.ORDER_BOOK_HNX.MEMBER_ID    comment: "Nguồn HNX dùng member_id; HLD mapping chung vào Broker Id."
     classification_context: null
     etl_derived_value: null
 
@@ -147,7 +147,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.SELL_BUY_CLS_CODE    comment: "Indicator domain — B/S. ETL normalize: 1=S; 2=B; SPACE=Cancelled (quyết định D-08 HLD)."
+      - ORDERTRADE.ORDER_BOOK_HNX.SELL_BUY_CLS_CODE    comment: "Indicator domain — B/S. ETL normalize: 1=S; 2=B; SPACE=Cancelled (quyết định D-08 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -160,7 +160,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ACCT_NO    comment: null
+      - ORDERTRADE.ORDER_BOOK_HNX.ACCT_NO    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -173,7 +173,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_TYPE_CODE    comment: "Scheme: ORDERTRADE_ORDER_TYPE."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_TYPE_CODE    comment: "Scheme: ORDERTRADE_ORDER_TYPE."
     classification_context: ORDERTRADE_ORDER_TYPE
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_CONDITION_CODE    comment: "Scheme: ORDERTRADE_ORDER_CONDITION."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_CONDITION_CODE    comment: "Scheme: ORDERTRADE_ORDER_CONDITION."
     classification_context: ORDERTRADE_ORDER_CONDITION
     etl_derived_value: null
 
@@ -199,7 +199,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.CLIENT_HOUSE_CLS_CODE    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+      - ORDERTRADE.ORDER_BOOK_HNX.CLIENT_HOUSE_CLS_CODE    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
     classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
     etl_derived_value: null
 
@@ -212,7 +212,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.INVESTOR_CLS_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+      - ORDERTRADE.ORDER_BOOK_HNX.INVESTOR_CLS_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
     classification_context: ORDERTRADE_INVESTOR_TYPE
     etl_derived_value: null
 
@@ -225,7 +225,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_DATE    comment: null
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_DATE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -238,7 +238,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_REJECT_REASON_CODE    comment: "HNX-only — HOSE không có field này. Text vì mã do KRX tự định nghĩa, không có scheme chuẩn."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_REJECT_REASON_CODE    comment: "HNX-only — HOSE không có field này. Text vì mã do KRX tự định nghĩa, không có scheme chuẩn."
     classification_context: null
     etl_derived_value: null
 
@@ -251,7 +251,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_QTY    comment: "Nguồn bigint. HNX dùng order_qty; HLD mapping chung vào Order Volume."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_QTY    comment: "Nguồn bigint. HNX dùng order_qty; HLD mapping chung vào Order Volume."
     classification_context: null
     etl_derived_value: null
 
@@ -264,7 +264,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_PRICE    comment: null
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_PRICE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -277,7 +277,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.PUB_QTY    comment: "HNX-only — Iceberg order feature. NULL = không phải Iceberg order."
+      - ORDERTRADE.ORDER_BOOK_HNX.PUB_QTY    comment: "HNX-only — Iceberg order feature. NULL = không phải Iceberg order."
     classification_context: null
     etl_derived_value: null
 
@@ -290,11 +290,11 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.COND_PRICE    comment: "HNX-only — Stop order feature. NULL = không phải Stop order."
+      - ORDERTRADE.ORDER_BOOK_HNX.COND_PRICE    comment: "HNX-only — Stop order feature. NULL = không phải Stop order."
     classification_context: null
     etl_derived_value: null
 
-  # ── ORDER RECEPTION NO (BK phụ HNX — FK-BK target cho HNX_TRADE_BOOK) ───
+  # ── ORDER RECEPTION NO (BK phụ HNX — FK-BK target cho TRADE_BOOK_HNX) ───
   - attribute_name: Order Reception Number
     physical_name: ordr_rcptn_nbr
     description: "Số định danh của lệnh tại thời điểm hệ thống KRX tiếp nhận (duy nhất trong ngày, tăng dần theo issue)."
@@ -303,7 +303,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_RECEPTION_NO    comment: "BK phụ HNX — tương đương order_accept_no của HOSE. FK-BK target cho buy/sell_scr_ordr_code trong Securities Trade (HNX_TRADE_BOOK)."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_RECEPTION_NO    comment: "BK phụ HNX — tương đương order_accept_no của HOSE. FK-BK target cho buy/sell_scr_ordr_code trong Securities Trade (TRADE_BOOK_HNX)."
     classification_context: null
     etl_derived_value: null
 
@@ -316,7 +316,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORIG_ORDER_RECEPTION_NO    comment: "HNX-only — HOSE không có field này."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORIG_ORDER_RECEPTION_NO    comment: "HNX-only — HOSE không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -329,7 +329,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORIG_ORDER_TYPE_CODE    comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORIG_ORDER_TYPE_CODE    comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only."
     classification_context: ORDERTRADE_ORDER_TYPE
     etl_derived_value: null
 
@@ -342,7 +342,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.SESSION_ID    comment: "Scheme: ORDERTRADE_SESSION."
+      - ORDERTRADE.ORDER_BOOK_HNX.SESSION_ID    comment: "Scheme: ORDERTRADE_SESSION."
     classification_context: ORDERTRADE_SESSION
     etl_derived_value: null
 
@@ -355,7 +355,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORDER_RMAN_QTY    comment: "Nguồn bigint."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORDER_RMAN_QTY    comment: "Nguồn bigint."
     classification_context: null
     etl_derived_value: null
 
@@ -368,7 +368,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.MSG_SEQ    comment: "Nguồn bigint. HNX-only — HOSE không có field này."
+      - ORDERTRADE.ORDER_BOOK_HNX.MSG_SEQ    comment: "Nguồn bigint. HNX-only — HOSE không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -381,7 +381,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.REPLACE_CANCEL_CLS_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. Nguồn HNX dùng 1/2/3; ETL normalize sang scheme chung."
+      - ORDERTRADE.ORDER_BOOK_HNX.REPLACE_CANCEL_CLS_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. Nguồn HNX dùng 1/2/3; ETL normalize sang scheme chung."
     classification_context: ORDERTRADE_ORDER_ACTION_TYPE
     etl_derived_value: null
 
@@ -394,7 +394,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.QUOTE_REQUEST_TYPE    comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với lệnh không phải RFQ."
+      - ORDERTRADE.ORDER_BOOK_HNX.QUOTE_REQUEST_TYPE    comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với lệnh không phải RFQ."
     classification_context: ORDERTRADE_QUOTE_REQUEST_TYPE
     etl_derived_value: null
 
@@ -407,7 +407,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.AUTO_CANCEL_CLS    comment: "Scheme: ORDERTRADE_AUTO_CANCEL_REASON. HNX-only — NULL với lệnh không bị auto-cancel."
+      - ORDERTRADE.ORDER_BOOK_HNX.AUTO_CANCEL_CLS    comment: "Scheme: ORDERTRADE_AUTO_CANCEL_REASON. HNX-only — NULL với lệnh không bị auto-cancel."
     classification_context: ORDERTRADE_AUTO_CANCEL_REASON
     etl_derived_value: null
 
@@ -420,7 +420,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.ORIG_ORDER_ID    comment: "Self-reference sang Securities Order Code của lệnh gốc."
+      - ORDERTRADE.ORDER_BOOK_HNX.ORIG_ORDER_ID    comment: "Self-reference sang Securities Order Code của lệnh gốc."
     classification_context: null
     etl_derived_value: null
 
@@ -433,7 +433,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.HNX_ORDER_BOOK.FOREIGN_INVESTOR_TYPE_CODE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
+      - ORDERTRADE.ORDER_BOOK_HNX.FOREIGN_INVESTOR_TYPE_CODE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
     classification_context: ORDERTRADE_FOREIGN_INVESTOR_TYPE
     etl_derived_value: null
 

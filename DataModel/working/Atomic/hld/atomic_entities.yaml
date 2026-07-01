@@ -24,9 +24,9 @@ entities:
   atomic_entity: "Securities Order"
   table_type: "Fact Append"
   description: "Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE và\
-    \ HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp HOSE_ORDER_BOOK + HNX_ORDER_BOOK,\
+    \ HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX,\
     \ phân biệt qua market_id_code và src_stm_code."
-  source_table: "ORDERTRADE.HOSE_ORDER_BOOK, ORDERTRADE.HNX_ORDER_BOOK"
+  source_table: "ORDERTRADE.ORDER_BOOK_HOSE, ORDERTRADE.ORDER_BOOK_HNX"
   status: "approved"
 - bcv_core_object: "Communication"
   bcv_concept: "[Communication] Assessment"
@@ -251,7 +251,7 @@ entities:
   description: "Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade\
     \ ID. Lưu đồng thời thông tin bên mua và bên bán trong cùng 1 row. FK-BK về Securities\
     \ Order qua buy/sell_scr_ordr_code."
-  source_table: "ORDERTRADE.HOSE_TRADE_BOOK, ORDERTRADE.HNX_TRADE_BOOK"
+  source_table: "ORDERTRADE.TRADE_BOOK_HOSE, ORDERTRADE.TRADE_BOOK_HNX"
   status: "approved"
 - bcv_core_object: "Transaction"
   bcv_concept: "[Transaction] Financial Market Transaction"

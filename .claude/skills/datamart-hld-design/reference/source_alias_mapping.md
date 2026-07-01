@@ -17,7 +17,7 @@ BA file thường ghi tên nguồn theo tên nghiệp vụ hoặc tên hệ th�
 | `QLRR` | `QLRR` | Tên hiện tại — khớp trực tiếp |
 | `NDTNN` | `FIMS` | Tên nghiệp vụ (Nhà đầu tư nước ngoài) → hệ thống FIMS; Source Analysis: `FIMS_Source_Analysis.md` |
 | `FIMS` | `FIMS` | Tên kỹ thuật — khớp trực tiếp |
-| `OrderTrade` | `MDDS` | Nhóm bảng lệnh/khớp lệnh trong BA → hệ thống MDDS; Source Analysis: `MDDS_Source_Analysis.md` |
+| `ORDERTRADE` | `MDDS` | Nhóm bảng lệnh/khớp lệnh trong BA → hệ thống MDDS; Source Analysis: `MDDS_Source_Analysis.md` |
 
 ---
 

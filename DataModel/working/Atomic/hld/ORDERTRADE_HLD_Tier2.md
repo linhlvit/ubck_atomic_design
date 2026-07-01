@@ -1,7 +1,7 @@
-# OrderTrade HLD — Tier 2
+# ORDERTRADE HLD — Tier 2
 
 **Tier:** 2 — Phụ thuộc Tier 1 (FK về Securities Order)
-**Source system:** OrderTrade
+**Source system:** ORDERTRADE
 **Entities trong Tier này:** Securities Trade
 
 ---
@@ -10,7 +10,7 @@
 
 | Entity | BCV Core Object | BCV Concept | Table Type | Source Table(s) |
 |---|---|---|---|---|
-| Securities Trade | Transaction | [Transaction] Financial Market Transaction | Fact Append | OrderTrade.HOSE_TRADE_BOOK, OrderTrade.HNX_TRADE_BOOK |
+| Securities Trade | Transaction | [Transaction] Financial Market Transaction | Fact Append | ORDERTRADE.TRADE_BOOK_HOSE, ORDERTRADE.TRADE_BOOK_HNX |
 
 ---
 
@@ -18,7 +18,7 @@
 
 ### Securities Trade
 
-**Mô tả:** Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade ID do KRX cấp. Lưu đồng thời thông tin execution, bên mua (Buy side) và bên bán (Sell side) trong cùng 1 row. Gộp HOSE_TRADE_BOOK + HNX_TRADE_BOOK, phân biệt qua `market_id_code` và `src_stm_code`.
+**Mô tả:** Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade ID do KRX cấp. Lưu đồng thời thông tin execution, bên mua (Buy side) và bên bán (Sell side) trong cùng 1 row. Gộp TRADE_BOOK_HOSE + TRADE_BOOK_HNX, phân biệt qua `market_id_code` và `src_stm_code`.
 
 **Grain:** 1 dòng = 1 lần khớp lệnh thành công (1 Trade ID từ KRX). 1 Securities Order có thể tạo ra nhiều Securities Trade (khớp dần).
 
@@ -30,13 +30,13 @@
 - `sell_scr_ordr_code` → `Securities Order.scr_ordr_code` (FK-BK)
 - `sell_scr_ordr_id` → `Securities Order.scr_ordr_id` (FK surrogate)
 
-**Inbound FK:** Không có entity nào FK vào Securities Trade trong scope OrderTrade.
+**Inbound FK:** Không có entity nào FK vào Securities Trade trong scope ORDERTRADE.
 
 ---
 
-## 6c. Gap phân tích HOSE_TRADE_BOOK vs HNX_TRADE_BOOK
+## 6c. Gap phân tích TRADE_BOOK_HOSE vs TRADE_BOOK_HNX
 
-| Nhóm field | HOSE_TRADE_BOOK | HNX_TRADE_BOOK | Xử lý trên entity gộp |
+| Nhóm field | TRADE_BOOK_HOSE | TRADE_BOOK_HNX | Xử lý trên entity gộp |
 |---|---|---|---|
 | **Field chung** | | | |
 | Trade Date, Trade Time | ✓ | ✓ | Dùng chung |

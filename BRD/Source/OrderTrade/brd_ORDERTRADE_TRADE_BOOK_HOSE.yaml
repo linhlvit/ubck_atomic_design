@@ -1,7 +1,7 @@
 schema_type: brd_source_columns
 source: ORDERTRADE
-table: HOSE_TRADE_BOOK
-bronze_table: HOSE_TRADE_BOOK
+table: TRADE_BOOK_HOSE
+bronze_table: TRADE_BOOK_HOSE
 description: "Sổ khớp HOSE — mỗi bản ghi là 1 lần khớp lệnh thành công trên HOSE. Lưu đồng thời thông tin bên mua và bên bán trong cùng 1 row. 1 Order có thể tạo ra nhiều Trade (khớp dần)"
 scope_status: in_scope
 
@@ -109,7 +109,7 @@ columns:
     data_type: "varchar(20)"
     nullable: true
     key: FK
-    fk_note: "FK-BK → HOSE_ORDER_BOOK.order_accept_no (Buy side)"
+    fk_note: "FK-BK → ORDER_BOOK_HOSE.order_accept_no (Buy side)"
     description: "Số thứ tự của lệnh mua được ghi nhận trên hệ thống Sàn trong ngày giao dịch"
 
   - name: BUY_BRK_ID
@@ -209,7 +209,7 @@ columns:
     data_type: "varchar(20)"
     nullable: true
     key: FK
-    fk_note: "FK-BK → HOSE_ORDER_BOOK.order_accept_no (Sell side)"
+    fk_note: "FK-BK → ORDER_BOOK_HOSE.order_accept_no (Sell side)"
     description: "Số thứ tự của lệnh bán được ghi nhận trên hệ thống Sàn trong ngày giao dịch"
 
   - name: SELL_BRK_ID

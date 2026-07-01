@@ -12,11 +12,11 @@ entity:
   consolidated_at: null
 sources:
 - source_system: "ORDERTRADE"
-  source_table: "HOSE_ORDER_BOOK"
-  lld_file: "OrderTrade/lld_OrderTrade_HOSE_ORDER_BOOK.yaml"
+  source_table: "ORDER_BOOK_HOSE"
+  lld_file: "ORDERTRADE/lld_ORDERTRADE_ORDER_BOOK_HOSE.yaml"
 - source_system: "ORDERTRADE"
-  source_table: "HNX_ORDER_BOOK"
-  lld_file: "OrderTrade/lld_OrderTrade_HNX_ORDER_BOOK.yaml"
+  source_table: "ORDER_BOOK_HNX"
+  lld_file: "ORDERTRADE/lld_ORDERTRADE_ORDER_BOOK_HNX.yaml"
 consolidation_notes: []
 attributes:
 - attribute_name: "Securities Order Id"
@@ -31,20 +31,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Securities Order Code"
   physical_name: "scr_ordr_code"
   description: "Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính). BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  comment: "BK chính. PK nguồn HOSE_ORDER_BOOK."
+  comment: "BK chính. PK nguồn ORDER_BOOK_HOSE."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_id"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_id"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_id"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_id"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -54,10 +54,10 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM. HOSE và HNX đều map vào Securities Order — src_stm_code\
     \ phân biệt nguồn."
   classification_context: "SOURCE_SYSTEM=..."
-  etl_derived_value: "ORDERTRADE.HOSE_ORDER_BOOK"
+  etl_derived_value: "ORDERTRADE.ORDER_BOOK_HOSE"
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Trade Date"
   physical_name: "trd_dt"
   description: "Ngày giao dịch theo thị trường chứng khoán."
@@ -68,8 +68,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.trade_date"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.trade_date"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.trade_date"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.trade_date"
 - attribute_name: "Market Id Code"
   physical_name: "mkt_id_code"
   description: "Mã thị trường chứng khoán."
@@ -80,8 +80,8 @@ attributes:
   classification_context: "ORDERTRADE_MARKET_ID"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.market_id"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.market_id"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.market_id"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.market_id"
 - attribute_name: "Security Symbol Code"
   physical_name: "scr_symb_code"
   description: "Mã định danh của loại chứng khoán (unique, thường là ISIN)."
@@ -92,8 +92,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.symbol"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.issue_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.symbol"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.issue_code"
 - attribute_name: "Currency Code"
   physical_name: "ccy_code"
   description: "Đơn vị tiền tệ."
@@ -105,8 +105,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.currency"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.currency"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Board Type Code"
   physical_name: "brd_tp_code"
   description: "Loại bảng giao dịch mà lệnh được phân loại vào."
@@ -117,8 +117,8 @@ attributes:
   classification_context: "ORDERTRADE_BOARD_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.board_type"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.board_id"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.board_type"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.board_id"
 - attribute_name: "Order Date"
   physical_name: "ordr_dt"
   description: "Ngày mà lệnh được ghi nhận theo ngày giao dịch của hệ thống."
@@ -129,8 +129,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_date"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_date"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_date"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_date"
 - attribute_name: "Order Time"
   physical_name: "ordr_tm"
   description: "Thời gian đặt lệnh của người thực hiện giao dịch."
@@ -142,8 +142,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_time"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_time"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Session Code"
   physical_name: "ssn_code"
   description: "Phiên giao dịch của thị trường chứng khoán."
@@ -154,8 +154,8 @@ attributes:
   classification_context: "ORDERTRADE_SESSION"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.session"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.session_id"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.session"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.session_id"
 - attribute_name: "Order Action Type Code"
   physical_name: "ordr_act_tp_code"
   description: "Loại hành động đối với lệnh: Mới / Sửa / Hủy."
@@ -167,8 +167,8 @@ attributes:
   classification_context: "ORDERTRADE_ORDER_ACTION_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.modify_cancel"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.replace_cancel_cls_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.modify_cancel"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.replace_cancel_cls_code"
 - attribute_name: "Order Accept Id"
   physical_name: "ordr_acpt_id"
   description: "Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày\
@@ -180,8 +180,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_accept_no"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_accept_no"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Original Order Accept Id"
   physical_name: "org_ordr_acpt_id"
   description: "Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ\
@@ -193,8 +193,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.orig_order_accept_no"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.orig_order_accept_no"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Original Order Code"
   physical_name: "org_ordr_code"
   description: "Order ID của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới."
@@ -205,8 +205,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.orig_order_id"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.orig_order_id"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.orig_order_id"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.orig_order_id"
 - attribute_name: "Side Indicator"
   physical_name: "side_ind"
   description: "Loại lệnh: B=Buy / S=Sell."
@@ -218,8 +218,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.side"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.sell_buy_cls_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.side"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.sell_buy_cls_code"
 - attribute_name: "Broker Id"
   physical_name: "bkr_id"
   description: "Mã định danh thành viên giao dịch (công ty chứng khoán) do Sở giao\
@@ -231,8 +231,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.brk_id"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.member_id"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.brk_id"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.member_id"
 - attribute_name: "Broker Name"
   physical_name: "bkr_nm"
   description: "Tên công ty chứng khoán."
@@ -243,8 +243,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.brk_name"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.brk_name"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Account Pin Code"
   physical_name: "acc_pin_code"
   description: "Mã PIN của tài khoản giao dịch."
@@ -256,8 +256,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.pin"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.pin"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Account Number"
   physical_name: "acc_nbr"
   description: "Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng\
@@ -269,8 +269,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.acct_no"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.acct_no"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.acct_no"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.acct_no"
 - attribute_name: "Account Holder Name"
   physical_name: "acc_hldr_nm"
   description: "Tên nhà đầu tư/chủ tài khoản nhà đầu tư."
@@ -281,8 +281,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.acct_holder_name"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.acct_holder_name"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Market Maker Order Indicator"
   physical_name: "mkt_mkr_ordr_ind"
   description: "Lệnh đặt của nhà tạo lập thị trường."
@@ -294,8 +294,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.market_maker_order"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.market_maker_order"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Client House Classification Code"
   physical_name: "clnt_hs_cls_code"
   description: "Phân loại lệnh khách hàng/công ty tự doanh."
@@ -306,8 +306,8 @@ attributes:
   classification_context: "ORDERTRADE_CLIENT_HOUSE_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.client_house_cls_code"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.client_house_cls_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.client_house_cls_code"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.client_house_cls_code"
 - attribute_name: "Investor Type Code"
   physical_name: "ivsr_tp_code"
   description: "Phân loại nhà đầu tư theo loại hình tổ chức/cá nhân (raw từ HNX)."
@@ -319,8 +319,8 @@ attributes:
   classification_context: "ORDERTRADE_INVESTOR_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.investor_type"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.investor_cls_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.investor_type"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.investor_cls_code"
 - attribute_name: "Foreign Investor Type Code"
   physical_name: "frgn_ivsr_tp_code"
   description: "Phân loại loại hình nhà đầu tư nước ngoài."
@@ -331,8 +331,8 @@ attributes:
   classification_context: "ORDERTRADE_FOREIGN_INVESTOR_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.foreign_investor_type"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.foreign_investor_type_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.foreign_investor_type"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.foreign_investor_type_code"
 - attribute_name: "Order Type Code"
   physical_name: "ordr_tp_code"
   description: "Loại lệnh theo giá."
@@ -343,8 +343,8 @@ attributes:
   classification_context: "ORDERTRADE_ORDER_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_type"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_type_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_type"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_type_code"
 - attribute_name: "Order Price"
   physical_name: "ordr_prc"
   description: "Mức giá sẵn sàng mua hoặc bán (0 nếu Market/Fixed price/Cancel)."
@@ -355,8 +355,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_price"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_price"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_price"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_price"
 - attribute_name: "Order Volume"
   physical_name: "ordr_vol"
   description: "Số lượng chứng khoán muốn mua hoặc bán trong lệnh."
@@ -367,8 +367,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_vol"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_qty"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_vol"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_qty"
 - attribute_name: "Order Condition Code"
   physical_name: "ordr_cd_code"
   description: "Điều kiện thực hiện lệnh."
@@ -379,8 +379,8 @@ attributes:
   classification_context: "ORDERTRADE_ORDER_CONDITION"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_condition"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_condition_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_condition"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_condition_code"
 - attribute_name: "Last Traded Price"
   physical_name: "ltp"
   description: "Giá khớp gần nhất trên thị trường (LTP)."
@@ -391,8 +391,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.ltp"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.ltp"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Execution Price"
   physical_name: "exec_prc"
   description: "Giá khớp lệnh thực tế."
@@ -403,8 +403,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.exec_price"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.exec_price"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Immediate Matched Volume"
   physical_name: "imm_mtch_vol"
   description: "Khối lượng khớp ngay khi hệ thống ghi nhận lệnh."
@@ -415,8 +415,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.imm_matched_vol"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.imm_matched_vol"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Matched Volume"
   physical_name: "mtch_vol"
   description: "Tổng khối lượng đã khớp của lệnh."
@@ -427,8 +427,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.matched_vol"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.matched_vol"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Remaining Quantity"
   physical_name: "rman_qty"
   description: "Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy."
@@ -439,8 +439,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.rman_vol"
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_rman_qty"
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.rman_vol"
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_rman_qty"
 - attribute_name: "Order Spread"
   physical_name: "ordr_sprd"
   description: "Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất."
@@ -451,8 +451,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_price_vs_ltp"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_price_vs_ltp"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Matched Ratio"
   physical_name: "mtch_rto"
   description: "Tỷ lệ khớp lệnh."
@@ -463,8 +463,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.matched_rto"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.matched_rto"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Price Change Amount"
   physical_name: "prc_chg_amt"
   description: "Mức tăng/giảm giá so với tham chiếu theo giá trị."
@@ -475,8 +475,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.buy_up_sell_down_amt"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.buy_up_sell_down_amt"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Price Change Tick"
   physical_name: "prc_chg_tick"
   description: "Mức tăng/giảm theo bước giá."
@@ -487,8 +487,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.buy_up_sell_down_tick"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.buy_up_sell_down_tick"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "New High Low Price Indicator"
   physical_name: "new_high_low_prc_ind"
   description: "Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày."
@@ -499,8 +499,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.new_high_low_price"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.new_high_low_price"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Order Status Code"
   physical_name: "ordr_st_code"
   description: "Trạng thái của lệnh."
@@ -512,8 +512,8 @@ attributes:
   classification_context: "ORDERTRADE_ORDER_STATUS"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.order_status"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.order_status"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Icd Bug Quantity"
   physical_name: "icd_bug_qty"
   description: "Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch."
@@ -524,8 +524,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.icd_bug_qty"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.icd_bug_qty"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Expected Execution Price"
   physical_name: "expc_exec_prc"
   description: "Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày."
@@ -536,8 +536,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.expc_exec_price"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.expc_exec_price"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Expected Execution Volume"
   physical_name: "expc_exec_vol"
   description: "Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong\
@@ -549,8 +549,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.expc_exec_vol"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.expc_exec_vol"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Short Sell Type Code"
   physical_name: "shrt_sell_tp_code"
   description: "Phân loại lệnh bán khống."
@@ -562,8 +562,8 @@ attributes:
   classification_context: "ORDERTRADE_SHORT_SELL_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.short_sell_indicator"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.short_sell_indicator"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Trader Number"
   physical_name: "trdr_nbr"
   description: "Mã/số định danh người thực hiện giao dịch."
@@ -574,8 +574,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.trader_no"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.trader_no"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Trader Name"
   physical_name: "trdr_nm"
   description: "Tên người thực hiện giao dịch."
@@ -586,8 +586,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.trader_name"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.trader_name"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Reference Sequence Number"
   physical_name: "ref_seq_nbr"
   description: "Số tham chiếu theo thứ tự giao dịch."
@@ -599,8 +599,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: "ORDERTRADE.HOSE_ORDER_BOOK.ref_seq_no"
-    ORDERTRADE.HNX_ORDER_BOOK: null
+    ORDERTRADE.ORDER_BOOK_HOSE: "ORDERTRADE.ORDER_BOOK_HOSE.ref_seq_no"
+    ORDERTRADE.ORDER_BOOK_HNX: null
 - attribute_name: "Order Accept Time"
   physical_name: "ordr_acpt_tm"
   description: "Thời điểm KRX core system chấp nhận lệnh vào sổ lệnh (hh24misss)."
@@ -611,8 +611,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_accept_time"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_accept_time"
 - attribute_name: "Order Reject Reason Code"
   physical_name: "ordr_rjct_rsn_code"
   description: "Mã lý do lệnh bị từ chối bởi hệ thống KRX."
@@ -624,8 +624,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_reject_reason_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_reject_reason_code"
 - attribute_name: "Public Volume"
   physical_name: "pub_vol"
   description: "Phần khối lượng hiển thị công khai trên sổ lệnh (Iceberg order: pub_qty\
@@ -637,8 +637,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.pub_qty"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.pub_qty"
 - attribute_name: "Condition Price"
   physical_name: "cd_prc"
   description: "Mức giá điều kiện để kích hoạt lệnh Stop order."
@@ -649,8 +649,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.cond_price"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.cond_price"
 - attribute_name: "Order Reception Number"
   physical_name: "ordr_rcptn_nbr"
   description: "Số định danh của lệnh tại thời điểm hệ thống KRX tiếp nhận (duy nhất\
@@ -659,12 +659,12 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: "BK phụ HNX — tương đương order_accept_no của HOSE. FK-BK target cho buy/sell_scr_ordr_code\
-    \ trong Securities Trade (HNX_TRADE_BOOK)."
+    \ trong Securities Trade (TRADE_BOOK_HNX)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.order_reception_no"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.order_reception_no"
 - attribute_name: "Original Order Reception Number"
   physical_name: "org_ordr_rcptn_nbr"
   description: "Order Reception Number của lệnh gốc mà một lệnh sửa/hủy đang tham\
@@ -676,8 +676,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.orig_order_reception_no"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.orig_order_reception_no"
 - attribute_name: "Original Order Type Code"
   physical_name: "org_ordr_tp_code"
   description: "Loại lệnh của lệnh gốc trước khi bị sửa/hủy."
@@ -688,8 +688,8 @@ attributes:
   classification_context: "ORDERTRADE_ORDER_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.orig_order_type_code"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.orig_order_type_code"
 - attribute_name: "Message Sequence Number"
   physical_name: "msg_seq_nbr"
   description: "Số thứ tự message trong luồng dữ liệu (tăng dần từ 1)."
@@ -700,8 +700,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.msg_seq"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.msg_seq"
 - attribute_name: "Quote Request Type Code"
   physical_name: "qte_rqs_tp_code"
   description: "Loại yêu cầu báo giá RFQ (HNX-only)."
@@ -713,8 +713,8 @@ attributes:
   classification_context: "ORDERTRADE_QUOTE_REQUEST_TYPE"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.quote_request_type"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.quote_request_type"
 - attribute_name: "Auto Cancel Reason Code"
   physical_name: "auto_cncl_rsn_code"
   description: "Mã xác định việc hủy lệnh tự động do cơ chế nào."
@@ -726,5 +726,5 @@ attributes:
   classification_context: "ORDERTRADE_AUTO_CANCEL_REASON"
   etl_derived_value: null
   source_mappings:
-    ORDERTRADE.HOSE_ORDER_BOOK: null
-    ORDERTRADE.HNX_ORDER_BOOK: "ORDERTRADE.HNX_ORDER_BOOK.auto_cancel_cls"
+    ORDERTRADE.ORDER_BOOK_HOSE: null
+    ORDERTRADE.ORDER_BOOK_HNX: "ORDERTRADE.ORDER_BOOK_HNX.auto_cancel_cls"
