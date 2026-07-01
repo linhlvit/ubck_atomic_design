@@ -12,9 +12,9 @@ brd_entries:
       functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
       scope_status: in_scope
       scope_reason: null
-      table: MarketInfor
+      table: JAD_MARKETINFOR
       related_tables:
-        - table: IDXInfor
+        - table: JAD_IDXINFOR
           relation: "Tham chiếu — chi tiết chỉ số thị trường"
       notes: null
       data_volume_hint: null
@@ -34,11 +34,11 @@ brd_entries:
       functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
       scope_status: in_scope
       scope_reason: null
-      table: CSIDXInfor
+      table: JAD_CSIDXINFOR
       related_tables:
-        - table: IDXInfor
+        - table: JAD_IDXINFOR
           relation: "FK — chỉ số cha của constituent"
-        - table: StockInfor
+        - table: JAD_STOCKINFOR
           relation: "FK — mã chứng khoán trong rổ"
       notes: null
       data_volume_hint: null
@@ -59,11 +59,11 @@ brd_entries:
       functional_group: "UID-02 Bảng giá chứng khoán và khớp lệnh"
       scope_status: in_scope
       scope_reason: null
-      table: StockInfor
+      table: JAD_STOCKINFOR
       related_tables:
-        - table: TransLog
+        - table: JAD_TRANSLOG
           relation: "1-N — log khớp lệnh tick-by-tick"
-        - table: CSIDXInfor
+        - table: JAD_CSIDXINFOR
           relation: "1-N — thành phần rổ chỉ số"
       notes: null
       data_volume_hint: null
@@ -83,9 +83,9 @@ brd_entries:
       functional_group: "UID-02 Bảng giá chứng khoán và khớp lệnh"
       scope_status: in_scope
       scope_reason: null
-      table: TransLog
+      table: JAD_TRANSLOG
       related_tables:
-        - table: StockInfor
+        - table: JAD_STOCKINFOR
           relation: "FK cha — mã chứng khoán được khớp lệnh"
       notes: null
       data_volume_hint: null
@@ -106,9 +106,9 @@ brd_entries:
       functional_group: "UID-03 Trái phiếu doanh nghiệp"
       scope_status: in_scope
       scope_reason: null
-      table: CorpBondInfor
+      table: JAD_CORPBONDINFOR
       related_tables:
-        - table: CorpBondMatch
+        - table: JAD_CORPBONDMATCH
           relation: "1-N — log khớp lệnh tick-by-tick TPDN"
       notes: null
       data_volume_hint: null
