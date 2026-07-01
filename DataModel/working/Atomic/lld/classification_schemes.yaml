@@ -1785,6 +1785,74 @@ schemes:
         label: "Công ty mẹ"
         source_value: "CONG_TY_ME"
 
+  # ── SCMS — Tier 2: Group F Risk/Alert ──────────────────────────────
+
+  - scheme_code: "SCMS_COMPARISON_VALUE_TYPE"
+    name: "Loại giá trị so sánh trong điều kiện cảnh báo: Giá trị cố định, Tỷ lệ phần trăm, Công thức tính toán"
+    source_type: "source_table"
+    source_table: "SCMS.ALERT_INDICATOR_CONDITION.COMPARISON_VALUE_TYPE"
+    used_in_entities:
+      - "Securities Company Alert Indicator Condition"
+    values:
+      - code: "FIXED"
+        label: "Giá trị cố định"
+        source_value: "FIXED"
+      - code: "PERCENTAGE"
+        label: "Tỷ lệ phần trăm"
+        source_value: "PERCENTAGE"
+      - code: "FORMULA"
+        label: "Công thức tính toán"
+        source_value: "FORMULA"
+
+  - scheme_code: "SCMS_RISK_RATING"
+    name: "Xếp hạng rủi ro CTCK theo mô hình CAMEL: A=Tốt, B=Khá, C=Trung bình, D=Yếu, E=Rất yếu"
+    source_type: "source_table"
+    source_table: "SCMS.RISK_SUMMARY.INITIAL_RATING"
+    used_in_entities:
+      - "Securities Company Risk Summary"
+    values:
+      - code: "A"
+        label: "Tốt"
+        source_value: "A"
+      - code: "B"
+        label: "Khá"
+        source_value: "B"
+      - code: "C"
+        label: "Trung bình"
+        source_value: "C"
+      - code: "D"
+        label: "Yếu"
+        source_value: "D"
+      - code: "E"
+        label: "Rất yếu"
+        source_value: "E"
+
+  - scheme_code: "SCMS_PROFILE_CHANGE_ENTITY_TYPE"
+    name: "Loại đối tượng thay đổi hồ sơ CTCK: CTCK, Chi nhánh, Phòng giao dịch, Văn phòng đại diện, Nhân sự, Cổ đông"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_TYPE"
+    used_in_entities:
+      - "Securities Company Profile Change"
+    values:
+      - code: "CTCK"
+        label: "Công ty chứng khoán"
+        source_value: "CTCK"
+      - code: "CHI_NHANH"
+        label: "Chi nhánh"
+        source_value: "CHI_NHANH"
+      - code: "PHONG_GIAO_DICH"
+        label: "Phòng giao dịch"
+        source_value: "PHONG_GIAO_DICH"
+      - code: "VPDD"
+        label: "Văn phòng đại diện"
+        source_value: "VPDD"
+      - code: "NHAN_SU"
+        label: "Nhân sự"
+        source_value: "NHAN_SU"
+      - code: "CO_DONG"
+        label: "Cổ đông"
+        source_value: "CO_DONG"
+
   # --- Tier 7 schemes ---
 
   - scheme_code: "CIRCUMSTANCE_TYPE"

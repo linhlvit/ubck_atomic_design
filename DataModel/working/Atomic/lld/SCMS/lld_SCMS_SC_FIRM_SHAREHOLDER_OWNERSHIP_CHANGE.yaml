@@ -1,0 +1,304 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE"
+  atomic_entity: "Securities Company Shareholder Ownership Change"
+  entity_physical_name: "scr_co_shrhdr_ownshp_chng"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Transaction"
+  table_type: "Fact Append"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Ghi nhận từng lần thay đổi sở hữu cổ đông CTCK (tăng/giảm vốn, chuyển nhượng). Fact Append — mỗi giao dịch là 1 dòng insert-only. FKs: SC_FIRM_INFO_ID→Securities Company (T1); SHAREHOLDER_ID→Securities Company Shareholder (T2) — được xác nhận FK qua HLD diagram mặc dù BRD key:null. TRANSACTION_TYPE → SCMS_SHAREHOLDER_TXN_TYPE (TANG_VON/GIAM_VON/CHUYEN_NHUONG/TANG_VON_DIEU_LE). NGAY_HIEU_LUC (DATE): null desc = 'Ngày hiệu lực' của thay đổi. DATA_SOURCE → SCMS_DATA_SOURCE. ATTACHMENT_PATH: reference path. Audit: chỉ CREATED_AT + CREATED_BY pair (Fact Append — không có LAST_MODIFIED)."
+
+attributes:
+  - attribute_name: "Securities Company Shareholder Ownership Change Id"
+    physical_name: "scr_co_shrhdr_ownshp_chng_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Shareholder Ownership Change Code"
+    physical_name: "scr_co_shrhdr_ownshp_chng_code"
+    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.ID"
+    comment: "BK. NUMBER(19) — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE"
+    etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE"
+    data_type: "string"
+
+  # ── FKs ───────────────────────────────────────────────────────────────
+  - attribute_name: "Securities Company Id"
+    physical_name: "scr_co_id"
+    description: "FK đến Công ty chứng khoán liên quan đến giao dịch thay đổi sở hữu."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID"
+    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID). NUMBER(19)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Code"
+    physical_name: "scr_co_code"
+    description: "Mã Công ty chứng khoán."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID"
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Shareholder Id"
+    physical_name: "scr_co_shrhdr_id"
+    description: "FK đến Cổ đông CTCK có thay đổi sở hữu."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SHAREHOLDER_ID"
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', SHAREHOLDER_ID). NUMBER(19) — BRD key:null nhưng HLD diagram xác nhận là FK."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Shareholder Code"
+    physical_name: "scr_co_shrhdr_code"
+    description: "Mã Cổ đông CTCK có thay đổi sở hữu."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SHAREHOLDER_ID"
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Securities Company Shareholder Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── CLASSIFICATION ────────────────────────────────────────────────────
+  - attribute_name: "Shareholder Transaction Type Code"
+    physical_name: "shrhdr_txn_tp_code"
+    description: "Loại giao dịch thay đổi sở hữu: TANG_VON=Tăng vốn góp; GIAM_VON=Giảm vốn góp; CHUYEN_NHUONG=Chuyển nhượng cổ phần; TANG_VON_DIEU_LE=Tăng vốn điều lệ."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.TRANSACTION_TYPE"
+    comment: "Scheme: SCMS_SHAREHOLDER_TXN_TYPE. NVARCHAR2(100)."
+    classification_context: "SCMS_SHAREHOLDER_TXN_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Data Source Code"
+    physical_name: "data_src_code"
+    description: "Nguồn gốc dữ liệu: Đồng bộ tự động, Nhập tay, Cổng báo cáo."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.DATA_SOURCE"
+    comment: "Scheme: SCMS_DATA_SOURCE. NVARCHAR2(50)."
+    classification_context: "SCMS_DATA_SOURCE"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── TRANSACTION DETAILS ───────────────────────────────────────────────
+  - attribute_name: "Capital Before"
+    physical_name: "cptl_bfr"
+    description: "Vốn góp trước khi giao dịch (đơn vị: đồng)."
+    data_domain: "Currency Amount"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.CAPITAL_BEFORE"
+    comment: "NUMBER(22,4). Đơn vị VND."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Ratio Before"
+    physical_name: "ratio_bfr"
+    description: "Tỷ lệ sở hữu trước khi giao dịch (%)."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.RATIO_BEFORE"
+    comment: "NUMBER(12,4). Lưu dạng thập phân (VD: 10.50 = 10.50%)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Capital After"
+    physical_name: "cptl_aftr"
+    description: "Vốn góp sau khi giao dịch (đơn vị: đồng)."
+    data_domain: "Currency Amount"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.CAPITAL_AFTER"
+    comment: "NUMBER(22,4). Đơn vị VND."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Ratio After"
+    physical_name: "ratio_aftr"
+    description: "Tỷ lệ sở hữu sau khi giao dịch (%)."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.RATIO_AFTER"
+    comment: "NUMBER(12,4). Lưu dạng thập phân."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Effective Date"
+    physical_name: "efctv_dt"
+    description: "Ngày hiệu lực của thay đổi sở hữu."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.NGAY_HIEU_LUC"
+    comment: "DATE. NGAY_HIEU_LUC = Ngày Hiệu Lực — mô tả gốc BRD null."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Document Number"
+    physical_name: "doc_nbr"
+    description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư) của giao dịch thay đổi sở hữu."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.DOCUMENT_NUMBER"
+    comment: "NVARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Attachment Path"
+    physical_name: "attchmnt_pth"
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.ATTACHMENT_PATH"
+    comment: "NVARCHAR2(500). Reference path — không load binary vào Atomic."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Note"
+    physical_name: "note"
+    description: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.NOTE"
+    comment: "NVARCHAR2(2000)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK (Fact Append — CREATED only) ──────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.CREATED_AT"
+    comment: "TIMESTAMP(6). Fact Append — bảng nguồn không có LAST_MODIFIED_AT/BY."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY). NUMBER(19)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.CREATED_BY"
+    comment: "Pending — Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

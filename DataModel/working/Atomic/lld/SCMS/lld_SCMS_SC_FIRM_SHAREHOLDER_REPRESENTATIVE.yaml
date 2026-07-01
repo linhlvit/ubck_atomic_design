@@ -1,0 +1,347 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_SHAREHOLDER_REPRESENTATIVE"
+  atomic_entity: "Securities Company Shareholder Representative"
+  entity_physical_name: "scr_co_shrhdr_rprsntv"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Representative"
+  table_type: "Relative"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Người đại diện của cổ đông (tổ chức) tại CTCK. Mỗi dòng = 1 người đại diện cho 1 cổ đông tổ chức. FKs: SC_FIRM_INFO_ID→Securities Company (T1); SC_FIRM_SHAREHOLDER_ID→Securities Company Shareholder (T2). ID_NUMBER/ISSUE_DATE/ISSUE_PLACE: thuộc tính giấy tờ định danh, giữ tại entity chính (entity không có NATIONAL_ID riêng). SHARES_COUNT (NUMBER 38): số cổ phần đại diện (null desc). OWNERSHIP_RATIO: tỷ lệ sở hữu cổ đông mà người này đại diện. RECORD_STATUS → SCMS_USAGE_STATUS. Audit: canonical 6-attr (all BY pending). ATTACHMENT_PATH: lưu reference path, không load file vào Atomic."
+
+attributes:
+  - attribute_name: "Securities Company Shareholder Representative Id"
+    physical_name: "scr_co_shrhdr_rprsntv_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Shareholder Representative Code"
+    physical_name: "scr_co_shrhdr_rprsntv_code"
+    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ID"
+    comment: "BK. NUMBER(10) — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE"
+    etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE"
+    data_type: "string"
+
+  # ── FKs ───────────────────────────────────────────────────────────────
+  - attribute_name: "Securities Company Id"
+    physical_name: "scr_co_id"
+    description: "FK đến Công ty chứng khoán liên quan."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.SC_FIRM_INFO_ID"
+    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Code"
+    physical_name: "scr_co_code"
+    description: "Mã Công ty chứng khoán."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.SC_FIRM_INFO_ID"
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Shareholder Id"
+    physical_name: "scr_co_shrhdr_id"
+    description: "FK đến Cổ đông CTCK mà người này là đại diện."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.SC_FIRM_SHAREHOLDER_ID"
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', SC_FIRM_SHAREHOLDER_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Shareholder Code"
+    physical_name: "scr_co_shrhdr_code"
+    description: "Mã Cổ đông CTCK."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.SC_FIRM_SHAREHOLDER_ID"
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Securities Company Shareholder Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── CLASSIFICATION ────────────────────────────────────────────────────
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái bản ghi người đại diện cổ đông."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1). Mô tả gốc BRD null."
+    classification_context: "SCMS_USAGE_STATUS"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── PERSON INFO ───────────────────────────────────────────────────────
+  - attribute_name: "Representative Name"
+    physical_name: "rprsntv_nm"
+    description: "Họ tên người đại diện cổ đông tổ chức."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.REPRESENTATIVE_NAME"
+    comment: "NVARCHAR2(250). Mô tả gốc BRD null."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Position"
+    physical_name: "pstn"
+    description: "Chức vụ của người đại diện tại tổ chức cổ đông."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.POSITION"
+    comment: "NVARCHAR2(100). Tên chức vụ."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Identification Number"
+    physical_name: "id_nbr"
+    description: "Số CMND/CCCD của người đại diện (định danh cũ)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ID_NUMBER"
+    comment: "NVARCHAR2(30). ID_NUMBER = CMND legacy. Không có NATIONAL_ID riêng trong bảng nguồn."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Issue Date"
+    physical_name: "issue_dt"
+    description: "Ngày cấp giấy tờ/chứng chỉ của người đại diện."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ISSUE_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Issue Place"
+    physical_name: "issue_plc"
+    description: "Nơi cấp giấy tờ/chứng chỉ của người đại diện."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ISSUE_PLACE"
+    comment: "NVARCHAR2(250)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── OWNERSHIP DATA ────────────────────────────────────────────────────
+  - attribute_name: "Shares Count"
+    physical_name: "shrs_cnt"
+    description: "Số lượng cổ phần mà người đại diện này quản lý/đại diện."
+    data_domain: "Small Counter"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.SHARES_COUNT"
+    comment: "NUMBER(38). Large integer. Mô tả gốc BRD null."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "long"
+
+  - attribute_name: "Ownership Ratio"
+    physical_name: "ownshp_ratio"
+    description: "Tỷ lệ sở hữu vốn của cổ đông mà người này đại diện (%)."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.OWNERSHIP_RATIO"
+    comment: "NUMBER(10,4). Lưu dạng thập phân (VD: 15.50 = 15.50%)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Attachment Path"
+    physical_name: "attchmnt_pth"
+    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ATTACHMENT_PATH"
+    comment: "NVARCHAR2(1000). Lưu đường dẫn reference — không load binary vào Atomic."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Note"
+    physical_name: "note"
+    description: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.NOTE"
+    comment: "NVARCHAR2(1000)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.CREATED_AT"
+    comment: "TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.LAST_MODIFIED_AT"
+    comment: "TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.CREATED_BY"
+    comment: "Pending — Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Id"
+    physical_name: "udt_by_scms_usr_id"
+    description: "FK đến người cập nhật bản ghi lần cuối."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Code"
+    physical_name: "udt_by_scms_usr_code"
+    description: "Mã người cập nhật bản ghi lần cuối."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.LAST_MODIFIED_BY"
+    comment: "Pending — Pair with Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
