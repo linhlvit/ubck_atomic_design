@@ -45,7 +45,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_NO    comment: BK chính. PK nguồn HNX_TRADE_BOOK.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -72,7 +72,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_DATE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_DATE    comment: null
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -85,7 +85,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.MARKET_ID
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.MARKET_ID    comment: "Scheme: ORDERTRADE_MARKET_ID."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -98,7 +98,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.ISSUE_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.ISSUE_CODE    comment: Nguồn HNX dùng tên cột issue_code; HLD mapping chung vào Security Symbol.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -125,7 +125,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BOARD_ID
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BOARD_ID    comment: "Scheme: ORDERTRADE_BOARD_TYPE. Nguồn HNX dùng tên cột board_id; cùng scheme với HOSE board_type."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -138,7 +138,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_TIME
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_TIME    comment: Nguồn lưu dạng varchar — ETL giữ nguyên định dạng KRX.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -151,7 +151,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SESSION_ID
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SESSION_ID    comment: "Scheme: ORDERTRADE_SESSION."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -164,7 +164,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_PRICE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_PRICE    comment: Nguồn HNX dùng trade_price; HLD mapping chung vào Execution Price.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -191,7 +191,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_QTY
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.TRADE_QTY    comment: Nguồn bigint. HNX dùng trade_qty; HLD mapping chung vào Execution Volume.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -274,7 +274,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_RECEPTION_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_RECEPTION_NO    comment: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.HNX_ORDER_BOOK', buy_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -287,7 +287,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_RECEPTION_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_RECEPTION_NO    comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Buy Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -300,7 +300,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_MEMBER_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_MEMBER_NO    comment: Nguồn HNX dùng buy_member_no; HLD mapping chung vào Buy Broker Id.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -341,7 +341,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ACCT_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ACCT_NO    comment: null
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -368,7 +368,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_CLIENT_HOUSE_CLS
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_CLIENT_HOUSE_CLS    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -381,7 +381,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_INVESTOR_CLS_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_INVESTOR_CLS_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -394,7 +394,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_FOREIGN_INVESTOR_TYPE_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_FOREIGN_INVESTOR_TYPE_CODE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -407,7 +407,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_PRICE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_PRICE    comment: null
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -420,7 +420,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_QTY
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_QTY    comment: Nguồn bigint.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -503,7 +503,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_RECEPTION_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_RECEPTION_NO    comment: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.HNX_ORDER_BOOK', sell_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -516,7 +516,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_RECEPTION_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_RECEPTION_NO    comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Sell Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -529,7 +529,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_MEMBER_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_MEMBER_NO    comment: Nguồn HNX dùng sell_member_no; HLD mapping chung vào Sell Broker Id.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -570,7 +570,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ACCT_NO
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ACCT_NO    comment: null
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -597,7 +597,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_CLIENT_HOUSE_CLS
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_CLIENT_HOUSE_CLS    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -610,7 +610,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_INVESTOR_CLS_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_INVESTOR_CLS_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -623,7 +623,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_FOREIGN_INVESTOR_TYPE_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_FOREIGN_INVESTOR_TYPE_CODE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -636,7 +636,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_PRICE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_PRICE    comment: null
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -649,7 +649,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_QTY
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_QTY    comment: Nguồn bigint.
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -704,7 +704,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.MSG_SEQ
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.MSG_SEQ    comment: "Nguồn bigint. HNX-only — HOSE không có field này."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -717,7 +717,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_REPLACE_CANCEL_CLS_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_REPLACE_CANCEL_CLS_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -730,7 +730,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_TYPE_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_TYPE_CODE    comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only — HOSE Trade không có field này."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -743,7 +743,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_CONDITION_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_ORDER_CONDITION_CODE    comment: "Scheme: ORDERTRADE_ORDER_CONDITION. HNX-only — HOSE Trade không có field này."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -756,7 +756,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_QUOTE_REQUEST_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.SELL_QUOTE_REQUEST_CODE    comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với trade không phải RFQ."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -769,7 +769,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_REPLACE_CANCEL_CLS_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_REPLACE_CANCEL_CLS_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -782,7 +782,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_TYPE_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_TYPE_CODE    comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only — HOSE Trade không có field này."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -795,7 +795,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_CONDITION_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_ORDER_CONDITION_CODE    comment: "Scheme: ORDERTRADE_ORDER_CONDITION. HNX-only — HOSE Trade không có field này."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -808,7 +808,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_QUOTE_REQUEST_CODE
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.BUY_QUOTE_REQUEST_CODE    comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với trade không phải RFQ."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -821,7 +821,7 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.EXEC_PRICE_SPREAD_FIRST
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.EXEC_PRICE_SPREAD_FIRST    comment: "HNX-only — NULL với trade không phải spread."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null
 
@@ -834,6 +834,6 @@ attributes:
     is_primary_key: false
     source_system: ORDERTRADE
     source_table: HNX_TRADE_BOOK
-    source_column: ORDERTRADE.HNX_TRADE_BOOK.EXEC_PRICE_SPREAD_SECOND
+    source_column: ORDERTRADE.HNX_TRADE_BOOK.EXEC_PRICE_SPREAD_SECOND    comment: "HNX-only — NULL với trade không phải spread."
     classification_context: "Source System Code = 'ORDERTRADE_TRADE_HNX'"
     etl_derived_value: null

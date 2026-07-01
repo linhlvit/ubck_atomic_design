@@ -45,7 +45,7 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.ID
+    source_column: MDDS.JAD_CSIDXINFOR.ID    comment: BK chính. PK nguồn id — GUID unique.
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -72,7 +72,7 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.INDEXCODE
+    source_column: MDDS.JAD_CSIDXINFOR.INDEXCODE    comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không tạo FK surrogate ở Atomic — join tại Gold layer qua index_code."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -85,7 +85,7 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.INDEXID
+    source_column: MDDS.JAD_CSIDXINFOR.INDEXID    comment: Nguồn lưu dạng int — ETL cần convert sang string. Giữ nguyên leading zeros nếu có.
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -98,7 +98,7 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.SYMBOL
+    source_column: MDDS.JAD_CSIDXINFOR.SYMBOL    comment: "Denormalized join key với Security Trading Snapshot. Join tại Gold layer qua (symbol, trading_date)."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -111,7 +111,7 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.TRADINGDATE
+    source_column: MDDS.JAD_CSIDXINFOR.TRADINGDATE    comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Grain key: mỗi ngày 1 snapshot."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -124,7 +124,7 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.ADDDATE
+    source_column: MDDS.JAD_CSIDXINFOR.ADDDATE    comment: Nguồn lưu dạng string — ETL cần parse sang date.
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -137,7 +137,7 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.FLOORCODE
+    source_column: MDDS.JAD_CSIDXINFOR.FLOORCODE    comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
 
@@ -150,6 +150,6 @@ attributes:
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_CSIDXINFOR
-    source_column: MDDS.JAD_CSIDXINFOR.TOTALQTTY
+    source_column: MDDS.JAD_CSIDXINFOR.TOTALQTTY    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric. HLD note T2-03: cân nhắc bỏ nếu trùng StockInfor.totaltrading, giữ nguyên theo nguyên tắc mapping 1-1."
     classification_context: "Source System Code = 'MDDS_CSIDXINFOR'"
     etl_derived_value: null
