@@ -1,0 +1,79 @@
+schema_type: "lld_shared_ip_electronic"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_SENIOR_PERSONNEL"
+  atomic_entity: "IP Electronic Address"
+  entity_physical_name: "ip_elec_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Electronic Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Electronic Address của Securities Company Senior Personnel. ETL pivot: 4 cột PHONE/FAX/EMAIL/DISCLOSURE_EMAIL → 4 rows per nhân sự cấp cao. DISCLOSURE_EMAIL lưu email đại diện công bố thông tin — type code DISCLOSURE_EMAIL."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Senior Personnel."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
+    comment: "FK target: Securities Company Senior Personnel.Securities Company Senior Personnel Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Electronic Address Type Code"
+    physical_name: "elec_addr_tp_code"
+    description: "Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax; EMAIL=Email; DISCLOSURE_EMAIL=Email công bố thông tin."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. ETL pivot: PHONE → from PHONE; FAX → from FAX; EMAIL → from EMAIL; DISCLOSURE_EMAIL → from DISCLOSURE_EMAIL. Cần xác nhận DISCLOSURE_EMAIL có trong scheme IP_ELEC_ADDR_TYPE."
+    classification_context: "IP_ELEC_ADDR_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SENIOR_PERSONNEL"
+    etl_derived_value: "SCMS.SC_FIRM_SENIOR_PERSONNEL"
+    data_type: "string"
+
+  - attribute_name: "Electronic Address Value"
+    physical_name: "elec_addr_val"
+    description: "Giá trị địa chỉ điện tử (số điện thoại / số fax / địa chỉ email / email CBTT)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.PHONE"
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.FAX"
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.EMAIL"
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_EMAIL"
+    comment: "ETL pivot: value lấy từ column tương ứng với Electronic Address Type Code."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

@@ -1,0 +1,76 @@
+schema_type: "lld_shared_ip_postal"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "CUSTODIAN_BANK"
+  atomic_entity: "IP Postal Address"
+  entity_physical_name: "ip_pstl_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Postal Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Postal Address của Securities Company Custodian Bank. 1 row per ngân hàng lưu ký, addr_type_code hardcode HEAD_OFFICE. CUSTODIAN_BANK chỉ có ADDRESS text — không có PROVINCE_ID/DISTRICT_ID/WARD_ID."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Custodian Bank."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.CUSTODIAN_BANK.ID"
+    comment: "FK target: Securities Company Custodian Bank.Securities Company Custodian Bank Id. Shared entity. Hash: hash_id('SCMS.CUSTODIAN_BANK', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "addr_tp_code"
+    description: "Loại địa chỉ: HEAD_OFFICE=Trụ sở chính ngân hàng lưu ký."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode — CUSTODIAN_BANK chỉ có 1 địa chỉ."
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: "HEAD_OFFICE"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.CUSTODIAN_BANK"
+    etl_derived_value: "SCMS.CUSTODIAN_BANK"
+    data_type: "string"
+
+  - attribute_name: "Street Address"
+    physical_name: "strt_addr"
+    description: "Địa chỉ trụ sở chính ngân hàng lưu ký."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.CUSTODIAN_BANK.ADDRESS"
+    comment: "Text — không có Province/District/Ward FK."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

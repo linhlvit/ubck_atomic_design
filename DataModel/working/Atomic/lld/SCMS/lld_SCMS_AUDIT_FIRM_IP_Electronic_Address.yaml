@@ -1,0 +1,97 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "AUDIT_FIRM"
+  atomic_entity: "Involved Party Electronic Address"
+  entity_physical_name: "ip_elec_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Electronic Address"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Shared entity IP Electronic Address — extend từ AUDIT_FIRM. 4 loại: PHONE, FAX, EMAIL, WEBSITE. Mỗi dòng = 1 loại liên lạc của 1 Audit Firm. Composite PK: (Involved Party Id, Address Type Code)."
+
+attributes:
+  # ── INVOLVED PARTY FK ───────────────────────────────────────────────
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Audit Firm (Involved Party)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDIT_FIRM.ID"
+    comment: "FK target: Audit Firm.Audit Firm Id. Shared entity. Hash: hash_id('SCMS.AUDIT_FIRM', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Audit Firm."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDIT_FIRM.ID"
+    comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── ADDRESS TYPE ────────────────────────────────────────────────────
+  - attribute_name: "Address Type Code"
+    physical_name: "addr_type_code"
+    description: "Loại địa chỉ điện tử: PHONE, FAX, EMAIL, WEBSITE."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. ETL sinh 4 dòng từ 1 dòng AUDIT_FIRM: PHONE, FAX, EMAIL, WEBSITE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
+    etl_derived_value: "SCMS.AUDIT_FIRM"
+    data_type: "string"
+
+  # ── CONTACT VALUE ────────────────────────────────────────────────────
+  - attribute_name: "Electronic Address"
+    physical_name: "elec_addr"
+    description: "Giá trị địa chỉ điện tử (số điện thoại/fax/email/website tuỳ loại)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDIT_FIRM.PHONE"
+      - "SCMS.AUDIT_FIRM.FAX"
+      - "SCMS.AUDIT_FIRM.EMAIL"
+      - "SCMS.AUDIT_FIRM.WEBSITE"
+    comment: "ETL pivot: PHONE → (PHONE, row), FAX → (FAX, row), EMAIL → (EMAIL, row), WEBSITE → (WEBSITE, row). Mỗi source column tương ứng với 1 giá trị Address Type Code."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

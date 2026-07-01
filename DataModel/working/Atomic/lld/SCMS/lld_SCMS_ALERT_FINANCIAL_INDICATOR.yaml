@@ -1,0 +1,305 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "ALERT_FINANCIAL_INDICATOR"
+  atomic_entity: "Securities Company Alert Financial Indicator"
+  entity_physical_name: "scr_co_alrt_fin_ind"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Alert Financial Indicator"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "BCV Term: Alert Financial Indicator. Bảng master chỉ tiêu tài chính dùng trong cảnh báo — độc lập với ALERT_INDICATOR. INDICATOR_GROUP_ID không có FK target rõ ràng trong BRD."
+
+attributes:
+  # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
+  - attribute_name: "Securities Company Alert Financial Indicator Id"
+    physical_name: "scr_co_alrt_fin_ind_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Event] Alert Financial Indicator\". Chỉ tiêu tài chính dùng trong cảnh báo."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── BUSINESS KEY ────────────────────────────────────────────────────
+  - attribute_name: "Securities Company Alert Financial Indicator Code"
+    physical_name: "scr_co_alrt_fin_ind_code"
+    description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.ID"
+    comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.ALERT_FINANCIAL_INDICATOR"
+    etl_derived_value: "SCMS.ALERT_FINANCIAL_INDICATOR"
+    data_type: "string"
+
+  # ── BUSINESS ATTRIBUTES ─────────────────────────────────────────────
+  - attribute_name: "Indicator Code"
+    physical_name: "ind_code"
+    description: "Mã chỉ tiêu tài chính."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.INDICATOR_CODE"
+    comment: "Mã nghiệp vụ — khác BK (INDICATOR_CODE khác ID nguồn)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Alert Financial Indicator Name"
+    physical_name: "scr_co_alrt_fin_ind_nm"
+    description: "Tên chỉ tiêu tài chính."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.INDICATOR_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Indicator Group Id"
+    physical_name: "ind_grp_id"
+    description: "ID nhóm chỉ tiêu (nguồn không khai báo FK target)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.INDICATOR_GROUP_ID"
+    comment: "FK target chưa xác định trong BRD — lưu dạng text denormalized. Nguồn lưu NUMBER(10) — ETL convert sang string. Cần xác nhận với team nguồn SCMS."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Description"
+    physical_name: "dsc"
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.DESCRIPTION"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Unit"
+    physical_name: "unit"
+    description: "Đơn vị tính của chỉ tiêu."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.UNIT"
+    comment: "Mô tả gốc trong BRD trống — cần bổ sung từ tài liệu đặc tả SCMS."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Threshold Max"
+    physical_name: "thrs_max"
+    description: "Ngưỡng cảnh báo trên (giá trị tối đa)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.THRESHOLD_MAX"
+    comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Threshold Min"
+    physical_name: "thrs_min"
+    description: "Ngưỡng cảnh báo dưới (giá trị tối thiểu)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.THRESHOLD_MIN"
+    comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau. Xem Threshold Max."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Weight"
+    physical_name: "wght"
+    description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.WEIGHT"
+    comment: "NUMBER(38,2) — trọng số phần trăm."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal(38,2)"
+
+  - attribute_name: "Sort Order"
+    physical_name: "sort_ordr"
+    description: "Thứ tự sắp xếp hiển thị."
+    data_domain: "Small Counter"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.SORT_ORDER"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "int"
+
+  - attribute_name: "Formula"
+    physical_name: "frml"
+    description: "Công thức tính toán giá trị ô."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.FORMULA"
+    comment: "Nguồn lưu VARCHAR2(1000)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái chỉ tiêu tài chính: 0=Không sử dụng; 1=Đang sử dụng."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK ──────────────────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.CREATED_AT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.LAST_MODIFIED_AT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người dùng hệ thống SCMS tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Id"
+    physical_name: "udt_by_scms_usr_id"
+    description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Code"
+    physical_name: "udt_by_scms_usr_code"
+    description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_FINANCIAL_INDICATOR.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

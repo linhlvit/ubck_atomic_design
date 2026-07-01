@@ -1,0 +1,188 @@
+schema_type: "lld_shared_ip_postal"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_BRANCH"
+  atomic_entity: "IP Postal Address"
+  entity_physical_name: "ip_pstl_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Postal Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Postal Address của Securities Company Organization Unit (type BRANCH). 1 bảng nguồn → 1 row per branch với addr_type_code hardcode HEAD_OFFICE. Có PROVINCE_ID (FK CAT_PROVINCE → Province) + DISTRICT_ID/DISTRICT_NAME + WARD_ID/WARD_NAME."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Organization Unit (chi nhánh CTCK)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.ID"
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_BRANCH', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "addr_tp_code"
+    description: "Loại địa chỉ: HEAD_OFFICE=Trụ sở/địa điểm kinh doanh chính."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode vì SC_FIRM_BRANCH chỉ có 1 địa chỉ."
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: "HEAD_OFFICE"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_BRANCH"
+    etl_derived_value: "SCMS.SC_FIRM_BRANCH"
+    data_type: "string"
+
+  - attribute_name: "Street Address"
+    physical_name: "strt_addr"
+    description: "Địa chỉ chi tiết của chi nhánh (số nhà, tên đường, phường/xã)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.ADDRESS"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Province Geographic Area Id"
+    physical_name: "prov_geo_area_id"
+    description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.PROVINCE_ID"
+    comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('SCMS.CAT_PROVINCE', PROVINCE_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Province Geographic Area Code"
+    physical_name: "prov_geo_area_code"
+    description: "Mã Tỉnh/Thành phố."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.PROVINCE_ID"
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province Geographic Area Id. ETL map PROVINCE_ID → code từ CAT_PROVINCE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "District Geographic Area Id"
+    physical_name: "dist_geo_area_id"
+    description: "FK đến Geographic Area cấp Quận/Huyện."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.DISTRICT_ID"
+    comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('SCMS.CAT_DISTRICT', DISTRICT_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "District Geographic Area Code"
+    physical_name: "dist_geo_area_code"
+    description: "Mã Quận/Huyện."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.DISTRICT_ID"
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with District Geographic Area Id. ETL map DISTRICT_ID → code từ CAT_DISTRICT."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "District Name"
+    physical_name: "dist_nm"
+    description: "Tên Quận/Huyện (denormalized text, không có FK riêng)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.DISTRICT_NAME"
+    comment: "Text denormalized từ bảng nguồn. Dùng khi District Geographic Area Id NULL."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Ward Geographic Area Id"
+    physical_name: "ward_geo_area_id"
+    description: "FK đến Geographic Area cấp Phường/Xã."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.WARD_ID"
+    comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('SCMS.CAT_WARD', WARD_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Ward Geographic Area Code"
+    physical_name: "ward_geo_area_code"
+    description: "Mã Phường/Xã."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.WARD_ID"
+    comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Ward Geographic Area Id. ETL map WARD_ID → code từ CAT_WARD."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Ward Name"
+    physical_name: "ward_nm"
+    description: "Tên Phường/Xã (denormalized text)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.WARD_NAME"
+    comment: "Text denormalized từ bảng nguồn. Dùng khi Ward Geographic Area Id NULL."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

@@ -1,0 +1,235 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "RISK_INDICATOR_GROUP"
+  atomic_entity: "Securities Company Risk Indicator Group"
+  entity_physical_name: "scr_co_rsk_ind_grp"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Risk Category"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "BCV Term: Risk Category (Group). Nhóm chỉ tiêu rủi ro CAMEL — bảng master độc lập, không FK đến entity nghiệp vụ nào."
+
+attributes:
+  # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
+  - attribute_name: "Securities Company Risk Indicator Group Id"
+    physical_name: "scr_co_rsk_ind_grp_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Business Activity] Risk Category\". Nhóm chỉ tiêu rủi ro CAMEL."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── BUSINESS KEY ────────────────────────────────────────────────────
+  - attribute_name: "Securities Company Risk Indicator Group Code"
+    physical_name: "scr_co_rsk_ind_grp_code"
+    description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.ID"
+    comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.RISK_INDICATOR_GROUP"
+    etl_derived_value: "SCMS.RISK_INDICATOR_GROUP"
+    data_type: "string"
+
+  # ── BUSINESS ATTRIBUTES ─────────────────────────────────────────────
+  - attribute_name: "Group Code"
+    physical_name: "grp_code"
+    description: "Mã nhóm chỉ tiêu (mã nghiệp vụ do hệ thống gán)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.GROUP_CODE"
+    comment: "Mã nghiệp vụ — khác BK (GROUP_CODE khác ID nguồn)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Risk Indicator Group Name"
+    physical_name: "scr_co_rsk_ind_grp_nm"
+    description: "Tên nhóm chỉ tiêu rủi ro (GROUP_NAME)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.GROUP_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Weight"
+    physical_name: "wght"
+    description: "Trọng số của nhóm trong công thức tính điểm (%)."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.WEIGHT"
+    comment: "NUMBER(6,2) — trọng số phần trăm."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal(6,2)"
+
+  - attribute_name: "Description"
+    physical_name: "dsc"
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.DESCRIPTION"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "CAMEL Group Code"
+    physical_name: "camel_grp_code"
+    description: "Nhóm theo mô hình CAMEL: C=Vốn (Capital); A=Tài sản (Asset); M=Quản trị (Management); E=Sinh lợi (Earnings); L=Thanh khoản (Liquidity)."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.RECORD_TYPE"
+    comment: "Scheme: SCMS_RISK_CAMEL_GROUP. Nguồn lưu VARCHAR2(22)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái nhóm chỉ tiêu: 0=Không sử dụng; 1=Đang sử dụng."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK ──────────────────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.CREATED_AT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.LAST_MODIFIED_AT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người dùng hệ thống SCMS tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Id"
+    physical_name: "udt_by_scms_usr_id"
+    description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Code"
+    physical_name: "udt_by_scms_usr_code"
+    description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.RISK_INDICATOR_GROUP.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

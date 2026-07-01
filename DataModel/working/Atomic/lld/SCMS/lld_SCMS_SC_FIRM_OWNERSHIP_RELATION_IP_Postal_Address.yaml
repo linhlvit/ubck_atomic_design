@@ -1,0 +1,76 @@
+schema_type: "lld_shared_ip_postal"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_OWNERSHIP_RELATION"
+  atomic_entity: "IP Postal Address"
+  entity_physical_name: "ip_pstl_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Postal Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Postal Address của Securities Company Ownership Relation (tổ chức có quan hệ sở hữu với CTCK). 1 row — REGISTERED_ADDRESS → type REGISTERED (địa chỉ đăng ký kinh doanh). Không có Province/District/Ward FK trong nguồn."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Ownership Relation."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ID"
+    comment: "FK target: Securities Company Ownership Relation.Securities Company Ownership Relation Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_OWNERSHIP_RELATION', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "addr_tp_code"
+    description: "Loại địa chỉ: REGISTERED=Địa chỉ đăng ký kinh doanh của tổ chức có quan hệ sở hữu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode REGISTERED — chỉ có 1 cột REGISTERED_ADDRESS."
+    classification_context: "IP_ADDR_TYPE=REGISTERED"
+    etl_derived_value: "REGISTERED"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_OWNERSHIP_RELATION"
+    etl_derived_value: "SCMS.SC_FIRM_OWNERSHIP_RELATION"
+    data_type: "string"
+
+  - attribute_name: "Street Address"
+    physical_name: "strt_addr"
+    description: "Địa chỉ đăng ký kinh doanh của tổ chức có quan hệ sở hữu với CTCK."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.REGISTERED_ADDRESS"
+    comment: "VARCHAR2(500). Không có Province/District/Ward FK trong nguồn."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

@@ -1,0 +1,900 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  atomic_entity: "Securities Practitioner"
+  entity_physical_name: "scr_prac"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "SC_FIRM_LICENSED_PRACTITIONER → extends entity Securities Practitioner (đã approved từ NHNCK.PROFESSIONALS). Người hành nghề chứng khoán tại CTCK theo dữ liệu SCMS. SCMS thêm: quan hệ với CTCK/đơn vị, trạng thái việc làm, xác minh CCHN với NHNCK, sync status. Nhiều trường tiếng Việt (HOTEN, SOCMT, GIOITINH...) là legacy từ hệ thống cũ, trùng với NHNCK.PROFESSIONALS. NHN_ID là link đến NHNCK system (canonical source). Shared IP entities: DIACHITHUONGTRU/PERMANENT_ADDRESS → IP Postal (2 types: PERMANENT, HOUSEHOLD_REGISTRY); DIENTHOAI/DIDONG/EMAIL → IP Electronic; NATIONAL_ID/SOCMT → IP Alt Identification."
+
+attributes:
+  - attribute_name: "Securities Practitioner Id"
+    physical_name: "scr_prac_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate. Entity Securities Practitioner đã có từ NHNCK.PROFESSIONALS (approved). SCMS extend thêm source_table này — NHN_ID là bridge đến NHNCK canonical source."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Practitioner Code"
+    physical_name: "scr_prac_code"
+    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity từ nguồn SCMS."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+    comment: "BK SCMS. NUMBER(10) — ETL convert sang string. Khác với NHNCK.PROFESSIONALS.PROFESSIONAL_ID (BK canonical)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+    etl_derived_value: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+    data_type: "string"
+
+  # ── LINK TO NHNCK ────────────────────────────────────────────────────
+  - attribute_name: "NHNCK Personnel Id"
+    physical_name: "nhnck_prsnl_id"
+    description: "ID người hành nghề trong hệ thống NHNCK (link đến canonical source)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NHN_ID"
+    comment: "Link đến NHNCK.PROFESSIONALS.PROFESSIONAL_ID. Dùng để reconcile giữa SCMS và NHNCK — nếu NHN_ID có giá trị, ETL ưu tiên canonical từ NHNCK. Lưu dạng Text vì schema NHNCK dùng NVARCHAR key."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── FK TO PARENT ENTITIES ─────────────────────────────────────────────
+  - attribute_name: "Securities Company Id"
+    physical_name: "scr_co_id"
+    description: "FK đến Công ty chứng khoán nơi người hành nghề công tác."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
+    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Code"
+    physical_name: "scr_co_code"
+    description: "Mã Công ty chứng khoán."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Branch Organization Unit Id"
+    physical_name: "brn_org_unt_id"
+    description: "FK đến chi nhánh CTCK nơi người hành nghề công tác (nullable)."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Branch Organization Unit Code"
+    physical_name: "brn_org_unt_code"
+    description: "Mã chi nhánh."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
+    comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Transaction Office Organization Unit Id"
+    physical_name: "txn_ofc_org_unt_id"
+    description: "FK đến phòng giao dịch CTCK nơi người hành nghề công tác (nullable)."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Transaction Office Organization Unit Code"
+    physical_name: "txn_ofc_org_unt_code"
+    description: "Mã phòng giao dịch."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
+    comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Representative Office Organization Unit Id"
+    physical_name: "rp_ofc_org_unt_id"
+    description: "FK đến VPDD CTCK nơi người hành nghề công tác (nullable)."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE', SC_FIRM_REP_OFFICE_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Representative Office Organization Unit Code"
+    physical_name: "rp_ofc_org_unt_code"
+    description: "Mã VPDD."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
+    comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── SECURITIES LICENSE ───────────────────────────────────────────────
+  - attribute_name: "Securities License Number"
+    physical_name: "scr_lcns_nbr"
+    description: "Số chứng chỉ hành nghề chứng khoán theo SCMS."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SO_CHUNG_CHI_HNCK"
+    comment: "SO_CHUNG_CHI_HNCK — CCHN number canonical từ SCMS. SECURITIES_LICENSE_NUMBER là cột thứ 2 có thể trùng; cần xác nhận. NVARCHAR2(100)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities License Date"
+    physical_name: "scr_lcns_dt"
+    description: "Ngày cấp chứng chỉ hành nghề chứng khoán."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SECURITIES_LICENSE_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Securities License Number (Secondary)"
+    physical_name: "scr_lcns_nbr_sec"
+    description: "Số chứng chỉ hành nghề chứng khoán (cột thứ 2 — cần xác nhận khác SO_CHUNG_CHI_HNCK)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SECURITIES_LICENSE_NUMBER"
+    comment: "Pending — cần xác nhận với team liệu SECURITIES_LICENSE_NUMBER và SO_CHUNG_CHI_HNCK có giá trị khác nhau không. Nếu giống nhau → gộp vào Securities License Number."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── STATUS ────────────────────────────────────────────────────────────
+  - attribute_name: "Work Status Code"
+    physical_name: "wrk_st_code"
+    description: "Trạng thái làm việc tại CTCK: DANG_LAM_VIEC=Đang làm việc; DA_NGHI_VIEC=Đã nghỉ việc."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_STATUS"
+    comment: "Scheme: SCMS_WORK_STATUS. VARCHAR2(20)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái bản ghi tại CTCK: 1=Đương nhiệm/Đang làm việc; 0=Đã nghỉ việc/Miễn nhiệm."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. VARCHAR2(1)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Licensee Status Code"
+    physical_name: "lcns_st_code"
+    description: "Trạng thái người hành nghề tại CTCK."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TRANG_THAI"
+    comment: "Pending — TRANG_THAI NUMBER(1), mô tả gốc BRD trống. Cần xác nhận values và scheme phù hợp."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Verification Status Code"
+    physical_name: "vrfctn_st_code"
+    description: "Trạng thái xác minh CCHN với hệ thống NHNCK: 0=Chờ xác minh; 1=Khớp; 2=Không khớp."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.VERIFICATION_STATUS"
+    comment: "Scheme: SCMS_VERIFICATION_STATUS. NUMBER(10) với giá trị 0/1/2."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── EMPLOYMENT DATES ─────────────────────────────────────────────────
+  - attribute_name: "Work Start Date"
+    physical_name: "wrk_strt_dt"
+    description: "Ngày bắt đầu làm việc tại CTCK."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_START_DATE"
+    comment: "START_DATE có thể trùng — ETL dùng WORK_START_DATE làm canonical."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Work End Date"
+    physical_name: "wrk_end_dt"
+    description: "Ngày kết thúc làm việc tại CTCK."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_END_DATE"
+    comment: "END_DATE có thể trùng — ETL dùng WORK_END_DATE làm canonical."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Appointment Date"
+    physical_name: "appntmt_dt"
+    description: "Ngày bổ nhiệm vào vị trí."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.APPOINTMENT_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Dismissal Date"
+    physical_name: "dsmssl_dt"
+    description: "Ngày miễn nhiệm."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DISMISSAL_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Certificate Issue Date"
+    physical_name: "cert_issue_dt"
+    description: "Ngày cấp giấy tờ/chứng chỉ."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ISSUE_DATE"
+    comment: "Mô tả gốc BRD: Ngày cấp giấy tờ/chứng chỉ."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  # ── BUSINESS / SYNC ───────────────────────────────────────────────────
+  - attribute_name: "Business Line Code"
+    physical_name: "biz_line_code"
+    description: "Nghiệp vụ kinh doanh người hành nghề phụ trách (FK → CAT_BUSINESS_LINE)."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
+    comment: "Scheme: SCMS_BUSINESS_LINE. VARCHAR2(100) — có thể là code hoặc ID."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Business Division Id"
+    physical_name: "biz_div_id"
+    description: "ID phân khu kinh doanh (pending FK target)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_DIVISION_ID"
+    comment: "Pending — FK target chưa xác định. NUMBER(10) — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Responsible Service Id"
+    physical_name: "rspnsbl_svc_id"
+    description: "ID dịch vụ phụ trách (pending FK target)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.RESPONSIBLE_SERVICE_ID"
+    comment: "Pending — FK target chưa xác định. Mô tả gốc BRD trống."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Synced Indicator"
+    physical_name: "syncd_ind"
+    description: "Cờ đã đồng bộ với hệ thống NHNCK: 1=Đã sync; 0=Chưa sync."
+    data_domain: "Boolean"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SYNCED"
+    comment: "NUMBER(1). Mô tả gốc BRD trống."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "boolean"
+
+  - attribute_name: "Sync Timestamp"
+    physical_name: "sync_tms"
+    description: "Thời điểm đồng bộ với hệ thống NHNCK gần nhất."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SYNC_AT"
+    comment: "TIMESTAMP(6). Mô tả gốc BRD trống."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Latest Verification Timestamp"
+    physical_name: "ltst_vrfctn_tms"
+    description: "Thời điểm xác minh CCHN với NHNCK gần nhất."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LATEST_VERIFICATION_AT"
+    comment: "TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Insider Indicator"
+    physical_name: "insdpr_ind"
+    description: "Là người nội bộ của CTCK theo quy định CBTT: 1=Người nội bộ; 0=Không phải."
+    data_domain: "Boolean"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.INSIDER"
+    comment: "NUMBER(10) với giá trị 0/1."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "boolean"
+
+  - attribute_name: "Labor Contract Termination Report Indicator"
+    physical_name: "lbr_cntrt_trm_rpt_ind"
+    description: "Đã nộp báo cáo chấm dứt hợp đồng lao động: 1=Đã nộp; 0=Chưa nộp."
+    data_domain: "Boolean"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LABOR_CONTRACT_TERMINATION_REPORT"
+    comment: "NUMBER(1)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "boolean"
+
+  - attribute_name: "Deleted Indicator"
+    physical_name: "dlrd_ind"
+    description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
+    data_domain: "Boolean"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DELETED"
+    comment: "NUMBER(1). Soft delete — ETL filter trước khi load Atomic."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "boolean"
+
+  # ── TECHNICAL / BATCH ─────────────────────────────────────────────────
+  - attribute_name: "Report Id"
+    physical_name: "rprt_id"
+    description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.REPORT_ID"
+    comment: "Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Batch Id"
+    physical_name: "btch_id"
+    description: "ID batch xử lý đồng bộ dữ liệu."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BATCHID"
+    comment: "VARCHAR2(30) — ID batch từ old system."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Error Text"
+    physical_name: "err_txt"
+    description: "Nội dung lỗi đồng bộ dữ liệu (nếu có)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ERRTEXT"
+    comment: "VARCHAR2(1000). Lỗi từ quá trình sync với NHNCK."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Content"
+    physical_name: "cntnt"
+    description: "Nội dung thông báo/tin nhắn liên quan đến người hành nghề."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CONTENT"
+    comment: "VARCHAR2(1000). Mô tả gốc: Nội dung thông báo/tin nhắn/văn bản."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Attachment Path"
+    physical_name: "attch_path"
+    description: "Đường dẫn file đính kèm."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ATTACHMENT_PATH"
+    comment: "Nguồn CLOB."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Note"
+    physical_name: "note"
+    description: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOTE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── LEGACY PERSONAL INFO (from old-system import) ────────────────────
+  # Các trường tiếng Việt dưới đây là legacy từ hệ thống cũ — trùng với NHNCK.PROFESSIONALS.
+  # ETL ưu tiên NHNCK canonical nếu NHN_ID có giá trị.
+  - attribute_name: "Legacy Full Name"
+    physical_name: "lgcy_full_nm"
+    description: "Họ và tên đầy đủ (từ hệ thống cũ — HOTEN)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.HOTEN"
+    comment: "Legacy duplicate của NHNCK.PROFESSIONALS.FULL_NAME. FULL_NAME (VARCHAR2 500) là canonical nếu có, dùng khi NHN_ID NULL."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Gender Code"
+    physical_name: "lgcy_gndr_code"
+    description: "Giới tính từ hệ thống cũ (GIOITINH — text)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.GIOITINH"
+    comment: "Legacy. VARCHAR2(500) — có thể là '1'/'2' hoặc text. GENDER (NUMBER(10)) là canonical hơn. Từ old system."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Date Of Birth"
+    physical_name: "lgcy_brth_dt"
+    description: "Ngày sinh từ hệ thống cũ (NGAY_SINH)."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NGAY_SINH"
+    comment: "Legacy duplicate của DATE_OF_BIRTH và NHNCK.PROFESSIONALS.DATE_OF_BIRTH."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Legacy Nationality"
+    physical_name: "lgcy_ntlty"
+    description: "Quốc tịch (text) từ hệ thống cũ (QUOCTICH)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.QUOCTICH"
+    comment: "Legacy. NATIONALITY_ID (FK canonical → SCMS_NATIONALITY) là cột chuẩn hơn. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Place Of Birth"
+    physical_name: "lgcy_plc_of_brth"
+    description: "Nơi sinh từ hệ thống cũ (NOISINH)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOISINH"
+    comment: "Legacy. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy National Id Number"
+    physical_name: "lgcy_natl_id_nbr"
+    description: "Số CMND từ hệ thống cũ (SOCMT)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SOCMT"
+    comment: "Legacy duplicate. NATIONAL_ID (VARCHAR2(50)) là canonical. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Id Issue Place"
+    physical_name: "lgcy_id_issue_plc"
+    description: "Nơi cấp CMND từ hệ thống cũ (NOICAPCMT)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOICAPCMT"
+    comment: "Legacy. ISSUE_PLACE là canonical. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Company Name"
+    physical_name: "lgcy_co_nm"
+    description: "Tên công ty từ hệ thống cũ (TENCONGTY)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENCONGTY"
+    comment: "Legacy. Trùng với Securities Company Name — không dùng để join. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Company English Name"
+    physical_name: "lgcy_co_en_nm"
+    description: "Tên công ty tiếng Anh từ hệ thống cũ (TENTIENGANH)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENTIENGANH"
+    comment: "Legacy. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Company Short Name"
+    physical_name: "lgcy_co_shrt_nm"
+    description: "Tên viết tắt công ty từ hệ thống cũ (TENVIETTAT)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENVIETTAT"
+    comment: "Legacy. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy License Number"
+    physical_name: "lgcy_license_nbr"
+    description: "Số giấy phép từ hệ thống cũ (SOGIAYPHEP)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SOGIAYPHEP"
+    comment: "Legacy — trùng SO_CHUNG_CHI_HNCK. VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Department"
+    physical_name: "lgcy_dept"
+    description: "Phòng/Ban từ hệ thống cũ (PHONGBAN)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONGBAN"
+    comment: "Legacy. DEPARTMENT (VARCHAR2(255)) là canonical. VARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Position"
+    physical_name: "lgcy_pstn"
+    description: "Chức vụ từ hệ thống cũ (CHUCVU)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CHUCVU"
+    comment: "Legacy. VARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── LEGACY AUDIT ─────────────────────────────────────────────────────
+  - attribute_name: "Legacy Created Date"
+    physical_name: "lgcy_crt_dt"
+    description: "Ngày tạo từ hệ thống cũ (DATECREATED)."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATECREATED"
+    comment: "Legacy audit. CREATED_AT (TIMESTAMP) là canonical. DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Legacy Created By"
+    physical_name: "lgcy_crt_by"
+    description: "Người tạo từ hệ thống cũ (CREATEDBY)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CREATEDBY"
+    comment: "Legacy audit. VARCHAR2(200) lưu tên/username dạng text."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Updated Date"
+    physical_name: "lgcy_udt_dt"
+    description: "Ngày cập nhật từ hệ thống cũ (DATEMODIFY)."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATEMODIFY"
+    comment: "Legacy audit. LAST_MODIFIED_AT (TIMESTAMP) là canonical."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Legacy Updated By"
+    physical_name: "lgcy_udt_by"
+    description: "Người cập nhật từ hệ thống cũ (MODIFYBY)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.MODIFYBY"
+    comment: "Legacy audit. VARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK (CANONICAL) ──────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CREATED_AT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật bản ghi gần nhất."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LAST_MODIFIED_AT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người dùng hệ thống SCMS tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CREATED_BY"
+    comment: "Pending — Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Id"
+    physical_name: "udt_by_scms_usr_id"
+    description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Code"
+    physical_name: "udt_by_scms_usr_code"
+    description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LAST_MODIFIED_BY"
+    comment: "Pending — Pair with Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

@@ -1,0 +1,94 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "AUDIT_FIRM"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Postal Address"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Shared entity IP Postal Address — extend từ AUDIT_FIRM. Grain: 1 địa chỉ trụ sở chính (HEAD_OFFICE). Nguồn: AUDIT_FIRM.ADDRESS (text). Không có FK tỉnh/huyện/xã trong BRD AUDIT_FIRM → chỉ map Street Address."
+
+attributes:
+  # ── INVOLVED PARTY FK ───────────────────────────────────────────────
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Audit Firm (Involved Party)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDIT_FIRM.ID"
+    comment: "FK target: Audit Firm.Audit Firm Id. Shared entity. Hash: hash_id('SCMS.AUDIT_FIRM', ID)."
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Audit Firm."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDIT_FIRM.ID"
+    comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── ADDRESS TYPE ────────────────────────────────────────────────────
+  - attribute_name: "Address Type Code"
+    physical_name: "addr_type_code"
+    description: "Loại địa chỉ."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE — AUDIT_FIRM chỉ có 1 loại địa chỉ (trụ sở chính)."
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: "HEAD_OFFICE"
+    data_type: "string"
+
+  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
+    etl_derived_value: "SCMS.AUDIT_FIRM"
+    data_type: "string"
+
+  # ── ADDRESS FIELDS ───────────────────────────────────────────────────
+  - attribute_name: "Street Address"
+    physical_name: "street_addr"
+    description: "Địa chỉ trụ sở chính/văn phòng."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDIT_FIRM.ADDRESS"
+    comment: null
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: null
+    data_type: "string"

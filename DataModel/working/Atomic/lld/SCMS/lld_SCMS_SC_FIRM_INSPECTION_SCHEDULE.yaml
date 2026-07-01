@@ -1,0 +1,531 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_INSPECTION_SCHEDULE"
+  atomic_entity: "Securities Company Inspection Schedule"
+  entity_physical_name: "scr_co_inspctn_schd"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Business Activity"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Kế hoạch kiểm tra/thanh tra CTCK. Mỗi dòng = 1 đợt kiểm tra/thanh tra. RECORD_TYPE: loại hoạt động (KIEM_TRA/THANH_TRA → SCMS_INSPECTION_TYPE). FORM_TYPE và INSPECTION_TYPE cùng values DINH_KY/DOT_XUAT — có thể trùng nhau, cần xác nhận sau khi profile; map riêng cùng scheme SCMS_INSPECTION_FORM_TYPE. FROM_DATE/TO_DATE = thời gian thực hiện đoàn kiểm tra. PERIOD_FROM_DATE/PERIOD_TO_DATE = giai đoạn được kiểm tra. INSPECTION_TEAM_JSON (CLOB) excluded. CONCLUSION_SUMMARY và RECOMMENDATIONS (NCLOB) = kết luận và kiến nghị. CONTENT (NCLOB) = nội dung kiểm tra. INSPECTOR_NAME và TEAM_LEADER là tên denormalized. Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT; nguồn DATE — widening sang Timestamp."
+
+attributes:
+  - attribute_name: "Securities Company Inspection Schedule Id"
+    physical_name: "scr_co_inspctn_schd_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Inspection Schedule Code"
+    physical_name: "scr_co_inspctn_schd_code"
+    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.ID"
+    comment: "BK. NUMBER(10) — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_INSPECTION_SCHEDULE"
+    etl_derived_value: "SCMS.SC_FIRM_INSPECTION_SCHEDULE"
+    data_type: "string"
+
+  # ── FK TO PARENT ─────────────────────────────────────────────────────
+  - attribute_name: "Securities Company Id"
+    physical_name: "scr_co_id"
+    description: "FK đến Công ty chứng khoán được kiểm tra/thanh tra."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.SC_FIRM_INFO_ID"
+    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Code"
+    physical_name: "scr_co_code"
+    description: "Mã Công ty chứng khoán."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.SC_FIRM_INFO_ID"
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── CLASSIFICATION ────────────────────────────────────────────────────
+  - attribute_name: "Inspection Type Code"
+    physical_name: "inspctn_tp_code"
+    description: "Loại hoạt động giám sát: KIEM_TRA=Kiểm tra; THANH_TRA=Thanh tra."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.RECORD_TYPE"
+    comment: "Scheme: SCMS_INSPECTION_TYPE. NVARCHAR2(50). Phân biệt kiểm tra (hành chính thông thường) và thanh tra (thẩm quyền cao hơn)."
+    classification_context: "SCMS_INSPECTION_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Inspection Form Type Code"
+    physical_name: "inspctn_form_tp_code"
+    description: "Hình thức kiểm tra: DINH_KY=Định kỳ; DOT_XUAT=Đột xuất (từ FORM_TYPE)."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.FORM_TYPE"
+    comment: "Scheme: SCMS_INSPECTION_FORM_TYPE. NVARCHAR2(50). Xem thêm INSPECTION_TYPE — cùng values, cần xác nhận sự khác biệt sau profile."
+    classification_context: "SCMS_INSPECTION_FORM_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Inspection Category Code"
+    physical_name: "inspctn_ctgry_code"
+    description: "Phân loại đợt kiểm tra theo chu kỳ: DINH_KY=Định kỳ; DOT_XUAT=Đột xuất (từ INSPECTION_TYPE)."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.INSPECTION_TYPE"
+    comment: "Scheme: SCMS_INSPECTION_FORM_TYPE. NVARCHAR2(50). Dùng chung scheme với FORM_TYPE. Cần profile để xác nhận FORM_TYPE vs INSPECTION_TYPE có khác nhau không — nếu luôn giống nhau có thể bỏ 1 trường."
+    classification_context: "SCMS_INSPECTION_FORM_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái bản ghi: 1=Đang hoạt động; 0=Ngừng hoạt động."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+    classification_context: "SCMS_USAGE_STATUS"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── DECISION & SCHEDULE ───────────────────────────────────────────────
+  - attribute_name: "Decision Number"
+    physical_name: "dcn_nbr"
+    description: "Số hiệu quyết định kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.DECISION_NUMBER"
+    comment: "VARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Decision Date"
+    physical_name: "dcn_dt"
+    description: "Ngày ban hành quyết định kiểm tra/thanh tra."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.DECISION_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Decision Content"
+    physical_name: "dcn_cntnt"
+    description: "Nội dung quyết định kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.DECISION_CONTENT"
+    comment: "NVARCHAR2(2000)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Start Date"
+    physical_name: "strt_dt"
+    description: "Ngày bắt đầu thực hiện kiểm tra/thanh tra."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.START_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "End Date"
+    physical_name: "end_dt"
+    description: "Ngày kết thúc thực hiện kiểm tra/thanh tra."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.END_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Inspection From Date"
+    physical_name: "inspctn_from_dt"
+    description: "Ngày bắt đầu của giai đoạn được kiểm tra."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.FROM_DATE"
+    comment: "DATE. Phân biệt với START_DATE: FROM_DATE là ngày đầu giai đoạn dữ liệu được kiểm tra; START_DATE là ngày đoàn bắt đầu làm việc."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Inspection To Date"
+    physical_name: "inspctn_to_dt"
+    description: "Ngày kết thúc của giai đoạn được kiểm tra."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.TO_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Period From Date"
+    physical_name: "prd_from_dt"
+    description: "Ngày bắt đầu kỳ báo cáo được kiểm tra."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.PERIOD_FROM_DATE"
+    comment: "DATE. Khác FROM_DATE: PERIOD_FROM_DATE là kỳ báo cáo tài chính được kiểm tra (VD: từ 01/01/2023)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Period To Date"
+    physical_name: "prd_to_dt"
+    description: "Ngày kết thúc kỳ báo cáo được kiểm tra."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.PERIOD_TO_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  # ── TEAM ──────────────────────────────────────────────────────────────
+  - attribute_name: "Team Leader"
+    physical_name: "team_ldr"
+    description: "Tên trưởng đoàn kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.TEAM_LEADER"
+    comment: "NVARCHAR2(500). Denormalized text."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Inspector Name"
+    physical_name: "inspctr_nm"
+    description: "Tên kiểm tra viên."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.INSPECTOR_NAME"
+    comment: "NVARCHAR2(500). Denormalized text. Có thể là tên cá nhân hoặc danh sách."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Implementing Unit"
+    physical_name: "impl_unt"
+    description: "Đơn vị thực hiện kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.IMPLEMENTING_UNIT"
+    comment: "NVARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AMOUNT ────────────────────────────────────────────────────────────
+  - attribute_name: "Amount"
+    physical_name: "amt"
+    description: "Số tiền liên quan đến đợt kiểm tra/thanh tra."
+    data_domain: "Currency Amount"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.AMOUNT"
+    comment: "NUMBER(38). Không có scale — integer-like. Mô tả gốc BRD trống — cần xác nhận ngữ nghĩa (phí phạt? giá trị tài sản kiểm tra?)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  # ── CONTENT & CONCLUSIONS ─────────────────────────────────────────────
+  - attribute_name: "Content"
+    physical_name: "cntnt"
+    description: "Nội dung kế hoạch kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CONTENT"
+    comment: "NCLOB. Large text."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Conclusion Summary"
+    physical_name: "cnclsn_smry"
+    description: "Tóm tắt kết luận kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CONCLUSION_SUMMARY"
+    comment: "NCLOB."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Recommendations"
+    physical_name: "rcmdtns"
+    description: "Kiến nghị sau kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.RECOMMENDATIONS"
+    comment: "NCLOB."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Conclusion Document Number"
+    physical_name: "cnclsn_doc_nbr"
+    description: "Số hiệu văn bản kết luận kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CONCLUSION_DOC_NUMBER"
+    comment: "VARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Conclusion Document Date"
+    physical_name: "cnclsn_doc_dt"
+    description: "Ngày ban hành văn bản kết luận."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CONCLUSION_DOC_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Decision File Path"
+    physical_name: "dcn_file_path"
+    description: "Đường dẫn file quyết định kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.DECISION_FILE_PATH"
+    comment: "VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Conclusion Document File Path"
+    physical_name: "cnclsn_doc_file_path"
+    description: "Đường dẫn file văn bản kết luận kiểm tra/thanh tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CONCLUSION_DOC_FILE_PATH"
+    comment: "VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Attachment Path"
+    physical_name: "attch_path"
+    description: "Đường dẫn file đính kèm của đợt kiểm tra."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.ATTACHMENT_PATH"
+    comment: "VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CREATED_AT"
+    comment: "Nguồn data type DATE — widening sang Timestamp."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật bản ghi gần nhất."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.LAST_MODIFIED_AT"
+    comment: "Nguồn data type DATE — widening sang Timestamp."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.CREATED_BY"
+    comment: "Pending — Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Id"
+    physical_name: "udt_by_scms_usr_id"
+    description: "FK đến người cập nhật bản ghi gần nhất."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Code"
+    physical_name: "udt_by_scms_usr_code"
+    description: "Mã người cập nhật bản ghi gần nhất."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_INSPECTION_SCHEDULE.LAST_MODIFIED_BY"
+    comment: "Pending — Pair with Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

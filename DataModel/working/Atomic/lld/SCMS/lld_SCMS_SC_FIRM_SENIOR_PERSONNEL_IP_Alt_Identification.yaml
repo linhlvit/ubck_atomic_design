@@ -1,0 +1,105 @@
+schema_type: "lld_shared_ip_alt_identification"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_SENIOR_PERSONNEL"
+  atomic_entity: "IP Alt Identification"
+  entity_physical_name: "ip_alt_id"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Alt Identification"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Securities Company Senior Personnel. ETL tạo 2 rows per nhân sự: Row 1 — NATIONAL_ID (CCCD/CMND/Hộ chiếu — canonical, không có issue date/place riêng trong nguồn vì ISSUE_DATE/ISSUE_PLACE có thể dùng chung); Row 2 — ID_NUMBER (CMND legacy — type LEGACY_ID). ISSUE_DATE và ISSUE_PLACE có thể gắn với ID_NUMBER (vì NATIONAL_ID là format mới hơn thường không lưu ngày cấp riêng). Cần xác nhận team."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Senior Personnel."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
+    comment: "FK target: Securities Company Senior Personnel.Securities Company Senior Personnel Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "id_tp_code"
+    description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu hiện tại; LEGACY_CMND=CMND cũ."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot: NATIONAL_ID → type NATIONAL_ID; ID_NUMBER → type LEGACY_CMND."
+    classification_context: "IP_ALT_ID_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SENIOR_PERSONNEL"
+    etl_derived_value: "SCMS.SC_FIRM_SENIOR_PERSONNEL"
+    data_type: "string"
+
+  - attribute_name: "Identification Number"
+    physical_name: "id_nbr"
+    description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID"
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID_NUMBER"
+    comment: "ETL pivot: NATIONAL_ID → row NATIONAL_ID; ID_NUMBER → row LEGACY_CMND."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Issue Date"
+    physical_name: "issue_dt"
+    description: "Ngày cấp giấy tờ tùy thân."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_DATE"
+    comment: "Gắn với row LEGACY_CMND (ID_NUMBER). NATIONAL_ID (mới) thường không có ISSUE_DATE riêng trong nguồn — cần xác nhận."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Issue Place"
+    physical_name: "issue_plc"
+    description: "Nơi cấp giấy tờ tùy thân."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_PLACE"
+    comment: "Gắn với row LEGACY_CMND (ID_NUMBER). Cần xác nhận có áp dụng cho NATIONAL_ID không."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

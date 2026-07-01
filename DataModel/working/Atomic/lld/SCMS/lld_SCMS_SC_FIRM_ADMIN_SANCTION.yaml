@@ -1,0 +1,332 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ADMIN_SANCTION"
+  atomic_entity: "Securities Company Administrative Sanction"
+  entity_physical_name: "scr_co_adm_snctn"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Business Activity"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Biện pháp xử lý hành chính đối với CTCK (hình thức nhẹ hơn hoặc bổ sung cho quyết định xử phạt). Mỗi dòng = 1 biện pháp xử lý. CONTENT (NCLOB) = nội dung chi tiết biện pháp. BIEN_PHAP_KHAC_PHUC = biện pháp khắc phục (NVARCHAR2 2000). AMOUNT = số tiền xử phạt (NUMBER 38 không có scale — integer-like, map Currency Amount). Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT; nguồn DATE — widening sang Timestamp."
+
+attributes:
+  - attribute_name: "Securities Company Administrative Sanction Id"
+    physical_name: "scr_co_adm_snctn_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Administrative Sanction Code"
+    physical_name: "scr_co_adm_snctn_code"
+    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.ID"
+    comment: "BK. NUMBER(10) — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_ADMIN_SANCTION"
+    etl_derived_value: "SCMS.SC_FIRM_ADMIN_SANCTION"
+    data_type: "string"
+
+  # ── FK TO PARENT ─────────────────────────────────────────────────────
+  - attribute_name: "Securities Company Id"
+    physical_name: "scr_co_id"
+    description: "FK đến Công ty chứng khoán bị xử lý hành chính."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.SC_FIRM_INFO_ID"
+    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Code"
+    physical_name: "scr_co_code"
+    description: "Mã Công ty chứng khoán."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.SC_FIRM_INFO_ID"
+    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── CLASSIFICATION ────────────────────────────────────────────────────
+  - attribute_name: "Sanction Form Type Code"
+    physical_name: "snctn_form_tp_code"
+    description: "Hình thức xử lý hành chính: CANH_CAO=Cảnh cáo; PHAT_TIEN=Phạt tiền; DINH_CHI=Đình chỉ; TUOC_GIAY_PHEP=Tước giấy phép."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.FORM_TYPE"
+    comment: "Scheme: SCMS_ADMIN_SANCTION_TYPE. NVARCHAR2(50)."
+    classification_context: "SCMS_ADMIN_SANCTION_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái bản ghi: 1=Đang hoạt động; 0=Ngừng hoạt động."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+    classification_context: "SCMS_USAGE_STATUS"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── SANCTION DETAILS ──────────────────────────────────────────────────
+  - attribute_name: "Amount"
+    physical_name: "amt"
+    description: "Số tiền xử phạt hành chính."
+    data_domain: "Currency Amount"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.AMOUNT"
+    comment: "NUMBER(38). Không có scale — integer-like. Đơn vị VND. ETL widening sang decimal."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Content"
+    physical_name: "cntnt"
+    description: "Nội dung chi tiết biện pháp xử lý hành chính."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.CONTENT"
+    comment: "NCLOB. Large text — lưu nguyên vẹn."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Decision Content"
+    physical_name: "dcn_cntnt"
+    description: "Nội dung quyết định xử phạt liên quan."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.DECISION_CONTENT"
+    comment: "NVARCHAR2(2000)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Decision Date"
+    physical_name: "dcn_dt"
+    description: "Ngày ban hành quyết định xử lý hành chính."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.DECISION_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Additional Penalty"
+    physical_name: "addtl_pnlty"
+    description: "Mô tả hình phạt bổ sung kèm theo biện pháp xử lý chính."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.ADDITIONAL_PENALTY"
+    comment: "NVARCHAR2(2000). Free-text mô tả."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Additional Penalty Date"
+    physical_name: "addtl_pnlty_dt"
+    description: "Ngày áp dụng hình phạt bổ sung."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.ADDITIONAL_PENALTY_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Remediation Measures"
+    physical_name: "rmdy_msrs"
+    description: "Biện pháp khắc phục hậu quả vi phạm."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.BIEN_PHAP_KHAC_PHUC"
+    comment: "NVARCHAR2(2000). Tên cột nguồn tiếng Việt: Biện pháp khắc phục."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Processing Unit"
+    physical_name: "prcs_unt"
+    description: "Đơn vị xử lý biện pháp hành chính."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.PROCESSING_UNIT"
+    comment: "NVARCHAR2(200)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Attachment Path"
+    physical_name: "attch_path"
+    description: "Đường dẫn file đính kèm biện pháp xử lý."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.ATTACHMENT_PATH"
+    comment: "VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.CREATED_AT"
+    comment: "Nguồn data type DATE — widening sang Timestamp."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật bản ghi gần nhất."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.LAST_MODIFIED_AT"
+    comment: "Nguồn data type DATE — widening sang Timestamp."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.CREATED_BY"
+    comment: "Pending — Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Id"
+    physical_name: "udt_by_scms_usr_id"
+    description: "FK đến người cập nhật bản ghi gần nhất."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Code"
+    physical_name: "udt_by_scms_usr_code"
+    description: "Mã người cập nhật bản ghi gần nhất."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.SC_FIRM_ADMIN_SANCTION.LAST_MODIFIED_BY"
+    comment: "Pending — Pair with Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

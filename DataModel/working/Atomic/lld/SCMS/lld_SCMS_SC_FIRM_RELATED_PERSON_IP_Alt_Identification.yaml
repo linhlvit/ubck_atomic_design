@@ -1,0 +1,76 @@
+schema_type: "lld_shared_ip_alt_identification"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_RELATED_PERSON"
+  atomic_entity: "IP Alt Identification"
+  entity_physical_name: "ip_alt_id"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Alt Identification"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Securities Company Related Person. 1 row — IDENTIFICATION_NUMBER → type NATIONAL_ID (CCCD/CMND/Hộ chiếu/Mã số doanh nghiệp tuỳ ENTITY_TYPE). Issue Date và Issue Place đã map tại entity chính."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Related Person."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_RELATED_PERSON.ID"
+    comment: "FK target: Securities Company Related Person.Securities Company Related Person Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "id_tp_code"
+    description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu (cá nhân) hoặc Mã số doanh nghiệp (tổ chức — theo ENTITY_TYPE)."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột IDENTIFICATION_NUMBER. Cần xác nhận: khi ENTITY_TYPE=TO_CHUC thì loại giấy tờ có nên là ORG_REG_NUMBER không?"
+    classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+    etl_derived_value: "NATIONAL_ID"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_RELATED_PERSON"
+    etl_derived_value: "SCMS.SC_FIRM_RELATED_PERSON"
+    data_type: "string"
+
+  - attribute_name: "Identification Number"
+    physical_name: "id_nbr"
+    description: "Số giấy tờ tùy thân / Mã số doanh nghiệp."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_RELATED_PERSON.IDENTIFICATION_NUMBER"
+    comment: "VARCHAR2 — cần profile length. Mô tả gốc BRD trống."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

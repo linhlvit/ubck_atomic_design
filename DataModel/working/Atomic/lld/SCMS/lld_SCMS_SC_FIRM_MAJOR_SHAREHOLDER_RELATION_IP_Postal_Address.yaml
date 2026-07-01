@@ -1,0 +1,76 @@
+schema_type: "lld_shared_ip_postal"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
+  atomic_entity: "IP Postal Address"
+  entity_physical_name: "ip_pstl_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Postal Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Postal Address của Securities Company Major Shareholder Relation. 1 row — ADDRESS (VARCHAR2 500) → type CURRENT (địa chỉ hiện tại). Cột không rõ loại địa chỉ cụ thể (permanent/current) — hardcode CURRENT theo ngữ nghĩa phổ biến. Không có Province/District/Ward FK."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Major Shareholder Relation."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
+    comment: "FK target: Securities Company Major Shareholder Relation.Securities Company Major Shareholder Relation Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "addr_tp_code"
+    description: "Loại địa chỉ: CURRENT=Địa chỉ hiện tại của cổ đông lớn."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode CURRENT — cột ADDRESS không có type cụ thể, mặc định là địa chỉ hiện tại. Cần xác nhận team nếu cần phân biệt CURRENT/PERMANENT."
+    classification_context: "IP_ADDR_TYPE=CURRENT"
+    etl_derived_value: "CURRENT"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
+    etl_derived_value: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
+    data_type: "string"
+
+  - attribute_name: "Street Address"
+    physical_name: "strt_addr"
+    description: "Địa chỉ của cổ đông lớn."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ADDRESS"
+    comment: "VARCHAR2(500). Mô tả gốc BRD: 'Địa chỉ cổ đông lớn'. Không có Province/District/Ward FK."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

@@ -1,0 +1,76 @@
+schema_type: "lld_shared_ip_postal"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_SENIOR_PERSONNEL"
+  atomic_entity: "IP Postal Address"
+  entity_physical_name: "ip_pstl_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Postal Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Postal Address của Securities Company Senior Personnel. 1 row per nhân sự cấp cao (ADDRESS text), addr_type_code hardcode HOME — địa chỉ cá nhân. SC_FIRM_SENIOR_PERSONNEL không có PROVINCE_ID/DISTRICT_ID/WARD_ID."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Senior Personnel."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
+    comment: "FK target: Securities Company Senior Personnel.Securities Company Senior Personnel Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "addr_tp_code"
+    description: "Loại địa chỉ: HOME=Địa chỉ cá nhân nhân sự cấp cao."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode HOME — SC_FIRM_SENIOR_PERSONNEL có 1 cột ADDRESS là địa chỉ cá nhân."
+    classification_context: "IP_ADDR_TYPE=HOME"
+    etl_derived_value: "HOME"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SENIOR_PERSONNEL"
+    etl_derived_value: "SCMS.SC_FIRM_SENIOR_PERSONNEL"
+    data_type: "string"
+
+  - attribute_name: "Street Address"
+    physical_name: "strt_addr"
+    description: "Địa chỉ trụ sở chính/văn phòng của nhân sự cấp cao."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SENIOR_PERSONNEL.ADDRESS"
+    comment: "Text — không có Province/District/Ward FK."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

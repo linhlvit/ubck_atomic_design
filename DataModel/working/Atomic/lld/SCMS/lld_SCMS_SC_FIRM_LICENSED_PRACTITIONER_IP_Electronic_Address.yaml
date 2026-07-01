@@ -1,0 +1,78 @@
+schema_type: "lld_shared_ip_electronic"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  atomic_entity: "IP Electronic Address"
+  entity_physical_name: "ip_elec_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Electronic Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Electronic Address của Securities Practitioner (nguồn SCMS.SC_FIRM_LICENSED_PRACTITIONER). ETL pivot 3 cột → 3 rows per người hành nghề: DIENTHOAI → PHONE (điện thoại bàn/cố định); DIDONG → MOBILE_PHONE (di động); EMAIL → EMAIL. Không có WEBSITE trong bảng nguồn."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+    comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Electronic Address Type Code"
+    physical_name: "elec_addr_tp_code"
+    description: "Loại địa chỉ điện tử: PHONE=Điện thoại bàn; MOBILE_PHONE=Di động; EMAIL=Thư điện tử."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. ETL pivot: DIENTHOAI → PHONE; DIDONG → MOBILE_PHONE; EMAIL → EMAIL. Cần xác nhận MOBILE_PHONE có trong scheme IP_ELEC_ADDR_TYPE (SENIOR_PERSONNEL chỉ có PHONE/FAX/EMAIL/DISCLOSURE_EMAIL)."
+    classification_context: "IP_ELEC_ADDR_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+    etl_derived_value: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+    data_type: "string"
+
+  - attribute_name: "Electronic Address Value"
+    physical_name: "elec_addr_val"
+    description: "Giá trị địa chỉ điện tử (số điện thoại / số di động / địa chỉ email)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DIENTHOAI"
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DIDONG"
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.EMAIL"
+    comment: "ETL pivot: value lấy từ cột tương ứng với Electronic Address Type Code. DIENTHOAI=NVARCHAR2; DIDONG=NVARCHAR2; EMAIL=VARCHAR2."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

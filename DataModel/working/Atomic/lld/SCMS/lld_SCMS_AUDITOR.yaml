@@ -1,0 +1,217 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "AUDITOR"
+  atomic_entity: "Audit Firm Auditor"
+  entity_physical_name: "audt_firm_audtr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Auditor"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "AUDITOR → Audit Firm Auditor. Kiểm toán viên cá nhân đang công tác tại công ty kiểm toán được CTCK chỉ định. FK đến AUDIT_FIRM (T1). Cấu trúc đơn giản: không có CREATED_BY/LAST_MODIFIED_BY → audit block chỉ có 2 timestamp. Không có ADDRESS/PHONE → không có IP shared entities."
+
+attributes:
+  - attribute_name: "Audit Firm Auditor Id"
+    physical_name: "audt_firm_audtr_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Involved Party] Auditor\". Kiểm toán viên cá nhân trực thuộc công ty kiểm toán."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Audit Firm Auditor Code"
+    physical_name: "audt_firm_audtr_code"
+    description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.ID"
+    comment: "BK chính. PK nguồn (NUMBER(10) — ETL convert sang string)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.AUDITOR"
+    etl_derived_value: "SCMS.AUDITOR"
+    data_type: "string"
+
+  - attribute_name: "Audit Firm Id"
+    physical_name: "audt_firm_id"
+    description: "FK đến Công ty kiểm toán."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.AUDIT_FIRM_ID"
+    comment: "FK target: Audit Firm.Audit Firm Id. Hash: hash_id('SCMS.AUDIT_FIRM', AUDIT_FIRM_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Audit Firm Code"
+    physical_name: "audt_firm_code"
+    description: "Mã Công ty kiểm toán."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.AUDIT_FIRM_ID"
+    comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Full Name"
+    physical_name: "full_nm"
+    description: "Họ và tên đầy đủ của kiểm toán viên."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.FULL_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Certificate Number"
+    physical_name: "cert_nbr"
+    description: "Số chứng chỉ hành nghề kiểm toán."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.CERTIFICATE_NUMBER"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Certificate Issue Date"
+    physical_name: "cert_issue_dt"
+    description: "Ngày cấp chứng chỉ hành nghề kiểm toán."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.ISSUE_DATE"
+    comment: "Nguồn lưu TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Approval Date"
+    physical_name: "aprvl_dt"
+    description: "Ngày phê duyệt kiểm toán viên cho hoạt động kiểm toán CTCK."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.APPROVAL_DATE"
+    comment: "Mô tả gốc BRD trống."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Approval Revocation Date"
+    physical_name: "aprvl_rvktn_dt"
+    description: "Ngày thu hồi/hủy phê duyệt kiểm toán viên."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.APPROVAL_REVOCATION_DATE"
+    comment: "Mô tả gốc BRD trống."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái hành nghề: 1=Đang hành nghề; 0=Đã ngừng hành nghề."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. Giá trị 0/1 (NUMBER(1))."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Note"
+    physical_name: "note"
+    description: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.NOTE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK ─────────────────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.CREATED_AT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật bản ghi gần nhất."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.LAST_MODIFIED_AT"
+    comment: "AUDITOR không có CREATED_BY/LAST_MODIFIED_BY — audit block chỉ có timestamp, không có user FK."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"

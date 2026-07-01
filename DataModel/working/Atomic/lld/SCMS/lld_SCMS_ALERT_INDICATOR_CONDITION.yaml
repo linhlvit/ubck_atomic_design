@@ -1,0 +1,445 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR_CONDITION"
+  atomic_entity: "Securities Company Alert Indicator Condition"
+  entity_physical_name: "scr_co_alrt_ind_cndtn"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Alert Rule"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Điều kiện kích hoạt cảnh báo cho từng chỉ tiêu cảnh báo. Mỗi dòng = 1 điều kiện cụ thể cho 1 Alert Indicator. FK → ALERT_INDICATOR (T1 entity). NGAY_SUA/NGUOI_SUA_ID: legacy audit fields (tiếng Việt) — bảng có cả bộ CREATED_AT/BY + LAST_MODIFIED_AT/BY chuẩn lẫn legacy NGAY_SUA/NGUOI_SUA. Map cả hai. OPERATOR/OPERATOR_2: toán tử so sánh (>, <, =...). GIA_TRI_SO_SANH (NUMBER no scale): giá trị so sánh nguyên. SCORE/ITEM_VALUE/VALUE_2 (NUMBER 38,2): các giá trị số thập phân. SEVERITY → SCMS_VIOLATION_SEVERITY. COMPARISON_VALUE_TYPE → SCMS_COMPARISON_VALUE_TYPE (new). SORT_ORDER (NUMBER 10): thứ tự sắp xếp."
+
+attributes:
+  - attribute_name: "Securities Company Alert Indicator Condition Id"
+    physical_name: "scr_co_alrt_ind_cndtn_id"
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "PK surrogate."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Alert Indicator Condition Code"
+    physical_name: "scr_co_alrt_ind_cndtn_code"
+    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.ID"
+    comment: "BK. NUMBER(10) — ETL convert sang string."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.ALERT_INDICATOR_CONDITION"
+    etl_derived_value: "SCMS.ALERT_INDICATOR_CONDITION"
+    data_type: "string"
+
+  # ── FK TO PARENT ─────────────────────────────────────────────────────
+  - attribute_name: "Securities Company Alert Indicator Id"
+    physical_name: "scr_co_alrt_ind_id"
+    description: "FK đến Chỉ tiêu cảnh báo mà điều kiện này thuộc về."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.ALERT_INDICATOR_ID"
+    comment: "FK target: Securities Company Alert Indicator.Securities Company Alert Indicator Id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Securities Company Alert Indicator Code"
+    physical_name: "scr_co_alrt_ind_code"
+    description: "Mã Chỉ tiêu cảnh báo."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.ALERT_INDICATOR_ID"
+    comment: "Lookup pair: Securities Company Alert Indicator.Securities Company Alert Indicator Code. Pair with Securities Company Alert Indicator Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── CLASSIFICATION ────────────────────────────────────────────────────
+  - attribute_name: "Record Status Code"
+    physical_name: "rcrd_st_code"
+    description: "Trạng thái điều kiện cảnh báo: 1=Đang sử dụng; 0=Không sử dụng."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.RECORD_STATUS"
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1). Mô tả gốc BRD: 'Trang thai dieu kien canh bao: 0 = Khong su dung; 1 = Dang su dung'."
+    classification_context: "SCMS_USAGE_STATUS"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Severity Code"
+    physical_name: "svrt_code"
+    description: "Mức độ nghiêm trọng: 1=Thấp; 2=Trung bình; 3=Cao."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.SEVERITY"
+    comment: "Scheme: SCMS_VIOLATION_SEVERITY. NUMBER(10) — ETL convert sang string. Dùng chung scheme với ALERT_VIOLATION (cùng giá trị 1/2/3)."
+    classification_context: "SCMS_VIOLATION_SEVERITY"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Comparison Value Type Code"
+    physical_name: "cmprsn_val_tp_code"
+    description: "Loại giá trị so sánh: FIXED=Giá trị cố định; PERCENTAGE=Tỷ lệ phần trăm; FORMULA=Công thức tính toán."
+    data_domain: "Classification Value"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.COMPARISON_VALUE_TYPE"
+    comment: "Scheme: SCMS_COMPARISON_VALUE_TYPE. NVARCHAR2(20)."
+    classification_context: "SCMS_COMPARISON_VALUE_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── CONDITION DEFINITION ──────────────────────────────────────────────
+  - attribute_name: "Condition Name"
+    physical_name: "cndtn_nm"
+    description: "Tên/nhãn của điều kiện cảnh báo."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.CONDITION_NAME"
+    comment: "NVARCHAR2(500). Mô tả gốc BRD null."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Condition"
+    physical_name: "cndtn"
+    description: "Điều kiện áp dụng (biểu thức logic)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.CONDITION"
+    comment: "NVARCHAR2(50). Biểu thức điều kiện logic — có thể chứa toán tử, tham chiếu chỉ tiêu."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Upper Condition"
+    physical_name: "upr_cndtn"
+    description: "Điều kiện giới hạn trên bổ sung."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.UPPER_CONDITION"
+    comment: "VARCHAR2(50). Mô tả gốc BRD null — có thể là điều kiện ràng buộc biên trên."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Operator"
+    physical_name: "oprt"
+    description: "Toán tử so sánh (>, <, =, >=, <=, !=)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.OPERATOR"
+    comment: "VARCHAR2(20). Toán tử áp dụng cho GIA_TRI_SO_SANH."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Operator 2"
+    physical_name: "oprt_2"
+    description: "Toán tử so sánh thứ hai (cho điều kiện kết hợp)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.OPERATOR_2"
+    comment: "NVARCHAR2(20). Mô tả gốc BRD null. Pair với VALUE_2."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Comparison Value"
+    physical_name: "cmprsn_val"
+    description: "Cột gia_tri_so_sanh — giá trị ngưỡng so sánh chính."
+    data_domain: "Small Counter"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.GIA_TRI_SO_SANH"
+    comment: "NUMBER (không có scale) — integer-like. Dùng Small Counter. Cần profile: nếu có giá trị thập phân thực tế → đổi sang Percentage."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "long"
+
+  - attribute_name: "Item Value"
+    physical_name: "itm_val"
+    description: "Giá trị phần tử của điều kiện (ngưỡng số thập phân)."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.ITEM_VALUE"
+    comment: "NUMBER(38,2). Mô tả gốc BRD null — cần profile."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Value 2"
+    physical_name: "val_2"
+    description: "Giá trị so sánh thứ hai (cho điều kiện kết hợp với OPERATOR_2)."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.VALUE_2"
+    comment: "NUMBER(38,2). Mô tả gốc BRD null — pair với OPERATOR_2."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Score"
+    physical_name: "scr"
+    description: "Điểm số áp dụng khi điều kiện cảnh báo này được kích hoạt."
+    data_domain: "Percentage"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.SCORE"
+    comment: "NUMBER(38,2). Điểm deducted/added khi cảnh báo kích hoạt."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "decimal"
+
+  - attribute_name: "Frequency"
+    physical_name: "freq"
+    description: "Tần suất kiểm tra điều kiện cảnh báo."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.FREQUENCY"
+    comment: "NVARCHAR2(200). Mô tả gốc BRD null — cần profile giá trị (hàng ngày/hàng tuần/...)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Sort Order"
+    physical_name: "srt_ord"
+    description: "Thứ tự sắp xếp hiển thị của điều kiện trong danh sách."
+    data_domain: "Small Counter"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.SORT_ORDER"
+    comment: "NUMBER(10)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "integer"
+
+  - attribute_name: "Description"
+    physical_name: "dscrptn"
+    description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.DESCRIPTION"
+    comment: "VARCHAR2(500)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Note"
+    physical_name: "note"
+    description: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.NOTE"
+    comment: "NVARCHAR2(2000)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── LEGACY AUDIT (NGAY_SUA / NGUOI_SUA) ──────────────────────────────
+  - attribute_name: "Legacy Updated Timestamp"
+    physical_name: "lgcy_udt_tms"
+    description: "Thời điểm sửa đổi — trường legacy tiếng Việt (NGAY_SUA)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.NGAY_SUA"
+    comment: "TIMESTAMP(6). Legacy field — bảng có cả LAST_MODIFIED_AT chuẩn. Cần xác nhận ETL chọn field nào làm canonical Updated Timestamp."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Legacy Updated By SCMS User Id"
+    physical_name: "lgcy_udt_by_scms_usr_id"
+    description: "FK đến người sửa đổi — trường legacy tiếng Việt (NGUOI_SUA_ID)."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.NGUOI_SUA_ID"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Legacy field — bảng có cả LAST_MODIFIED_BY chuẩn. NUMBER(10)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Legacy Updated By SCMS User Code"
+    physical_name: "lgcy_udt_by_scms_usr_code"
+    description: "Mã người sửa đổi — trường legacy tiếng Việt."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.NGUOI_SUA_ID"
+    comment: "Pending — Pair with Legacy Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  # ── AUDIT BLOCK (CANONICAL) ───────────────────────────────────────────
+  - attribute_name: "Created Timestamp"
+    physical_name: "crt_tms"
+    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.CREATED_AT"
+    comment: "TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Updated Timestamp"
+    physical_name: "udt_tms"
+    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
+    data_domain: "Timestamp"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.LAST_MODIFIED_AT"
+    comment: "TIMESTAMP(6)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "timestamp"
+
+  - attribute_name: "Created By SCMS User Id"
+    physical_name: "crt_by_scms_usr_id"
+    description: "FK đến người tạo bản ghi."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.CREATED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Created By SCMS User Code"
+    physical_name: "crt_by_scms_usr_code"
+    description: "Mã người tạo bản ghi."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.CREATED_BY"
+    comment: "Pending — Pair with Created By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Id"
+    physical_name: "udt_by_scms_usr_id"
+    description: "FK đến người cập nhật bản ghi lần cuối."
+    data_domain: "Surrogate Key"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.LAST_MODIFIED_BY"
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Updated By SCMS User Code"
+    physical_name: "udt_by_scms_usr_code"
+    description: "Mã người cập nhật bản ghi lần cuối."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "pending"
+    source_columns:
+      - "SCMS.ALERT_INDICATOR_CONDITION.LAST_MODIFIED_BY"
+    comment: "Pending — Pair with Updated By SCMS User Id."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

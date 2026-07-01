@@ -1,0 +1,79 @@
+schema_type: "lld_shared_ip_electronic"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_BRANCH"
+  atomic_entity: "IP Electronic Address"
+  entity_physical_name: "ip_elec_addr"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Electronic Address"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Electronic Address của Securities Company Organization Unit (type BRANCH). ETL pivot: 4 cột PHONE/FAX/EMAIL/WEBSITE → 4 rows per branch. Lưu ý: SC_FIRM_BRANCH có 2 cột điện thoại PHONE và PHONE_NUMBER — PHONE là canonical (mô tả Số điện thoại), PHONE_NUMBER là trùng lặp legacy (mô tả Số điện thoại chi nhánh); ETL dùng PHONE làm source chính, ghi chú PHONE_NUMBER."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Organization Unit (chi nhánh CTCK)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.ID"
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_BRANCH', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Electronic Address Type Code"
+    physical_name: "elec_addr_tp_code"
+    description: "Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax; EMAIL=Email; WEBSITE=Website."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ELEC_ADDR_TYPE. ETL pivot: 1 row/type. PHONE → from PHONE (canonical, PHONE_NUMBER trùng lặp bỏ qua); FAX → from FAX; EMAIL → from EMAIL; WEBSITE → from WEBSITE."
+    classification_context: "IP_ELEC_ADDR_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_BRANCH"
+    etl_derived_value: "SCMS.SC_FIRM_BRANCH"
+    data_type: "string"
+
+  - attribute_name: "Electronic Address Value"
+    physical_name: "elec_addr_val"
+    description: "Giá trị địa chỉ điện tử (số điện thoại / số fax / địa chỉ email / URL website)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_BRANCH.PHONE"
+      - "SCMS.SC_FIRM_BRANCH.FAX"
+      - "SCMS.SC_FIRM_BRANCH.EMAIL"
+      - "SCMS.SC_FIRM_BRANCH.WEBSITE"
+    comment: "ETL pivot: value lấy từ column tương ứng với Electronic Address Type Code. PHONE_NUMBER (SC_FIRM_BRANCH) là duplicate của PHONE — ETL bỏ qua PHONE_NUMBER, chỉ dùng PHONE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
