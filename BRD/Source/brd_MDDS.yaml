@@ -2,7 +2,7 @@
 description: "Hệ thống phân phối dữ liệu thị trường — Bảng giá, sổ khớp, chỉ số thị trường realtime"
 brd_entries:
   # UID-01 — Thị trường và chỉ số tổng hợp
-  - brd_id: BRD-SRC-MDDS-MarketInfor
+  - brd_id: BRD-SRC-MDDS-JAD_MARKETINFOR
     brd_name: "Design Atomic từ nguồn MDDS bảng MarketInfor"
     type: Theo Source
     ba_email: username@fssc.com.vn
@@ -20,33 +20,11 @@ brd_entries:
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
+        data_change_mode: Append
+        filter_logic: "TRADINGDATE = {etl_date}"
+        filter_note: "Snapshot EOD theo ngày giao dịch — append 1 batch mỗi ngày"
 
-  - brd_id: BRD-SRC-MDDS-IDXInfor
-    brd_name: "Design Atomic từ nguồn MDDS bảng IDXInfor"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Snapshot đầy đủ của một chỉ số thị trường: giá trị, OHLC trong ngày, thống kê mã trong rổ, phân loại loại chỉ số"
-      functional_group: "UID-01 Thị trường và chỉ số tổng hợp"
-      scope_status: out_of_scope
-      scope_reason: "Người thiết kế xác nhận loại khỏi scope — không thiết kế Atomic entity cho bảng này"
-      table: IDXInfor
-      related_tables:
-        - table: CSIDXInfor
-          relation: "1-N — thành phần rổ chỉ số"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-MDDS-CSIDXInfor
+  - brd_id: BRD-SRC-MDDS-JAD_CSIDXINFOR
     brd_name: "Design Atomic từ nguồn MDDS bảng CSIDXInfor"
     type: Theo Source
     ba_email: username@fssc.com.vn
@@ -66,12 +44,12 @@ brd_entries:
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
+        data_change_mode: Append
+        filter_logic: "TRADINGDATE = {etl_date}"
+        filter_note: "Snapshot EOD theo ngày giao dịch — append 1 batch mỗi ngày"
 
   # UID-02 — Bảng giá chứng khoán và khớp lệnh
-  - brd_id: BRD-SRC-MDDS-StockInfor
+  - brd_id: BRD-SRC-MDDS-JAD_STOCKINFOR
     brd_name: "Design Atomic từ nguồn MDDS bảng StockInfor"
     type: Theo Source
     ba_email: username@fssc.com.vn
@@ -91,11 +69,11 @@ brd_entries:
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
+        data_change_mode: Append
+        filter_logic: "TRADINGDATE = {etl_date}"
+        filter_note: "Snapshot EOD theo ngày giao dịch — append 1 batch mỗi ngày"
 
-  - brd_id: BRD-SRC-MDDS-TransLog
+  - brd_id: BRD-SRC-MDDS-JAD_TRANSLOG
     brd_name: "Design Atomic từ nguồn MDDS bảng TransLog"
     type: Theo Source
     ba_email: username@fssc.com.vn
@@ -118,7 +96,7 @@ brd_entries:
         filter_note: "Log tick-by-tick khớp lệnh — append theo ngày giao dịch"
 
   # UID-03 — Trái phiếu doanh nghiệp
-  - brd_id: BRD-SRC-MDDS-CorpBondInfor
+  - brd_id: BRD-SRC-MDDS-JAD_CORPBONDINFOR
     brd_name: "Design Atomic từ nguồn MDDS bảng CorpBondInfor"
     type: Theo Source
     ba_email: username@fssc.com.vn
@@ -136,28 +114,7 @@ brd_entries:
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-MDDS-CorpBondMatch
-    brd_name: "Design Atomic từ nguồn MDDS bảng CorpBondMatch"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Log tick-by-tick từng lần khớp lệnh TPDN: giá khớp, KL khớp, chiều chủ động, tích lũy KL/GT"
-      functional_group: "UID-03 Trái phiếu doanh nghiệp"
-      scope_status: out_of_scope
-      scope_reason: "Người thiết kế xác nhận loại khỏi scope — không thiết kế Atomic entity cho bảng này"
-      table: CorpBondMatch
-      related_tables:
-        - table: CorpBondInfor
-          relation: "FK cha — mã trái phiếu doanh nghiệp"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
         data_change_mode: Append
-        filter_logic: "trade_date = {etl_date}"
-        filter_note: "Log tick-by-tick khớp lệnh TPDN — append theo ngày giao dịch"
+        filter_logic: "TRADINGDATE = {etl_date}"
+        filter_note: "Snapshot EOD theo ngày giao dịch — append 1 batch mỗi ngày"
+

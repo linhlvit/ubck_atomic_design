@@ -43,7 +43,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.ID    comment: "BK chính. PK nguồn Id — unique per lần khớp lệnh."
+      - "MDDS.JAD_TRANSLOG.ID"
+    comment: "BK chính. PK nguồn Id — unique per lần khớp lệnh."
     classification_context: null
     etl_derived_value: null
 
@@ -69,7 +70,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.SYMBOL    comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định không tạo FK surrogate."
+      - "MDDS.JAD_TRANSLOG.SYMBOL"
+    comment: "Denormalized join key với Security Trading Snapshot — D-02 quyết định không tạo FK surrogate."
     classification_context: null
     etl_derived_value: null
 
@@ -81,7 +83,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.TRADINGDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join key với Security Trading Snapshot."
+      - "MDDS.JAD_TRANSLOG.TRADINGDATE"
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join key với Security Trading Snapshot."
     classification_context: null
     etl_derived_value: null
 
@@ -93,7 +96,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.FORMATTEDTIME    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
+      - "MDDS.JAD_TRANSLOG.FORMATTEDTIME"
+    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp."
     classification_context: null
     etl_derived_value: null
 
@@ -105,7 +109,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.SEQUENCEMSG    comment: "Metadata kỹ thuật từ Sở — giữ để traceability và deduplication."
+      - "MDDS.JAD_TRANSLOG.SEQUENCEMSG"
+    comment: "Metadata kỹ thuật từ Sở — giữ để traceability và deduplication."
     classification_context: null
     etl_derived_value: null
 
@@ -118,7 +123,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.LASTCOLOR    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
+      - "MDDS.JAD_TRANSLOG.LASTCOLOR"
+    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
     classification_context: MDDS_TRADE_DIRECTION
     etl_derived_value: null
 
@@ -130,7 +136,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.CHANGECOLOR    comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng pattern với lastColor (MDDS_TRADE_DIRECTION) — indicator chiều giá so với tham chiếu."
+      - "MDDS.JAD_TRANSLOG.CHANGECOLOR"
+    comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng pattern với lastColor (MDDS_TRADE_DIRECTION) — indicator chiều giá so với tham chiếu."
     classification_context: MDDS_PRICE_CHANGE_COLOR
     etl_derived_value: null
 
@@ -143,7 +150,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.FORMATTEDMATCHPRICE    comment: null
+      - "MDDS.JAD_TRANSLOG.FORMATTEDMATCHPRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -155,7 +162,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.FORMATTEDVOL    comment: null
+      - "MDDS.JAD_TRANSLOG.FORMATTEDVOL"
     classification_context: null
     etl_derived_value: null
 
@@ -168,7 +175,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.FORMATTEDACCVOL    comment: null
+      - "MDDS.JAD_TRANSLOG.FORMATTEDACCVOL"
     classification_context: null
     etl_derived_value: null
 
@@ -180,7 +187,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.FORMATTEDACCVAL    comment: null
+      - "MDDS.JAD_TRANSLOG.FORMATTEDACCVAL"
     classification_context: null
     etl_derived_value: null
 
@@ -192,7 +199,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.TOTALBUYVOL    comment: null
+      - "MDDS.JAD_TRANSLOG.TOTALBUYVOL"
     classification_context: null
     etl_derived_value: null
 
@@ -204,7 +211,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.TOTALSELLVOL    comment: null
+      - "MDDS.JAD_TRANSLOG.TOTALSELLVOL"
     classification_context: null
     etl_derived_value: null
 
@@ -217,6 +224,6 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_TRANSLOG.BOARDID    comment: null
+      - "MDDS.JAD_TRANSLOG.BOARDID"
     classification_context: null
     etl_derived_value: null

@@ -3,7 +3,7 @@ schema_version: "2.0"
 
 metadata:
   source_system: MDDS
-  source_table: JAD_CORBONDINFOR
+  source_table: JAD_CORPBONDINFOR
   atomic_entity: Corporate Bond Trading Snapshot
   entity_physical_name: corp_bond_trd_snpst
   bcv_core_object: Product
@@ -43,7 +43,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.KID    comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với nguồn."
+      - "MDDS.JAD_CORPBONDINFOR.KID"
+    comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với nguồn."
     classification_context: null
     etl_derived_value: null
 
@@ -57,8 +58,8 @@ attributes:
     status: draft
     source_columns: []
     comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=MDDS.JAD_CORBONDINFOR
-    etl_derived_value: MDDS.JAD_CORBONDINFOR
+    classification_context: SOURCE_SYSTEM=MDDS.JAD_CORPBONDINFOR
+    etl_derived_value: MDDS.JAD_CORPBONDINFOR
 
   # ── CORE IDENTIFIERS ─────────────────────────────────────────────────
   - attribute_name: Symbol
@@ -69,7 +70,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.SYMBOL    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.SYMBOL"
     classification_context: null
     etl_derived_value: null
 
@@ -81,7 +82,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.TRADINGDATE    comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date."
+      - "MDDS.JAD_CORPBONDINFOR.TRADINGDATE"
+    comment: "Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -93,7 +95,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.FULLNAME    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.FULLNAME"
     classification_context: null
     etl_derived_value: null
 
@@ -105,7 +107,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.TRADINGTIME    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa."
+      - "MDDS.JAD_CORPBONDINFOR.TRADINGTIME"
+    comment: "Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa."
     classification_context: null
     etl_derived_value: null
 
@@ -118,7 +121,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.FLOORCODE    comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
+      - "MDDS.JAD_CORPBONDINFOR.FLOORCODE"
+    comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
     classification_context: MDDS_FLOOR_CODE
     etl_derived_value: null
 
@@ -130,7 +134,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.STOCKTYPE    comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường = 12 cho TPDN."
+      - "MDDS.JAD_CORPBONDINFOR.STOCKTYPE"
+    comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường = 12 cho TPDN."
     classification_context: MDDS_STOCK_TYPE
     etl_derived_value: null
 
@@ -142,7 +147,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.TRADINGSESSIONID    comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
+      - "MDDS.JAD_CORPBONDINFOR.TRADINGSESSIONID"
+    comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
     classification_context: MDDS_TRADING_SESSION_STATUS
     etl_derived_value: null
 
@@ -154,7 +160,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.SECURITYTRADINGSTATUS    comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
+      - "MDDS.JAD_CORPBONDINFOR.SECURITYTRADINGSTATUS"
+    comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
     classification_context: MDDS_SECURITY_TRADING_STATUS
     etl_derived_value: null
 
@@ -166,7 +173,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.TRADSESSTATUS    comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid — cần profile sự khác biệt giữa 2 trường này."
+      - "MDDS.JAD_CORPBONDINFOR.TRADSESSTATUS"
+    comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid — cần profile sự khác biệt giữa 2 trường này."
     classification_context: MDDS_TRADING_SESSION_STATUS
     etl_derived_value: null
 
@@ -178,7 +186,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PERIOD_UNIT    comment: "Scheme: MDDS_PERIOD_UNIT."
+      - "MDDS.JAD_CORPBONDINFOR.PERIOD_UNIT"
+    comment: "Scheme: MDDS_PERIOD_UNIT."
     classification_context: MDDS_PERIOD_UNIT
     etl_derived_value: null
 
@@ -190,7 +199,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.INTEREST_PERIOD_UNIT    comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
+      - "MDDS.JAD_CORPBONDINFOR.INTEREST_PERIOD_UNIT"
+    comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
     classification_context: MDDS_PERIOD_UNIT
     etl_derived_value: null
 
@@ -202,7 +212,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.INTEREST_COUPON_TYPE    comment: "Scheme: MDDS_COUPON_TYPE."
+      - "MDDS.JAD_CORPBONDINFOR.INTEREST_COUPON_TYPE"
+    comment: "Scheme: MDDS_COUPON_TYPE."
     classification_context: MDDS_COUPON_TYPE
     etl_derived_value: null
 
@@ -214,7 +225,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.INTERESTRATE_TYPE    comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
+      - "MDDS.JAD_CORPBONDINFOR.INTERESTRATE_TYPE"
+    comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
     classification_context: MDDS_INTEREST_RATE_TYPE
     etl_derived_value: null
 
@@ -226,7 +238,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.INTEREST_TYPE    comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
+      - "MDDS.JAD_CORPBONDINFOR.INTEREST_TYPE"
+    comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
     classification_context: MDDS_INTEREST_TYPE
     etl_derived_value: null
 
@@ -238,7 +251,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.INTEREST_PAYMENT_TYPE    comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
+      - "MDDS.JAD_CORPBONDINFOR.INTEREST_PAYMENT_TYPE"
+    comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type — danh mục cố định của HNX."
     classification_context: MDDS_INTEREST_PAYMENT_TYPE
     etl_derived_value: null
 
@@ -251,7 +265,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.CEILING    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.CEILING"
     classification_context: null
     etl_derived_value: null
 
@@ -263,7 +277,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.FLOOR    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.FLOOR"
     classification_context: null
     etl_derived_value: null
 
@@ -275,7 +289,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.REFERENCE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.REFERENCE"
     classification_context: null
     etl_derived_value: null
 
@@ -287,7 +301,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.CLOSEPRICE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.CLOSEPRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -299,7 +313,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.CLOSEVOL    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.CLOSEVOL"
     classification_context: null
     etl_derived_value: null
 
@@ -311,7 +325,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.CHANGE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.CHANGE"
     classification_context: null
     etl_derived_value: null
 
@@ -323,7 +337,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.OPEN    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.OPEN"
     classification_context: null
     etl_derived_value: null
 
@@ -335,7 +349,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.HIGH    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.HIGH"
     classification_context: null
     etl_derived_value: null
 
@@ -347,7 +361,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.LOW    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.LOW"
     classification_context: null
     etl_derived_value: null
 
@@ -359,7 +373,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.AVERAGEPRICE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.AVERAGEPRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -372,7 +386,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.TOTALTRADING    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.TOTALTRADING"
     classification_context: null
     etl_derived_value: null
 
@@ -384,7 +398,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.TOTALTRADINGVALUE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.TOTALTRADINGVALUE"
     classification_context: null
     etl_derived_value: null
 
@@ -396,7 +410,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.TOTALLISTINGQTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.TOTALLISTINGQTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -408,7 +422,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.FOREIGNREMAIN    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.FOREIGNREMAIN"
     classification_context: null
     etl_derived_value: null
 
@@ -421,7 +435,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_MATCH_QTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_MATCH_QTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -433,7 +447,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_MATCH_PRICE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_MATCH_PRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -445,7 +459,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_TOTAL_TRADED_QTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_TOTAL_TRADED_QTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -457,7 +471,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_TOTAL_TRADED_VALUE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_TOTAL_TRADED_VALUE"
     classification_context: null
     etl_derived_value: null
 
@@ -469,7 +483,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_BESTBIDQTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_BESTBIDQTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -481,7 +495,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_BESTBIDPRICE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_BESTBIDPRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -493,7 +507,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_BESTOFFERQTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_BESTOFFERQTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -505,7 +519,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_BESTOFFERPRICE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_BESTOFFERPRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -517,7 +531,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_TOTALBIDQTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_TOTALBIDQTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -529,7 +543,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_TOTALOFFERQTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_TOTALOFFERQTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -541,7 +555,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_MAXQTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_MAXQTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -553,7 +567,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_MAXPRICE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_MAXPRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -565,7 +579,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_MINQTTY    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_MINQTTY"
     classification_context: null
     etl_derived_value: null
 
@@ -577,7 +591,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PT_MINPRICE    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.PT_MINPRICE"
     classification_context: null
     etl_derived_value: null
 
@@ -590,7 +604,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.ISSUERNAME    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.ISSUERNAME"
     classification_context: null
     etl_derived_value: null
 
@@ -602,7 +616,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.ISSUEDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - "MDDS.JAD_CORPBONDINFOR.ISSUEDATE"
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -614,7 +629,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.MATURITYDATE    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
+      - "MDDS.JAD_CORPBONDINFOR.MATURITYDATE"
+    comment: "Nguồn lưu dạng string — ETL cần parse sang date."
     classification_context: null
     etl_derived_value: null
 
@@ -626,7 +642,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PARVALUE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+      - "MDDS.JAD_CORPBONDINFOR.PARVALUE"
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -638,7 +655,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.BOND_PERIOD    comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit."
+      - "MDDS.JAD_CORPBONDINFOR.BOND_PERIOD"
+    comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit."
     classification_context: null
     etl_derived_value: null
 
@@ -650,7 +668,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.PERIOD_REMAIN    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate không có giá trị non-numeric."
+      - "MDDS.JAD_CORPBONDINFOR.PERIOD_REMAIN"
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -662,7 +681,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.INTEREST_PERIOD    comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit."
+      - "MDDS.JAD_CORPBONDINFOR.INTEREST_PERIOD"
+    comment: "Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit."
     classification_context: null
     etl_derived_value: null
 
@@ -674,7 +694,8 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.INTEREST_RATE    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
+      - "MDDS.JAD_CORPBONDINFOR.INTEREST_RATE"
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -686,6 +707,6 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - MDDS.JAD_CORBONDINFOR.CHARACTERISTICS    comment: null
+      - "MDDS.JAD_CORPBONDINFOR.CHARACTERISTICS"
     classification_context: null
     etl_derived_value: null
