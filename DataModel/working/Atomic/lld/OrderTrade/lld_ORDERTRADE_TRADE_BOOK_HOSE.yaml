@@ -43,7 +43,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.TRADE_NO    comment: "BK chính. PK nguồn TRADE_BOOK_HOSE."
+      - ORDERTRADE.TRADE_BOOK_HOSE.TRADE_ID    comment: "BK chính. PK nguồn TRADE_BOOK_HOSE."
     classification_context: null
     etl_derived_value: null
 
@@ -134,7 +134,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.TRADE_TIME    comment: "Nguồn lưu dạng varchar — ETL giữ nguyên định dạng KRX."
+      - ORDERTRADE.TRADE_BOOK_HOSE.TIME    comment: "Nguồn lưu dạng varchar — ETL giữ nguyên định dạng KRX."
     classification_context: null
     etl_derived_value: null
 
@@ -160,7 +160,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.EXEC_PRICE    comment: null
+      - ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_EXEC_PRICE    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -173,7 +173,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.EXEC_PRICE_VS_LTP    comment: "Chỉ có ở HOSE — HNX không có field này."
+      - ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_EXEC_PRICE_LTP    comment: "Chỉ có ở HOSE — HNX không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.EXEC_VOL    comment: "Nguồn bigint."
+      - ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_VOLUME    comment: "Nguồn bigint."
     classification_context: null
     etl_derived_value: null
 
@@ -199,7 +199,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.EXEC_VAL    comment: "nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty (quyết định Q6 HLD). Nguồn decimal(22,4)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_VALUE    comment: "nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty (quyết định Q6 HLD). Nguồn decimal(22,4)."
     classification_context: null
     etl_derived_value: null
 
@@ -212,7 +212,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.EXEC_LTP    comment: "Chỉ có ở HOSE — HNX không có field này."
+      - ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_LTP    comment: "Chỉ có ở HOSE — HNX không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -225,7 +225,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.EXEC_NEW_HIGH_LOW_PRICE    comment: "Chỉ có ở HOSE — HNX không có field này."
+      - ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_NEW_HIGH_LOW_PRICE    comment: "Chỉ có ở HOSE — HNX không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -267,7 +267,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_NO    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE', buy_order_accept_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_ID    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE', buy_order_accept_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -279,7 +279,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_NO    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Buy Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_ID    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Buy Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -304,7 +304,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_BRK_NAME    comment: "Chỉ có ở HOSE — HNX không có field này."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_BRK    comment: "Chỉ có ở HOSE — HNX không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -342,7 +342,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_ACCT_HOLDER_NAME    comment: "Chỉ có ở HOSE — HNX không có field này."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_NAME    comment: "Chỉ có ở HOSE — HNX không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -355,7 +355,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_CLIENT_HOUSE_CLS_CODE    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_CLIENT_HOUSE_CLASSIFICATION_CODE    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
     classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
     etl_derived_value: null
 
@@ -368,7 +368,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_INVESTOR_TYPE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_INVEST_TYPE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
     classification_context: ORDERTRADE_INVESTOR_TYPE
     etl_derived_value: null
 
@@ -381,7 +381,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_FOREIGN_INVESTOR_TYPE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_FOREIGNER_INVESTOR_TYPE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
     classification_context: ORDERTRADE_FOREIGN_INVESTOR_TYPE
     etl_derived_value: null
 
@@ -444,7 +444,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_REF_SEQ_NO    comment: "Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng; nullable cho HNX (quyết định Q5 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.BUY_REFERENCE_SEQUENCE_NO    comment: "Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng; nullable cho HNX (quyết định Q5 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -486,7 +486,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_NO    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE', sell_order_accept_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_ID    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE', sell_order_accept_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -498,7 +498,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_NO    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Sell Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_ID    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Sell Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -523,7 +523,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_BRK_NAME    comment: "Chỉ có ở HOSE — HNX không có field này."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_BRK    comment: "Chỉ có ở HOSE — HNX không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -561,7 +561,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_ACCT_HOLDER_NAME    comment: "Chỉ có ở HOSE — HNX không có field này."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_NAME    comment: "Chỉ có ở HOSE — HNX không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -574,7 +574,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_CLIENT_HOUSE_CLS_CODE    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_CLIENT_HOUSE_CLASSIFICATION_CODE    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
     classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
     etl_derived_value: null
 
@@ -587,7 +587,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_INVESTOR_TYPE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_INVEST_TYPE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
     classification_context: ORDERTRADE_INVESTOR_TYPE
     etl_derived_value: null
 
@@ -600,7 +600,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_FOREIGN_INVESTOR_TYPE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_FOREIGNER_INVESTOR_TYPE    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
     classification_context: ORDERTRADE_FOREIGN_INVESTOR_TYPE
     etl_derived_value: null
 
@@ -663,6 +663,6 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_REF_SEQ_NO    comment: "Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng; nullable cho HNX (quyết định Q5 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HOSE.SELL_REFERENCE_SEQUENCE_NO    comment: "Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng; nullable cho HNX (quyết định Q5 HLD)."
     classification_context: null
     etl_derived_value: null

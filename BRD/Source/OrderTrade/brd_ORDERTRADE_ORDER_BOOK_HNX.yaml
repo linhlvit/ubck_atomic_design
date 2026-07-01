@@ -44,14 +44,14 @@ columns:
     key: null
     description: "Mã định danh thành viên giao dịch (công ty chứng khoán) do Sở giao dịch cấp"
 
-  - name: SELL_BUY_CLS_CODE
+  - name: SELL_BUY_CLASSIFICATION_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
     description: "Hướng lệnh: Mua/Bán"
     values: "1=Sell; 2=Buy; 3=Sell/Buy; SPACE=Cancelled"
 
-  - name: ACCT_NO
+  - name: ACCOUNT_NUMBER
     data_type: "varchar(50)"
     nullable: true
     key: null
@@ -71,14 +71,14 @@ columns:
     description: "Điều kiện thực hiện lệnh"
     values: "0=FAS; 1=GTC; 2=ATO; 3=FAK; 4=FOK; 6=GTD; 7=ATC; 9=MTL; SPACE=Cancelled"
 
-  - name: CLIENT_HOUSE_CLS_CODE
+  - name: CLIENT_HOUSE_CLASSIFICATION_CODE
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Lệnh của khách hàng hay công ty tự doanh"
     values: "10=Client trade; 30=House trade; SPACE=Replaced/Cancelled"
 
-  - name: INVESTOR_CLS_CODE
+  - name: INVESTOR_CLASSIFICATION_CODE
     data_type: "varchar(10)"
     nullable: true
     key: null
@@ -97,7 +97,7 @@ columns:
     key: null
     description: "Mã lý do lệnh bị từ chối bởi hệ thống KRX"
 
-  - name: ORDER_QTY
+  - name: ORDER_QUANTITY
     data_type: "bigint"
     nullable: true
     key: null
@@ -109,31 +109,31 @@ columns:
     key: null
     description: "Mức giá sẵn sàng mua hoặc bán (0 nếu Market/Fixed price/Cancel)"
 
-  - name: PUB_QTY
+  - name: PUBLIC_QUANTITY
     data_type: "bigint"
     nullable: true
     key: null
     description: "Phần khối lượng hiển thị công khai trên sổ lệnh (Iceberg order: pub_qty ≤ order_qty)"
 
-  - name: COND_PRICE
+  - name: CONDITION_PRICE
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Mức giá điều kiện để kích hoạt lệnh Stop order"
 
-  - name: ORDER_RECEPTION_NO
+  - name: ORDER_RECEPTION_NUMBER
     data_type: "varchar(20)"
     nullable: true
     key: null
     description: "Số định danh của lệnh tại thời điểm hệ thống KRX tiếp nhận (duy nhất trong ngày, tăng dần theo issue)"
 
-  - name: ORIG_ORDER_RECEPTION_NO
+  - name: ORIGINAL_ORDER_RECEPTION_NUMBER
     data_type: "varchar(20)"
     nullable: true
     key: null
     description: "Order Reception Number của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới"
 
-  - name: ORIG_ORDER_TYPE_CODE
+  - name: ORIGINAL_ORDER_TYPE_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
@@ -146,19 +146,19 @@ columns:
     description: "Mã phiên giao dịch"
     values: "00=Pre-market; 10=ATO; 11=ATO extension; 20=Continuous shifted; 21=Continuous extension; 25=Buy-In; 30=ATC; 40=Continuous; 50=Pre off-hour; 60=Post off-hour receipt; 65=Post off-hours; 70=Post off-hour call auction; 80=Unit trading; 90=Trading halt; 99=Market closing"
 
-  - name: ORDER_RMAN_QTY
+  - name: ORDER_REMAINING_QUANTITY
     data_type: "bigint"
     nullable: true
     key: null
     description: "Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy"
 
-  - name: MSG_SEQ
+  - name: MESSAGE_SEQUENCE
     data_type: "bigint"
     nullable: true
     key: null
     description: "Số thứ tự message trong luồng dữ liệu (tăng dần từ 1)"
 
-  - name: REPLACE_CANCEL_CLS_CODE
+  - name: REPLACE_CANCEL_CLASSIFICATION_CODE
     data_type: "varchar(1)"
     nullable: true
     key: null
@@ -172,7 +172,7 @@ columns:
     description: "Loại yêu cầu báo giá RFQ (HNX-only)"
     values: "1=Request (Initiator); 2=Cancel (Initiator); 3=Confirm (Counterparty); 4=Reject (Counterparty)"
 
-  - name: AUTO_CANCEL_CLS
+  - name: AUTOMATED_CANCEL_PROCESSING_CLASSIFICATION
     data_type: "varchar(1)"
     nullable: true
     key: null
@@ -185,7 +185,7 @@ columns:
     key: PK
     description: "Mã định danh của lệnh giao dịch (BK chính)"
 
-  - name: ORIG_ORDER_ID
+  - name: ORIGINAL_ORDER_ID
     data_type: "varchar(50)"
     nullable: true
     key: null

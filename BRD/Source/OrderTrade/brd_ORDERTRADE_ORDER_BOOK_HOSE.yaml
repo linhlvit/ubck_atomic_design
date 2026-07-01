@@ -64,13 +64,13 @@ columns:
     description: "Loại hành động lệnh: N=Mới / M=Sửa / C=Hủy"
     values: "N=No (lệnh mới); M=Modify; C=Cancel"
 
-  - name: ORDER_ACCEPT_NO
+  - name: ORDER_ACCEPT_ID
     data_type: "varchar(20)"
     nullable: true
     key: null
     description: "Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán (BK phụ)"
 
-  - name: ORIG_ORDER_ACCEPT_NO
+  - name: ORIG_ORDER_ACCEPT_ID
     data_type: "varchar(20)"
     nullable: true
     key: null
@@ -89,7 +89,7 @@ columns:
     key: null
     description: "Mã/số công ty chứng khoán"
 
-  - name: BRK_NAME
+  - name: BRK
     data_type: "varchar(255)"
     nullable: true
     key: null
@@ -107,7 +107,7 @@ columns:
     key: null
     description: "Mã/Số tài khoản giao dịch của nhà đầu tư"
 
-  - name: ACCT_HOLDER_NAME
+  - name: NAME
     data_type: "varchar(255)"
     nullable: true
     key: null
@@ -120,21 +120,21 @@ columns:
     description: "Lệnh đặt của nhà tạo lập thị trường"
     values: "Y=Là lệnh market maker; N=Không phải"
 
-  - name: CLIENT_HOUSE_CLS_CODE
+  - name: CLIENT_HOUSE_CLASSIFICATION_CODE
     data_type: "varchar(5)"
     nullable: true
     key: null
     description: "Phân loại lệnh khách hàng/công ty tự doanh"
     values: "10=Client trade; 30=House trade"
 
-  - name: INVESTOR_TYPE
+  - name: INVEST_TYPE
     data_type: "varchar(10)"
     nullable: true
     key: null
     description: "Phân loại nhà đầu tư (raw từ HOSE)"
     values: "1000/8000=Cá nhân; 7000=NĐT nước ngoài; 3000=Quỹ đầu tư; 5000=CTCK; 4000=Ngân hàng; 6000=Tổ chức khác"
 
-  - name: FOREIGN_INVESTOR_TYPE
+  - name: FOREIGNER_INVESTOR_TYPE
     data_type: "varchar(5)"
     nullable: true
     key: null
@@ -173,13 +173,13 @@ columns:
     key: null
     description: "Giá khớp gần nhất trên thị trường (Last Traded Price)"
 
-  - name: EXEC_PRICE
+  - name: EXECUTION_PRICE
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Giá khớp lệnh thực tế"
 
-  - name: IMM_MATCHED_VOL
+  - name: IMMED_MATCHED_VOL
     data_type: "bigint"
     nullable: true
     key: null
@@ -191,19 +191,19 @@ columns:
     key: null
     description: "Tổng khối lượng đã khớp của lệnh"
 
-  - name: RMAN_VOL
+  - name: ORDER_RQTY
     data_type: "bigint"
     nullable: true
     key: null
     description: "Khối lượng còn lại chưa khớp của lệnh"
 
-  - name: ORDER_PRICE_VS_LTP
+  - name: ORDER_PRICE_LTP
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất"
 
-  - name: MATCHED_RTO
+  - name: MATCHED_RATIO
     data_type: "decimal(10,4)"
     nullable: true
     key: null
@@ -240,13 +240,13 @@ columns:
     key: null
     description: "Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch"
 
-  - name: EXPC_EXEC_PRICE
+  - name: EXPECTED_EXECUTION_PRICE
     data_type: "decimal(18,4)"
     nullable: true
     key: null
     description: "Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày"
 
-  - name: EXPC_EXEC_VOL
+  - name: EXPECTED_EXECUTION_VOLUME
     data_type: "bigint"
     nullable: true
     key: null
@@ -271,7 +271,7 @@ columns:
     key: null
     description: "Tên người thực hiện giao dịch"
 
-  - name: REF_SEQ_NO
+  - name: REFERENCE_SEQUENCE_NO
     data_type: "varchar(30)"
     nullable: true
     key: null

@@ -17,13 +17,13 @@ brd_entries:
         - table: ORDER_BOOK_HNX
           relation: "Gộp chung entity Securities Order — phân biệt bằng market_id"
         - table: TRADE_BOOK_HOSE
-          relation: "1-N — khớp lệnh phát sinh từ lệnh này (FK qua Order Accept #)"
+          relation: "1-N — khớp lệnh phát sinh từ lệnh này (FK qua ORDER_ACCEPT_ID)"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "order_date = {etl_date}"
+        filter_logic: "ORDER_DATE = {etl_date}"
         filter_note: "Sổ lệnh HOSE — append theo ngày giao dịch, mỗi event lệnh mới/sửa/hủy"
 
   - brd_id: BRD-SRC-ORDERTRADE-ORDER_BOOK_HNX
@@ -41,13 +41,13 @@ brd_entries:
         - table: ORDER_BOOK_HOSE
           relation: "Gộp chung entity Securities Order — phân biệt bằng market_id"
         - table: TRADE_BOOK_HNX
-          relation: "1-N — khớp lệnh phát sinh từ lệnh này (FK qua Order Reception Number)"
+          relation: "1-N — khớp lệnh phát sinh từ lệnh này (FK qua ORDER_RECEPTION_NUMBER)"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "order_date = {etl_date}"
+        filter_logic: "ORDER_DATE = {etl_date}"
         filter_note: "Sổ lệnh HNX — append theo ngày giao dịch"
 
   # UID-02 — Khớp lệnh (Trade Execution)
@@ -64,9 +64,9 @@ brd_entries:
       table: TRADE_BOOK_HOSE
       related_tables:
         - table: ORDER_BOOK_HOSE
-          relation: "FK (Buy side) Buy - Order Accept # → Securities Order lệnh mua"
+          relation: "FK (Buy side) BUY_ORDER_ACCEPT_ID → Securities Order lệnh mua"
         - table: ORDER_BOOK_HOSE
-          relation: "FK (Sell side) Sell - Order Accept # → Securities Order lệnh bán"
+          relation: "FK (Sell side) SELL_ORDER_ACCEPT_ID → Securities Order lệnh bán"
         - table: TRADE_BOOK_HNX
           relation: "Gộp chung entity Securities Trade — phân biệt bằng market_id"
       notes: null
@@ -74,7 +74,7 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "trade_date = {etl_date}"
+        filter_logic: "TRADE_DATE = {etl_date}"
         filter_note: "Sổ khớp HOSE — append theo ngày khớp lệnh"
 
   - brd_id: BRD-SRC-ORDERTRADE-TRADE_BOOK_HNX
@@ -90,9 +90,9 @@ brd_entries:
       table: TRADE_BOOK_HNX
       related_tables:
         - table: ORDER_BOOK_HNX
-          relation: "FK (Buy side) Buy Order Reception Number → Securities Order lệnh mua"
+          relation: "FK (Buy side) BUY_ORDER_RECEPTION_NUMBER → Securities Order lệnh mua"
         - table: ORDER_BOOK_HNX
-          relation: "FK (Sell side) Sell Order Reception Number → Securities Order lệnh bán"
+          relation: "FK (Sell side) SELL_ORDER_RECEPTION_NUMBER → Securities Order lệnh bán"
         - table: TRADE_BOOK_HOSE
           relation: "Gộp chung entity Securities Trade — phân biệt bằng market_id"
       notes: null
@@ -100,5 +100,5 @@ brd_entries:
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "trade_date = {etl_date}"
+        filter_logic: "TRADE_DATE = {etl_date}"
         filter_note: "Sổ khớp HNX — append theo ngày khớp lệnh"

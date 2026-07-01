@@ -43,7 +43,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.TRADE_NO    comment: "BK chính. PK nguồn TRADE_BOOK_HNX."
+      - ORDERTRADE.TRADE_BOOK_HNX.TRADE_NUMBER    comment: "BK chính. PK nguồn TRADE_BOOK_HNX."
     classification_context: null
     etl_derived_value: null
 
@@ -147,7 +147,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.TRADE_QTY    comment: "Nguồn bigint. HNX dùng trade_qty; HLD mapping chung vào Execution Volume."
+      - ORDERTRADE.TRADE_BOOK_HNX.TRADE_QUANTITY    comment: "Nguồn bigint. HNX dùng trade_qty; HLD mapping chung vào Execution Volume."
     classification_context: null
     etl_derived_value: null
 
@@ -173,7 +173,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.MSG_SEQ    comment: "Nguồn bigint. HNX-only — HOSE không có field này."
+      - ORDERTRADE.TRADE_BOOK_HNX.MESSAGE_SEQUENCE    comment: "Nguồn bigint. HNX-only — HOSE không có field này."
     classification_context: null
     etl_derived_value: null
 
@@ -190,7 +190,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_REPLACE_CANCEL_CLS_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
     classification_context: ORDERTRADE_ORDER_ACTION_TYPE
     etl_derived_value: null
 
@@ -203,7 +203,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_MEMBER_NO    comment: "Nguồn HNX dùng sell_member_no; HLD mapping chung vào Sell Broker Id."
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_MEMBER_NUMBER    comment: "Nguồn HNX dùng sell_member_no; HLD mapping chung vào Sell Broker Id."
     classification_context: null
     etl_derived_value: null
 
@@ -216,7 +216,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ACCT_NO    comment: null
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ACCOUNT_NUMBER    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -255,7 +255,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_CLIENT_HOUSE_CLS    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_CLIENT_HOUSE_CLASSIFICATION    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
     classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
     etl_derived_value: null
 
@@ -268,7 +268,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_INVESTOR_CLS_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_INVESTOR_CLASSIFICATION_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
     classification_context: ORDERTRADE_INVESTOR_TYPE
     etl_derived_value: null
 
@@ -281,7 +281,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_QTY    comment: "Nguồn bigint."
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_QUANTITY    comment: "Nguồn bigint."
     classification_context: null
     etl_derived_value: null
 
@@ -306,7 +306,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NO    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', sell_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NUMBER    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', sell_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -318,7 +318,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NO    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Sell Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NUMBER    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Sell Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -374,7 +374,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_REPLACE_CANCEL_CLS_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
     classification_context: ORDERTRADE_ORDER_ACTION_TYPE
     etl_derived_value: null
 
@@ -387,7 +387,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_MEMBER_NO    comment: "Nguồn HNX dùng buy_member_no; HLD mapping chung vào Buy Broker Id."
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_MEMBER_NUMBER    comment: "Nguồn HNX dùng buy_member_no; HLD mapping chung vào Buy Broker Id."
     classification_context: null
     etl_derived_value: null
 
@@ -400,7 +400,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ACCT_NO    comment: null
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ACCOUNT_NUMBER    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -439,7 +439,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_CLIENT_HOUSE_CLS    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_CLIENT_HOUSE_CLASSIFICATION    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
     classification_context: ORDERTRADE_CLIENT_HOUSE_TYPE
     etl_derived_value: null
 
@@ -452,7 +452,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_INVESTOR_CLS_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_INVESTOR_CLASSIFICATION_CODE    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
     classification_context: ORDERTRADE_INVESTOR_TYPE
     etl_derived_value: null
 
@@ -465,7 +465,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_QTY    comment: "Nguồn bigint."
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_QUANTITY    comment: "Nguồn bigint."
     classification_context: null
     etl_derived_value: null
 
@@ -490,7 +490,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NO    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', buy_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NUMBER    comment: "FK target: Securities Order.Securities Order Id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', buy_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -502,7 +502,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NO    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Buy Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
+      - ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NUMBER    comment: "Lookup pair: Securities Order.Securities Order Code. Pair with Buy Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
     classification_context: null
     etl_derived_value: null
 
@@ -557,7 +557,7 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.EXEC_PRICE_SPREAD_FIRST    comment: "HNX-only — NULL với trade không phải spread."
+      - ORDERTRADE.TRADE_BOOK_HNX.EXECUTION_PRICE_OF_SPREAD_FIRST    comment: "HNX-only — NULL với trade không phải spread."
     classification_context: null
     etl_derived_value: null
 
@@ -569,6 +569,6 @@ attributes:
     is_primary_key: false
     status: draft
     source_columns:
-      - ORDERTRADE.TRADE_BOOK_HNX.EXEC_PRICE_SPREAD_SECOND    comment: "HNX-only — NULL với trade không phải spread."
+      - ORDERTRADE.TRADE_BOOK_HNX.EXECUTION_PRICE_OF_SPREAD_SECOND    comment: "HNX-only — NULL với trade không phải spread."
     classification_context: null
     etl_derived_value: null
