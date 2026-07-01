@@ -12366,7 +12366,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.kid
+        source_column: MDDS.JAD_CORPBONDINFOR.kid
         business_meaning: ID mã do jadapter sinh. BK của Snapshot entity.
         comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực\
           \ sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với\
@@ -12402,7 +12402,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.symbol
+        source_column: MDDS.JAD_CORPBONDINFOR.symbol
         business_meaning: Mã chứng khoán trái phiếu.
         comment: null
   - name: Trading Date
@@ -12419,7 +12419,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.tradingdate
+        source_column: MDDS.JAD_CORPBONDINFOR.tradingdate
         business_meaning: Ngày giao dịch format dd/mm/yyyy.
         comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date.
   - name: Bond Full Name
@@ -12436,7 +12436,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.fullname
+        source_column: MDDS.JAD_CORPBONDINFOR.fullname
         business_meaning: Tên đầy đủ của trái phiếu.
         comment: null
   - name: Trading Time
@@ -12453,7 +12453,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.tradingtime
+        source_column: MDDS.JAD_CORPBONDINFOR.tradingtime
         business_meaning: Thời gian giao dịch.
         comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa.
   - name: Floor Code
@@ -12470,7 +12470,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.floorcode
+        source_column: MDDS.JAD_CORPBONDINFOR.floorcode
         business_meaning: "Mã sàn: 06 (corp-bond HNX)."
         comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
   - name: Stock Type Code
@@ -12488,7 +12488,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.stocktype
+        source_column: MDDS.JAD_CORPBONDINFOR.stocktype
         business_meaning: "Loại CK: 12 (trái phiếu DN)."
         comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường\
           \ = 12 cho TPDN."
@@ -12506,7 +12506,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.tradingsessionid
+        source_column: MDDS.JAD_CORPBONDINFOR.tradingsessionid
         business_meaning: Trạng thái phiên giao dịch HNX.
         comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
   - name: Security Trading Status Code
@@ -12524,7 +12524,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.securitytradingstatus
+        source_column: MDDS.JAD_CORPBONDINFOR.securitytradingstatus
         business_meaning: Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn
           chế).
         comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
@@ -12543,7 +12543,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.tradsesstatus
+        source_column: MDDS.JAD_CORPBONDINFOR.tradsesstatus
         business_meaning: Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2).
         comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid\
           \ — cần profile sự khác biệt giữa 2 trường này."
@@ -12561,7 +12561,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.period_unit
+        source_column: MDDS.JAD_CORPBONDINFOR.period_unit
         business_meaning: Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm).
         comment: "Scheme: MDDS_PERIOD_UNIT."
   - name: Interest Period Unit Code
@@ -12578,7 +12578,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.interest_period_unit
+        source_column: MDDS.JAD_CORPBONDINFOR.interest_period_unit
         business_meaning: Đơn vị kỳ hạn trả lãi.
         comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
   - name: Coupon Type Code
@@ -12595,7 +12595,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.interest_coupon_type
+        source_column: MDDS.JAD_CORPBONDINFOR.interest_coupon_type
         business_meaning: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon."
         comment: "Scheme: MDDS_COUPON_TYPE."
   - name: Interest Rate Type Code
@@ -12612,7 +12612,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.interestrate_type
+        source_column: MDDS.JAD_CORPBONDINFOR.interestrate_type
         business_meaning: "Loại lãi suất: Cố định/Thả nổi/Khác."
         comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
   - name: Interest Type Code
@@ -12630,7 +12630,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.interest_type
+        source_column: MDDS.JAD_CORPBONDINFOR.interest_type
         business_meaning: Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác).
         comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type\
           \ — danh mục cố định của HNX."
@@ -12649,7 +12649,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.interest_payment_type
+        source_column: MDDS.JAD_CORPBONDINFOR.interest_payment_type
         business_meaning: Phương thức trả lãi.
         comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type\
           \ — danh mục cố định của HNX."
@@ -12667,7 +12667,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.ceiling
+        source_column: MDDS.JAD_CORPBONDINFOR.ceiling
         business_meaning: Giá trần khớp lệnh.
         comment: null
   - name: Floor Price
@@ -12684,7 +12684,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.floor
+        source_column: MDDS.JAD_CORPBONDINFOR.floor
         business_meaning: Giá sàn khớp lệnh.
         comment: null
   - name: Reference Price
@@ -12701,7 +12701,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.reference
+        source_column: MDDS.JAD_CORPBONDINFOR.reference
         business_meaning: Giá tham chiếu.
         comment: null
   - name: Close Price
@@ -12718,7 +12718,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.closeprice
+        source_column: MDDS.JAD_CORPBONDINFOR.closeprice
         business_meaning: Giá đóng cửa ngày.
         comment: null
   - name: Close Volume
@@ -12735,7 +12735,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.closevol
+        source_column: MDDS.JAD_CORPBONDINFOR.closevol
         business_meaning: Khối lượng đóng cửa.
         comment: null
   - name: Price Change
@@ -12752,7 +12752,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.change
+        source_column: MDDS.JAD_CORPBONDINFOR.change
         business_meaning: Thay đổi giá khớp gần nhất so với giá tham chiếu.
         comment: null
   - name: Open Price
@@ -12769,7 +12769,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.open
+        source_column: MDDS.JAD_CORPBONDINFOR.open
         business_meaning: Giá mở cửa.
         comment: null
   - name: High Price
@@ -12786,7 +12786,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.high
+        source_column: MDDS.JAD_CORPBONDINFOR.high
         business_meaning: Giá thực hiện cao nhất GD khớp lệnh.
         comment: null
   - name: Low Price
@@ -12803,7 +12803,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.low
+        source_column: MDDS.JAD_CORPBONDINFOR.low
         business_meaning: Giá thực hiện thấp nhất GD khớp lệnh.
         comment: null
   - name: Average Price
@@ -12820,7 +12820,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.averageprice
+        source_column: MDDS.JAD_CORPBONDINFOR.averageprice
         business_meaning: Giá trung bình.
         comment: null
   - name: Total Trading Volume
@@ -12837,7 +12837,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.totaltrading
+        source_column: MDDS.JAD_CORPBONDINFOR.totaltrading
         business_meaning: Tổng khối lượng giao dịch.
         comment: null
   - name: Total Trading Value
@@ -12854,7 +12854,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.totaltradingvalue
+        source_column: MDDS.JAD_CORPBONDINFOR.totaltradingvalue
         business_meaning: Tổng giá trị giao dịch.
         comment: null
   - name: Total Listing Volume
@@ -12871,7 +12871,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.totallistingqtty
+        source_column: MDDS.JAD_CORPBONDINFOR.totallistingqtty
         business_meaning: Khối lượng niêm yết.
         comment: null
   - name: Foreign Remain Volume
@@ -12888,7 +12888,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.foreignremain
+        source_column: MDDS.JAD_CORPBONDINFOR.foreignremain
         business_meaning: Room NĐTNN còn lại.
         comment: null
   - name: PT Match Volume
@@ -12905,7 +12905,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_match_qtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_match_qtty
         business_meaning: Khối lượng thực hiện gần nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Match Price
@@ -12922,7 +12922,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_match_price
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_match_price
         business_meaning: Giá thực hiện gần nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Total Traded Volume
@@ -12939,7 +12939,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_total_traded_qtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_total_traded_qtty
         business_meaning: Tổng khối lượng GD thỏa thuận Outright.
         comment: null
   - name: PT Total Traded Value
@@ -12956,7 +12956,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_total_traded_value
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_total_traded_value
         business_meaning: Tổng giá trị GD thỏa thuận Outright.
         comment: null
   - name: PT Best Bid Volume
@@ -12973,7 +12973,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_bestbidqtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestbidqtty
         business_meaning: Tổng KL chào mua cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Best Bid Price
@@ -12990,7 +12990,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_bestbidprice
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestbidprice
         business_meaning: Giá chào mua cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Best Offer Volume
@@ -13007,7 +13007,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_bestofferqtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestofferqtty
         business_meaning: Tổng KL chào bán thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Best Offer Price
@@ -13024,7 +13024,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_bestofferprice
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestofferprice
         business_meaning: Giá chào bán thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Total Bid Volume
@@ -13041,7 +13041,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_totalbidqtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_totalbidqtty
         business_meaning: Tổng KL chào mua GD thỏa thuận Outright.
         comment: null
   - name: PT Total Offer Volume
@@ -13058,7 +13058,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_totalofferqtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_totalofferqtty
         business_meaning: Tổng KL chào bán GD thỏa thuận Outright.
         comment: null
   - name: PT Max Volume
@@ -13075,7 +13075,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_maxqtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_maxqtty
         business_meaning: KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Max Price
@@ -13092,7 +13092,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_maxprice
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_maxprice
         business_meaning: Giá thực hiện cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Min Volume
@@ -13109,7 +13109,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_minqtty
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_minqtty
         business_meaning: KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Min Price
@@ -13126,7 +13126,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.pt_minprice
+        source_column: MDDS.JAD_CORPBONDINFOR.pt_minprice
         business_meaning: Giá thực hiện thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: Issuer Name
@@ -13143,7 +13143,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.issuername
+        source_column: MDDS.JAD_CORPBONDINFOR.issuername
         business_meaning: Tên tổ chức phát hành.
         comment: null
   - name: Issue Date
@@ -13160,7 +13160,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.issuedate
+        source_column: MDDS.JAD_CORPBONDINFOR.issuedate
         business_meaning: Ngày phát hành trái phiếu.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Maturity Date
@@ -13177,7 +13177,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.maturitydate
+        source_column: MDDS.JAD_CORPBONDINFOR.maturitydate
         business_meaning: Ngày đáo hạn trái phiếu.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Par Value
@@ -13195,7 +13195,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.parvalue
+        source_column: MDDS.JAD_CORPBONDINFOR.parvalue
         business_meaning: Mệnh giá trái phiếu.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -13213,7 +13213,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.bond_period
+        source_column: MDDS.JAD_CORPBONDINFOR.bond_period
         business_meaning: Kỳ hạn trái phiếu.
         comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit.
   - name: Period Remain Days
@@ -13231,7 +13231,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.period_remain
+        source_column: MDDS.JAD_CORPBONDINFOR.period_remain
         business_meaning: Kỳ hạn còn lại tính bằng ngày.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate
           không có giá trị non-numeric.
@@ -13249,7 +13249,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.interest_period
+        source_column: MDDS.JAD_CORPBONDINFOR.interest_period
         business_meaning: Kỳ hạn trả lãi.
         comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit.
   - name: Interest Rate
@@ -13267,7 +13267,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.interest_rate
+        source_column: MDDS.JAD_CORPBONDINFOR.interest_rate
         business_meaning: Lãi suất danh nghĩa.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -13285,7 +13285,7 @@ entities:
     - source_system: MDDS
       source_tables:
       - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORBONDINFOR.characteristics
+        source_column: MDDS.JAD_CORPBONDINFOR.characteristics
         business_meaning: Đặc điểm trái phiếu.
         comment: null
 - ldm:

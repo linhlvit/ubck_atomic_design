@@ -467,9 +467,9 @@ entries:
     group: T1
     design_status: draft
 
-  - lld_file: MDDS/lld_MDDS_JAD_CORBONDINFOR.yaml
+  - lld_file: MDDS/lld_MDDS_JAD_CORPBONDINFOR.yaml
     source_system: MDDS
-    source_table: JAD_CORBONDINFOR
+    source_table: JAD_CORPBONDINFOR
     atomic_entity: Corporate Bond Trading Snapshot
     group: T1
     design_status: draft
@@ -493,28 +493,28 @@ entries:
     atomic_entity: Securities Order
     group: T1
     lld_file: ORDERTRADE/lld_ORDERTRADE_ORDER_BOOK_HOSE.yaml
-    design_status: draft
+    design_status: approved
 
   - source_system: ORDERTRADE
     source_table: ORDER_BOOK_HNX
     atomic_entity: Securities Order
     group: T1
     lld_file: ORDERTRADE/lld_ORDERTRADE_ORDER_BOOK_HNX.yaml
-    design_status: draft
+    design_status: approved
 
   - source_system: ORDERTRADE
     source_table: TRADE_BOOK_HOSE
     atomic_entity: Securities Trade
     group: T2
     lld_file: ORDERTRADE/lld_ORDERTRADE_TRADE_BOOK_HOSE.yaml
-    design_status: draft
+    design_status: approved
 
   - source_system: ORDERTRADE
     source_table: TRADE_BOOK_HNX
     atomic_entity: Securities Trade
     group: T2
     lld_file: ORDERTRADE/lld_ORDERTRADE_TRADE_BOOK_HNX.yaml
-    design_status: draft
+    design_status: approved
 
   # ── SCMS — Tier 1 ────────────────────────────────────────────────────
   - source_system: SCMS
@@ -1042,3 +1042,33 @@ entries:
     group: T2
     lld_file: SCMS/lld_SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION_IP_Alt_Identification.yaml
     design_status: draft
+
+  # ── SCMS — Tier 2: Group F Risk/Alert ────────────────────────────────
+  - source_system: SCMS
+    source_table: RISK_SCORING_SCALE
+    atomic_entity: Securities Company Risk Indicator Scoring Scale
+    group: T2
+    lld_file: SCMS/lld_SCMS_RISK_SCORING_SCALE.yaml
+    design_status: draft
+
+  - source_system: SCMS
+    source_table: ALERT_INDICATOR_CONDITION
+    atomic_entity: Securities Company Alert Indicator Condition
+    group: T2
+    lld_file: SCMS/lld_SCMS_ALERT_INDICATOR_CONDITION.yaml
+    design_status: draft
+
+  - source_system: SCMS
+    source_table: RISK_SUMMARY
+    atomic_entity: Securities Company Risk Summary
+    group: T2
+    lld_file: SCMS/lld_SCMS_RISK_SUMMARY.yaml
+    design_status: draft
+
+  - source_system: SCMS
+    source_table: SC_FIRM_PROFILE_CHANGE
+    atomic_entity: Securities Company Profile Change
+    group: T2
+    lld_file: SCMS/lld_SCMS_SC_FIRM_PROFILE_CHANGE.yaml
+    design_status: draft
+

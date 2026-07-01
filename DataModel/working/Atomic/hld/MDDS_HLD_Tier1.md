@@ -41,7 +41,7 @@ erDiagram
         integer declines
     }
 
-    JAD_CORBONDINFOR {
+    JAD_CORPBONDINFOR {
         varchar kid PK
         varchar symbol
         varchar tradingdate
