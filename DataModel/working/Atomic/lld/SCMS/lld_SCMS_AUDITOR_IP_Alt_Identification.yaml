@@ -1,0 +1,90 @@
+schema_type: "lld_shared_ip_alt_identification"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "AUDITOR"
+  atomic_entity: "IP Alt Identification"
+  entity_physical_name: "ip_alt_id"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Alt Identification"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Audit Firm Auditor. 1 row per kiểm toán viên — CERTIFICATE_NUMBER → type AUDITOR_CERT (chứng chỉ hành nghề kiểm toán được UBCKNN cấp phép). ISSUE_DATE → issue_dt. Không có ISSUE_PLACE trong nguồn AUDITOR."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Audit Firm Auditor."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.ID"
+    comment: "FK target: Audit Firm Auditor.Audit Firm Auditor Id. Shared entity. Hash: hash_id('SCMS.AUDITOR', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "id_tp_code"
+    description: "Loại giấy tờ: AUDITOR_CERT=Chứng chỉ hành nghề kiểm toán."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode AUDITOR_CERT — chỉ có 1 cột CERTIFICATE_NUMBER."
+    classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERT"
+    etl_derived_value: "AUDITOR_CERT"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.AUDITOR"
+    etl_derived_value: "SCMS.AUDITOR"
+    data_type: "string"
+
+  - attribute_name: "Identification Number"
+    physical_name: "id_nbr"
+    description: "Số chứng chỉ hành nghề kiểm toán."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.CERTIFICATE_NUMBER"
+    comment: "VARCHAR2 — số chứng chỉ hành nghề kiểm toán do UBCKNN cấp."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Issue Date"
+    physical_name: "issue_dt"
+    description: "Ngày cấp chứng chỉ hành nghề kiểm toán."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.AUDITOR.ISSUE_DATE"
+    comment: "Nguồn lưu TIMESTAMP(6) — ETL truncate lấy phần ngày."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"

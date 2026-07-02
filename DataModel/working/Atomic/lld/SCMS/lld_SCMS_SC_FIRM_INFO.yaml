@@ -208,48 +208,6 @@ attributes:
     data_type: "string"
 
   # ── LICENSING ────────────────────────────────────────────────────────
-  - attribute_name: "Business License Number"
-    physical_name: "biz_license_nbr"
-    description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_NUMBER"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Business License Date"
-    physical_name: "biz_license_dt"
-    description: "Ngày cấp giấy phép kinh doanh/thành lập lần đầu."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_DATE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Business License Issuer Name"
-    physical_name: "biz_license_issur_nm"
-    description: "Nơi cấp giấy phép kinh doanh (mặc định: UBCKNN)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_ISSUER"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
   - attribute_name: "Business License"
     physical_name: "biz_license"
     description: "Giấy phép kinh doanh (số/tên file)."
@@ -260,48 +218,6 @@ attributes:
     source_columns:
       - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE"
     comment: "Mô tả gốc BRD trống — có thể là path file hoặc số giấy phép bổ sung."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Foundation License Number"
-    physical_name: "fndtn_license_nbr"
-    description: "Số giấy phép thành lập."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_NUMBER"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Foundation License Date"
-    physical_name: "fndtn_license_dt"
-    description: "Ngày cấp giấy phép thành lập."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_DATE"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Foundation License Issuer Name"
-    physical_name: "fndtn_license_issur_nm"
-    description: "Cơ quan cấp giấy phép thành lập."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_ISSUER"
-    comment: "Mô tả gốc BRD trống."
     classification_context: null
     etl_derived_value: null
     data_type: "string"
@@ -362,20 +278,6 @@ attributes:
     etl_derived_value: null
     data_type: "string"
 
-  - attribute_name: "Certificate Number"
-    physical_name: "cert_nbr"
-    description: "Số chứng nhận."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.CERTIFICATE_NUMBER"
-    comment: "Mô tả gốc BRD trống — cần bổ sung từ tài liệu đặc tả SCMS."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
   # ── FINANCIAL INFO ───────────────────────────────────────────────────
   - attribute_name: "Charter Capital Amount"
     physical_name: "charter_cptl_amt"
@@ -401,34 +303,6 @@ attributes:
     source_columns:
       - "SCMS.SC_FIRM_INFO.TOTAL_SHARES"
     comment: "Nguồn lưu NUMBER(38) — ETL convert sang string. Lưu text để tránh overflow với số cổ phần lớn."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Tax Code"
-    physical_name: "tax_code"
-    description: "Mã số thuế doanh nghiệp."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.TAX_CODE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Enterprise Code"
-    physical_name: "entpr_code"
-    description: "Mã số doanh nghiệp."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.ENTERPRISE_CODE"
-    comment: "Mô tả gốc BRD trống."
     classification_context: null
     etl_derived_value: null
     data_type: "string"
@@ -691,34 +565,6 @@ attributes:
     data_type: "string"
 
   # ── CUSTODIAN ────────────────────────────────────────────────────────
-  - attribute_name: "Custodian Certificate Number"
-    physical_name: "cstd_cert_nbr"
-    description: "Số chứng nhận lưu ký."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_NUMBER"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Custodian Certificate Date"
-    physical_name: "cstd_cert_dt"
-    description: "Ngày cấp chứng nhận lưu ký."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_DATE"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
   - attribute_name: "Custodian Member Code"
     physical_name: "cstd_mmbr_code"
     description: "Mã thành viên lưu ký."
@@ -728,34 +574,6 @@ attributes:
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CODE"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Custodian Member Certificate Date"
-    physical_name: "cstd_mmbr_cert_dt"
-    description: "Ngày cấp chứng nhận thành viên lưu ký."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_DATE"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Custodian Member Certificate Number"
-    physical_name: "cstd_mmbr_cert_nbr"
-    description: "Số chứng nhận thành viên lưu ký."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_NUMBER"
     comment: "Mô tả gốc BRD trống."
     classification_context: null
     etl_derived_value: null

@@ -1,0 +1,104 @@
+schema_type: "lld_shared_ip_alt_identification"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_SHAREHOLDER_RELATION"
+  atomic_entity: "IP Alt Identification"
+  entity_physical_name: "ip_alt_id"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Alt Identification"
+  table_type: "Shared"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Securities Company Shareholder Relation. 1 row per người liên quan cổ đông — ID_NUMBER (NVARCHAR2 30, CMND legacy — tên cột gốc ID_NUMBER) → type LEGACY_CMND. ISSUE_DATE → issue_dt. ISSUE_PLACE → issue_plc. Nguồn không phân biệt CCCD mới — chỉ 1 loại giấy tờ."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Shareholder Relation."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID"
+    comment: "FK target: Securities Company Shareholder Relation.Securities Company Shareholder Relation Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER_RELATION', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "id_tp_code"
+    description: "Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ (ID_NUMBER)."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode LEGACY_CMND — chỉ có 1 cột ID_NUMBER (CMND legacy). Chuỗi NVARCHAR2(10) — giá trị ngắn, có thể là số hoặc ký hiệu viết tắt."
+    classification_context: "IP_ALT_ID_TYPE=LEGACY_CMND"
+    etl_derived_value: "LEGACY_CMND"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_RELATION"
+    etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER_RELATION"
+    data_type: "string"
+
+  - attribute_name: "Identification Number"
+    physical_name: "id_nbr"
+    description: "Số CMND của người liên quan cổ đông."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID_NUMBER"
+    comment: "NVARCHAR2(30) — số CMND legacy. Tên cột gốc ID_NUMBER."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Issue Date"
+    physical_name: "issue_dt"
+    description: "Ngày cấp CMND."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_RELATION.ISSUE_DATE"
+    comment: "DATE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Issue Place"
+    physical_name: "issue_plc"
+    description: "Nơi cấp CMND."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER_RELATION.ISSUE_PLACE"
+    comment: "NVARCHAR2(250)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
