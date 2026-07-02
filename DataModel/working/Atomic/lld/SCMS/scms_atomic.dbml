@@ -1,0 +1,1940 @@
+// SCMS Atomic DBML - Generated from LLD YAML files
+// Source: DataModel/working/Atomic/lld/SCMS/
+
+Table alert_financial_indicator [note: 'Securities Company Alert Financial Indicator'] {
+  scr_co_alrt_fin_ind_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_alrt_fin_ind_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  ind_code varchar [note: 'Mã chỉ tiêu tài chính.']
+  scr_co_alrt_fin_ind_nm varchar [note: 'Tên chỉ tiêu tài chính.']
+  ind_grp_id varchar [note: 'ID nhóm chỉ tiêu (nguồn không khai báo FK target).']
+  dsc varchar [note: 'Mô tả chi tiết nội dung/mục đích của bản ghi.']
+  unit varchar [note: 'Đơn vị tính của chỉ tiêu.']
+  thrs_max varchar [note: 'Ngưỡng cảnh báo trên (giá trị tối đa).']
+  thrs_min varchar [note: 'Ngưỡng cảnh báo dưới (giá trị tối thiểu).']
+  wght decimal(38,2) [note: 'Trọng số của chỉ tiêu trong công thức tính điểm (%).']
+  sort_ordr integer [note: 'Thứ tự sắp xếp hiển thị.']
+  frml varchar [note: 'Công thức tính toán giá trị ô.']
+  rcrd_st_code varchar [note: 'Trạng thái chỉ tiêu tài chính: 0=Không sử dụng; 1=Đang sử dụng.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table alert_indicator [note: 'Securities Company Alert Indicator'] {
+  scr_co_alrt_ind_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_alrt_ind_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  alrt_code varchar [note: 'Mã chỉ tiêu cảnh báo (mã nghiệp vụ chính).']
+  ind_code varchar [note: 'Mã chỉ tiêu (trường thứ cấp, có thể trùng với Alert Code).']
+  scr_co_alrt_ind_nm varchar [note: 'Tên chỉ tiêu cảnh báo (tên chính).']
+  ind_nm varchar [note: 'Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name).']
+  alrt_ind_tp_code varchar [note: 'Loại chỉ tiêu cảnh báo: AN_TOAN_TAI_CHINH=An toàn tài chính; TUAN_THU=Tuân th...']
+  ind_tp_id varchar [note: 'ID loại chỉ tiêu (nguồn không khai báo FK target).']
+  lgl_ref varchar [note: 'Tham chiếu văn bản pháp luật liên quan (denormalized).']
+  lgl_ref_id varchar [note: 'ID văn bản pháp luật tham chiếu (nguồn không khai báo FK target).']
+  lgl_basis varchar [note: 'Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng).']
+  svr_lvl integer [note: 'Mức độ cảnh báo: Cấp 1, 2 hoặc 3.']
+  svr integer [note: 'Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao.']
+  lwr_thrs varchar [note: 'Ngưỡng cảnh báo dưới.']
+  upr_thrs varchar [note: 'Ngưỡng cảnh báo trên.']
+  unit varchar [note: 'Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng).']
+  dflt_val varchar [note: 'Giá trị mặc định của ô khi khởi tạo.']
+  dsc varchar [note: 'Mô tả chi tiết nội dung/mục đích của bản ghi.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  frml_txt varchar [note: 'Mô tả công thức dạng văn bản để hiển thị cho người dùng.']
+  frml varchar [note: 'Công thức tính toán giá trị ô.']
+  sum_frml varchar [note: 'Công thức tổng hợp của ô (tính tổng nhiều ô).']
+  wght decimal(38,2) [note: 'Trọng số của chỉ tiêu trong công thức tính điểm (%).']
+  sort_ordr integer [note: 'Thứ tự sắp xếp hiển thị.']
+  rcrd_st_code varchar [note: 'Trạng thái chỉ tiêu cảnh báo: 0=Không sử dụng; 1=Đang sử dụng.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table alert_indicator_condition [note: 'Securities Company Alert Indicator Condition'] {
+  scr_co_alrt_ind_cndtn_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_alrt_ind_cndtn_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_alrt_ind_id varchar [not null, note: 'FK đến Chỉ tiêu cảnh báo mà điều kiện này thuộc về.']
+  scr_co_alrt_ind_code varchar [not null, note: 'Mã Chỉ tiêu cảnh báo.']
+  rcrd_st_code varchar [note: 'Trạng thái điều kiện cảnh báo: 1=Đang sử dụng; 0=Không sử dụng.']
+  svrt_code varchar [note: 'Mức độ nghiêm trọng: 1=Thấp; 2=Trung bình; 3=Cao.']
+  cmprsn_val_tp_code varchar [note: 'Loại giá trị so sánh: FIXED=Giá trị cố định; PERCENTAGE=Tỷ lệ phần trăm; FORM...']
+  cndtn_nm varchar [note: 'Tên/nhãn của điều kiện cảnh báo.']
+  cndtn varchar [note: 'Điều kiện áp dụng (biểu thức logic).']
+  upr_cndtn varchar [note: 'Điều kiện giới hạn trên bổ sung.']
+  oprt varchar [note: 'Toán tử so sánh (>, <, =, >=, <=, !=).']
+  oprt_2 varchar [note: 'Toán tử so sánh thứ hai (cho điều kiện kết hợp).']
+  cmprsn_val integer [note: 'Cột gia_tri_so_sanh — giá trị ngưỡng so sánh chính.']
+  itm_val decimal [note: 'Giá trị phần tử của điều kiện (ngưỡng số thập phân).']
+  val_2 decimal [note: 'Giá trị so sánh thứ hai (cho điều kiện kết hợp với OPERATOR_2).']
+  scr decimal [note: 'Điểm số áp dụng khi điều kiện cảnh báo này được kích hoạt.']
+  freq varchar [note: 'Tần suất kiểm tra điều kiện cảnh báo.']
+  srt_ord integer [note: 'Thứ tự sắp xếp hiển thị của điều kiện trong danh sách.']
+  dscrptn varchar [note: 'Mô tả chi tiết nội dung/mục đích của bản ghi.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  lgcy_udt_tms timestamp [note: 'Thời điểm sửa đổi — trường legacy tiếng Việt (NGAY_SUA).']
+  lgcy_udt_by_scms_usr_id varchar [note: 'FK đến người sửa đổi — trường legacy tiếng Việt (NGUOI_SUA_ID).']
+  lgcy_udt_by_scms_usr_code varchar [note: 'Mã người sửa đổi — trường legacy tiếng Việt.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi lần cuối.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi lần cuối.']
+}
+
+Table auditor [note: 'Audit Firm Auditor'] {
+  audt_firm_audtr_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  audt_firm_audtr_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  audt_firm_id varchar [not null, note: 'FK đến Công ty kiểm toán.']
+  audt_firm_code varchar [not null, note: 'Mã Công ty kiểm toán.']
+  full_nm varchar [note: 'Họ và tên đầy đủ của kiểm toán viên.']
+  aprvl_dt date [note: 'Ngày phê duyệt kiểm toán viên cho hoạt động kiểm toán CTCK.']
+  aprvl_rvktn_dt date [note: 'Ngày thu hồi/hủy phê duyệt kiểm toán viên.']
+  rcrd_st_code varchar [note: 'Trạng thái hành nghề: 1=Đang hành nghề; 0=Đã ngừng hành nghề.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+}
+
+Table audit_firm [note: 'Audit Firm'] {
+  audt_firm_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  audt_firm_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  org_code varchar [note: 'Mã định danh (mã viết tắt, mã nghiệp vụ).']
+  audt_firm_shrt_nm varchar [note: 'Tên viết tắt (VD: KPMG, E&Y, Deloitte).']
+  audt_firm_nm varchar [note: 'Tên đầy đủ bằng tiếng Việt.']
+  audt_firm_en_nm varchar [note: 'Tên đầy đủ bằng tiếng Anh.']
+  charter_cptl_amt decimal(23,2) [note: 'Vốn điều lệ (đơn vị: đồng).']
+  dcsn_nbr varchar [note: 'Số quyết định phê duyệt.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  rcrd_st_code varchar [note: 'Trạng thái công ty kiểm toán: 1=Hoạt động; 0=Ngừng hoạt động.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table audit_firm_ip_electronic_address [note: 'Involved Party Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Audit Firm (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Audit Firm.']
+  addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE, FAX, EMAIL, WEBSITE.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại/fax/email/website tuỳ loại).']
+}
+
+Table audit_firm_ip_postal_address [note: 'Involved Party Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Audit Firm (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Audit Firm.']
+  addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  street_addr varchar [note: 'Địa chỉ trụ sở chính/văn phòng.']
+}
+
+Table bank [note: 'Securities Company Depositary Bank'] {
+  scr_co_dpst_bnk_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_dpst_bnk_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_dpst_bnk_nm varchar [note: 'Tên ngân hàng.']
+  scr_co_dpst_bnk_en_nm varchar [note: 'Tên đầy đủ bằng tiếng Anh.']
+  scr_co_dpst_bnk_shrt_nm varchar [note: 'Tên viết tắt (VD: TCB, VCB, BIDV).']
+  charter_cptl_amt decimal(23,2) [note: 'Vốn điều lệ (đơn vị: đồng).']
+  bnk_ctgr_code varchar [note: 'Phân loại ngân hàng.']
+  stlmt_bnk_dcsn_nbr varchar [note: 'Số quyết định chỉ định ngân hàng thanh toán.']
+  stlmt_bnk_dcsn_dt date [note: 'Ngày quyết định chỉ định ngân hàng thanh toán.']
+  stlmt_strt_dt date [note: 'Ngày bắt đầu thực hiện chức năng thanh toán.']
+  stlmt_func_dsc varchar [note: 'Mô tả chức năng thanh toán của ngân hàng.']
+  cstd_strt_dt date [note: 'Ngày bắt đầu chức năng lưu ký.']
+  cstd_mmbr_cert_nbr varchar [note: 'Số chứng nhận thành viên lưu ký.']
+  cstd_cert_dt date [note: 'Ngày cấp chứng nhận lưu ký.']
+  cstd_mmbr_code varchar [note: 'Mã thành viên lưu ký.']
+  cstd_func_dsc varchar [note: 'Mô tả chức năng lưu ký của ngân hàng.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  input_rpt_data_ind boolean [note: 'Cờ cho phép nhập dữ liệu báo cáo.']
+  rcrd_st_code varchar [note: 'Trạng thái ngân hàng: 1=Hoạt động; 0=Ngừng hoạt động.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table bank_ip_electronic_address [note: 'Involved Party Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Depositary Bank (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Securities Company Depositary Bank.']
+  addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE, FAX, EMAIL, WEBSITE.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại/fax/email/website tuỳ loại).']
+}
+
+Table bank_ip_postal_address [note: 'Involved Party Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Depositary Bank (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Securities Company Depositary Bank.']
+  addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  street_addr varchar [note: 'Địa chỉ trụ sở chính/văn phòng.']
+}
+
+Table custodian_bank [note: 'Securities Company Custodian Bank'] {
+  scr_co_cstdn_bnk_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_cstdn_bnk_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán chỉ định ngân hàng lưu ký.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_cstdn_bnk_nm varchar [note: 'Tên đầy đủ ngân hàng lưu ký bằng tiếng Việt.']
+  scr_co_cstdn_bnk_en_nm varchar [note: 'Tên đầy đủ ngân hàng lưu ký bằng tiếng Anh.']
+  scr_co_cstdn_bnk_shrt_nm varchar [note: 'Tên viết tắt ngân hàng lưu ký.']
+  rcrd_st_code varchar [note: 'Trạng thái: 1=Hoạt động; 2=Ngừng hoạt động.']
+  bnk_ctgr_code varchar [note: 'Loại ngân hàng lưu ký: 1=Thanh toán; 2=Lưu ký; 3=Cả hai chức năng.']
+  chrtr_cptl_amt decimal(23,2) [note: 'Vốn điều lệ ngân hàng lưu ký (đơn vị: đồng).']
+  aprvl_dcsn_nbr varchar [note: 'Số quyết định phê duyệt ngân hàng tham gia lưu ký.']
+  aprvl_dcsn_dt timestamp [note: 'Ngày ban hành quyết định phê duyệt ngân hàng lưu ký.']
+  aprvl_oprtn_strt_dt timestamp [note: 'Ngày bắt đầu hoạt động được phê duyệt.']
+  cstdn_strt_dt timestamp [note: 'Ngày bắt đầu thực hiện nghiệp vụ lưu ký tại CTCK.']
+  cstdn_mmbr_cert_nbr varchar [note: 'Số chứng nhận thành viên lưu ký.']
+  cstdn_cert_dt timestamp [note: 'Ngày cấp chứng nhận thành viên lưu ký.']
+  lqdtn_dcsn varchar [note: 'Số quyết định thanh lý/thu hồi tư cách lưu ký.']
+  lqdtn_dcsn_dt timestamp [note: 'Ngày ban hành quyết định thanh lý tư cách lưu ký.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table custodian_bank_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Custodian Bank.']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax; EMAIL=Email; WEBSITE=Website.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số fax / địa chỉ email / URL website).']
+}
+
+Table custodian_bank_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Custodian Bank.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Trụ sở chính ngân hàng lưu ký.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ trụ sở chính ngân hàng lưu ký.']
+}
+
+Table disclosure_report [note: 'Securities Company Disclosure Report'] {
+  scr_co_dscsr_rprt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_dscsr_rprt_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán công bố thông tin.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_prdc_rprt_id varchar [note: 'FK đến báo cáo định kỳ liên quan (nullable).']
+  scr_co_prdc_rprt_code varchar [note: 'Mã báo cáo định kỳ.']
+  scr_co_adhc_rprt_id varchar [note: 'FK đến báo cáo đột xuất liên quan (nullable).']
+  scr_co_adhc_rprt_code varchar [note: 'Mã báo cáo đột xuất.']
+  scr_co_frgn_brn_id varchar [note: 'FK đến chi nhánh CTCK nước ngoài liên quan (nullable).']
+  scr_co_frgn_brn_code varchar [note: 'Mã chi nhánh CTCK nước ngoài.']
+  orig_dscsr_rprt_id varchar [note: 'FK self-reference đến bản CBTT gốc (khi bản này là đính chính).']
+  orig_dscsr_rprt_code varchar [note: 'Mã bản CBTT gốc.']
+  mmbr_rprt_id varchar [note: 'FK đến báo cáo thành viên liên quan (MEMBER_REPORT).']
+  dscsr_news_tp_code varchar [note: 'Loại tin công bố: 1=Định kỳ; 2=Bất thường; 3=Theo yêu cầu.']
+  dscsr_chnl_tp_code varchar [note: 'Loại hình công bố: 1=CBTT trên sàn; 2=UBCKNN; 3=Trang web công ty.']
+  rprt_prd_code varchar [note: 'Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).']
+  evt_tp_code varchar [note: 'FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).']
+  dscsr_st_code varchar [note: 'Trạng thái gửi CBTT từ hệ thống BA: 0=Chưa gửi; 1=Đã gửi thành công; -1=Lỗi k...']
+  title varchar [note: 'Tiêu đề thông báo/tin nhắn/báo cáo.']
+  descr varchar [note: 'Mô tả chi tiết nội dung/mục đích của bản ghi.']
+  smry varchar [note: 'Tóm tắt nội dung trích yếu.']
+  dscsr_prsn_nm varchar [note: 'Tên người công bố thông tin (denormalized).']
+  rprt_yr varchar [note: 'Năm báo cáo CBTT.']
+  rprt_prd_val varchar [note: 'Giá trị kỳ báo cáo (VD: \'2024-Q1\', \'2024-06\').']
+  crrctn_ind boolean [note: 'Cờ tin đính chính: 1=Đính chính; 0=Tin gốc.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  err_descr varchar [note: 'Mô tả lỗi khi gửi CBTT.']
+  cncl_rsn varchar [note: 'Lý do hủy báo cáo.']
+  rjctn_rsn varchar [note: 'Lý do từ chối báo cáo.']
+  dscsr_dt date [note: 'Ngày công bố thông tin.']
+  dscsr_ddln_tms timestamp [note: 'Thời hạn phải công bố thông tin.']
+  late_days integer [note: 'Số ngày CBTT muộn.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  evt_tms timestamp [note: 'Thời điểm xảy ra sự kiện CBTT.']
+  sent_tms timestamp [note: 'Thời điểm gửi CBTT.']
+  cncld_tms timestamp [note: 'Thời điểm hủy CBTT.']
+  lgcy_news_id varchar [note: 'ID tin tức từ hệ thống cũ (legacy).']
+  lgcy_filenm varchar [note: 'Tên file đính kèm từ hệ thống cũ.']
+  frgn_brn_rprt_id varchar [note: 'ID báo cáo chi nhánh CTCK nước ngoài liên quan.']
+  apprvd_by_scms_usr_id varchar [note: 'FK đến người phê duyệt CBTT.']
+  apprvd_by_scms_usr_code varchar [note: 'Mã người phê duyệt CBTT.']
+  sndr_scms_usr_id varchar [note: 'FK đến người gửi CBTT.']
+  sndr_scms_usr_code varchar [note: 'Mã người gửi CBTT.']
+  cncld_by_scms_usr_id varchar [note: 'FK đến người hủy CBTT.']
+  cncld_by_scms_usr_code varchar [note: 'Mã người hủy CBTT.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi CBTT.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi CBTT.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi CBTT gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi CBTT gần nhất.']
+}
+
+Table disclosure_securities_offering [note: 'Securities Company Disclosure Securities Offering'] {
+  scr_co_dscsr_scr_ofrng_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_dscsr_scr_ofrng_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán chào bán chứng khoán.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  evt_tp_code varchar [note: 'FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).']
+  adm_proc_id varchar [note: 'FK đến thủ tục hành chính liên quan.']
+  ofrng_tp_code varchar [note: 'Loại chào bán: 1=Công chúng; 2=CP thường; 3=Trả cổ tức CP; 4=CTLC>100 NLĐ; 5=...']
+  scr_tp_code varchar [note: 'Loại chứng khoán: CP_THUONG=Cổ phiếu phổ thông; CP_UU_DAI=Cổ phiếu ưu đãi; TP...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi chào bán: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động...']
+  data_src_code varchar [note: 'Nguồn gốc dữ liệu: Đồng bộ tự động/Nhập tay/Cổng báo cáo.']
+  assmt_code varchar [note: 'Đánh giá đợt chào bán.']
+  itm_ctgr_code varchar [note: 'Phân loại mục chào bán.']
+  su_vu varchar [note: 'Tên sự vụ áp dụng (VD: Chào bán riêng lẻ; Chào bán ra công chúng).']
+  doc_nbr varchar [note: 'Số văn bản pháp lý (QĐ/GP/CV/Thông tư).']
+  doc_dt date [note: 'Ngày ký/ban hành văn bản.']
+  doc_file_path varchar [note: 'Đường dẫn file văn bản.']
+  ofrng_mthd varchar [note: 'Hình thức chào bán (Riêng lẻ/Công chúng/Đấu giá).']
+  trgt_invstrs varchar [note: 'Đối tượng nhà đầu tư mục tiêu.']
+  ofrng_prps varchar [note: 'Mục đích chào bán/phát hành chứng khoán.']
+  undwrtr varchar [note: 'Tổ chức bảo lãnh phát hành.']
+  undwrtng_co varchar [note: 'Công ty bảo lãnh phát hành.']
+  advsр varchar [note: 'Tổ chức tư vấn phát hành.']
+  dscsr_prsn_nm varchar [note: 'Tên người công bố thông tin (denormalized).']
+  qty integer [note: 'Số lượng chứng khoán (nghĩa gốc trống).']
+  offrd_qty integer [note: 'Số lượng chứng khoán dự kiến chào bán.']
+  ttl_offrd_qty integer [note: 'Tổng số lượng chứng khoán chào bán.']
+  ttl_offrd_cmpltd integer [note: 'Tổng số lượng chứng khoán đã chào bán hoàn thành.']
+  itm_val_amt decimal [note: 'Giá trị mặt hàng chào bán.']
+  ofrng_prc_amt decimal [note: 'Giá chào bán (đồng/cổ phiếu hoặc trái phiếu).']
+  ttl_val_amt decimal [note: 'Tổng giá trị đợt chào bán (đồng).']
+  exptd_ttl_amt decimal [note: 'Tổng giá trị dự kiến thu về.']
+  prds_cllctd_amt decimal [note: 'Tổng tiền thực tế thu được.']
+  vld_dt timestamp [note: 'Ngày có hiệu lực.']
+  ofrng_dt timestamp [note: 'Ngày chào bán.']
+  strt_dt date [note: 'Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.']
+  end_dt date [note: 'Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.']
+  ofrng_strt_dt date [note: 'Ngày bắt đầu đợt chào bán.']
+  ofrng_end_dt date [note: 'Ngày kết thúc đợt chào bán.']
+  exptd_strt_dt date [note: 'Ngày bắt đầu dự kiến đợt chào bán.']
+  exptd_end_dt date [note: 'Ngày kết thúc dự kiến đợt chào bán.']
+  rslt_rprt_dt date [note: 'Ngày báo cáo kết quả đợt chào bán.']
+  frst_dssr_sbmsn_dt date [note: 'Ngày nộp hồ sơ lần đầu.']
+  cmplt_dssr_sbmsn_dt date [note: 'Ngày nộp hồ sơ đầy đủ.']
+  extn_to_dt date [note: 'Ngày gia hạn đợt chào bán.']
+  dscsr_dt timestamp [note: 'Ngày công bố thông tin chào bán.']
+  sent_tms timestamp [note: 'Thời điểm gửi thông báo chào bán.']
+  cltrl_rqrd_ind boolean [note: 'Có tài sản bảo đảm: 1=Có; 0=Không.']
+  syncd_from_adm_proc_ind boolean [note: 'Dữ liệu đồng bộ từ phân hệ TTHC: 1=Đồng bộ; 0=Nhập tay.']
+  bnd_tp_code varchar [note: 'Loại trái phiếu: CO_BAO_DAM=Có bảo đảm; KHONG_BAO_DAM=Không bảo đảm; CHUYEN_D...']
+  bnd_code varchar [note: 'Mã trái phiếu.']
+  bnd_face_val_amt decimal [note: 'Mệnh giá trái phiếu (đồng/trái phiếu).']
+  mtrty_yrs integer [note: 'Kỳ hạn trái phiếu (số năm).']
+  intr_pmnt_prd varchar [note: 'Kỳ trả lãi (Hàng tháng/Quý/6 tháng/Năm).']
+  bnd_hldr_rprs varchar [note: 'Đại diện người nắm giữ trái phiếu.']
+  issnc_dt date [note: 'Ngày phát hành trái phiếu.']
+  cw_tp_code varchar [note: 'Loại chứng quyền có bảo đảm: CW_MUA=Chứng quyền mua; CW_BAN=Chứng quyền bán.']
+  cw_nm varchar [note: 'Tên chứng quyền có bảo đảm.']
+  listd_cw_code varchar [note: 'Mã chứng quyền niêm yết trên sàn.']
+  undrlng_scr_code varchar [note: 'Mã chứng khoán cơ sở của chứng quyền.']
+  undrlng_scr_issuer varchar [note: 'Tổ chức phát hành chứng khoán cơ sở.']
+  cw_term_mths integer [note: 'Thời hạn chứng quyền (số tháng).']
+  cw_rgstrd_qty integer [note: 'Số lượng chứng quyền đăng ký.']
+  cw_prmtd_qty integer [note: 'Số lượng chứng quyền được phép phát hành.']
+  cw_dstbtd_qty integer [note: 'Số lượng chứng quyền đã phân phối.']
+  cw_shrs_per_wnrt integer [note: 'Số cổ phiếu/1 chứng quyền.']
+  cnvrsn_ratio integer [note: 'Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở).']
+  cnvrtd_shrs_qty integer [note: 'Số cổ phiếu chuyển đổi.']
+  rgstrd_ofrng_prc_amt decimal [note: 'Giá chào bán đã đăng ký.']
+  cw_actl_ofrng_prc_amt decimal [note: 'Giá chào bán thực tế chứng quyền.']
+  cw_ofrng_dt date [note: 'Ngày chào bán chứng quyền.']
+  cw_mtrty_dt date [note: 'Ngày đáo hạn chứng quyền.']
+  cltrl_sttlmt_val_amt decimal [note: 'Giá trị thanh toán tài sản bảo đảm chứng quyền.']
+  cltrl_dpst_bnk varchar [note: 'Ngân hàng ký quỹ tài sản bảo đảm cho chứng quyền.']
+  cw_dpst_amt decimal [note: 'Số tiền ký quỹ chứng quyền.']
+  cw_prds_amt decimal [note: 'Tiền thu được từ chứng quyền.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  rslt_attch_path varchar [note: 'Đường dẫn file báo cáo kết quả đợt chào bán.']
+  err_descr varchar [note: 'Mô tả lỗi khi gửi CBTT chào bán.']
+  lgcy_filenm varchar [note: 'Tên file đính kèm từ hệ thống cũ.']
+  lgcy_row_txt varchar [note: 'Chuỗi tham chiếu bản ghi từ hệ thống cũ.']
+  lgcy_udt_dt timestamp [note: 'Ngày cập nhật từ hệ thống cũ (NGAY_SUA).']
+  lgcy_udt_by_id varchar [note: 'ID người cập nhật từ hệ thống cũ (NGUOI_SUA_ID).']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi gần nhất.']
+}
+
+Table disclosure_shareholder [note: 'Securities Company Disclosure Shareholder'] {
+  scr_co_dscsr_shrhdr_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_dscsr_shrhdr_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán công bố thông tin cổ đông.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  txn_tp_code varchar [note: 'Loại giao dịch cổ đông công bố.']
+  dscsr_st_code varchar [note: 'Trạng thái bản ghi công bố cổ đông: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng ho...']
+  title varchar [note: 'Tiêu đề thông báo công bố cổ đông.']
+  smry varchar [note: 'Tóm tắt nội dung trích yếu.']
+  cntnt varchar [note: 'Nội dung thông báo/tin nhắn/văn bản.']
+  dscsr_dt timestamp [note: 'Ngày công bố thông tin cổ đông.']
+  sent_tms timestamp [note: 'Thời điểm gửi thông báo công bố cổ đông.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  lgcy_filenm varchar [note: 'Tên file đính kèm từ hệ thống cũ.']
+  lgcy_row_txt varchar [note: 'Chuỗi tham chiếu bản ghi từ hệ thống cũ.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+}
+
+Table report_violation [note: 'Securities Company Report Violation'] {
+  scr_co_rprt_vlt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_rprt_vlt_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán có vi phạm.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  rsn varchar [note: 'Lý do/mô tả vi phạm từ báo cáo.']
+  vlt_dt date [note: 'Ngày phát hiện vi phạm.']
+  usr_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS liên quan.']
+  usr_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS liên quan.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+}
+
+Table risk_indicator [note: 'Securities Company Risk Indicator'] {
+  scr_co_rsk_ind_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_rsk_ind_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_rsk_ind_grp_id varchar [note: 'FK đến nhóm chỉ tiêu rủi ro (Securities Company Risk Indicator Group).']
+  scr_co_rsk_ind_grp_code varchar [note: 'Mã nhóm chỉ tiêu rủi ro.']
+  ind_code varchar [note: 'Mã chỉ tiêu (mã nghiệp vụ do hệ thống gán).']
+  scr_co_rsk_ind_nm varchar [note: 'Tên chỉ tiêu rủi ro.']
+  wght decimal(6,2) [note: 'Trọng số của chỉ tiêu trong công thức tính điểm (%).']
+  dsc varchar [note: 'Mô tả chi tiết nội dung/mục đích của bản ghi.']
+  impl_mthd_code varchar [note: 'Phương pháp tính toán: 1=Thủ công (nhập tay); 2=Tự động (tính theo công thức).']
+  dflt_val varchar [note: 'Giá trị mặc định của ô khi khởi tạo.']
+  camel_grp_code varchar [note: 'Nhóm theo mô hình CAMEL: C=Vốn (Capital Adequacy); A=Tài sản (Asset Quality);...']
+  frml_txt varchar [note: 'Mô tả công thức dạng văn bản để hiển thị cho người dùng.']
+  frml varchar [note: 'Công thức tính toán giá trị ô.']
+  sum_frml varchar [note: 'Công thức tổng hợp của ô (tính tổng nhiều ô).']
+  rcrd_st_code varchar [note: 'Trạng thái chỉ tiêu rủi ro: 0=Không sử dụng; 1=Đang sử dụng.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table risk_indicator_group [note: 'Securities Company Risk Indicator Group'] {
+  scr_co_rsk_ind_grp_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_rsk_ind_grp_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  grp_code varchar [note: 'Mã nhóm chỉ tiêu (mã nghiệp vụ do hệ thống gán).']
+  scr_co_rsk_ind_grp_nm varchar [note: 'Tên nhóm chỉ tiêu rủi ro (GROUP_NAME).']
+  wght decimal(6,2) [note: 'Trọng số của nhóm trong công thức tính điểm (%).']
+  dsc varchar [note: 'Mô tả chi tiết nội dung/mục đích của bản ghi.']
+  camel_grp_code varchar [note: 'Nhóm theo mô hình CAMEL: C=Vốn (Capital); A=Tài sản (Asset); M=Quản trị (Mana...']
+  rcrd_st_code varchar [note: 'Trạng thái nhóm chỉ tiêu: 0=Không sử dụng; 1=Đang sử dụng.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table risk_reporting_period [note: 'Securities Company Risk Reporting Period'] {
+  scr_co_rsk_rpt_prd_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_rsk_rpt_prd_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  prd_seq_nbr integer [note: 'Kỳ số trong năm (1-4 cho quý, 1-12 cho tháng).']
+  rpt_yr integer [note: 'Năm báo cáo đánh giá rủi ro.']
+  prd_tp_code varchar [note: 'Mã kỳ đánh giá: NAM=Năm; BN=Bán niên; Q1=Quý 1; Q2=Quý 2; Q3=Quý 3; Q4=Quý 4.']
+  consolidated_ind boolean [note: 'Cờ đã tổng hợp kết quả: 0=Chưa tổng hợp; 1=Đã tổng hợp.']
+  scored_ind boolean [note: 'Cờ đã tính điểm rủi ro: 0=Chưa tính điểm; 1=Đã tính điểm.']
+  dsc varchar [note: 'Mô tả chi tiết nội dung/mục đích của bản ghi.']
+  rcrd_st_code varchar [note: 'Trạng thái kỳ báo cáo.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table risk_scoring_scale [note: 'Securities Company Risk Indicator Scoring Scale'] {
+  scr_co_rsk_ind_scr_scl_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_rsk_ind_scr_scl_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_rsk_ind_id varchar [not null, note: 'FK đến Chỉ tiêu rủi ro mà thang điểm này thuộc về.']
+  scr_co_rsk_ind_code varchar [not null, note: 'Mã Chỉ tiêu rủi ro.']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi: 1=Đang sử dụng; 0=Không sử dụng.']
+  frm_val decimal [note: 'Giá trị ngưỡng từ (khoảng dưới của thang điểm).']
+  to_val decimal [note: 'Giá trị ngưỡng đến (khoảng trên của thang điểm).']
+  scr decimal [note: 'Điểm số đánh giá tương ứng với khoảng giá trị [FROM_VALUE, TO_VALUE).']
+  itm_val varchar [note: 'Mô tả giá trị điều kiện hoặc giá trị đặc biệt của thang điểm.']
+  val_cndtn varchar [note: 'Biểu thức điều kiện bổ sung áp dụng cho khoảng giá trị thang điểm.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi lần cuối.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi lần cuối.']
+}
+
+Table risk_summary [note: 'Securities Company Risk Summary'] {
+  scr_co_rsk_smry_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_rsk_smry_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán được đánh giá rủi ro.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_rsk_rprtng_prd_id varchar [note: 'FK đến Kỳ báo cáo rủi ro.']
+  scr_co_rsk_rprtng_prd_code varchar [note: 'Mã Kỳ báo cáo rủi ro.']
+  rsk_scr_scfirm_ref_id varchar [note: 'Tham chiếu đến bản ghi chấm điểm rủi ro chi tiết của CTCK (không phải FK cons...']
+  prd varchar [note: 'Kỳ số trong năm (1-4 cho quý, 1-12 cho tháng).']
+  rprt_yr integer [note: 'Năm đánh giá rủi ro.']
+  intl_rtng_code varchar [note: 'Xếp hạng rủi ro ban đầu (trước điều chỉnh): A=Tốt; B=Khá; C=Trung bình; D=Yếu...']
+  prdic_rtng_code varchar [note: 'Xếp hạng rủi ro định kỳ sau điều chỉnh: A=Tốt; B=Khá; C=Trung bình; D=Yếu; E=...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi: 1=Đang hoạt động; 0=Không sử dụng.']
+  ttl_scr decimal [note: 'Tổng điểm đánh giá rủi ro (tổng hợp các nhóm CAMEL).']
+  cptl_scr decimal [note: 'Điểm nhóm C — Vốn (Capital) trong mô hình CAMEL.']
+  asst_scr decimal [note: 'Điểm nhóm A — Tài sản (Asset quality) trong mô hình CAMEL.']
+  mngmt_scr decimal [note: 'Điểm nhóm M — Quản lý (Management) trong mô hình CAMEL.']
+  erng_scr decimal [note: 'Điểm nhóm E — Lợi nhuận (Earnings) trong mô hình CAMEL.']
+  lqdty_scr decimal [note: 'Điểm nhóm L — Thanh khoản (Liquidity) trong mô hình CAMEL.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi lần cuối.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi lần cuối.']
+}
+
+Table sc_firm_adhoc_report [note: 'Securities Company Adhoc Report'] {
+  scr_co_adhc_rprt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_adhc_rprt_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán nộp báo cáo.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_frgn_brn_id varchar [note: 'FK đến chi nhánh CTCK nước ngoài liên quan (nullable).']
+  scr_co_frgn_brn_code varchar [note: 'Mã chi nhánh CTCK nước ngoài.']
+  bnk_id varchar [note: 'FK đến ngân hàng liên quan đến báo cáo (nullable).']
+  bnk_code varchar [note: 'Mã ngân hàng.']
+  frm_rprt_id varchar [note: 'FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).']
+  frm_vrsn_id varchar [note: 'Phiên bản biểu mẫu báo cáo.']
+  rprt_inpt_sbmsn_id varchar [note: 'FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION).']
+  rprt_nm varchar [note: 'Tên báo cáo/biểu mẫu.']
+  rprt_yr integer [note: 'Năm báo cáo.']
+  doc_nbr varchar [note: 'Số văn bản pháp lý (QĐ/GP/CV/Thông tư).']
+  prd_val varchar [note: 'Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1).']
+  adhc_rprt_tp_code varchar [note: 'Loại báo cáo chi tiết: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu cầu; KHAC...']
+  ctgr_code varchar [note: 'Phân loại báo cáo đột xuất.']
+  sgn_tp_code varchar [note: 'Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký; NONE=Không...']
+  rprt_sbmsn_st_code varchar [note: 'Trạng thái nộp báo cáo đột xuất: 0=Chưa gửi; 1=Gửi đúng hạn; 2=Gửi muộn; 3=Bị...']
+  ovrd_days integer [note: 'Số ngày gửi báo cáo muộn.']
+  alw_imprt_ind boolean [note: 'Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép.']
+  rqrs_dscsr_ind boolean [note: 'Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không.']
+  evt_tp_code varchar [note: 'FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).']
+  sbmsn_ddln_tms timestamp [note: 'Hạn nộp báo cáo đột xuất (tên cột: HAN_GUI).']
+  evt_dt date [note: 'Ngày xảy ra sự kiện báo cáo đột xuất.']
+  doc_dt date [note: 'Ngày ký/ban hành văn bản.']
+  sent_tms timestamp [note: 'Thời điểm gửi báo cáo.']
+  cncld_tms timestamp [note: 'Thời điểm hủy báo cáo.']
+  sndr_scms_usr_id varchar [note: 'FK đến người gửi báo cáo.']
+  sndr_scms_usr_code varchar [note: 'Mã người gửi báo cáo.']
+  cncld_by_scms_usr_id varchar [note: 'FK đến người hủy báo cáo.']
+  cncld_by_scms_usr_code varchar [note: 'Mã người hủy báo cáo.']
+  smry varchar [note: 'Tóm tắt nội dung trích yếu.']
+  imprt_file_path varchar [note: 'Đường dẫn file Excel import dữ liệu.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  cncl_rsn varchar [note: 'Lý do hủy báo cáo.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+}
+
+Table sc_firm_admin_penalty_decision [note: 'Securities Company Administrative Penalty Decision'] {
+  scr_co_adm_pnlty_dcn_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_adm_pnlty_dcn_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán bị xử phạt.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  dcn_nbr varchar [note: 'Số hiệu quyết định xử phạt hành chính.']
+  issd_dt date [note: 'Ngày ban hành quyết định xử phạt.']
+  pnlty_form varchar [note: 'Hình thức xử phạt theo quyết định.']
+  sgnty varchar [note: 'Tên người ký quyết định xử phạt.']
+  rgtrd_addr varchar [note: 'Địa chỉ đăng ký của CTCK tại thời điểm ra quyết định xử phạt.']
+  tax_code_biz_lcns varchar [note: 'Mã số thuế hoặc số giấy phép kinh doanh của CTCK.']
+  impl_st_code varchar [note: 'Trạng thái thực thi quyết định xử phạt: CHUA_THUC_HIEN=Chưa thực hiện; DANG_T...']
+  dt_src_code varchar [note: 'Nguồn dữ liệu của quyết định xử phạt.']
+  fine_amt decimal [note: 'Số tiền phạt theo quyết định xử phạt.']
+  tot_fine_amt decimal [note: 'Tổng số tiền phạt (bao gồm cả phạt chính + phạt bổ sung nếu có).']
+  pd_amt decimal [note: 'Số tiền phạt đã nộp.']
+  fine_pymt_ddln varchar [note: 'Hạn nộp phạt (lưu dạng text vì data type nguồn là VARCHAR).']
+  dcn_file_path varchar [note: 'Đường dẫn file quyết định xử phạt trên hệ thống lưu trữ.']
+  sync_dt date [note: 'Ngày đồng bộ dữ liệu từ nguồn ngoài.']
+  note varchar [note: 'Ghi chú về quyết định xử phạt.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_admin_sanction [note: 'Securities Company Administrative Sanction'] {
+  scr_co_adm_snctn_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_adm_snctn_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán bị xử lý hành chính.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  snctn_form_tp_code varchar [note: 'Hình thức xử lý hành chính: CANH_CAO=Cảnh cáo; PHAT_TIEN=Phạt tiền; DINH_CHI=...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi: 1=Đang hoạt động; 0=Ngừng hoạt động.']
+  amt decimal [note: 'Số tiền xử phạt hành chính.']
+  cntnt varchar [note: 'Nội dung chi tiết biện pháp xử lý hành chính.']
+  dcn_cntnt varchar [note: 'Nội dung quyết định xử phạt liên quan.']
+  dcn_dt date [note: 'Ngày ban hành quyết định xử lý hành chính.']
+  addtl_pnlty varchar [note: 'Mô tả hình phạt bổ sung kèm theo biện pháp xử lý chính.']
+  addtl_pnlty_dt date [note: 'Ngày áp dụng hình phạt bổ sung.']
+  rmdy_msrs varchar [note: 'Biện pháp khắc phục hậu quả vi phạm.']
+  prcs_unt varchar [note: 'Đơn vị xử lý biện pháp hành chính.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm biện pháp xử lý.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_alert_violation [note: 'Securities Company Alert Violation'] {
+  scr_co_alrt_vlt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_alrt_vlt_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán có vi phạm cảnh báo.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_alrt_indctr_id varchar [note: 'FK đến chỉ tiêu cảnh báo kích hoạt vi phạm.']
+  scr_co_alrt_indctr_code varchar [note: 'Mã chỉ tiêu cảnh báo.']
+  alrt_cndtn_id varchar [note: 'FK đến điều kiện cảnh báo (Alert Condition) liên quan.']
+  alrt_cndtn_code varchar [note: 'Mã điều kiện cảnh báo.']
+  alrt_run_id varchar [note: 'FK đến lần chạy alert tạo ra vi phạm này.']
+  alrt_run_code varchar [note: 'Mã lần chạy alert.']
+  vlt_svty_code varchar [note: 'Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm trọng.']
+  svty_lvl varchar [note: 'Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY nhưng dạn...']
+  alrt_ent_tp_code varchar [note: 'Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi nhánh nư...']
+  alrt_ent_code varchar [note: 'Mã nghiệp vụ của đối tượng cảnh báo (tùy loại ENTITY_TYPE).']
+  cndtn_exprn varchar [note: 'Biểu thức điều kiện logic đã kích hoạt cảnh báo.']
+  cmpr_val integer [note: 'Giá trị so sánh dùng trong điều kiện cảnh báo.']
+  actl_val decimal [note: 'Giá trị thực tế của chỉ số tại thời điểm cảnh báo.']
+  thrshd_val decimal [note: 'Ngưỡng cảnh báo được cấu hình.']
+  ddctd_scr decimal [note: 'Điểm trừ do vi phạm cảnh báo.']
+  alrt_yr varchar [note: 'Năm của cảnh báo.']
+  rprt_yr integer [note: 'Năm báo cáo liên quan đến cảnh báo.']
+  rprt_prd_code varchar [note: 'Kỳ báo cáo của cảnh báo.']
+  rprt_prd_val integer [note: 'Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12).']
+  prd varchar [note: 'Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu.']
+  rslvd_ind boolean [note: 'Cờ đánh dấu vi phạm đã được xử lý: 1=Đã xử lý; 0=Chưa xử lý.']
+  rsln_note varchar [note: 'Ghi chú về cách xử lý vi phạm cảnh báo.']
+  vlt_dscptn varchar [note: 'Mô tả chi tiết về vi phạm cảnh báo.']
+  note varchar [note: 'Ghi chú bổ sung về vi phạm cảnh báo.']
+  prcs_dt timestamp [note: 'Thời điểm xử lý vi phạm cảnh báo.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng tạo bản ghi.']
+  prcs_scms_usr_id varchar [note: 'FK đến người xử lý vi phạm cảnh báo.']
+  prcs_scms_usr_code varchar [note: 'Mã người xử lý vi phạm cảnh báo.']
+}
+
+Table sc_firm_branch [note: 'Securities Company Organization Unit'] {
+  scr_co_org_unt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_org_unt_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  org_unt_tp_code varchar [not null, note: 'Loại đơn vị tổ chức trực thuộc CTCK.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán (đơn vị cha).']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  prn_org_unt_id varchar [note: 'FK tự tham chiếu — chi nhánh cha (nếu là chi nhánh cấp dưới).']
+  prn_org_unt_code varchar [note: 'Mã đơn vị tổ chức cha.']
+  org_unt_code varchar [note: 'Mã nghiệp vụ chi nhánh (mã viết tắt).']
+  org_unt_nm varchar [note: 'Tên chi nhánh.']
+  org_unt_lgcy_nm varchar [note: 'Tên chi nhánh (trường cũ BRANCH_NAME — có thể trùng với FULL_NAME).']
+  org_unt_en_nm varchar [note: 'Tên chi nhánh bằng tiếng Anh.']
+  lfc_st_code varchar [note: 'Trạng thái pháp lý chi nhánh — FK tới CAT_SC_FIRM_STATUS (Đang hoạt động, Tạm...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi kỹ thuật: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động...']
+  prvsn_ind boolean [note: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.']
+  dcsn_nbr varchar [note: 'Số quyết định cấp phép/chấp thuận chi nhánh.']
+  dcsn_dt date [note: 'Ngày ban hành quyết định.']
+  vld_dssr_dt date [note: 'Ngày hồ sơ hợp lệ (ngày tiếp nhận hồ sơ hợp lệ).']
+  oprtn_dt date [note: 'Ngày bắt đầu hoạt động (dự kiến).']
+  ofcl_oprtn_dt date [note: 'Ngày bắt đầu hoạt động chính thức.']
+  dir_nm varchar [note: 'Họ tên Giám đốc chi nhánh.']
+  rprs_nm varchar [note: 'Họ tên người đại diện chi nhánh.']
+  rprs_ttl varchar [note: 'Chức danh người đại diện chi nhánh.']
+  prsn_dir_id varchar [note: 'ID nhân sự giám đốc (liên kết nội bộ SCMS, không phải FK chính thức).']
+  adm_authr_nm varchar [note: 'Tên cơ quan cấp phép/quản lý chi nhánh (VD: UBCKNN, Sở KH).']
+  biz_line_codes varchar[] [note: 'Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép cho chi nhánh.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_branch_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (chi nhánh CTCK).']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax; EMAIL=Email; WEBSITE=Website.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số fax / địa chỉ email / URL website).']
+}
+
+Table sc_firm_branch_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (chi nhánh CTCK).']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Trụ sở/địa điểm kinh doanh chính.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ chi tiết của chi nhánh (số nhà, tên đường, phường/xã).']
+  prov_geo_area_id varchar [note: 'FK đến Geographic Area cấp Tỉnh/Thành phố.']
+  prov_geo_area_code varchar [note: 'Mã Tỉnh/Thành phố.']
+  dist_geo_area_id varchar [note: 'FK đến Geographic Area cấp Quận/Huyện.']
+  dist_geo_area_code varchar [note: 'Mã Quận/Huyện.']
+  dist_nm varchar [note: 'Tên Quận/Huyện (denormalized text, không có FK riêng).']
+  ward_geo_area_id varchar [note: 'FK đến Geographic Area cấp Phường/Xã.']
+  ward_geo_area_code varchar [note: 'Mã Phường/Xã.']
+  ward_nm varchar [note: 'Tên Phường/Xã (denormalized text).']
+}
+
+Table sc_firm_complaint_petition [note: 'Securities Company Complaint Petition'] {
+  scr_co_cmplnt_ptn_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_cmplnt_ptn_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán liên quan đến đơn.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  ptn_tp_code varchar [note: 'Loại đơn: KHIEU_NAI=Khiếu nại; TO_CAO=Tố cáo; KIEN_NGHI=Kiến nghị; PHAN_ANH=P...']
+  prcs_st_code varchar [note: 'Trạng thái xử lý đơn: DANG_XU_LY=Đang xử lý; DA_XU_LY=Đã xử lý; CHO_PHAN_HOI=...']
+  dt_src_code varchar [note: 'Nguồn dữ liệu của đơn.']
+  ptn_nbr varchar [note: 'Số hiệu đơn/công văn khiếu nại tố cáo.']
+  case_code varchar [note: 'Mã vụ việc/hồ sơ.']
+  rcvd_dt date [note: 'Ngày nhận đơn.']
+  smry varchar [note: 'Tóm tắt nội dung đơn khiếu nại tố cáo.']
+  scr_co_nm varchar [note: 'Tên Công ty chứng khoán tại thời điểm ghi đơn (denormalized).']
+  prcs_unt varchar [note: 'Đơn vị xử lý đơn khiếu nại tố cáo.']
+  sync_dt date [note: 'Ngày đồng bộ dữ liệu từ nguồn ngoài vào SCMS.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_domestic_rep_office [note: 'Securities Company Organization Unit'] {
+  scr_co_org_unt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_org_unt_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  org_unt_tp_code varchar [not null, note: 'Loại đơn vị tổ chức trực thuộc CTCK.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  org_unt_nm varchar [note: 'Tên văn phòng đại diện.']
+  rprs_nm varchar [note: 'Họ tên người đại diện chính của văn phòng (Trưởng VPDD).']
+  ntlty_code varchar [note: 'Quốc tịch của tổ chức VPDD (FK đến CAT_NATIONALITY).']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_domestic_rep_office_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (VPDD nội địa).']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Địa điểm VPDD nội địa.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ VPDD nội địa (text, không có FK tỉnh/quận/phường).']
+}
+
+Table sc_firm_foreign_branch [note: 'Securities Company Foreign Branch'] {
+  scr_co_frgn_brn_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_frgn_brn_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [note: 'FK đến Công ty chứng khoán nội địa liên quan.']
+  scr_co_code varchar [note: 'Mã Công ty chứng khoán.']
+  brn_nm varchar [note: 'Tên chi nhánh CTCK nước ngoài tại Việt Nam.']
+  brn_en_nm varchar [note: 'Tên chi nhánh bằng tiếng Anh.']
+  brn_shrt_nm varchar [note: 'Tên viết tắt chi nhánh.']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu...']
+  evt_tp_code varchar [note: 'Loại sự vụ/sự kiện nghiệp vụ.']
+  allctd_cptl_amt decimal(23,2) [note: 'Vốn được cấp cho chi nhánh (đơn vị: đồng).']
+  fin_rpt_tp_code varchar [note: 'Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất.']
+  fscl_yr_end_dt varchar [note: 'Ngày kết thúc năm tài chính.']
+  ofcl_oprtn_dt date [note: 'Ngày bắt đầu hoạt động chính thức.']
+  biz_reg_cert varchar [note: 'Giấy chứng nhận đăng ký doanh nghiệp.']
+  prn_co_nm varchar [note: 'Tên công ty mẹ nước ngoài.']
+  prn_co_license_nbr varchar [note: 'Số giấy phép của công ty mẹ nước ngoài.']
+  prn_co_license_dt date [note: 'Ngày cấp giấy phép của công ty mẹ.']
+  prn_co_addr varchar [note: 'Địa chỉ trụ sở của công ty mẹ nước ngoài.']
+  ctry_nm varchar [note: 'Tên quốc gia nơi công ty mẹ đặt trụ sở.']
+  amndmt_decl_ind boolean [note: 'Cờ có khai bổ sung/sửa đổi: 1=Có; 0=Không.']
+  amndmt_doc_nbr varchar [note: 'Số văn bản sửa đổi.']
+  amndmt_eff_dt date [note: 'Ngày hiệu lực văn bản sửa đổi.']
+  amndmt_doc_file_path varchar [note: 'Đường dẫn file văn bản sửa đổi.']
+  syncd_from_adm_proc_ind boolean [note: 'Cờ đồng bộ từ thủ tục hành chính.']
+  svc_tp_codes varchar[] [note: 'Danh sách loại dịch vụ được cấp phép cho chi nhánh (denormalized từ LNK_SC_FI...']
+  attch_path varchar [note: 'Đường dẫn file đính kèm.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_foreign_branch_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Foreign Branch.']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax; EMAIL=Email.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số fax / địa chỉ email).']
+}
+
+Table sc_firm_foreign_branch_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Foreign Branch.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Địa điểm chi nhánh CTCK nước ngoài tại VN.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ chi nhánh CTCK nước ngoài tại Việt Nam (text).']
+}
+
+Table sc_firm_foreign_rep_office [note: 'Securities Company Organization Unit'] {
+  scr_co_org_unt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_org_unt_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  org_unt_tp_code varchar [not null, note: 'Loại đơn vị tổ chức trực thuộc CTCK.']
+  scr_co_id varchar [note: 'FK đến Công ty chứng khoán.']
+  scr_co_code varchar [note: 'Mã Công ty chứng khoán.']
+  org_unt_nm varchar [note: 'Tên văn phòng đại diện tại Việt Nam.']
+  lfc_st_code varchar [note: 'Trạng thái pháp lý VPDD CTCK nước ngoài — FK tới CAT_SC_FIRM_STATUS.']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi kỹ thuật: 1=Còn hiệu lực; 0=Hết hiệu lực.']
+  evt_tp_code varchar [note: 'Loại sự vụ/sự kiện nghiệp vụ.']
+  ofcl_oprtn_dt date [note: 'Ngày bắt đầu hoạt động chính thức.']
+  vldty_end_dt date [note: 'Ngày hết hạn giấy phép VPDD.']
+  oprtn_term_yrs integer [note: 'Thời hạn hoạt động (số năm).']
+  amndmt_decl_ind boolean [note: 'Cờ có khai bổ sung/sửa đổi: 1=Có; 0=Không.']
+  amndmt_doc_nbr varchar [note: 'Số văn bản sửa đổi.']
+  amndmt_eff_dt date [note: 'Ngày hiệu lực văn bản sửa đổi.']
+  amndmt_doc_file_path varchar [note: 'Đường dẫn file văn bản sửa đổi.']
+  prn_co_nm varchar [note: 'Tên công ty mẹ nước ngoài.']
+  prn_co_license_nbr varchar [note: 'Số giấy phép hoạt động của công ty mẹ nước ngoài.']
+  prn_co_license_dt date [note: 'Ngày cấp giấy phép của công ty mẹ nước ngoài.']
+  prn_co_hq_addr varchar [note: 'Địa chỉ trụ sở chính của công ty mẹ nước ngoài.']
+  ctry_nm varchar [note: 'Tên quốc gia nơi công ty mẹ đặt trụ sở.']
+  rptng_enabled_ind boolean [note: 'Cờ kích hoạt báo cáo định kỳ: 1=Có; 0=Không.']
+  syncd_from_adm_proc_ind boolean [note: 'Cờ đồng bộ từ thủ tục hành chính: 1=Đồng bộ từ TTHC; 0=Nhập tay.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_foreign_rep_office_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (VPDD CTCK nước ngoài tại VN).']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax; EMAIL=Email.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số fax / địa chỉ email).']
+}
+
+Table sc_firm_foreign_rep_office_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (VPDD CTCK nước ngoài tại VN).']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Địa điểm VPDD CTCK nước ngoài tại VN.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ VPDD CTCK nước ngoài tại Việt Nam (text).']
+}
+
+Table sc_firm_foreign_rep_office_vn [note: 'Securities Company Organization Unit'] {
+  scr_co_org_unt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_org_unt_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  org_unt_tp_code varchar [not null, note: 'Loại đơn vị tổ chức trực thuộc CTCK.']
+  scr_co_id varchar [note: 'FK đến Công ty chứng khoán (nullable — bảng nguồn không có SC_FIRM_INFO_ID).']
+  scr_co_code varchar [note: 'Mã Công ty chứng khoán.']
+  org_unt_nm varchar [note: 'Tên văn phòng đại diện tại Việt Nam.']
+  lfc_st_code varchar [note: 'Trạng thái hoạt động: 1=Hoạt động; 2=Đóng cửa; 3=Tạm ngừng; 4=Đình chỉ.']
+  doc_tp_code varchar [note: 'Loại văn bản/giấy phép: GP=Giấy phép; QD=Quyết định; CV=Công văn; TT=Thông tư.']
+  doc_nbr varchar [note: 'Số văn bản pháp lý.']
+  dcsn_dt date [note: 'Ngày ban hành quyết định/văn bản pháp lý.']
+  vld_dssr_dt date [note: 'Ngày hồ sơ hợp lệ.']
+  prn_co_nm varchar [note: 'Tên công ty mẹ nước ngoài.']
+  ntlty_code varchar [note: 'Quốc tịch của tổ chức (FK đến CAT_NATIONALITY).']
+  rprs_nm varchar [note: 'Họ tên người đại diện/Trưởng VPDD.']
+  chng_rsn varchar [note: 'Lý do thay đổi hồ sơ.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_foreign_rep_office_vn_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (VPDD CTCK NN — phiên bản đăng ký...']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Địa điểm VPDD tại VN; PARENT_ADDRESS=Địa chỉ công t...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ theo loại: địa điểm VPDD tại VN (HEAD_OFFICE) hoặc địa chỉ công ty mẹ...']
+}
+
+Table sc_firm_info [note: 'Securities Company'] {
+  scr_co_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  prn_scr_co_id varchar [note: 'FK tự tham chiếu — CTCK cha trong cấu trúc phân cấp (nếu có).']
+  prn_scr_co_code varchar [note: 'Mã CTCK cha.']
+  org_code varchar [note: 'Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK.']
+  scr_co_shrt_nm varchar [note: 'Tên viết tắt (VD: SSI, VPS, MBS).']
+  scr_co_nm varchar [note: 'Tên đầy đủ bằng tiếng Việt.']
+  scr_co_en_nm varchar [note: 'Tên đầy đủ bằng tiếng Anh.']
+  co_tp_code varchar [note: 'Loại hình doanh nghiệp CTCK (FK đến CAT_COMPANY_TYPE).']
+  lfc_st_code varchar [note: 'Trạng thái pháp lý CTCK — FK tới CAT_SC_FIRM_STATUS (Đang hoạt động, Tạm ngừn...']
+  evt_tp_code varchar [note: 'Loại sự vụ/sự kiện nghiệp vụ — FK tới CAT_EVENT_TYPE.']
+  fin_rpt_tp_code varchar [note: 'Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất (nhiều giá trị p...']
+  biz_license varchar [note: 'Giấy phép kinh doanh (số/tên file).']
+  fndtn_license_file_path varchar [note: 'Đường dẫn file giấy phép thành lập trên hệ thống lưu trữ.']
+  dcsn_nbr varchar [note: 'Số quyết định phê duyệt/cấp phép.']
+  license_expiry_dt date [note: 'Ngày hết hạn giấy phép.']
+  termntn_dcsn_nbr varchar [note: 'Số quyết định chấm dứt hoạt động.']
+  charter_cptl_amt decimal(23,2) [note: 'Vốn điều lệ (đơn vị: đồng).']
+  tot_shrs varchar [note: 'Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá 10.000đ).']
+  biz_line_codes varchar[] [note: 'Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép (denormalized từ LNK...']
+  addnl_biz_line_codes varchar[] [note: 'Danh sách nghiệp vụ kinh doanh bổ sung được cấp phép.']
+  listed_ind boolean [note: 'Cờ niêm yết: 1=Có niêm yết trên sàn; 0=Không niêm yết.']
+  listing_xchg_code varchar [note: 'Sàn niêm yết (HOSE, HNX, UPCOM).']
+  scr_code varchar [note: 'Mã chứng khoán niêm yết.']
+  listing_dt date [note: 'Ngày niêm yết trên sàn giao dịch.']
+  reg_dt date [note: 'Ngày đăng ký thành lập CTCK.']
+  ofcl_oprtn_dt date [note: 'Ngày bắt đầu hoạt động chính thức.']
+  fscl_yr_end_dt varchar [note: 'Ngày kết thúc năm tài chính (VD: 31/12).']
+  elec_trd_st_code varchar [note: 'Trạng thái giao dịch điện tử: HOAT_DONG=Đang hoạt động; TAM_NGUNG=Tạm ngừng; ...']
+  elec_trd_dcsn_nbr varchar [note: 'Số quyết định về giao dịch điện tử.']
+  elec_trd_dcsn_dt date [note: 'Ngày quyết định về giao dịch điện tử.']
+  elec_trd_rsn varchar [note: 'Lý do thay đổi trạng thái giao dịch điện tử.']
+  pub_co_ind boolean [note: 'Cờ công ty đại chúng: 1=Là công ty đại chúng; 0=Không phải.']
+  pub_co_reg_dt date [note: 'Ngày đăng ký là công ty đại chúng với UBCKNN.']
+  pub_co_dcsn_nbr varchar [note: 'Số quyết định công ty đại chúng.']
+  pub_co_end_dt date [note: 'Ngày chấm dứt tư cách công ty đại chúng.']
+  pub_co_end_dcsn_nbr varchar [note: 'Số quyết định chấm dứt tư cách công ty đại chúng.']
+  cstd_mmbr_code varchar [note: 'Mã thành viên lưu ký.']
+  cstd_mmbr_revoc_dcsn varchar [note: 'Quyết định thu hồi tư cách thành viên lưu ký.']
+  cstd_mmbr_revoc_dt date [note: 'Ngày thu hồi tư cách thành viên lưu ký.']
+  frgn_invstr_own_lmt_rate decimal(9,4) [note: 'Tỷ lệ sở hữu tối đa của nhà đầu tư nước ngoài.']
+  own_lmt_from_dt date [note: 'Ngày bắt đầu áp dụng giới hạn sở hữu nước ngoài.']
+  own_lmt_to_dt date [note: 'Ngày kết thúc áp dụng giới hạn sở hữu nước ngoài.']
+  amndmt_decl_ind boolean [note: 'Cờ có khai bổ sung/sửa đổi: 1=Có văn bản sửa đổi; 0=Không có.']
+  amndmt_doc_nbr varchar [note: 'Số văn bản sửa đổi.']
+  amndmt_doc_dt date [note: 'Ngày văn bản sửa đổi.']
+  amndmt_eff_dt date [note: 'Ngày hiệu lực văn bản sửa đổi.']
+  amndmt_expiry_dt date [note: 'Ngày hết hạn văn bản sửa đổi.']
+  amndmt_doc_file_path varchar [note: 'Đường dẫn file văn bản sửa đổi.']
+  prvsn_ind boolean [note: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.']
+  syncd_from_adm_proc_ind boolean [note: 'Cờ đã đồng bộ từ Thủ tục hành chính: 1=Đã đồng bộ; 0=Chưa đồng bộ.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_info_ip_electronic_address [note: 'Involved Party Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Securities Company.']
+  addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE, FAX, EMAIL, WEBSITE.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại/fax/email/website tuỳ loại).']
+}
+
+Table sc_firm_info_ip_postal_address [note: 'Involved Party Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company (Involved Party).']
+  ip_code varchar [not null, note: 'Mã Securities Company.']
+  addr_type_code varchar [primary key, not null, note: 'Loại địa chỉ.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  street_addr varchar [note: 'Địa chỉ trụ sở chính (số nhà, tên đường).']
+  prov_geo_area_id varchar [note: 'FK đến Geographic Area cấp tỉnh/thành phố.']
+  prov_geo_area_code varchar [note: 'Mã tỉnh/thành phố.']
+  dist_geo_area_id varchar [note: 'FK đến Geographic Area cấp quận/huyện.']
+  dist_geo_area_code varchar [note: 'Mã quận/huyện.']
+  dist_nm varchar [note: 'Tên quận/huyện (denormalized để tiện query mà không cần join CAT_DISTRICT).']
+  ward_geo_area_id varchar [note: 'FK đến Geographic Area cấp phường/xã.']
+  ward_geo_area_code varchar [note: 'Mã phường/xã.']
+  ward_nm varchar [note: 'Tên phường/xã (denormalized để tiện query mà không cần join CAT_WARD).']
+}
+
+Table sc_firm_insider_relation [note: 'Securities Company Insider Related Person'] {
+  scr_co_insdpr_rltd_prsn_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_insdpr_rltd_prsn_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán mà người nội bộ liên quan.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_snr_prsnl_id varchar [note: 'FK đến nhân sự cao cấp CTCK mà người này có quan hệ nội bộ.']
+  scr_co_snr_prsnl_code varchar [note: 'Mã nhân sự cao cấp liên quan.']
+  ent_tp_code varchar [note: 'Loại đối tượng người nội bộ: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức.']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi: 1=Còn hiệu lực; 0=Hết hiệu lực.']
+  gndr_code varchar [note: 'Giới tính: 1=Nam; 2=Nữ.']
+  full_nm varchar [note: 'Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).']
+  nm_en varchar [note: 'Tên đầy đủ bằng tiếng Anh.']
+  shrt_nm varchar [note: 'Tên viết tắt của tổ chức (VD: SSI, VPS, MBS).']
+  dt_of_brth date [note: 'Ngày sinh (dd/mm/yyyy).']
+  issue_dt date [note: 'Ngày cấp giấy tờ/chứng chỉ định danh.']
+  issue_plc varchar [note: 'Nơi cấp giấy tờ/chứng chỉ định danh.']
+  ntlty_id varchar [note: 'FK đến quốc tịch của người nội bộ.']
+  ntlty_code varchar [note: 'Mã quốc tịch của người nội bộ.']
+  rltshp varchar [note: 'Mối quan hệ với nhân sự cao cấp (vợ/chồng/con cái/anh chị em).']
+  rln_strt_dt date [note: 'Ngày bắt đầu mối quan hệ nội bộ.']
+  ownshp_ratio decimal [note: 'Tỷ lệ sở hữu vốn (%).']
+  ownshp_ratio_dt date [note: 'Ngày xác định tỷ lệ sở hữu.']
+  shrs_cnt integer [note: 'Số lượng cổ phần nắm giữ.']
+  fndng_shrhdr_ind boolean [note: 'Cờ là cổ đông sáng lập: 1=Có; 0=Không.']
+  lgl_rprsntv_nm varchar [note: 'Tên người đại diện pháp luật của tổ chức nội bộ.']
+  rprsntv_pstn varchar [note: 'Chức vụ của người đại diện pháp luật.']
+  note varchar [note: 'Ghi chú bổ sung về người nội bộ.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_insider_relation_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Insider Related Person.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu).']
+}
+
+Table sc_firm_insider_relation_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Insider Related Person.']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; EMAIL=Email.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại hoặc địa chỉ email).']
+}
+
+Table sc_firm_insider_relation_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Insider Related Person.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: PERMANENT=Địa chỉ thường trú.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ thường trú của người nội bộ liên quan.']
+}
+
+Table sc_firm_inspection_schedule [note: 'Securities Company Inspection Schedule'] {
+  scr_co_inspctn_schd_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_inspctn_schd_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán được kiểm tra/thanh tra.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  inspctn_tp_code varchar [note: 'Loại hoạt động giám sát: KIEM_TRA=Kiểm tra; THANH_TRA=Thanh tra.']
+  inspctn_form_tp_code varchar [note: 'Hình thức kiểm tra: DINH_KY=Định kỳ; DOT_XUAT=Đột xuất (từ FORM_TYPE).']
+  inspctn_ctgry_code varchar [note: 'Phân loại đợt kiểm tra theo chu kỳ: DINH_KY=Định kỳ; DOT_XUAT=Đột xuất (từ IN...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi: 1=Đang hoạt động; 0=Ngừng hoạt động.']
+  dcn_nbr varchar [note: 'Số hiệu quyết định kiểm tra/thanh tra.']
+  dcn_dt date [note: 'Ngày ban hành quyết định kiểm tra/thanh tra.']
+  dcn_cntnt varchar [note: 'Nội dung quyết định kiểm tra/thanh tra.']
+  strt_dt date [note: 'Ngày bắt đầu thực hiện kiểm tra/thanh tra.']
+  end_dt date [note: 'Ngày kết thúc thực hiện kiểm tra/thanh tra.']
+  inspctn_from_dt date [note: 'Ngày bắt đầu của giai đoạn được kiểm tra.']
+  inspctn_to_dt date [note: 'Ngày kết thúc của giai đoạn được kiểm tra.']
+  prd_from_dt date [note: 'Ngày bắt đầu kỳ báo cáo được kiểm tra.']
+  prd_to_dt date [note: 'Ngày kết thúc kỳ báo cáo được kiểm tra.']
+  team_ldr varchar [note: 'Tên trưởng đoàn kiểm tra/thanh tra.']
+  inspctr_nm varchar [note: 'Tên kiểm tra viên.']
+  impl_unt varchar [note: 'Đơn vị thực hiện kiểm tra/thanh tra.']
+  amt decimal [note: 'Số tiền liên quan đến đợt kiểm tra/thanh tra.']
+  cntnt varchar [note: 'Nội dung kế hoạch kiểm tra/thanh tra.']
+  cnclsn_smry varchar [note: 'Tóm tắt kết luận kiểm tra/thanh tra.']
+  rcmdtns varchar [note: 'Kiến nghị sau kiểm tra/thanh tra.']
+  cnclsn_doc_nbr varchar [note: 'Số hiệu văn bản kết luận kiểm tra/thanh tra.']
+  cnclsn_doc_dt date [note: 'Ngày ban hành văn bản kết luận.']
+  dcn_file_path varchar [note: 'Đường dẫn file quyết định kiểm tra/thanh tra.']
+  cnclsn_doc_file_path varchar [note: 'Đường dẫn file văn bản kết luận kiểm tra/thanh tra.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm của đợt kiểm tra.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_licensed_practitioner [note: 'Securities Practitioner'] {
+  scr_prac_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_prac_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity từ nguồn SCMS.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  nhnck_prsnl_id varchar [note: 'ID người hành nghề trong hệ thống NHNCK (link đến canonical source).']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán nơi người hành nghề công tác.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  brn_org_unt_id varchar [note: 'FK đến chi nhánh CTCK nơi người hành nghề công tác (nullable).']
+  brn_org_unt_code varchar [note: 'Mã chi nhánh.']
+  txn_ofc_org_unt_id varchar [note: 'FK đến phòng giao dịch CTCK nơi người hành nghề công tác (nullable).']
+  txn_ofc_org_unt_code varchar [note: 'Mã phòng giao dịch.']
+  rp_ofc_org_unt_id varchar [note: 'FK đến VPDD CTCK nơi người hành nghề công tác (nullable).']
+  rp_ofc_org_unt_code varchar [note: 'Mã VPDD.']
+  scr_lcns_nbr varchar [note: 'Số chứng chỉ hành nghề chứng khoán theo SCMS.']
+  scr_lcns_dt date [note: 'Ngày cấp chứng chỉ hành nghề chứng khoán.']
+  scr_lcns_nbr_sec varchar [note: 'Số chứng chỉ hành nghề chứng khoán (cột thứ 2 — cần xác nhận khác SO_CHUNG_CH...']
+  wrk_st_code varchar [note: 'Trạng thái làm việc tại CTCK: DANG_LAM_VIEC=Đang làm việc; DA_NGHI_VIEC=Đã ng...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi tại CTCK: 1=Đương nhiệm/Đang làm việc; 0=Đã nghỉ việc/Miễn...']
+  lcns_st_code varchar [note: 'Trạng thái người hành nghề tại CTCK.']
+  vrfctn_st_code varchar [note: 'Trạng thái xác minh CCHN với hệ thống NHNCK: 0=Chờ xác minh; 1=Khớp; 2=Không ...']
+  wrk_strt_dt date [note: 'Ngày bắt đầu làm việc tại CTCK.']
+  wrk_end_dt date [note: 'Ngày kết thúc làm việc tại CTCK.']
+  appntmt_dt date [note: 'Ngày bổ nhiệm vào vị trí.']
+  dsmssl_dt date [note: 'Ngày miễn nhiệm.']
+  cert_issue_dt date [note: 'Ngày cấp giấy tờ/chứng chỉ.']
+  biz_line_code varchar [note: 'Nghiệp vụ kinh doanh người hành nghề phụ trách (FK → CAT_BUSINESS_LINE).']
+  biz_div_id varchar [note: 'ID phân khu kinh doanh (pending FK target).']
+  rspnsbl_svc_id varchar [note: 'ID dịch vụ phụ trách (pending FK target).']
+  syncd_ind boolean [note: 'Cờ đã đồng bộ với hệ thống NHNCK: 1=Đã sync; 0=Chưa sync.']
+  sync_tms timestamp [note: 'Thời điểm đồng bộ với hệ thống NHNCK gần nhất.']
+  ltst_vrfctn_tms timestamp [note: 'Thời điểm xác minh CCHN với NHNCK gần nhất.']
+  insdpr_ind boolean [note: 'Là người nội bộ của CTCK theo quy định CBTT: 1=Người nội bộ; 0=Không phải.']
+  lbr_cntrt_trm_rpt_ind boolean [note: 'Đã nộp báo cáo chấm dứt hợp đồng lao động: 1=Đã nộp; 0=Chưa nộp.']
+  dlrd_ind boolean [note: 'Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa.']
+  rprt_id varchar [note: 'FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).']
+  btch_id varchar [note: 'ID batch xử lý đồng bộ dữ liệu.']
+  err_txt varchar [note: 'Nội dung lỗi đồng bộ dữ liệu (nếu có).']
+  cntnt varchar [note: 'Nội dung thông báo/tin nhắn liên quan đến người hành nghề.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  lgcy_full_nm varchar [note: 'Họ và tên đầy đủ (từ hệ thống cũ — HOTEN).']
+  lgcy_gndr_code varchar [note: 'Giới tính từ hệ thống cũ (GIOITINH — text).']
+  lgcy_brth_dt date [note: 'Ngày sinh từ hệ thống cũ (NGAY_SINH).']
+  lgcy_ntlty varchar [note: 'Quốc tịch (text) từ hệ thống cũ (QUOCTICH).']
+  lgcy_plc_of_brth varchar [note: 'Nơi sinh từ hệ thống cũ (NOISINH).']
+  lgcy_natl_id_nbr varchar [note: 'Số CMND từ hệ thống cũ (SOCMT).']
+  lgcy_id_issue_plc varchar [note: 'Nơi cấp CMND từ hệ thống cũ (NOICAPCMT).']
+  lgcy_co_nm varchar [note: 'Tên công ty từ hệ thống cũ (TENCONGTY).']
+  lgcy_co_en_nm varchar [note: 'Tên công ty tiếng Anh từ hệ thống cũ (TENTIENGANH).']
+  lgcy_co_shrt_nm varchar [note: 'Tên viết tắt công ty từ hệ thống cũ (TENVIETTAT).']
+  lgcy_license_nbr varchar [note: 'Số giấy phép từ hệ thống cũ (SOGIAYPHEP).']
+  lgcy_dept varchar [note: 'Phòng/Ban từ hệ thống cũ (PHONGBAN).']
+  lgcy_pstn varchar [note: 'Chức vụ từ hệ thống cũ (CHUCVU).']
+  lgcy_crt_dt date [note: 'Ngày tạo từ hệ thống cũ (DATECREATED).']
+  lgcy_crt_by varchar [note: 'Người tạo từ hệ thống cũ (CREATEDBY).']
+  lgcy_udt_dt date [note: 'Ngày cập nhật từ hệ thống cũ (DATEMODIFY).']
+  lgcy_udt_by varchar [note: 'Người cập nhật từ hệ thống cũ (MODIFYBY).']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_licensed_practitioner_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Practitioner (người hành nghề chứng khoán).']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND hiện hành; LEGACY_CMND=CMND cũ t...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ tùy thân (CCCD / CMND).']
+}
+
+Table sc_firm_licensed_practitioner_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Practitioner (người hành nghề chứng khoán).']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại bàn; MOBILE_PHONE=Di động; EMAIL=Thư đ...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số di động / địa chỉ email).']
+}
+
+Table sc_firm_licensed_practitioner_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Practitioner (người hành nghề chứng khoán).']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: PERMANENT=Địa chỉ thường trú; HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ thường trú hoặc địa chỉ hộ khẩu (theo loại row).']
+}
+
+Table sc_firm_major_shareholder_relation [note: 'Securities Company Major Shareholder Relation'] {
+  scr_co_mjr_shrhdr_rln_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_mjr_shrhdr_rln_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán có cổ đông lớn.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  shrhdr_ref_id varchar [note: 'Tham chiếu đến SC_FIRM_SHAREHOLDER.ID (không phải FK constraint).']
+  indvdl_ind boolean [note: 'Cờ là cá nhân: 1=Cá nhân; 0=Tổ chức.']
+  full_nm varchar [note: 'Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).']
+  issue_dt date [note: 'Ngày cấp giấy tờ/chứng chỉ định danh.']
+  issue_plc varchar [note: 'Nơi cấp giấy tờ/chứng chỉ định danh.']
+  ntlty_id varchar [note: 'FK đến quốc tịch của cổ đông lớn.']
+  ntlty_code varchar [note: 'Mã quốc tịch của cổ đông lớn.']
+  rltshp varchar [note: 'Mối quan hệ của cổ đông lớn với CTCK.']
+  rln_strt_dt date [note: 'Ngày bắt đầu quan hệ cổ đông lớn.']
+  rln_end_dt date [note: 'Ngày kết thúc quan hệ cổ đông lớn.']
+  lrg_shrhdr_dt date [note: 'Ngày đạt tỷ lệ sở hữu cổ đông lớn (từ 5% trở lên).']
+  ownshp_ratio decimal [note: 'Tỷ lệ sở hữu vốn (%).']
+  shrs_cnt integer [note: 'Số lượng cổ phần nắm giữ.']
+  cntrd_cap decimal [note: 'Vốn góp (đơn vị: đồng).']
+  note varchar [note: 'Ghi chú bổ sung về cổ đông lớn.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_major_shareholder_relation_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Major Shareholder Relation.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ tùy thân / Mã số doanh nghiệp.']
+}
+
+Table sc_firm_major_shareholder_relation_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Major Shareholder Relation.']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; EMAIL=Email.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại hoặc địa chỉ email).']
+}
+
+Table sc_firm_major_shareholder_relation_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Major Shareholder Relation.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: CURRENT=Địa chỉ hiện tại của cổ đông lớn.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ của cổ đông lớn.']
+}
+
+Table sc_firm_ownership_relation [note: 'Securities Company Ownership Relation'] {
+  scr_co_ownshp_rln_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_ownshp_rln_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán có quan hệ sở hữu.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  ownshp_rln_tp_code varchar [note: 'Loại quan hệ sở hữu: SO_HUU_TREN_5=Sở hữu trên 5%; CONG_TY_CON=Công ty con; C...']
+  co_nm varchar [note: 'Tên tổ chức/công ty có quan hệ sở hữu với CTCK (denormalized).']
+  ent_tp_id varchar [note: 'FK đến loại hình doanh nghiệp của tổ chức có quan hệ sở hữu.']
+  ent_tp_code varchar [note: 'Mã loại hình doanh nghiệp của tổ chức có quan hệ sở hữu.']
+  ctry_id varchar [note: 'FK đến quốc gia đăng ký của tổ chức có quan hệ sở hữu.']
+  ctry_code varchar [note: 'Mã quốc gia đăng ký của tổ chức có quan hệ sở hữu.']
+  ownshp_ratio decimal [note: 'Tỷ lệ sở hữu vốn (%).']
+  ownshp_dt date [note: 'Ngày xác lập quan hệ sở hữu.']
+  end_dt date [note: 'Ngày kết thúc/hết hiệu lực của quan hệ sở hữu.']
+  note varchar [note: 'Ghi chú bổ sung về quan hệ sở hữu.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_ownership_relation_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Ownership Relation.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: REGISTERED=Địa chỉ đăng ký kinh doanh của tổ chức có quan hệ sở...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ đăng ký kinh doanh của tổ chức có quan hệ sở hữu với CTCK.']
+}
+
+Table sc_firm_periodic_report [note: 'Securities Company Periodic Report'] {
+  scr_co_prdc_rprt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_prdc_rprt_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán nộp báo cáo.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  frm_rprt_id varchar [note: 'FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).']
+  rprt_nm varchar [note: 'Tên báo cáo/biểu mẫu.']
+  rprt_yr integer [note: 'Năm báo cáo.']
+  rprt_prd integer [note: 'Kỳ số (1-4 cho quý, 1-12 cho tháng).']
+  rprt_qtr integer [note: 'Quý trong năm (1, 2, 3, 4).']
+  rprt_mth integer [note: 'Tháng trong năm.']
+  rprt_prd_code varchar [note: 'Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).']
+  strt_dt date [note: 'Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.']
+  end_dt date [note: 'Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.']
+  sbmsn_ddln_dt date [note: 'Hạn nộp báo cáo theo quy định.']
+  sbmsn_ddln_tms timestamp [note: 'Hạn nộp báo cáo theo quy định (có giờ).']
+  rprt_sbmsn_st_code varchar [note: 'Trạng thái nộp báo cáo định kỳ: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt; -1=Từ chối;...']
+  ovrd_days integer [note: 'Số ngày nộp báo cáo quá hạn.']
+  evt_tp_code varchar [note: 'FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).']
+  sent_tms timestamp [note: 'Thời điểm gửi báo cáo lên UBCKNN.']
+  apprvd_tms timestamp [note: 'Thời điểm phê duyệt báo cáo.']
+  cncld_tms timestamp [note: 'Thời điểm hủy báo cáo.']
+  apprvd_by_scms_usr_id varchar [note: 'FK đến người phê duyệt báo cáo.']
+  apprvd_by_scms_usr_code varchar [note: 'Mã người phê duyệt báo cáo.']
+  sndr_scms_usr_id varchar [note: 'FK đến người gửi báo cáo.']
+  sndr_scms_usr_code varchar [note: 'Mã người gửi báo cáo.']
+  cncld_by_scms_usr_id varchar [note: 'FK đến người hủy báo cáo.']
+  cncld_by_scms_usr_code varchar [note: 'Mã người hủy báo cáo.']
+  vld_dgtl_sgn_ind boolean [note: 'Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ.']
+  vld_data_ind boolean [note: 'Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ; 0=Không hợp lệ.']
+  dgtl_sgn_file varchar [note: 'Đường dẫn file chữ ký số.']
+  smry varchar [note: 'Tóm tắt nội dung trích yếu.']
+  imprt_file_path varchar [note: 'Đường dẫn file Excel import dữ liệu.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  cncl_rsn varchar [note: 'Lý do hủy báo cáo.']
+  rjctn_rsn varchar [note: 'Lý do từ chối báo cáo.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống).']
+}
+
+Table sc_firm_profile_change [note: 'Securities Company Profile Change'] {
+  scr_co_prfl_chng_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_prfl_chng_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán liên quan đến thay đổi hồ sơ.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  prfl_chng_ent_tp_code varchar [note: 'Loại đối tượng bị thay đổi: CTCK=Công ty chứng khoán; CHI_NHANH=Chi nhánh; PH...']
+  ent_id varchar [note: 'ID của đối tượng bị thay đổi (polymorphic — trỏ đến bảng khác nhau tuỳ theo E...']
+  evt_tp_id varchar [note: 'FK đến loại sự vụ/sự kiện nghiệp vụ (loại thay đổi hồ sơ).']
+  evt_tp_code varchar [note: 'Mã loại sự vụ/sự kiện nghiệp vụ.']
+  evt_tp_nm varchar [note: 'Tên loại sự vụ/sự kiện nghiệp vụ (denormalized snapshot).']
+  sbj_dsply_nm varchar [note: 'Tên hiển thị của đối tượng bị thay đổi (chuỗi mô tả ngắn).']
+  bfr_info varchar [note: 'Thông tin hồ sơ trước khi thay đổi (dạng văn bản).']
+  aftr_info varchar [note: 'Thông tin hồ sơ sau khi thay đổi (dạng văn bản).']
+  doc_ref_nbr varchar [note: 'Số giấy phép/quyết định/công văn liên quan đến thay đổi hồ sơ.']
+  efctv_dt date [note: 'Ngày văn bản/thay đổi có hiệu lực.']
+  apprvl_doc_ind boolean [note: 'Cờ có văn bản chấp thuận: 1=Có; 0=Không.']
+  prfmr_nm varchar [note: 'Tên người thực hiện thay đổi (denormalized snapshot).']
+  exctn_tms timestamp [note: 'Thời điểm thực hiện thay đổi hồ sơ.']
+  prfmd_by_scms_usr_id varchar [note: 'FK đến người thực hiện thay đổi hồ sơ.']
+  prfmd_by_scms_usr_code varchar [note: 'Mã người thực hiện thay đổi hồ sơ.']
+}
+
+Table sc_firm_related_person [note: 'Securities Company Related Person'] {
+  scr_co_rltd_prsn_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_rltd_prsn_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán mà người liên quan này gắn với.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  ent_tp_code varchar [note: 'Loại đối tượng người liên quan: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức (trong nước/...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu...']
+  gndr_code varchar [note: 'Giới tính: 1=Nam; 2=Nữ.']
+  pstn_id varchar [note: 'FK đến danh mục chức vụ của người liên quan.']
+  pstn_code varchar [note: 'Mã chức vụ của người liên quan.']
+  ctry_id varchar [note: 'FK đến quốc gia của người/tổ chức liên quan.']
+  ctry_code varchar [note: 'Mã quốc gia của người/tổ chức liên quan.']
+  full_nm varchar [note: 'Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).']
+  org_nm_en varchar [note: 'Tên tổ chức bằng tiếng Anh.']
+  org_shrt_nm varchar [note: 'Tên viết tắt của tổ chức liên quan.']
+  dt_of_brth date [note: 'Ngày sinh (dd/mm/yyyy).']
+  issue_dt date [note: 'Ngày cấp giấy tờ/chứng chỉ định danh.']
+  issue_plc varchar [note: 'Nơi cấp giấy tờ/chứng chỉ định danh.']
+  rprsntv_title varchar [note: 'Chức danh người đại diện.']
+  lgl_rprsntv varchar [note: 'Thông tin người đại diện pháp luật (lưu dạng text).']
+  appntmt_dt date [note: 'Ngày bổ nhiệm vào chức vụ.']
+  wkplc varchar [note: 'Nơi làm việc của người liên quan.']
+  rltshp varchar [note: 'Mối quan hệ với CTCK hoặc với người nội bộ (vợ/chồng/con cái/anh chị em).']
+  ownshp_ratio decimal [note: 'Tỷ lệ sở hữu vốn (%).']
+  ownshp_ratio_dt date [note: 'Ngày xác định tỷ lệ sở hữu.']
+  shrs_cnt integer [note: 'Số lượng cổ phần nắm giữ.']
+  fndng_shrhdr_ind boolean [note: 'Cờ là cổ đông sáng lập: 1=Có; 0=Không.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+}
+
+Table sc_firm_related_person_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Related Person.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu (cá nhân) hoặc Mã số do...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ tùy thân / Mã số doanh nghiệp.']
+}
+
+Table sc_firm_related_person_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Related Person.']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; EMAIL=Email.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại hoặc địa chỉ email).']
+}
+
+Table sc_firm_related_person_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Related Person.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: PERMANENT=Địa chỉ thường trú.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ thường trú của người liên quan.']
+}
+
+Table sc_firm_rep_office [note: 'Securities Company Organization Unit'] {
+  scr_co_org_unt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_org_unt_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  org_unt_tp_code varchar [not null, note: 'Loại đơn vị tổ chức trực thuộc CTCK.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  prn_org_unt_id varchar [note: 'FK đến chi nhánh cha (VPDD có thể trực thuộc chi nhánh hoặc hội sở).']
+  prn_org_unt_code varchar [note: 'Mã đơn vị tổ chức cha.']
+  org_unt_nm varchar [note: 'Tên văn phòng đại diện.']
+  org_unt_lgcy_nm varchar [note: 'Tên văn phòng đại diện (trường OFFICE_NAME — có thể trùng với FULL_NAME).']
+  lfc_st_code varchar [note: 'Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm ngừng; ...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi kỹ thuật: 1=Còn hiệu lực; 0=Hết hiệu lực.']
+  prvsn_ind boolean [note: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.']
+  evt_tp_code varchar [note: 'Loại sự vụ/sự kiện nghiệp vụ.']
+  dcsn_nbr varchar [note: 'Số quyết định cấp phép/chấp thuận văn phòng.']
+  dcsn_nbr_sec varchar [note: 'Số quyết định (trường mới DECISION_NUMBER — cần xác nhận trùng với SO_QUYET_D...']
+  dcsn_dt date [note: 'Ngày ban hành quyết định.']
+  dcsn_dt_sec date [note: 'Ngày quyết định (trường mới DECISION_DATE — cần xác nhận trùng với NGAY_QUYET...']
+  doc_nbr varchar [note: 'Số văn bản pháp lý (QĐ/GP/CV/Thông tư).']
+  doc_dt date [note: 'Ngày ký/ban hành văn bản.']
+  doc_file_path varchar [note: 'Đường dẫn file văn bản.']
+  doc_decl_ind boolean [note: 'Cờ khai theo văn bản: 1=Có khai theo văn bản; 0=Không.']
+  vld_dssr_dt date [note: 'Ngày hồ sơ hợp lệ.']
+  ofcl_oprtn_dt date [note: 'Ngày bắt đầu hoạt động chính thức.']
+  vldty_strt_dt date [note: 'Ngày bắt đầu hiệu lực giấy phép/văn bản.']
+  vldty_end_dt date [note: 'Ngày hết hiệu lực giấy phép/văn bản.']
+  rprs_nm varchar [note: 'Họ tên người đại diện văn phòng.']
+  rprs_id varchar [note: 'ID nhân sự người đại diện (liên kết nội bộ SCMS, không phải FK chính thức).']
+  scope_of_oprtn varchar [note: 'Phạm vi hoạt động của văn phòng đại diện.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_rep_office_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (VPDD CTCK nội địa).']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số fax).']
+}
+
+Table sc_firm_rep_office_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (VPDD CTCK nội địa).']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Trụ sở/địa điểm VPDD.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ chi tiết của VPDD (số nhà, tên đường, phường/xã).']
+  prov_geo_area_id varchar [note: 'FK đến Geographic Area cấp Tỉnh/Thành phố.']
+  prov_geo_area_code varchar [note: 'Mã Tỉnh/Thành phố.']
+  dist_geo_area_id varchar [note: 'FK đến Geographic Area cấp Quận/Huyện.']
+  dist_geo_area_code varchar [note: 'Mã Quận/Huyện.']
+  ward_geo_area_id varchar [note: 'FK đến Geographic Area cấp Phường/Xã.']
+  ward_geo_area_code varchar [note: 'Mã Phường/Xã.']
+}
+
+Table sc_firm_senior_personnel [note: 'Securities Company Senior Personnel'] {
+  scr_co_snr_prsnl_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_snr_prsnl_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  brn_org_unt_id varchar [note: 'FK đến chi nhánh CTCK nơi nhân sự công tác (nullable).']
+  brn_org_unt_code varchar [note: 'Mã chi nhánh CTCK nơi nhân sự công tác.']
+  txn_ofc_org_unt_id varchar [note: 'FK đến phòng giao dịch CTCK nơi nhân sự công tác (nullable).']
+  txn_ofc_org_unt_code varchar [note: 'Mã phòng giao dịch CTCK nơi nhân sự công tác.']
+  rp_ofc_org_unt_id varchar [note: 'FK đến VPDD CTCK nơi nhân sự công tác (nullable).']
+  rp_ofc_org_unt_code varchar [note: 'Mã VPDD CTCK nơi nhân sự công tác.']
+  full_nm varchar [note: 'Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).']
+  entity_tp_code varchar [note: 'Loại đối tượng: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức.']
+  gndr_code varchar [note: 'Giới tính: 1=Nam; 2=Nữ.']
+  brth_dt date [note: 'Ngày sinh (dd/mm/yyyy).']
+  plc_of_brth varchar [note: 'Nơi sinh.']
+  ntlty_code varchar [note: 'Quốc tịch (FK đến CAT_NATIONALITY).']
+  prsnl_st_code varchar [note: 'Trạng thái nhân sự cấp cao: DUONG_NHIEM=Đương nhiệm; MIEN_NHIEM=Miễn nhiệm; N...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi kỹ thuật: 1=Đang hoạt động; 0=Ngừng hoạt động.']
+  prvsn_ind boolean [note: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.']
+  lgl_rprs_ind boolean [note: 'Là người đại diện theo pháp luật: 1=Có; 0=Không.']
+  stttry_rprs_ind boolean [note: 'Là người đại diện theo điều lệ.']
+  dscsr_prsn_ind boolean [note: 'Là người công bố thông tin (NGUOI_CONG_BO_TT): 1=Có; 0=Không.']
+  dscsr_prsn_id varchar [note: 'FK đến người dùng đại diện công bố thông tin (SYS_USER).']
+  dscsr_prsn_code varchar [note: 'Mã người dùng đại diện công bố thông tin.']
+  dept varchar [note: 'Phòng/Ban công tác của nhân sự.']
+  pstn_code varchar [note: 'Mã chức vụ trong danh mục (FK → CAT_POSITION).']
+  pstn_nm varchar [note: 'Tên chức vụ (tên tự do, không chuẩn hóa theo danh mục).']
+  pstn_ids varchar [note: 'Danh sách ID chức vụ kiêm nhiệm (CLOB — có thể là JSON array).']
+  appntmt_dt date [note: 'Ngày bổ nhiệm vào chức vụ.']
+  wrk_strt_dt date [note: 'Ngày bắt đầu làm việc tại CTCK.']
+  dsmssl_dt date [note: 'Ngày miễn nhiệm khỏi chức vụ.']
+  rsgtn_dt date [note: 'Ngày nghỉ việc (tự nguyện).']
+  scr_lcns_ind boolean [note: 'Có chứng chỉ hành nghề chứng khoán: 1=Có; 0=Không.']
+  scr_lcns_nbr varchar [note: 'Số chứng chỉ hành nghề chứng khoán (CCHN).']
+  scr_lcns_dt date [note: 'Ngày cấp chứng chỉ hành nghề chứng khoán.']
+  shrhdr_tp_code varchar [note: 'Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông sáng lậ...']
+  cntrtd_cptl_amt decimal(23,2) [note: 'Vốn góp của nhân sự này với tư cách cổ đông (đơn vị: đồng).']
+  ownshp_rti_dt date [note: 'Ngày tính tỷ lệ sở hữu.']
+  lgcy_prttnr_id varchar [note: 'ID nhân sự từ hệ thống cũ (TLID).']
+  biz_div_id varchar [note: 'ID phân khu kinh doanh (FK → không xác định, pending).']
+  rspnsbl_svc_id varchar [note: 'ID dịch vụ phụ trách (FK → không xác định, pending).']
+  rprt_cntnt varchar [note: 'Nội dung báo cáo liên quan đến nhân sự.']
+  dlrd_ind boolean [note: 'Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa.']
+  attch_path varchar [note: 'Đường dẫn file đính kèm.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_senior_personnel_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Senior Personnel.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu hiện tại; LEGACY_CMND=C...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu).']
+  issue_dt date [note: 'Ngày cấp giấy tờ tùy thân.']
+  issue_plc varchar [note: 'Nơi cấp giấy tờ tùy thân.']
+}
+
+Table sc_firm_senior_personnel_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Senior Personnel.']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax; EMAIL=Email; DISCLOSURE_EMAI...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số fax / địa chỉ email / email CBTT).']
+}
+
+Table sc_firm_senior_personnel_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Senior Personnel.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HOME=Địa chỉ cá nhân nhân sự cấp cao.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ trụ sở chính/văn phòng của nhân sự cấp cao.']
+}
+
+Table sc_firm_shareholder [note: 'Securities Company Shareholder'] {
+  scr_co_shrhdr_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_shrhdr_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán có cổ đông này.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_snr_prsnl_id varchar [note: 'FK đến nhân sự cao cấp CTCK (nếu cổ đông cũng là nhân sự cao cấp).']
+  scr_co_snr_prsnl_code varchar [note: 'Mã nhân sự cao cấp CTCK liên quan.']
+  shrhdr_tp_code varchar [note: 'Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông sáng lậ...']
+  shrhdr_ent_tp_code varchar [note: 'Loại hình cổ đông: CA_NHAN=Cá nhân; TO_CHUC_TRONG_NUOC=Tổ chức trong nước; TO...']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi cổ đông: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/...']
+  ntlty_id varchar [note: 'FK đến quốc tịch của cổ đông.']
+  ntlty_code varchar [note: 'Mã quốc tịch của cổ đông.']
+  indvdl_ind boolean [note: 'Cờ là cá nhân: 1=Cá nhân; 0=Tổ chức.']
+  shrhdr_nm varchar [note: 'Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức) của cổ đông.']
+  dt_of_brth date [note: 'Ngày sinh (dd/mm/yyyy).']
+  plc_of_brth varchar [note: 'Nơi sinh.']
+  issue_dt date [note: 'Ngày cấp giấy tờ/chứng chỉ định danh.']
+  issue_plc varchar [note: 'Nơi cấp giấy tờ/chứng chỉ định danh.']
+  edu_lvl varchar [note: 'Trình độ học vấn của cổ đông cá nhân.']
+  dgr varchar [note: 'Bằng cấp chuyên môn của cổ đông cá nhân.']
+  ocptn varchar [note: 'Nghề nghiệp của cổ đông cá nhân.']
+  wkplc varchar [note: 'Nơi làm việc của cổ đông cá nhân.']
+  job_title varchar [note: 'Chức danh/chức vụ của cổ đông cá nhân tại nơi làm việc.']
+  trdng_acct varchar [note: 'Số tài khoản giao dịch chứng khoán của cổ đông.']
+  org_shrt_nm varchar [note: 'Tên viết tắt của tổ chức cổ đông.']
+  lgl_rprsntv_nm varchar [note: 'Tên người đại diện pháp luật của tổ chức cổ đông.']
+  rprsntv_pstn varchar [note: 'Chức vụ của người đại diện pháp luật của tổ chức cổ đông.']
+  shrs_held integer [note: 'Số lượng cổ phần đang nắm giữ.']
+  frly_trdbl_shrs integer [note: 'Số cổ phần tự do giao dịch.']
+  plgd_shrs integer [note: 'Số cổ phần đang cầm cố/thế chấp.']
+  rstrd_shrs integer [note: 'Số cổ phần bị hạn chế chuyển nhượng.']
+  ownshp_ratio decimal [note: 'Tỷ lệ sở hữu vốn (%).']
+  cntrd_cap decimal [note: 'Vốn góp (đơn vị: đồng).']
+  lrg_shrhdr_dt date [note: 'Ngày đạt tỷ lệ sở hữu cổ đông lớn (từ 5% trở lên).']
+  cntrlng_shrhdr varchar [note: 'Thông tin cổ đông kiểm soát.']
+  fndng_shrhdr_ind boolean [note: 'Cờ là cổ đông sáng lập: 1=Có; 0=Không.']
+  ownr_ind boolean [note: 'Cờ là chủ sở hữu.']
+  prty_mmbr_ind boolean [note: 'Cờ là đảng viên.']
+  lgl_ent_rprsntv_ind boolean [note: 'Cờ là người đại diện pháp luật.']
+  co_emply_ind boolean [note: 'Cờ là nhân viên của CTCK.']
+  frgn_invstmt_ind boolean [note: 'Cờ là vốn đầu tư nước ngoài: 1=Có; 0=Không.']
+  prctnr_lgcy_id varchar [note: 'Mã tham chiếu người hành nghề từ hệ thống cũ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến tài khoản người dùng cập nhật lần cuối.']
+  udt_by_scms_usr_code varchar [note: 'Mã tài khoản người dùng cập nhật lần cuối.']
+}
+
+Table sc_firm_shareholder_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Shareholder.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu).']
+}
+
+Table sc_firm_shareholder_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Shareholder.']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; EMAIL=Email.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại hoặc địa chỉ email).']
+}
+
+Table sc_firm_shareholder_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Shareholder.']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: CURRENT=Địa chỉ hiện tại; HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu th...']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ đầy đủ (địa chỉ hiện tại hoặc hộ khẩu tuỳ theo Address Type Code).']
+}
+
+Table sc_firm_shareholder_ownership_change [note: 'Securities Company Shareholder Ownership Change'] {
+  scr_co_shrhdr_ownshp_chng_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_shrhdr_ownshp_chng_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán liên quan đến giao dịch thay đổi sở hữu.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_shrhdr_id varchar [note: 'FK đến Cổ đông CTCK có thay đổi sở hữu.']
+  scr_co_shrhdr_code varchar [note: 'Mã Cổ đông CTCK có thay đổi sở hữu.']
+  shrhdr_txn_tp_code varchar [note: 'Loại giao dịch thay đổi sở hữu: TANG_VON=Tăng vốn góp; GIAM_VON=Giảm vốn góp;...']
+  data_src_code varchar [note: 'Nguồn gốc dữ liệu: Đồng bộ tự động, Nhập tay, Cổng báo cáo.']
+  cptl_bfr decimal [note: 'Vốn góp trước khi giao dịch (đơn vị: đồng).']
+  ratio_bfr decimal [note: 'Tỷ lệ sở hữu trước khi giao dịch (%).']
+  cptl_aftr decimal [note: 'Vốn góp sau khi giao dịch (đơn vị: đồng).']
+  ratio_aftr decimal [note: 'Tỷ lệ sở hữu sau khi giao dịch (%).']
+  efctv_dt date [note: 'Ngày hiệu lực của thay đổi sở hữu.']
+  doc_nbr varchar [note: 'Số văn bản pháp lý (QĐ/GP/CV/Thông tư) của giao dịch thay đổi sở hữu.']
+  attchmnt_pth varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+}
+
+Table sc_firm_shareholder_relation [note: 'Securities Company Shareholder Relation'] {
+  scr_co_shrhdr_rln_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_shrhdr_rln_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán liên quan.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_shrhdr_id varchar [not null, note: 'FK đến Cổ đông CTCK mà người này có quan hệ.']
+  scr_co_shrhdr_code varchar [not null, note: 'Mã Cổ đông CTCK.']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi quan hệ cổ đông: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng ho...']
+  full_nm varchar [note: 'Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức) của người liên quan.']
+  rltshp varchar [note: 'Mối quan hệ với cổ đông (vợ/chồng/con cái/anh chị em).']
+  id_nbr varchar [note: 'Số CMND/CCCD của người liên quan (định danh cũ).']
+  issue_dt date [note: 'Ngày cấp giấy tờ/chứng chỉ của người liên quan.']
+  issue_plc varchar [note: 'Nơi cấp giấy tờ/chứng chỉ của người liên quan.']
+  wkplc varchar [note: 'Nơi làm việc của người liên quan.']
+  job_title varchar [note: 'Chức danh/chức vụ của người liên quan tại nơi làm việc.']
+  scr_co_w_shrs_ref_id varchar [note: 'Tham chiếu đến CTCK khác mà người liên quan nắm cổ phần (không phải FK constr...']
+  shrs_cnt integer [note: 'Số lượng cổ phần của người liên quan tại CTCK.']
+  ownshp_ratio decimal [note: 'Tỷ lệ sở hữu vốn của người liên quan tại CTCK (%).']
+  attchmnt_pth varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi lần cuối.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi lần cuối.']
+}
+
+Table sc_firm_shareholder_representative [note: 'Securities Company Shareholder Representative'] {
+  scr_co_shrhdr_rprsntv_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_shrhdr_rprsntv_code varchar [not null, note: 'Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán liên quan.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  scr_co_shrhdr_id varchar [not null, note: 'FK đến Cổ đông CTCK mà người này là đại diện.']
+  scr_co_shrhdr_code varchar [not null, note: 'Mã Cổ đông CTCK.']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi người đại diện cổ đông.']
+  rprsntv_nm varchar [note: 'Họ tên người đại diện cổ đông tổ chức.']
+  pstn varchar [note: 'Chức vụ của người đại diện tại tổ chức cổ đông.']
+  id_nbr varchar [note: 'Số CMND/CCCD của người đại diện (định danh cũ).']
+  issue_dt date [note: 'Ngày cấp giấy tờ/chứng chỉ của người đại diện.']
+  issue_plc varchar [note: 'Nơi cấp giấy tờ/chứng chỉ của người đại diện.']
+  shrs_cnt integer [note: 'Số lượng cổ phần mà người đại diện này quản lý/đại diện.']
+  ownshp_ratio decimal [note: 'Tỷ lệ sở hữu vốn của cổ đông mà người này đại diện (%).']
+  attchmnt_pth varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống).']
+  udt_tms timestamp [note: 'Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống).']
+  crt_by_scms_usr_id varchar [note: 'FK đến người tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người cập nhật bản ghi lần cuối.']
+  udt_by_scms_usr_code varchar [note: 'Mã người cập nhật bản ghi lần cuối.']
+}
+
+Table sc_firm_transaction_office [note: 'Securities Company Organization Unit'] {
+  scr_co_org_unt_id varchar [primary key, not null, note: 'Khóa đại diện (surrogate key).']
+  scr_co_org_unt_code varchar [not null, note: 'Khóa chính kỹ thuật (ID tự tăng). BK của entity.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  org_unt_tp_code varchar [not null, note: 'Loại đơn vị tổ chức trực thuộc CTCK.']
+  scr_co_id varchar [not null, note: 'FK đến Công ty chứng khoán.']
+  scr_co_code varchar [not null, note: 'Mã Công ty chứng khoán.']
+  prn_org_unt_id varchar [note: 'FK đến chi nhánh cha (phòng giao dịch trực thuộc chi nhánh).']
+  prn_org_unt_code varchar [note: 'Mã đơn vị tổ chức cha.']
+  org_unt_nm varchar [note: 'Tên phòng giao dịch.']
+  org_unt_lgcy_nm varchar [note: 'Tên phòng giao dịch (trường TRANSACTION_OFFICE_NAME — có thể trùng FULL_NAME).']
+  lfc_st_code varchar [note: 'Trạng thái pháp lý phòng giao dịch — FK tới CAT_SC_FIRM_STATUS.']
+  rcrd_st_code varchar [note: 'Trạng thái bản ghi kỹ thuật: 1=Còn hiệu lực; 0=Hết hiệu lực.']
+  prvsn_ind boolean [note: 'Cờ bản nháp: 1=Bản nháp; 0=Chính thức.']
+  evt_tp_code varchar [note: 'Loại sự vụ/sự kiện nghiệp vụ.']
+  dcsn_nbr varchar [note: 'Số quyết định cấp phép/chấp thuận phòng giao dịch.']
+  dcsn_nbr_sec varchar [note: 'Số quyết định (trường mới DECISION_NUMBER — có thể trùng SO_QUYET_DINH).']
+  dcsn_dt date [note: 'Ngày ban hành quyết định.']
+  dcsn_dt_sec date [note: 'Ngày quyết định (trường mới DECISION_DATE — có thể trùng NGAY_QUYET_DINH).']
+  doc_nbr varchar [note: 'Số văn bản pháp lý (QĐ/GP/CV/Thông tư).']
+  doc_dt date [note: 'Ngày ký/ban hành văn bản.']
+  doc_file_path varchar [note: 'Đường dẫn file văn bản.']
+  doc_decl_ind boolean [note: 'Cờ khai theo văn bản.']
+  vld_dssr_dt date [note: 'Ngày hồ sơ hợp lệ.']
+  ofcl_oprtn_dt date [note: 'Ngày bắt đầu hoạt động chính thức.']
+  vldty_strt_dt date [note: 'Ngày bắt đầu hiệu lực.']
+  vldty_end_dt date [note: 'Ngày hết hiệu lực.']
+  rprs_nm varchar [note: 'Họ tên người đại diện phòng giao dịch.']
+  rprs_id varchar [note: 'ID nhân sự người đại diện (liên kết nội bộ SCMS, không phải FK chính thức).']
+  attch_path varchar [note: 'Đường dẫn file đính kèm trên hệ thống lưu trữ.']
+  note varchar [note: 'Ghi chú bổ sung, không bắt buộc.']
+  crt_tms timestamp [note: 'Thời điểm tạo bản ghi.']
+  udt_tms timestamp [note: 'Thời điểm cập nhật bản ghi gần nhất.']
+  crt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS tạo bản ghi.']
+  crt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS tạo bản ghi.']
+  udt_by_scms_usr_id varchar [note: 'FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+  udt_by_scms_usr_code varchar [note: 'Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất.']
+}
+
+Table sc_firm_transaction_office_ip_electronic_address [note: 'IP Electronic Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (phòng giao dịch CTCK).']
+  elec_addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ điện tử: PHONE=Điện thoại; FAX=Fax.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  elec_addr_val varchar [note: 'Giá trị địa chỉ điện tử (số điện thoại / số fax).']
+}
+
+Table sc_firm_transaction_office_ip_postal_address [note: 'IP Postal Address'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Organization Unit (phòng giao dịch CTCK).']
+  addr_tp_code varchar [primary key, not null, note: 'Loại địa chỉ: HEAD_OFFICE=Địa điểm phòng giao dịch.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  strt_addr varchar [note: 'Địa chỉ chi tiết của phòng giao dịch.']
+  prov_geo_area_id varchar [note: 'FK đến Geographic Area cấp Tỉnh/Thành phố.']
+  prov_geo_area_code varchar [note: 'Mã Tỉnh/Thành phố.']
+  dist_geo_area_id varchar [note: 'FK đến Geographic Area cấp Quận/Huyện.']
+  dist_geo_area_code varchar [note: 'Mã Quận/Huyện.']
+  ward_geo_area_id varchar [note: 'FK đến Geographic Area cấp Phường/Xã.']
+  ward_geo_area_code varchar [note: 'Mã Phường/Xã.']
+}
+
+Table sc_firm_branch_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Branch.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép hoạt động chi nhánh.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy phép hoạt động chi nhánh.']
+  issue_dt date [note: 'Ngày cấp giấy phép hoạt động chi nhánh.']
+}
+
+Table sc_firm_domestic_rep_office_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Domestic Representative Office.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép kinh doanh của văn phòng.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy phép kinh doanh của văn phòng đại diện trong nước.']
+  issue_dt date [note: 'Ngày cấp giấy phép kinh doanh.']
+}
+
+Table sc_firm_foreign_rep_office_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Foreign Representative Office.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép hoạt động VPDD tại VN; ENTERPRISE_CODE=Mã số doanh nghiệp; TAX_CODE=Mã số thuế.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ định danh của VPDD nước ngoài theo từng loại.']
+  issue_dt date [note: 'Ngày cấp giấy phép hoạt động (áp dụng cho OPERATION_LICENSE).']
+}
+
+Table sc_firm_foreign_rep_office_vn_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Foreign Representative Office in VN.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép thành lập và hoạt động (UBCKNN); ESTABLISHMENT_LICENSE=Giấy phép hoạt động văn phòng tại VN.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ định danh của VPDD-VN theo từng loại.']
+  issue_dt date [note: 'Ngày cấp giấy tờ.']
+  issue_plc varchar [note: 'Cơ quan/nơi cấp giấy tờ.']
+}
+
+Table sc_firm_info_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: OPERATION_LICENSE; ESTABLISHMENT_LICENSE; TAX_CODE; ENTERPRISE_CODE; CERTIFICATE; CUSTODIAN_CERT; CUSTODIAN_MEMBER_CERT.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ định danh của CTCK theo từng loại.']
+  issue_dt date [note: 'Ngày cấp giấy tờ (áp dụng cho các loại có ngày cấp).']
+  issue_plc varchar [note: 'Cơ quan/nơi cấp (áp dụng cho OPERATION_LICENSE và ESTABLISHMENT_LICENSE).']
+}
+
+Table sc_firm_ownership_relation_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Ownership Relation.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh: ENTERPRISE_CODE=Mã số doanh nghiệp.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Mã số doanh nghiệp của tổ chức có quan hệ sở hữu với CTCK.']
+}
+
+Table auditor_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Audit Firm Auditor.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: AUDITOR_CERT=Chứng chỉ hành nghề kiểm toán.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số chứng chỉ hành nghề kiểm toán.']
+  issue_dt date [note: 'Ngày cấp chứng chỉ hành nghề.']
+}
+
+Table audit_firm_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Audit Firm.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh tổ chức: BUSINESS_LICENSE=Giấy phép thành lập và hoạt động.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy phép thành lập và hoạt động.']
+  issue_dt date [note: 'Ngày cấp giấy phép.']
+  issue_plc varchar [note: 'Nơi cấp giấy phép (mặc định: UBCKNN).']
+}
+
+Table bank_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Depositary Bank.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh tổ chức: ENTERPRISE_CODE=Mã số doanh nghiệp; TAX_CODE=Mã số thuế; OPERATION_LICENSE=Giấy phép hoạt động ngân hàng; BIZ_REG_CERT=Giấy chứng nhận đăng ký kinh doanh.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ định danh của ngân hàng theo từng loại.']
+  issue_dt date [note: 'Ngày cấp giấy tờ (áp dụng cho OPERATION_LICENSE và BIZ_REG_CERT).']
+  issue_plc varchar [note: 'Tên cơ quan cấp (áp dụng cho OPERATION_LICENSE).']
+}
+
+Table custodian_bank_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Custodian Bank.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh tổ chức: ESTABLISHMENT_LICENSE=Giấy phép thành lập ngân hàng; BIZ_REG_CERT=Giấy chứng nhận đăng ký kinh doanh.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ định danh của ngân hàng lưu ký theo từng loại.']
+  issue_dt date [note: 'Ngày cấp giấy tờ.']
+  issue_plc varchar [note: 'Nơi cấp giấy phép thành lập (áp dụng cho ESTABLISHMENT_LICENSE).']
+}
+
+Table sc_firm_foreign_branch_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Foreign Branch.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ định danh tổ chức: OPERATION_LICENSE=Giấy phép hoạt động tại Việt Nam; ENTERPRISE_CODE=Mã số doanh nghiệp; TAX_CODE=Mã số thuế; BIZ_REG_CERT=Giấy chứng nhận đăng ký doanh nghiệp.']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số giấy tờ định danh của chi nhánh nước ngoài theo từng loại.']
+  issue_dt date [note: 'Ngày cấp giấy tờ (áp dụng cho OPERATION_LICENSE và BIZ_REG_CERT).']
+}
+
+Table sc_firm_shareholder_relation_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Shareholder Relation.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ (ID_NUMBER).']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số CMND của người liên quan cổ đông.']
+  issue_dt date [note: 'Ngày cấp CMND.']
+  issue_plc varchar [note: 'Nơi cấp CMND.']
+}
+
+Table sc_firm_shareholder_representative_ip_alt_identification [note: 'IP Alt Identification'] {
+  ip_id varchar [primary key, not null, note: 'FK đến Securities Company Shareholder Representative.']
+  id_tp_code varchar [primary key, not null, note: 'Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ (ID_NUMBER).']
+  src_stm_code varchar [not null, note: 'Mã hệ thống nguồn dữ liệu.']
+  id_nbr varchar [note: 'Số CMND của người đại diện cổ đông.']
+  issue_dt date [note: 'Ngày cấp CMND.']
+  issue_plc varchar [note: 'Nơi cấp CMND.']
+}
+
+// === FK REFERENCES ===
+
+Ref ref_alert_indicator_condition__scr_co_alrt_ind_id__alert_indicator: alert_indicator_condition.scr_co_alrt_ind_id > alert_indicator.scr_co_alrt_ind_id
+Ref ref_auditor__audt_firm_id__audit_firm: auditor.audt_firm_id > audit_firm.audt_firm_id
+Ref ref_audit_firm_ip_electronic_address__ip_id__audit_firm: audit_firm_ip_electronic_address.ip_id > audit_firm.audt_firm_id
+Ref ref_audit_firm_ip_postal_address__ip_id__audit_firm: audit_firm_ip_postal_address.ip_id > audit_firm.audt_firm_id
+Ref ref_bank_ip_electronic_address__ip_id__bank: bank_ip_electronic_address.ip_id > bank.scr_co_dpst_bnk_id
+Ref ref_bank_ip_postal_address__ip_id__bank: bank_ip_postal_address.ip_id > bank.scr_co_dpst_bnk_id
+Ref ref_custodian_bank__scr_co_id__sc_firm_info: custodian_bank.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_custodian_bank_ip_electronic_address__ip_id__custodian_bank: custodian_bank_ip_electronic_address.ip_id > custodian_bank.scr_co_cstdn_bnk_id
+Ref ref_custodian_bank_ip_postal_address__ip_id__custodian_bank: custodian_bank_ip_postal_address.ip_id > custodian_bank.scr_co_cstdn_bnk_id
+Ref ref_disclosure_report__scr_co_id__sc_firm_info: disclosure_report.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_disclosure_report__scr_co_prdc_rprt_id__sc_firm_periodic_report: disclosure_report.scr_co_prdc_rprt_id > sc_firm_periodic_report.scr_co_prdc_rprt_id
+Ref ref_disclosure_report__scr_co_adhc_rprt_id__sc_firm_adhoc_report: disclosure_report.scr_co_adhc_rprt_id > sc_firm_adhoc_report.scr_co_adhc_rprt_id
+Ref ref_disclosure_report__scr_co_frgn_brn_id__sc_firm_foreign_branch: disclosure_report.scr_co_frgn_brn_id > sc_firm_foreign_branch.scr_co_frgn_brn_id
+Ref ref_disclosure_report__orig_dscsr_rprt_id__disclosure_report: disclosure_report.orig_dscsr_rprt_id > disclosure_report.scr_co_dscsr_rprt_id
+Ref ref_disclosure_securities_offering__scr_co_id__sc_firm_info: disclosure_securities_offering.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_disclosure_shareholder__scr_co_id__sc_firm_info: disclosure_shareholder.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_report_violation__scr_co_id__sc_firm_info: report_violation.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_risk_scoring_scale__scr_co_rsk_ind_id__risk_indicator: risk_scoring_scale.scr_co_rsk_ind_id > risk_indicator.scr_co_rsk_ind_id
+Ref ref_risk_summary__scr_co_id__sc_firm_info: risk_summary.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_risk_summary__scr_co_rsk_rprtng_prd_id__risk_reporting_period: risk_summary.scr_co_rsk_rprtng_prd_id > risk_reporting_period.scr_co_rsk_rpt_prd_id
+Ref ref_sc_firm_adhoc_report__scr_co_id__sc_firm_info: sc_firm_adhoc_report.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_adhoc_report__scr_co_frgn_brn_id__sc_firm_foreign_branch: sc_firm_adhoc_report.scr_co_frgn_brn_id > sc_firm_foreign_branch.scr_co_frgn_brn_id
+Ref ref_sc_firm_adhoc_report__bnk_id__bank: sc_firm_adhoc_report.bnk_id > bank.scr_co_dpst_bnk_id
+Ref ref_sc_firm_admin_penalty_decision__scr_co_id__sc_firm_info: sc_firm_admin_penalty_decision.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_admin_sanction__scr_co_id__sc_firm_info: sc_firm_admin_sanction.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_alert_violation__scr_co_id__sc_firm_info: sc_firm_alert_violation.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_alert_violation__scr_co_alrt_indctr_id__alert_indicator: sc_firm_alert_violation.scr_co_alrt_indctr_id > alert_indicator.scr_co_alrt_ind_id
+Ref ref_sc_firm_branch__scr_co_id__sc_firm_info: sc_firm_branch.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_branch__prn_org_unt_id__sc_firm_branch: sc_firm_branch.prn_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_branch_ip_electronic_address__ip_id__sc_firm_branch: sc_firm_branch_ip_electronic_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_branch_ip_postal_address__ip_id__sc_firm_branch: sc_firm_branch_ip_postal_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_complaint_petition__scr_co_id__sc_firm_info: sc_firm_complaint_petition.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_domestic_rep_office__scr_co_id__sc_firm_info: sc_firm_domestic_rep_office.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_domestic_rep_office_ip_postal_address__ip_id__sc_firm_branch: sc_firm_domestic_rep_office_ip_postal_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_foreign_branch__scr_co_id__sc_firm_info: sc_firm_foreign_branch.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_foreign_branch_ip_electronic_address__ip_id__sc_firm_foreign_branch: sc_firm_foreign_branch_ip_electronic_address.ip_id > sc_firm_foreign_branch.scr_co_frgn_brn_id
+Ref ref_sc_firm_foreign_branch_ip_postal_address__ip_id__sc_firm_foreign_branch: sc_firm_foreign_branch_ip_postal_address.ip_id > sc_firm_foreign_branch.scr_co_frgn_brn_id
+Ref ref_sc_firm_foreign_rep_office__scr_co_id__sc_firm_info: sc_firm_foreign_rep_office.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_foreign_rep_office_ip_electronic_address__ip_id__sc_firm_branch: sc_firm_foreign_rep_office_ip_electronic_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_foreign_rep_office_ip_postal_address__ip_id__sc_firm_branch: sc_firm_foreign_rep_office_ip_postal_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_foreign_rep_office_vn_ip_postal_address__ip_id__sc_firm_branch: sc_firm_foreign_rep_office_vn_ip_postal_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_info__prn_scr_co_id__sc_firm_info: sc_firm_info.prn_scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_info_ip_electronic_address__ip_id__sc_firm_info: sc_firm_info_ip_electronic_address.ip_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_info_ip_postal_address__ip_id__sc_firm_info: sc_firm_info_ip_postal_address.ip_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_insider_relation__scr_co_id__sc_firm_info: sc_firm_insider_relation.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_insider_relation__scr_co_snr_prsnl_id__sc_firm_senior_personnel: sc_firm_insider_relation.scr_co_snr_prsnl_id > sc_firm_senior_personnel.scr_co_snr_prsnl_id
+Ref ref_sc_firm_insider_relation_ip_alt_identification__ip_id__sc_firm_insider_relation: sc_firm_insider_relation_ip_alt_identification.ip_id > sc_firm_insider_relation.scr_co_insdpr_rltd_prsn_id
+Ref ref_sc_firm_insider_relation_ip_electronic_address__ip_id__sc_firm_insider_relation: sc_firm_insider_relation_ip_electronic_address.ip_id > sc_firm_insider_relation.scr_co_insdpr_rltd_prsn_id
+Ref ref_sc_firm_insider_relation_ip_postal_address__ip_id__sc_firm_insider_relation: sc_firm_insider_relation_ip_postal_address.ip_id > sc_firm_insider_relation.scr_co_insdpr_rltd_prsn_id
+Ref ref_sc_firm_inspection_schedule__scr_co_id__sc_firm_info: sc_firm_inspection_schedule.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_licensed_practitioner__scr_co_id__sc_firm_info: sc_firm_licensed_practitioner.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_licensed_practitioner__brn_org_unt_id__sc_firm_branch: sc_firm_licensed_practitioner.brn_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_licensed_practitioner__txn_ofc_org_unt_id__sc_firm_branch: sc_firm_licensed_practitioner.txn_ofc_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_licensed_practitioner__rp_ofc_org_unt_id__sc_firm_branch: sc_firm_licensed_practitioner.rp_ofc_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_licensed_practitioner_ip_alt_identification__ip_id__sc_firm_licensed_practitioner: sc_firm_licensed_practitioner_ip_alt_identification.ip_id > sc_firm_licensed_practitioner.scr_prac_id
+Ref ref_sc_firm_licensed_practitioner_ip_electronic_address__ip_id__sc_firm_licensed_practitioner: sc_firm_licensed_practitioner_ip_electronic_address.ip_id > sc_firm_licensed_practitioner.scr_prac_id
+Ref ref_sc_firm_licensed_practitioner_ip_postal_address__ip_id__sc_firm_licensed_practitioner: sc_firm_licensed_practitioner_ip_postal_address.ip_id > sc_firm_licensed_practitioner.scr_prac_id
+Ref ref_sc_firm_major_shareholder_relation__scr_co_id__sc_firm_info: sc_firm_major_shareholder_relation.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_major_shareholder_relation_ip_alt_identification__ip_id__sc_firm_major_shareholder_relation: sc_firm_major_shareholder_relation_ip_alt_identification.ip_id > sc_firm_major_shareholder_relation.scr_co_mjr_shrhdr_rln_id
+Ref ref_sc_firm_major_shareholder_relation_ip_electronic_address__ip_id__sc_firm_major_shareholder_relation: sc_firm_major_shareholder_relation_ip_electronic_address.ip_id > sc_firm_major_shareholder_relation.scr_co_mjr_shrhdr_rln_id
+Ref ref_sc_firm_major_shareholder_relation_ip_postal_address__ip_id__sc_firm_major_shareholder_relation: sc_firm_major_shareholder_relation_ip_postal_address.ip_id > sc_firm_major_shareholder_relation.scr_co_mjr_shrhdr_rln_id
+Ref ref_sc_firm_ownership_relation__scr_co_id__sc_firm_info: sc_firm_ownership_relation.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_ownership_relation_ip_postal_address__ip_id__sc_firm_ownership_relation: sc_firm_ownership_relation_ip_postal_address.ip_id > sc_firm_ownership_relation.scr_co_ownshp_rln_id
+Ref ref_sc_firm_periodic_report__scr_co_id__sc_firm_info: sc_firm_periodic_report.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_profile_change__scr_co_id__sc_firm_info: sc_firm_profile_change.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_related_person__scr_co_id__sc_firm_info: sc_firm_related_person.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_related_person_ip_alt_identification__ip_id__sc_firm_related_person: sc_firm_related_person_ip_alt_identification.ip_id > sc_firm_related_person.scr_co_rltd_prsn_id
+Ref ref_sc_firm_related_person_ip_electronic_address__ip_id__sc_firm_related_person: sc_firm_related_person_ip_electronic_address.ip_id > sc_firm_related_person.scr_co_rltd_prsn_id
+Ref ref_sc_firm_related_person_ip_postal_address__ip_id__sc_firm_related_person: sc_firm_related_person_ip_postal_address.ip_id > sc_firm_related_person.scr_co_rltd_prsn_id
+Ref ref_sc_firm_rep_office__scr_co_id__sc_firm_info: sc_firm_rep_office.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_rep_office__prn_org_unt_id__sc_firm_branch: sc_firm_rep_office.prn_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_rep_office_ip_electronic_address__ip_id__sc_firm_branch: sc_firm_rep_office_ip_electronic_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_rep_office_ip_postal_address__ip_id__sc_firm_branch: sc_firm_rep_office_ip_postal_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_senior_personnel__scr_co_id__sc_firm_info: sc_firm_senior_personnel.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_senior_personnel__brn_org_unt_id__sc_firm_branch: sc_firm_senior_personnel.brn_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_senior_personnel__txn_ofc_org_unt_id__sc_firm_branch: sc_firm_senior_personnel.txn_ofc_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_senior_personnel__rp_ofc_org_unt_id__sc_firm_branch: sc_firm_senior_personnel.rp_ofc_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_senior_personnel_ip_alt_identification__ip_id__sc_firm_senior_personnel: sc_firm_senior_personnel_ip_alt_identification.ip_id > sc_firm_senior_personnel.scr_co_snr_prsnl_id
+Ref ref_sc_firm_senior_personnel_ip_electronic_address__ip_id__sc_firm_senior_personnel: sc_firm_senior_personnel_ip_electronic_address.ip_id > sc_firm_senior_personnel.scr_co_snr_prsnl_id
+Ref ref_sc_firm_senior_personnel_ip_postal_address__ip_id__sc_firm_senior_personnel: sc_firm_senior_personnel_ip_postal_address.ip_id > sc_firm_senior_personnel.scr_co_snr_prsnl_id
+Ref ref_sc_firm_shareholder__scr_co_id__sc_firm_info: sc_firm_shareholder.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_shareholder__scr_co_snr_prsnl_id__sc_firm_senior_personnel: sc_firm_shareholder.scr_co_snr_prsnl_id > sc_firm_senior_personnel.scr_co_snr_prsnl_id
+Ref ref_sc_firm_shareholder_ip_alt_identification__ip_id__sc_firm_shareholder: sc_firm_shareholder_ip_alt_identification.ip_id > sc_firm_shareholder.scr_co_shrhdr_id
+Ref ref_sc_firm_shareholder_ip_electronic_address__ip_id__sc_firm_shareholder: sc_firm_shareholder_ip_electronic_address.ip_id > sc_firm_shareholder.scr_co_shrhdr_id
+Ref ref_sc_firm_shareholder_ip_postal_address__ip_id__sc_firm_shareholder: sc_firm_shareholder_ip_postal_address.ip_id > sc_firm_shareholder.scr_co_shrhdr_id
+Ref ref_sc_firm_shareholder_ownership_change__scr_co_id__sc_firm_info: sc_firm_shareholder_ownership_change.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_shareholder_ownership_change__scr_co_shrhdr_id__sc_firm_shareholder: sc_firm_shareholder_ownership_change.scr_co_shrhdr_id > sc_firm_shareholder.scr_co_shrhdr_id
+Ref ref_sc_firm_shareholder_relation__scr_co_id__sc_firm_info: sc_firm_shareholder_relation.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_shareholder_relation__scr_co_shrhdr_id__sc_firm_shareholder: sc_firm_shareholder_relation.scr_co_shrhdr_id > sc_firm_shareholder.scr_co_shrhdr_id
+Ref ref_sc_firm_shareholder_representative__scr_co_id__sc_firm_info: sc_firm_shareholder_representative.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_shareholder_representative__scr_co_shrhdr_id__sc_firm_shareholder: sc_firm_shareholder_representative.scr_co_shrhdr_id > sc_firm_shareholder.scr_co_shrhdr_id
+Ref ref_sc_firm_transaction_office__scr_co_id__sc_firm_info: sc_firm_transaction_office.scr_co_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_transaction_office__prn_org_unt_id__sc_firm_branch: sc_firm_transaction_office.prn_org_unt_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_transaction_office_ip_electronic_address__ip_id__sc_firm_branch: sc_firm_transaction_office_ip_electronic_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_transaction_office_ip_postal_address__ip_id__sc_firm_branch: sc_firm_transaction_office_ip_postal_address.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_branch_ip_alt_identification__ip_id__sc_firm_branch: sc_firm_branch_ip_alt_identification.ip_id > sc_firm_branch.scr_co_org_unt_id
+Ref ref_sc_firm_domestic_rep_office_ip_alt_identification__ip_id__sc_firm_domestic_rep_office: sc_firm_domestic_rep_office_ip_alt_identification.ip_id > sc_firm_domestic_rep_office.scr_co_org_unt_id
+Ref ref_sc_firm_foreign_rep_office_ip_alt_identification__ip_id__sc_firm_foreign_rep_office: sc_firm_foreign_rep_office_ip_alt_identification.ip_id > sc_firm_foreign_rep_office.scr_co_org_unt_id
+Ref ref_sc_firm_foreign_rep_office_vn_ip_alt_identification__ip_id__sc_firm_foreign_rep_office_vn: sc_firm_foreign_rep_office_vn_ip_alt_identification.ip_id > sc_firm_foreign_rep_office_vn.scr_co_org_unt_id
+Ref ref_sc_firm_info_ip_alt_identification__ip_id__sc_firm_info: sc_firm_info_ip_alt_identification.ip_id > sc_firm_info.scr_co_id
+Ref ref_sc_firm_ownership_relation_ip_alt_identification__ip_id__sc_firm_ownership_relation: sc_firm_ownership_relation_ip_alt_identification.ip_id > sc_firm_ownership_relation.scr_co_ownshp_rln_id
+Ref ref_auditor_ip_alt_identification__ip_id__auditor: auditor_ip_alt_identification.ip_id > auditor.audt_firm_audtr_id
+Ref ref_audit_firm_ip_alt_identification__ip_id__audit_firm: audit_firm_ip_alt_identification.ip_id > audit_firm.audt_firm_id
+Ref ref_bank_ip_alt_identification__ip_id__bank: bank_ip_alt_identification.ip_id > bank.scr_co_dpst_bnk_id
+Ref ref_custodian_bank_ip_alt_identification__ip_id__custodian_bank: custodian_bank_ip_alt_identification.ip_id > custodian_bank.scr_co_cstdn_bnk_id
+Ref ref_sc_firm_foreign_branch_ip_alt_identification__ip_id__sc_firm_foreign_branch: sc_firm_foreign_branch_ip_alt_identification.ip_id > sc_firm_foreign_branch.scr_co_frgn_brn_id
+Ref ref_sc_firm_shareholder_relation_ip_alt_identification__ip_id__sc_firm_shareholder_relation: sc_firm_shareholder_relation_ip_alt_identification.ip_id > sc_firm_shareholder_relation.scr_co_shrhdr_rln_id
+Ref ref_sc_firm_shareholder_representative_ip_alt_identification__ip_id__sc_firm_shareholder_representative: sc_firm_shareholder_representative_ip_alt_identification.ip_id > sc_firm_shareholder_representative.scr_co_shrhdr_rprsntv_id
