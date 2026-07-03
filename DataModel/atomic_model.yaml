@@ -945,7 +945,7 @@ entities:
     version_1st: "1.0"
     status_1st: approved
     description_1st: Toàn bộ lifecycle của từng lệnh giao dịch chứng khoán trên HOSE
-      và HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp ORDER_BOOK_HOSE + ORDER_BOOK_HNX,
+      và HNX. Mỗi dòng = 1 event lệnh (new/modify/cancel). Gộp Order_HOSE + Order_HNX,
       phân biệt qua market_id_code và src_stm_code.
     owner_1st:
       steward: username@ubck.com.vn
@@ -1003,11 +1003,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_id
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_ID
         business_meaning: Mã định danh của lệnh giao dịch (BK chính). BK.
         comment: BK chính. PK nguồn ORDER_BOOK_HNX.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_id
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_ID
         business_meaning: Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính).
           BK.
         comment: BK chính. PK nguồn ORDER_BOOK_HOSE.
@@ -1021,8 +1021,8 @@ entities:
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
-    - ORDERTRADE.ORDER_BOOK_HNX
-    - ORDERTRADE.ORDER_BOOK_HOSE
+    - ORDERTRADE_ORDER_BOOK_HNX
+    - ORDERTRADE_ORDER_BOOK_HOSE
     conflict_review: null
     source_mappings:
     - source_system: ORDERTRADE
@@ -1051,11 +1051,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.trade_date
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.TRADE_DATE
         business_meaning: Ngày giao dịch (yyyymmdd).
         comment: null
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.trade_date
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.TRADE_DATE
         business_meaning: Ngày giao dịch theo thị trường chứng khoán.
         comment: null
   - name: Market Id Code
@@ -1072,11 +1072,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.market_id
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.MARKET_ID
         business_meaning: Mã thị trường chứng khoán.
         comment: "Scheme: ORDERTRADE_MARKET_ID."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.market_id
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.MARKET_ID
         business_meaning: Mã thị trường chứng khoán.
         comment: "Scheme: ORDERTRADE_MARKET_ID."
   - name: Security Symbol Code
@@ -1094,12 +1094,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.issue_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ISSUE_CODE
         business_meaning: Mã định danh của loại chứng khoán (unique, thường là ISIN).
         comment: Nguồn HNX dùng tên cột issue_code; HLD mapping chung vào Security
           Symbol.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.symbol
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.SYMBOL
         business_meaning: Mã chứng khoán.
         comment: null
   - name: Currency Code
@@ -1122,7 +1122,7 @@ entities:
         comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có\
           \ field này."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.currency
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.CURRENCY
         business_meaning: Đơn vị tiền tệ.
         comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có\
           \ field này."
@@ -1141,12 +1141,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.board_id
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.BOARD_ID
         business_meaning: Loại bảng giao dịch.
         comment: "Scheme: ORDERTRADE_BOARD_TYPE. Nguồn HNX dùng tên cột board_id;\
           \ cùng scheme với HOSE board_type."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.board_type
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.BOARD_TYPE
         business_meaning: Loại bảng giao dịch mà lệnh được phân loại vào.
         comment: "Scheme: ORDERTRADE_BOARD_TYPE."
   - name: Order Date
@@ -1163,11 +1163,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_date
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_DATE
         business_meaning: Ngày mà lệnh được ghi nhận theo ngày giao dịch của hệ thống.
         comment: null
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_date
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_DATE
         business_meaning: Ngày đặt lệnh của người thực hiện giao dịch.
         comment: null
   - name: Order Time
@@ -1190,7 +1190,7 @@ entities:
         comment: Nguồn lưu dạng varchar — ETL giữ nguyên định dạng HHMMSSsss từ KRX.
           Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_time
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_TIME
         business_meaning: Thời gian đặt lệnh của người thực hiện giao dịch.
         comment: Nguồn lưu dạng varchar — ETL giữ nguyên định dạng HHMMSSsss từ KRX.
           Chỉ có ở HOSE — HNX không có field này.
@@ -1208,11 +1208,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.session_id
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.SESSION_ID
         business_meaning: Mã phiên giao dịch.
         comment: "Scheme: ORDERTRADE_SESSION."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.session
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.SESSION
         business_meaning: Phiên giao dịch của thị trường chứng khoán.
         comment: "Scheme: ORDERTRADE_SESSION."
   - name: Order Action Type Code
@@ -1230,12 +1230,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.replace_cancel_cls_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.REPLACE_CANCEL_CLASSIFICATION_CODE
         business_meaning: "Loại hành động đối với lệnh: Mới / Sửa / Hủy."
         comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. Nguồn HNX dùng 1/2/3; ETL\
           \ normalize sang scheme chung."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.modify_cancel
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.MODIFY_CANCEL
         business_meaning: "Loại hành động lệnh: N=Mới / M=Sửa / C=Hủy."
         comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. Nguồn HOSE dùng N/M/C; ETL\
           \ normalize sang scheme chung."
@@ -1259,7 +1259,7 @@ entities:
           trong ngày giao dịch, theo từng mã chứng khoán (BK phụ).
         comment: BK phụ HOSE — dùng làm FK-BK target cho Securities Trade (buy/sell_scr_ordr_code).
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_accept_no
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_ACCEPT_ID
         business_meaning: Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn
           trong ngày giao dịch, theo từng mã chứng khoán (BK phụ).
         comment: BK phụ HOSE — dùng làm FK-BK target cho Securities Trade (buy/sell_scr_ordr_code).
@@ -1283,7 +1283,7 @@ entities:
           trên hệ thống của Sàn.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.orig_order_accept_no
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORIG_ORDER_ACCEPT_ID
         business_meaning: Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận
           trên hệ thống của Sàn.
         comment: Chỉ có ở HOSE — HNX không có field này.
@@ -1302,12 +1302,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.orig_order_id
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORIGINAL_ORDER_ID
         business_meaning: Order ID của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu
           tới.
         comment: Self-reference sang Securities Order Code của lệnh gốc.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.orig_order_id
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORIG_ORDER_ID
         business_meaning: Mã định danh của lệnh đặt trước khi chỉnh sửa.
         comment: Self-reference sang Securities Order Code của lệnh gốc.
   - name: Side Indicator
@@ -1325,12 +1325,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.sell_buy_cls_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.SELL_BUY_CLASSIFICATION_CODE
         business_meaning: "Hướng lệnh: Mua/Bán."
         comment: "Indicator domain — B/S. ETL normalize: 1=S; 2=B; SPACE=Cancelled\
           \ (quyết định D-08 HLD)."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.side
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.SIDE
         business_meaning: "Loại lệnh: B=Buy / S=Sell."
         comment: Indicator domain — B/S. HNX nguồn dùng 1/2; ETL normalize sang B/S
           (quyết định D-08 HLD).
@@ -1349,12 +1349,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.member_id
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.MEMBER_ID
         business_meaning: Mã định danh thành viên giao dịch (công ty chứng khoán)
           do Sở giao dịch cấp.
         comment: Nguồn HNX dùng member_id; HLD mapping chung vào Broker Id.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.brk_id
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.BRK_ID
         business_meaning: Mã/số công ty chứng khoán.
         comment: null
   - name: Broker Name
@@ -1375,7 +1375,7 @@ entities:
         business_meaning: Tên công ty chứng khoán.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.brk_name
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.BRK
         business_meaning: Tên công ty chứng khoán.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Account Pin Code
@@ -1398,7 +1398,7 @@ entities:
         comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định
           Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.pin
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.PIN
         business_meaning: Mã PIN của tài khoản giao dịch.
         comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định
           Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
@@ -1417,12 +1417,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.acct_no
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ACCOUNT_NUMBER
         business_meaning: Mã định danh tài khoản giao dịch của nhà đầu tư tại công
           ty chứng khoán.
         comment: null
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.acct_no
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ACCT_NO
         business_meaning: Mã/Số tài khoản giao dịch của nhà đầu tư.
         comment: null
   - name: Account Holder Name
@@ -1443,7 +1443,7 @@ entities:
         business_meaning: Tên nhà đầu tư/chủ tài khoản nhà đầu tư.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.acct_holder_name
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.NAME
         business_meaning: Tên nhà đầu tư/chủ tài khoản nhà đầu tư.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Market Maker Order Indicator
@@ -1466,7 +1466,7 @@ entities:
         comment: Y=Là lệnh market maker; N=Không phải. Chỉ có ở HOSE — HNX không có
           field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.market_maker_order
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.MARKET_MAKER_ORDER
         business_meaning: Lệnh đặt của nhà tạo lập thị trường.
         comment: Y=Là lệnh market maker; N=Không phải. Chỉ có ở HOSE — HNX không có
           field này.
@@ -1484,11 +1484,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.client_house_cls_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.CLIENT_HOUSE_CLASSIFICATION_CODE
         business_meaning: Lệnh của khách hàng hay công ty tự doanh.
         comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.client_house_cls_code
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.CLIENT_HOUSE_CLASSIFICATION_CODE
         business_meaning: Phân loại lệnh khách hàng/công ty tự doanh.
         comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
   - name: Investor Type Code
@@ -1507,13 +1507,13 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.investor_cls_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.INVESTOR_CLASSIFICATION_CODE
         business_meaning: Phân loại nhà đầu tư theo loại hình tổ chức/cá nhân (raw
           từ HNX).
         comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua\
           \ src_stm_code (quyết định Q1 HLD)."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.investor_type
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.INVEST_TYPE
         business_meaning: Phân loại nhà đầu tư (raw từ HOSE).
         comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua\
           \ src_stm_code (quyết định Q1 HLD)."
@@ -1531,11 +1531,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.foreign_investor_type_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.FOREIGN_INVESTOR_TYPE_CODE
         business_meaning: Phân loại loại hình nhà đầu tư nước ngoài.
         comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.foreign_investor_type
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.FOREIGNER_INVESTOR_TYPE
         business_meaning: Phân loại đầu tư nước ngoài.
         comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
   - name: Order Type Code
@@ -1552,11 +1552,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_type_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_TYPE_CODE
         business_meaning: Loại lệnh theo giá.
         comment: "Scheme: ORDERTRADE_ORDER_TYPE."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_type
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_TYPE
         business_meaning: Loại lệnh theo giá.
         comment: "Scheme: ORDERTRADE_ORDER_TYPE."
   - name: Order Price
@@ -1573,11 +1573,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_price
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_PRICE
         business_meaning: Mức giá sẵn sàng mua hoặc bán (0 nếu Market/Fixed price/Cancel).
         comment: null
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_price
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_PRICE
         business_meaning: Giá đặt lệnh.
         comment: Nguồn decimal(18,4). 0 nếu Market/Fixed price/Cancel.
   - name: Order Volume
@@ -1594,11 +1594,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_qty
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_QUANTITY
         business_meaning: Số lượng chứng khoán muốn mua hoặc bán trong lệnh.
         comment: Nguồn bigint. HNX dùng order_qty; HLD mapping chung vào Order Volume.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_vol
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_VOL
         business_meaning: Khối lượng đặt lệnh.
         comment: Nguồn bigint.
   - name: Order Condition Code
@@ -1615,11 +1615,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_condition_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_CONDITION_CODE
         business_meaning: Điều kiện thực hiện lệnh.
         comment: "Scheme: ORDERTRADE_ORDER_CONDITION."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_condition
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_CONDITION
         business_meaning: Điều kiện thực hiện lệnh.
         comment: "Scheme: ORDERTRADE_ORDER_CONDITION."
   - name: Last Traded Price
@@ -1640,7 +1640,7 @@ entities:
         business_meaning: Giá khớp gần nhất trên thị trường (LTP).
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ltp
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.LTP
         business_meaning: Giá khớp gần nhất trên thị trường (LTP).
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Execution Price
@@ -1661,7 +1661,7 @@ entities:
         business_meaning: Giá khớp lệnh thực tế.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.exec_price
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.EXECUTION_PRICE
         business_meaning: Giá khớp lệnh thực tế.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Immediate Matched Volume
@@ -1682,7 +1682,7 @@ entities:
         business_meaning: Khối lượng khớp ngay khi hệ thống ghi nhận lệnh.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.imm_matched_vol
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.IMMED_MATCHED_VOL
         business_meaning: Khối lượng khớp ngay khi hệ thống ghi nhận lệnh.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
   - name: Matched Volume
@@ -1703,7 +1703,7 @@ entities:
         business_meaning: Tổng khối lượng đã khớp của lệnh.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.matched_vol
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.MATCHED_VOL
         business_meaning: Tổng khối lượng đã khớp của lệnh.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
   - name: Remaining Quantity
@@ -1721,12 +1721,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_rman_qty
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_REMAINING_QUANTITY
         business_meaning: Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị
           hủy.
         comment: Nguồn bigint.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.rman_vol
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_RQTY
         business_meaning: Khối lượng còn lại chưa khớp của lệnh.
         comment: Nguồn bigint.
   - name: Order Spread
@@ -1747,7 +1747,7 @@ entities:
         business_meaning: Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_price_vs_ltp
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_PRICE_LTP
         business_meaning: Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Matched Ratio
@@ -1768,7 +1768,7 @@ entities:
         business_meaning: Tỷ lệ khớp lệnh.
         comment: Nguồn decimal(10,4). Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.matched_rto
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.MATCHED_RATIO
         business_meaning: Tỷ lệ khớp lệnh.
         comment: Nguồn decimal(10,4). Chỉ có ở HOSE — HNX không có field này.
   - name: Price Change Amount
@@ -1789,7 +1789,7 @@ entities:
         business_meaning: Mức tăng/giảm giá so với tham chiếu theo giá trị.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.buy_up_sell_down_amt
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.BUY_UP_SELL_DOWN_AMT
         business_meaning: Mức tăng/giảm giá so với tham chiếu theo giá trị.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Price Change Tick
@@ -1810,7 +1810,7 @@ entities:
         business_meaning: Mức tăng/giảm theo bước giá.
         comment: Nguồn int. Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.buy_up_sell_down_tick
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.BUY_UP_SELL_DOWN_TICK
         business_meaning: Mức tăng/giảm theo bước giá.
         comment: Nguồn int. Chỉ có ở HOSE — HNX không có field này.
   - name: New High Low Price Indicator
@@ -1833,7 +1833,7 @@ entities:
           ngày.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.new_high_low_price
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.NEW_HIGH_LOW_PRICE
         business_meaning: Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong
           ngày.
         comment: Chỉ có ở HOSE — HNX không có field này.
@@ -1857,7 +1857,7 @@ entities:
         comment: "Scheme: ORDERTRADE_ORDER_STATUS. HNX không có field trực tiếp —\
           \ nullable; ETL pending derive (quyết định Q2 HLD)."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.order_status
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ORDER_STATUS
         business_meaning: Trạng thái của lệnh.
         comment: "Scheme: ORDERTRADE_ORDER_STATUS. HOSE có sẵn; HNX nullable — ETL\
           \ pending derive (quyết định Q2 HLD)."
@@ -1879,7 +1879,7 @@ entities:
         business_meaning: Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.icd_bug_qty
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ICD_BUG_QTY
         business_meaning: Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
   - name: Expected Execution Price
@@ -1902,7 +1902,7 @@ entities:
           trong ngày.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.expc_exec_price
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.EXPECTED_EXECUTION_PRICE
         business_meaning: Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường
           trong ngày.
         comment: Chỉ có ở HOSE — HNX không có field này.
@@ -1926,7 +1926,7 @@ entities:
           trường trong ngày.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.expc_exec_vol
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.EXPECTED_EXECUTION_VOLUME
         business_meaning: Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị
           trường trong ngày.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX không có field này.
@@ -1950,7 +1950,7 @@ entities:
         comment: "Scheme: ORDERTRADE_SHORT_SELL_TYPE. Chỉ có ở HOSE — HNX không có\
           \ field này."
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.short_sell_indicator
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.SHORT_SELL_INDICATOR
         business_meaning: Phân loại lệnh bán khống.
         comment: "Scheme: ORDERTRADE_SHORT_SELL_TYPE. Chỉ có ở HOSE — HNX không có\
           \ field này."
@@ -1972,7 +1972,7 @@ entities:
         business_meaning: Mã/số định danh người thực hiện giao dịch.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.trader_no
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.TRADER_NO
         business_meaning: Mã/số định danh người thực hiện giao dịch.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Trader Name
@@ -1993,7 +1993,7 @@ entities:
         business_meaning: Tên người thực hiện giao dịch.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.trader_name
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.TRADER_NAME
         business_meaning: Tên người thực hiện giao dịch.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Reference Sequence Number
@@ -2016,7 +2016,7 @@ entities:
         comment: BK phụ HOSE — dùng làm FK-BK target tương ứng cho buy/sell_ref_seq_nbr
           trong Securities Trade (quyết định Q5 HLD).
       - source_table: ORDER_BOOK_HOSE
-        source_column: ORDERTRADE.ORDER_BOOK_HOSE.ref_seq_no
+        source_column: ORDERTRADE.ORDER_BOOK_HOSE.REFERENCE_SEQUENCE_NO
         business_meaning: Số tham chiếu theo thứ tự giao dịch.
         comment: BK phụ HOSE — dùng làm FK-BK target tương ứng cho buy/sell_ref_seq_nbr
           trong Securities Trade (quyết định Q5 HLD).
@@ -2034,7 +2034,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_accept_time
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_ACCEPT_TIME
         business_meaning: Thời điểm KRX core system chấp nhận lệnh vào sổ lệnh (hh24misss).
         comment: HNX-only — HOSE không có field tương đương (HOSE có order_time riêng).
       - source_table: ORDER_BOOK_HOSE
@@ -2056,7 +2056,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_reject_reason_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_REJECT_REASON_CODE
         business_meaning: Mã lý do lệnh bị từ chối bởi hệ thống KRX.
         comment: HNX-only — HOSE không có field này. Text vì mã do KRX tự định nghĩa,
           không có scheme chuẩn.
@@ -2080,7 +2080,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.pub_qty
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.PUBLIC_QUANTITY
         business_meaning: "Phần khối lượng hiển thị công khai trên sổ lệnh (Iceberg\
           \ order: pub_qty ≤ order_qty)."
         comment: HNX-only — Iceberg order feature. NULL = không phải Iceberg order.
@@ -2103,7 +2103,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.cond_price
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.CONDITION_PRICE
         business_meaning: Mức giá điều kiện để kích hoạt lệnh Stop order.
         comment: HNX-only — Stop order feature. NULL = không phải Stop order.
       - source_table: ORDER_BOOK_HOSE
@@ -2126,7 +2126,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.order_reception_no
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORDER_RECEPTION_NUMBER
         business_meaning: Số định danh của lệnh tại thời điểm hệ thống KRX tiếp nhận
           (duy nhất trong ngày, tăng dần theo issue).
         comment: BK phụ HNX — tương đương order_accept_no của HOSE. FK-BK target cho
@@ -2152,7 +2152,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.orig_order_reception_no
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORIGINAL_ORDER_RECEPTION_NUMBER
         business_meaning: Order Reception Number của lệnh gốc mà một lệnh sửa/hủy
           đang tham chiếu tới.
         comment: HNX-only — HOSE không có field này.
@@ -2175,7 +2175,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.orig_order_type_code
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.ORIGINAL_ORDER_TYPE_CODE
         business_meaning: Loại lệnh của lệnh gốc trước khi bị sửa/hủy.
         comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only."
       - source_table: ORDER_BOOK_HOSE
@@ -2196,7 +2196,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.msg_seq
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.MESSAGE_SEQUENCE
         business_meaning: Số thứ tự message trong luồng dữ liệu (tăng dần từ 1).
         comment: Nguồn bigint. HNX-only — HOSE không có field này.
       - source_table: ORDER_BOOK_HOSE
@@ -2218,7 +2218,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.quote_request_type
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.QUOTE_REQUEST_TYPE
         business_meaning: Loại yêu cầu báo giá RFQ (HNX-only).
         comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với lệnh\
           \ không phải RFQ."
@@ -2242,7 +2242,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: ORDER_BOOK_HNX
-        source_column: ORDERTRADE.ORDER_BOOK_HNX.auto_cancel_cls
+        source_column: ORDERTRADE.ORDER_BOOK_HNX.AUTOMATED_CANCEL_PROCESSING_CLASSIFICATION
         business_meaning: Mã xác định việc hủy lệnh tự động do cơ chế nào.
         comment: "Scheme: ORDERTRADE_AUTO_CANCEL_REASON. HNX-only — NULL với lệnh\
           \ không bị auto-cancel."
@@ -6651,7 +6651,7 @@ entities:
     physical_name_1st: indx_constituent_snpst
     layer_1st: Atomic
     version_1st: "1.0"
-    status_1st: draft
+    status_1st: approved
     description_1st: Snapshot thành phần rổ chỉ số thị trường theo ngày giao dịch
       — mỗi dòng ghi nhận một cặp mã chỉ số và mã chứng khoán có mặt trong rổ chỉ
       số tại ngày giao dịch tương ứng.
@@ -6667,7 +6667,7 @@ entities:
     - MDDS
     references:
       brd:
-      - BRD-SRC-MDDS-CSIDXInfor
+      - BRD-SRC-MDDS-JAD_CSIDXINFOR
   attributes:
   - name: Index Constituent Snapshot Id
     physical_name: indx_constituent_snpst_id
@@ -6683,7 +6683,7 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
+      - source_table: JAD_CSIDXINFOR
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: [Group] Share Index. Snapshot thành phần rổ chỉ\
@@ -6701,8 +6701,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.id
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.ID
         business_meaning: GUID — PK của bảng nguồn. BK.
         comment: BK chính. PK nguồn id — GUID unique.
   - name: Source System Code
@@ -6713,12 +6713,12 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: MDDS.CSIDXInfor
+    etl_derived_value: MDDS.JAD_CSIDXINFOR
     conflict_review: null
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
+      - source_table: JAD_CSIDXINFOR
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
@@ -6736,8 +6736,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.indexcode
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.INDEXCODE
         business_meaning: Mã chỉ số (FK đến MarketInfor / IDXInfor).
         comment: "Denormalized join key với Market Index Snapshot. D-02 pattern: không\
           \ tạo FK surrogate ở Atomic — join tại Gold layer qua index_code."
@@ -6755,8 +6755,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.indexid
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.INDEXID
         business_meaning: ID nội bộ của chỉ số.
         comment: Nguồn lưu dạng int — ETL cần convert sang string. Giữ nguyên leading
           zeros nếu có.
@@ -6774,8 +6774,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.symbol
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.SYMBOL
         business_meaning: Mã chứng khoán trong rổ (FK đến StockInfor).
         comment: Denormalized join key với Security Trading Snapshot. Join tại Gold
           layer qua (symbol, trading_date).
@@ -6793,8 +6793,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.tradingdate
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.TRADINGDATE
         business_meaning: Ngày giao dịch dạng dd/MM/yyyy.
         comment: "Nguồn lưu dạng string dd/MM/yyyy — ETL cần parse sang date. Grain\
           \ key: mỗi ngày 1 snapshot."
@@ -6811,8 +6811,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.adddate
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.ADDDATE
         business_meaning: Ngày thêm vào chỉ số.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Floor Code
@@ -6828,8 +6828,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.floorcode
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.FLOORCODE
         business_meaning: Mã sở giao dịch CK.
         comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
   - name: Total Match Volume
@@ -6847,8 +6847,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CSIDXInfor
-        source_column: MDDS.JAD_CSIDXINFOR.totalqtty
+      - source_table: JAD_CSIDXINFOR
+        source_column: MDDS.JAD_CSIDXINFOR.TOTALQTTY
         business_meaning: Tổng khối lượng khớp lệnh lô chẵn.
         comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate\
           \ không có giá trị non-numeric. HLD note T2-03: cân nhắc bỏ nếu trùng StockInfor.totaltrading,\
@@ -6859,7 +6859,7 @@ entities:
     physical_name_1st: mkt_indx_snpst
     layer_1st: Atomic
     version_1st: "1.0"
-    status_1st: draft
+    status_1st: approved
     description_1st: Snapshot trạng thái của một chỉ số thị trường (VNINDEX, HNX-Index,
       UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá
       trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch.
@@ -6875,7 +6875,7 @@ entities:
     - MDDS
     references:
       brd:
-      - BRD-SRC-MDDS-MarketInfor
+      - BRD-SRC-MDDS-JAD_MARKETINFOR
   attributes:
   - name: Market Index Snapshot Id
     physical_name: mkt_indx_snpst_id
@@ -6891,7 +6891,7 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
+      - source_table: JAD_MARKETINFOR
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: [Group] Share Index. Snapshot trạng thái chỉ\
@@ -6910,8 +6910,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.historyid
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.HISTORYID
         business_meaning: ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot
           entity.
         comment: BK chính. PK nguồn historyid — unique per lần chụp chỉ số.
@@ -6923,12 +6923,12 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: MDDS.MarketInfor
+    etl_derived_value: MDDS.JAD_MARKETINFOR
     conflict_review: null
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
+      - source_table: JAD_MARKETINFOR
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
@@ -6945,8 +6945,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.marketcode
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.MARKETCODE
         business_meaning: Mã thị trường — FSS tự quy định.
         comment: null
   - name: Market Id
@@ -6962,8 +6962,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.marketid
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.MARKETID
         business_meaning: ID thị trường — FSS tự quy định.
         comment: null
   - name: Jadapter Id
@@ -6979,8 +6979,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.id
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.ID
         business_meaning: ID jadapter sinh.
         comment: Metadata kỹ thuật jadapter — giữ để traceability.
   - name: Trading Date
@@ -6996,8 +6996,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.tradingdate
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.TRADINGDATE
         business_meaning: Ngày giao dịch.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Index Time
@@ -7014,8 +7014,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.indextime
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.INDEXTIME
         business_meaning: Thời gian ghi nhận chỉ số.
         comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
           trước khi convert sang Timestamp.
@@ -7032,8 +7032,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.indextypecode
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.INDEXTYPECODE
         business_meaning: Loại index — mã Sở quy định.
         comment: "Scheme: MDDS_INDEX_TYPE."
   - name: Market Status Code
@@ -7049,8 +7049,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.marketstatus
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.MARKETSTATUS
         business_meaning: Trạng thái phiên giao dịch.
         comment: "Scheme: MDDS_MARKET_STATUS."
   - name: Index Color Code
@@ -7067,8 +7067,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.indexcolor
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.INDEXCOLOR
         business_meaning: Indicator index đang tăng/giảm.
         comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng scheme với TransLog.changeColor\
           \ — indicator chiều giá so với tham chiếu, áp dụng cho chỉ số."
@@ -7086,8 +7086,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.haltrsncode
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.HALTRSNCODE
         business_meaning: Lý do thị trường bị halt.
         comment: Cần profile giá trị — có thể promote sang Classification Value sau
           khi profile.
@@ -7105,8 +7105,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.marketindex
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.MARKETINDEX
         business_meaning: Giá trị index tại thời điểm ghi nhận.
         comment: Domain Currency Amount vì đây là điểm số tài chính. Nguồn double
           precision — không mất dữ liệu.
@@ -7123,8 +7123,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.indexchange
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.INDEXCHANGE
         business_meaning: Giá trị index thay đổi so với index cuối ngày hôm trước.
         comment: null
   - name: Index Percent Change
@@ -7140,8 +7140,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.indexpercentchange
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.INDEXPERCENTCHANGE
         business_meaning: "% index thay đổi so với index cuối ngày hôm trước."
         comment: null
   - name: Open Index
@@ -7157,8 +7157,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.open
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.OPEN
         business_meaning: Index mở cửa.
         comment: null
   - name: High Index
@@ -7174,8 +7174,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.high
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.HIGH
         business_meaning: Index cao nhất tính đến thời điểm hiện tại.
         comment: null
   - name: Low Index
@@ -7191,8 +7191,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.low
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.LOW
         business_meaning: Index thấp nhất tính đến thời điểm hiện tại.
         comment: null
   - name: Prior Index
@@ -7208,8 +7208,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.prv_prior_market_index
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.PRV_PRIOR_MARKET_INDEX
         business_meaning: Index cuối cùng của phiên trước đó.
         comment: null
   - name: Total Volume
@@ -7226,8 +7226,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.totalvolume
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.TOTALVOLUME
         business_meaning: Tổng khối lượng đã khớp.
         comment: Nguồn double precision — ETL cần cast sang bigint. Ý nghĩa là số
           lượng CK, cùng pattern với advancesvolumn/declinesvolumn.
@@ -7244,8 +7244,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.totalvalue
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.TOTALVALUE
         business_meaning: Tổng giá trị đã khớp.
         comment: null
   - name: Advances Count
@@ -7261,8 +7261,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.advances
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.ADVANCES
         business_meaning: Số lượng mã tăng.
         comment: null
   - name: Declines Count
@@ -7278,8 +7278,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.declines
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.DECLINES
         business_meaning: Số lượng mã giảm.
         comment: null
   - name: No Change Count
@@ -7295,8 +7295,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.nochange
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.NOCHANGE
         business_meaning: Số lượng mã không tăng/giảm.
         comment: null
   - name: Ceiling Count
@@ -7312,8 +7312,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.numberofce
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.NUMBEROFCE
         business_meaning: Số lượng mã đang trần.
         comment: null
   - name: Floor Count
@@ -7329,8 +7329,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.numberoffl
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.NUMBEROFFL
         business_meaning: Số lượng mã đang sàn.
         comment: null
   - name: Advances Volume
@@ -7346,8 +7346,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.advancesvolumn
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.ADVANCESVOLUMN
         business_meaning: Tổng khối lượng đã khớp của các mã tăng.
         comment: null
   - name: Declines Volume
@@ -7363,8 +7363,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.declinesvolumn
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.DECLINESVOLUMN
         business_meaning: Tổng khối lượng đã khớp của các mã giảm.
         comment: null
   - name: No Change Volume
@@ -7380,8 +7380,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.nochangevolumn
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.NOCHANGEVOLUMN
         business_meaning: Khối lượng khớp mã không tăng/giảm.
         comment: null
   - name: Odd Lot Total Value
@@ -7397,8 +7397,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.oddlottotalvalue
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.ODDLOTTOTALVALUE
         business_meaning: Giá trị khớp lô lẻ.
         comment: null
   - name: Odd Lot Total Volume
@@ -7414,8 +7414,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.oddlottotalvolume
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.ODDLOTTOTALVOLUME
         business_meaning: Khối lượng khớp lô lẻ.
         comment: null
   - name: PT Total Volume
@@ -7431,8 +7431,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.pt_total_qtty
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_QTTY
         business_meaning: Tổng khối lượng giao dịch thỏa thuận.
         comment: null
   - name: PT Total Value
@@ -7448,8 +7448,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.pt_total_value
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_VALUE
         business_meaning: Tổng giá trị giao dịch thỏa thuận.
         comment: null
   - name: PT Total Trade Count
@@ -7465,8 +7465,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.pt_total_trade
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.PT_TOTAL_TRADE
         business_meaning: Tổng số giao dịch thỏa thuận.
         comment: Nguồn double precision — widening, không mất dữ liệu.
   - name: TSC Product Group Id
@@ -7482,8 +7482,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: MarketInfor
-        source_column: MDDS.JAD_MARKETINFOR.tscprodgrpid
+      - source_table: JAD_MARKETINFOR
+        source_column: MDDS.JAD_MARKETINFOR.TSCPRODGRPID
         business_meaning: Mã sản phẩm giao dịch (hose/hnx/upcom).
         comment: null
 - ldm:
@@ -12313,7 +12313,7 @@ entities:
     physical_name_1st: corp_bond_tdg_snpst
     layer_1st: Atomic
     version_1st: "1.0"
-    status_1st: draft
+    status_1st: approved
     description_1st: Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm
       yết tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright,
       thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát
@@ -12330,7 +12330,7 @@ entities:
     - MDDS
     references:
       brd:
-      - BRD-SRC-MDDS-CorpBondInfor
+      - BRD-SRC-MDDS-JAD_CORPBONDINFOR
   attributes:
   - name: Corporate Bond Trading Snapshot Id
     physical_name: corp_bond_tdg_snpst_id
@@ -12346,7 +12346,7 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
+      - source_table: JAD_CORPBONDINFOR
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot\
@@ -12365,8 +12365,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.kid
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.KID
         business_meaning: ID mã do jadapter sinh. BK của Snapshot entity.
         comment: "BK kỹ thuật từ jadapter. Điểm cần xác nhận T1-03: nếu grain thực\
           \ sự là (symbol, tradingdate) thì kid chỉ là technical — cần xác nhận với\
@@ -12379,12 +12379,12 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: MDDS.CorpBondInfor
+    etl_derived_value: MDDS.JAD_CORPBONDINFOR
     conflict_review: null
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
+      - source_table: JAD_CORPBONDINFOR
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
@@ -12401,8 +12401,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.symbol
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.SYMBOL
         business_meaning: Mã chứng khoán trái phiếu.
         comment: null
   - name: Trading Date
@@ -12418,8 +12418,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.tradingdate
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.TRADINGDATE
         business_meaning: Ngày giao dịch format dd/mm/yyyy.
         comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date.
   - name: Bond Full Name
@@ -12435,8 +12435,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.fullname
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.FULLNAME
         business_meaning: Tên đầy đủ của trái phiếu.
         comment: null
   - name: Trading Time
@@ -12452,8 +12452,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.tradingtime
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.TRADINGTIME
         business_meaning: Thời gian giao dịch.
         comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa.
   - name: Floor Code
@@ -12469,8 +12469,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.floorcode
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.FLOORCODE
         business_meaning: "Mã sàn: 06 (corp-bond HNX)."
         comment: "Scheme: MDDS_FLOOR_CODE. Cùng scheme với StockInfor.floorcode."
   - name: Stock Type Code
@@ -12487,8 +12487,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.stocktype
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.STOCKTYPE
         business_meaning: "Loại CK: 12 (trái phiếu DN)."
         comment: "Scheme: MDDS_STOCK_TYPE. Cùng scheme với StockInfor.stocktype. Thường\
           \ = 12 cho TPDN."
@@ -12505,8 +12505,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.tradingsessionid
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.TRADINGSESSIONID
         business_meaning: Trạng thái phiên giao dịch HNX.
         comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với StockInfor.tradingsessionid."
   - name: Security Trading Status Code
@@ -12523,8 +12523,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.securitytradingstatus
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.SECURITYTRADINGSTATUS
         business_meaning: Trạng thái trái phiếu (0-bình thường / 10-tạm ngừng / 11-hạn
           chế).
         comment: "Scheme: MDDS_SECURITY_TRADING_STATUS."
@@ -12542,8 +12542,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.tradsesstatus
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.TRADSESSTATUS
         business_meaning: Trạng thái phiên giao dịch (tradsesstatus — trường thứ 2).
         comment: "Scheme: MDDS_TRADING_SESSION_STATUS. Cùng scheme với tradingsessionid\
           \ — cần profile sự khác biệt giữa 2 trường này."
@@ -12560,8 +12560,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.period_unit
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PERIOD_UNIT
         business_meaning: Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm).
         comment: "Scheme: MDDS_PERIOD_UNIT."
   - name: Interest Period Unit Code
@@ -12577,8 +12577,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.interest_period_unit
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_PERIOD_UNIT
         business_meaning: Đơn vị kỳ hạn trả lãi.
         comment: "Scheme: MDDS_PERIOD_UNIT. Cùng scheme với period_unit."
   - name: Coupon Type Code
@@ -12594,8 +12594,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.interest_coupon_type
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_COUPON_TYPE
         business_meaning: "Kiểu trả lãi: Standard/Long/Short/Zero Coupon."
         comment: "Scheme: MDDS_COUPON_TYPE."
   - name: Interest Rate Type Code
@@ -12611,8 +12611,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.interestrate_type
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.INTERESTRATE_TYPE
         business_meaning: "Loại lãi suất: Cố định/Thả nổi/Khác."
         comment: "Scheme: MDDS_INTEREST_RATE_TYPE."
   - name: Interest Type Code
@@ -12629,8 +12629,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.interest_type
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_TYPE
         business_meaning: Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác).
         comment: "Scheme: MDDS_INTEREST_TYPE. Cùng pattern với interest_coupon_type\
           \ — danh mục cố định của HNX."
@@ -12648,8 +12648,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.interest_payment_type
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_PAYMENT_TYPE
         business_meaning: Phương thức trả lãi.
         comment: "Scheme: MDDS_INTEREST_PAYMENT_TYPE. Cùng pattern với interest_coupon_type\
           \ — danh mục cố định của HNX."
@@ -12666,8 +12666,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.ceiling
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.CEILING
         business_meaning: Giá trần khớp lệnh.
         comment: null
   - name: Floor Price
@@ -12683,8 +12683,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.floor
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.FLOOR
         business_meaning: Giá sàn khớp lệnh.
         comment: null
   - name: Reference Price
@@ -12700,8 +12700,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.reference
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.REFERENCE
         business_meaning: Giá tham chiếu.
         comment: null
   - name: Close Price
@@ -12717,8 +12717,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.closeprice
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.CLOSEPRICE
         business_meaning: Giá đóng cửa ngày.
         comment: null
   - name: Close Volume
@@ -12734,8 +12734,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.closevol
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.CLOSEVOL
         business_meaning: Khối lượng đóng cửa.
         comment: null
   - name: Price Change
@@ -12751,8 +12751,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.change
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.CHANGE
         business_meaning: Thay đổi giá khớp gần nhất so với giá tham chiếu.
         comment: null
   - name: Open Price
@@ -12768,8 +12768,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.open
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.OPEN
         business_meaning: Giá mở cửa.
         comment: null
   - name: High Price
@@ -12785,8 +12785,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.high
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.HIGH
         business_meaning: Giá thực hiện cao nhất GD khớp lệnh.
         comment: null
   - name: Low Price
@@ -12802,8 +12802,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.low
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.LOW
         business_meaning: Giá thực hiện thấp nhất GD khớp lệnh.
         comment: null
   - name: Average Price
@@ -12819,8 +12819,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.averageprice
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.AVERAGEPRICE
         business_meaning: Giá trung bình.
         comment: null
   - name: Total Trading Volume
@@ -12836,8 +12836,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.totaltrading
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.TOTALTRADING
         business_meaning: Tổng khối lượng giao dịch.
         comment: null
   - name: Total Trading Value
@@ -12853,8 +12853,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.totaltradingvalue
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.TOTALTRADINGVALUE
         business_meaning: Tổng giá trị giao dịch.
         comment: null
   - name: Total Listing Volume
@@ -12870,8 +12870,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.totallistingqtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.TOTALLISTINGQTTY
         business_meaning: Khối lượng niêm yết.
         comment: null
   - name: Foreign Remain Volume
@@ -12887,8 +12887,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.foreignremain
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.FOREIGNREMAIN
         business_meaning: Room NĐTNN còn lại.
         comment: null
   - name: PT Match Volume
@@ -12904,8 +12904,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_match_qtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_MATCH_QTTY
         business_meaning: Khối lượng thực hiện gần nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Match Price
@@ -12921,8 +12921,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_match_price
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_MATCH_PRICE
         business_meaning: Giá thực hiện gần nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Total Traded Volume
@@ -12938,8 +12938,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_total_traded_qtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTAL_TRADED_QTTY
         business_meaning: Tổng khối lượng GD thỏa thuận Outright.
         comment: null
   - name: PT Total Traded Value
@@ -12955,8 +12955,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_total_traded_value
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTAL_TRADED_VALUE
         business_meaning: Tổng giá trị GD thỏa thuận Outright.
         comment: null
   - name: PT Best Bid Volume
@@ -12972,8 +12972,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestbidqtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTBIDQTTY
         business_meaning: Tổng KL chào mua cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Best Bid Price
@@ -12989,8 +12989,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestbidprice
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTBIDPRICE
         business_meaning: Giá chào mua cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Best Offer Volume
@@ -13006,8 +13006,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestofferqtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTOFFERQTTY
         business_meaning: Tổng KL chào bán thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Best Offer Price
@@ -13023,8 +13023,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_bestofferprice
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_BESTOFFERPRICE
         business_meaning: Giá chào bán thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Total Bid Volume
@@ -13040,8 +13040,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_totalbidqtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTALBIDQTTY
         business_meaning: Tổng KL chào mua GD thỏa thuận Outright.
         comment: null
   - name: PT Total Offer Volume
@@ -13057,8 +13057,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_totalofferqtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_TOTALOFFERQTTY
         business_meaning: Tổng KL chào bán GD thỏa thuận Outright.
         comment: null
   - name: PT Max Volume
@@ -13074,8 +13074,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_maxqtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_MAXQTTY
         business_meaning: KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Max Price
@@ -13091,8 +13091,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_maxprice
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_MAXPRICE
         business_meaning: Giá thực hiện cao nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Min Volume
@@ -13108,8 +13108,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_minqtty
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_MINQTTY
         business_meaning: KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: PT Min Price
@@ -13125,8 +13125,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.pt_minprice
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PT_MINPRICE
         business_meaning: Giá thực hiện thấp nhất GD thỏa thuận Outright.
         comment: null
   - name: Issuer Name
@@ -13142,8 +13142,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.issuername
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.ISSUERNAME
         business_meaning: Tên tổ chức phát hành.
         comment: null
   - name: Issue Date
@@ -13159,8 +13159,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.issuedate
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.ISSUEDATE
         business_meaning: Ngày phát hành trái phiếu.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Maturity Date
@@ -13176,8 +13176,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.maturitydate
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.MATURITYDATE
         business_meaning: Ngày đáo hạn trái phiếu.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Par Value
@@ -13194,8 +13194,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.parvalue
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PARVALUE
         business_meaning: Mệnh giá trái phiếu.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -13212,8 +13212,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.bond_period
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.BOND_PERIOD
         business_meaning: Kỳ hạn trái phiếu.
         comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc period_unit.
   - name: Period Remain Days
@@ -13230,8 +13230,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.period_remain
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.PERIOD_REMAIN
         business_meaning: Kỳ hạn còn lại tính bằng ngày.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang integer. Cần validate
           không có giá trị non-numeric.
@@ -13248,8 +13248,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.interest_period
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_PERIOD
         business_meaning: Kỳ hạn trả lãi.
         comment: Nguồn lưu dạng string — giữ Text vì đơn vị phụ thuộc interest_period_unit.
   - name: Interest Rate
@@ -13266,8 +13266,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.interest_rate
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.INTEREST_RATE
         business_meaning: Lãi suất danh nghĩa.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -13284,8 +13284,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: CorpBondInfor
-        source_column: MDDS.JAD_CORPBONDINFOR.characteristics
+      - source_table: JAD_CORPBONDINFOR
+        source_column: MDDS.JAD_CORPBONDINFOR.CHARACTERISTICS
         business_meaning: Đặc điểm trái phiếu.
         comment: null
 - ldm:
@@ -13294,7 +13294,7 @@ entities:
     physical_name_1st: scr_tdg_snpst
     layer_1st: Atomic
     version_1st: "1.0"
-    status_1st: draft
+    status_1st: approved
     description_1st: Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu,
       chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày
       giao dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument.
@@ -13310,7 +13310,7 @@ entities:
     - MDDS
     references:
       brd:
-      - BRD-SRC-MDDS-StockInfor
+      - BRD-SRC-MDDS-JAD_STOCKINFOR
   attributes:
   - name: Security Trading Snapshot Id
     physical_name: scr_tdg_snpst_id
@@ -13326,7 +13326,7 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
+      - source_table: JAD_STOCKINFOR
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot\
@@ -13345,8 +13345,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.historyid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.HISTORYID
         business_meaning: ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của
           Snapshot entity.
         comment: BK chính. PK nguồn historyid — unique per lần chụp.
@@ -13358,12 +13358,12 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: MDDS.StockInfor
+    etl_derived_value: MDDS.JAD_STOCKINFOR
     conflict_review: null
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
+      - source_table: JAD_STOCKINFOR
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
@@ -13380,8 +13380,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.symbol
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.SYMBOL
         business_meaning: Mã chứng khoán.
         comment: null
   - name: Trading Date
@@ -13398,8 +13398,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.tradingdate
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TRADINGDATE
         business_meaning: Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date.
         comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate
           format nhất quán.
@@ -13416,8 +13416,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.fullname
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FULLNAME
         business_meaning: Tên chứng khoán (tiếng Việt).
         comment: null
   - name: Security Id
@@ -13433,8 +13433,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.stockid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.STOCKID
         business_meaning: ID của chứng khoán trong hệ thống Sở.
         comment: Mã nội bộ Sở — giữ dạng text denormalized.
   - name: Jadapter Id
@@ -13450,8 +13450,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.kid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.KID
         business_meaning: ID của mã do jadapter tự sinh.
         comment: Metadata kỹ thuật jadapter — giữ để traceability.
   - name: Stock Type Code
@@ -13467,8 +13467,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.stocktype
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.STOCKTYPE
         business_meaning: Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...).
         comment: "Scheme: MDDS_STOCK_TYPE."
   - name: Floor Code
@@ -13484,8 +13484,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.floorcode
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FLOORCODE
         business_meaning: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
         comment: "Scheme: MDDS_FLOOR_CODE."
   - name: Trading Session Status Code
@@ -13501,8 +13501,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.tradingsessionid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TRADINGSESSIONID
         business_meaning: Trạng thái phiên tại thời điểm chụp.
         comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
   - name: Trade Direction Code
@@ -13518,8 +13518,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.lastcolor
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.LASTCOLOR
         business_meaning: Chiều mua/bán chủ động gần nhất.
         comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
   - name: Symbol Status Code
@@ -13536,8 +13536,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.symbolstatuscode
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.SYMBOLSTATUSCODE
         business_meaning: Trạng thái mã CK.
         comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile\
           \ giá trị."
@@ -13554,8 +13554,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.ceiling
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.CEILING
         business_meaning: Giá trần.
         comment: null
   - name: Floor Price
@@ -13571,8 +13571,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.floor
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FLOOR
         business_meaning: Giá sàn.
         comment: null
   - name: Reference Price
@@ -13588,8 +13588,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.reference
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.REFERENCE
         business_meaning: Giá tham chiếu.
         comment: null
   - name: Close Price
@@ -13605,8 +13605,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.closeprice
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.CLOSEPRICE
         business_meaning: Giá khớp gần nhất.
         comment: null
   - name: Close Volume
@@ -13623,8 +13623,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.closevol
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.CLOSEVOL
         business_meaning: Khối lượng khớp gần nhất.
         comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không
           mất dữ liệu.
@@ -13641,8 +13641,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.change
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.CHANGE
         business_meaning: Thay đổi giữa giá khớp gần nhất và giá tham chiếu.
         comment: null
   - name: Open Price
@@ -13658,8 +13658,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.open
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OPEN
         business_meaning: Giá mở cửa.
         comment: null
   - name: High Price
@@ -13675,8 +13675,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.high
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.HIGH
         business_meaning: Giá khớp cao nhất tính đến thời điểm.
         comment: null
   - name: Low Price
@@ -13692,8 +13692,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.low
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.LOW
         business_meaning: Giá khớp thấp nhất tính đến thời điểm.
         comment: null
   - name: Average Price
@@ -13709,8 +13709,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.averageprice
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.AVERAGEPRICE
         business_meaning: Giá khớp trung bình.
         comment: null
   - name: Bid Price 1
@@ -13726,8 +13726,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.bidprice1
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.BIDPRICE1
         business_meaning: Giá mua top 1.
         comment: null
   - name: Bid Volume 1
@@ -13743,8 +13743,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.bidvol1
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.BIDVOL1
         business_meaning: Khối lượng mua top 1.
         comment: null
   - name: Bid Price 2
@@ -13760,8 +13760,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.bidprice2
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.BIDPRICE2
         business_meaning: Giá mua top 2.
         comment: null
   - name: Bid Volume 2
@@ -13777,8 +13777,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.bidvol2
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.BIDVOL2
         business_meaning: Khối lượng mua top 2.
         comment: null
   - name: Bid Price 3
@@ -13794,8 +13794,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.bidprice3
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.BIDPRICE3
         business_meaning: Giá mua top 3.
         comment: null
   - name: Bid Volume 3
@@ -13811,8 +13811,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.bidvol3
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.BIDVOL3
         business_meaning: Khối lượng mua top 3.
         comment: null
   - name: Offer Price 1
@@ -13828,8 +13828,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.offerprice1
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE1
         business_meaning: Giá bán top 1.
         comment: null
   - name: Offer Volume 1
@@ -13845,8 +13845,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.offervol1
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OFFERVOL1
         business_meaning: Khối lượng bán top 1.
         comment: null
   - name: Offer Price 2
@@ -13862,8 +13862,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.offerprice2
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE2
         business_meaning: Giá bán top 2.
         comment: null
   - name: Offer Volume 2
@@ -13879,8 +13879,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.offervol2
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OFFERVOL2
         business_meaning: Khối lượng bán top 2.
         comment: null
   - name: Offer Price 3
@@ -13896,8 +13896,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.offerprice3
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE3
         business_meaning: Giá bán top 3.
         comment: null
   - name: Offer Volume 3
@@ -13913,8 +13913,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.offervol3
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OFFERVOL3
         business_meaning: Khối lượng bán top 3.
         comment: null
   - name: Total Trading Volume
@@ -13930,8 +13930,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.totaltrading
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TOTALTRADING
         business_meaning: Tổng khối lượng khớp từ đầu ngày.
         comment: null
   - name: Total Trading Value
@@ -13947,8 +13947,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.totaltradingvalue
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TOTALTRADINGVALUE
         business_meaning: Tổng giá trị khớp từ đầu ngày.
         comment: null
   - name: Total Offer Volume
@@ -13964,8 +13964,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.total_offer_qtty
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TOTAL_OFFER_QTTY
         business_meaning: Tổng khối lượng dư bán.
         comment: null
   - name: Total Bid Volume
@@ -13981,8 +13981,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.total_bid_qtty
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TOTAL_BID_QTTY
         business_meaning: Tổng khối lượng dư mua.
         comment: null
   - name: Foreign Buy Volume
@@ -13998,8 +13998,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.foreignbuy
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FOREIGNBUY
         business_meaning: Khối lượng NĐTNN mua.
         comment: null
   - name: Foreign Sell Volume
@@ -14015,8 +14015,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.foreignsell
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FOREIGNSELL
         business_meaning: Khối lượng NĐTNN bán.
         comment: null
   - name: Foreign Remain Volume
@@ -14032,8 +14032,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.foreignremain
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FOREIGNREMAIN
         business_meaning: Room còn lại cho NĐTNN.
         comment: null
   - name: Foreign Room Volume
@@ -14049,8 +14049,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.foreignroom
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FOREIGNROOM
         business_meaning: Tổng room NĐTNN.
         comment: null
   - name: PT Match Volume
@@ -14066,8 +14066,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.pt_match_qtty
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_QTTY
         business_meaning: Khối lượng khớp thỏa thuận gần nhất.
         comment: PT = Put-Through (giao dịch thỏa thuận).
   - name: PT Match Price
@@ -14083,8 +14083,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.pt_match_price
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_PRICE
         business_meaning: Giá khớp thỏa thuận gần nhất.
         comment: Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount.
   - name: PT Total Traded Volume
@@ -14100,8 +14100,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.pt_total_traded_qtty
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_QTTY
         business_meaning: Tổng khối lượng khớp thỏa thuận từ đầu ngày.
         comment: null
   - name: PT Total Traded Value
@@ -14117,8 +14117,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.pt_total_traded_value
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_VALUE
         business_meaning: Tổng giá trị khớp thỏa thuận từ đầu ngày.
         comment: null
   - name: Security Event Status Code
@@ -14135,8 +14135,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.status
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.STATUS
         business_meaning: Trạng thái sự kiện quyền của CK.
         comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ\
           \ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
@@ -14153,8 +14153,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.symbolisin
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.SYMBOLISIN
         business_meaning: Mã ISIN của CK.
         comment: null
   - name: Listed Share Count
@@ -14171,8 +14171,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.listedshare
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.LISTEDSHARE
         business_meaning: Khối lượng CK niêm yết.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate
           không có giá trị non-numeric.
@@ -14190,8 +14190,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.totallistingqtty
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY
         business_meaning: Khối lượng CK niêm yết.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate
           không có giá trị non-numeric.
@@ -14208,8 +14208,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.marketid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.MARKETID
         business_meaning: Mã sàn theo Sở.
         comment: null
   - name: Board Id
@@ -14225,8 +14225,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.boardid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.BOARDID
         business_meaning: Board của mã CK (mặc định G1).
         comment: null
   - name: Product Group Id
@@ -14242,8 +14242,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.productgrpid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.PRODUCTGRPID
         business_meaning: Mã sản phẩm của CK theo Sở.
         comment: null
   - name: Product Id
@@ -14259,8 +14259,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.productid
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.PRODUCTID
         business_meaning: Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào.
         comment: null
   - name: Trading Time
@@ -14277,8 +14277,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.tradingtime
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.TRADINGTIME
         business_meaning: Thời gian ghi nhận snapshot.
         comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
           trước khi convert sang Timestamp.
@@ -14296,8 +14296,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.fundtype
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FUNDTYPE
         business_meaning: Loại quỹ — FSS quy định.
         comment: Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile
           giá trị.
@@ -14315,8 +14315,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.openinterest
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.OPENINTEREST
         business_meaning: Khối lượng mở OI — dành cho phái sinh.
         comment: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
           = FU/OP.
@@ -14333,8 +14333,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.firsttradingdate
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.FIRSTTRADINGDATE
         business_meaning: Ngày giao dịch đầu tiên — dành cho phái sinh/CW.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Last Trading Date
@@ -14350,8 +14350,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.lasttradingdate
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.LASTTRADINGDATE
         business_meaning: Ngày giao dịch cuối cùng — dành cho phái sinh/CW.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Underlying Symbol
@@ -14367,8 +14367,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.underlyingsymbol
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.UNDERLYINGSYMBOL
         business_meaning: Chứng khoán cơ sở — dành cho CW/phái sinh.
         comment: null
   - name: Issuer Name
@@ -14384,8 +14384,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.issuername
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.ISSUERNAME
         business_meaning: Tổ chức phát hành.
         comment: null
   - name: Covered Warrant Type Code
@@ -14403,8 +14403,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.coveredwarranttype
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.COVEREDWARRANTTYPE
         business_meaning: Kiểu chứng quyền.
         comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype\
           \ = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy\
@@ -14422,8 +14422,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.maturitydate
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.MATURITYDATE
         business_meaning: Ngày đáo hạn.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Exercise Price
@@ -14440,8 +14440,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.exerciseprice
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.EXERCISEPRICE
         business_meaning: Giá thực hiện CW.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -14459,8 +14459,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.exerciseratio
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.EXERCISERATIO
         business_meaning: Tỉ lệ thực hiện CW.
         comment: Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5
           hay decimal.
@@ -14478,8 +14478,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.settlementprice
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.SETTLEMENTPRICE
         business_meaning: Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -14497,8 +14497,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.maturitymonthyear
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.MATURITYMONTHYEAR
         business_meaning: Năm tháng đáo hạn HĐTL.
         comment: Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn
           hóa format.
@@ -14515,8 +14515,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.listingdate
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.LISTINGDATE
         business_meaning: Ngày niêm yết sản phẩm phái sinh.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
   - name: Contract Multiplier
@@ -14533,8 +14533,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.contractmultiplier
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.CONTRACTMULTIPLIER
         business_meaning: Hệ số nhân HĐTL.
         comment: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
           = FU.
@@ -14552,8 +14552,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.putorcall
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.PUTORCALL
         business_meaning: "Loại quyền phái sinh: P/C."
         comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có\
           \ giá trị khi stocktype = OP."
@@ -14571,8 +14571,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.exercisestyle
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.EXERCISESTYLE
         business_meaning: "Kiểu thực hiện phái sinh: A/E/B/Z."
         comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan,\
           \ Z=Other — chuẩn quốc tế, tập cố định."
@@ -14590,8 +14590,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.couponrate
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.COUPONRATE
         business_meaning: Lãi suất trái phiếu.
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -14609,8 +14609,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.yield
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.YIELD
         business_meaning: YTM (Yield to Maturity).
         comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate
           không có giá trị non-numeric.
@@ -14627,8 +14627,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: StockInfor
-        source_column: MDDS.JAD_STOCKINFOR.issuedate
+      - source_table: JAD_STOCKINFOR
+        source_column: MDDS.JAD_STOCKINFOR.ISSUEDATE
         business_meaning: Ngày phát hành.
         comment: Nguồn lưu dạng string — ETL cần parse sang date.
 - ldm:
@@ -14637,7 +14637,7 @@ entities:
     physical_name_1st: scr_mtch_log
     layer_1st: Atomic
     version_1st: "1.0"
-    status_1st: draft
+    status_1st: approved
     description_1st: Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong
       ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động,
       và lũy kế khối lượng/giá trị từ đầu ngày.
@@ -14653,7 +14653,7 @@ entities:
     - MDDS
     references:
       brd:
-      - BRD-SRC-MDDS-TransLog
+      - BRD-SRC-MDDS-JAD_TRANSLOG
   attributes:
   - name: Security Match Log Id
     physical_name: scr_mtch_log_id
@@ -14669,7 +14669,7 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
+      - source_table: JAD_TRANSLOG
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: [Transaction] Financial Market Transaction. 1\
@@ -14687,8 +14687,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.Id
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.ID
         business_meaning: ID unique cho từng lần khớp — PK bảng nguồn. BK.
         comment: BK chính. PK nguồn Id — unique per lần khớp lệnh.
   - name: Source System Code
@@ -14699,12 +14699,12 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: MDDS.TransLog
+    etl_derived_value: MDDS.JAD_TRANSLOG
     conflict_review: null
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
+      - source_table: JAD_TRANSLOG
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
@@ -14722,8 +14722,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.symbol
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.SYMBOL
         business_meaning: Mã chứng khoán.
         comment: Denormalized join key với Security Trading Snapshot — D-02 quyết
           định không tạo FK surrogate.
@@ -14741,8 +14741,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.tradingdate
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.TRADINGDATE
         business_meaning: Ngày giao dịch.
         comment: Nguồn lưu dạng string — ETL cần parse sang date. Denormalized join
           key với Security Trading Snapshot.
@@ -14760,8 +14760,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.formattedTime
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.FORMATTEDTIME
         business_meaning: Thời gian khớp.
         comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
           trước khi convert sang Timestamp.
@@ -14778,8 +14778,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.sequenceMsg
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.SEQUENCEMSG
         business_meaning: Sequence tín hiệu của sở.
         comment: Metadata kỹ thuật từ Sở — giữ để traceability và deduplication.
   - name: Trade Direction Code
@@ -14795,8 +14795,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.lastColor
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.LASTCOLOR
         business_meaning: Chiều mua/bán chủ động.
         comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
   - name: Change Color Code
@@ -14813,8 +14813,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.changeColor
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.CHANGECOLOR
         business_meaning: Indicator tăng/giảm so với giá tham chiếu.
         comment: "Scheme: MDDS_PRICE_CHANGE_COLOR. Cùng pattern với lastColor (MDDS_TRADE_DIRECTION)\
           \ — indicator chiều giá so với tham chiếu."
@@ -14831,8 +14831,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.formattedMatchPrice
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.FORMATTEDMATCHPRICE
         business_meaning: Giá khớp.
         comment: null
   - name: Match Volume
@@ -14848,8 +14848,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.formattedVol
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.FORMATTEDVOL
         business_meaning: Khối lượng khớp.
         comment: null
   - name: Accumulated Volume
@@ -14865,8 +14865,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.formattedAccVol
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.FORMATTEDACCVOL
         business_meaning: Tổng khối lượng khớp lũy kế trong ngày (lô chẵn).
         comment: null
   - name: Accumulated Value
@@ -14882,8 +14882,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.formattedAccVal
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.FORMATTEDACCVAL
         business_meaning: Tổng giá trị khớp lũy kế trong ngày (lô chẵn).
         comment: null
   - name: Total Buy Volume
@@ -14899,8 +14899,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.totalBuyVol
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.TOTALBUYVOL
         business_meaning: Tổng khối lượng mua chủ động.
         comment: null
   - name: Total Sell Volume
@@ -14916,8 +14916,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.totalSellVol
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.TOTALSELLVOL
         business_meaning: Tổng khối lượng bán chủ động.
         comment: null
   - name: Board Id
@@ -14933,8 +14933,8 @@ entities:
     source_mappings:
     - source_system: MDDS
       source_tables:
-      - source_table: TransLog
-        source_column: MDDS.JAD_TRANSLOG.boardID
+      - source_table: JAD_TRANSLOG
+        source_column: MDDS.JAD_TRANSLOG.BOARDID
         business_meaning: Board của mã, mặc định G1.
         comment: null
 - ldm:
@@ -15415,12 +15415,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.trade_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_NUMBER
         business_meaning: ID của giao dịch — dùng làm unique key, audit, tracking
           trade (BK). BK.
         comment: BK chính. PK nguồn TRADE_BOOK_HNX.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.trade_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.TRADE_ID
         business_meaning: Số thứ tự giao dịch khớp lệnh được ghi nhận trên hệ thống
           Sàn trong ngày, theo từng mã chứng khoán (Trade ID / BK). BK.
         comment: BK chính. PK nguồn TRADE_BOOK_HOSE.
@@ -15434,8 +15434,8 @@ entities:
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
-    - ORDERTRADE.TRADE_BOOK_HNX
-    - ORDERTRADE.TRADE_BOOK_HOSE
+    - ORDERTRADE_TRADE_BOOK_HNX
+    - ORDERTRADE_TRADE_BOOK_HOSE
     conflict_review: null
     source_mappings:
     - source_system: ORDERTRADE
@@ -15464,11 +15464,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.trade_date
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_DATE
         business_meaning: Ngày giao dịch của trade.
         comment: null
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.trade_date
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.TRADE_DATE
         business_meaning: Ngày giao dịch theo thị trường chứng khoán.
         comment: null
   - name: Market Id Code
@@ -15485,11 +15485,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.market_id
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.MARKET_ID
         business_meaning: Mã thị trường chứng khoán.
         comment: "Scheme: ORDERTRADE_MARKET_ID."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.market_id
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.MARKET_ID
         business_meaning: Mã thị trường chứng khoán.
         comment: "Scheme: ORDERTRADE_MARKET_ID."
   - name: Security Symbol Code
@@ -15507,12 +15507,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.issue_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.ISSUE_CODE
         business_meaning: Mã định danh của loại chứng khoán đang được giao dịch (unique).
         comment: Nguồn HNX dùng tên cột issue_code; HLD mapping chung vào Security
           Symbol.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.symbol
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SYMBOL
         business_meaning: Mã chứng khoán.
         comment: null
   - name: Currency Code
@@ -15535,7 +15535,7 @@ entities:
         comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có\
           \ field này."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.currency
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.CURRENCY
         business_meaning: Đơn vị tiền tệ.
         comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có\
           \ field này."
@@ -15554,12 +15554,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.board_id
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BOARD_ID
         business_meaning: Loại bảng giao dịch.
         comment: "Scheme: ORDERTRADE_BOARD_TYPE. Nguồn HNX dùng tên cột board_id;\
           \ cùng scheme với HOSE board_type."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.board_type
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BOARD_TYPE
         business_meaning: Loại bảng giao dịch.
         comment: "Scheme: ORDERTRADE_BOARD_TYPE."
   - name: Trade Time
@@ -15576,11 +15576,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.trade_time
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_TIME
         business_meaning: Thời điểm giao dịch xảy ra.
         comment: Nguồn lưu dạng varchar — ETL giữ nguyên định dạng KRX.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.trade_time
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.TIME
         business_meaning: Thời gian diễn ra giao dịch khớp lệnh.
         comment: Nguồn lưu dạng varchar — ETL giữ nguyên định dạng KRX.
   - name: Session Code
@@ -15597,11 +15597,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.session_id
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SESSION_ID
         business_meaning: Mã phiên giao dịch.
         comment: "Scheme: ORDERTRADE_SESSION."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.session
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SESSION
         business_meaning: Phiên giao dịch.
         comment: "Scheme: ORDERTRADE_SESSION."
   - name: Execution Price
@@ -15618,11 +15618,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.trade_price
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_PRICE
         business_meaning: Giá khớp của giao dịch.
         comment: Nguồn HNX dùng trade_price; HLD mapping chung vào Execution Price.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.exec_price
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_EXEC_PRICE
         business_meaning: Giá khớp lệnh thực tế của giao dịch.
         comment: null
   - name: Execution Price Versus LTP
@@ -15645,7 +15645,7 @@ entities:
           chứng khoán.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.exec_price_vs_ltp
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_EXEC_PRICE_LTP
         business_meaning: Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã
           chứng khoán.
         comment: Chỉ có ở HOSE — HNX không có field này.
@@ -15664,12 +15664,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.trade_qty
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_QUANTITY
         business_meaning: Khối lượng giao dịch.
         comment: Nguồn bigint. HNX dùng trade_qty; HLD mapping chung vào Execution
           Volume.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.exec_vol
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_VOLUME
         business_meaning: Khối lượng khớp lệnh.
         comment: Nguồn bigint.
   - name: Execution Value
@@ -15692,7 +15692,7 @@ entities:
         comment: nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty
           (quyết định Q6 HLD). Nguồn decimal(22,4).
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.exec_val
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_VALUE
         business_meaning: Tổng giá trị giao dịch của lệnh khớp.
         comment: nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty
           (quyết định Q6 HLD). Nguồn decimal(22,4).
@@ -15716,7 +15716,7 @@ entities:
           Traded Price).
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.exec_ltp
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_LTP
         business_meaning: Giá khớp gần nhất của mã chứng khoán trên thị trường (Last
           Traded Price).
         comment: Chỉ có ở HOSE — HNX không có field này.
@@ -15740,7 +15740,7 @@ entities:
           trong ngày.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.exec_new_high_low_price
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.EXECUTION_NEW_HIGH_LOW_PRICE
         business_meaning: Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới
           trong ngày.
         comment: Chỉ có ở HOSE — HNX không có field này.
@@ -15762,7 +15762,7 @@ entities:
         business_meaning: Ngày đặt lệnh mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_order_date
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_DATE
         business_meaning: Ngày đặt lệnh mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Buy Order Time
@@ -15783,7 +15783,7 @@ entities:
         business_meaning: Thời gian đặt lệnh mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_order_time
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_TIME
         business_meaning: Thời gian đặt lệnh mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Buy Securities Order Id
@@ -15791,8 +15791,8 @@ entities:
     business_meaning_1st: FK surrogate đến Securities Order của lệnh mua (best-effort
       resolve).
     comment_1st: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX',\
-      \ buy_order_reception_no). nullable=true — ETL best-effort resolve trong batch\
-      \ ngày (quyết định Q7 HLD)."
+      \ buy_order_reception_number). nullable=true — ETL best-effort resolve trong\
+      \ batch ngày (quyết định Q7 HLD)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -15803,18 +15803,18 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_order_reception_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NUMBER
         business_meaning: FK surrogate đến Securities Order của lệnh mua (best-effort
           resolve).
         comment: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX',\
-          \ buy_order_reception_no). nullable=true — ETL best-effort resolve trong\
+          \ buy_order_reception_number). nullable=true — ETL best-effort resolve trong\
           \ batch ngày (quyết định Q7 HLD)."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_order_accept_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_ID
         business_meaning: FK surrogate đến Securities Order của lệnh mua (best-effort
           resolve).
         comment: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE',\
-          \ buy_order_accept_no). nullable=true — ETL best-effort resolve trong batch\
+          \ buy_order_accept_id). nullable=true — ETL best-effort resolve trong batch\
           \ ngày (quyết định Q7 HLD)."
   - name: Buy Securities Order Code
     physical_name: buy_scr_ordr_code
@@ -15832,13 +15832,13 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_order_reception_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NUMBER
         business_meaning: FK-BK đến Securities Order của lệnh mua (Order Reception
           Number — BK phụ HNX).
         comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Buy Securities Order\
           \ Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_order_accept_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_ACCEPT_ID
         business_meaning: FK-BK đến Securities Order của lệnh mua (Order Accept Number
           — BK phụ HOSE).
         comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Buy Securities Order\
@@ -15857,11 +15857,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_member_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_MEMBER_NUMBER
         business_meaning: Mã/số công ty chứng khoán thực hiện giao dịch mua.
         comment: Nguồn HNX dùng buy_member_no; HLD mapping chung vào Buy Broker Id.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_brk_id
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_BRK_ID
         business_meaning: Mã/số công ty chứng khoán thực hiện giao dịch mua.
         comment: null
   - name: Buy Broker Name
@@ -15882,7 +15882,7 @@ entities:
         business_meaning: Tên công ty chứng khoán thực hiện giao dịch mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_brk_name
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_BRK
         business_meaning: Tên công ty chứng khoán thực hiện giao dịch mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Buy Account Pin Code
@@ -15905,7 +15905,7 @@ entities:
         comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định
           Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_pin
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_PIN
         business_meaning: Mã PIN của tài khoản mua.
         comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định
           Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
@@ -15923,11 +15923,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_acct_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ACCOUNT_NUMBER
         business_meaning: Mã tài khoản thực hiện giao dịch mua.
         comment: null
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_acct_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ACCT_NO
         business_meaning: Mã/Số tài khoản giao dịch mua của nhà đầu tư.
         comment: null
   - name: Buy Account Holder Name
@@ -15948,7 +15948,7 @@ entities:
         business_meaning: Tên tài khoản giao dịch mua của nhà đầu tư.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_acct_holder_name
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_NAME
         business_meaning: Tên tài khoản giao dịch mua của nhà đầu tư.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Buy Client House Classification Code
@@ -15965,11 +15965,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_client_house_cls
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_CLIENT_HOUSE_CLASSIFICATION
         business_meaning: Lệnh mua của khách hàng hay tự doanh.
         comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_client_house_cls_code
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_CLIENT_HOUSE_CLASSIFICATION_CODE
         business_meaning: Phân loại lệnh khách hàng/công ty tự doanh của lệnh mua.
         comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
   - name: Buy Investor Type Code
@@ -15988,13 +15988,13 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_investor_cls_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_INVESTOR_CLASSIFICATION_CODE
         business_meaning: Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân
           (raw từ HNX).
         comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua\
           \ src_stm_code (quyết định Q1 HLD)."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_investor_type
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_INVEST_TYPE
         business_meaning: Phân loại nhà đầu tư của lệnh mua (raw từ HOSE).
         comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua\
           \ src_stm_code (quyết định Q1 HLD)."
@@ -16013,12 +16013,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_foreign_investor_type_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_FOREIGN_INVESTOR_TYPE_CODE
         business_meaning: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao
           dịch mua.
         comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_foreign_investor_type
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_FOREIGNER_INVESTOR_TYPE
         business_meaning: Phân loại đầu tư nước ngoài của lệnh mua.
         comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
   - name: Buy Order Price
@@ -16035,11 +16035,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_order_price
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_PRICE
         business_meaning: Giá đặt mua.
         comment: null
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_order_price
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_PRICE
         business_meaning: Giá đặt mua.
         comment: null
   - name: Buy Order Volume
@@ -16056,11 +16056,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_order_qty
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_QUANTITY
         business_meaning: Khối lượng đặt mua.
         comment: Nguồn bigint.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_order_vol
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_ORDER_VOL
         business_meaning: Khối lượng đặt mua.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX dùng buy_order_qty.
   - name: Buy Trader Number
@@ -16081,7 +16081,7 @@ entities:
         business_meaning: Mã/số định danh người thực hiện đặt mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_trader_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_TRADER_NO
         business_meaning: Mã/số định danh người thực hiện đặt mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Buy Trader Name
@@ -16102,7 +16102,7 @@ entities:
         business_meaning: Tên người thực hiện đặt mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_trader_name
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_TRADER_NAME
         business_meaning: Tên người thực hiện đặt mua.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Buy Reference Sequence Number
@@ -16125,7 +16125,7 @@ entities:
         comment: HNX Trade không có field Reference Sequence riêng — nullable; tương
           ứng buy_ref_seq_no của TRADE_BOOK_HOSE (quyết định Q5 HLD).
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.buy_ref_seq_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.BUY_REFERENCE_SEQUENCE_NO
         business_meaning: Số tham chiếu theo thứ tự đặt mua trong ngày.
         comment: Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng;
           nullable cho HNX (quyết định Q5 HLD).
@@ -16147,7 +16147,7 @@ entities:
         business_meaning: Ngày đặt lệnh bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_order_date
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_DATE
         business_meaning: Ngày đặt lệnh bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Sell Order Time
@@ -16168,7 +16168,7 @@ entities:
         business_meaning: Thời gian đặt lệnh bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_order_time
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_TIME
         business_meaning: Thời gian đặt lệnh bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Sell Securities Order Id
@@ -16176,8 +16176,8 @@ entities:
     business_meaning_1st: FK surrogate đến Securities Order của lệnh bán (best-effort
       resolve).
     comment_1st: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX',\
-      \ sell_order_reception_no). nullable=true — ETL best-effort resolve trong batch\
-      \ ngày (quyết định Q7 HLD)."
+      \ sell_order_reception_number). nullable=true — ETL best-effort resolve trong\
+      \ batch ngày (quyết định Q7 HLD)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -16188,18 +16188,18 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_order_reception_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NUMBER
         business_meaning: FK surrogate đến Securities Order của lệnh bán (best-effort
           resolve).
         comment: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX',\
-          \ sell_order_reception_no). nullable=true — ETL best-effort resolve trong\
-          \ batch ngày (quyết định Q7 HLD)."
+          \ sell_order_reception_number). nullable=true — ETL best-effort resolve\
+          \ trong batch ngày (quyết định Q7 HLD)."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_order_accept_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_ID
         business_meaning: FK surrogate đến Securities Order của lệnh bán (best-effort
           resolve).
         comment: "FK target: scr_ordr.scr_ordr_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HOSE',\
-          \ sell_order_accept_no). nullable=true — ETL best-effort resolve trong batch\
+          \ sell_order_accept_id). nullable=true — ETL best-effort resolve trong batch\
           \ ngày (quyết định Q7 HLD)."
   - name: Sell Securities Order Code
     physical_name: sell_scr_ordr_code
@@ -16217,13 +16217,13 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_order_reception_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NUMBER
         business_meaning: FK-BK đến Securities Order của lệnh bán (Order Reception
           Number — BK phụ HNX).
         comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Sell Securities Order\
           \ Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_order_accept_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_ACCEPT_ID
         business_meaning: FK-BK đến Securities Order của lệnh bán (Order Accept Number
           — BK phụ HOSE).
         comment: "Lookup pair: scr_ordr.scr_ordr_code. Pair with Sell Securities Order\
@@ -16243,12 +16243,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_member_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_MEMBER_NUMBER
         business_meaning: Mã định danh công ty chứng khoán thực hiện lệnh bán.
         comment: Nguồn HNX dùng sell_member_no; HLD mapping chung vào Sell Broker
           Id.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_brk_id
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_BRK_ID
         business_meaning: Mã/số công ty chứng khoán thực hiện giao dịch bán.
         comment: null
   - name: Sell Broker Name
@@ -16269,7 +16269,7 @@ entities:
         business_meaning: Tên công ty chứng khoán thực hiện giao dịch bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_brk_name
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_BRK
         business_meaning: Tên công ty chứng khoán thực hiện giao dịch bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Sell Account Pin Code
@@ -16292,7 +16292,7 @@ entities:
         comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định
           Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_pin
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_PIN
         business_meaning: Mã PIN của tài khoản bán.
         comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định
           Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
@@ -16310,11 +16310,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_acct_no
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ACCOUNT_NUMBER
         business_meaning: Số tài khoản giao dịch của khách hàng thực hiện lệnh bán.
         comment: null
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_acct_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ACCT_NO
         business_meaning: Mã/Số tài khoản giao dịch bán của nhà đầu tư.
         comment: null
   - name: Sell Account Holder Name
@@ -16335,7 +16335,7 @@ entities:
         business_meaning: Tên tài khoản giao dịch bán của nhà đầu tư.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_acct_holder_name
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_NAME
         business_meaning: Tên tài khoản giao dịch bán của nhà đầu tư.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Sell Client House Classification Code
@@ -16352,11 +16352,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_client_house_cls
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_CLIENT_HOUSE_CLASSIFICATION
         business_meaning: Lệnh bán của khách hàng hay tự doanh.
         comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_client_house_cls_code
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_CLIENT_HOUSE_CLASSIFICATION_CODE
         business_meaning: Phân loại lệnh khách hàng/công ty tự doanh của lệnh bán.
         comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
   - name: Sell Investor Type Code
@@ -16375,13 +16375,13 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_investor_cls_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_INVESTOR_CLASSIFICATION_CODE
         business_meaning: Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân
           (raw từ HNX).
         comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua\
           \ src_stm_code (quyết định Q1 HLD)."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_investor_type
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_INVEST_TYPE
         business_meaning: Phân loại nhà đầu tư của lệnh bán (raw từ HOSE).
         comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua\
           \ src_stm_code (quyết định Q1 HLD)."
@@ -16400,12 +16400,12 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_foreign_investor_type_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_FOREIGN_INVESTOR_TYPE_CODE
         business_meaning: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao
           dịch bán.
         comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_foreign_investor_type
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_FOREIGNER_INVESTOR_TYPE
         business_meaning: Phân loại đầu tư nước ngoài của lệnh bán.
         comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
   - name: Sell Order Price
@@ -16422,11 +16422,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_order_price
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_PRICE
         business_meaning: Giá đặt bán.
         comment: null
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_order_price
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_PRICE
         business_meaning: Giá đặt bán.
         comment: null
   - name: Sell Order Volume
@@ -16443,11 +16443,11 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_order_qty
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_QUANTITY
         business_meaning: Khối lượng đặt bán.
         comment: Nguồn bigint.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_order_vol
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_ORDER_VOL
         business_meaning: Khối lượng đặt bán.
         comment: Nguồn bigint. Chỉ có ở HOSE — HNX dùng sell_order_qty.
   - name: Sell Trader Number
@@ -16468,7 +16468,7 @@ entities:
         business_meaning: Mã/số định danh người thực hiện đặt bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_trader_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_TRADER_NO
         business_meaning: Mã/số định danh người thực hiện đặt bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Sell Trader Name
@@ -16489,7 +16489,7 @@ entities:
         business_meaning: Tên người thực hiện đặt bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_trader_name
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_TRADER_NAME
         business_meaning: Tên người thực hiện đặt bán.
         comment: Chỉ có ở HOSE — HNX không có field này.
   - name: Sell Reference Sequence Number
@@ -16512,7 +16512,7 @@ entities:
         comment: HNX Trade không có field Reference Sequence riêng — nullable; tương
           ứng sell_ref_seq_no của TRADE_BOOK_HOSE (quyết định Q5 HLD).
       - source_table: TRADE_BOOK_HOSE
-        source_column: ORDERTRADE.TRADE_BOOK_HOSE.sell_ref_seq_no
+        source_column: ORDERTRADE.TRADE_BOOK_HOSE.SELL_REFERENCE_SEQUENCE_NO
         business_meaning: Số tham chiếu theo thứ tự đặt bán trong ngày.
         comment: Chỉ có ở HOSE — HNX Trade không có field Reference Sequence riêng;
           nullable cho HNX (quyết định Q5 HLD).
@@ -16530,7 +16530,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.msg_seq
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.MESSAGE_SEQUENCE
         business_meaning: Số thứ tự message trong luồng dữ liệu (tăng dần từ 1).
         comment: Nguồn bigint. HNX-only — HOSE không có field này.
       - source_table: TRADE_BOOK_HOSE
@@ -16551,7 +16551,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_replace_cancel_cls_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE
         business_meaning: Loại hành động sửa/hủy của lệnh bên bán.
         comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
       - source_table: TRADE_BOOK_HOSE
@@ -16573,7 +16573,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_order_type_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_TYPE_CODE
         business_meaning: Loại lệnh của phía bán.
         comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only — HOSE Trade không có field\
           \ này."
@@ -16597,7 +16597,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_order_condition_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_CONDITION_CODE
         business_meaning: Điều kiện hiệu lực và cách xử lý của lệnh bán.
         comment: "Scheme: ORDERTRADE_ORDER_CONDITION. HNX-only — HOSE Trade không\
           \ có field này."
@@ -16621,7 +16621,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.sell_quote_request_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_QUOTE_REQUEST_CODE
         business_meaning: Mã loại yêu cầu báo giá của bên bán (HNX RFQ).
         comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với trade\
           \ không phải RFQ."
@@ -16644,7 +16644,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_replace_cancel_cls_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE
         business_meaning: Loại hành động sửa/hủy của lệnh bên mua.
         comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
       - source_table: TRADE_BOOK_HOSE
@@ -16666,7 +16666,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_order_type_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_TYPE_CODE
         business_meaning: Loại lệnh mua.
         comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only — HOSE Trade không có field\
           \ này."
@@ -16690,7 +16690,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_order_condition_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_CONDITION_CODE
         business_meaning: Điều kiện thực hiện lệnh mua.
         comment: "Scheme: ORDERTRADE_ORDER_CONDITION. HNX-only — HOSE Trade không\
           \ có field này."
@@ -16714,7 +16714,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.buy_quote_request_code
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_QUOTE_REQUEST_CODE
         business_meaning: Mã loại yêu cầu báo giá của bên mua (HNX RFQ).
         comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với trade\
           \ không phải RFQ."
@@ -16738,7 +16738,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.exec_price_spread_first
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.EXECUTION_PRICE_OF_SPREAD_FIRST
         business_meaning: "Giá khớp của leg thứ nhất trong spread trade (HNX-only:\
           \ phái sinh/repo 2 vế)."
         comment: HNX-only — NULL với trade không phải spread.
@@ -16762,7 +16762,7 @@ entities:
     - source_system: ORDERTRADE
       source_tables:
       - source_table: TRADE_BOOK_HNX
-        source_column: ORDERTRADE.TRADE_BOOK_HNX.exec_price_spread_second
+        source_column: ORDERTRADE.TRADE_BOOK_HNX.EXECUTION_PRICE_OF_SPREAD_SECOND
         business_meaning: "Giá khớp của leg thứ hai trong spread trade (HNX-only:\
           \ phái sinh/repo 2 vế)."
         comment: HNX-only — NULL với trade không phải spread.

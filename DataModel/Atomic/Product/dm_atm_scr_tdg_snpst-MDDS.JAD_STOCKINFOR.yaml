@@ -1,1073 +1,1020 @@
 schema_type: data_model
-schema_version: "1.0"
-
+schema_version: '1.0'
 ldm:
   id: ATM-scr_tdg_snpst-MDDS.JAD_STOCKINFOR
   logical_name: Security Trading Snapshot
   physical_name: scr_tdg_snpst
   layer: Atomic
-  version: "1.0"
+  version: '1.0'
   status: approved
   bcv_core_object: Product
-  bcv_concept: "[Product] Financial Market Instrument"
+  bcv_concept: '[Product] Financial Market Instrument'
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
   source: MDDS
-  description: |
-    Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu, chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày giao dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument.
+  description: 'Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu,
+    chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày giao
+    dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument.
+
+    '
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
     brd: BRD-SRC-MDDS-JAD_STOCKINFOR
-
 attributes:
-  - name: Security Trading Snapshot Id
-    physical_name: scr_tdg_snpst_id
-    business_meaning: Khóa đại diện (surrogate key).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: null
-    comment: "PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot trạng thái giao dịch của 1 mã CK tại 1 thời điểm."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Security Trading Snapshot Code
-    physical_name: scr_tdg_snpst_code
-    business_meaning: ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.HISTORYID
-    comment: BK chính. PK nguồn historyid — unique per lần chụp.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn dữ liệu.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: MDDS_JAD_STOCKINFOR
-
-  - name: Symbol
-    physical_name: symb
-    business_meaning: Mã chứng khoán.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.SYMBOL
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Trading Date
-    physical_name: tdg_dt
-    business_meaning: Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TRADINGDATE
-    comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate format nhất quán.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Security Full Name
-    physical_name: scr_full_nm
-    business_meaning: Tên chứng khoán (tiếng Việt).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FULLNAME
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Security Id
-    physical_name: scr_id
-    business_meaning: ID của chứng khoán trong hệ thống Sở.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.STOCKID
-    comment: Mã nội bộ Sở — giữ dạng text denormalized.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Jadapter Id
-    physical_name: jadapter_id
-    business_meaning: ID của mã do jadapter tự sinh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.KID
-    comment: Metadata kỹ thuật jadapter — giữ để traceability.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Stock Type Code
-    physical_name: stk_tp_code
-    business_meaning: Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...).
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.STOCKTYPE
-    comment: "Scheme: MDDS_STOCK_TYPE."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Floor Code
-    physical_name: flr_code
-    business_meaning: "Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FLOORCODE
-    comment: "Scheme: MDDS_FLOOR_CODE."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Trading Session Status Code
-    physical_name: tdg_ssn_st_code
-    business_meaning: Trạng thái phiên tại thời điểm chụp.
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TRADINGSESSIONID
-    comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Trade Direction Code
-    physical_name: trd_drc_code
-    business_meaning: Chiều mua/bán chủ động gần nhất.
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.LASTCOLOR
-    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Symbol Status Code
-    physical_name: symb_st_code
-    business_meaning: Trạng thái mã CK.
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.SYMBOLSTATUSCODE
-    comment: "Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Ceiling Price
-    physical_name: ceiling_prc
-    business_meaning: Giá trần.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.CEILING
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Floor Price
-    physical_name: flr_prc
-    business_meaning: Giá sàn.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FLOOR
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Reference Price
-    physical_name: refr_prc
-    business_meaning: Giá tham chiếu.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.REFERENCE
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Close Price
-    physical_name: cls_prc
-    business_meaning: Giá khớp gần nhất.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.CLOSEPRICE
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Close Volume
-    physical_name: cls_vol
-    business_meaning: Khối lượng khớp gần nhất.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.CLOSEVOL
-    comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ liệu.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Price Change
-    physical_name: prc_chg
-    business_meaning: Thay đổi giữa giá khớp gần nhất và giá tham chiếu.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.CHANGE
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Open Price
-    physical_name: opn_prc
-    business_meaning: Giá mở cửa.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OPEN
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: High Price
-    physical_name: high_prc
-    business_meaning: Giá khớp cao nhất tính đến thời điểm.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.HIGH
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Low Price
-    physical_name: low_prc
-    business_meaning: Giá khớp thấp nhất tính đến thời điểm.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.LOW
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Average Price
-    physical_name: av_prc
-    business_meaning: Giá khớp trung bình.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.AVERAGEPRICE
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Bid Price 1
-    physical_name: bid_prc_1
-    business_meaning: Giá mua top 1.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.BIDPRICE1
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Bid Volume 1
-    physical_name: bid_vol_1
-    business_meaning: Khối lượng mua top 1.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.BIDVOL1
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Bid Price 2
-    physical_name: bid_prc_2
-    business_meaning: Giá mua top 2.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.BIDPRICE2
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Bid Volume 2
-    physical_name: bid_vol_2
-    business_meaning: Khối lượng mua top 2.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.BIDVOL2
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Bid Price 3
-    physical_name: bid_prc_3
-    business_meaning: Giá mua top 3.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.BIDPRICE3
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Bid Volume 3
-    physical_name: bid_vol_3
-    business_meaning: Khối lượng mua top 3.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.BIDVOL3
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Offer Price 1
-    physical_name: ofr_prc_1
-    business_meaning: Giá bán top 1.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE1
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Offer Volume 1
-    physical_name: ofr_vol_1
-    business_meaning: Khối lượng bán top 1.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OFFERVOL1
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Offer Price 2
-    physical_name: ofr_prc_2
-    business_meaning: Giá bán top 2.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE2
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Offer Volume 2
-    physical_name: ofr_vol_2
-    business_meaning: Khối lượng bán top 2.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OFFERVOL2
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Offer Price 3
-    physical_name: ofr_prc_3
-    business_meaning: Giá bán top 3.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE3
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Offer Volume 3
-    physical_name: ofr_vol_3
-    business_meaning: Khối lượng bán top 3.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OFFERVOL3
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Total Trading Volume
-    physical_name: tot_tdg_vol
-    business_meaning: Tổng khối lượng khớp từ đầu ngày.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TOTALTRADING
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Total Trading Value
-    physical_name: tot_tdg_val
-    business_meaning: Tổng giá trị khớp từ đầu ngày.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TOTALTRADINGVALUE
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Total Offer Volume
-    physical_name: tot_ofr_vol
-    business_meaning: Tổng khối lượng dư bán.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TOTAL_OFFER_QTTY
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Total Bid Volume
-    physical_name: tot_bid_vol
-    business_meaning: Tổng khối lượng dư mua.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TOTAL_BID_QTTY
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Foreign Buy Volume
-    physical_name: frgn_buy_vol
-    business_meaning: Khối lượng NĐTNN mua.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FOREIGNBUY
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Foreign Sell Volume
-    physical_name: frgn_sell_vol
-    business_meaning: Khối lượng NĐTNN bán.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FOREIGNSELL
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Foreign Remain Volume
-    physical_name: frgn_rman_vol
-    business_meaning: Room còn lại cho NĐTNN.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FOREIGNREMAIN
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Foreign Room Volume
-    physical_name: frgn_room_vol
-    business_meaning: Tổng room NĐTNN.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FOREIGNROOM
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: PT Match Volume
-    physical_name: pt_mtch_vol
-    business_meaning: Khối lượng khớp thỏa thuận gần nhất.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_QTTY
-    comment: "PT = Put-Through (giao dịch thỏa thuận)."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: PT Match Price
-    physical_name: pt_mtch_prc
-    business_meaning: Giá khớp thỏa thuận gần nhất.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_PRICE
-    comment: Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: PT Total Traded Volume
-    physical_name: pt_tot_trdd_vol
-    business_meaning: Tổng khối lượng khớp thỏa thuận từ đầu ngày.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_QTTY
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: PT Total Traded Value
-    physical_name: pt_tot_trdd_val
-    business_meaning: Tổng giá trị khớp thỏa thuận từ đầu ngày.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_VALUE
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Security Event Status Code
-    physical_name: scr_ev_st_code
-    business_meaning: Trạng thái sự kiện quyền của CK.
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.STATUS
-    comment: "Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: ISIN Code
-    physical_name: isin_code
-    business_meaning: Mã ISIN của CK.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.SYMBOLISIN
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Listed Share Count
-    physical_name: list_shr_cnt
-    business_meaning: Khối lượng CK niêm yết.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.LISTEDSHARE
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Total Listing Volume
-    physical_name: tot_listing_vol
-    business_meaning: Khối lượng CK niêm yết.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Market Id
-    physical_name: mkt_id
-    business_meaning: Mã sàn theo Sở.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.MARKETID
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Board Id
-    physical_name: board_id
-    business_meaning: Board của mã CK (mặc định G1).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.BOARDID
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Product Group Id
-    physical_name: pd_grp_id
-    business_meaning: Mã sản phẩm của CK theo Sở.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.PRODUCTGRPID
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Product Id
-    physical_name: pd_id
-    business_meaning: Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.PRODUCTID
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Trading Time
-    physical_name: tdg_tm
-    business_meaning: Thời gian ghi nhận snapshot.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TRADINGTIME
-    comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile trước khi convert sang Timestamp.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Fund Type Code
-    physical_name: fnd_tp_code
-    business_meaning: Loại quỹ — FSS quy định.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FUNDTYPE
-    comment: "Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá trị."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Open Interest
-    physical_name: opn_int
-    business_meaning: Khối lượng mở OI — dành cho phái sinh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.OPENINTEREST
-    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU/OP."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: First Trading Date
-    physical_name: frst_tdg_dt
-    business_meaning: Ngày giao dịch đầu tiên — dành cho phái sinh/CW.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.FIRSTTRADINGDATE
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Last Trading Date
-    physical_name: last_tdg_dt
-    business_meaning: Ngày giao dịch cuối cùng — dành cho phái sinh/CW.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.LASTTRADINGDATE
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Underlying Symbol
-    physical_name: ulyg_symb
-    business_meaning: Chứng khoán cơ sở — dành cho CW/phái sinh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.UNDERLYINGSYMBOL
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Issuer Name
-    physical_name: issur_nm
-    business_meaning: Tổ chức phát hành.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.ISSUERNAME
-    comment: null
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Covered Warrant Type Code
-    physical_name: cvrd_wrnt_tp_code
-    business_meaning: Kiểu chứng quyền.
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.COVEREDWARRANTTYPE
-    comment: "Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize scheme."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Maturity Date
-    physical_name: mat_dt
-    business_meaning: Ngày đáo hạn.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.MATURITYDATE
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Exercise Price
-    physical_name: exrc_prc
-    business_meaning: Giá thực hiện CW.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.EXERCISEPRICE
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Exercise Ratio
-    physical_name: exrc_rto
-    business_meaning: Tỉ lệ thực hiện CW.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.EXERCISERATIO
-    comment: "Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay decimal."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Settlement Price
-    physical_name: setl_prc
-    business_meaning: Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.SETTLEMENTPRICE
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Maturity Month Year
-    physical_name: mat_mo_yr
-    business_meaning: Năm tháng đáo hạn HĐTL.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.MATURITYMONTHYEAR
-    comment: Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn hóa format.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Listing Date
-    physical_name: listing_dt
-    business_meaning: Ngày niêm yết sản phẩm phái sinh.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.LISTINGDATE
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Contract Multiplier
-    physical_name: ctr_multiplier
-    business_meaning: Hệ số nhân HĐTL.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.CONTRACTMULTIPLIER
-    comment: "Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype = FU."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Put Or Call Code
-    physical_name: put_or_call_code
-    business_meaning: "Loại quyền phái sinh: P/C."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.PUTORCALL
-    comment: "Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị khi stocktype = OP."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Exercise Style Code
-    physical_name: exrc_stl_code
-    business_meaning: "Kiểu thực hiện phái sinh: A/E/B/Z."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.EXERCISESTYLE
-    comment: "Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other — chuẩn quốc tế, tập cố định."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Coupon Rate
-    physical_name: cpn_rate
-    business_meaning: Lãi suất trái phiếu.
-    data_domain: Interest Rate
-    data_type: decimal(8,5)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.COUPONRATE
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Yield
-    physical_name: yld
-    business_meaning: YTM (Yield to Maturity).
-    data_domain: Interest Rate
-    data_type: decimal(8,5)
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.YIELD
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không có giá trị non-numeric."
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
-
-  - name: Issue Date
-    physical_name: issu_dt
-    business_meaning: Ngày phát hành.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.ISSUEDATE
-    comment: Nguồn lưu dạng string — ETL cần parse sang date.
-    classification_context: "Source System Code = 'MDDS_JAD_STOCKINFOR'"
-    etl_derived_value: null
+- name: Security Trading Snapshot Id
+  physical_name: scr_tdg_snpst_id
+  business_meaning: Khóa đại diện (surrogate key).
+  data_domain: Surrogate Key
+  data_type: string
+  nullable: false
+  is_primary_key: true
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: null
+  comment: 'PK surrogate. BCV: [Product] Financial Market Instrument. Snapshot trạng
+    thái giao dịch của 1 mã CK tại 1 thời điểm.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Security Trading Snapshot Code
+  physical_name: scr_tdg_snpst_code
+  business_meaning: ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot
+    entity.
+  data_domain: Text
+  data_type: string
+  nullable: false
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.HISTORYID
+  comment: BK chính. PK nguồn historyid — unique per lần chụp.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Source System Code
+  physical_name: src_stm_code
+  business_meaning: Mã hệ thống nguồn dữ liệu.
+  data_domain: Classification Value
+  data_type: string
+  nullable: false
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: null
+  comment: 'Scheme: SOURCE_SYSTEM.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: MDDS.JAD_STOCKINFOR
+- name: Symbol
+  physical_name: symb
+  business_meaning: Mã chứng khoán.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.SYMBOL
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Trading Date
+  physical_name: tdg_dt
+  business_meaning: Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date.
+  data_domain: Date
+  data_type: date
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TRADINGDATE
+  comment: Nguồn lưu dạng string dd/mm/yyyy — ETL cần parse sang date. Cần validate
+    format nhất quán.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Security Full Name
+  physical_name: scr_full_nm
+  business_meaning: Tên chứng khoán (tiếng Việt).
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FULLNAME
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Security Id
+  physical_name: scr_id
+  business_meaning: ID của chứng khoán trong hệ thống Sở.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.STOCKID
+  comment: Mã nội bộ Sở — giữ dạng text denormalized.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Jadapter Id
+  physical_name: jadapter_id
+  business_meaning: ID của mã do jadapter tự sinh.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.KID
+  comment: Metadata kỹ thuật jadapter — giữ để traceability.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Stock Type Code
+  physical_name: stk_tp_code
+  business_meaning: Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...).
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.STOCKTYPE
+  comment: 'Scheme: MDDS_STOCK_TYPE.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Floor Code
+  physical_name: flr_code
+  business_meaning: 'Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS, 06-corp-bond.'
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FLOORCODE
+  comment: 'Scheme: MDDS_FLOOR_CODE.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Trading Session Status Code
+  physical_name: tdg_ssn_st_code
+  business_meaning: Trạng thái phiên tại thời điểm chụp.
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TRADINGSESSIONID
+  comment: 'Scheme: MDDS_TRADING_SESSION_STATUS.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Trade Direction Code
+  physical_name: trd_drc_code
+  business_meaning: Chiều mua/bán chủ động gần nhất.
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.LASTCOLOR
+  comment: 'Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Symbol Status Code
+  physical_name: symb_st_code
+  business_meaning: Trạng thái mã CK.
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.SYMBOLSTATUSCODE
+  comment: 'Scheme: MDDS_SYMBOL_STATUS. Nguồn lưu dạng string — cần profile giá trị.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Ceiling Price
+  physical_name: ceiling_prc
+  business_meaning: Giá trần.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.CEILING
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Floor Price
+  physical_name: flr_prc
+  business_meaning: Giá sàn.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FLOOR
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Reference Price
+  physical_name: refr_prc
+  business_meaning: Giá tham chiếu.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.REFERENCE
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Close Price
+  physical_name: cls_prc
+  business_meaning: Giá khớp gần nhất.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.CLOSEPRICE
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Close Volume
+  physical_name: cls_vol
+  business_meaning: Khối lượng khớp gần nhất.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.CLOSEVOL
+  comment: Nguồn lưu dạng bigint — widening conversion sang int/bigint không mất dữ
+    liệu.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Price Change
+  physical_name: prc_chg
+  business_meaning: Thay đổi giữa giá khớp gần nhất và giá tham chiếu.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.CHANGE
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Open Price
+  physical_name: opn_prc
+  business_meaning: Giá mở cửa.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OPEN
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: High Price
+  physical_name: high_prc
+  business_meaning: Giá khớp cao nhất tính đến thời điểm.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.HIGH
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Low Price
+  physical_name: low_prc
+  business_meaning: Giá khớp thấp nhất tính đến thời điểm.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.LOW
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Average Price
+  physical_name: av_prc
+  business_meaning: Giá khớp trung bình.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.AVERAGEPRICE
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Bid Price 1
+  physical_name: bid_prc_1
+  business_meaning: Giá mua top 1.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.BIDPRICE1
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Bid Volume 1
+  physical_name: bid_vol_1
+  business_meaning: Khối lượng mua top 1.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.BIDVOL1
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Bid Price 2
+  physical_name: bid_prc_2
+  business_meaning: Giá mua top 2.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.BIDPRICE2
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Bid Volume 2
+  physical_name: bid_vol_2
+  business_meaning: Khối lượng mua top 2.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.BIDVOL2
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Bid Price 3
+  physical_name: bid_prc_3
+  business_meaning: Giá mua top 3.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.BIDPRICE3
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Bid Volume 3
+  physical_name: bid_vol_3
+  business_meaning: Khối lượng mua top 3.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.BIDVOL3
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Offer Price 1
+  physical_name: ofr_prc_1
+  business_meaning: Giá bán top 1.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE1
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Offer Volume 1
+  physical_name: ofr_vol_1
+  business_meaning: Khối lượng bán top 1.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OFFERVOL1
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Offer Price 2
+  physical_name: ofr_prc_2
+  business_meaning: Giá bán top 2.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE2
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Offer Volume 2
+  physical_name: ofr_vol_2
+  business_meaning: Khối lượng bán top 2.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OFFERVOL2
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Offer Price 3
+  physical_name: ofr_prc_3
+  business_meaning: Giá bán top 3.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OFFERPRICE3
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Offer Volume 3
+  physical_name: ofr_vol_3
+  business_meaning: Khối lượng bán top 3.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OFFERVOL3
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Total Trading Volume
+  physical_name: tot_tdg_vol
+  business_meaning: Tổng khối lượng khớp từ đầu ngày.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TOTALTRADING
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Total Trading Value
+  physical_name: tot_tdg_val
+  business_meaning: Tổng giá trị khớp từ đầu ngày.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TOTALTRADINGVALUE
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Total Offer Volume
+  physical_name: tot_ofr_vol
+  business_meaning: Tổng khối lượng dư bán.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TOTAL_OFFER_QTTY
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Total Bid Volume
+  physical_name: tot_bid_vol
+  business_meaning: Tổng khối lượng dư mua.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TOTAL_BID_QTTY
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Foreign Buy Volume
+  physical_name: frgn_buy_vol
+  business_meaning: Khối lượng NĐTNN mua.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FOREIGNBUY
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Foreign Sell Volume
+  physical_name: frgn_sell_vol
+  business_meaning: Khối lượng NĐTNN bán.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FOREIGNSELL
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Foreign Remain Volume
+  physical_name: frgn_rman_vol
+  business_meaning: Room còn lại cho NĐTNN.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FOREIGNREMAIN
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Foreign Room Volume
+  physical_name: frgn_room_vol
+  business_meaning: Tổng room NĐTNN.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FOREIGNROOM
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: PT Match Volume
+  physical_name: pt_mtch_vol
+  business_meaning: Khối lượng khớp thỏa thuận gần nhất.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_QTTY
+  comment: PT = Put-Through (giao dịch thỏa thuận).
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: PT Match Price
+  physical_name: pt_mtch_prc
+  business_meaning: Giá khớp thỏa thuận gần nhất.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.PT_MATCH_PRICE
+  comment: Nguồn khai báo data_type bigint nhưng ý nghĩa là giá — Currency Amount.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: PT Total Traded Volume
+  physical_name: pt_tot_trdd_vol
+  business_meaning: Tổng khối lượng khớp thỏa thuận từ đầu ngày.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_QTTY
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: PT Total Traded Value
+  physical_name: pt_tot_trdd_val
+  business_meaning: Tổng giá trị khớp thỏa thuận từ đầu ngày.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.PT_TOTAL_TRADED_VALUE
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Security Event Status Code
+  physical_name: scr_ev_st_code
+  business_meaning: Trạng thái sự kiện quyền của CK.
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.STATUS
+  comment: 'Scheme: MDDS_SECURITY_EVENT_STATUS. Cần thu thập data thực tế từ nguồn
+    để xác định danh sách enum đầy đủ trước khi finalize scheme.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: ISIN Code
+  physical_name: isin_code
+  business_meaning: Mã ISIN của CK.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.SYMBOLISIN
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Listed Share Count
+  physical_name: list_shr_cnt
+  business_meaning: Khối lượng CK niêm yết.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.LISTEDSHARE
+  comment: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không
+    có giá trị non-numeric.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Total Listing Volume
+  physical_name: tot_listing_vol
+  business_meaning: Khối lượng CK niêm yết.
+  data_domain: Small Counter
+  data_type: int
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY
+  comment: Nguồn lưu dạng string — ETL cần cast/parse sang numeric. Cần validate không
+    có giá trị non-numeric.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Market Id
+  physical_name: mkt_id
+  business_meaning: Mã sàn theo Sở.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.MARKETID
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Board Id
+  physical_name: board_id
+  business_meaning: Board của mã CK (mặc định G1).
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.BOARDID
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Product Group Id
+  physical_name: pd_grp_id
+  business_meaning: Mã sản phẩm của CK theo Sở.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.PRODUCTGRPID
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Product Id
+  physical_name: pd_id
+  business_meaning: Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.PRODUCTID
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Trading Time
+  physical_name: tdg_tm
+  business_meaning: Thời gian ghi nhận snapshot.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.TRADINGTIME
+  comment: Nguồn lưu dạng string — giữ Text vì format chưa chuẩn hóa. Cần profile
+    trước khi convert sang Timestamp.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Fund Type Code
+  physical_name: fnd_tp_code
+  business_meaning: Loại quỹ — FSS quy định.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FUNDTYPE
+  comment: Chỉ có giá trị khi stocktype = MF (quỹ). Giữ dạng Text — cần profile giá
+    trị.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Open Interest
+  physical_name: opn_int
+  business_meaning: Khối lượng mở OI — dành cho phái sinh.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.OPENINTEREST
+  comment: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
+    = FU/OP.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: First Trading Date
+  physical_name: frst_tdg_dt
+  business_meaning: Ngày giao dịch đầu tiên — dành cho phái sinh/CW.
+  data_domain: Date
+  data_type: date
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.FIRSTTRADINGDATE
+  comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Last Trading Date
+  physical_name: last_tdg_dt
+  business_meaning: Ngày giao dịch cuối cùng — dành cho phái sinh/CW.
+  data_domain: Date
+  data_type: date
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.LASTTRADINGDATE
+  comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Underlying Symbol
+  physical_name: ulyg_symb
+  business_meaning: Chứng khoán cơ sở — dành cho CW/phái sinh.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.UNDERLYINGSYMBOL
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Issuer Name
+  physical_name: issur_nm
+  business_meaning: Tổ chức phát hành.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.ISSUERNAME
+  comment: null
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Covered Warrant Type Code
+  physical_name: cvrd_wrnt_tp_code
+  business_meaning: Kiểu chứng quyền.
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.COVEREDWARRANTTYPE
+  comment: 'Scheme: MDDS_COVERED_WARRANT_TYPE. Chỉ có giá trị khi stocktype = W. Cần
+    thu thập data thực tế từ nguồn để xác định danh sách enum đầy đủ trước khi finalize
+    scheme.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Maturity Date
+  physical_name: mat_dt
+  business_meaning: Ngày đáo hạn.
+  data_domain: Date
+  data_type: date
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.MATURITYDATE
+  comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Exercise Price
+  physical_name: exrc_prc
+  business_meaning: Giá thực hiện CW.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.EXERCISEPRICE
+  comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không
+    có giá trị non-numeric.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Exercise Ratio
+  physical_name: exrc_rto
+  business_meaning: Tỉ lệ thực hiện CW.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.EXERCISERATIO
+  comment: Nguồn lưu dạng string — cần profile format. Tỷ lệ có thể dạng 1:5 hay decimal.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Settlement Price
+  physical_name: setl_prc
+  business_meaning: Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL.
+  data_domain: Currency Amount
+  data_type: decimal(23,2)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.SETTLEMENTPRICE
+  comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không
+    có giá trị non-numeric.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Maturity Month Year
+  physical_name: mat_mo_yr
+  business_meaning: Năm tháng đáo hạn HĐTL.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.MATURITYMONTHYEAR
+  comment: Nguồn lưu dạng string (YYYYMM hoặc tương tự) — giữ Text vì chưa chuẩn hóa
+    format.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Listing Date
+  physical_name: listing_dt
+  business_meaning: Ngày niêm yết sản phẩm phái sinh.
+  data_domain: Date
+  data_type: date
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.LISTINGDATE
+  comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Contract Multiplier
+  physical_name: ctr_multiplier
+  business_meaning: Hệ số nhân HĐTL.
+  data_domain: Text
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.CONTRACTMULTIPLIER
+  comment: Nguồn lưu dạng string — cần profile giá trị. Chỉ có giá trị khi stocktype
+    = FU.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Put Or Call Code
+  physical_name: put_or_call_code
+  business_meaning: 'Loại quyền phái sinh: P/C.'
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.PUTORCALL
+  comment: 'Scheme: MDDS_PUT_OR_CALL. Giá trị P (Put) hoặc C (Call). Chỉ có giá trị
+    khi stocktype = OP.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Exercise Style Code
+  physical_name: exrc_stl_code
+  business_meaning: 'Kiểu thực hiện phái sinh: A/E/B/Z.'
+  data_domain: Classification Value
+  data_type: string
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.EXERCISESTYLE
+  comment: 'Scheme: MDDS_EXERCISE_STYLE. A=American, E=European, B=Bermudan, Z=Other
+    — chuẩn quốc tế, tập cố định.'
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Coupon Rate
+  physical_name: cpn_rate
+  business_meaning: Lãi suất trái phiếu.
+  data_domain: Interest Rate
+  data_type: decimal(8,5)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.COUPONRATE
+  comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không
+    có giá trị non-numeric.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Yield
+  physical_name: yld
+  business_meaning: YTM (Yield to Maturity).
+  data_domain: Interest Rate
+  data_type: decimal(8,5)
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.YIELD
+  comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal. Cần validate không
+    có giá trị non-numeric.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
+- name: Issue Date
+  physical_name: issu_dt
+  business_meaning: Ngày phát hành.
+  data_domain: Date
+  data_type: date
+  nullable: true
+  is_primary_key: false
+  source_system: MDDS
+  source_table: JAD_STOCKINFOR
+  source_column: MDDS.JAD_STOCKINFOR.ISSUEDATE
+  comment: Nguồn lưu dạng string — ETL cần parse sang date.
+  classification_context: Source System Code = 'MDDS_JAD_STOCKINFOR'
+  etl_derived_value: null
