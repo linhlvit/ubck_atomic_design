@@ -1,14 +1,14 @@
-schema_type: "lld_shared_ip_postal"
+schema_type: "lld_source_table"
 schema_version: "2.0"
 
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  atomic_entity: "IP Postal Address"
-  entity_physical_name: "ip_pstl_addr"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_pst_adr"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Postal Address"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
   version: "1.0"
@@ -18,34 +18,49 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Postal Address của Securities Practitioner (nguồn SCMS.SC_FIRM_LICENSED_PRACTITIONER). ETL tạo 2 rows per người hành nghề: Row 1 — DIACHITHUONGTRU/PERMANENT_ADDRESS → type PERMANENT (địa chỉ thường trú); Row 2 — HOKHAUTHUONGTRU → type HOUSEHOLD_REGISTRY (địa chỉ hộ khẩu). 2 rows động → không hardcode addr_type_code. Không có PROVINCE_ID/DISTRICT_ID/WARD_ID trong bảng nguồn."
+  notes: "IP Postal Address của Securities Practitioner (nguồn SCMS.SC_FIRM_LICENSED_PRACTITIONER). ETL tạo 2 rows per người hành nghề: Row 1 — DIACHITHUONGTRU → type PERMANENT (địa chỉ thường trú; PERMANENT_ADDRESS là cột trùng lặp, xem pending_design.yaml); Row 2 — HOKHAUTHUONGTRU → type HOUSEHOLD_REGISTRY (địa chỉ hộ khẩu). Không có PROVINCE_ID/DISTRICT_ID/WARD_ID trong bảng nguồn. Format đồng bộ theo chuẩn NHNCK."
 
 attributes:
+  # ══ CONTEXT: PERMANENT ══════════════════════════════════════════════
   - attribute_name: "Involved Party Id"
     physical_name: "ip_id"
     description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
     data_domain: "Surrogate Key"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-    comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER', ID)."
-    classification_context: null
+    comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER', ID)."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Practitioner."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+    comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
     etl_derived_value: null
     data_type: "string"
 
   - attribute_name: "Address Type Code"
-    physical_name: "addr_tp_code"
-    description: "Loại địa chỉ: PERMANENT=Địa chỉ thường trú; HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu."
+    physical_name: "adr_tp_code"
+    description: "Loại địa chỉ: PERMANENT=Địa chỉ thường trú."
     data_domain: "Classification Value"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: IP_ADDR_TYPE. ETL pivot: DIACHITHUONGTRU/PERMANENT_ADDRESS → PERMANENT; HOKHAUTHUONGTRU → HOUSEHOLD_REGISTRY."
-    classification_context: "IP_ADDR_TYPE"
-    etl_derived_value: null
+    comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ DIACHITHUONGTRU."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: "PERMANENT"
     data_type: "string"
 
   - attribute_name: "Source System Code"
@@ -56,23 +71,90 @@ attributes:
     is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_LICENSED_PRACTITIONER"
     etl_derived_value: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
     data_type: "string"
 
-  - attribute_name: "Street Address"
-    physical_name: "strt_addr"
-    description: "Địa chỉ thường trú hoặc địa chỉ hộ khẩu (theo loại row)."
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
+    description: "Địa chỉ thường trú."
     data_domain: "Text"
     nullable: true
     is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DIACHITHUONGTRU"
-      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
+    comment: "Primary source. PERMANENT_ADDRESS (VARCHAR2) là cột trùng lặp giá trị — xem pending_design.yaml. Không có cột địa lý (Province/District/Ward)."
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ══ CONTEXT: HOUSEHOLD_REGISTRY ═════════════════════════════════════
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+    comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER', ID)."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Practitioner."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+    comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "adr_tp_code"
+    description: "Loại địa chỉ: HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ HOKHAUTHUONGTRU."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
+    etl_derived_value: "HOUSEHOLD_REGISTRY"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+    etl_derived_value: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+    data_type: "string"
+
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
+    description: "Địa chỉ hộ khẩu thường trú."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
       - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.HOKHAUTHUONGTRU"
-    comment: "ETL pivot: PERMANENT row dùng DIACHITHUONGTRU (NVARCHAR2) hoặc PERMANENT_ADDRESS (VARCHAR2) — 2 cột có thể trùng giá trị, cần xác nhận; HOUSEHOLD_REGISTRY row dùng HOKHAUTHUONGTRU (NVARCHAR2). Không có cột địa lý (Province/District/Ward)."
-    classification_context: null
+    comment: "NVARCHAR2. Không có cột địa lý (Province/District/Ward)."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
     etl_derived_value: null
     data_type: "string"

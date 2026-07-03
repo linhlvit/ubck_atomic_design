@@ -1,14 +1,14 @@
-schema_type: "lld_shared_ip_postal"
+schema_type: "lld_source_table"
 schema_version: "2.0"
 
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER"
-  atomic_entity: "IP Postal Address"
-  entity_physical_name: "ip_pstl_addr"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_pst_adr"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Postal Address"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
   version: "1.0"
@@ -18,34 +18,49 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Postal Address của Securities Company Shareholder. ETL pivot 2 rows per cổ đông: Row 1 — CURRENT_ADDRESS → type CURRENT (địa chỉ hiện tại); Row 2 — HOUSEHOLD_REGISTRATION → type HOUSEHOLD_REGISTRY (địa chỉ hộ khẩu thường trú). Không có Province/District/Ward FK trong nguồn."
+  notes: "IP Postal Address của Securities Company Shareholder. ETL tạo 2 rows per cổ đông: Row 1 — CURRENT_ADDRESS → type CURRENT (địa chỉ hiện tại); Row 2 — HOUSEHOLD_REGISTRATION → type HOUSEHOLD_REGISTRY (địa chỉ hộ khẩu). Không có Province/District/Ward FK. Format đồng bộ theo chuẩn NHNCK."
 
 attributes:
+  # ══ CONTEXT: CURRENT ════════════════════════════════════════════════
   - attribute_name: "Involved Party Id"
     physical_name: "ip_id"
     description: "FK đến Securities Company Shareholder."
     data_domain: "Surrogate Key"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_SHAREHOLDER.ID"
-    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
-    classification_context: null
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
+    classification_context: "IP_ADDR_TYPE=CURRENT"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Company Shareholder."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER.ID"
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE=CURRENT"
     etl_derived_value: null
     data_type: "string"
 
   - attribute_name: "Address Type Code"
-    physical_name: "addr_tp_code"
-    description: "Loại địa chỉ: CURRENT=Địa chỉ hiện tại; HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu thường trú."
+    physical_name: "adr_tp_code"
+    description: "Loại địa chỉ: CURRENT=Địa chỉ hiện tại."
     data_domain: "Classification Value"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: IP_ADDR_TYPE. ETL pivot: CURRENT_ADDRESS → type CURRENT; HOUSEHOLD_REGISTRATION → type HOUSEHOLD_REGISTRY. 2 rows per cổ đông nếu cả 2 cột đều có giá trị."
-    classification_context: "IP_ADDR_TYPE"
-    etl_derived_value: null
+    comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ CURRENT_ADDRESS."
+    classification_context: "IP_ADDR_TYPE=CURRENT"
+    etl_derived_value: "CURRENT"
     data_type: "string"
 
   - attribute_name: "Source System Code"
@@ -56,22 +71,90 @@ attributes:
     is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER"
     etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER"
     data_type: "string"
 
-  - attribute_name: "Street Address"
-    physical_name: "strt_addr"
-    description: "Địa chỉ đầy đủ (địa chỉ hiện tại hoặc hộ khẩu tuỳ theo Address Type Code)."
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
+    description: "Địa chỉ hiện tại của cổ đông."
     data_domain: "Text"
     nullable: true
     is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_SHAREHOLDER.CURRENT_ADDRESS"
+    comment: "NVARCHAR2(500). Không có Province/District/Ward FK."
+    classification_context: "IP_ADDR_TYPE=CURRENT"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ══ CONTEXT: HOUSEHOLD_REGISTRY ═════════════════════════════════════
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Shareholder."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER.ID"
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Company Shareholder."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER.ID"
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "adr_tp_code"
+    description: "Loại địa chỉ: HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ HOUSEHOLD_REGISTRATION."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
+    etl_derived_value: "HOUSEHOLD_REGISTRY"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER"
+    etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER"
+    data_type: "string"
+
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
+    description: "Địa chỉ hộ khẩu của cổ đông."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
       - "SCMS.SC_FIRM_SHAREHOLDER.HOUSEHOLD_REGISTRATION"
-    comment: "ETL pivot: lấy giá trị từ cột tương ứng với Address Type Code. CURRENT_ADDRESS → row CURRENT; HOUSEHOLD_REGISTRATION → row HOUSEHOLD_REGISTRY. Nguồn: NVARCHAR2(500)."
-    classification_context: null
+    comment: "NVARCHAR2(500). Không có Province/District/Ward FK."
+    classification_context: "IP_ADDR_TYPE=HOUSEHOLD_REGISTRY"
     etl_derived_value: null
     data_type: "string"

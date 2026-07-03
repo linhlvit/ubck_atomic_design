@@ -1,14 +1,14 @@
-schema_type: "lld_shared_ip_alt_identification"
+schema_type: "lld_source_table"
 schema_version: "2.0"
 
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
-  atomic_entity: "IP Alt Identification"
-  entity_physical_name: "ip_alt_id"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alt_identn"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Alt Identification"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
   version: "1.0"
@@ -18,7 +18,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Alt Identification của Securities Company Major Shareholder Relation. 1 row — IDENTIFICATION_NUMBER → type NATIONAL_ID (CCCD/CMND/Hộ chiếu cho cá nhân; Mã đăng ký kinh doanh cho tổ chức tuỳ INDIVIDUAL). Cần xác nhận: khi INDIVIDUAL=0 thì type có nên là ORG_REG_NUMBER không?"
+  notes: "IP Alt Identification của Securities Company Major Shareholder Relation. 1 row — IDENTIFICATION_NUMBER → type NATIONAL_ID (CCCD/CMND/Hộ chiếu cho cá nhân; Mã đăng ký kinh doanh cho tổ chức tuỳ INDIVIDUAL). Cần xác nhận: khi INDIVIDUAL=0 thì type có nên khác đi không? Format đồng bộ theo chuẩn NHNCK."
 
 attributes:
   - attribute_name: "Involved Party Id"
@@ -26,24 +26,38 @@ attributes:
     description: "FK đến Securities Company Major Shareholder Relation."
     data_domain: "Surrogate Key"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
-    comment: "FK target: Securities Company Major Shareholder Relation.Securities Company Major Shareholder Relation Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION', ID)."
+    comment: "FK target: Securities Company Major Shareholder Relation.Securities Company Major Shareholder Relation Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Company Major Shareholder Relation."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
+    comment: "Lookup pair: Securities Company Major Shareholder Relation.Securities Company Major Shareholder Relation Code. Pair with Involved Party Id."
     classification_context: null
     etl_derived_value: null
     data_type: "string"
 
   - attribute_name: "Identification Type Code"
-    physical_name: "id_tp_code"
+    physical_name: "identn_tp_code"
     description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu."
     data_domain: "Classification Value"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột IDENTIFICATION_NUMBER. Cần xác nhận: khi INDIVIDUAL=0 (tổ chức) thì type có nên là ORG_REG_NUMBER không?"
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột IDENTIFICATION_NUMBER. Cần xác nhận: khi INDIVIDUAL=0 (tổ chức) thì type có nên là mã khác (VD: TAX_ID) không?"
     classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
     etl_derived_value: "NATIONAL_ID"
     data_type: "string"
@@ -56,13 +70,13 @@ attributes:
     is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
     etl_derived_value: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
     data_type: "string"
 
   - attribute_name: "Identification Number"
-    physical_name: "id_nbr"
+    physical_name: "identn_nbr"
     description: "Số giấy tờ tùy thân / Mã số doanh nghiệp."
     data_domain: "Text"
     nullable: true
@@ -71,6 +85,6 @@ attributes:
     source_columns:
       - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.IDENTIFICATION_NUMBER"
     comment: "VARCHAR2 — cần profile length. Mô tả gốc BRD: 'Số CMND/Căn cước công dân/Giấy phép đăng ký kinh doanh'."
-    classification_context: null
+    classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
     etl_derived_value: null
     data_type: "string"

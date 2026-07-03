@@ -1,14 +1,14 @@
-schema_type: "lld_shared_ip_postal"
+schema_type: "lld_source_table"
 schema_version: "2.0"
 
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_RELATED_PERSON"
-  atomic_entity: "IP Postal Address"
-  entity_physical_name: "ip_pstl_addr"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_pst_adr"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Postal Address"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
   version: "1.0"
@@ -18,7 +18,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Postal Address của Securities Company Related Person. 1 row — PERMANENT_ADDRESS → type PERMANENT (địa chỉ thường trú). Không có Province/District/Ward FK trong nguồn."
+  notes: "IP Postal Address của Securities Company Related Person. 1 row — PERMANENT_ADDRESS → type PERMANENT (địa chỉ thường trú). Không có Province/District/Ward FK trong nguồn. Format đồng bộ theo chuẩn NHNCK."
 
 attributes:
   - attribute_name: "Involved Party Id"
@@ -26,21 +26,35 @@ attributes:
     description: "FK đến Securities Company Related Person."
     data_domain: "Surrogate Key"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_RELATED_PERSON.ID"
-    comment: "FK target: Securities Company Related Person.Securities Company Related Person Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON', ID)."
+    comment: "FK target: Securities Company Related Person.Securities Company Related Person Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Company Related Person."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_RELATED_PERSON.ID"
+    comment: "Lookup pair: Securities Company Related Person.Securities Company Related Person Code. Pair with Involved Party Id."
     classification_context: null
     etl_derived_value: null
     data_type: "string"
 
   - attribute_name: "Address Type Code"
-    physical_name: "addr_tp_code"
+    physical_name: "adr_tp_code"
     description: "Loại địa chỉ: PERMANENT=Địa chỉ thường trú."
     data_domain: "Classification Value"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns: []
     comment: "Scheme: IP_ADDR_TYPE. ETL hardcode PERMANENT — chỉ có 1 cột PERMANENT_ADDRESS."
@@ -56,13 +70,13 @@ attributes:
     is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_RELATED_PERSON"
     etl_derived_value: "SCMS.SC_FIRM_RELATED_PERSON"
     data_type: "string"
 
-  - attribute_name: "Street Address"
-    physical_name: "strt_addr"
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
     description: "Địa chỉ thường trú của người liên quan."
     data_domain: "Text"
     nullable: true
@@ -71,6 +85,6 @@ attributes:
     source_columns:
       - "SCMS.SC_FIRM_RELATED_PERSON.PERMANENT_ADDRESS"
     comment: "NVARCHAR2(500). Không có Province/District/Ward FK."
-    classification_context: null
+    classification_context: "IP_ADDR_TYPE=PERMANENT"
     etl_derived_value: null
     data_type: "string"

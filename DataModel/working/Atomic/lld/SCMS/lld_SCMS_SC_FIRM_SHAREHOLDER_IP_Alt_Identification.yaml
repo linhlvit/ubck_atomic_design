@@ -1,14 +1,14 @@
-schema_type: "lld_shared_ip_alt_identification"
+schema_type: "lld_source_table"
 schema_version: "2.0"
 
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER"
-  atomic_entity: "IP Alt Identification"
-  entity_physical_name: "ip_alt_id"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alt_identn"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Alt Identification"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
   version: "1.0"
@@ -18,7 +18,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Alt Identification của Securities Company Shareholder. 1 row per cổ đông — ID_NUMBER (NVARCHAR2 250) → type NATIONAL_ID (CCCD/CMND/Hộ chiếu). Issue Date và Issue Place đã được map tại entity chính do có thể liên quan đến nhiều ngữ cảnh hơn (chứng chỉ nghiệp vụ, giấy đăng ký...). Nếu cần canonical mapping theo IP Alt ID → chuyển từ entity chính sang đây."
+  notes: "IP Alt Identification của Securities Company Shareholder. 1 row per cổ đông — ID_NUMBER (NVARCHAR2 250) → type NATIONAL_ID (CCCD/CMND/Hộ chiếu). Issue Date/Issue Place đã map tại entity chính. Format đồng bộ theo chuẩn NHNCK."
 
 attributes:
   - attribute_name: "Involved Party Id"
@@ -26,21 +26,35 @@ attributes:
     description: "FK đến Securities Company Shareholder."
     data_domain: "Surrogate Key"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_SHAREHOLDER.ID"
-    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
+    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Company Shareholder."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_SHAREHOLDER.ID"
+    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Involved Party Id."
     classification_context: null
     etl_derived_value: null
     data_type: "string"
 
   - attribute_name: "Identification Type Code"
-    physical_name: "id_tp_code"
+    physical_name: "identn_tp_code"
     description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu."
     data_domain: "Classification Value"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns: []
     comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột ID_NUMBER."
@@ -56,13 +70,13 @@ attributes:
     is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER"
     etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER"
     data_type: "string"
 
   - attribute_name: "Identification Number"
-    physical_name: "id_nbr"
+    physical_name: "identn_nbr"
     description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
     data_domain: "Text"
     nullable: true
@@ -71,6 +85,6 @@ attributes:
     source_columns:
       - "SCMS.SC_FIRM_SHAREHOLDER.ID_NUMBER"
     comment: "NVARCHAR2(250)."
-    classification_context: null
+    classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
     etl_derived_value: null
     data_type: "string"

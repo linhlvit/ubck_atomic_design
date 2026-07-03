@@ -1,14 +1,14 @@
-schema_type: "lld_shared_ip_postal"
+schema_type: "lld_source_table"
 schema_version: "2.0"
 
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
-  atomic_entity: "IP Postal Address"
-  entity_physical_name: "ip_pstl_addr"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_pst_adr"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Postal Address"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
   version: "1.0"
@@ -18,34 +18,49 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Postal Address của Securities Company Organization Unit (type FOREIGN_REP_OFFICE_VN). SC_FIRM_FOREIGN_REP_OFFICE_VN có 2 địa chỉ riêng biệt: ADDRESS (địa chỉ công ty mẹ NN → addr_type_code=PARENT_ADDRESS) và OFFICE_ADDRESS (địa chỉ VPDD tại VN → addr_type_code=HEAD_OFFICE). ETL tạo 2 rows per entity. Không có PROVINCE/DISTRICT/WARD FK."
+  notes: "IP Postal Address của Securities Company Organization Unit (type FOREIGN_REP_OFFICE_VN). SC_FIRM_FOREIGN_REP_OFFICE_VN có 2 địa chỉ riêng biệt: OFFICE_ADDRESS (địa chỉ VPDD tại VN → FOREIGN_REP_OFFICE, vì đây là văn phòng đại diện của CTCK nước ngoài, không phải trụ sở chính) và ADDRESS (địa chỉ công ty mẹ NN → PARENT_ADDRESS). ETL tạo 2 rows per entity. Không có PROVINCE/DISTRICT/WARD FK. Format đồng bộ theo chuẩn NHNCK (lặp block theo từng address type, tương tự pattern Electronic Address của NHNCK.PROFESSIONALS)."
 
 attributes:
+  # ══ CONTEXT: FOREIGN_REP_OFFICE (VPDD tại VN) ═══════════════════════
   - attribute_name: "Involved Party Id"
     physical_name: "ip_id"
     description: "FK đến Securities Company Organization Unit (VPDD CTCK NN — phiên bản đăng ký tại VN)."
     data_domain: "Surrogate Key"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
-    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN', ID)."
-    classification_context: null
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN', ID)."
+    classification_context: "IP_ADDR_TYPE=FOREIGN_REP_OFFICE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Company Organization Unit."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
+    comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE=FOREIGN_REP_OFFICE"
     etl_derived_value: null
     data_type: "string"
 
   - attribute_name: "Address Type Code"
-    physical_name: "addr_tp_code"
-    description: "Loại địa chỉ: HEAD_OFFICE=Địa điểm VPDD tại VN; PARENT_ADDRESS=Địa chỉ công ty mẹ nước ngoài."
+    physical_name: "adr_tp_code"
+    description: "Loại địa chỉ: FOREIGN_REP_OFFICE=Địa điểm VPDD CTCK nước ngoài tại VN."
     data_domain: "Classification Value"
     nullable: false
-    is_primary_key: true
+    is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: IP_ADDR_TYPE. ETL tạo 2 rows: OFFICE_ADDRESS → HEAD_OFFICE; ADDRESS (công ty mẹ) → PARENT_ADDRESS."
-    classification_context: "IP_ADDR_TYPE"
-    etl_derived_value: null
+    comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ OFFICE_ADDRESS. Hardcode FOREIGN_REP_OFFICE — đây là văn phòng đại diện của CTCK nước ngoài, không phải trụ sở chính."
+    classification_context: "IP_ADDR_TYPE=FOREIGN_REP_OFFICE"
+    etl_derived_value: "FOREIGN_REP_OFFICE"
     data_type: "string"
 
   - attribute_name: "Source System Code"
@@ -56,22 +71,90 @@ attributes:
     is_primary_key: false
     status: "draft"
     source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
     etl_derived_value: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
     data_type: "string"
 
-  - attribute_name: "Street Address"
-    physical_name: "strt_addr"
-    description: "Địa chỉ theo loại: địa điểm VPDD tại VN (HEAD_OFFICE) hoặc địa chỉ công ty mẹ NN (PARENT_ADDRESS)."
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
+    description: "Địa điểm VPDD tại VN."
     data_domain: "Text"
     nullable: true
     is_primary_key: false
     status: "draft"
     source_columns:
       - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_ADDRESS"
+    comment: "Không có Province/District/Ward FK."
+    classification_context: "IP_ADDR_TYPE=FOREIGN_REP_OFFICE"
+    etl_derived_value: null
+    data_type: "string"
+
+  # ══ CONTEXT: PARENT_ADDRESS (công ty mẹ nước ngoài) ═════════════════
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Organization Unit (VPDD CTCK NN — phiên bản đăng ký tại VN)."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
+    comment: "FK target: Securities Company Organization Unit.Securities Company Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN', ID)."
+    classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Involved Party Code"
+    physical_name: "ip_code"
+    description: "Mã Securities Company Organization Unit."
+    data_domain: "Text"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
+    comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization Unit Code. Pair with Involved Party Id."
+    classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Address Type Code"
+    physical_name: "adr_tp_code"
+    description: "Loại địa chỉ: PARENT_ADDRESS=Địa chỉ công ty mẹ nước ngoài."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE. ETL tạo row từ ADDRESS (công ty mẹ)."
+    classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
+    etl_derived_value: "PARENT_ADDRESS"
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
+    etl_derived_value: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
+    data_type: "string"
+
+  - attribute_name: "Address Value"
+    physical_name: "adr_val"
+    description: "Địa chỉ công ty mẹ nước ngoài."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
       - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ADDRESS"
-    comment: "ETL pivot: OFFICE_ADDRESS → row HEAD_OFFICE; ADDRESS → row PARENT_ADDRESS. Cả 2 đều không có Province/District/Ward FK."
-    classification_context: null
+    comment: "Không có Province/District/Ward FK."
+    classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
     etl_derived_value: null
     data_type: "string"
