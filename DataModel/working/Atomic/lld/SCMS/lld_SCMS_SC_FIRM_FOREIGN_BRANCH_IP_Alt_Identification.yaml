@@ -1,0 +1,94 @@
+schema_type: "lld_shared_ip_alt_identification"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_BRANCH"
+  atomic_entity: "IP Alt Identification"
+  entity_physical_name: "ip_alt_id"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Alt Identification"
+  table_type: "Shared"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Securities Company Foreign Branch. ETL tạo tối đa 4 rows per chi nhánh nước ngoài (skip nếu id_nbr NULL): Row 1 OPERATION_LICENSE (LICENSE_NUMBER + LICENSE_DATE); Row 2 ENTERPRISE_CODE (ENTERPRISE_CODE — không có ngày/nơi); Row 3 TAX_CODE (TAX_CODE — không có ngày/nơi); Row 4 BIZ_REG_CERT (BUSINESS_REG_CERT + BUSINESS_REG_CERT_DATE). Lưu ý: BUSINESS_REG_CERT nguồn lưu cả số lẫn nội dung giấy (cần ETL làm sạch)."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Foreign Branch."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
+    comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "id_tp_code"
+    description: "Loại giấy tờ định danh tổ chức: OPERATION_LICENSE=Giấy phép hoạt động tại Việt Nam; ENTERPRISE_CODE=Mã số doanh nghiệp; TAX_CODE=Mã số thuế; BIZ_REG_CERT=Giấy chứng nhận đăng ký doanh nghiệp."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot: LICENSE_NUMBER→OPERATION_LICENSE; ENTERPRISE_CODE→ENTERPRISE_CODE; TAX_CODE→TAX_CODE; BUSINESS_REG_CERT→BIZ_REG_CERT."
+    classification_context: "IP_ALT_ID_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH"
+    etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH"
+    data_type: "string"
+
+  - attribute_name: "Identification Number"
+    physical_name: "id_nbr"
+    description: "Số giấy tờ định danh của chi nhánh nước ngoài theo từng loại."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_NUMBER"
+      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ENTERPRISE_CODE"
+      - "SCMS.SC_FIRM_FOREIGN_BRANCH.TAX_CODE"
+      - "SCMS.SC_FIRM_FOREIGN_BRANCH.BUSINESS_REG_CERT"
+    comment: "ETL pivot: LICENSE_NUMBER→row OPERATION_LICENSE; ENTERPRISE_CODE→row ENTERPRISE_CODE; TAX_CODE→row TAX_CODE; BUSINESS_REG_CERT→row BIZ_REG_CERT. Lưu ý BUSINESS_REG_CERT (mô tả BRD trống) — cần xác nhận là số giấy chứng nhận."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Issue Date"
+    physical_name: "issue_dt"
+    description: "Ngày cấp giấy tờ (áp dụng cho OPERATION_LICENSE và BIZ_REG_CERT)."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_DATE"
+      - "SCMS.SC_FIRM_FOREIGN_BRANCH.BUSINESS_REG_CERT_DATE"
+    comment: "ETL pivot: LICENSE_DATE→row OPERATION_LICENSE; BUSINESS_REG_CERT_DATE→row BIZ_REG_CERT. NULL cho ENTERPRISE_CODE và TAX_CODE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"

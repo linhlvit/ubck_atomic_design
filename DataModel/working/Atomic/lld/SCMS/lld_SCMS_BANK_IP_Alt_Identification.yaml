@@ -1,0 +1,108 @@
+schema_type: "lld_shared_ip_alt_identification"
+schema_version: "2.0"
+
+metadata:
+  source_system: "SCMS"
+  source_table: "BANK"
+  atomic_entity: "IP Alt Identification"
+  entity_physical_name: "ip_alt_id"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "IP Alt Identification"
+  table_type: "Shared"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Securities Company Depositary Bank. ETL tạo tối đa 4 rows per ngân hàng (skip nếu id_nbr NULL): Row 1 ENTERPRISE_CODE (ENTERPRISE_CODE — không có ngày/nơi cấp); Row 2 TAX_CODE (TAX_CODE — không có ngày/nơi cấp); Row 3 OPERATION_LICENSE (OPERATION_LICENSE_NUMBER + LICENSE_ISSUE_DATE + LICENSE_ISSUER); Row 4 BIZ_REG_CERT (BUSINESS_REG_CERT_NUMBER + BUSINESS_REG_CERT_DATE). issue_dt và issue_plc NULL cho ENTERPRISE_CODE và TAX_CODE."
+
+attributes:
+  - attribute_name: "Involved Party Id"
+    physical_name: "ip_id"
+    description: "FK đến Securities Company Depositary Bank."
+    data_domain: "Surrogate Key"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns:
+      - "SCMS.BANK.ID"
+    comment: "FK target: Securities Company Depositary Bank.Securities Company Depositary Bank Id. Shared entity. Hash: hash_id('SCMS.BANK', ID)."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Identification Type Code"
+    physical_name: "id_tp_code"
+    description: "Loại giấy tờ định danh tổ chức: ENTERPRISE_CODE=Mã số doanh nghiệp; TAX_CODE=Mã số thuế; OPERATION_LICENSE=Giấy phép hoạt động ngân hàng; BIZ_REG_CERT=Giấy chứng nhận đăng ký kinh doanh."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: true
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot: ENTERPRISE_CODE→ENTERPRISE_CODE; TAX_CODE→TAX_CODE; OPERATION_LICENSE_NUMBER→OPERATION_LICENSE; BUSINESS_REG_CERT_NUMBER→BIZ_REG_CERT."
+    classification_context: "IP_ALT_ID_TYPE"
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "SOURCE_SYSTEM=SCMS.BANK"
+    etl_derived_value: "SCMS.BANK"
+    data_type: "string"
+
+  - attribute_name: "Identification Number"
+    physical_name: "id_nbr"
+    description: "Số giấy tờ định danh của ngân hàng theo từng loại."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.BANK.ENTERPRISE_CODE"
+      - "SCMS.BANK.TAX_CODE"
+      - "SCMS.BANK.OPERATION_LICENSE_NUMBER"
+      - "SCMS.BANK.BUSINESS_REG_CERT_NUMBER"
+    comment: "ETL pivot: ENTERPRISE_CODE→row ENTERPRISE_CODE; TAX_CODE→row TAX_CODE; OPERATION_LICENSE_NUMBER→row OPERATION_LICENSE; BUSINESS_REG_CERT_NUMBER→row BIZ_REG_CERT."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"
+
+  - attribute_name: "Issue Date"
+    physical_name: "issue_dt"
+    description: "Ngày cấp giấy tờ (áp dụng cho OPERATION_LICENSE và BIZ_REG_CERT)."
+    data_domain: "Date"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.BANK.LICENSE_ISSUE_DATE"
+      - "SCMS.BANK.BUSINESS_REG_CERT_DATE"
+    comment: "ETL pivot: LICENSE_ISSUE_DATE→row OPERATION_LICENSE; BUSINESS_REG_CERT_DATE→row BIZ_REG_CERT. NULL cho ENTERPRISE_CODE và TAX_CODE."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "date"
+
+  - attribute_name: "Issue Place"
+    physical_name: "issue_plc"
+    description: "Tên cơ quan cấp (áp dụng cho OPERATION_LICENSE)."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "SCMS.BANK.LICENSE_ISSUER"
+    comment: "ETL pivot: LICENSE_ISSUER→row OPERATION_LICENSE. NULL cho ENTERPRISE_CODE, TAX_CODE, BIZ_REG_CERT."
+    classification_context: null
+    etl_derived_value: null
+    data_type: "string"

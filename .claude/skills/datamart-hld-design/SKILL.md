@@ -95,6 +95,10 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 - [ ] Mọi tên attribute dùng trong cột Nguồn/KPI → tra file YAML entity đó, lấy đúng `attribute.name` (field `name:` trong YAML, không phải `physical_name`). KHÔNG tự suy tên từ nghĩa nghiệp vụ.
 - [ ] Attribute không tìm thấy trong driving entity → kiểm tra entity liên quan (joined/shared entity), không kết luận PENDING trước khi tra entity phụ. Ví dụ: số định danh CCCD/Hộ chiếu nằm ở `Involved Party Alternative Identification`, không phải `Securities Practitioner`.
 - [ ] Attribute dạng ngày tháng có 2 trường tách biệt (VD: `Birth Date` + `Birth Year`) → ghi rõ cả 2 và công thức `COALESCE` trong ETL formula của KPI Derived. KHÔNG chỉ ghi 1 trường.
+- [ ] **KPI có điều kiện lọc theo Classification Value (code phân loại)** → bắt buộc đọc full nội dung ô **Mô tả** và **Mapping nghiệp vụ** của dòng BA đó để lấy giá trị code cụ thể. KHÔNG tự suy đoán code (VD: đừng giả định `'PROP'` hay `'FI'` khi chưa đọc BA).
+  - Sau khi lấy code từ BA → cross-check với `DataModel/working/Atomic/lld/classification_schemes.yaml` để xác nhận scheme tồn tại.
+  - Chỉ tạo Open Issue khi BA **thực sự không cung cấp** giá trị code. Nếu BA đã ghi rõ → dùng thẳng, không tạo issue thừa.
+  - Ví dụ thực tế (VP module): BA ghi `Buy/Sell Client House Classification Code = '30'` → Tự doanh; `Foreign Investor Type Code <> '00'` → NĐTNN (negative filter). Sai nếu dùng `'PROP'` hay `= 'FI'` mà không đọc BA.
 
 ---
 
@@ -116,62 +120,134 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 ## BƯỚC 3 — CHECK REUSE (DATAMART MODEL)
 
-**Mục tiêu:** Xác định bảng nào đã tồn tại trong `datamart_model.yaml` trước khi đặt tên bảng đích — tránh thiết kế trùng lặp, tái sử dụng cấu trúc khi có thể.
+**Mục tiêu:** Tối đa hóa tái sử dụng bảng đã có trong `datamart_model.yaml` trước khi đề xuất bảng mới. Thực hiện theo 4 lớp kiểm tra theo thứ tự — **dừng ngay khi đã xác định được reuse_status**, không kiểm tra lớp tiếp theo.
 
-**Thực hiện:** Sau khi xác định sơ bộ tên/mục đích các bảng đích từ BA, đọc `DataModel/datamart_model.yaml`.
+**Thực hiện:** Đọc toàn bộ `Datamart/datamart_model.yaml` một lần duy nhất trước khi bắt đầu phân tích — không đọc lại từng lần.
 
-### Quy trình xác định reuse
+---
 
-**Bước 1 — Xác định Atomic source** từ BA analyst (cột Nguồn):
+### Lớp 1 — Conformed Dimension Whitelist (không phụ thuộc source match)
+
+Một số Dimension được thiết kế dùng chung toàn hệ thống. **Bất kể module nào, bất kể BA ghi nguồn gì** — nếu nhóm thông tin cần các chiều dưới đây thì **luôn reuse**, không tạo mới:
+
+| Datamart table | Logical name | Khi nào reuse |
+|---|---|---|
+| `cdr_dt_dim` | Calendar Date Dimension | Mọi Fact có chiều thời gian |
+| `cls_dim` | Classification Dimension | Mọi chiều phân loại có nguồn từ Classification Value (CV) Atomic — xem Lớp 2 |
+
+> ❌ **KHÔNG tạo `Calendar Date Dimension` mới** dù không tìm thấy trong source match. Luôn reuse `cdr_dt_dim`.
+
+---
+
+### Lớp 2 — Classification Value → cls_dim (filter theo scheme)
+
+**Áp dụng khi:** Nhóm thông tin cần một chiều phân loại dạng danh mục (ngành nghề, loại hình, trạng thái...) mà nguồn Atomic là `Classification Value` (bảng `cv`).
+
+**Quy trình:**
+1. Xác định scheme CV cần dùng (VD: `IDS_INDUSTRY_CATEGORY`, `CERTIFICATE_TYPE`...)
+2. Kiểm tra `datamart_model.yaml` — nếu có entry `source_atomic: [cv]` với `table_type: dim` → **reuse `cls_dim`**, không tạo Dimension mới
+3. Trong thiết kế: ghi rõ FK tên `Classification Dimension Id` + ghi chú scheme trong cột Ghi chú / Bảng grain
+
+**Lý do quan trọng:** `cls_dim` là Conformed Dimension grain = 1 dòng / CV code / scheme — đã bao phủ toàn bộ danh mục CV. Tạo Dimension mới chỉ duplicate dữ liệu.
+
+> ❌ **KHÔNG tạo Dimension mới** (VD: `Industry Classification Dimension`, `Certificate Type Dimension`...) khi `cls_dim` đã tồn tại và CV scheme tương ứng có trong Atomic.
+
+**Ví dụ đúng:**
+- BA cần chiều "Ngành nghề kinh tế cấp 1" từ `IDS.categories` → Atomic: `cv` (scheme `IDS_INDUSTRY_CATEGORY`) → reuse `cls_dim`, ghi chú `filter scheme = 'IDS_INDUSTRY_CATEGORY'`
+- BA cần chiều "Loại CCHN" từ danh mục → Atomic: `cv` (scheme `CERTIFICATE_TYPE`) → reuse `cls_dim`, ghi chú `filter scheme = 'CERTIFICATE_TYPE'`
+
+---
+
+### Lớp 3 — Source Match (cùng nguồn Atomic)
+
+**Áp dụng khi:** Bảng đích không thuộc Lớp 1 hoặc Lớp 2.
+
+**Bước 3a — Xác định Atomic source** từ BA analyst (cột Nguồn):
 - Đọc cột Nguồn tại từng nhóm thông tin → tra `dm_manifest.yaml` lấy `physical_name` (= `atomic_table` vật lý)
 - Nếu BA ghi tên nguồn chung (VD: "NHNCK") → đọc tất cả entry trong manifest có `source` khớp, lấy tất cả `physical_name` liên quan
 
-**Bước 2 — Tìm trong `datamart_model.yaml`** theo `source_atomic`:
+**Bước 3b — Tìm trong `datamart_model.yaml`** theo `source_atomic`:
 - Duyệt qua `entities` → tìm entry có `source_atomic` chứa `physical_name` đang xét
-- Không tìm thấy → `new`, dừng
+- Không tìm thấy → `new`, chuyển sang Lớp 4 để kiểm tra Fact partial
 
-**Bước 3 — Nếu tìm thấy** (cùng nguồn Atomic đã được dùng):
+**Bước 3c — Nếu tìm thấy** (cùng nguồn Atomic đã được dùng):
 - Lấy `datamart_table` + `table_type` + số cột hiện có (`columns` list) từ model
-- Nếu `table_type` khác → `new` (khác mục đích)
-- Nếu `table_type` giống → **báo cáo human**, hỏi phương án:
+- So sánh `table_type` + grain mục đích:
+
+| Điều kiện | Hành xử |
+|---|---|
+| `table_type` khác nhau | `new` |
+| `table_type` giống, grain/mục đích giống | → Lớp 4 kiểm tra partial |
+| `table_type` giống, grain/mục đích khác hẳn | `new` |
+
+---
+
+### Lớp 4 — Fact/Dim Partial (thêm cột vào bảng hiện có)
+
+**Áp dụng khi:** Đã tìm thấy bảng cùng loại + cùng grain từ Lớp 3, hoặc cần bổ sung measure/attribute vào Fact đã có.
+
+**Câu hỏi kiểm tra:**
+- Fact hiện có đủ các measure/FK cần thiết cho nhóm này chưa?
+- Nếu thiếu measure → `partial` (thêm cột, không tạo Fact mới)
+- Nếu thiếu FK đến Dimension mới → vẫn `partial` (thêm FK + Dimension)
+- Nếu grain thực sự khác → `new`
+
+**Báo cáo human khi phát hiện khả năng reuse (Lớp 3 hoặc 4):**
 
 ```
 Phát hiện khả năng reuse:
   Nguồn Atomic: [atomic_table]
-  Bảng đã có trong datamart_model.yaml: [datamart_table] (table_type: dim/operational, N cột hiện có)
+  Bảng đã có trong datamart_model.yaml: [datamart_table] (table_type: dim/fact/operational, N cột hiện có)
   Bảng đang thiết kế: [tên mới đề xuất]
+  Grain hiện tại: [grain bảng đã có]
+  Grain cần thiết: [grain nhóm này]
 
 Đề xuất:
   (a) reuse — tái sử dụng toàn bộ [datamart_table] hiện có (không thêm cột)
-  (b) partial — thêm nguồn mới vào [datamart_table] hiện có (có thể thêm cột)
+  (b) partial — thêm cột/FK vào [datamart_table] hiện có
   (c) new — tạo bảng mới (grain/mục đích thực sự khác)
 
 → Human chọn phương án
 ```
 
-**Bước 4 — Tổng hợp và hỏi human (GATE — bắt buộc dừng)**
+---
 
-Sau khi hoàn tất phân tích tất cả bảng, trình bày bảng tóm tắt:
+### Tổng hợp và hỏi human (GATE — bắt buộc dừng)
+
+Sau khi chạy qua 4 lớp cho **tất cả bảng** trong module, trình bày bảng tóm tắt:
 
 ```
-Kết quả phân tích reuse:
+Kết quả phân tích reuse (4 lớp):
 
-| Datamart Entity | datamart_table | reuse_status đề xuất | Lý do |
-|---|---|---|---|
-| Calendar Date Dimension | cdr_dt_dim | reuse | Đã có trong master |
-| Branch Dimension | dim_branch | partial | Master có nguồn FLEX, module này thêm NHNCK |
-| Fact ATM Transaction | fct_atm_txn | new | Chưa có trong master |
+| Datamart Entity | datamart_table | Lớp phát hiện | reuse_status đề xuất | Lý do |
+|---|---|---|---|---|
+| Calendar Date Dimension | cdr_dt_dim | L1 — Whitelist | reuse | Conformed Dim toàn hệ thống |
+| Classification Dimension | cls_dim | L2 — CV scheme | reuse | scheme IDS_INDUSTRY_CATEGORY đã có trong cls_dim |
+| Fact Listed Bond Snapshot | fct_lst_bnd_snpst | L3 — source match | partial | Cùng nguồn scr_trd, cần thêm cột OTC_Bond_Trading_Value |
+| Fact New Fact | fct_new | L3 — source match | new | Chưa có trong master |
 
 → Xác nhận reuse_status từng bảng để tiến hành thiết kế?
 ```
 
 > ❌ **KHÔNG được tự tiếp tục thiết kế** khi chưa có xác nhận của human — dù toàn bộ bảng đều là `new`.
 
-**Bước 5 — Ghi kết quả vào Section 4 HLD.md** (xem format bên dưới)
+**Ghi kết quả vào Section 4 HLD.md** (xem format bên dưới)
 
 > **Lưu ý:** `datamart_model.yaml` rỗng (`entities: []`, module đầu tiên) → toàn bộ bảng là `new`, vẫn phải trình bày bảng tóm tắt và chờ human xác nhận.
 
-> **Bảng có khả năng reuse cao nhất:** `dim` và `operational` dùng chung (Calendar Date, Branch, thông tin 360°...). `fact` thường `new` vì grain gắn chặt với module.
+---
+
+### Áp dụng reuse khi thiết kế từng nhóm (Section 2)
+
+**Bước kiểm tra bắt buộc TRƯỚC KHI đề xuất bảng đích cho mỗi nhóm:**
+
+1. Chiều thời gian → Lớp 1: luôn là `cdr_dt_dim`
+2. Chiều phân loại/danh mục → Lớp 2: kiểm tra CV scheme → nếu có thì `cls_dim`
+3. Fact/Dim khác → Lớp 3: match source → Lớp 4: kiểm tra partial
+
+**Trong bảng KPI (cột Ghi chú) và Bảng grain:** ghi rõ reuse_status và scheme/filter khi áp dụng Lớp 1 hoặc Lớp 2. Ví dụ:
+- `Calendar Date Dimension — reuse (cdr_dt_dim)`
+- `Classification Dimension — reuse cls_dim, filter scheme = 'IDS_INDUSTRY_CATEGORY'`
 
 ### Section 4 — Reuse Analysis trong HLD.md
 
@@ -289,6 +365,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Bảng PENDING không có Star Schema, erDiagram, Lineage flowchart
 - [ ] Block PENDING không tạo Open Issue (Section 4) về grain/schema/logic — chỉ ghi nhận Atomic cần bổ sung
 - [ ] **Tên attribute trong cột Nguồn phải là logical name chính xác từ YAML** — đọc `attribute.name` trong file YAML của entity đó. KHÔNG tự đặt tên theo cảm tính. Ví dụ sai: `Date Of Birth` khi YAML ghi `Birth Date`.
+- [ ] **Giá trị Classification Value trong công thức KPI phải lấy từ BA, KHÔNG tự suy đoán** — đọc full ô Mô tả + Mapping nghiệp vụ của từng dòng BA. Ví dụ sai: dùng `= 'PROP'` thay vì `= '30'`; dùng `= 'FI'` thay vì `<> '00'`. Sau khi lấy code từ BA → verify với `DataModel/working/Atomic/lld/classification_schemes.yaml`.
 - [ ] **KPI có nguồn từ entity phụ (join/shared entity)** → ghi rõ tên entity phụ + điều kiện join trong cột Nguồn. KHÔNG ghi nhầm vào entity chính. Ví dụ đúng: "`Involved Party Alternative Identification`.Identification Number — join qua ip_id, filter Identification Type Code = CCCD/PASSPORT".
 - [ ] KPI ID đã được khai sinh trong Section 2 trước khi xuất hiện ở file khác
 - [ ] Mọi dòng BA `Phân loại = "Chiều"` phải có KPI_ID trong bảng KPI của nhóm tương ứng — không được bỏ qua
