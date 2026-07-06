@@ -9,19 +9,16 @@ metadata:
   bcv_concept: "[Group] Share Index"
   table_type: "Fact Snapshot"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: null
-  approved_at: null
-  notes: "Snapshot thành phần rổ chỉ số theo ngày giao dịch. Grain = 1 cặp (index_code,\
-    \ symbol, trading_date). Tier 2: FK đến Security Trading Snapshot (symbol) và\
-    \ Market Index Snapshot (indexcode). Quyết định D-03: Fact Snapshot thay vì Relative\
-    \ — insert-only per ngày. TC-02 ngoại lệ multi-parent: 2 FK bình đẳng không bắt\
-    \ buộc embed tên cha."
+  approved_by: Chien Nguyen
+  approved_at: 2026-07-03
+  notes: "Snapshot thành phần rổ chỉ số theo ngày giao dịch. Grain = 1 cặp (index_code, symbol, trading_date). Tier 2: FK đến Security Trading Snapshot (symbol) và Market Index Snapshot (indexcode). Quyết định D-03: Fact Snapshot thay vì Relative — insert-only per ngày. TC-02 ngoại lệ multi-parent: 2 FK bình đẳng không bắt buộc embed tên cha."
+
 attributes:
 - attribute_name: "Index Constituent Snapshot Id"
   physical_name: "index_constituent_snapshot_id"

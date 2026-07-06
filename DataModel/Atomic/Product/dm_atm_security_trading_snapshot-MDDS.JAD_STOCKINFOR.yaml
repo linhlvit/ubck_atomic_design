@@ -1,26 +1,27 @@
 schema_type: data_model
-schema_version: "1.0"
-
+schema_version: '1.0'
 ldm:
   id: ATM-security_trading_snapshot-MDDS.JAD_STOCKINFOR
   logical_name: Security Trading Snapshot
   physical_name: security_trading_snapshot
   layer: Atomic
   version: "1.0"
-  status: draft
+  status: approved
   bcv_core_object: Product
-  bcv_concept: "[Product] Financial Market Instrument"
+  bcv_concept: '[Product] Financial Market Instrument'
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
   source: MDDS
-  description: |
-    Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu, chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày giao dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument.
+  description: 'Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu,
+    chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày giao
+    dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument.
+
+    '
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
     brd: BRD-SRC-MDDS-JAD_STOCKINFOR
-
 attributes:
   - name: Security Trading Snapshot Id
     physical_name: security_trading_snapshot_id
