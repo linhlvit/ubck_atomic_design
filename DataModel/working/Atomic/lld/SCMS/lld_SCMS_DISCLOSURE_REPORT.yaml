@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "DISCLOSURE_REPORT"
   atomic_entity: "Securities Company Disclosure Report"
-  entity_physical_name: "scr_co_dscsr_rprt"
+  entity_physical_name: "sc_disclosure_report"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Communication"
   table_type: "Relative"
@@ -18,740 +17,702 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Sự kiện công bố thông tin (CBTT) của CTCK. Mỗi dòng = 1 lần gửi CBTT ra hệ thống BA. RECORD_STATUS theo: 0=Chưa gửi/1=Đã gửi/-1=Lỗi. Liên kết với báo cáo nguồn: PERIODIC_REPORT_ID hoặc SC_FIRM_ADHOC_REPORT_ID (tùy loại CBTT). CORRECTION=1 nếu là tin đính chính. ORIGINAL_DISCLOSURE_ID là self-FK về bản gốc. Audit: CREATED_BY/AT + UPDATED_BY/AT (tên cột UPDATED không phải LAST_MODIFIED). APPROVED_BY/SENDER_ID/CANCELLED_BY → pending. EFORM_DATA excluded. LEGACY_FILEDATA (BLOB) excluded."
-
+  notes: "Sự kiện công bố thông tin (CBTT) của CTCK. Mỗi dòng = 1 lần gửi CBTT ra\
+    \ hệ thống BA. RECORD_STATUS theo: 0=Chưa gửi/1=Đã gửi/-1=Lỗi. Liên kết với báo\
+    \ cáo nguồn: PERIODIC_REPORT_ID hoặc SC_FIRM_ADHOC_REPORT_ID (tùy loại CBTT).\
+    \ CORRECTION=1 nếu là tin đính chính. ORIGINAL_DISCLOSURE_ID là self-FK về bản\
+    \ gốc. Audit: CREATED_BY/AT + UPDATED_BY/AT (tên cột UPDATED không phải LAST_MODIFIED).\
+    \ APPROVED_BY/SENDER_ID/CANCELLED_BY → pending. EFORM_DATA excluded. LEGACY_FILEDATA\
+    \ (BLOB) excluded."
 attributes:
-  - attribute_name: "Securities Company Disclosure Report Id"
-    physical_name: "scr_co_dscsr_rprt_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Disclosure Report Code"
-    physical_name: "scr_co_dscsr_rprt_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.ID"
-    comment: "BK. NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.DISCLOSURE_REPORT"
-    etl_derived_value: "SCMS.DISCLOSURE_REPORT"
-    data_type: "string"
-
-  # ── FK TO PARENT ─────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán công bố thông tin."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Periodic Report Id"
-    physical_name: "scr_co_prdc_rprt_id"
-    description: "FK đến báo cáo định kỳ liên quan (nullable)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.PERIODIC_REPORT_ID"
-    comment: "FK target: Securities Company Periodic Report.Securities Company Periodic Report Id. Hash: hash_id('SCMS.SC_FIRM_PERIODIC_REPORT', PERIODIC_REPORT_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Periodic Report Code"
-    physical_name: "scr_co_prdc_rprt_code"
-    description: "Mã báo cáo định kỳ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.PERIODIC_REPORT_ID"
-    comment: "Lookup pair: Securities Company Periodic Report.Securities Company Periodic Report Code. Pair with Securities Company Periodic Report Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Adhoc Report Id"
-    physical_name: "scr_co_adhc_rprt_id"
-    description: "FK đến báo cáo đột xuất liên quan (nullable)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SC_FIRM_ADHOC_REPORT_ID"
-    comment: "FK target: Securities Company Adhoc Report.Securities Company Adhoc Report Id. Hash: hash_id('SCMS.SC_FIRM_ADHOC_REPORT', SC_FIRM_ADHOC_REPORT_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Adhoc Report Code"
-    physical_name: "scr_co_adhc_rprt_code"
-    description: "Mã báo cáo đột xuất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SC_FIRM_ADHOC_REPORT_ID"
-    comment: "Lookup pair: Securities Company Adhoc Report.Securities Company Adhoc Report Code. Pair with Securities Company Adhoc Report Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Foreign Branch Id"
-    physical_name: "scr_co_frgn_brn_id"
-    description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-    comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Foreign Branch Code"
-    physical_name: "scr_co_frgn_brn_code"
-    description: "Mã chi nhánh CTCK nước ngoài."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-    comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign Branch Code. Pair with Securities Company Foreign Branch Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Original Disclosure Report Id"
-    physical_name: "orig_dscsr_rprt_id"
-    description: "FK self-reference đến bản CBTT gốc (khi bản này là đính chính)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.ORIGINAL_DISCLOSURE_ID"
-    comment: "FK target: Securities Company Disclosure Report.Securities Company Disclosure Report Id (self). Hash: hash_id('SCMS.DISCLOSURE_REPORT', ORIGINAL_DISCLOSURE_ID). Nullable — chỉ có giá trị khi CORRECTION=1."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Original Disclosure Report Code"
-    physical_name: "orig_dscsr_rprt_code"
-    description: "Mã bản CBTT gốc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.ORIGINAL_DISCLOSURE_ID"
-    comment: "Lookup pair: Securities Company Disclosure Report.Securities Company Disclosure Report Code (self). Pair with Original Disclosure Report Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Member Report Id"
-    physical_name: "mmbr_rprt_id"
-    description: "FK đến báo cáo thành viên liên quan (MEMBER_REPORT)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.MEMBER_REPORT_ID"
-    comment: "Pending — FK target MEMBER_REPORT nằm ngoài scope. NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CLASSIFICATION ────────────────────────────────────────────────────
-  - attribute_name: "Disclosure News Type Code"
-    physical_name: "dscsr_news_tp_code"
-    description: "Loại tin công bố: 1=Định kỳ; 2=Bất thường; 3=Theo yêu cầu."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.NEWS_TYPE"
-    comment: "Scheme: SCMS_DISCLOSURE_NEWS_TYPE. VARCHAR2(255) — giá trị là '1','2','3'."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Disclosure Channel Type Code"
-    physical_name: "dscsr_chnl_tp_code"
-    description: "Loại hình công bố: 1=CBTT trên sàn; 2=UBCKNN; 3=Trang web công ty."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_TYPE"
-    comment: "Scheme: SCMS_DISCLOSURE_CHANNEL_TYPE. VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Period Code"
-    physical_name: "rprt_prd_code"
-    description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.REPORT_PERIOD"
-    comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Event Type Code"
-    physical_name: "evt_tp_code"
-    description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.EVENT_TYPE_ID"
-    comment: "Pending — FK target CAT_EVENT_TYPE; entity chưa thiết kế. NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Disclosure Status Code"
-    physical_name: "dscsr_st_code"
-    description: "Trạng thái gửi CBTT từ hệ thống BA: 0=Chưa gửi; 1=Đã gửi thành công; -1=Lỗi khi gửi."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.RECORD_STATUS"
-    comment: "Scheme: SCMS_DISCLOSURE_STATUS. NUMBER(1)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CONTENT ───────────────────────────────────────────────────────────
-  - attribute_name: "Title"
-    physical_name: "title"
-    description: "Tiêu đề thông báo/tin nhắn/báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.TITLE"
-    comment: "VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Description"
-    physical_name: "descr"
-    description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.DESCRIPTION"
-    comment: "VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Summary"
-    physical_name: "smry"
-    description: "Tóm tắt nội dung trích yếu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SUMMARY"
-    comment: "VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Disclosure Person Name"
-    physical_name: "dscsr_prsn_nm"
-    description: "Tên người công bố thông tin (denormalized)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_PERSON_NAME"
-    comment: "VARCHAR2(255). Denormalized — tên tại thời điểm CBTT. Không tạo FK."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Year"
-    physical_name: "rprt_yr"
-    description: "Năm báo cáo CBTT."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.REPORT_YEAR"
-    comment: "VARCHAR2(255) — lưu dạng Text. Có thể là '2024' hoặc dạng khác."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Period Value"
-    physical_name: "rprt_prd_val"
-    description: "Giá trị kỳ báo cáo (VD: '2024-Q1', '2024-06')."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.REPORT_PERIOD_VALUE"
-    comment: "VARCHAR2(255). Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Correction Indicator"
-    physical_name: "crrctn_ind"
-    description: "Cờ tin đính chính: 1=Đính chính; 0=Tin gốc."
-    data_domain: "Boolean"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CORRECTION"
-    comment: "NUMBER(1). Khi CORRECTION=1 → ORIGINAL_DISCLOSURE_ID có giá trị."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "boolean"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.NOTE"
-    comment: "VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Error Description"
-    physical_name: "err_descr"
-    description: "Mô tả lỗi khi gửi CBTT."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.ERROR_DESCRIPTION"
-    comment: "NVARCHAR2(1000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Cancellation Reason"
-    physical_name: "cncl_rsn"
-    description: "Lý do hủy báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CANCELLATION_REASON"
-    comment: "VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Rejection Reason"
-    physical_name: "rjctn_rsn"
-    description: "Lý do từ chối báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.REJECTION_REASON"
-    comment: "VARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── DATES ─────────────────────────────────────────────────────────────
-  - attribute_name: "Disclosure Date"
-    physical_name: "dscsr_dt"
-    description: "Ngày công bố thông tin."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_DATE"
-    comment: "DATE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Disclosure Deadline Timestamp"
-    physical_name: "dscsr_ddln_tms"
-    description: "Thời hạn phải công bố thông tin."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_DEADLINE"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Late Days"
-    physical_name: "late_days"
-    description: "Số ngày CBTT muộn."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.LATE_DAYS"
-    comment: "NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "integer"
-
-  - attribute_name: "Attachment Path"
-    physical_name: "attch_path"
-    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.ATTACHMENT_PATH"
-    comment: "VARCHAR2(255)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Event Timestamp"
-    physical_name: "evt_tms"
-    description: "Thời điểm xảy ra sự kiện CBTT."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.EVENT_DATE"
-    comment: "TIMESTAMP(6). Tên cột BRD là EVENT_DATE nhưng data type là TIMESTAMP."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Sent Timestamp"
-    physical_name: "sent_tms"
-    description: "Thời điểm gửi CBTT."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SENT_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Cancelled Timestamp"
-    physical_name: "cncld_tms"
-    description: "Thời điểm hủy CBTT."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CANCELLED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  # ── LEGACY ────────────────────────────────────────────────────────────
-  - attribute_name: "Legacy News Id"
-    physical_name: "lgcy_news_id"
-    description: "ID tin tức từ hệ thống cũ (legacy)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.LEGACY_NEWS_ID"
-    comment: "NUMBER(20) — ETL convert sang string. Legacy reference."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Legacy Filename"
-    physical_name: "lgcy_filenm"
-    description: "Tên file đính kèm từ hệ thống cũ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.LEGACY_FILENAME"
-    comment: "VARCHAR2(255). LEGACY_FILEDATA (BLOB) excluded."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Foreign Branch Report Id"
-    physical_name: "frgn_brn_rprt_id"
-    description: "ID báo cáo chi nhánh CTCK nước ngoài liên quan."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_REPORT_ID"
-    comment: "Pending — NUMBER(19), mô tả gốc BRD trống. FK target chưa xác định."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── USER FKs (LIFECYCLE ACTORS, PENDING) ─────────────────────────────
-  - attribute_name: "Approved By SCMS User Id"
-    physical_name: "apprvd_by_scms_usr_id"
-    description: "FK đến người phê duyệt CBTT."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', APPROVED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Approved By SCMS User Code"
-    physical_name: "apprvd_by_scms_usr_code"
-    description: "Mã người phê duyệt CBTT."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
-    comment: "Pending — Pair with Approved By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Sender SCMS User Id"
-    physical_name: "sndr_scms_usr_id"
-    description: "FK đến người gửi CBTT."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', SENDER_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Sender SCMS User Code"
-    physical_name: "sndr_scms_usr_code"
-    description: "Mã người gửi CBTT."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
-    comment: "Pending — Pair with Sender SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Cancelled By SCMS User Id"
-    physical_name: "cncld_by_scms_usr_id"
-    description: "FK đến người hủy CBTT."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CANCELLED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Cancelled By SCMS User Code"
-    physical_name: "cncld_by_scms_usr_code"
-    description: "Mã người hủy CBTT."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
-    comment: "Pending — Pair with Cancelled By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  # EFORM_DATA excluded — raw JSON form payload.
-
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CREATED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.UPDATED_AT"
-    comment: "TIMESTAMP(6). Tên cột UPDATED_AT (không phải LAST_MODIFIED_AT)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người tạo bản ghi CBTT."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người tạo bản ghi CBTT."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.CREATED_BY"
-    comment: "Pending — Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người cập nhật bản ghi CBTT gần nhất."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.UPDATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', UPDATED_BY). Tên cột UPDATED_BY."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người cập nhật bản ghi CBTT gần nhất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.DISCLOSURE_REPORT.UPDATED_BY"
-    comment: "Pending — Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Disclosure Report Id"
+  physical_name: "securities_company_disclosure_report_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Disclosure Report Code"
+  physical_name: "securities_company_disclosure_report_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.DISCLOSURE_REPORT"
+  etl_derived_value: "SCMS.DISCLOSURE_REPORT"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán công bố thông tin."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Periodic Report Id"
+  physical_name: "securities_company_periodic_report_id"
+  description: "FK đến báo cáo định kỳ liên quan (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.PERIODIC_REPORT_ID"
+  comment: "FK target: Securities Company Periodic Report.Securities Company Periodic\
+    \ Report Id. Hash: hash_id('SCMS.SC_FIRM_PERIODIC_REPORT', PERIODIC_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Periodic Report Code"
+  physical_name: "securities_company_periodic_report_code"
+  description: "Mã báo cáo định kỳ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.PERIODIC_REPORT_ID"
+  comment: "Lookup pair: Securities Company Periodic Report.Securities Company Periodic\
+    \ Report Code. Pair with Securities Company Periodic Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Adhoc Report Id"
+  physical_name: "securities_company_adhoc_report_id"
+  description: "FK đến báo cáo đột xuất liên quan (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SC_FIRM_ADHOC_REPORT_ID"
+  comment: "FK target: Securities Company Adhoc Report.Securities Company Adhoc Report\
+    \ Id. Hash: hash_id('SCMS.SC_FIRM_ADHOC_REPORT', SC_FIRM_ADHOC_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Adhoc Report Code"
+  physical_name: "securities_company_adhoc_report_code"
+  description: "Mã báo cáo đột xuất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SC_FIRM_ADHOC_REPORT_ID"
+  comment: "Lookup pair: Securities Company Adhoc Report.Securities Company Adhoc\
+    \ Report Code. Pair with Securities Company Adhoc Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Branch Id"
+  physical_name: "securities_company_foreign_branch_id"
+  description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Branch Code"
+  physical_name: "securities_company_foreign_branch_code"
+  description: "Mã chi nhánh CTCK nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Code. Pair with Securities Company Foreign Branch Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Disclosure Report Id"
+  physical_name: "original_disclosure_report_id"
+  description: "FK self-reference đến bản CBTT gốc (khi bản này là đính chính)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.ORIGINAL_DISCLOSURE_ID"
+  comment: "FK target: Securities Company Disclosure Report.Securities Company Disclosure\
+    \ Report Id (self). Hash: hash_id('SCMS.DISCLOSURE_REPORT', ORIGINAL_DISCLOSURE_ID).\
+    \ Nullable — chỉ có giá trị khi CORRECTION=1."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Disclosure Report Code"
+  physical_name: "original_disclosure_report_code"
+  description: "Mã bản CBTT gốc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.ORIGINAL_DISCLOSURE_ID"
+  comment: "Lookup pair: Securities Company Disclosure Report.Securities Company Disclosure\
+    \ Report Code (self). Pair with Original Disclosure Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Report Id"
+  physical_name: "member_report_id"
+  description: "FK đến báo cáo thành viên liên quan (MEMBER_REPORT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.MEMBER_REPORT_ID"
+  comment: "Pending — FK target MEMBER_REPORT nằm ngoài scope. NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure News Type Code"
+  physical_name: "disclosure_news_type_code"
+  description: "Loại tin công bố: 1=Định kỳ; 2=Bất thường; 3=Theo yêu cầu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.NEWS_TYPE"
+  comment: "Scheme: SCMS_DISCLOSURE_NEWS_TYPE. VARCHAR2(255) — giá trị là '1','2','3'."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Channel Type Code"
+  physical_name: "disclosure_channel_type_code"
+  description: "Loại hình công bố: 1=CBTT trên sàn; 2=UBCKNN; 3=Trang web công ty."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_TYPE"
+  comment: "Scheme: SCMS_DISCLOSURE_CHANNEL_TYPE. VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Code"
+  physical_name: "report_period_code"
+  description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.REPORT_PERIOD"
+  comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Event Type Code"
+  physical_name: "event_type_code"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.EVENT_TYPE_ID"
+  comment: "Pending — FK target CAT_EVENT_TYPE; entity chưa thiết kế. NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Status Code"
+  physical_name: "disclosure_status_code"
+  description: "Trạng thái gửi CBTT từ hệ thống BA: 0=Chưa gửi; 1=Đã gửi thành công;\
+    \ -1=Lỗi khi gửi."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.RECORD_STATUS"
+  comment: "Scheme: SCMS_DISCLOSURE_STATUS. NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Title"
+  physical_name: "title"
+  description: "Tiêu đề thông báo/tin nhắn/báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.TITLE"
+  comment: "VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.DESCRIPTION"
+  comment: "VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Summary"
+  physical_name: "summary"
+  description: "Tóm tắt nội dung trích yếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SUMMARY"
+  comment: "VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Person Name"
+  physical_name: "disclosure_person_nm"
+  description: "Tên người công bố thông tin (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_PERSON_NAME"
+  comment: "VARCHAR2(255). Denormalized — tên tại thời điểm CBTT. Không tạo FK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "report_year"
+  description: "Năm báo cáo CBTT."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.REPORT_YEAR"
+  comment: "VARCHAR2(255) — lưu dạng Text. Có thể là '2024' hoặc dạng khác."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Value"
+  physical_name: "report_period_value"
+  description: "Giá trị kỳ báo cáo (VD: '2024-Q1', '2024-06')."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.REPORT_PERIOD_VALUE"
+  comment: "VARCHAR2(255). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Correction Indicator"
+  physical_name: "correction_indicator"
+  description: "Cờ tin đính chính: 1=Đính chính; 0=Tin gốc."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CORRECTION"
+  comment: "NUMBER(1). Khi CORRECTION=1 → ORIGINAL_DISCLOSURE_ID có giá trị."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.NOTE"
+  comment: "VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Error Description"
+  physical_name: "error_description"
+  description: "Mô tả lỗi khi gửi CBTT."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.ERROR_DESCRIPTION"
+  comment: "NVARCHAR2(1000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cancellation Reason"
+  physical_name: "cancellation_reason"
+  description: "Lý do hủy báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CANCELLATION_REASON"
+  comment: "VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Rejection Reason"
+  physical_name: "rejection_reason"
+  description: "Lý do từ chối báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.REJECTION_REASON"
+  comment: "VARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Date"
+  physical_name: "disclosure_dt"
+  description: "Ngày công bố thông tin."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_DATE"
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Disclosure Deadline Timestamp"
+  physical_name: "disclosure_deadline_tms"
+  description: "Thời hạn phải công bố thông tin."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.DISCLOSURE_DEADLINE"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Late Days"
+  physical_name: "late_days"
+  description: "Số ngày CBTT muộn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.LATE_DAYS"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Attachment Path"
+  physical_name: "attachment_path"
+  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.ATTACHMENT_PATH"
+  comment: "VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Event Timestamp"
+  physical_name: "event_tms"
+  description: "Thời điểm xảy ra sự kiện CBTT."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.EVENT_DATE"
+  comment: "TIMESTAMP(6). Tên cột BRD là EVENT_DATE nhưng data type là TIMESTAMP."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Sent Timestamp"
+  physical_name: "sent_tms"
+  description: "Thời điểm gửi CBTT."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SENT_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Cancelled Timestamp"
+  physical_name: "cancelled_tms"
+  description: "Thời điểm hủy CBTT."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CANCELLED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Legacy News Id"
+  physical_name: "legacy_news_id"
+  description: "ID tin tức từ hệ thống cũ (legacy)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.LEGACY_NEWS_ID"
+  comment: "NUMBER(20) — ETL convert sang string. Legacy reference."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legacy Filename"
+  physical_name: "legacy_filename"
+  description: "Tên file đính kèm từ hệ thống cũ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.LEGACY_FILENAME"
+  comment: "VARCHAR2(255). LEGACY_FILEDATA (BLOB) excluded."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Branch Report Id"
+  physical_name: "foreign_branch_report_id"
+  description: "ID báo cáo chi nhánh CTCK nước ngoài liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SC_FIRM_FOREIGN_BRANCH_REPORT_ID"
+  comment: "Pending — NUMBER(19), mô tả gốc BRD trống. FK target chưa xác định."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approved By SCMS User Id"
+  physical_name: "approved_by_scms_user_id"
+  description: "FK đến người phê duyệt CBTT."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ APPROVED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approved By SCMS User Code"
+  physical_name: "approved_by_scms_user_code"
+  description: "Mã người phê duyệt CBTT."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
+  comment: "Pending — Pair with Approved By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sender SCMS User Id"
+  physical_name: "sender_scms_user_id"
+  description: "FK đến người gửi CBTT."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ SENDER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sender SCMS User Code"
+  physical_name: "sender_scms_user_code"
+  description: "Mã người gửi CBTT."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
+  comment: "Pending — Pair with Sender SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cancelled By SCMS User Id"
+  physical_name: "cancelled_by_scms_user_id"
+  description: "FK đến người hủy CBTT."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CANCELLED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cancelled By SCMS User Code"
+  physical_name: "cancelled_by_scms_user_code"
+  description: "Mã người hủy CBTT."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
+  comment: "Pending — Pair with Cancelled By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CREATED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.UPDATED_AT"
+  comment: "TIMESTAMP(6). Tên cột UPDATED_AT (không phải LAST_MODIFIED_AT)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người tạo bản ghi CBTT."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người tạo bản ghi CBTT."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.CREATED_BY"
+  comment: "Pending — Pair with Created By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người cập nhật bản ghi CBTT gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.UPDATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ UPDATED_BY). Tên cột UPDATED_BY."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người cập nhật bản ghi CBTT gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.UPDATED_BY"
+  comment: "Pending — Pair with Updated By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_WORK_HISTORIES"
   atomic_entity: "Securities Practitioner Employment Status"
-  entity_physical_name: "scr_prac_emp_st"
+  entity_physical_name: "sp_employment_status"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner Employment Status Id"
-  physical_name: "scr_prac_emp_st_id"
+  physical_name: "securities_practitioner_employment_status_id"
   description: "Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của\
     \ người hành nghề chứng khoán (surrogate key)."
   data_domain: "Surrogate Key"
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Employment Status Code"
-  physical_name: "scr_prac_emp_st_code"
+  physical_name: "securities_practitioner_employment_status_code"
   description: "Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "NHNCK.PROFESSIONAL_WORK_HISTORIES"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "Surrogate key FK đến người hành nghề chứng khoán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -66,12 +66,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_WORK_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã kỹ thuật của người hành nghề (dư thừa)."
   data_domain: "Text"
   nullable: false
@@ -85,7 +86,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Id"
-  physical_name: "scr_org_refr_id"
+  physical_name: "securities_organization_reference_id"
   description: "Surrogate key FK đến tổ chức kinh doanh chứng khoán nơi người hành\
     \ nghề làm việc."
   data_domain: "Surrogate Key"
@@ -94,12 +95,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_WORK_HISTORIES.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Code"
-  physical_name: "scr_org_refr_code"
+  physical_name: "securities_organization_reference_code"
   description: "Mã kỹ thuật của tổ chức (dư thừa)."
   data_domain: "Text"
   nullable: true
@@ -113,7 +115,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Department Name"
-  physical_name: "dept_nm"
+  physical_name: "department_nm"
   description: "Tên đơn vị / phòng ban trong tổ chức tại thời điểm làm việc (snapshot\
     \ text)."
   data_domain: "Text"
@@ -142,7 +144,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Employment Start Date"
-  physical_name: "emp_strt_dt"
+  physical_name: "employment_start_dt"
   description: "Ngày bắt đầu làm việc tại tổ chức."
   data_domain: "Date"
   nullable: false
@@ -155,7 +157,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Employment End Date"
-  physical_name: "emp_end_dt"
+  physical_name: "employment_end_dt"
   description: "Ngày kết thúc làm việc. Null = đang làm việc."
   data_domain: "Date"
   nullable: true
@@ -168,7 +170,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Position Code"
-  physical_name: "pos_code"
+  physical_name: "position_code"
   description: "Mã chức vụ của người hành nghề tại tổ chức."
   data_domain: "Classification Value"
   nullable: true
@@ -182,7 +184,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Position Name"
-  physical_name: "pos_nm"
+  physical_name: "position_nm"
   description: "Tên chức vụ snapshot tại thời điểm ghi nhận."
   data_domain: "Text"
   nullable: true

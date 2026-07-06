@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_OWNERSHIP_RELATION"
   atomic_entity: "Securities Company Ownership Relation"
-  entity_physical_name: "scr_co_ownshp_rln"
+  entity_physical_name: "sc_ownership_relation"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Connected Entity"
   table_type: "Relative"
@@ -18,302 +17,287 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Quan hệ sở hữu của CTCK với các công ty liên quan (công ty mẹ, công ty con, công ty liên kết, sở hữu trên 5%). Mỗi dòng = 1 quan hệ sở hữu của CTCK với 1 tổ chức khác. COMPANY_NAME là tên tổ chức có quan hệ sở hữu (denormalized text). REGISTERED_ADDRESS → IP Postal Address (1 loại: REGISTERED). ENTERPRISE_TYPE_ID: pending (FK tới loại hình doanh nghiệp, ngoài scope). COUNTRY_ID: pending (FK tới danh mục quốc gia, ngoài scope). OWNERSHIP_RATIO → Percentage. Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT (canonical)."
-
+  notes: "Quan hệ sở hữu của CTCK với các công ty liên quan (công ty mẹ, công ty con,\
+    \ công ty liên kết, sở hữu trên 5%). Mỗi dòng = 1 quan hệ sở hữu của CTCK với\
+    \ 1 tổ chức khác. COMPANY_NAME là tên tổ chức có quan hệ sở hữu (denormalized\
+    \ text). REGISTERED_ADDRESS → IP Postal Address (1 loại: REGISTERED). ENTERPRISE_TYPE_ID:\
+    \ pending (FK tới loại hình doanh nghiệp, ngoài scope). COUNTRY_ID: pending (FK\
+    \ tới danh mục quốc gia, ngoài scope). OWNERSHIP_RATIO → Percentage. Audit: CREATED_BY/AT\
+    \ + LAST_MODIFIED_BY/AT (canonical)."
 attributes:
-  - attribute_name: "Securities Company Ownership Relation Id"
-    physical_name: "scr_co_ownshp_rln_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Ownership Relation Code"
-    physical_name: "scr_co_ownshp_rln_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ID"
-    comment: "BK. NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_OWNERSHIP_RELATION"
-    etl_derived_value: "SCMS.SC_FIRM_OWNERSHIP_RELATION"
-    data_type: "string"
-
-  # ── FK TO PARENT ─────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán có quan hệ sở hữu."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CLASSIFICATION ────────────────────────────────────────────────────
-  - attribute_name: "Ownership Relation Type Code"
-    physical_name: "ownshp_rln_tp_code"
-    description: "Loại quan hệ sở hữu: SO_HUU_TREN_5=Sở hữu trên 5%; CONG_TY_CON=Công ty con; CONG_TY_LIEN_KET=Công ty liên kết; CONG_TY_ME=Công ty mẹ."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.RELATION_TYPE"
-    comment: "Scheme: SCMS_OWNERSHIP_RELATION_TYPE. VARCHAR2(100)."
-    classification_context: "SCMS_OWNERSHIP_RELATION_TYPE"
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CONNECTED COMPANY DETAILS ─────────────────────────────────────────
-  - attribute_name: "Company Name"
-    physical_name: "co_nm"
-    description: "Tên tổ chức/công ty có quan hệ sở hữu với CTCK (denormalized)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.COMPANY_NAME"
-    comment: "VARCHAR2(500). Snapshot denormalized — không có FK cứng đến tổ chức."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Enterprise Type Id"
-    physical_name: "ent_tp_id"
-    description: "FK đến loại hình doanh nghiệp của tổ chức có quan hệ sở hữu."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID"
-    comment: "Pending — FK target ENTERPRISE_TYPE nằm ngoài scope. NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Enterprise Type Code"
-    physical_name: "ent_tp_code"
-    description: "Mã loại hình doanh nghiệp của tổ chức có quan hệ sở hữu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID"
-    comment: "Pending — Pair with Enterprise Type Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Country Id"
-    physical_name: "ctry_id"
-    description: "FK đến quốc gia đăng ký của tổ chức có quan hệ sở hữu."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.COUNTRY_ID"
-    comment: "Pending — FK target CAT_COUNTRY nằm ngoài scope. NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Country Code"
-    physical_name: "ctry_code"
-    description: "Mã quốc gia đăng ký của tổ chức có quan hệ sở hữu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.COUNTRY_ID"
-    comment: "Pending — Pair with Country Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── OWNERSHIP DATA ────────────────────────────────────────────────────
-  - attribute_name: "Ownership Ratio"
-    physical_name: "ownshp_ratio"
-    description: "Tỷ lệ sở hữu vốn (%)."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.OWNERSHIP_RATIO"
-    comment: "NUMBER(10,2). Lưu dạng thập phân (VD: 25.50 = 25.50%)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Ownership Date"
-    physical_name: "ownshp_dt"
-    description: "Ngày xác lập quan hệ sở hữu."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.OWNERSHIP_DATE"
-    comment: "DATE. Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "End Date"
-    physical_name: "end_dt"
-    description: "Ngày kết thúc/hết hiệu lực của quan hệ sở hữu."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.END_DATE"
-    comment: "DATE. Null = còn hiệu lực."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung về quan hệ sở hữu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.NOTE"
-    comment: "VARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.CREATED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.LAST_MODIFIED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.CREATED_BY"
-    comment: "Pending — Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người cập nhật bản ghi gần nhất."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người cập nhật bản ghi gần nhất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_OWNERSHIP_RELATION.LAST_MODIFIED_BY"
-    comment: "Pending — Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Ownership Relation Id"
+  physical_name: "securities_company_ownership_relation_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Ownership Relation Code"
+  physical_name: "securities_company_ownership_relation_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_OWNERSHIP_RELATION"
+  etl_derived_value: "SCMS.SC_FIRM_OWNERSHIP_RELATION"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán có quan hệ sở hữu."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ownership Relation Type Code"
+  physical_name: "ownership_relation_type_code"
+  description: "Loại quan hệ sở hữu: SO_HUU_TREN_5=Sở hữu trên 5%; CONG_TY_CON=Công\
+    \ ty con; CONG_TY_LIEN_KET=Công ty liên kết; CONG_TY_ME=Công ty mẹ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.RELATION_TYPE"
+  comment: "Scheme: SCMS_OWNERSHIP_RELATION_TYPE. VARCHAR2(100)."
+  classification_context: "SCMS_OWNERSHIP_RELATION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Company Name"
+  physical_name: "company_nm"
+  description: "Tên tổ chức/công ty có quan hệ sở hữu với CTCK (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.COMPANY_NAME"
+  comment: "VARCHAR2(500). Snapshot denormalized — không có FK cứng đến tổ chức."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enterprise Type Id"
+  physical_name: "enterprise_type_id"
+  description: "FK đến loại hình doanh nghiệp của tổ chức có quan hệ sở hữu."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID"
+  comment: "Pending — FK target ENTERPRISE_TYPE nằm ngoài scope. NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enterprise Type Code"
+  physical_name: "enterprise_type_code"
+  description: "Mã loại hình doanh nghiệp của tổ chức có quan hệ sở hữu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID"
+  comment: "Pending — Pair with Enterprise Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Country Id"
+  physical_name: "country_id"
+  description: "FK đến quốc gia đăng ký của tổ chức có quan hệ sở hữu."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.COUNTRY_ID"
+  comment: "Pending — FK target CAT_COUNTRY nằm ngoài scope. NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Country Code"
+  physical_name: "country_code"
+  description: "Mã quốc gia đăng ký của tổ chức có quan hệ sở hữu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.COUNTRY_ID"
+  comment: "Pending — Pair with Country Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ownership Ratio"
+  physical_name: "ownership_ratio"
+  description: "Tỷ lệ sở hữu vốn (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.OWNERSHIP_RATIO"
+  comment: "NUMBER(10,2). Lưu dạng thập phân (VD: 25.50 = 25.50%)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Ownership Date"
+  physical_name: "ownership_dt"
+  description: "Ngày xác lập quan hệ sở hữu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.OWNERSHIP_DATE"
+  comment: "DATE. Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "End Date"
+  physical_name: "end_dt"
+  description: "Ngày kết thúc/hết hiệu lực của quan hệ sở hữu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.END_DATE"
+  comment: "DATE. Null = còn hiệu lực."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung về quan hệ sở hữu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.NOTE"
+  comment: "VARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.CREATED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.LAST_MODIFIED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.CREATED_BY"
+  comment: "Pending — Pair with Created By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người cập nhật bản ghi gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người cập nhật bản ghi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.LAST_MODIFIED_BY"
+  comment: "Pending — Pair with Updated By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

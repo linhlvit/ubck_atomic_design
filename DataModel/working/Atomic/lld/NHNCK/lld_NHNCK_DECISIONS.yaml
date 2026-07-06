@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "DECISIONS"
   atomic_entity: "Securities Practitioner License Decision Document"
-  entity_physical_name: "scr_prac_license_dcsn_doc"
+  entity_physical_name: "sp_license_decision_document"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner License Decision Document Id"
-  physical_name: "scr_prac_license_dcsn_doc_id"
+  physical_name: "securities_practitioner_license_decision_document_id"
   description: "Surrogate key cho quyết định hành chính"
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Decision Document Code"
-  physical_name: "scr_prac_license_dcsn_doc_code"
+  physical_name: "securities_practitioner_license_decision_document_code"
   description: "Business key từ PK nguồn DECISIONS.ID"
   data_domain: "Text"
   nullable: false
@@ -45,7 +45,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Number"
-  physical_name: "dcsn_nbr"
+  physical_name: "decision_number"
   description: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
   data_domain: "Text"
   nullable: true
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Title"
-  physical_name: "dcsn_ttl"
+  physical_name: "decision_title"
   description: "Tiêu đề/tên quyết định hành chính"
   data_domain: "Text"
   nullable: true
@@ -71,7 +71,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Legal Reference"
-  physical_name: "lgl_refr"
+  physical_name: "legal_reference"
   description: "Căn cứ pháp lý của quyết định"
   data_domain: "Text"
   nullable: true
@@ -84,7 +84,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Content"
-  physical_name: "dcsn_cntnt"
+  physical_name: "decision_content"
   description: "Nội dung đầy đủ của quyết định"
   data_domain: "Text"
   nullable: true
@@ -97,7 +97,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Signed Date"
-  physical_name: "dcsn_signed_dt"
+  physical_name: "decision_signed_dt"
   description: "Ngày ký ban hành quyết định"
   data_domain: "Date"
   nullable: true
@@ -123,7 +123,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Signatory Position"
-  physical_name: "signatory_pos"
+  physical_name: "signatory_position"
   description: "Chức vụ của người ký quyết định"
   data_domain: "Text"
   nullable: true
@@ -136,7 +136,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Issuing Organization Name"
-  physical_name: "issu_org_nm"
+  physical_name: "issuing_organization_nm"
   description: "Tên đơn vị ban hành quyết định (VD: Ủy ban Chứng khoán Nhà nước)"
   data_domain: "Text"
   nullable: true
@@ -149,7 +149,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Attachment File Name"
-  physical_name: "attch_file_nm"
+  physical_name: "attachment_file_nm"
   description: "Tên file văn bản đính kèm"
   data_domain: "Text"
   nullable: true
@@ -162,7 +162,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Attachment File Path"
-  physical_name: "attch_file_path"
+  physical_name: "attachment_file_path"
   description: "Đường dẫn lưu trữ file đính kèm"
   data_domain: "Text"
   nullable: true
@@ -175,7 +175,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Type Code"
-  physical_name: "dcsn_tp_code"
+  physical_name: "decision_type_code"
   description: "Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại / ...)"
   data_domain: "Classification Value"
   nullable: false
@@ -189,7 +189,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái hiệu lực của bản ghi quyết định"
   data_domain: "Classification Value"
   nullable: false
@@ -198,11 +198,11 @@ attributes:
   source_columns:
   - "NHNCK.DECISIONS.RECORD_STATUS"
   comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Notification Content"
-  physical_name: "notf_cntnt"
+  physical_name: "notification_content"
   description: "Nội dung thông báo hoặc yêu cầu bổ sung hồ sơ kèm theo"
   data_domain: "Text"
   nullable: true
@@ -215,7 +215,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Active Flag"
-  physical_name: "actv_f"
+  physical_name: "active_flag"
   description: "Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô hiệu)"
   data_domain: "Boolean"
   nullable: false

@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "RISK_SUMMARY"
   atomic_entity: "Securities Company Risk Summary"
-  entity_physical_name: "scr_co_rsk_smry"
+  entity_physical_name: "sc_risk_summary"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Business Activity"
   table_type: "Fact Snapshot"
@@ -18,373 +17,364 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Tổng hợp điểm rủi ro CTCK theo kỳ đánh giá (mô hình CAMEL). Grain = 1 CTCK × 1 kỳ báo cáo → Fact Snapshot. FK: SC_FIRM_INFO_ID (FK cứng) → Securities Company; RISK_REPORTING_PERIOD_ID (FK suy luận, T1) → Securities Company Risk Reporting Period. RISK_SCORING_SC_FIRM_ID (key: null, không phải FK constraint) → lưu dạng Text reference. PERIOD+REPORT_YEAR: kỳ và năm báo cáo (mô tả bổ sung cho RISK_REPORTING_PERIOD_ID). Score fields (CAPITAL/ASSET/MANAGEMENT/EARNINGS/LIQUIDITY): 5 nhóm CAMEL. INITIAL_RATING/PERIODIC_RATING → SCMS_RISK_RATING (A/B/C/D/E). RECORD_STATUS → SCMS_USAGE_STATUS. Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT canonical (all BY pending)."
-
+  notes: "Tổng hợp điểm rủi ro CTCK theo kỳ đánh giá (mô hình CAMEL). Grain = 1 CTCK\
+    \ × 1 kỳ báo cáo → Fact Snapshot. FK: SC_FIRM_INFO_ID (FK cứng) → Securities Company;\
+    \ RISK_REPORTING_PERIOD_ID (FK suy luận, T1) → Securities Company Risk Reporting\
+    \ Period. RISK_SCORING_SC_FIRM_ID (key: null, không phải FK constraint) → lưu\
+    \ dạng Text reference. PERIOD+REPORT_YEAR: kỳ và năm báo cáo (mô tả bổ sung cho\
+    \ RISK_REPORTING_PERIOD_ID). Score fields (CAPITAL/ASSET/MANAGEMENT/EARNINGS/LIQUIDITY):\
+    \ 5 nhóm CAMEL. INITIAL_RATING/PERIODIC_RATING → SCMS_RISK_RATING (A/B/C/D/E).\
+    \ RECORD_STATUS → SCMS_USAGE_STATUS. Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT\
+    \ canonical (all BY pending)."
 attributes:
-  - attribute_name: "Securities Company Risk Summary Id"
-    physical_name: "scr_co_rsk_smry_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Risk Summary Code"
-    physical_name: "scr_co_rsk_smry_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.ID"
-    comment: "BK. NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.RISK_SUMMARY"
-    etl_derived_value: "SCMS.RISK_SUMMARY"
-    data_type: "string"
-
-  # ── FKs ───────────────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán được đánh giá rủi ro."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Risk Reporting Period Id"
-    physical_name: "scr_co_rsk_rprtng_prd_id"
-    description: "FK đến Kỳ báo cáo rủi ro."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.RISK_REPORTING_PERIOD_ID"
-    comment: "FK target: Securities Company Risk Reporting Period.Securities Company Risk Reporting Period Id. Hash: hash_id('SCMS.RISK_REPORTING_PERIOD', RISK_REPORTING_PERIOD_ID). NUMBER (no precision) — T1 entity."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Risk Reporting Period Code"
-    physical_name: "scr_co_rsk_rprtng_prd_code"
-    description: "Mã Kỳ báo cáo rủi ro."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.RISK_REPORTING_PERIOD_ID"
-    comment: "Lookup pair: Securities Company Risk Reporting Period.Securities Company Risk Reporting Period Code. Pair with Securities Company Risk Reporting Period Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── NON-FK REFERENCE ──────────────────────────────────────────────────
-  - attribute_name: "Risk Scoring Sc Firm Reference Id"
-    physical_name: "rsk_scr_scfirm_ref_id"
-    description: "Tham chiếu đến bản ghi chấm điểm rủi ro chi tiết của CTCK (không phải FK constraint)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.RISK_SCORING_SC_FIRM_ID"
-    comment: "NUMBER(10) — lưu dạng Text. Không phải FK constraint (key: null trong BRD). Tham chiếu mềm đến bảng chi tiết chấm điểm."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── PERIOD INFO ───────────────────────────────────────────────────────
-  - attribute_name: "Period"
-    physical_name: "prd"
-    description: "Kỳ số trong năm (1-4 cho quý, 1-12 cho tháng)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.PERIOD"
-    comment: "NVARCHAR2(20). Mô tả bổ sung cho RISK_REPORTING_PERIOD_ID — giá trị kỳ dạng text."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Year"
-    physical_name: "rprt_yr"
-    description: "Năm đánh giá rủi ro."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.REPORT_YEAR"
-    comment: "NUMBER(4). Năm 4 chữ số (VD: 2024)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "integer"
-
-  # ── CLASSIFICATION ────────────────────────────────────────────────────
-  - attribute_name: "Initial Rating Code"
-    physical_name: "intl_rtng_code"
-    description: "Xếp hạng rủi ro ban đầu (trước điều chỉnh): A=Tốt; B=Khá; C=Trung bình; D=Yếu; E=Rất yếu."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.INITIAL_RATING"
-    comment: "Scheme: SCMS_RISK_RATING. NVARCHAR2(20)."
-    classification_context: "SCMS_RISK_RATING"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Periodic Rating Code"
-    physical_name: "prdic_rtng_code"
-    description: "Xếp hạng rủi ro định kỳ sau điều chỉnh: A=Tốt; B=Khá; C=Trung bình; D=Yếu; E=Rất yếu."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.PERIODIC_RATING"
-    comment: "Scheme: SCMS_RISK_RATING. NVARCHAR2(20). Xếp hạng cuối cùng sau khi có điều chỉnh định kỳ."
-    classification_context: "SCMS_RISK_RATING"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Record Status Code"
-    physical_name: "rcrd_st_code"
-    description: "Trạng thái bản ghi: 1=Đang hoạt động; 0=Không sử dụng."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.RECORD_STATUS"
-    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1). Mô tả gốc BRD null."
-    classification_context: "SCMS_USAGE_STATUS"
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CAMEL SCORES ──────────────────────────────────────────────────────
-  - attribute_name: "Total Score"
-    physical_name: "ttl_scr"
-    description: "Tổng điểm đánh giá rủi ro (tổng hợp các nhóm CAMEL)."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.TOTAL_SCORE"
-    comment: "NUMBER(38,2). Tổng điểm CAMEL. Dùng Percentage domain (điểm 0-100 hoặc tỷ lệ)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Capital Score"
-    physical_name: "cptl_scr"
-    description: "Điểm nhóm C — Vốn (Capital) trong mô hình CAMEL."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.CAPITAL_SCORE"
-    comment: "NUMBER(38,2). Nhóm Capital trong CAMEL."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Asset Score"
-    physical_name: "asst_scr"
-    description: "Điểm nhóm A — Tài sản (Asset quality) trong mô hình CAMEL."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.ASSET_SCORE"
-    comment: "NUMBER(38,2). Nhóm Asset quality trong CAMEL."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Management Score"
-    physical_name: "mngmt_scr"
-    description: "Điểm nhóm M — Quản lý (Management) trong mô hình CAMEL."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.MANAGEMENT_SCORE"
-    comment: "NUMBER(38,2). Nhóm Management trong CAMEL."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Earnings Score"
-    physical_name: "erng_scr"
-    description: "Điểm nhóm E — Lợi nhuận (Earnings) trong mô hình CAMEL."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.EARNINGS_SCORE"
-    comment: "NUMBER(38,2). Nhóm Earnings trong CAMEL."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Liquidity Score"
-    physical_name: "lqdty_scr"
-    description: "Điểm nhóm L — Thanh khoản (Liquidity) trong mô hình CAMEL."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.LIQUIDITY_SCORE"
-    comment: "NUMBER(38,2). Nhóm Liquidity trong CAMEL."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.NOTE"
-    comment: "NVARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.CREATED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.LAST_MODIFIED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.CREATED_BY"
-    comment: "Pending — Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người cập nhật bản ghi lần cuối."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người cập nhật bản ghi lần cuối."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_SUMMARY.LAST_MODIFIED_BY"
-    comment: "Pending — Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Risk Summary Id"
+  physical_name: "securities_company_risk_summary_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Risk Summary Code"
+  physical_name: "securities_company_risk_summary_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng hoặc UUID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.RISK_SUMMARY"
+  etl_derived_value: "SCMS.RISK_SUMMARY"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán được đánh giá rủi ro."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Risk Reporting Period Id"
+  physical_name: "securities_company_risk_reporting_period_id"
+  description: "FK đến Kỳ báo cáo rủi ro."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.RISK_REPORTING_PERIOD_ID"
+  comment: "FK target: Securities Company Risk Reporting Period.Securities Company\
+    \ Risk Reporting Period Id. Hash: hash_id('SCMS.RISK_REPORTING_PERIOD', RISK_REPORTING_PERIOD_ID).\
+    \ NUMBER (no precision) — T1 entity."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Risk Reporting Period Code"
+  physical_name: "securities_company_risk_reporting_period_code"
+  description: "Mã Kỳ báo cáo rủi ro."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.RISK_REPORTING_PERIOD_ID"
+  comment: "Lookup pair: Securities Company Risk Reporting Period.Securities Company\
+    \ Risk Reporting Period Code. Pair with Securities Company Risk Reporting Period\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Risk Scoring Sc Firm Reference Id"
+  physical_name: "risk_scoring_sc_firm_reference_id"
+  description: "Tham chiếu đến bản ghi chấm điểm rủi ro chi tiết của CTCK (không phải\
+    \ FK constraint)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.RISK_SCORING_SC_FIRM_ID"
+  comment: "NUMBER(10) — lưu dạng Text. Không phải FK constraint (key: null trong\
+    \ BRD). Tham chiếu mềm đến bảng chi tiết chấm điểm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Period"
+  physical_name: "period"
+  description: "Kỳ số trong năm (1-4 cho quý, 1-12 cho tháng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.PERIOD"
+  comment: "NVARCHAR2(20). Mô tả bổ sung cho RISK_REPORTING_PERIOD_ID — giá trị kỳ\
+    \ dạng text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "report_year"
+  description: "Năm đánh giá rủi ro."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.REPORT_YEAR"
+  comment: "NUMBER(4). Năm 4 chữ số (VD: 2024)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Initial Rating Code"
+  physical_name: "initial_rating_code"
+  description: "Xếp hạng rủi ro ban đầu (trước điều chỉnh): A=Tốt; B=Khá; C=Trung\
+    \ bình; D=Yếu; E=Rất yếu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.INITIAL_RATING"
+  comment: "Scheme: SCMS_RISK_RATING. NVARCHAR2(20)."
+  classification_context: "SCMS_RISK_RATING"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Periodic Rating Code"
+  physical_name: "periodic_rating_code"
+  description: "Xếp hạng rủi ro định kỳ sau điều chỉnh: A=Tốt; B=Khá; C=Trung bình;\
+    \ D=Yếu; E=Rất yếu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.PERIODIC_RATING"
+  comment: "Scheme: SCMS_RISK_RATING. NVARCHAR2(20). Xếp hạng cuối cùng sau khi có\
+    \ điều chỉnh định kỳ."
+  classification_context: "SCMS_RISK_RATING"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái bản ghi: 1=Đang hoạt động; 0=Không sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.RECORD_STATUS"
+  comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1). Mô tả gốc BRD null."
+  classification_context: "SCMS_USAGE_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Total Score"
+  physical_name: "total_score"
+  description: "Tổng điểm đánh giá rủi ro (tổng hợp các nhóm CAMEL)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.TOTAL_SCORE"
+  comment: "NUMBER(38,2). Tổng điểm CAMEL. Dùng Percentage domain (điểm 0-100 hoặc\
+    \ tỷ lệ)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Capital Score"
+  physical_name: "capital_score"
+  description: "Điểm nhóm C — Vốn (Capital) trong mô hình CAMEL."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.CAPITAL_SCORE"
+  comment: "NUMBER(38,2). Nhóm Capital trong CAMEL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Asset Score"
+  physical_name: "asset_score"
+  description: "Điểm nhóm A — Tài sản (Asset quality) trong mô hình CAMEL."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.ASSET_SCORE"
+  comment: "NUMBER(38,2). Nhóm Asset quality trong CAMEL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Management Score"
+  physical_name: "management_score"
+  description: "Điểm nhóm M — Quản lý (Management) trong mô hình CAMEL."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.MANAGEMENT_SCORE"
+  comment: "NUMBER(38,2). Nhóm Management trong CAMEL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Earnings Score"
+  physical_name: "earnings_score"
+  description: "Điểm nhóm E — Lợi nhuận (Earnings) trong mô hình CAMEL."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.EARNINGS_SCORE"
+  comment: "NUMBER(38,2). Nhóm Earnings trong CAMEL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Liquidity Score"
+  physical_name: "liquidity_score"
+  description: "Điểm nhóm L — Thanh khoản (Liquidity) trong mô hình CAMEL."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.LIQUIDITY_SCORE"
+  comment: "NUMBER(38,2). Nhóm Liquidity trong CAMEL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.NOTE"
+  comment: "NVARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.CREATED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.LAST_MODIFIED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.CREATED_BY"
+  comment: "Pending — Pair with Created By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người cập nhật bản ghi lần cuối."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người cập nhật bản ghi lần cuối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_SUMMARY.LAST_MODIFIED_BY"
+  comment: "Pending — Pair with Updated By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "UNITS"
   atomic_entity: "Regulatory Authority Organization Unit"
-  entity_physical_name: "reg_ahr_ou"
+  entity_physical_name: "ra_organization_unit"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Regulatory Authority Organization Unit Id"
-  physical_name: "reg_ahr_ou_id"
+  physical_name: "regulatory_authority_organization_unit_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Regulatory Authority Organization Unit Code"
-  physical_name: "reg_ahr_ou_code"
+  physical_name: "regulatory_authority_organization_unit_code"
   description: "Mã đơn vị nội bộ UBCKNN. BK"
   data_domain: "Text"
   nullable: false
@@ -57,7 +57,7 @@ attributes:
   etl_derived_value: "NHNCK.UNITS"
   data_type: "string"
 - attribute_name: "Organization Unit Type Code"
-  physical_name: "ou_tp_code"
+  physical_name: "organization_unit_type_code"
   description: "Phân loại — Đơn vị (Unit)"
   data_domain: "Classification Value"
   nullable: false
@@ -69,7 +69,7 @@ attributes:
   etl_derived_value: "UNIT"
   data_type: "string"
 - attribute_name: "Regulatory Authority Organization Unit Name"
-  physical_name: "reg_ahr_ou_nm"
+  physical_name: "regulatory_authority_organization_unit_nm"
   description: "Tên đơn vị nội bộ UBCKNN"
   data_domain: "Text"
   nullable: true
@@ -82,7 +82,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Hierarchy Level Code"
-  physical_name: "hier_lvl_code"
+  physical_name: "hierarchy_level_code"
   description: "Cấp độ trong cây phân cấp tổ chức"
   data_domain: "Classification Value"
   nullable: true
@@ -95,7 +95,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Regulatory Authority Organization Unit Id"
-  physical_name: "prn_reg_ahr_ou_id"
+  physical_name: "parent_regulatory_authority_organization_unit_id"
   description: "FK đến đơn vị cha (self-ref)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -103,12 +103,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.UNITS.PARENT_ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. Hash: hash_id('NHNCK.UNITS', PARENT_ID)."
+  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
+    \ Organization Unit Id. Hash: hash_id('NHNCK.UNITS', PARENT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Regulatory Authority Organization Unit Code"
-  physical_name: "prn_reg_ahr_ou_code"
+  physical_name: "parent_regulatory_authority_organization_unit_code"
   description: "Mã đơn vị cha"
   data_domain: "Text"
   nullable: true
@@ -123,7 +124,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"
-  physical_name: "dsc"
+  physical_name: "description"
   description: "Mô tả chi tiết đơn vị"
   data_domain: "Text"
   nullable: true
@@ -136,7 +137,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái hoạt động của đơn vị"
   data_domain: "Classification Value"
   nullable: false

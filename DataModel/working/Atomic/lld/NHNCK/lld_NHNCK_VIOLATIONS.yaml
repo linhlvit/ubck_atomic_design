@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   atomic_entity: "Securities Practitioner Conduct Violation"
-  entity_physical_name: "scr_prac_conduct_vln"
+  entity_physical_name: "sp_conduct_violation"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner Conduct Violation Id"
-  physical_name: "scr_prac_conduct_vln_id"
+  physical_name: "securities_practitioner_conduct_violation_id"
   description: "Khóa đại diện cho bản ghi vi phạm đạo đức hành nghề (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Conduct Violation Code"
-  physical_name: "scr_prac_conduct_vln_code"
+  physical_name: "securities_practitioner_conduct_violation_code"
   description: "Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "NHNCK.VIOLATIONS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "FK đến người hành nghề chứng khoán bị vi phạm."
   data_domain: "Surrogate Key"
   nullable: false
@@ -66,12 +66,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.VIOLATIONS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã người hành nghề chứng khoán bị vi phạm."
   data_domain: "Text"
   nullable: false
@@ -85,7 +86,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Decision Document Id"
-  physical_name: "license_dcsn_doc_id"
+  physical_name: "license_decision_document_id"
   description: "FK đến quyết định xử lý vi phạm."
   data_domain: "Surrogate Key"
   nullable: true
@@ -93,12 +94,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.VIOLATIONS.DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Decision Document Code"
-  physical_name: "license_dcsn_doc_code"
+  physical_name: "license_decision_document_code"
   description: "Mã quyết định xử lý vi phạm."
   data_domain: "Text"
   nullable: true
@@ -112,7 +114,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Name At Violation"
-  physical_name: "prac_nm_at_vln"
+  physical_name: "practitioner_nm_at_violation"
   description: "Họ tên người hành nghề tại thời điểm vi phạm (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -126,7 +128,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Birth Date At Violation"
-  physical_name: "prac_brth_dt_at_vln"
+  physical_name: "practitioner_birth_dt_at_violation"
   description: "Ngày sinh người hành nghề tại thời điểm vi phạm (snapshot)."
   data_domain: "Date"
   nullable: true
@@ -140,7 +142,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Practitioner Identity Number At Violation"
-  physical_name: "prac_id_nbr_at_vln"
+  physical_name: "practitioner_identity_number_at_violation"
   description: "Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -154,7 +156,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Violation Record Date"
-  physical_name: "vln_rcrd_dt"
+  physical_name: "violation_record_dt"
   description: "Ngày ghi nhận vi phạm (business event date)."
   data_domain: "Timestamp"
   nullable: false
@@ -180,7 +182,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Type Code"
-  physical_name: "rcrd_tp_code"
+  physical_name: "record_type_code"
   description: "Phân loại bản ghi."
   data_domain: "Classification Value"
   nullable: true
@@ -194,7 +196,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái bản ghi vi phạm (1=Hoạt động)."
   data_domain: "Classification Value"
   nullable: false
@@ -203,6 +205,6 @@ attributes:
   source_columns:
   - "NHNCK.VIOLATIONS.RECORD_STATUS"
   comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"

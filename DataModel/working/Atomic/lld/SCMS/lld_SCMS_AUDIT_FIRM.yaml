@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "AUDIT_FIRM"
   atomic_entity: "Audit Firm"
-  entity_physical_name: "audt_firm"
+  entity_physical_name: "audit_firm"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Audit Firm"
   table_type: "Fundamental"
@@ -18,288 +17,272 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "BCV Term: Audit Firm (Involved Party). Công ty kiểm toán được UBCKNN chấp thuận. Grain = 1 Involved Party → tách IP Postal Address và IP Electronic Address. Địa chỉ → lld_SCMS_AUDIT_FIRM_IP_Postal_Address.yaml. Liên lạc (PHONE/FAX/EMAIL/WEBSITE) → lld_SCMS_AUDIT_FIRM_IP_Electronic_Address.yaml."
-
+  notes: "BCV Term: Audit Firm (Involved Party). Công ty kiểm toán được UBCKNN chấp\
+    \ thuận. Grain = 1 Involved Party → tách IP Postal Address và IP Electronic Address.\
+    \ Địa chỉ → lld_SCMS_AUDIT_FIRM_IP_Postal_Address.yaml. Liên lạc (PHONE/FAX/EMAIL/WEBSITE)\
+    \ → lld_SCMS_AUDIT_FIRM_IP_Electronic_Address.yaml."
 attributes:
-  # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
-  - attribute_name: "Audit Firm Id"
-    physical_name: "audt_firm_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate. BCV: \"[Involved Party] Audit Firm\". Công ty kiểm toán được chấp thuận."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── BUSINESS KEY ────────────────────────────────────────────────────
-  - attribute_name: "Audit Firm Code"
-    physical_name: "audt_firm_code"
-    description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.ID"
-    comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
-    etl_derived_value: "SCMS.AUDIT_FIRM"
-    data_type: "string"
-
-  # ── BUSINESS ATTRIBUTES ─────────────────────────────────────────────
-  - attribute_name: "Organization Code"
-    physical_name: "org_code"
-    description: "Mã định danh (mã viết tắt, mã nghiệp vụ)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.CODE"
-    comment: "Mã nghiệp vụ — khác BK (CODE khác ID nguồn)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Audit Firm Short Name"
-    physical_name: "audt_firm_shrt_nm"
-    description: "Tên viết tắt (VD: KPMG, E&Y, Deloitte)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.SHORT_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Audit Firm Name"
-    physical_name: "audt_firm_nm"
-    description: "Tên đầy đủ bằng tiếng Việt."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.NAME_VI"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Audit Firm English Name"
-    physical_name: "audt_firm_en_nm"
-    description: "Tên đầy đủ bằng tiếng Anh."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.NAME_EN"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Charter Capital Amount"
-    physical_name: "charter_cptl_amt"
-    description: "Vốn điều lệ (đơn vị: đồng)."
-    data_domain: "Currency Amount"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.CHARTER_CAPITAL"
-    comment: "Nguồn lưu NUMBER(38) — lưu dạng số nguyên (không có phần thập phân)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal(23,2)"
-
-  - attribute_name: "Business License Number"
-    physical_name: "biz_license_nbr"
-    description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_NUMBER"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Business License Date"
-    physical_name: "biz_license_dt"
-    description: "Ngày cấp giấy phép kinh doanh/thành lập lần đầu."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_DATE"
-    comment: "Nguồn lưu TIMESTAMP(6) — widening conversion về Date (chỉ lấy phần ngày)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Business License Issuer Name"
-    physical_name: "biz_license_issur_nm"
-    description: "Nơi cấp giấy phép kinh doanh (mặc định: UBCKNN)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_ISSUER"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Decision Number"
-    physical_name: "dcsn_nbr"
-    description: "Số quyết định phê duyệt."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.DECISION_NUMBER"
-    comment: "Mô tả gốc trống trong BRD — cần bổ sung từ tài liệu đặc tả SCMS."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.NOTE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Record Status Code"
-    physical_name: "rcrd_st_code"
-    description: "Trạng thái công ty kiểm toán: 1=Hoạt động; 0=Ngừng hoạt động."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.RECORD_STATUS"
-    comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ──────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.CREATED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.LAST_MODIFIED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Audit Firm Id"
+  physical_name: "audit_firm_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Audit Firm\". Công ty kiểm toán\
+    \ được chấp thuận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Code"
+  physical_name: "audit_firm_code"
+  description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
+  etl_derived_value: "SCMS.AUDIT_FIRM"
+  data_type: "string"
+- attribute_name: "Organization Code"
+  physical_name: "organization_code"
+  description: "Mã định danh (mã viết tắt, mã nghiệp vụ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.CODE"
+  comment: "Mã nghiệp vụ — khác BK (CODE khác ID nguồn)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Short Name"
+  physical_name: "audit_firm_short_nm"
+  description: "Tên viết tắt (VD: KPMG, E&Y, Deloitte)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.SHORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Name"
+  physical_name: "audit_firm_nm"
+  description: "Tên đầy đủ bằng tiếng Việt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.NAME_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm English Name"
+  physical_name: "audit_firm_english_nm"
+  description: "Tên đầy đủ bằng tiếng Anh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Charter Capital Amount"
+  physical_name: "charter_capital_amount"
+  description: "Vốn điều lệ (đơn vị: đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.CHARTER_CAPITAL"
+  comment: "Nguồn lưu NUMBER(38) — lưu dạng số nguyên (không có phần thập phân)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Business License Number"
+  physical_name: "business_license_number"
+  description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business License Date"
+  physical_name: "business_license_dt"
+  description: "Ngày cấp giấy phép kinh doanh/thành lập lần đầu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_DATE"
+  comment: "Nguồn lưu TIMESTAMP(6) — widening conversion về Date (chỉ lấy phần ngày)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Business License Issuer Name"
+  physical_name: "business_license_issuer_nm"
+  description: "Nơi cấp giấy phép kinh doanh (mặc định: UBCKNN)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_ISSUER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Number"
+  physical_name: "decision_number"
+  description: "Số quyết định phê duyệt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.DECISION_NUMBER"
+  comment: "Mô tả gốc trống trong BRD — cần bổ sung từ tài liệu đặc tả SCMS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái công ty kiểm toán: 1=Hoạt động; 0=Ngừng hoạt động."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.RECORD_STATUS"
+  comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang\
+    \ string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.LAST_MODIFIED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By\
+    \ SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By\
+    \ SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

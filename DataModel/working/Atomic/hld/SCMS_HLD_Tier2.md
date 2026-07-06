@@ -20,6 +20,9 @@
 | Involved Party | [Involved Party] Individual | Involved Party | SC_FIRM_LICENSED_PRACTITIONER | Người hành nghề chứng khoán đang công tác tại CTCK (từ hệ thống SCMS) | Securities Practitioner | Fundamental | (1) BCV có `Registered Securities Practitioner` trong Involved Party — đây là entity đã LOCKED tại NHNCK với tên `Securities Practitioner`. (2) SC_FIRM_LICENSED_PRACTITIONER lưu thông tin người HNCK tại CTCK: số CCHN, ngày cấp, trạng thái làm việc, FK đến SC_FIRM_INFO. (3) Extend source_table của entity `Securities Practitioner` (LOCKED); không tạo entity mới. |
 | Involved Party | [Involved Party] Auditor | Involved Party | AUDITOR | Kiểm toán viên được giao kiểm toán CTCK (cá nhân, trực thuộc AUDIT_FIRM) | Audit Firm Auditor | Relative | (1) BCV có `Auditor` trong Involved Party — cá nhân có chứng chỉ kiểm toán. (2) AUDITOR có FK AUDIT_FIRM_ID → AUDIT_FIRM.ID — là Involved Party cá nhân gắn với công ty kiểm toán. (3) Chọn `[Involved Party] Auditor`. |
 | Involved Party | [Involved Party] Custodian | Involved Party | CUSTODIAN_BANK | Ngân hàng lưu ký được CTCK chỉ định (quan hệ CTCK—Ngân hàng lưu ký) | Securities Company Custodian Bank | Relative | (1) BCV có `Securities Service Agreement` hoặc `Custodian Arrangement` trong Arrangement. (2) CUSTODIAN_BANK không phải thực thể Ngân hàng — mà là quan hệ giữa CTCK và Ngân hàng lưu ký (SC_FIRM_INFO_ID + BANK_ID). Đây là arrangement/thỏa thuận lưu ký. (3) Chọn `[Arrangement] Securities Service Agreement` — mô tả quan hệ lưu ký. |
+| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | Nhân sự tại chi nhánh CTCK nước ngoài tại Việt Nam | Securities Company Foreign Branch Personnel | Fundamental | (1) Đưa lại vào scope từ Tier 3 sau khi resolve mâu thuẫn Append/SCD4A (xem SCMS_HLD_Overview.md mục 7e #10) — table_type đổi thành Fundamental, không cần track SCD4A qua UPDATED_AT. (2) FK → SC_FIRM_FOREIGN_BRANCH.ID (Securities Company Foreign Branch). (3) Grain = Involved Party (cá nhân) → tách Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification. (4) Chọn `[Involved Party] Key Personnel`. |
+| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | Nhân sự tại VPĐD CTCK nước ngoài tại Việt Nam | Securities Company Foreign Representative Office Personnel | Fundamental | (1) Đưa lại vào scope từ Tier 3, cùng lý do với SC_FIRM_FOREIGN_BRANCH_PERSONNEL. (2) FK → SC_FIRM_FOREIGN_REP_OFFICE.ID (Securities Company Organization Unit). (3) Grain = Involved Party (cá nhân) → tách Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification. (4) Chọn `[Involved Party] Key Personnel`. |
+| Event | [Event] Business Activity | Event | SC_FIRM_SERVICE | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi dịch vụ) | Securities Company Licensed Service | Fundamental | (1) Đã resolve open question 7e-04 (SCMS_HLD_Overview.md) — giữ SC_FIRM_SERVICE, loại LNK_SC_FIRM_SERVICE (junction đơn giản hơn, thiếu vòng đời văn bản). (2) SC_FIRM_SERVICE có REGISTRATION_DOC_NUMBER/DATE, TERMINATION_DOC_NUMBER, EFFECTIVE_DATE, DOCUMENT_NUMBER — vòng đời cấp phép/thu hồi dịch vụ. (3) BCV Core Object = Event, theo đúng pattern đã implement thực tế cho SC_FIRM_ADMIN_PENALTY_DECISION/SC_FIRM_ADMIN_SANCTION (LLD 2 entity này dùng `bcv_core_object: Event`, `[Event] Business Activity` — khác với ghi chú Documentation trong bảng BCV ban đầu của 2 entity đó). (4) FK → SC_FIRM_INFO.ID (Securities Company); SERVICE_ID → CAT_SERVICE (Classification Value scheme SCMS_SERVICE_TYPE, đã có). (5) Chọn `[Event] Business Activity`. |
 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_PERIODIC_REPORT | Báo cáo định kỳ CTCK nộp lên UBCKNN (mỗi kỳ = 1 event nộp báo cáo) | Securities Company Periodic Report | Relative | (1) BCV có `Transaction` hoặc `Submission` trong Event — sự kiện nộp tài liệu. (2) SC_FIRM_PERIODIC_REPORT ghi nhận từng lần nộp báo cáo định kỳ: REPORT_YEAR, PERIOD, RECORD_STATUS (0=chưa gửi,1=đã gửi,2=đã duyệt). Đây là event nộp báo cáo, có trạng thái lifecycle. (3) Chọn `[Event] Transaction`. |
 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_ADHOC_REPORT | Báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN | Securities Company Adhoc Report | Relative | (1) Tương tự SC_FIRM_PERIODIC_REPORT — event nộp báo cáo đột xuất theo yêu cầu hoặc bất thường. (2) SC_FIRM_ADHOC_REPORT có RECORD_STATUS, EVENT_TYPE_ID, DETAIL_TYPE — mô tả event nghiệp vụ. (3) Chọn `[Event] Transaction`. |
 | Business Activity | [Business Activity] Communication | Business Activity | DISCLOSURE_REPORT | Báo cáo công bố thông tin (CBTT) của CTCK | Securities Company Disclosure Report | Relative | (1) BCV có `Communication` trong Event — sự kiện truyền đạt thông tin ra bên ngoài. (2) DISCLOSURE_REPORT = sự kiện CBTT: gắn SC_FIRM_INFO_ID, loại CBTT, nội dung. (3) Chọn `[Event] Communication`. |
@@ -114,6 +117,19 @@ erDiagram
         int ID PK
         int SC_FIRM_INFO_ID FK
     }
+    SC_FIRM_FOREIGN_BRANCH_PERSONNEL {
+        int ID PK
+        int SC_FIRM_FOREIGN_BRANCH_ID FK
+    }
+    SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL {
+        int ID PK
+        int SC_FIRM_FOREIGN_REP_OFFICE_ID FK
+    }
+    SC_FIRM_SERVICE {
+        int ID PK
+        int SC_FIRM_INFO_ID FK
+        int SERVICE_ID FK
+    }
     SC_FIRM_PERIODIC_REPORT {
         int ID PK
         int SC_FIRM_INFO_ID FK
@@ -197,6 +213,9 @@ erDiagram
     SC_FIRM_INFO ||--o{ SC_FIRM_SENIOR_PERSONNEL : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_LICENSED_PRACTITIONER : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ CUSTODIAN_BANK : "SC_FIRM_INFO_ID"
+    SC_FIRM_INFO ||--o{ SC_FIRM_SERVICE : "SC_FIRM_INFO_ID"
+    SC_FIRM_FOREIGN_BRANCH ||--o{ SC_FIRM_FOREIGN_BRANCH_PERSONNEL : "SC_FIRM_FOREIGN_BRANCH_ID"
+    SC_FIRM_FOREIGN_REP_OFFICE ||--o{ SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL : "SC_FIRM_FOREIGN_REP_OFFICE_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_PERIODIC_REPORT : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_ADHOC_REPORT : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ DISCLOSURE_REPORT : "SC_FIRM_INFO_ID"

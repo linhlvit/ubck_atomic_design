@@ -1,0 +1,115 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Alt Identification của Securities Company Foreign Branch Personnel. 1\
+    \ row per nhân sự — NATIONAL_ID → type NATIONAL_ID (CCCD/CMND/Hộ chiếu), kèm ISSUE_PLACE\
+    \ + ID_ISSUED_DATE. Format đồng bộ theo chuẩn NHNCK."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Securities Company Foreign Branch Personnel."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
+  comment: "FK target: Securities Company Foreign Branch Personnel.Securities Company\
+    \ Foreign Branch Personnel Id. Shared entity — không có PK surrogate riêng. Hash:\
+    \ hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã Securities Company Foreign Branch Personnel."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
+  comment: "Lookup pair: Securities Company Foreign Branch Personnel.Securities Company\
+    \ Foreign Branch Personnel Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
+  etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_type_code"
+  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ NATIONAL_ID."
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: "NATIONAL_ID"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_number"
+  description: "Số CCCD/CMND/Hộ chiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.NATIONAL_ID"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy tờ/chứng chỉ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID_ISSUED_DATE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp giấy tờ/chứng chỉ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ISSUE_PLACE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: null
+  data_type: "string"

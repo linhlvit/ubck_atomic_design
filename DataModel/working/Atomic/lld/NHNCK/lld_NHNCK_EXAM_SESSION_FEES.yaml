@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  entity_physical_name: "scr_prac_qualf_exam_ases_fee"
+  entity_physical_name: "sp_qualification_examination_assessment_fee"
   bcv_core_object: "Condition"
   bcv_concept: "[Condition] Financial Charge"
   table_type: "Fundamental"
@@ -21,7 +21,7 @@ metadata:
 attributes:
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Fee\
     \ Id"
-  physical_name: "scr_prac_qualf_exam_ases_fee_id"
+  physical_name: "securities_practitioner_qualification_examination_assessment_fee_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,7 +35,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Fee\
     \ Code"
-  physical_name: "scr_prac_qualf_exam_ases_fee_code"
+  physical_name: "securities_practitioner_qualification_examination_assessment_fee_code"
   description: "Mã định danh (tự động tăng). BK"
   data_domain: "Text"
   nullable: false
@@ -60,7 +60,7 @@ attributes:
   etl_derived_value: "NHNCK.EXAM_SESSION_FEES"
   data_type: "string"
 - attribute_name: "Examination Assessment Id"
-  physical_name: "exam_ases_id"
+  physical_name: "examination_assessment_id"
   description: "FK đến đợt thi (Exam Assessment)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -68,12 +68,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
+  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
+    \ Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Assessment Code"
-  physical_name: "exam_ases_code"
+  physical_name: "examination_assessment_code"
   description: "Mã đợt thi"
   data_domain: "Text"
   nullable: false
@@ -87,7 +88,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Type Code"
-  physical_name: "ctf_tp_code"
+  physical_name: "certificate_type_code"
   description: "Mã loại chứng chỉ"
   data_domain: "Classification Value"
   nullable: false
@@ -100,7 +101,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Fee Amount"
-  physical_name: "exam_fee_amt"
+  physical_name: "examination_fee_amount"
   description: "Mức phí dự thi (VNĐ)"
   data_domain: "Currency Amount"
   nullable: true
@@ -113,7 +114,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Appeal Fee Amount"
-  physical_name: "appeal_fee_amt"
+  physical_name: "appeal_fee_amount"
   description: "Mức phí phúc khảo (VNĐ)"
   data_domain: "Currency Amount"
   nullable: true
@@ -126,7 +127,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái bản ghi"
   data_domain: "Classification Value"
   nullable: true
@@ -135,11 +136,11 @@ attributes:
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.RECORD_STATUS"
   comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo"
   data_domain: "Timestamp"
   nullable: true
@@ -152,7 +153,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật"
   data_domain: "Timestamp"
   nullable: true
@@ -165,7 +166,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến Officer (người tạo)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -173,12 +174,13 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã người tạo"
   data_domain: "Text"
   nullable: true
@@ -192,7 +194,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến Officer (người cập nhật)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -200,12 +202,13 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã người cập nhật"
   data_domain: "Text"
   nullable: true

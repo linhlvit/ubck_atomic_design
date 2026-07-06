@@ -1,0 +1,877 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-securities_trade-ORDERTRADE.TRADE_BOOK_HNX
+  logical_name: Securities Trade
+  physical_name: securities_trade
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: ORDERTRADE
+  description: |
+    Từng lần khớp lệnh thành công trên HOSE và HNX. Mỗi dòng = 1 Trade ID. Lưu đồng thời thông tin bên mua và bên bán trong cùng 1 row. FK-BK về Securities Order qua buy/sell_scr_ordr_code.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ORDERTRADE-TRADE_BOOK_HNX
+
+attributes:
+  - name: Securities Trade Id
+    physical_name: securities_trade_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Khớp lệnh thành công trên HNX — mỗi trade là 1 bản ghi Fact Append."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Securities Trade Code
+    physical_name: securities_trade_code
+    business_meaning: "ID của giao dịch — dùng làm unique key, audit, tracking trade (BK). BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_NUMBER
+    comment: BK chính. PK nguồn TRADE_BOOK_HNX.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. HOSE và HNX đều map vào Securities Trade — src_stm_code phân biệt nguồn."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: ORDERTRADE.TRADE_BOOK_HNX
+
+  - name: Trade Date
+    physical_name: trade_dt
+    business_meaning: Ngày giao dịch của trade.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_DATE
+    comment: null
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Market Id Code
+    physical_name: market_id_code
+    business_meaning: Mã thị trường chứng khoán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.MARKET_ID
+    comment: "Scheme: ORDERTRADE_MARKET_ID."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Security Symbol Code
+    physical_name: security_symbol_code
+    business_meaning: Mã định danh của loại chứng khoán đang được giao dịch (unique).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.ISSUE_CODE
+    comment: Nguồn HNX dùng tên cột issue_code; HLD mapping chung vào Security Symbol.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Currency Code
+    physical_name: currency_code
+    business_meaning: Đơn vị tiền tệ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: "FK target: Currency.Currency Code. Chỉ có ở HOSE — HNX không có field này."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Board Type Code
+    physical_name: board_type_code
+    business_meaning: Loại bảng giao dịch.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BOARD_ID
+    comment: "Scheme: ORDERTRADE_BOARD_TYPE. Nguồn HNX dùng tên cột board_id; cùng scheme với HOSE board_type."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Trade Time
+    physical_name: trade_time
+    business_meaning: Thời điểm giao dịch xảy ra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_TIME
+    comment: Nguồn lưu dạng varchar — ETL giữ nguyên định dạng KRX.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Session Code
+    physical_name: session_code
+    business_meaning: Mã phiên giao dịch.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SESSION_ID
+    comment: "Scheme: ORDERTRADE_SESSION."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution Price
+    physical_name: execution_price
+    business_meaning: Giá khớp của giao dịch.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_PRICE
+    comment: Nguồn HNX dùng trade_price; HLD mapping chung vào Execution Price.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution Price Versus LTP
+    physical_name: execution_price_versus_ltp
+    business_meaning: Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution Volume
+    physical_name: execution_volume
+    business_meaning: Khối lượng giao dịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.TRADE_QUANTITY
+    comment: Nguồn bigint. HNX dùng trade_qty; HLD mapping chung vào Execution Volume.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution Value
+    physical_name: execution_value
+    business_meaning: Tổng giá trị giao dịch của lệnh khớp.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: false
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: "nullable=false — HOSE có sẵn; HNX ETL derive = trade_price × trade_qty (quyết định Q6 HLD). Nguồn decimal(22,4)."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution Last Traded Price
+    physical_name: execution_last_traded_price
+    business_meaning: Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution New High Low Price Indicator
+    physical_name: execution_new_high_low_price_indicator
+    business_meaning: Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày.
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Order Date
+    physical_name: buy_order_dt
+    business_meaning: Ngày đặt lệnh mua.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Order Time
+    physical_name: buy_order_time
+    business_meaning: Thời gian đặt lệnh mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Securities Order Id
+    physical_name: buy_securities_order_id
+    business_meaning: "FK surrogate đến Securities Order của lệnh mua (best-effort resolve)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NUMBER
+    comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', buy_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Securities Order Code
+    physical_name: buy_securities_order_code
+    business_meaning: "FK-BK đến Securities Order của lệnh mua (Order Reception Number — BK phụ HNX)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_RECEPTION_NUMBER
+    comment: "Lookup pair: securities_order.securities_order_code. Pair with Buy Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Broker Id
+    physical_name: buy_broker_id
+    business_meaning: Mã/số công ty chứng khoán thực hiện giao dịch mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_MEMBER_NUMBER
+    comment: Nguồn HNX dùng buy_member_no; HLD mapping chung vào Buy Broker Id.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Broker Name
+    physical_name: buy_broker_nm
+    business_meaning: Tên công ty chứng khoán thực hiện giao dịch mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Account Pin Code
+    physical_name: buy_account_pin_code
+    business_meaning: Mã PIN của tài khoản mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Account Number
+    physical_name: buy_account_number
+    business_meaning: Mã tài khoản thực hiện giao dịch mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ACCOUNT_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Account Holder Name
+    physical_name: buy_account_holder_nm
+    business_meaning: Tên tài khoản giao dịch mua của nhà đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Client House Classification Code
+    physical_name: buy_client_house_classification_code
+    business_meaning: Lệnh mua của khách hàng hay tự doanh.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_CLIENT_HOUSE_CLASSIFICATION
+    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Investor Type Code
+    physical_name: buy_investor_type_code
+    business_meaning: Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân (raw từ HNX).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_INVESTOR_CLASSIFICATION_CODE
+    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Foreign Investor Type Code
+    physical_name: buy_foreign_investor_type_code
+    business_meaning: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_FOREIGN_INVESTOR_TYPE_CODE
+    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Order Price
+    physical_name: buy_order_price
+    business_meaning: Giá đặt mua.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_PRICE
+    comment: null
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Order Volume
+    physical_name: buy_order_volume
+    business_meaning: Khối lượng đặt mua.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_QUANTITY
+    comment: Nguồn bigint.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Trader Number
+    physical_name: buy_trader_number
+    business_meaning: Mã/số định danh người thực hiện đặt mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Trader Name
+    physical_name: buy_trader_nm
+    business_meaning: Tên người thực hiện đặt mua.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Reference Sequence Number
+    physical_name: buy_reference_sequence_number
+    business_meaning: Số tham chiếu theo thứ tự đặt mua trong ngày.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: HNX Trade không có field Reference Sequence riêng — nullable; tương ứng buy_ref_seq_no của TRADE_BOOK_HOSE (quyết định Q5 HLD).
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Order Date
+    physical_name: sell_order_dt
+    business_meaning: Ngày đặt lệnh bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Order Time
+    physical_name: sell_order_time
+    business_meaning: Thời gian đặt lệnh bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Securities Order Id
+    physical_name: sell_securities_order_id
+    business_meaning: "FK surrogate đến Securities Order của lệnh bán (best-effort resolve)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NUMBER
+    comment: "FK target: securities_order.securities_order_id. Hash: hash_id('ORDERTRADE.ORDER_BOOK_HNX', sell_order_reception_no). nullable=true — ETL best-effort resolve trong batch ngày (quyết định Q7 HLD)."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Securities Order Code
+    physical_name: sell_securities_order_code
+    business_meaning: "FK-BK đến Securities Order của lệnh bán (Order Reception Number — BK phụ HNX)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_RECEPTION_NUMBER
+    comment: "Lookup pair: securities_order.securities_order_code. Pair with Sell Securities Order Id. FK-BK join target tại Gold layer (quyết định Q3 HLD)."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Broker Id
+    physical_name: sell_broker_id
+    business_meaning: Mã định danh công ty chứng khoán thực hiện lệnh bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_MEMBER_NUMBER
+    comment: Nguồn HNX dùng sell_member_no; HLD mapping chung vào Sell Broker Id.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Broker Name
+    physical_name: sell_broker_nm
+    business_meaning: Tên công ty chứng khoán thực hiện giao dịch bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Account Pin Code
+    physical_name: sell_account_pin_code
+    business_meaning: Mã PIN của tài khoản bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Lưu raw tại Atomic — masking quyết định ở lớp truy cập (quyết định Q4 HLD). Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Account Number
+    physical_name: sell_account_number
+    business_meaning: Số tài khoản giao dịch của khách hàng thực hiện lệnh bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ACCOUNT_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Account Holder Name
+    physical_name: sell_account_holder_nm
+    business_meaning: Tên tài khoản giao dịch bán của nhà đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Client House Classification Code
+    physical_name: sell_client_house_classification_code
+    business_meaning: Lệnh bán của khách hàng hay tự doanh.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_CLIENT_HOUSE_CLASSIFICATION
+    comment: "Scheme: ORDERTRADE_CLIENT_HOUSE_TYPE."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Investor Type Code
+    physical_name: sell_investor_type_code
+    business_meaning: Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân (raw từ HNX).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_INVESTOR_CLASSIFICATION_CODE
+    comment: "Scheme: ORDERTRADE_INVESTOR_TYPE. Lưu raw — phân biệt HOSE/HNX qua src_stm_code (quyết định Q1 HLD)."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Foreign Investor Type Code
+    physical_name: sell_foreign_investor_type_code
+    business_meaning: Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_FOREIGN_INVESTOR_TYPE_CODE
+    comment: "Scheme: ORDERTRADE_FOREIGN_INVESTOR_TYPE."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Order Price
+    physical_name: sell_order_price
+    business_meaning: Giá đặt bán.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_PRICE
+    comment: null
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Order Volume
+    physical_name: sell_order_volume
+    business_meaning: Khối lượng đặt bán.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_QUANTITY
+    comment: Nguồn bigint.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Trader Number
+    physical_name: sell_trader_number
+    business_meaning: Mã/số định danh người thực hiện đặt bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Trader Name
+    physical_name: sell_trader_nm
+    business_meaning: Tên người thực hiện đặt bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: Chỉ có ở HOSE — HNX không có field này.
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Reference Sequence Number
+    physical_name: sell_reference_sequence_number
+    business_meaning: Số tham chiếu theo thứ tự đặt bán trong ngày.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: null
+    comment: HNX Trade không có field Reference Sequence riêng — nullable; tương ứng sell_ref_seq_no của TRADE_BOOK_HOSE (quyết định Q5 HLD).
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Message Sequence Number
+    physical_name: message_sequence_number
+    business_meaning: Số thứ tự message trong luồng dữ liệu (tăng dần từ 1).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.MESSAGE_SEQUENCE
+    comment: "Nguồn bigint. HNX-only — HOSE không có field này."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Order Action Type Code
+    physical_name: sell_order_action_type_code
+    business_meaning: Loại hành động sửa/hủy của lệnh bên bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE
+    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Order Type Code
+    physical_name: sell_order_type_code
+    business_meaning: Loại lệnh của phía bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_TYPE_CODE
+    comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only — HOSE Trade không có field này."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Order Condition Code
+    physical_name: sell_order_condition_code
+    business_meaning: Điều kiện hiệu lực và cách xử lý của lệnh bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_ORDER_CONDITION_CODE
+    comment: "Scheme: ORDERTRADE_ORDER_CONDITION. HNX-only — HOSE Trade không có field này."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Sell Quote Request Type Code
+    physical_name: sell_quote_request_type_code
+    business_meaning: Mã loại yêu cầu báo giá của bên bán (HNX RFQ).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.SELL_QUOTE_REQUEST_CODE
+    comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với trade không phải RFQ."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Order Action Type Code
+    physical_name: buy_order_action_type_code
+    business_meaning: Loại hành động sửa/hủy của lệnh bên mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE
+    comment: "Scheme: ORDERTRADE_ORDER_ACTION_TYPE. HNX Trade-level field."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Order Type Code
+    physical_name: buy_order_type_code
+    business_meaning: Loại lệnh mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_TYPE_CODE
+    comment: "Scheme: ORDERTRADE_ORDER_TYPE. HNX-only — HOSE Trade không có field này."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Order Condition Code
+    physical_name: buy_order_condition_code
+    business_meaning: Điều kiện thực hiện lệnh mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_ORDER_CONDITION_CODE
+    comment: "Scheme: ORDERTRADE_ORDER_CONDITION. HNX-only — HOSE Trade không có field này."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Buy Quote Request Type Code
+    physical_name: buy_quote_request_type_code
+    business_meaning: Mã loại yêu cầu báo giá của bên mua (HNX RFQ).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.BUY_QUOTE_REQUEST_CODE
+    comment: "Scheme: ORDERTRADE_QUOTE_REQUEST_TYPE. HNX-only — NULL với trade không phải RFQ."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution Price Spread First
+    physical_name: execution_price_spread_first
+    business_meaning: "Giá khớp của leg thứ nhất trong spread trade (HNX-only: phái sinh/repo 2 vế)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.EXECUTION_PRICE_OF_SPREAD_FIRST
+    comment: "HNX-only — NULL với trade không phải spread."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null
+
+  - name: Execution Price Spread Second
+    physical_name: execution_price_spread_second
+    business_meaning: "Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo 2 vế)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ORDERTRADE
+    source_table: TRADE_BOOK_HNX
+    source_column: ORDERTRADE.TRADE_BOOK_HNX.EXECUTION_PRICE_OF_SPREAD_SECOND
+    comment: "HNX-only — NULL với trade không phải spread."
+    classification_context: "Source System Code = 'ORDERTRADE_TRADE_BOOK_HNX'"
+    etl_derived_value: null

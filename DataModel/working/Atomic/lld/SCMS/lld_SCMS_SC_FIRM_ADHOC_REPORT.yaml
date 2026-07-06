@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_ADHOC_REPORT"
   atomic_entity: "Securities Company Adhoc Report"
-  entity_physical_name: "scr_co_adhc_rprt"
+  entity_physical_name: "sc_adhoc_report"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Event] Transaction"
   table_type: "Relative"
@@ -18,572 +17,538 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Mỗi dòng = 1 báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN. DETAIL_TYPE phân loại: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu cầu; KHAC=Khác. SC_FIRM_FOREIGN_BRANCH_ID và BANK_ID: nullable FK cho báo cáo của chi nhánh/ngân hàng. EFORM_DATA + IMPORT_DU_LIEU_JSON excluded (raw JSON payload). Audit: CREATED_AT + LAST_MODIFIED_AT (không có CREATED_BY/LAST_MODIFIED_BY); CANCELLED_BY + SENDER_ID → pending."
-
+  notes: "Mỗi dòng = 1 báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN. DETAIL_TYPE\
+    \ phân loại: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu cầu; KHAC=Khác. SC_FIRM_FOREIGN_BRANCH_ID\
+    \ và BANK_ID: nullable FK cho báo cáo của chi nhánh/ngân hàng. EFORM_DATA + IMPORT_DU_LIEU_JSON\
+    \ excluded (raw JSON payload). Audit: CREATED_AT + LAST_MODIFIED_AT (không có\
+    \ CREATED_BY/LAST_MODIFIED_BY); CANCELLED_BY + SENDER_ID → pending."
 attributes:
-  - attribute_name: "Securities Company Adhoc Report Id"
-    physical_name: "scr_co_adhc_rprt_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Adhoc Report Code"
-    physical_name: "scr_co_adhc_rprt_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.ID"
-    comment: "BK. NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_ADHOC_REPORT"
-    etl_derived_value: "SCMS.SC_FIRM_ADHOC_REPORT"
-    data_type: "string"
-
-  # ── FK TO PARENT ─────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán nộp báo cáo."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Foreign Branch Id"
-    physical_name: "scr_co_frgn_brn_id"
-    description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-    comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Foreign Branch Code"
-    physical_name: "scr_co_frgn_brn_code"
-    description: "Mã chi nhánh CTCK nước ngoài."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
-    comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign Branch Code. Pair with Securities Company Foreign Branch Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Bank Id"
-    physical_name: "bnk_id"
-    description: "FK đến ngân hàng liên quan đến báo cáo (nullable)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-    comment: "FK target: Bank.Bank Id. Hash: hash_id('SCMS.BANK', BANK_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Bank Code"
-    physical_name: "bnk_code"
-    description: "Mã ngân hàng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
-    comment: "Lookup pair: Bank.Bank Code. Pair with Bank Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Form Report Id"
-    physical_name: "frm_rprt_id"
-    description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
-    comment: "Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER(19)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Form Version Id"
-    physical_name: "frm_vrsn_id"
-    description: "Phiên bản biểu mẫu báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
-    comment: "Pending — FK target chưa xác định. NUMBER(19). Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Input Submission Id"
-    physical_name: "rprt_inpt_sbmsn_id"
-    description: "FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
-    comment: "Pending — FK target REPORT_INPUT_SUBMISSION nằm ngoài scope. NUMBER(19)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── REPORT IDENTIFIERS ────────────────────────────────────────────────
-  - attribute_name: "Report Name"
-    physical_name: "rprt_nm"
-    description: "Tên báo cáo/biểu mẫu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_NAME"
-    comment: "VARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Year"
-    physical_name: "rprt_yr"
-    description: "Năm báo cáo."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_YEAR"
-    comment: "NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "integer"
-
-  - attribute_name: "Document Number"
-    physical_name: "doc_nbr"
-    description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_NUMBER"
-    comment: "VARCHAR2(200)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Period Value"
-    physical_name: "prd_val"
-    description: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.PERIOD_VALUE"
-    comment: "NVARCHAR2(200)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Adhoc Report Type Code"
-    physical_name: "adhc_rprt_tp_code"
-    description: "Loại báo cáo chi tiết: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu cầu; KHAC=Khác."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE"
-    comment: "Scheme: SCMS_ADHOC_REPORT_TYPE. NVARCHAR2(100)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Category Code"
-    physical_name: "ctgr_code"
-    description: "Phân loại báo cáo đột xuất."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY"
-    comment: "Pending — VARCHAR2(30), mô tả gốc BRD trống. Cần xác nhận values để tạo scheme. Tạm để pending."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Signature Type Code"
-    physical_name: "sgn_tp_code"
-    description: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký; NONE=Không yêu cầu chữ ký."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE"
-    comment: "Scheme: SCMS_SIGNATURE_TYPE. NVARCHAR2(30)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── STATUS ────────────────────────────────────────────────────────────
-  - attribute_name: "Report Submission Status Code"
-    physical_name: "rprt_sbmsn_st_code"
-    description: "Trạng thái nộp báo cáo đột xuất: 0=Chưa gửi; 1=Gửi đúng hạn; 2=Gửi muộn; 3=Bị hủy."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
-    comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10). Lưu ý: values khác với PERIODIC_REPORT (không có -1=Từ chối)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Overdue Days"
-    physical_name: "ovrd_days"
-    description: "Số ngày gửi báo cáo muộn."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SO_NGAY_GUI_MUON"
-    comment: "NUMBER(10). Tên cột tiếng Việt — SO_NGAY_GUI_MUON."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "integer"
-
-  - attribute_name: "Allow Import Indicator"
-    physical_name: "alw_imprt_ind"
-    description: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép."
-    data_domain: "Boolean"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.ALLOW_IMPORT"
-    comment: "NUMBER(1)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "boolean"
-
-  - attribute_name: "Requires Disclosure Indicator"
-    physical_name: "rqrs_dscsr_ind"
-    description: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
-    data_domain: "Boolean"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.REQUIRES_DISCLOSURE"
-    comment: "NUMBER(1)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "boolean"
-
-  - attribute_name: "Event Type Code"
-    physical_name: "evt_tp_code"
-    description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
-    comment: "Pending — FK target CAT_EVENT_TYPE; entity chưa thiết kế. NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── DATES ─────────────────────────────────────────────────────────────
-  - attribute_name: "Submission Deadline Timestamp"
-    physical_name: "sbmsn_ddln_tms"
-    description: "Hạn nộp báo cáo đột xuất (tên cột: HAN_GUI)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.HAN_GUI"
-    comment: "TIMESTAMP(6). Tên cột tiếng Việt HAN_GUI = Hạn gửi."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Event Date"
-    physical_name: "evt_dt"
-    description: "Ngày xảy ra sự kiện báo cáo đột xuất."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_DATE"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Document Date"
-    physical_name: "doc_dt"
-    description: "Ngày ký/ban hành văn bản."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_DATE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Sent Timestamp"
-    physical_name: "sent_tms"
-    description: "Thời điểm gửi báo cáo."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SENT_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Cancelled Timestamp"
-    physical_name: "cncld_tms"
-    description: "Thời điểm hủy báo cáo."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  # ── USER FKs LIFECYCLE (PENDING) ──────────────────────────────────────
-  - attribute_name: "Sender SCMS User Id"
-    physical_name: "sndr_scms_usr_id"
-    description: "FK đến người gửi báo cáo."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', SENDER_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Sender SCMS User Code"
-    physical_name: "sndr_scms_usr_code"
-    description: "Mã người gửi báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-    comment: "Pending — Pair with Sender SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Cancelled By SCMS User Id"
-    physical_name: "cncld_by_scms_usr_id"
-    description: "FK đến người hủy báo cáo."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CANCELLED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Cancelled By SCMS User Code"
-    physical_name: "cncld_by_scms_usr_code"
-    description: "Mã người hủy báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-    comment: "Pending — Pair with Cancelled By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CONTENT ───────────────────────────────────────────────────────────
-  - attribute_name: "Summary"
-    physical_name: "smry"
-    description: "Tóm tắt nội dung trích yếu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.SUMMARY"
-    comment: "NCLOB."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Import File Path"
-    physical_name: "imprt_file_path"
-    description: "Đường dẫn file Excel import dữ liệu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH"
-    comment: "VARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Attachment Path"
-    physical_name: "attch_path"
-    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.ATTACHMENT_PATH"
-    comment: "NCLOB."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.NOTE"
-    comment: "NCLOB."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Cancellation Reason"
-    physical_name: "cncl_rsn"
-    description: "Lý do hủy báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLATION_REASON"
-    comment: "NCLOB."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # EFORM_DATA + IMPORT_DU_LIEU_JSON excluded — raw JSON form payload, out of scope.
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.CREATED_AT"
-    comment: "TIMESTAMP(6). Bảng nguồn không có CREATED_BY."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ADHOC_REPORT.LAST_MODIFIED_AT"
-    comment: "TIMESTAMP(6). Bảng nguồn không có LAST_MODIFIED_BY."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
+- attribute_name: "Securities Company Adhoc Report Id"
+  physical_name: "securities_company_adhoc_report_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Adhoc Report Code"
+  physical_name: "securities_company_adhoc_report_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_ADHOC_REPORT"
+  etl_derived_value: "SCMS.SC_FIRM_ADHOC_REPORT"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán nộp báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Branch Id"
+  physical_name: "securities_company_foreign_branch_id"
+  description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Branch Code"
+  physical_name: "securities_company_foreign_branch_code"
+  description: "Mã chi nhánh CTCK nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Code. Pair with Securities Company Foreign Branch Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bank Id"
+  physical_name: "bank_id"
+  description: "FK đến ngân hàng liên quan đến báo cáo (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
+  comment: "FK target: Bank.Bank Id. Hash: hash_id('SCMS.BANK', BANK_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bank Code"
+  physical_name: "bank_code"
+  description: "Mã ngân hàng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.BANK_ID"
+  comment: "Lookup pair: Bank.Bank Code. Pair with Bank Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Report Id"
+  physical_name: "form_report_id"
+  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_REPORT_ID"
+  comment: "Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER(19)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Version Id"
+  physical_name: "form_version_id"
+  description: "Phiên bản biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.FORM_VERSION_ID"
+  comment: "Pending — FK target chưa xác định. NUMBER(19). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Input Submission Id"
+  physical_name: "report_input_submission_id"
+  description: "FK đến phiên gửi báo cáo liên quan (REPORT_INPUT_SUBMISSION)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_INPUT_SUBMISSION_ID"
+  comment: "Pending — FK target REPORT_INPUT_SUBMISSION nằm ngoài scope. NUMBER(19)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Name"
+  physical_name: "report_nm"
+  description: "Tên báo cáo/biểu mẫu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_NAME"
+  comment: "VARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "report_year"
+  description: "Năm báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.REPORT_YEAR"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Document Number"
+  physical_name: "document_number"
+  description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_NUMBER"
+  comment: "VARCHAR2(200)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Period Value"
+  physical_name: "period_value"
+  description: "Giá trị kỳ đánh giá rủi ro (VD: 2024-Q1)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.PERIOD_VALUE"
+  comment: "NVARCHAR2(200)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Adhoc Report Type Code"
+  physical_name: "adhoc_report_type_code"
+  description: "Loại báo cáo chi tiết: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu\
+    \ cầu; KHAC=Khác."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.DETAIL_TYPE"
+  comment: "Scheme: SCMS_ADHOC_REPORT_TYPE. NVARCHAR2(100)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Category Code"
+  physical_name: "category_code"
+  description: "Phân loại báo cáo đột xuất."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.CATEGORY"
+  comment: "Pending — VARCHAR2(30), mô tả gốc BRD trống. Cần xác nhận values để tạo\
+    \ scheme. Tạm để pending."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signature Type Code"
+  physical_name: "signature_type_code"
+  description: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký;\
+    \ NONE=Không yêu cầu chữ ký."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SIGNATURE_TYPE"
+  comment: "Scheme: SCMS_SIGNATURE_TYPE. NVARCHAR2(30)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Submission Status Code"
+  physical_name: "report_submission_status_code"
+  description: "Trạng thái nộp báo cáo đột xuất: 0=Chưa gửi; 1=Gửi đúng hạn; 2=Gửi\
+    \ muộn; 3=Bị hủy."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.RECORD_STATUS"
+  comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10). Lưu ý: values khác\
+    \ với PERIODIC_REPORT (không có -1=Từ chối)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overdue Days"
+  physical_name: "overdue_days"
+  description: "Số ngày gửi báo cáo muộn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SO_NGAY_GUI_MUON"
+  comment: "NUMBER(10). Tên cột tiếng Việt — SO_NGAY_GUI_MUON."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Allow Import Indicator"
+  physical_name: "allow_import_indicator"
+  description: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.ALLOW_IMPORT"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Requires Disclosure Indicator"
+  physical_name: "requires_disclosure_indicator"
+  description: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.REQUIRES_DISCLOSURE"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Event Type Code"
+  physical_name: "event_type_code"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
+  comment: "Pending — FK target CAT_EVENT_TYPE; entity chưa thiết kế. NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Deadline Timestamp"
+  physical_name: "submission_deadline_tms"
+  description: "Hạn nộp báo cáo đột xuất (tên cột: HAN_GUI)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.HAN_GUI"
+  comment: "TIMESTAMP(6). Tên cột tiếng Việt HAN_GUI = Hạn gửi."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Event Date"
+  physical_name: "event_dt"
+  description: "Ngày xảy ra sự kiện báo cáo đột xuất."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_DATE"
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Document Date"
+  physical_name: "document_dt"
+  description: "Ngày ký/ban hành văn bản."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.DOCUMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Sent Timestamp"
+  physical_name: "sent_tms"
+  description: "Thời điểm gửi báo cáo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SENT_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Cancelled Timestamp"
+  physical_name: "cancelled_tms"
+  description: "Thời điểm hủy báo cáo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Sender SCMS User Id"
+  physical_name: "sender_scms_user_id"
+  description: "FK đến người gửi báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ SENDER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sender SCMS User Code"
+  physical_name: "sender_scms_user_code"
+  description: "Mã người gửi báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
+  comment: "Pending — Pair with Sender SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cancelled By SCMS User Id"
+  physical_name: "cancelled_by_scms_user_id"
+  description: "FK đến người hủy báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CANCELLED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cancelled By SCMS User Code"
+  physical_name: "cancelled_by_scms_user_code"
+  description: "Mã người hủy báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
+  comment: "Pending — Pair with Cancelled By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Summary"
+  physical_name: "summary"
+  description: "Tóm tắt nội dung trích yếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.SUMMARY"
+  comment: "NCLOB."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Import File Path"
+  physical_name: "import_file_path"
+  description: "Đường dẫn file Excel import dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.IMPORT_FILE_PATH"
+  comment: "VARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Attachment Path"
+  physical_name: "attachment_path"
+  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.ATTACHMENT_PATH"
+  comment: "NCLOB."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.NOTE"
+  comment: "NCLOB."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cancellation Reason"
+  physical_name: "cancellation_reason"
+  description: "Lý do hủy báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLATION_REASON"
+  comment: "NCLOB."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.CREATED_AT"
+  comment: "TIMESTAMP(6). Bảng nguồn không có CREATED_BY."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ADHOC_REPORT.LAST_MODIFIED_AT"
+  comment: "TIMESTAMP(6). Bảng nguồn không có LAST_MODIFIED_BY."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

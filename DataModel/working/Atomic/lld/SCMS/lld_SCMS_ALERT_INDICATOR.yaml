@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "ALERT_INDICATOR"
   atomic_entity: "Securities Company Alert Indicator"
-  entity_physical_name: "scr_co_alrt_ind"
+  entity_physical_name: "securities_company_alert_indicator"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Alert Indicator"
   table_type: "Fundamental"
@@ -18,456 +17,439 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "BCV Term: Alert Indicator. Bảng master định nghĩa chỉ tiêu cảnh báo — không lưu kết quả. BRD có trường trùng lặp: ALERT_CODE/INDICATOR_CODE, ALERT_NAME/INDICATOR_NAME, SEVERITY_LEVEL/SEVERITY — xem comment từng trường. LEGAL_REFERENCE_ID và INDICATOR_TYPE_ID không có FK target trong BRD."
-
+  notes: "BCV Term: Alert Indicator. Bảng master định nghĩa chỉ tiêu cảnh báo — không\
+    \ lưu kết quả. BRD có trường trùng lặp: ALERT_CODE/INDICATOR_CODE, ALERT_NAME/INDICATOR_NAME,\
+    \ SEVERITY_LEVEL/SEVERITY — xem comment từng trường. LEGAL_REFERENCE_ID và INDICATOR_TYPE_ID\
+    \ không có FK target trong BRD."
 attributes:
-  # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
-  - attribute_name: "Securities Company Alert Indicator Id"
-    physical_name: "scr_co_alrt_ind_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo tài chính/tuân thủ."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── BUSINESS KEY ────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Alert Indicator Code"
-    physical_name: "scr_co_alrt_ind_code"
-    description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.ID"
-    comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.ALERT_INDICATOR"
-    etl_derived_value: "SCMS.ALERT_INDICATOR"
-    data_type: "string"
-
-  # ── BUSINESS ATTRIBUTES ─────────────────────────────────────────────
-  - attribute_name: "Alert Code"
-    physical_name: "alrt_code"
-    description: "Mã chỉ tiêu cảnh báo (mã nghiệp vụ chính)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.ALERT_CODE"
-    comment: "Mã nghiệp vụ chính — khác BK (ALERT_CODE khác ID nguồn). Ưu tiên so với INDICATOR_CODE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Indicator Code"
-    physical_name: "ind_code"
-    description: "Mã chỉ tiêu (trường thứ cấp, có thể trùng với Alert Code)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
-    comment: "BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2 để bảo toàn dữ liệu."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Alert Indicator Name"
-    physical_name: "scr_co_alrt_ind_nm"
-    description: "Tên chỉ tiêu cảnh báo (tên chính)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.ALERT_NAME"
-    comment: "Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Indicator Name"
-    physical_name: "ind_nm"
-    description: "Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.INDICATOR_NAME"
-    comment: "BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Alert Indicator Type Code"
-    physical_name: "alrt_ind_tp_code"
-    description: "Loại chỉ tiêu cảnh báo: AN_TOAN_TAI_CHINH=An toàn tài chính; TUAN_THU=Tuân thủ pháp lý; RUI_RO=Rủi ro hoạt động."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
-    comment: "Scheme: SCMS_ALERT_INDICATOR_TYPE. Nguồn lưu NUMBER(1) — ETL map số → text code. Cần profile values thực tế."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Indicator Type Id"
-    physical_name: "ind_tp_id"
-    description: "ID loại chỉ tiêu (nguồn không khai báo FK target)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.INDICATOR_TYPE_ID"
-    comment: "FK target chưa xác định trong BRD — lưu dạng text denormalized. Nguồn lưu NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Legal Reference"
-    physical_name: "lgl_ref"
-    description: "Tham chiếu văn bản pháp luật liên quan (denormalized)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Legal Reference Id"
-    physical_name: "lgl_ref_id"
-    description: "ID văn bản pháp luật tham chiếu (nguồn không khai báo FK target)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE_ID"
-    comment: "BRD ghi chú 'Chưa liên kết đến bảng khác' — lưu dạng text denormalized. Nguồn lưu NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Legal Basis"
-    physical_name: "lgl_basis"
-    description: "Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.LEGAL_BASIS"
-    comment: "Nguồn lưu NCLOB — ETL cần xử lý large object."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Severity Level"
-    physical_name: "svr_lvl"
-    description: "Mức độ cảnh báo: Cấp 1, 2 hoặc 3."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.SEVERITY_LEVEL"
-    comment: "NUMBER(3). BRD có cả SEVERITY_LEVEL và SEVERITY — dùng SEVERITY_LEVEL là trường chính (NUMBER(3), mô tả rõ Cấp 1/2/3)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "int"
-
-  - attribute_name: "Severity"
-    physical_name: "svr"
-    description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.SEVERITY"
-    comment: "NUMBER(10). BRD có cả SEVERITY và SEVERITY_LEVEL — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "int"
-
-  - attribute_name: "Lower Threshold"
-    physical_name: "lwr_thrs"
-    description: "Ngưỡng cảnh báo dưới."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.LOWER_THRESHOLD"
-    comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau (Triệu đồng/Phần trăm/Số lượng)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Upper Threshold"
-    physical_name: "upr_thrs"
-    description: "Ngưỡng cảnh báo trên."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.UPPER_THRESHOLD"
-    comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau. Xem Lower Threshold."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Unit"
-    physical_name: "unit"
-    description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.UNIT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Default Value"
-    physical_name: "dflt_val"
-    description: "Giá trị mặc định của ô khi khởi tạo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.DEFAULT_VALUE"
-    comment: "Nguồn lưu NUMBER — ETL convert sang string để đồng nhất."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Description"
-    physical_name: "dsc"
-    description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.DESCRIPTION"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.NOTE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Formula Text"
-    physical_name: "frml_txt"
-    description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.FORMULA_TEXT"
-    comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Formula"
-    physical_name: "frml"
-    description: "Công thức tính toán giá trị ô."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.FORMULA"
-    comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Sum Formula"
-    physical_name: "sum_frml"
-    description: "Công thức tổng hợp của ô (tính tổng nhiều ô)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.SUM_FORMULA"
-    comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Weight"
-    physical_name: "wght"
-    description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.WEIGHT"
-    comment: "NUMBER(38,2) — trọng số phần trăm."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal(38,2)"
-
-  - attribute_name: "Sort Order"
-    physical_name: "sort_ordr"
-    description: "Thứ tự sắp xếp hiển thị."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.SORT_ORDER"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "int"
-
-  - attribute_name: "Record Status Code"
-    physical_name: "rcrd_st_code"
-    description: "Trạng thái chỉ tiêu cảnh báo: 0=Không sử dụng; 1=Đang sử dụng."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.RECORD_STATUS"
-    comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ──────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.CREATED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.LAST_MODIFIED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.ALERT_INDICATOR.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Id"
+  physical_name: "securities_company_alert_indicator_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo tài\
+    \ chính/tuân thủ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Code"
+  physical_name: "securities_company_alert_indicator_code"
+  description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.ALERT_INDICATOR"
+  etl_derived_value: "SCMS.ALERT_INDICATOR"
+  data_type: "string"
+- attribute_name: "Alert Code"
+  physical_name: "alert_code"
+  description: "Mã chỉ tiêu cảnh báo (mã nghiệp vụ chính)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.ALERT_CODE"
+  comment: "Mã nghiệp vụ chính — khác BK (ALERT_CODE khác ID nguồn). Ưu tiên so với\
+    \ INDICATOR_CODE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Indicator Code"
+  physical_name: "indicator_code"
+  description: "Mã chỉ tiêu (trường thứ cấp, có thể trùng với Alert Code)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
+  comment: "BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác nhận sự khác biệt với\
+    \ team nguồn. Giữ cả 2 để bảo toàn dữ liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Name"
+  physical_name: "securities_company_alert_indicator_nm"
+  description: "Tên chỉ tiêu cảnh báo (tên chính)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.ALERT_NAME"
+  comment: "Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Indicator Name"
+  physical_name: "indicator_nm"
+  description: "Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.INDICATOR_NAME"
+  comment: "BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt với\
+    \ team nguồn. Giữ cả 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Indicator Type Code"
+  physical_name: "alert_indicator_type_code"
+  description: "Loại chỉ tiêu cảnh báo: AN_TOAN_TAI_CHINH=An toàn tài chính; TUAN_THU=Tuân\
+    \ thủ pháp lý; RUI_RO=Rủi ro hoạt động."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
+  comment: "Scheme: SCMS_ALERT_INDICATOR_TYPE. Nguồn lưu NUMBER(1) — ETL map số →\
+    \ text code. Cần profile values thực tế."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Indicator Type Id"
+  physical_name: "indicator_type_id"
+  description: "ID loại chỉ tiêu (nguồn không khai báo FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.INDICATOR_TYPE_ID"
+  comment: "FK target chưa xác định trong BRD — lưu dạng text denormalized. Nguồn\
+    \ lưu NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Reference"
+  physical_name: "legal_reference"
+  description: "Tham chiếu văn bản pháp luật liên quan (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Reference Id"
+  physical_name: "legal_reference_id"
+  description: "ID văn bản pháp luật tham chiếu (nguồn không khai báo FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE_ID"
+  comment: "BRD ghi chú 'Chưa liên kết đến bảng khác' — lưu dạng text denormalized.\
+    \ Nguồn lưu NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Basis"
+  physical_name: "legal_basis"
+  description: "Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LEGAL_BASIS"
+  comment: "Nguồn lưu NCLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Severity Level"
+  physical_name: "severity_level"
+  description: "Mức độ cảnh báo: Cấp 1, 2 hoặc 3."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.SEVERITY_LEVEL"
+  comment: "NUMBER(3). BRD có cả SEVERITY_LEVEL và SEVERITY — dùng SEVERITY_LEVEL\
+    \ là trường chính (NUMBER(3), mô tả rõ Cấp 1/2/3)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Severity"
+  physical_name: "severity"
+  description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.SEVERITY"
+  comment: "NUMBER(10). BRD có cả SEVERITY và SEVERITY_LEVEL — cần xác nhận sự khác\
+    \ biệt với team nguồn. Giữ cả 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Lower Threshold"
+  physical_name: "lower_threshold"
+  description: "Ngưỡng cảnh báo dưới."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LOWER_THRESHOLD"
+  comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau (Triệu đồng/Phần\
+    \ trăm/Số lượng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Upper Threshold"
+  physical_name: "upper_threshold"
+  description: "Ngưỡng cảnh báo trên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.UPPER_THRESHOLD"
+  comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau. Xem Lower\
+    \ Threshold."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Unit"
+  physical_name: "unit"
+  description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.UNIT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Default Value"
+  physical_name: "default_value"
+  description: "Giá trị mặc định của ô khi khởi tạo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.DEFAULT_VALUE"
+  comment: "Nguồn lưu NUMBER — ETL convert sang string để đồng nhất."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Formula Text"
+  physical_name: "formula_text"
+  description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.FORMULA_TEXT"
+  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Formula"
+  physical_name: "formula"
+  description: "Công thức tính toán giá trị ô."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.FORMULA"
+  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sum Formula"
+  physical_name: "sum_formula"
+  description: "Công thức tổng hợp của ô (tính tổng nhiều ô)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.SUM_FORMULA"
+  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Weight"
+  physical_name: "weight"
+  description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.WEIGHT"
+  comment: "NUMBER(38,2) — trọng số phần trăm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Sort Order"
+  physical_name: "sort_order"
+  description: "Thứ tự sắp xếp hiển thị."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.SORT_ORDER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái chỉ tiêu cảnh báo: 0=Không sử dụng; 1=Đang sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.RECORD_STATUS"
+  comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang\
+    \ string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LAST_MODIFIED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By\
+    \ SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.ALERT_INDICATOR.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By\
+    \ SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

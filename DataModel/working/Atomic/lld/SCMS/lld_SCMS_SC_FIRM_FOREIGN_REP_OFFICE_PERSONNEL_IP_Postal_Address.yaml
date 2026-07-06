@@ -1,0 +1,92 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IP Postal Address của Securities Company Foreign Representative Office Personnel.\
+    \ Grain: 1 địa chỉ thường trú (PERMANENT). Nguồn chỉ có PERMANENT_ADDRESS, không\
+    \ có ADDRESS như Securities Company Foreign Branch Personnel. Không có cột địa\
+    \ lý (Province/District/Ward). Format đồng bộ theo chuẩn NHNCK."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Securities Company Foreign Representative Office Personnel."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
+  comment: "FK target: Securities Company Foreign Representative Office Personnel.Securities\
+    \ Company Foreign Representative Office Personnel Id. Shared entity — không có\
+    \ PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã Securities Company Foreign Representative Office Personnel."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
+  comment: "Lookup pair: Securities Company Foreign Representative Office Personnel.Securities\
+    \ Company Foreign Representative Office Personnel Code. Pair with Involved Party\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
+  etl_derived_value: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "address_type_code"
+  description: "Loại địa chỉ: PERMANENT=Địa chỉ thường trú theo hộ khẩu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. Hardcode PERMANENT — nguồn chỉ có 1 loại địa chỉ."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: "PERMANENT"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "address_value"
+  description: "Địa chỉ thường trú theo hộ khẩu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.PERMANENT_ADDRESS"
+  comment: "Không có cột địa lý (Province/District/Ward) trong BRD."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"

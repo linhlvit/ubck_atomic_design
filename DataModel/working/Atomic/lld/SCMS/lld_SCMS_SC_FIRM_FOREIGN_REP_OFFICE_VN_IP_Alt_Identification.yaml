@@ -1,14 +1,13 @@
-schema_type: "lld_shared_ip_alt_identification"
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
-  atomic_entity: "IP Alt Identification"
-  entity_physical_name: "ip_alt_id"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Alt Identification"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
   version: "1.0"
@@ -18,90 +17,111 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Alt Identification của Securities Company Foreign Representative Office in VN (VPDD nước ngoài thành lập tại VN — có tư cách pháp nhân VN). ETL tạo tối đa 2 rows per VPDD-VN (skip nếu id_nbr NULL): Row 1 OPERATION_LICENSE (BUSINESS_LICENSE_NUMBER + BUSINESS_LICENSE_DATE + BUSINESS_LICENSE_ISSUER — giấy phép thành lập và hoạt động do UBCKNN cấp); Row 2 ESTABLISHMENT_LICENSE (OFFICE_BUSINESS_LICENSE + OFFICE_LICENSE_DATE + OFFICE_LICENSE_ISSUER — giấy phép hoạt động của VPDD tại VN)."
-
+  notes: "IP Alt Identification của Securities Company Foreign Representative Office\
+    \ in VN (VPDD nước ngoài thành lập tại VN — có tư cách pháp nhân VN). ETL tạo\
+    \ tối đa 2 rows per VPDD-VN (skip nếu id_nbr NULL): Row 1 OPERATION_LICENSE (BUSINESS_LICENSE_NUMBER\
+    \ + BUSINESS_LICENSE_DATE + BUSINESS_LICENSE_ISSUER — giấy phép thành lập và hoạt\
+    \ động do UBCKNN cấp); Row 2 ESTABLISHMENT_LICENSE (OFFICE_BUSINESS_LICENSE +\
+    \ OFFICE_LICENSE_DATE + OFFICE_LICENSE_ISSUER — giấy phép hoạt động của VPDD tại\
+    \ VN)."
 attributes:
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Securities Company Foreign Representative Office in VN."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
-    comment: "FK target: Securities Company Foreign Rep Office VN.Securities Company Org Unit Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN', ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Identification Type Code"
-    physical_name: "id_tp_code"
-    description: "Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép thành lập và hoạt động (UBCKNN cấp); ESTABLISHMENT_LICENSE=Giấy phép hoạt động văn phòng tại VN."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot: BUSINESS_LICENSE_NUMBER→OPERATION_LICENSE; OFFICE_BUSINESS_LICENSE→ESTABLISHMENT_LICENSE."
-    classification_context: "IP_ALT_ID_TYPE"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
-    etl_derived_value: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
-    data_type: "string"
-
-  - attribute_name: "Identification Number"
-    physical_name: "id_nbr"
-    description: "Số giấy tờ định danh của VPDD-VN theo từng loại."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_NUMBER"
-      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_BUSINESS_LICENSE"
-    comment: "ETL pivot: BUSINESS_LICENSE_NUMBER→row OPERATION_LICENSE; OFFICE_BUSINESS_LICENSE→row ESTABLISHMENT_LICENSE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Issue Date"
-    physical_name: "issue_dt"
-    description: "Ngày cấp giấy tờ."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_DATE"
-      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_DATE"
-    comment: "ETL pivot: BUSINESS_LICENSE_DATE→row OPERATION_LICENSE; OFFICE_LICENSE_DATE→row ESTABLISHMENT_LICENSE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Issue Place"
-    physical_name: "issue_plc"
-    description: "Cơ quan/nơi cấp giấy tờ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_ISSUER"
-      - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_ISSUER"
-    comment: "ETL pivot: BUSINESS_LICENSE_ISSUER→row OPERATION_LICENSE; OFFICE_LICENSE_ISSUER→row ESTABLISHMENT_LICENSE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Securities Company Foreign Representative Office in VN."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
+  comment: "FK target: Securities Company Foreign Rep Office VN.Securities Company\
+    \ Org Unit Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã Securities Company Organization Unit."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID"
+  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
+    \ Unit Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_type_code"
+  description: "Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép thành lập và hoạt\
+    \ động (UBCKNN cấp); ESTABLISHMENT_LICENSE=Giấy phép hoạt động văn phòng tại VN."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot: BUSINESS_LICENSE_NUMBER→OPERATION_LICENSE;\
+    \ OFFICE_BUSINESS_LICENSE→ESTABLISHMENT_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=(source)"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
+  etl_derived_value: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_number"
+  description: "Số giấy tờ định danh của VPDD-VN theo từng loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_NUMBER"
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_BUSINESS_LICENSE"
+  comment: "ETL pivot: BUSINESS_LICENSE_NUMBER→row OPERATION_LICENSE; OFFICE_BUSINESS_LICENSE→row\
+    \ ESTABLISHMENT_LICENSE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy tờ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_DATE"
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_DATE"
+  comment: "ETL pivot: BUSINESS_LICENSE_DATE→row OPERATION_LICENSE; OFFICE_LICENSE_DATE→row\
+    \ ESTABLISHMENT_LICENSE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Cơ quan/nơi cấp giấy tờ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_ISSUER"
+  - "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_ISSUER"
+  comment: "ETL pivot: BUSINESS_LICENSE_ISSUER→row OPERATION_LICENSE; OFFICE_LICENSE_ISSUER→row\
+    \ ESTABLISHMENT_LICENSE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

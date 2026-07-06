@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   atomic_entity: "Securities Practitioner"
-  entity_physical_name: "scr_prac"
+  entity_physical_name: "securities_practitioner"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã người hành nghề. BK từ PK nguồn"
   data_domain: "Text"
   nullable: false
@@ -70,7 +70,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Given Name"
-  physical_name: "gvn_nm"
+  physical_name: "given_nm"
   description: "Tên đệm và tên riêng"
   data_domain: "Text"
   nullable: true
@@ -83,7 +83,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Birth Date"
-  physical_name: "brth_dt"
+  physical_name: "birth_dt"
   description: "Ngày sinh"
   data_domain: "Date"
   nullable: true
@@ -96,7 +96,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Birth Year"
-  physical_name: "brth_yr"
+  physical_name: "birth_year"
   description: "Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ)"
   data_domain: "Text"
   nullable: true
@@ -109,7 +109,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Gender Code"
-  physical_name: "gnd_code"
+  physical_name: "gender_code"
   description: "Giới tính: 0=Nam / 1=Nữ"
   data_domain: "Classification Value"
   nullable: true
@@ -122,7 +122,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Education Level Code"
-  physical_name: "ed_lvl_code"
+  physical_name: "education_level_code"
   description: "Trình độ học vấn"
   data_domain: "Classification Value"
   nullable: true
@@ -135,7 +135,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Registration Type Code"
-  physical_name: "prac_rgst_tp_code"
+  physical_name: "practitioner_registration_type_code"
   description: "Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay"
   data_domain: "Classification Value"
   nullable: true
@@ -149,7 +149,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practice Status Code"
-  physical_name: "practice_st_code"
+  physical_name: "practice_status_code"
   description: "Trạng thái hành nghề chứng khoán"
   data_domain: "Classification Value"
   nullable: true
@@ -163,7 +163,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Account Status Code"
-  physical_name: "ac_st_code"
+  physical_name: "account_status_code"
   description: "Trạng thái tài khoản người dùng trên cổng NHNCK"
   data_domain: "Classification Value"
   nullable: true
@@ -176,7 +176,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Id"
-  physical_name: "org_id"
+  physical_name: "organization_id"
   description: "FK đến tổ chức chứng khoán hiện tại (nullable)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -184,12 +184,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+    \ ORGANIZATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Code"
-  physical_name: "org_code"
+  physical_name: "organization_code"
   description: "Mã tổ chức (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -203,7 +205,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Nationality Id"
-  physical_name: "nat_id"
+  physical_name: "nationality_id"
   description: "FK đến Geographic Area (quốc tịch)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -211,12 +213,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
+    \ = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Nationality Code"
-  physical_name: "nat_code"
+  physical_name: "nationality_code"
   description: "Mã quốc gia/quốc tịch (denormalized)"
   data_domain: "Text"
   nullable: true
@@ -244,7 +247,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Position Name"
-  physical_name: "pos_nm"
+  physical_name: "position_nm"
   description: "Chức vụ hiện tại (denormalized text tự do)"
   data_domain: "Text"
   nullable: true
@@ -257,7 +260,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Department Name"
-  physical_name: "dept_nm"
+  physical_name: "department_nm"
   description: "Phòng ban hiện tại (denormalized text tự do)"
   data_domain: "Text"
   nullable: true
@@ -270,7 +273,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Previous Identity Number"
-  physical_name: "prev_id_nbr"
+  physical_name: "previous_identity_number"
   description: "Số CMND cũ trước khi chuyển sang CCCD"
   data_domain: "Text"
   nullable: true
@@ -309,7 +312,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Religion Name"
-  physical_name: "rlg_nm"
+  physical_name: "religion_nm"
   description: "Tôn giáo (dữ liệu tích hợp C06)"
   data_domain: "Text"
   nullable: true
@@ -322,7 +325,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Place of Birth Description"
-  physical_name: "plc_of_brth_dsc"
+  physical_name: "place_of_birth_description"
   description: "Nơi sinh (text tự do)"
   data_domain: "Text"
   nullable: true

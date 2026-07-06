@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_DOMESTIC_REP_OFFICE"
   atomic_entity: "Securities Company Organization Unit"
-  entity_physical_name: "scr_co_org_unt"
+  entity_physical_name: "sc_organization_unit"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Representative Office"
   table_type: "Relative"
@@ -18,227 +17,222 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "SC_FIRM_DOMESTIC_REP_OFFICE → Securities Company Organization Unit. Organization Unit Type Code hardcode: DOMESTIC_REP_OFFICE. Cấu trúc đơn giản hơn SC_FIRM_REP_OFFICE: không có SC_FIRM_BRANCH_ID, không có PROVINCE/DISTRICT/WARD IDs, không có PHONE/FAX — chỉ có OFFICE_ADDRESS text. NATIONALITY_ID → CV SCMS_NATIONALITY. IP Postal Address → OFFICE_ADDRESS text (không có Province FK). T2-01: cần xác nhận SC_FIRM_DOMESTIC_REP_OFFICE và SC_FIRM_REP_OFFICE có phải 2 loại VPDD khác nhau hay data từ 2 thời kỳ."
-
+  notes: "SC_FIRM_DOMESTIC_REP_OFFICE → Securities Company Organization Unit. Organization\
+    \ Unit Type Code hardcode: DOMESTIC_REP_OFFICE. Cấu trúc đơn giản hơn SC_FIRM_REP_OFFICE:\
+    \ không có SC_FIRM_BRANCH_ID, không có PROVINCE/DISTRICT/WARD IDs, không có PHONE/FAX\
+    \ — chỉ có OFFICE_ADDRESS text. NATIONALITY_ID → CV SCMS_NATIONALITY. IP Postal\
+    \ Address → OFFICE_ADDRESS text (không có Province FK). T2-01: cần xác nhận SC_FIRM_DOMESTIC_REP_OFFICE\
+    \ và SC_FIRM_REP_OFFICE có phải 2 loại VPDD khác nhau hay data từ 2 thời kỳ."
 attributes:
-  - attribute_name: "Securities Company Organization Unit Id"
-    physical_name: "scr_co_org_unt_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate. BCV: \"[Involved Party] Representative Office\". Văn phòng đại diện nội địa (cấu trúc alternative)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Organization Unit Code"
-    physical_name: "scr_co_org_unt_code"
-    description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.ID"
-    comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_DOMESTIC_REP_OFFICE"
-    etl_derived_value: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE"
-    data_type: "string"
-
-  - attribute_name: "Organization Unit Type Code"
-    physical_name: "org_unt_tp_code"
-    description: "Loại đơn vị tổ chức trực thuộc CTCK."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SCMS_ORG_UNIT_TYPE. ETL hardcode. SC_FIRM_DOMESTIC_REP_OFFICE → DOMESTIC_REP_OFFICE."
-    classification_context: "SCMS_ORG_UNIT_TYPE=DOMESTIC_REP_OFFICE"
-    etl_derived_value: "DOMESTIC_REP_OFFICE"
-    data_type: "string"
-
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Organization Unit Name"
-    physical_name: "org_unt_nm"
-    description: "Tên văn phòng đại diện."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.REP_OFFICE_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Representative Name"
-    physical_name: "rprs_nm"
-    description: "Họ tên người đại diện chính của văn phòng (Trưởng VPDD)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.HEAD_REPRESENTATIVE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Nationality Code"
-    physical_name: "ntlty_code"
-    description: "Quốc tịch của tổ chức VPDD (FK đến CAT_NATIONALITY)."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.NATIONALITY_ID"
-    comment: "Scheme: SCMS_NATIONALITY. Nguồn lưu NUMBER(10) — ETL map ID → code từ CAT_NATIONALITY."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.NOTE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ──────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.CREATED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.LAST_MODIFIED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.CREATED_BY"
-    comment: "Pending — Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.LAST_MODIFIED_BY"
-    comment: "Pending — Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Organization Unit Id"
+  physical_name: "securities_company_organization_unit_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Representative Office\". Văn phòng\
+    \ đại diện nội địa (cấu trúc alternative)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Organization Unit Code"
+  physical_name: "securities_company_organization_unit_code"
+  description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_DOMESTIC_REP_OFFICE"
+  etl_derived_value: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE"
+  data_type: "string"
+- attribute_name: "Organization Unit Type Code"
+  physical_name: "organization_unit_type_code"
+  description: "Loại đơn vị tổ chức trực thuộc CTCK."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SCMS_ORG_UNIT_TYPE. ETL hardcode. SC_FIRM_DOMESTIC_REP_OFFICE\
+    \ → DOMESTIC_REP_OFFICE."
+  classification_context: "SCMS_ORG_UNIT_TYPE=DOMESTIC_REP_OFFICE"
+  etl_derived_value: "DOMESTIC_REP_OFFICE"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Organization Unit Name"
+  physical_name: "organization_unit_nm"
+  description: "Tên văn phòng đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.REP_OFFICE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Representative Name"
+  physical_name: "representative_nm"
+  description: "Họ tên người đại diện chính của văn phòng (Trưởng VPDD)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.HEAD_REPRESENTATIVE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Quốc tịch của tổ chức VPDD (FK đến CAT_NATIONALITY)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.NATIONALITY_ID"
+  comment: "Scheme: SCMS_NATIONALITY. Nguồn lưu NUMBER(10) — ETL map ID → code từ\
+    \ CAT_NATIONALITY."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.LAST_MODIFIED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.CREATED_BY"
+  comment: "Pending — Pair with Created By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.LAST_MODIFIED_BY"
+  comment: "Pending — Pair with Updated By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

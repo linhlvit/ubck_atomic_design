@@ -1,0 +1,391 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
+  atomic_entity: "Securities Company Foreign Branch Personnel"
+  entity_physical_name: "sc_foreign_branch_personnel"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Key Personnel"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "SC_FIRM_FOREIGN_BRANCH_PERSONNEL → Securities Company Foreign Branch Personnel.\
+    \ Nhân sự tại chi nhánh CTCK nước ngoài tại Việt Nam. Đưa lại vào scope Tier 2\
+    \ sau khi resolve mâu thuẫn Append/SCD4A (SCMS_HLD_Overview.md mục 7e #10) — table_type\
+    \ đổi thành Fundamental. FK đến Securities Company Foreign Branch. Có trường cá\
+    \ nhân (NATIONAL_ID/ISSUE_PLACE/ID_ISSUED_DATE → IP Alt Identification; ADDRESS/PERMANENT_ADDRESS\
+    \ → IP Postal Address; PHONE/EMAIL/DISCLOSURE_EMAIL → IP Electronic Address).\
+    \ Nguồn chỉ có CREATED_AT — không có CREATED_BY/UPDATED_AT/UPDATED_BY (xem pending_design.yaml)."
+attributes:
+- attribute_name: "Securities Company Foreign Branch Personnel Id"
+  physical_name: "securities_company_foreign_branch_personnel_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Key Personnel\". Nhân sự chi nhánh\
+    \ CTCK nước ngoài."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Branch Personnel Code"
+  physical_name: "securities_company_foreign_branch_personnel_code"
+  description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
+  comment: "BK chính. PK nguồn (NUMBER(10) — ETL convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
+  etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Branch Id"
+  physical_name: "securities_company_foreign_branch_id"
+  description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Foreign Branch Code"
+  physical_name: "securities_company_foreign_branch_code"
+  description: "Mã chi nhánh CTCK nước ngoài."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.SC_FIRM_FOREIGN_BRANCH_ID"
+  comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Code. Pair with Securities Company Foreign Branch Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Full Name"
+  physical_name: "full_nm"
+  description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.FULL_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Gender Code"
+  physical_name: "gender_code"
+  description: "Giới tính: 1=Nam, 2=Nữ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.GENDER"
+  comment: "Scheme: SCMS_GENDER. Nguồn VARCHAR2(10) lưu '1'/'2' — cùng values với\
+    \ SCMS_GENDER đã dùng cho Securities Company Senior Personnel."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Date Of Birth"
+  physical_name: "dt_of_birth"
+  description: "Ngày sinh (dd/mm/yyyy)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.DATE_OF_BIRTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Nationality"
+  physical_name: "nationality"
+  description: "Quốc tịch (mã hoặc tên quốc gia)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.NATIONALITY"
+  comment: "Text denormalized — mô tả gốc BRD không rõ lưu mã hay tên quốc gia. Không\
+    \ có lookup Geographic Area trong scope SCMS Tier này. Cần xác nhận với BA nếu\
+    \ nên chuẩn hóa theo scheme SCMS_NATIONALITY (đã dùng cho Securities Company Senior\
+    \ Personnel)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Division Name"
+  physical_name: "business_division_nm"
+  description: "Bộ phận nghiệp vụ phụ trách."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.BUSINESS_DIVISION"
+  comment: "VARCHAR2(255) — tên bộ phận dạng text tự do, không phải FK (khác BUSINESS_DIVISION_ID\
+    \ dạng NUMBER ở Securities Company Senior Personnel)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Department"
+  physical_name: "department"
+  description: "Phòng/Ban công tác."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.DEPARTMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Position Json"
+  physical_name: "position_json"
+  description: "Danh sách/chi tiết chức vụ (CLOB — có thể là JSON)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.POSITION_JSON"
+  comment: "Nguồn CLOB — lưu nguyên dạng text. Nếu là JSON object/array cần xác nhận\
+    \ format trước khi denormalize thành Array<Struct>."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Branch Head Indicator"
+  physical_name: "branch_head_indicator"
+  description: "Cờ là trưởng chi nhánh."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.BRANCH_HEAD_USER_ID"
+  comment: "Tên cột nguồn gợi ý FK 'User Id' nhưng data type NUMBER(1) — nhiều khả\
+    \ năng là cờ boolean (là trưởng chi nhánh) chứ không phải FK thực sự. Mô tả gốc\
+    \ BRD trống. Cần xác nhận với BA trước khi finalize."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Disclosure Representative Indicator"
+  physical_name: "disclosure_representative_indicator"
+  description: "Cờ là người đại diện công bố thông tin (ĐDCBTT): 1=Có, 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.DISCLOSURE_REPRESENTATIVE"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Work Start Date"
+  physical_name: "work_start_dt"
+  description: "Ngày bắt đầu làm việc tại CTCK."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.WORK_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Appointment Date"
+  physical_name: "appointment_dt"
+  description: "Ngày bổ nhiệm vào chức vụ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.APPOINTMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Dismissal Date"
+  physical_name: "dismissal_dt"
+  description: "Ngày miễn nhiệm khỏi chức vụ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.DISMISSAL_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Resignation Date"
+  physical_name: "resignation_dt"
+  description: "Ngày nghỉ việc/thôi việc."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.RESIGNATION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Securities License Indicator"
+  physical_name: "securities_license_indicator"
+  description: "Cờ có chứng chỉ hành nghề chứng khoán: 1=Có, 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.SECURITIES_LICENSE"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Securities License Number"
+  physical_name: "securities_license_number"
+  description: "Số chứng chỉ hành nghề chứng khoán (CCHN)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.SECURITIES_LICENSE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities License Date"
+  physical_name: "securities_license_dt"
+  description: "Ngày cấp chứng chỉ hành nghề chứng khoán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.SECURITIES_LICENSE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Verification Status Code"
+  physical_name: "verification_status_code"
+  description: "Trạng thái xác minh chứng chỉ hành nghề: CHO_XAC_MINH = Chờ xác minh;\
+    \ KHOP = Khớp (đã xác minh); KHONG_KHOP = Không khớp."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.VERIFICATION_STATUS"
+  comment: "Scheme: SCMS_LICENSE_VERIFICATION_STATUS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái bản ghi nhân sự chi nhánh NN: 1 = Đương nhiệm; 0 = Miễn\
+    \ nhiệm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.RECORD_STATUS"
+  comment: "Scheme: SCMS_FOREIGN_PERSONNEL_RECORD_STATUS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Work Status Code"
+  physical_name: "work_status_code"
+  description: "Trạng thái làm việc hiện tại: 1 = Đương nhiệm; 2 = Miễn nhiệm; 3 =\
+    \ Đã nghỉ việc."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.WORK_STATUS"
+  comment: "Scheme: SCMS_FOREIGN_BRANCH_PERSONNEL_WORK_STATUS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Attachment Path"
+  physical_name: "attachment_path"
+  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ATTACHMENT_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.CREATED_AT"
+  comment: "Nguồn chỉ có CREATED_AT — không có CREATED_BY/UPDATED_AT/UPDATED_BY, không\
+    \ đủ audit block 6-attribute chuẩn (xem pending_design.yaml)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

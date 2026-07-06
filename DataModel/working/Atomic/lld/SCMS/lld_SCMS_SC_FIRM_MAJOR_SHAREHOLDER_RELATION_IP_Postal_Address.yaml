@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
   atomic_entity: "Involved Party Postal Address"
-  entity_physical_name: "ip_pst_adr"
+  entity_physical_name: "ip_postal_address"
   bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
@@ -18,73 +17,75 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Postal Address của Securities Company Major Shareholder Relation. 1 row — ADDRESS (VARCHAR2 500) → type CURRENT (địa chỉ hiện tại). Cột không rõ loại địa chỉ cụ thể (permanent/current) — hardcode CURRENT theo ngữ nghĩa phổ biến. Không có Province/District/Ward FK. Format đồng bộ theo chuẩn NHNCK."
-
+  notes: "IP Postal Address của Securities Company Major Shareholder Relation. 1 row\
+    \ — ADDRESS (VARCHAR2 500) → type CURRENT (địa chỉ hiện tại). Cột không rõ loại\
+    \ địa chỉ cụ thể (permanent/current) — hardcode CURRENT theo ngữ nghĩa phổ biến.\
+    \ Không có Province/District/Ward FK. Format đồng bộ theo chuẩn NHNCK."
 attributes:
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Securities Company Major Shareholder Relation."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
-    comment: "FK target: Securities Company Major Shareholder Relation.Securities Company Major Shareholder Relation Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION', ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Involved Party Code"
-    physical_name: "ip_code"
-    description: "Mã Securities Company Major Shareholder Relation."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
-    comment: "Lookup pair: Securities Company Major Shareholder Relation.Securities Company Major Shareholder Relation Code. Pair with Involved Party Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Address Type Code"
-    physical_name: "adr_tp_code"
-    description: "Loại địa chỉ: CURRENT=Địa chỉ hiện tại của cổ đông lớn."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode CURRENT — cột ADDRESS không có type cụ thể, mặc định là địa chỉ hiện tại. Cần xác nhận team nếu cần phân biệt CURRENT/PERMANENT."
-    classification_context: "IP_ADDR_TYPE=CURRENT"
-    etl_derived_value: "CURRENT"
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
-    etl_derived_value: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
-    data_type: "string"
-
-  - attribute_name: "Address Value"
-    physical_name: "adr_val"
-    description: "Địa chỉ của cổ đông lớn."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ADDRESS"
-    comment: "VARCHAR2(500). Không có Province/District/Ward FK."
-    classification_context: "IP_ADDR_TYPE=CURRENT"
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Securities Company Major Shareholder Relation."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
+  comment: "FK target: Securities Company Major Shareholder Relation.Securities Company\
+    \ Major Shareholder Relation Id. Shared entity — không có PK surrogate riêng.\
+    \ Hash: hash_id('SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã Securities Company Major Shareholder Relation."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID"
+  comment: "Lookup pair: Securities Company Major Shareholder Relation.Securities\
+    \ Company Major Shareholder Relation Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
+  etl_derived_value: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "address_type_code"
+  description: "Loại địa chỉ: CURRENT=Địa chỉ hiện tại của cổ đông lớn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. ETL hardcode CURRENT — cột ADDRESS không có type\
+    \ cụ thể, mặc định là địa chỉ hiện tại. Cần xác nhận team nếu cần phân biệt CURRENT/PERMANENT."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: "CURRENT"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "address_value"
+  description: "Địa chỉ của cổ đông lớn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ADDRESS"
+  comment: "VARCHAR2(500). Không có Province/District/Ward FK."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"

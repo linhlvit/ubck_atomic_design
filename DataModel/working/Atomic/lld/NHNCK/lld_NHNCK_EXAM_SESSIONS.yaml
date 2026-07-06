@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "EXAM_SESSIONS"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  entity_physical_name: "scr_prac_qualf_exam_ases"
+  entity_physical_name: "securities_practitioner_qualification_examination_assessment"
   bcv_core_object: "Communication"
   bcv_concept: "[Communication] Assessment"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
-  physical_name: "scr_prac_qualf_exam_ases_id"
+  physical_name: "securities_practitioner_qualification_examination_assessment_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Code"
-  physical_name: "scr_prac_qualf_exam_ases_code"
+  physical_name: "securities_practitioner_qualification_examination_assessment_code"
   description: "Mã định danh nghiệp vụ đợt thi. BK"
   data_domain: "Text"
   nullable: false
@@ -46,7 +46,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Assessment Name"
-  physical_name: "ases_nm"
+  physical_name: "assessment_nm"
   description: "Tên hiển thị đợt thi"
   data_domain: "Text"
   nullable: true
@@ -59,7 +59,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Year"
-  physical_name: "rpt_yr"
+  physical_name: "report_year"
   description: "Năm báo cáo (YYYY)"
   data_domain: "Small Counter"
   nullable: true
@@ -72,7 +72,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Examination Session Number"
-  physical_name: "exam_ssn_nbr"
+  physical_name: "examination_session_number"
   description: "Kỳ thi trong năm (1, 2…)"
   data_domain: "Small Counter"
   nullable: true
@@ -98,7 +98,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Application Registration Start Date"
-  physical_name: "ap_rgst_strt_dt"
+  physical_name: "application_registration_start_dt"
   description: "Ngày bắt đầu nhận đăng ký"
   data_domain: "Text"
   nullable: true
@@ -111,7 +111,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Application Registration End Date"
-  physical_name: "ap_rgst_end_dt"
+  physical_name: "application_registration_end_dt"
   description: "Ngày kết thúc nhận đăng ký"
   data_domain: "Text"
   nullable: true
@@ -124,7 +124,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Start Date"
-  physical_name: "exam_strt_dt"
+  physical_name: "examination_start_dt"
   description: "Ngày bắt đầu thi"
   data_domain: "Text"
   nullable: true
@@ -137,7 +137,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination End Date"
-  physical_name: "exam_end_dt"
+  physical_name: "examination_end_dt"
   description: "Ngày kết thúc thi"
   data_domain: "Text"
   nullable: true
@@ -150,7 +150,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Result Notification Date"
-  physical_name: "rslt_notf_dt"
+  physical_name: "result_notification_dt"
   description: "Ngày thông báo kết quả thi"
   data_domain: "Text"
   nullable: true
@@ -163,7 +163,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Locations"
-  physical_name: "exam_locations"
+  physical_name: "examination_locations"
   description: "Địa điểm tổ chức thi"
   data_domain: "Text"
   nullable: true
@@ -176,7 +176,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Submission Methods"
-  physical_name: "subm_methods"
+  physical_name: "submission_methods"
   description: "Phương thức nộp hồ sơ"
   data_domain: "Text"
   nullable: true
@@ -189,7 +189,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Notification File Path"
-  physical_name: "notf_file_path"
+  physical_name: "notification_file_path"
   description: "Đường dẫn file thông báo kết quả"
   data_domain: "Text"
   nullable: true
@@ -202,7 +202,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Decision Id"
-  physical_name: "license_dcsn_id"
+  physical_name: "license_decision_id"
   description: "FK đến quyết định cấp chứng chỉ liên quan đợt thi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -210,12 +210,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.DECISION_ID"
-  comment: "FK target: Securities Practitioner License Decision Document.Securities Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Decision Code"
-  physical_name: "license_dcsn_code"
+  physical_name: "license_decision_code"
   description: "Mã quyết định cấp chứng chỉ"
   data_domain: "Text"
   nullable: true
@@ -229,7 +231,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bank Code"
-  physical_name: "bnk_code"
+  physical_name: "bank_code"
   description: "Mã ngân hàng thu phí"
   data_domain: "Classification Value"
   nullable: true
@@ -242,7 +244,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bank Account Number"
-  physical_name: "bnk_ac_nbr"
+  physical_name: "bank_account_number"
   description: "Số tài khoản ngân hàng thu phí"
   data_domain: "Text"
   nullable: true
@@ -255,7 +257,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bank Account Name"
-  physical_name: "bnk_ac_nm"
+  physical_name: "bank_account_nm"
   description: "Tên chủ tài khoản ngân hàng thu phí"
   data_domain: "Text"
   nullable: true
@@ -268,7 +270,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái đợt thi (1=Hoạt động)"
   data_domain: "Classification Value"
   nullable: true
@@ -277,7 +279,7 @@ attributes:
   source_columns:
   - "NHNCK.EXAM_SESSIONS.RECORD_STATUS"
   comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source System Code"
@@ -293,7 +295,7 @@ attributes:
   etl_derived_value: "NHNCK.EXAM_SESSIONS"
   data_type: "string"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo bản ghi"
   data_domain: "Timestamp"
   nullable: true
@@ -306,7 +308,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật bản ghi"
   data_domain: "Timestamp"
   nullable: true
@@ -319,7 +321,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến người tạo"
   data_domain: "Surrogate Key"
   nullable: true
@@ -327,12 +329,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.CREATED_BY"
-  comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority\
+    \ Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã người tạo"
   data_domain: "Text"
   nullable: true
@@ -346,7 +349,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến người cập nhật"
   data_domain: "Surrogate Key"
   nullable: true
@@ -354,12 +357,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.UPDATED_BY"
-  comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority\
+    \ Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã người cập nhật"
   data_domain: "Text"
   nullable: true

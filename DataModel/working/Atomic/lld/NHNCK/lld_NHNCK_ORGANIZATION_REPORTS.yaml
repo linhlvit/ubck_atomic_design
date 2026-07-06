@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  entity_physical_name: "scr_prac_org_emp_rpt"
+  entity_physical_name: "sp_organization_employment_report"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Employer Registration"
   table_type: "Fact Append"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner Organization Employment Report Id"
-  physical_name: "scr_prac_org_emp_rpt_id"
+  physical_name: "securities_practitioner_organization_employment_report_id"
   description: "Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Organization Employment Report Code"
-  physical_name: "scr_prac_org_emp_rpt_code"
+  physical_name: "securities_practitioner_organization_employment_report_code"
   description: "Mã định danh kỹ thuật (BK). Map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -57,7 +57,7 @@ attributes:
   etl_derived_value: "NHNCK.ORGANIZATION_REPORTS"
   data_type: "string"
 - attribute_name: "Securities Organization Reference Id"
-  physical_name: "scr_org_refr_id"
+  physical_name: "securities_organization_reference_id"
   description: "FK đến tổ chức kinh doanh chứng khoán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -65,12 +65,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Code"
-  physical_name: "scr_org_refr_code"
+  physical_name: "securities_organization_reference_code"
   description: "Mã tổ chức (denormalized)."
   data_domain: "Text"
   nullable: false
@@ -84,7 +85,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "FK đến người hành nghề chứng khoán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -92,12 +93,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã người hành nghề (denormalized)."
   data_domain: "Text"
   nullable: false
@@ -111,7 +113,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Certificate Document Id"
-  physical_name: "license_ctf_doc_id"
+  physical_name: "license_certificate_document_id"
   description: "FK đến hồ sơ chứng chỉ hành nghề (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -119,12 +121,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
-  comment: "FK target: License Certificate Document.License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
+  comment: "FK target: License Certificate Document.License Certificate Document Id.\
+    \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Certificate Document Code"
-  physical_name: "license_ctf_doc_code"
+  physical_name: "license_certificate_document_code"
   description: "Mã hồ sơ chứng chỉ hành nghề (denormalized)."
   data_domain: "Text"
   nullable: true
@@ -138,7 +141,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Type Code"
-  physical_name: "ctf_tp_code"
+  physical_name: "certificate_type_code"
   description: "Loại chứng chỉ hành nghề tại thời điểm báo cáo."
   data_domain: "Classification Value"
   nullable: true
@@ -152,7 +155,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Report Id"
-  physical_name: "prn_rpt_id"
+  physical_name: "parent_report_id"
   description: "FK self-ref — báo cáo gốc được điều chỉnh (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -160,12 +163,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
-  comment: "FK target: Securities Practitioner Organization Employment Report.Securities Practitioner Organization Employment Report Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
+  comment: "FK target: Securities Practitioner Organization Employment Report.Securities\
+    \ Practitioner Organization Employment Report Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS',\
+    \ PARENT_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Report Code"
-  physical_name: "prn_rpt_code"
+  physical_name: "parent_report_code"
   description: "Mã báo cáo gốc (denormalized)."
   data_domain: "Text"
   nullable: true
@@ -179,7 +184,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Name At Report"
-  physical_name: "prac_nm_at_rpt"
+  physical_name: "practitioner_nm_at_report"
   description: "Họ và tên người hành nghề tại thời điểm lập báo cáo (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -192,7 +197,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Birth Date At Report"
-  physical_name: "prac_brth_dt_at_rpt"
+  physical_name: "practitioner_birth_dt_at_report"
   description: "Ngày sinh người hành nghề tại thời điểm lập báo cáo (snapshot)."
   data_domain: "Date"
   nullable: true
@@ -205,7 +210,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Practitioner Identity Number At Report"
-  physical_name: "prac_id_nbr_at_rpt"
+  physical_name: "practitioner_identity_number_at_report"
   description: "Số định danh cá nhân tại thời điểm lập báo cáo (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -218,7 +223,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Position At Report"
-  physical_name: "prac_pos_at_rpt"
+  physical_name: "practitioner_position_at_report"
   description: "Chức vụ của người hành nghề tại tổ chức (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -231,7 +236,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Department At Report"
-  physical_name: "prac_dept_at_rpt"
+  physical_name: "practitioner_department_at_report"
   description: "Phòng ban của người hành nghề tại tổ chức (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -244,7 +249,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Workplace At Report"
-  physical_name: "prac_workplace_at_rpt"
+  physical_name: "practitioner_workplace_at_report"
   description: "Nơi làm việc của người hành nghề tại thời điểm báo cáo (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -257,7 +262,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Number At Report"
-  physical_name: "ctf_nbr_at_rpt"
+  physical_name: "certificate_number_at_report"
   description: "Số chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -270,7 +275,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Issue Date At Report"
-  physical_name: "ctf_issu_dt_at_rpt"
+  physical_name: "certificate_issue_dt_at_report"
   description: "Ngày cấp chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot)."
   data_domain: "Date"
   nullable: true
@@ -296,7 +301,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Termination Date"
-  physical_name: "tmt_dt"
+  physical_name: "termination_dt"
   description: "Ngày chấm dứt hợp đồng lao động (NULL = đang làm việc)."
   data_domain: "Date"
   nullable: true
@@ -309,7 +314,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Report Date"
-  physical_name: "rpt_dt"
+  physical_name: "report_dt"
   description: "Ngày lập báo cáo."
   data_domain: "Date"
   nullable: true
@@ -335,7 +340,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"
-  physical_name: "dsc"
+  physical_name: "description"
   description: "Mô tả bổ sung cho báo cáo."
   data_domain: "Text"
   nullable: true
@@ -361,7 +366,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Business Department Name"
-  physical_name: "bsn_dept_nm"
+  physical_name: "business_department_nm"
   description: "Tên phòng nghiệp vụ UBCKNN phụ trách (denormalized text)."
   data_domain: "Text"
   nullable: true
@@ -375,7 +380,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report File Path"
-  physical_name: "rpt_file_path"
+  physical_name: "report_file_path"
   description: "Đường dẫn file báo cáo đính kèm."
   data_domain: "Text"
   nullable: true
@@ -388,7 +393,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Termination File Path"
-  physical_name: "tmt_file_path"
+  physical_name: "termination_file_path"
   description: "Đường dẫn file chấm dứt hợp đồng đính kèm."
   data_domain: "Text"
   nullable: true
@@ -401,7 +406,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "External Sync Id"
-  physical_name: "ext_sync_id"
+  physical_name: "external_sync_id"
   description: "Mã đồng bộ từ hệ thống ngoài (FMS/SCMS)."
   data_domain: "Text"
   nullable: true
@@ -414,7 +419,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Type Code"
-  physical_name: "rcrd_tp_code"
+  physical_name: "record_type_code"
   description: "Phân loại loại bản ghi báo cáo."
   data_domain: "Classification Value"
   nullable: true
@@ -427,7 +432,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Status Code At Report"
-  physical_name: "org_st_code_at_rpt"
+  physical_name: "organization_status_code_at_report"
   description: "Trạng thái tổ chức tại thời điểm lập báo cáo."
   data_domain: "Classification Value"
   nullable: true
@@ -440,7 +445,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái bản ghi báo cáo (1=Hoạt động)."
   data_domain: "Classification Value"
   nullable: false
@@ -453,7 +458,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Sync Created Timestamp"
-  physical_name: "sync_crt_tms"
+  physical_name: "sync_created_tms"
   description: "Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn."
   data_domain: "Timestamp"
   nullable: true
@@ -466,7 +471,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Sync Updated Timestamp"
-  physical_name: "sync_udt_tms"
+  physical_name: "sync_updated_tms"
   description: "Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn."
   data_domain: "Timestamp"
   nullable: true
@@ -479,7 +484,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo bản ghi trong NHNCK."
   data_domain: "Timestamp"
   nullable: true
@@ -492,7 +497,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến nhân viên UBCKNN tạo bản ghi."
   data_domain: "Surrogate Key"
   nullable: true
@@ -500,12 +505,13 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã nhân viên tạo bản ghi (denormalized)."
   data_domain: "Text"
   nullable: true
@@ -519,7 +525,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật bản ghi gần nhất."
   data_domain: "Timestamp"
   nullable: true
@@ -532,7 +538,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến nhân viên UBCKNN cập nhật bản ghi."
   data_domain: "Surrogate Key"
   nullable: true
@@ -540,12 +546,13 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã nhân viên cập nhật bản ghi (denormalized)."
   data_domain: "Text"
   nullable: true

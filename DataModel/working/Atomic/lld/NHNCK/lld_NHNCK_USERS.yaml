@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "USERS"
   atomic_entity: "Regulatory Authority Officer"
-  entity_physical_name: "reg_ahr_ofcr"
+  entity_physical_name: "ra_officer"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Regulatory Authority Officer Id"
-  physical_name: "reg_ahr_ofcr_id"
+  physical_name: "regulatory_authority_officer_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Regulatory Authority Officer Code"
-  physical_name: "reg_ahr_ofcr_code"
+  physical_name: "regulatory_authority_officer_code"
   description: "Mã cán bộ/chuyên viên UBCK. BK"
   data_domain: "Text"
   nullable: false
@@ -71,7 +71,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Individual Gender Code"
-  physical_name: "idv_gnd_code"
+  physical_name: "individual_gender_code"
   description: "Giới tính"
   data_domain: "Classification Value"
   nullable: true
@@ -84,7 +84,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Unit Id"
-  physical_name: "ou_id"
+  physical_name: "organization_unit_id"
   description: "FK đến Regulatory Authority Organization Unit (đơn vị)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -92,12 +92,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.UNIT_ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. Hash: hash_id('NHNCK.UNITS', UNIT_ID)."
+  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
+    \ Organization Unit Id. Hash: hash_id('NHNCK.UNITS', UNIT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Unit Code"
-  physical_name: "ou_code"
+  physical_name: "organization_unit_code"
   description: "Mã đơn vị"
   data_domain: "Text"
   nullable: true
@@ -111,7 +112,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Department Id"
-  physical_name: "dept_id"
+  physical_name: "department_id"
   description: "FK đến Regulatory Authority Organization Unit (phòng ban)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -119,12 +120,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.DEPARTMENT_ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. (Represents the DEPARTMENT node). Hash: hash_id('NHNCK.DEPARTMENTS', DEPARTMENT_ID)."
+  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
+    \ Organization Unit Id. (Represents the DEPARTMENT node). Hash: hash_id('NHNCK.DEPARTMENTS',\
+    \ DEPARTMENT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Department Code"
-  physical_name: "dept_code"
+  physical_name: "department_code"
   description: "Mã phòng ban"
   data_domain: "Text"
   nullable: true
@@ -139,7 +142,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Position Code"
-  physical_name: "pos_code"
+  physical_name: "position_code"
   description: "Mã vị trí/chức danh"
   data_domain: "Classification Value"
   nullable: true
@@ -152,7 +155,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "FK đến Securities Practitioner (nếu cán bộ cũng là NHNCK)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -160,12 +163,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer có thể không là NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Practitioner Id. Nullable — officer\
+    \ có thể không là NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã người hành nghề liên kết"
   data_domain: "Text"
   nullable: true
@@ -179,7 +183,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái hoạt động của cán bộ"
   data_domain: "Classification Value"
   nullable: true
@@ -192,7 +196,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Type Code"
-  physical_name: "rcrd_tp_code"
+  physical_name: "record_type_code"
   description: "Loại bản ghi cán bộ"
   data_domain: "Classification Value"
   nullable: true
@@ -205,7 +209,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo bản ghi"
   data_domain: "Timestamp"
   nullable: true
@@ -218,7 +222,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật bản ghi lần cuối"
   data_domain: "Timestamp"
   nullable: true
@@ -231,7 +235,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến cán bộ tạo bản ghi (self-ref)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -239,12 +243,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã cán bộ tạo bản ghi"
   data_domain: "Text"
   nullable: true
@@ -258,7 +263,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến cán bộ cập nhật bản ghi lần cuối (self-ref)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -266,12 +271,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.USERS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã cán bộ cập nhật bản ghi lần cuối"
   data_domain: "Text"
   nullable: true

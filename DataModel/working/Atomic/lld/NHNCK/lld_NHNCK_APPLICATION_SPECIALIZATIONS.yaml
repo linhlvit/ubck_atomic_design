@@ -5,7 +5,7 @@ metadata:
   source_table: "APPLICATION_SPECIALIZATIONS"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
     \ Document"
-  entity_physical_name: "scr_prac_license_ap_ed_ctf_doc"
+  entity_physical_name: "sp_license_application_education_certificate_document"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Education Certificate"
   table_type: "Fundamental"
@@ -22,7 +22,7 @@ metadata:
 attributes:
 - attribute_name: "Securities Practitioner License Application Education Certificate\
     \ Document Id"
-  physical_name: "scr_prac_license_ap_ed_ctf_doc_id"
+  physical_name: "securities_practitioner_license_application_education_certificate_document_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -36,7 +36,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Education Certificate\
     \ Document Code"
-  physical_name: "scr_prac_license_ap_ed_ctf_doc_code"
+  physical_name: "securities_practitioner_license_application_education_certificate_document_code"
   description: "Mã định danh bản ghi chuyên môn. BK"
   data_domain: "Text"
   nullable: false
@@ -49,7 +49,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Application Id"
-  physical_name: "license_ap_id"
+  physical_name: "license_application_id"
   description: "FK đến License Application (hồ sơ đăng ký)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -57,12 +57,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Application Code"
-  physical_name: "license_ap_code"
+  physical_name: "license_application_code"
   description: "Mã hồ sơ đăng ký. Lookup pair"
   data_domain: "Text"
   nullable: false
@@ -76,7 +77,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Specialization Type Code"
-  physical_name: "specialization_tp_code"
+  physical_name: "specialization_type_code"
   description: "Mã loại chuyên môn (Classification Value)"
   data_domain: "Classification Value"
   nullable: false
@@ -89,7 +90,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Issue Date"
-  physical_name: "ctf_issu_dt"
+  physical_name: "certificate_issue_dt"
   description: "Ngày cấp chứng chỉ chuyên môn"
   data_domain: "Date"
   nullable: true
@@ -102,7 +103,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Certificate Issue Place"
-  physical_name: "ctf_issu_plc"
+  physical_name: "certificate_issue_place"
   description: "Nơi cấp chứng chỉ chuyên môn"
   data_domain: "Text"
   nullable: true
@@ -115,7 +116,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái thẩm định chứng chỉ (Classification Value)"
   data_domain: "Classification Value"
   nullable: false
@@ -124,11 +125,11 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.RECORD_STATUS"
   comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Appraisal Completed Date"
-  physical_name: "aprs_completed_dt"
+  physical_name: "appraisal_completed_dt"
   description: "Thời điểm thẩm định hoàn tất"
   data_domain: "Timestamp"
   nullable: true
@@ -141,7 +142,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Appraised By Officer Id"
-  physical_name: "appraised_by_ofcr_id"
+  physical_name: "appraised_by_officer_id"
   description: "FK đến cán bộ thẩm định (Regulatory Authority Officer)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -149,12 +150,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.ASSIGNEE_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Appraised By Officer Code"
-  physical_name: "appraised_by_ofcr_code"
+  physical_name: "appraised_by_officer_code"
   description: "Mã cán bộ thẩm định. Lookup pair"
   data_domain: "Text"
   nullable: true
@@ -168,7 +170,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Attachment Files"
-  physical_name: "attch_files"
+  physical_name: "attachment_files"
   description: "Danh sách file đính kèm (JSON CLOB)"
   data_domain: "Text"
   nullable: true

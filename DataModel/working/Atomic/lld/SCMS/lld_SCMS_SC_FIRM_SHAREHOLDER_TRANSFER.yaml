@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER_TRANSFER"
   atomic_entity: "Securities Company Shareholder Transfer"
-  entity_physical_name: "scr_co_shrhdr_trnsfr"
+  entity_physical_name: "sc_shareholder_transfer"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Transaction"
   table_type: "Fact Append"
@@ -18,357 +17,349 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Giao dịch chuyển nhượng cổ phần giữa hai cổ đông CTCK. Fact Append — mỗi lần chuyển nhượng là 1 sự kiện. FKs: SC_FIRM_INFO_ID→Securities Company (T1); TRANSFEROR_SHAREHOLDER_ID→Securities Company Shareholder (T2) vai trò Bên chuyển; TRANSFEREE_SHAREHOLDER_ID→Securities Company Shareholder (T2) vai trò Bên nhận. Hai FK đến cùng entity Securities Company Shareholder → dùng prefix Transferor/Transferee để phân biệt. DOCUMENT_DATE (DATE): ngày của văn bản pháp lý; TRANSFER_DATE (TIMESTAMP 6): ngày giờ chính xác của giao dịch chuyển nhượng. EVENT_TYPE_ID: FK đến CAT_EVENT_TYPE nằm ngoài scope → pending. RECORD_STATUS → SCMS_USAGE_STATUS. Audit: canonical 6-attr (bảng nguồn có đủ LAST_MODIFIED_AT/BY dù là Fact Append — giữ nguyên để track corrections)."
-
+  notes: "Giao dịch chuyển nhượng cổ phần giữa hai cổ đông CTCK. Fact Append — mỗi\
+    \ lần chuyển nhượng là 1 sự kiện. FKs: SC_FIRM_INFO_ID→Securities Company (T1);\
+    \ TRANSFEROR_SHAREHOLDER_ID→Securities Company Shareholder (T2) vai trò Bên chuyển;\
+    \ TRANSFEREE_SHAREHOLDER_ID→Securities Company Shareholder (T2) vai trò Bên nhận.\
+    \ Hai FK đến cùng entity Securities Company Shareholder → dùng prefix Transferor/Transferee\
+    \ để phân biệt. DOCUMENT_DATE (DATE): ngày của văn bản pháp lý; TRANSFER_DATE\
+    \ (TIMESTAMP 6): ngày giờ chính xác của giao dịch chuyển nhượng. EVENT_TYPE_ID:\
+    \ FK đến CAT_EVENT_TYPE nằm ngoài scope → pending. RECORD_STATUS → SCMS_USAGE_STATUS.\
+    \ Audit: canonical 6-attr (bảng nguồn có đủ LAST_MODIFIED_AT/BY dù là Fact Append\
+    \ — giữ nguyên để track corrections)."
 attributes:
-  - attribute_name: "Securities Company Shareholder Transfer Id"
-    physical_name: "scr_co_shrhdr_trnsfr_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Shareholder Transfer Code"
-    physical_name: "scr_co_shrhdr_trnsfr_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.ID"
-    comment: "BK. NUMBER(19) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_TRANSFER"
-    etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER"
-    data_type: "string"
-
-  # ── FKs ───────────────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán nơi diễn ra giao dịch chuyển nhượng."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Transferor Securities Company Shareholder Id"
-    physical_name: "trnsfr_scr_co_shrhdr_id"
-    description: "FK đến Cổ đông CTCK bên chuyển nhượng (bên bán)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID"
-    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEROR_SHAREHOLDER_ID). Prefix Transferor phân biệt với Transferee cùng target entity."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Transferor Securities Company Shareholder Code"
-    physical_name: "trnsfr_scr_co_shrhdr_code"
-    description: "Mã Cổ đông CTCK bên chuyển nhượng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID"
-    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Transferor Securities Company Shareholder Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Transferee Securities Company Shareholder Id"
-    physical_name: "trnsfe_scr_co_shrhdr_id"
-    description: "FK đến Cổ đông CTCK bên nhận chuyển nhượng (bên mua)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID"
-    comment: "FK target: Securities Company Shareholder.Securities Company Shareholder Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEREE_SHAREHOLDER_ID). Prefix Transferee phân biệt với Transferor cùng target entity."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Transferee Securities Company Shareholder Code"
-    physical_name: "trnsfe_scr_co_shrhdr_code"
-    description: "Mã Cổ đông CTCK bên nhận chuyển nhượng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID"
-    comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder Code. Pair with Transferee Securities Company Shareholder Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Event Type Id"
-    physical_name: "evt_tp_id"
-    description: "FK đến loại sự kiện pháp lý tương ứng với giao dịch chuyển nhượng."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-    comment: "Pending — FK target CAT_EVENT_TYPE nằm ngoài scope. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Event Type Code"
-    physical_name: "evt_tp_code"
-    description: "Mã loại sự kiện pháp lý."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-    comment: "Pending — Pair with Event Type Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CLASSIFICATION ────────────────────────────────────────────────────
-  - attribute_name: "Record Status Code"
-    physical_name: "rcrd_st_code"
-    description: "Trạng thái bản ghi chuyển nhượng cổ phần."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.RECORD_STATUS"
-    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-    classification_context: "SCMS_USAGE_STATUS"
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── TRANSFER DETAILS ──────────────────────────────────────────────────
-  - attribute_name: "Document Number"
-    physical_name: "doc_nbr"
-    description: "Số văn bản pháp lý (QĐ/GP/Hợp đồng) của giao dịch chuyển nhượng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.DOCUMENT_NUMBER"
-    comment: "NVARCHAR2(30)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Document Date"
-    physical_name: "doc_dt"
-    description: "Ngày của văn bản pháp lý giao dịch chuyển nhượng."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.DOCUMENT_DATE"
-    comment: "DATE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Transfer Timestamp"
-    physical_name: "trnsfr_tms"
-    description: "Thời điểm chính xác thực hiện giao dịch chuyển nhượng cổ phần."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFER_DATE"
-    comment: "TIMESTAMP(6). Nguồn tên là TRANSFER_DATE nhưng kiểu TIMESTAMP(6) — dùng domain Timestamp."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Transferred Shares"
-    physical_name: "trnsfrd_shrs"
-    description: "Số lượng cổ phần được chuyển nhượng trong giao dịch."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFERRED_SHARES"
-    comment: "NUMBER(38). Large integer."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "long"
-
-  - attribute_name: "Transfer Ratio"
-    physical_name: "trnsfr_ratio"
-    description: "Tỷ lệ cổ phần được chuyển nhượng (%)."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFER_RATIO"
-    comment: "NUMBER(10,4). Mô tả gốc BRD null. Lưu dạng thập phân."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Attachment Path"
-    physical_name: "attchmnt_pth"
-    description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.ATTACHMENT_PATH"
-    comment: "NVARCHAR2(1000). Reference path — không load binary vào Atomic."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung, không bắt buộc."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.NOTE"
-    comment: "NVARCHAR2(2000). Mô tả gốc BRD null."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.CREATED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.LAST_MODIFIED_AT"
-    comment: "TIMESTAMP(6)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.CREATED_BY"
-    comment: "Pending — Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người cập nhật bản ghi lần cuối."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người cập nhật bản ghi lần cuối."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.LAST_MODIFIED_BY"
-    comment: "Pending — Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Shareholder Transfer Id"
+  physical_name: "securities_company_shareholder_transfer_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Shareholder Transfer Code"
+  physical_name: "securities_company_shareholder_transfer_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.ID"
+  comment: "BK. NUMBER(19) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_TRANSFER"
+  etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán nơi diễn ra giao dịch chuyển nhượng."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transferor Securities Company Shareholder Id"
+  physical_name: "transferor_securities_company_shareholder_id"
+  description: "FK đến Cổ đông CTCK bên chuyển nhượng (bên bán)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID"
+  comment: "FK target: Securities Company Shareholder.Securities Company Shareholder\
+    \ Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEROR_SHAREHOLDER_ID). Prefix\
+    \ Transferor phân biệt với Transferee cùng target entity."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transferor Securities Company Shareholder Code"
+  physical_name: "transferor_securities_company_shareholder_code"
+  description: "Mã Cổ đông CTCK bên chuyển nhượng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID"
+  comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder\
+    \ Code. Pair with Transferor Securities Company Shareholder Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transferee Securities Company Shareholder Id"
+  physical_name: "transferee_securities_company_shareholder_id"
+  description: "FK đến Cổ đông CTCK bên nhận chuyển nhượng (bên mua)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID"
+  comment: "FK target: Securities Company Shareholder.Securities Company Shareholder\
+    \ Id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEREE_SHAREHOLDER_ID). Prefix\
+    \ Transferee phân biệt với Transferor cùng target entity."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transferee Securities Company Shareholder Code"
+  physical_name: "transferee_securities_company_shareholder_code"
+  description: "Mã Cổ đông CTCK bên nhận chuyển nhượng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID"
+  comment: "Lookup pair: Securities Company Shareholder.Securities Company Shareholder\
+    \ Code. Pair with Transferee Securities Company Shareholder Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Event Type Id"
+  physical_name: "event_type_id"
+  description: "FK đến loại sự kiện pháp lý tương ứng với giao dịch chuyển nhượng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
+  comment: "Pending — FK target CAT_EVENT_TYPE nằm ngoài scope. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Event Type Code"
+  physical_name: "event_type_code"
+  description: "Mã loại sự kiện pháp lý."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
+  comment: "Pending — Pair with Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái bản ghi chuyển nhượng cổ phần."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.RECORD_STATUS"
+  comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+  classification_context: "SCMS_USAGE_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Number"
+  physical_name: "document_number"
+  description: "Số văn bản pháp lý (QĐ/GP/Hợp đồng) của giao dịch chuyển nhượng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.DOCUMENT_NUMBER"
+  comment: "NVARCHAR2(30)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Date"
+  physical_name: "document_dt"
+  description: "Ngày của văn bản pháp lý giao dịch chuyển nhượng."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.DOCUMENT_DATE"
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Transfer Timestamp"
+  physical_name: "transfer_tms"
+  description: "Thời điểm chính xác thực hiện giao dịch chuyển nhượng cổ phần."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFER_DATE"
+  comment: "TIMESTAMP(6). Nguồn tên là TRANSFER_DATE nhưng kiểu TIMESTAMP(6) — dùng\
+    \ domain Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Transferred Shares"
+  physical_name: "transferred_shares"
+  description: "Số lượng cổ phần được chuyển nhượng trong giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFERRED_SHARES"
+  comment: "NUMBER(38). Large integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Transfer Ratio"
+  physical_name: "transfer_ratio"
+  description: "Tỷ lệ cổ phần được chuyển nhượng (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFER_RATIO"
+  comment: "NUMBER(10,4). Mô tả gốc BRD null. Lưu dạng thập phân."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Attachment Path"
+  physical_name: "attachment_path"
+  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.ATTACHMENT_PATH"
+  comment: "NVARCHAR2(1000). Reference path — không load binary vào Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.NOTE"
+  comment: "NVARCHAR2(2000). Mô tả gốc BRD null."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.CREATED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.LAST_MODIFIED_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.CREATED_BY"
+  comment: "Pending — Pair with Created By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người cập nhật bản ghi lần cuối."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người cập nhật bản ghi lần cuối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.LAST_MODIFIED_BY"
+  comment: "Pending — Pair with Updated By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

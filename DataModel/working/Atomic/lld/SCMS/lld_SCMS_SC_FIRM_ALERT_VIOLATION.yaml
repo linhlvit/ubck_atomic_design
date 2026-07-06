@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_ALERT_VIOLATION"
   atomic_entity: "Securities Company Alert Violation"
-  entity_physical_name: "scr_co_alrt_vlt"
+  entity_physical_name: "sc_alert_violation"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Business Activity"
   table_type: "Relative"
@@ -18,500 +17,481 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Vi phạm cảnh báo từ chỉ tiêu giám sát (Alert Indicator). Mỗi dòng = 1 cảnh báo vi phạm được tạo ra khi run alert. ENTITY_TYPE + ENTITY_ID là polymorphic FK: CTCK → Securities Company; CN_NUOC_NGOAI → Securities Company Foreign Branch; VPDD_NUOC_NGOAI → Securities Company Foreign Rep Office. ALERT_CONDITION_ID và ALERT_RUN_ID: pending vì không có trong HLD scope. CONDITION là chuỗi logic expression từ hệ thống — lưu dạng Text. Audit: CREATED_AT + CREATED_BY; không có LAST_MODIFIED_BY/AT."
-
+  notes: "Vi phạm cảnh báo từ chỉ tiêu giám sát (Alert Indicator). Mỗi dòng = 1 cảnh\
+    \ báo vi phạm được tạo ra khi run alert. ENTITY_TYPE + ENTITY_ID là polymorphic\
+    \ FK: CTCK → Securities Company; CN_NUOC_NGOAI → Securities Company Foreign Branch;\
+    \ VPDD_NUOC_NGOAI → Securities Company Foreign Rep Office. ALERT_CONDITION_ID\
+    \ và ALERT_RUN_ID: pending vì không có trong HLD scope. CONDITION là chuỗi logic\
+    \ expression từ hệ thống — lưu dạng Text. Audit: CREATED_AT + CREATED_BY; không\
+    \ có LAST_MODIFIED_BY/AT."
 attributes:
-  - attribute_name: "Securities Company Alert Violation Id"
-    physical_name: "scr_co_alrt_vlt_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Alert Violation Code"
-    physical_name: "scr_co_alrt_vlt_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ID"
-    comment: "BK. NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_ALERT_VIOLATION"
-    etl_derived_value: "SCMS.SC_FIRM_ALERT_VIOLATION"
-    data_type: "string"
-
-  # ── FK TO PARENT ─────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán có vi phạm cảnh báo."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Alert Indicator Id"
-    physical_name: "scr_co_alrt_indctr_id"
-    description: "FK đến chỉ tiêu cảnh báo kích hoạt vi phạm."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
-    comment: "FK target: Securities Company Alert Indicator.Securities Company Alert Indicator Id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Alert Indicator Code"
-    physical_name: "scr_co_alrt_indctr_code"
-    description: "Mã chỉ tiêu cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
-    comment: "Lookup pair: Securities Company Alert Indicator.Securities Company Alert Indicator Code. Pair with Securities Company Alert Indicator Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Alert Condition Id"
-    physical_name: "alrt_cndtn_id"
-    description: "FK đến điều kiện cảnh báo (Alert Condition) liên quan."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
-    comment: "Pending — ALERT_CONDITION nằm ngoài scope HLD hiện tại. NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Alert Condition Code"
-    physical_name: "alrt_cndtn_code"
-    description: "Mã điều kiện cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
-    comment: "Pending — Pair with Alert Condition Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Alert Run Id"
-    physical_name: "alrt_run_id"
-    description: "FK đến lần chạy alert tạo ra vi phạm này."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
-    comment: "Pending — ALERT_RUN nằm ngoài scope HLD hiện tại. NUMBER(10)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Alert Run Code"
-    physical_name: "alrt_run_code"
-    description: "Mã lần chạy alert."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
-    comment: "Pending — Pair with Alert Run Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CLASSIFICATION ────────────────────────────────────────────────────
-  - attribute_name: "Violation Severity Code"
-    physical_name: "vlt_svty_code"
-    description: "Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm trọng."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_SEVERITY"
-    comment: "Scheme: SCMS_VIOLATION_SEVERITY. NUMBER(1) — ETL convert sang string."
-    classification_context: "SCMS_VIOLATION_SEVERITY"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Severity Level"
-    physical_name: "svty_lvl"
-    description: "Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY nhưng dạng text)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL"
-    comment: "NVARCHAR2(50). Có thể trùng ý nghĩa với VIOLATION_SEVERITY — cần xác nhận có thể bỏ sau khi profile dữ liệu."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── POLYMORPHIC ENTITY REFERENCE ──────────────────────────────────────
-  - attribute_name: "Alert Entity Type Code"
-    physical_name: "alrt_ent_tp_code"
-    description: "Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi nhánh nước ngoài; VPDD_NUOC_NGOAI=Văn phòng đại diện nước ngoài."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE"
-    comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(50). Xác định ENTITY_ID trỏ về entity nào (polymorphic)."
-    classification_context: "SCMS_ALERT_ENTITY_TYPE"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Alert Entity Code"
-    physical_name: "alrt_ent_code"
-    description: "Mã nghiệp vụ của đối tượng cảnh báo (tùy loại ENTITY_TYPE)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_ID"
-    comment: "Pending — polymorphic FK: khi ENTITY_TYPE=CTCK trỏ Securities Company; khi =CN_NUOC_NGOAI trỏ Securities Company Foreign Branch; khi =VPDD_NUOC_NGOAI trỏ Securities Company Foreign Rep Office. ETL cần resolve theo ENTITY_TYPE. NUMBER(10) — convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── ALERT CONDITION DETAILS ───────────────────────────────────────────
-  - attribute_name: "Condition Expression"
-    physical_name: "cndtn_exprn"
-    description: "Biểu thức điều kiện logic đã kích hoạt cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.CONDITION"
-    comment: "NVARCHAR2(2000). Chuỗi logic expression dạng text từ hệ thống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Comparison Value"
-    physical_name: "cmpr_val"
-    description: "Giá trị so sánh dùng trong điều kiện cảnh báo."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_SO_SANH"
-    comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn là integer. Tên nguồn tiếng Việt: Giá trị so sánh."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "long"
-
-  - attribute_name: "Actual Value"
-    physical_name: "actl_val"
-    description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo."
-    data_domain: "Currency Amount"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_THUC_TE"
-    comment: "NUMBER(38,2). Tên nguồn tiếng Việt: Giá trị thực tế. Có thể là số tài chính hoặc tỉ lệ — dùng Currency Amount vì có decimal scale."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Threshold Value"
-    physical_name: "thrshd_val"
-    description: "Ngưỡng cảnh báo được cấu hình."
-    data_domain: "Currency Amount"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.THRESHOLD"
-    comment: "NUMBER(38,2)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  - attribute_name: "Deducted Score"
-    physical_name: "ddctd_scr"
-    description: "Điểm trừ do vi phạm cảnh báo."
-    data_domain: "Currency Amount"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.DEDUCTED_SCORE"
-    comment: "NUMBER(38,2). Điểm rủi ro bị trừ — dùng Currency Amount vì có decimal scale."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal"
-
-  # ── REPORTING PERIOD ──────────────────────────────────────────────────
-  - attribute_name: "Alert Year"
-    physical_name: "alrt_yr"
-    description: "Năm của cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_YEAR"
-    comment: "VARCHAR2(4). Lưu dạng Text để bảo toàn format 4 ký tự."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Year"
-    physical_name: "rprt_yr"
-    description: "Năm báo cáo liên quan đến cảnh báo."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_YEAR"
-    comment: "NUMBER (integer). Dùng số nguyên, khác ALERT_YEAR (text 4 char)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "long"
-
-  - attribute_name: "Report Period Code"
-    physical_name: "rprt_prd_code"
-    description: "Kỳ báo cáo của cảnh báo."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD"
-    comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(50)."
-    classification_context: "SCMS_REPORT_PERIOD"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Report Period Value"
-    physical_name: "rprt_prd_val"
-    description: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12)."
-    data_domain: "Small Counter"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD_VALUE"
-    comment: "NUMBER (integer). Số thứ tự kỳ trong năm."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "long"
-
-  - attribute_name: "Period"
-    physical_name: "prd"
-    description: "Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD"
-    comment: "VARCHAR2(20). Mô tả gốc BRD trống — cần xác nhận format (VD: '2024Q1', '202401')."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── RESOLUTION ────────────────────────────────────────────────────────
-  - attribute_name: "Resolved Indicator"
-    physical_name: "rslvd_ind"
-    description: "Cờ đánh dấu vi phạm đã được xử lý: 1=Đã xử lý; 0=Chưa xử lý."
-    data_domain: "Boolean"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.RESOLVED"
-    comment: "NUMBER(1). ETL: 1→true, 0/null→false."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "boolean"
-
-  - attribute_name: "Resolution Note"
-    physical_name: "rsln_note"
-    description: "Ghi chú về cách xử lý vi phạm cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.RESOLUTION_NOTE"
-    comment: "NVARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Violation Description"
-    physical_name: "vlt_dscptn"
-    description: "Mô tả chi tiết về vi phạm cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_DESCRIPTION"
-    comment: "NVARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Note"
-    physical_name: "note"
-    description: "Ghi chú bổ sung về vi phạm cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.NOTE"
-    comment: "NVARCHAR2(2000)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Processing Date"
-    physical_name: "prcs_dt"
-    description: "Thời điểm xử lý vi phạm cảnh báo."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSING_DATE"
-    comment: "TIMESTAMP. Tên cột PROCESSING_DATE nhưng data type là TIMESTAMP."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_AT"
-    comment: "TIMESTAMP."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người dùng tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người dùng tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_BY"
-    comment: "Pending — Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Processor SCMS User Id"
-    physical_name: "prcs_scms_usr_id"
-    description: "FK đến người xử lý vi phạm cảnh báo."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', PROCESSOR_ID). Khác Created By — là người xử lý sau khi alert phát sinh."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Processor SCMS User Code"
-    physical_name: "prcs_scms_usr_code"
-    description: "Mã người xử lý vi phạm cảnh báo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
-    comment: "Pending — Pair with Processor SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Alert Violation Id"
+  physical_name: "securities_company_alert_violation_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Violation Code"
+  physical_name: "securities_company_alert_violation_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_ALERT_VIOLATION"
+  etl_derived_value: "SCMS.SC_FIRM_ALERT_VIOLATION"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán có vi phạm cảnh báo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Id"
+  physical_name: "securities_company_alert_indicator_id"
+  description: "FK đến chỉ tiêu cảnh báo kích hoạt vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
+  comment: "FK target: Securities Company Alert Indicator.Securities Company Alert\
+    \ Indicator Id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Code"
+  physical_name: "securities_company_alert_indicator_code"
+  description: "Mã chỉ tiêu cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
+  comment: "Lookup pair: Securities Company Alert Indicator.Securities Company Alert\
+    \ Indicator Code. Pair with Securities Company Alert Indicator Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Condition Id"
+  physical_name: "alert_condition_id"
+  description: "FK đến điều kiện cảnh báo (Alert Condition) liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
+  comment: "Pending — ALERT_CONDITION nằm ngoài scope HLD hiện tại. NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Condition Code"
+  physical_name: "alert_condition_code"
+  description: "Mã điều kiện cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
+  comment: "Pending — Pair with Alert Condition Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Run Id"
+  physical_name: "alert_run_id"
+  description: "FK đến lần chạy alert tạo ra vi phạm này."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
+  comment: "Pending — ALERT_RUN nằm ngoài scope HLD hiện tại. NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Run Code"
+  physical_name: "alert_run_code"
+  description: "Mã lần chạy alert."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
+  comment: "Pending — Pair with Alert Run Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Severity Code"
+  physical_name: "violation_severity_code"
+  description: "Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm trọng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_SEVERITY"
+  comment: "Scheme: SCMS_VIOLATION_SEVERITY. NUMBER(1) — ETL convert sang string."
+  classification_context: "SCMS_VIOLATION_SEVERITY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Severity Level"
+  physical_name: "severity_level"
+  description: "Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY\
+    \ nhưng dạng text)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL"
+  comment: "NVARCHAR2(50). Có thể trùng ý nghĩa với VIOLATION_SEVERITY — cần xác nhận\
+    \ có thể bỏ sau khi profile dữ liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Entity Type Code"
+  physical_name: "alert_entity_type_code"
+  description: "Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi\
+    \ nhánh nước ngoài; VPDD_NUOC_NGOAI=Văn phòng đại diện nước ngoài."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE"
+  comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(50). Xác định ENTITY_ID trỏ\
+    \ về entity nào (polymorphic)."
+  classification_context: "SCMS_ALERT_ENTITY_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Entity Code"
+  physical_name: "alert_entity_code"
+  description: "Mã nghiệp vụ của đối tượng cảnh báo (tùy loại ENTITY_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_ID"
+  comment: "Pending — polymorphic FK: khi ENTITY_TYPE=CTCK trỏ Securities Company;\
+    \ khi =CN_NUOC_NGOAI trỏ Securities Company Foreign Branch; khi =VPDD_NUOC_NGOAI\
+    \ trỏ Securities Company Foreign Rep Office. ETL cần resolve theo ENTITY_TYPE.\
+    \ NUMBER(10) — convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Condition Expression"
+  physical_name: "condition_expression"
+  description: "Biểu thức điều kiện logic đã kích hoạt cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.CONDITION"
+  comment: "NVARCHAR2(2000). Chuỗi logic expression dạng text từ hệ thống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Comparison Value"
+  physical_name: "comparison_value"
+  description: "Giá trị so sánh dùng trong điều kiện cảnh báo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_SO_SANH"
+  comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn\
+    \ là integer. Tên nguồn tiếng Việt: Giá trị so sánh."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Actual Value"
+  physical_name: "actual_value"
+  description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_THUC_TE"
+  comment: "NUMBER(38,2). Tên nguồn tiếng Việt: Giá trị thực tế. Có thể là số tài\
+    \ chính hoặc tỉ lệ — dùng Currency Amount vì có decimal scale."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Threshold Value"
+  physical_name: "threshold_value"
+  description: "Ngưỡng cảnh báo được cấu hình."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.THRESHOLD"
+  comment: "NUMBER(38,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Deducted Score"
+  physical_name: "deducted_score"
+  description: "Điểm trừ do vi phạm cảnh báo."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.DEDUCTED_SCORE"
+  comment: "NUMBER(38,2). Điểm rủi ro bị trừ — dùng Currency Amount vì có decimal\
+    \ scale."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Alert Year"
+  physical_name: "alert_year"
+  description: "Năm của cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_YEAR"
+  comment: "VARCHAR2(4). Lưu dạng Text để bảo toàn format 4 ký tự."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "report_year"
+  description: "Năm báo cáo liên quan đến cảnh báo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_YEAR"
+  comment: "NUMBER (integer). Dùng số nguyên, khác ALERT_YEAR (text 4 char)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Period Code"
+  physical_name: "report_period_code"
+  description: "Kỳ báo cáo của cảnh báo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD"
+  comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(50)."
+  classification_context: "SCMS_REPORT_PERIOD"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Value"
+  physical_name: "report_period_value"
+  description: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD_VALUE"
+  comment: "NUMBER (integer). Số thứ tự kỳ trong năm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Period"
+  physical_name: "period"
+  description: "Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD"
+  comment: "VARCHAR2(20). Mô tả gốc BRD trống — cần xác nhận format (VD: '2024Q1',\
+    \ '202401')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Resolved Indicator"
+  physical_name: "resolved_indicator"
+  description: "Cờ đánh dấu vi phạm đã được xử lý: 1=Đã xử lý; 0=Chưa xử lý."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.RESOLVED"
+  comment: "NUMBER(1). ETL: 1→true, 0/null→false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Resolution Note"
+  physical_name: "resolution_note"
+  description: "Ghi chú về cách xử lý vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.RESOLUTION_NOTE"
+  comment: "NVARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Description"
+  physical_name: "violation_description"
+  description: "Mô tả chi tiết về vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_DESCRIPTION"
+  comment: "NVARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung về vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.NOTE"
+  comment: "NVARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processing Date"
+  physical_name: "processing_dt"
+  description: "Thời điểm xử lý vi phạm cảnh báo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSING_DATE"
+  comment: "TIMESTAMP. Tên cột PROCESSING_DATE nhưng data type là TIMESTAMP."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_AT"
+  comment: "TIMESTAMP."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người dùng tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_BY"
+  comment: "Pending — Pair with Created By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor SCMS User Id"
+  physical_name: "processor_scms_user_id"
+  description: "FK đến người xử lý vi phạm cảnh báo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ PROCESSOR_ID). Khác Created By — là người xử lý sau khi alert phát sinh."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor SCMS User Code"
+  physical_name: "processor_scms_user_code"
+  description: "Mã người xử lý vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
+  comment: "Pending — Pair with Processor SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

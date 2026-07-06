@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "RISK_INDICATOR"
   atomic_entity: "Securities Company Risk Indicator"
-  entity_physical_name: "scr_co_rsk_ind"
+  entity_physical_name: "securities_company_risk_indicator"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Risk Indicator"
   table_type: "Fundamental"
@@ -18,315 +17,303 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "BCV Term: Risk Indicator. Bảng master định nghĩa chỉ tiêu rủi ro — không lưu kết quả đánh giá. RISK_INDICATOR_GROUP_ID không có trong BRD nhưng HLD diagram đã thiết kế FK này — đặt status pending để xác nhận với team nguồn."
-
+  notes: "BCV Term: Risk Indicator. Bảng master định nghĩa chỉ tiêu rủi ro — không\
+    \ lưu kết quả đánh giá. RISK_INDICATOR_GROUP_ID không có trong BRD nhưng HLD diagram\
+    \ đã thiết kế FK này — đặt status pending để xác nhận với team nguồn."
 attributes:
-  # ── PRIMARY KEY (surrogate) ─────────────────────────────────────────
-  - attribute_name: "Securities Company Risk Indicator Id"
-    physical_name: "scr_co_rsk_ind_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate. BCV: \"[Business Activity] Risk Indicator\". Chỉ tiêu rủi ro CAMEL."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── BUSINESS KEY ────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Risk Indicator Code"
-    physical_name: "scr_co_rsk_ind_code"
-    description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.ID"
-    comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.RISK_INDICATOR"
-    etl_derived_value: "SCMS.RISK_INDICATOR"
-    data_type: "string"
-
-  # ── FK ĐẾN RISK_INDICATOR_GROUP ────────────────────────────────────
-  - attribute_name: "Securities Company Risk Indicator Group Id"
-    physical_name: "scr_co_rsk_ind_grp_id"
-    description: "FK đến nhóm chỉ tiêu rủi ro (Securities Company Risk Indicator Group)."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns: []
-    comment: "Pending — RISK_INDICATOR_GROUP_ID không có trong BRD RISK_INDICATOR nhưng HLD Tier1 diagram thiết kế FK này. Cần xác nhận với team nguồn SCMS. Hash: hash_id('SCMS.RISK_INDICATOR_GROUP', RISK_INDICATOR_GROUP_ID) khi column được xác nhận."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Risk Indicator Group Code"
-    physical_name: "scr_co_rsk_ind_grp_code"
-    description: "Mã nhóm chỉ tiêu rủi ro."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns: []
-    comment: "Pending — pair với Securities Company Risk Indicator Group Id. Xác nhận cùng column RISK_INDICATOR_GROUP_ID."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── BUSINESS ATTRIBUTES ─────────────────────────────────────────────
-  - attribute_name: "Indicator Code"
-    physical_name: "ind_code"
-    description: "Mã chỉ tiêu (mã nghiệp vụ do hệ thống gán)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.INDICATOR_CODE"
-    comment: "Mã nghiệp vụ — khác BK (INDICATOR_CODE khác ID nguồn)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Risk Indicator Name"
-    physical_name: "scr_co_rsk_ind_nm"
-    description: "Tên chỉ tiêu rủi ro."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.INDICATOR_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Weight"
-    physical_name: "wght"
-    description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
-    data_domain: "Percentage"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.WEIGHT"
-    comment: "NUMBER(6,2) — trọng số phần trăm."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "decimal(6,2)"
-
-  - attribute_name: "Description"
-    physical_name: "dsc"
-    description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.DESCRIPTION"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Implementation Method Code"
-    physical_name: "impl_mthd_code"
-    description: "Phương pháp tính toán: 1=Thủ công (nhập tay); 2=Tự động (tính theo công thức)."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.IMPLEMENTATION_METHOD"
-    comment: "Scheme: SCMS_IMPLEMENTATION_METHOD. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Default Value"
-    physical_name: "dflt_val"
-    description: "Giá trị mặc định của ô khi khởi tạo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.DEFAULT_VALUE"
-    comment: "Nguồn lưu NUMBER — ETL cần convert sang string để đồng nhất. Data type nguồn có thể là số nguyên hoặc thập phân."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "CAMEL Group Code"
-    physical_name: "camel_grp_code"
-    description: "Nhóm theo mô hình CAMEL: C=Vốn (Capital Adequacy); A=Tài sản (Asset Quality); M=Quản trị (Management Quality); E=Sinh lợi (Earnings); L=Thanh khoản (Liquidity)."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.RECORD_TYPE"
-    comment: "Scheme: SCMS_RISK_CAMEL_GROUP. Nguồn lưu NVARCHAR2(20)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Formula Text"
-    physical_name: "frml_txt"
-    description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.FORMULA_TEXT"
-    comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Formula"
-    physical_name: "frml"
-    description: "Công thức tính toán giá trị ô."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.FORMULA"
-    comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Sum Formula"
-    physical_name: "sum_frml"
-    description: "Công thức tổng hợp của ô (tính tổng nhiều ô)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.SUM_FORMULA"
-    comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Record Status Code"
-    physical_name: "rcrd_st_code"
-    description: "Trạng thái chỉ tiêu rủi ro: 0=Không sử dụng; 1=Đang sử dụng."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.RECORD_STATUS"
-    comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ──────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.CREATED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.LAST_MODIFIED_AT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.RISK_INDICATOR.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Risk Indicator Id"
+  physical_name: "securities_company_risk_indicator_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Risk Indicator\". Chỉ tiêu rủi\
+    \ ro CAMEL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Risk Indicator Code"
+  physical_name: "securities_company_risk_indicator_code"
+  description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.ID"
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.RISK_INDICATOR"
+  etl_derived_value: "SCMS.RISK_INDICATOR"
+  data_type: "string"
+- attribute_name: "Securities Company Risk Indicator Group Id"
+  physical_name: "securities_company_risk_indicator_group_id"
+  description: "FK đến nhóm chỉ tiêu rủi ro (Securities Company Risk Indicator Group)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns: []
+  comment: "Pending — RISK_INDICATOR_GROUP_ID không có trong BRD RISK_INDICATOR nhưng\
+    \ HLD Tier1 diagram thiết kế FK này. Cần xác nhận với team nguồn SCMS. Hash: hash_id('SCMS.RISK_INDICATOR_GROUP',\
+    \ RISK_INDICATOR_GROUP_ID) khi column được xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Risk Indicator Group Code"
+  physical_name: "securities_company_risk_indicator_group_code"
+  description: "Mã nhóm chỉ tiêu rủi ro."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns: []
+  comment: "Pending — pair với Securities Company Risk Indicator Group Id. Xác nhận\
+    \ cùng column RISK_INDICATOR_GROUP_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Indicator Code"
+  physical_name: "indicator_code"
+  description: "Mã chỉ tiêu (mã nghiệp vụ do hệ thống gán)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.INDICATOR_CODE"
+  comment: "Mã nghiệp vụ — khác BK (INDICATOR_CODE khác ID nguồn)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Risk Indicator Name"
+  physical_name: "securities_company_risk_indicator_nm"
+  description: "Tên chỉ tiêu rủi ro."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.INDICATOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Weight"
+  physical_name: "weight"
+  description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.WEIGHT"
+  comment: "NUMBER(6,2) — trọng số phần trăm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Implementation Method Code"
+  physical_name: "implementation_method_code"
+  description: "Phương pháp tính toán: 1=Thủ công (nhập tay); 2=Tự động (tính theo\
+    \ công thức)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.IMPLEMENTATION_METHOD"
+  comment: "Scheme: SCMS_IMPLEMENTATION_METHOD. Nguồn lưu NUMBER(1) — ETL cần convert\
+    \ sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Default Value"
+  physical_name: "default_value"
+  description: "Giá trị mặc định của ô khi khởi tạo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.DEFAULT_VALUE"
+  comment: "Nguồn lưu NUMBER — ETL cần convert sang string để đồng nhất. Data type\
+    \ nguồn có thể là số nguyên hoặc thập phân."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "CAMEL Group Code"
+  physical_name: "camel_group_code"
+  description: "Nhóm theo mô hình CAMEL: C=Vốn (Capital Adequacy); A=Tài sản (Asset\
+    \ Quality); M=Quản trị (Management Quality); E=Sinh lợi (Earnings); L=Thanh khoản\
+    \ (Liquidity)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.RECORD_TYPE"
+  comment: "Scheme: SCMS_RISK_CAMEL_GROUP. Nguồn lưu NVARCHAR2(20)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Formula Text"
+  physical_name: "formula_text"
+  description: "Mô tả công thức dạng văn bản để hiển thị cho người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.FORMULA_TEXT"
+  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Formula"
+  physical_name: "formula"
+  description: "Công thức tính toán giá trị ô."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.FORMULA"
+  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sum Formula"
+  physical_name: "sum_formula"
+  description: "Công thức tổng hợp của ô (tính tổng nhiều ô)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.SUM_FORMULA"
+  comment: "Nguồn lưu CLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái chỉ tiêu rủi ro: 0=Không sử dụng; 1=Đang sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.RECORD_STATUS"
+  comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang\
+    \ string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.LAST_MODIFIED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By\
+    \ SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.RISK_INDICATOR.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By\
+    \ SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

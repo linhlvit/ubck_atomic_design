@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "COUNTRIES"
   atomic_entity: "Geographic Area"
-  entity_physical_name: "geo"
+  entity_physical_name: "geographic_area"
   bcv_core_object: "Location"
   bcv_concept: "[Location] Geographic Area"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Geographic Area Id"
-  physical_name: "geo_id"
+  physical_name: "geographic_area_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Geographic Area Code"
-  physical_name: "geo_code"
+  physical_name: "geographic_area_code"
   description: "Mã quốc gia nguồn. BK"
   data_domain: "Text"
   nullable: false
@@ -57,7 +57,7 @@ attributes:
   etl_derived_value: "NHNCK.COUNTRIES"
   data_type: "string"
 - attribute_name: "Geographic Area Type Code"
-  physical_name: "geo_tp_code"
+  physical_name: "geographic_area_type_code"
   description: "Phân loại vùng địa lý — Quốc gia"
   data_domain: "Classification Value"
   nullable: false
@@ -69,7 +69,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Geographic Area Name"
-  physical_name: "geo_nm"
+  physical_name: "geographic_area_nm"
   description: "Tên quốc gia/vùng lãnh thổ"
   data_domain: "Text"
   nullable: false
@@ -82,7 +82,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "ISO Country Code"
-  physical_name: "iso_cty_code"
+  physical_name: "iso_country_code"
   description: "Mã quốc gia ISO 3166-1 alpha-2"
   data_domain: "Text"
   nullable: true
@@ -95,19 +95,20 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Geographic Area Id"
-  physical_name: "prn_geo_id"
+  physical_name: "parent_geographic_area_id"
   description: "FK đến vùng địa lý cha (self-ref). NULL cho quốc gia"
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không có parent."
+  comment: "FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không\
+    \ có parent."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Geographic Area Code"
-  physical_name: "prn_geo_code"
+  physical_name: "parent_geographic_area_code"
   description: "Mã vùng địa lý cha"
   data_domain: "Text"
   nullable: true
@@ -120,7 +121,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Default Flag"
-  physical_name: "dflt_f"
+  physical_name: "default_flag"
   description: "Cờ mặc định: true=Mặc định; false=Không"
   data_domain: "Boolean"
   nullable: false
@@ -133,7 +134,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái bản ghi: 1=Hoạt động; 0=Không hoạt động"
   data_domain: "Classification Value"
   nullable: true

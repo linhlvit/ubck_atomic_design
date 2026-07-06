@@ -1,0 +1,233 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-spqea_fee-NHNCK.EXAM_SESSION_FEES
+  logical_name: Securities Practitioner Qualification Examination Assessment Fee
+  physical_name: spqea_fee
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Financial Charge"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Biểu phí thi sát hạch quy định cho từng loại CCHN trong từng đợt thi (Condition). Phân biệt với License Application Fee là phí thực tế thu từng hồ sơ (Transaction).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-EXAM_SESSION_FEES
+
+attributes:
+  - name: Securities Practitioner Qualification Examination Assessment Fee Id
+    physical_name: securities_practitioner_qualification_examination_assessment_fee_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: null
+    comment: "PK surrogate. BCV: \"Condition\" (Condition). Mức phí thi theo đợt thi + loại chứng chỉ."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Qualification Examination Assessment Fee Code
+    physical_name: securities_practitioner_qualification_examination_assessment_fee_code
+    business_meaning: Mã định danh (tự động tăng). BK
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.ID
+    comment: BK chính.
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. ETL-derived."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: NHNCK.EXAM_SESSION_FEES
+
+  - name: Examination Assessment Id
+    physical_name: examination_assessment_id
+    business_meaning: FK đến đợt thi (Exam Assessment)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID
+    comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Examination Assessment Code
+    physical_name: examination_assessment_code
+    business_meaning: Mã đợt thi
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID
+    comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination Assessment Code. Pair with Examination Assessment Id."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Certificate Type Code
+    physical_name: certificate_type_code
+    business_meaning: Mã loại chứng chỉ
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID
+    comment: "Scheme: CERTIFICATE_TYPE."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Examination Fee Amount
+    physical_name: examination_fee_amount
+    business_meaning: Mức phí dự thi (VNĐ)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.FEE_EXAM
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Appeal Fee Amount
+    physical_name: appeal_fee_amount
+    business_meaning: Mức phí phúc khảo (VNĐ)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.FEE_APPEAL
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: Trạng thái bản ghi
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.RECORD_STATUS
+    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.UPDATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: created_by_officer_id
+    business_meaning: FK đến Officer (người tạo)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.CREATED_BY
+    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: created_by_officer_code
+    business_meaning: Mã người tạo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.CREATED_BY
+    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: updated_by_officer_id
+    business_meaning: FK đến Officer (người cập nhật)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.UPDATED_BY
+    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: updated_by_officer_code
+    business_meaning: Mã người cập nhật
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_SESSION_FEES
+    source_column: NHNCK.EXAM_SESSION_FEES.UPDATED_BY
+    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Updated By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
+    etl_derived_value: null

@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   atomic_entity: "Securities Organization Reference"
-  entity_physical_name: "scr_org_refr"
+  entity_physical_name: "securities_organization_reference"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Organization Reference Id"
-  physical_name: "scr_org_refr_id"
+  physical_name: "securities_organization_reference_id"
   description: "Khóa đại diện cho tổ chức kinh doanh chứng khoán (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Code"
-  physical_name: "scr_org_refr_code"
+  physical_name: "securities_organization_reference_code"
   description: "Mã định danh kỹ thuật tự tăng. BK của entity. Map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "NHNCK.ORGANIZATIONS"
   data_type: "string"
 - attribute_name: "Organization Code"
-  physical_name: "org_code"
+  physical_name: "organization_code"
   description: "Mã tổ chức (mã nghiệp vụ do hệ thống gán)."
   data_domain: "Text"
   nullable: true
@@ -71,7 +71,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Name"
-  physical_name: "scr_org_refr_nm"
+  physical_name: "securities_organization_reference_nm"
   description: "Tên đầy đủ tổ chức."
   data_domain: "Text"
   nullable: true
@@ -84,7 +84,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference English Name"
-  physical_name: "scr_org_refr_en_nm"
+  physical_name: "securities_organization_reference_english_nm"
   description: "Tên tiếng Anh của tổ chức."
   data_domain: "Text"
   nullable: true
@@ -97,7 +97,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Short Name"
-  physical_name: "scr_org_refr_shrt_nm"
+  physical_name: "securities_organization_reference_short_nm"
   description: "Tên viết tắt của tổ chức."
   data_domain: "Text"
   nullable: true
@@ -110,7 +110,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Type Code"
-  physical_name: "org_tp_code"
+  physical_name: "organization_type_code"
   description: "Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng."
   data_domain: "Classification Value"
   nullable: true
@@ -123,7 +123,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Level Code"
-  physical_name: "org_lvl_code"
+  physical_name: "organization_level_code"
   description: "Cấp độ phân cấp tổ chức."
   data_domain: "Classification Value"
   nullable: true
@@ -136,7 +136,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Securities Organization Reference Id"
-  physical_name: "prn_scr_org_refr_id"
+  physical_name: "parent_securities_organization_reference_id"
   description: "FK tự tham chiếu — tổ chức cha trong cấu trúc phân cấp."
   data_domain: "Surrogate Key"
   nullable: true
@@ -144,12 +144,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.PARENT_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id. Self-referencing. Hash: hash_id('NHNCK.ORGANIZATIONS', PARENT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Securities Organization Reference Code"
-  physical_name: "prn_scr_org_refr_code"
+  physical_name: "parent_securities_organization_reference_code"
   description: "Mã tổ chức cha."
   data_domain: "Text"
   nullable: true
@@ -163,7 +164,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "External System Linked Id"
-  physical_name: "ext_stm_linked_id"
+  physical_name: "external_stm_linked_id"
   description: "ID liên kết sang hệ thống FMS/SCMS."
   data_domain: "Text"
   nullable: true
@@ -177,7 +178,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "External System Sync Id"
-  physical_name: "ext_stm_sync_id"
+  physical_name: "external_stm_sync_id"
   description: "Mã đồng bộ từ FMS/SCMS."
   data_domain: "Text"
   nullable: true
@@ -190,7 +191,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Legal Representative Name"
-  physical_name: "lgl_rprs_nm"
+  physical_name: "legal_representative_nm"
   description: "Tên người đại diện pháp luật của tổ chức."
   data_domain: "Text"
   nullable: true
@@ -204,7 +205,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Number"
-  physical_name: "license_nbr"
+  physical_name: "license_number"
   description: "Số giấy phép hoạt động chứng khoán."
   data_domain: "Text"
   nullable: true
@@ -217,7 +218,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Issuer Name"
-  physical_name: "license_issur_nm"
+  physical_name: "license_issuer_nm"
   description: "Tên cơ quan cấp giấy phép hoạt động."
   data_domain: "Text"
   nullable: true
@@ -243,7 +244,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Charter Capital Amount"
-  physical_name: "charter_cptl_amt"
+  physical_name: "charter_capital_amount"
   description: "Vốn điều lệ của tổ chức."
   data_domain: "Currency Amount"
   nullable: true
@@ -257,7 +258,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Description"
-  physical_name: "dsc"
+  physical_name: "description"
   description: "Mô tả chi tiết về tổ chức."
   data_domain: "Text"
   nullable: true
@@ -270,7 +271,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái bản ghi: 1=Hoạt động."
   data_domain: "Classification Value"
   nullable: true
@@ -283,7 +284,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Sort Order"
-  physical_name: "sort_ordr"
+  physical_name: "sort_order"
   description: "Thứ tự sắp xếp hiển thị."
   data_domain: "Small Counter"
   nullable: true
@@ -309,7 +310,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Sync Status Code"
-  physical_name: "sync_st_code"
+  physical_name: "sync_status_code"
   description: "Trạng thái đồng bộ: 0=Chưa đồng bộ, 1=Đã đồng bộ, 2=Lỗi."
   data_domain: "Classification Value"
   nullable: true
@@ -323,7 +324,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo bản ghi."
   data_domain: "Timestamp"
   nullable: true
@@ -336,7 +337,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật bản ghi gần nhất."
   data_domain: "Timestamp"
   nullable: true
@@ -349,7 +350,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến cán bộ tạo bản ghi."
   data_domain: "Surrogate Key"
   nullable: true
@@ -357,12 +358,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã cán bộ tạo bản ghi."
   data_domain: "Text"
   nullable: true
@@ -376,7 +378,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến cán bộ cập nhật bản ghi gần nhất."
   data_domain: "Surrogate Key"
   nullable: true
@@ -384,12 +386,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATIONS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã cán bộ cập nhật bản ghi gần nhất."
   data_domain: "Text"
   nullable: true

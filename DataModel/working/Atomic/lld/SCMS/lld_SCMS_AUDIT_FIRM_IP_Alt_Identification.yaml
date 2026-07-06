@@ -1,14 +1,13 @@
-schema_type: "lld_shared_ip_alt_identification"
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "AUDIT_FIRM"
-  atomic_entity: "IP Alt Identification"
-  entity_physical_name: "ip_alt_id"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
   bcv_core_object: "Involved Party"
-  bcv_concept: "IP Alt Identification"
-  table_type: "Shared"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
   group: "T1"
   design_status: "draft"
   version: "1.0"
@@ -18,87 +17,99 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Alt Identification của Audit Firm. 1 row per công ty kiểm toán — BUSINESS_LICENSE_NUMBER → type BUSINESS_LICENSE (giấy phép thành lập và hoạt động do UBCKNN cấp). BUSINESS_LICENSE_DATE → issue_dt. BUSINESS_LICENSE_ISSUER → issue_plc (tên cơ quan cấp, mặc định UBCKNN)."
-
+  notes: "IP Alt Identification của Audit Firm. 1 row per công ty kiểm toán — BUSINESS_LICENSE_NUMBER\
+    \ → type BUSINESS_LICENSE (giấy phép thành lập và hoạt động do UBCKNN cấp). BUSINESS_LICENSE_DATE\
+    \ → issue_dt. BUSINESS_LICENSE_ISSUER → issue_plc (tên cơ quan cấp, mặc định UBCKNN)."
 attributes:
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Audit Firm."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.ID"
-    comment: "FK target: Audit Firm.Audit Firm Id. Shared entity. Hash: hash_id('SCMS.AUDIT_FIRM', ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Identification Type Code"
-    physical_name: "id_tp_code"
-    description: "Loại giấy tờ: BUSINESS_LICENSE=Giấy phép kinh doanh/thành lập."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode BUSINESS_LICENSE — chỉ có 1 cột BUSINESS_LICENSE_NUMBER."
-    classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-    etl_derived_value: "BUSINESS_LICENSE"
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
-    etl_derived_value: "SCMS.AUDIT_FIRM"
-    data_type: "string"
-
-  - attribute_name: "Identification Number"
-    physical_name: "id_nbr"
-    description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_NUMBER"
-    comment: "VARCHAR2 — số giấy phép kinh doanh."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Issue Date"
-    physical_name: "issue_dt"
-    description: "Ngày cấp giấy phép thành lập và hoạt động."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_DATE"
-    comment: "Nguồn lưu TIMESTAMP(6) — ETL truncate lấy phần ngày (widening conversion về Date)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Issue Place"
-    physical_name: "issue_plc"
-    description: "Tên cơ quan cấp giấy phép (mặc định: UBCKNN)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_ISSUER"
-    comment: "VARCHAR2 — tên cơ quan cấp phép. Map vào issue_plc theo ngữ nghĩa 'nơi/cơ quan cấp'."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Audit Firm."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.ID"
+  comment: "FK target: Audit Firm.Audit Firm Id. Shared entity. Hash: hash_id('SCMS.AUDIT_FIRM',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã Audit Firm."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.ID"
+  comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_type_code"
+  description: "Loại giấy tờ: BUSINESS_LICENSE=Giấy phép kinh doanh/thành lập."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode BUSINESS_LICENSE — chỉ có 1 cột BUSINESS_LICENSE_NUMBER."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: "BUSINESS_LICENSE"
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
+  etl_derived_value: "SCMS.AUDIT_FIRM"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_number"
+  description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_NUMBER"
+  comment: "VARCHAR2 — số giấy phép kinh doanh."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy phép thành lập và hoạt động."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_DATE"
+  comment: "Nguồn lưu TIMESTAMP(6) — ETL truncate lấy phần ngày (widening conversion\
+    \ về Date)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Tên cơ quan cấp giấy phép (mặc định: UBCKNN)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_ISSUER"
+  comment: "VARCHAR2 — tên cơ quan cấp phép. Map vào issue_plc theo ngữ nghĩa 'nơi/cơ\
+    \ quan cấp'."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

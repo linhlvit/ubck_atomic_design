@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   atomic_entity: "Securities Practitioner License Application Fee"
-  entity_physical_name: "scr_prac_license_ap_fee"
+  entity_physical_name: "sp_license_application_fee"
   bcv_core_object: "Transaction"
   bcv_concept: "[Event] Transaction"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner License Application Fee Id"
-  physical_name: "scr_prac_license_ap_fee_id"
+  physical_name: "securities_practitioner_license_application_fee_id"
   description: "Surrogate primary key"
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Fee Code"
-  physical_name: "scr_prac_license_ap_fee_code"
+  physical_name: "securities_practitioner_license_application_fee_code"
   description: "Business key từ APPLICATION_FEES.ID"
   data_domain: "Text"
   nullable: false
@@ -45,7 +45,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Application Id"
-  physical_name: "license_ap_id"
+  physical_name: "license_application_id"
   description: "FK đến License Application"
   data_domain: "Surrogate Key"
   nullable: false
@@ -53,12 +53,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Application Code"
-  physical_name: "license_ap_code"
+  physical_name: "license_application_code"
   description: "Mã hồ sơ đăng ký (lookup pair)"
   data_domain: "Text"
   nullable: false
@@ -72,7 +73,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "FK đến Securities Practitioner (redundant — derive được từ Application)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -80,12 +81,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã chuyên viên (lookup pair)"
   data_domain: "Text"
   nullable: true
@@ -99,7 +101,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fee Type Code"
-  physical_name: "fee_tp_code"
+  physical_name: "fee_type_code"
   description: "Loại phí: 1=Phí thi 2=Phí phúc khảo 3=Phí cấp chứng chỉ"
   data_domain: "Classification Value"
   nullable: false
@@ -112,7 +114,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fee Content"
-  physical_name: "fee_cntnt"
+  physical_name: "fee_content"
   description: "Nội dung khoản phí"
   data_domain: "Text"
   nullable: true
@@ -125,7 +127,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fee Amount"
-  physical_name: "fee_amt"
+  physical_name: "fee_amount"
   description: "Số tiền phí (VNĐ)"
   data_domain: "Currency Amount"
   nullable: false
@@ -138,7 +140,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Payment Request Date"
-  physical_name: "pymt_rqs_dt"
+  physical_name: "payment_request_dt"
   description: "Ngày yêu cầu nộp phí"
   data_domain: "Date"
   nullable: false
@@ -151,7 +153,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Payment Date"
-  physical_name: "pymt_dt"
+  physical_name: "payment_dt"
   description: "Ngày thanh toán thực tế"
   data_domain: "Date"
   nullable: true
@@ -164,7 +166,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Payment Expiry Date"
-  physical_name: "pymt_expiry_dt"
+  physical_name: "payment_expiry_dt"
   description: "Ngày hết hạn thanh toán"
   data_domain: "Date"
   nullable: true
@@ -177,7 +179,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động)"
   data_domain: "Classification Value"
   nullable: false
@@ -186,11 +188,11 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_FEES.RECORD_STATUS"
   comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Payment Evidence File Path"
-  physical_name: "pymt_evidence_file_path"
+  physical_name: "payment_evidence_file_path"
   description: "Đường dẫn chứng từ thanh toán"
   data_domain: "Text"
   nullable: true
@@ -228,7 +230,7 @@ attributes:
   etl_derived_value: "NHNCK.APPLICATION_FEES"
   data_type: "string"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo bản ghi"
   data_domain: "Timestamp"
   nullable: true
@@ -241,7 +243,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật bản ghi"
   data_domain: "Timestamp"
   nullable: true
@@ -254,7 +256,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến cán bộ tạo bản ghi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -262,12 +264,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã cán bộ tạo bản ghi"
   data_domain: "Text"
   nullable: true
@@ -281,7 +284,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến cán bộ cập nhật bản ghi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -289,12 +292,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã cán bộ cập nhật bản ghi"
   data_domain: "Text"
   nullable: true

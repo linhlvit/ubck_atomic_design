@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-NHNCK.PROFESSIONALS
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-PROFESSIONALS
+
+attributes:
+  - name: Involved Party Id
+    physical_name: involved_party_id
+    business_meaning: FK đến Securities Practitioner.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.ID
+    comment: "FK target: securities_practitioner.securities_practitioner_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: involved_party_code
+    business_meaning: Mã người hành nghề.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.ID
+    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: NHNCK.PROFESSIONALS
+
+  - name: Address Type Code
+    physical_name: address_type_code
+    business_meaning: Loại địa chỉ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: null
+    comment: "Scheme: IP_ADDR_TYPE. Nguồn NHNCK chỉ có địa chỉ thường trú (PERMANENT_ADDRESS)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: PERMANENT
+
+  - name: Address Value
+    physical_name: address_value
+    business_meaning: Giá trị địa chỉ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_ADDRESS
+    comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.PROFESSIONALS.ADDRESS khi PERMANENT_ADDRESS null. ETL xử lý logic này."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Country Id
+    physical_name: country_id
+    business_meaning: FK đến Geographic Area — quốc gia.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Country Code
+    physical_name: country_code
+    business_meaning: Mã quốc gia.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: province_id
+    business_meaning: FK đến Geographic Area — tỉnh/thành.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã tỉnh/thành.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: District Id
+    physical_name: district_id
+    business_meaning: FK đến Geographic Area — quận/huyện.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: District Code
+    physical_name: district_code
+    business_meaning: Mã quận/huyện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with District Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null

@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
-  entity_physical_name: "scr_prac_prof_trn_clss_enrollment"
+  entity_physical_name: "sp_professional_training_class_enrollment"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
@@ -21,7 +21,7 @@ metadata:
 attributes:
 - attribute_name: "Securities Practitioner Professional Training Class Enrollment\
     \ Id"
-  physical_name: "scr_prac_prof_trn_clss_enrollment_id"
+  physical_name: "securities_practitioner_professional_training_class_enrollment_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,7 +35,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Securities Practitioner Professional Training Class Enrollment\
     \ Code"
-  physical_name: "scr_prac_prof_trn_clss_enrollment_code"
+  physical_name: "securities_practitioner_professional_training_class_enrollment_code"
   description: "Mã định danh (BK từ PK nguồn)"
   data_domain: "Text"
   nullable: false
@@ -60,7 +60,7 @@ attributes:
   etl_derived_value: "NHNCK.SPECIALIZATION_COURSE_DETAILS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Professional Training Class Id"
-  physical_name: "scr_prac_prof_trn_clss_id"
+  physical_name: "securities_practitioner_professional_training_class_id"
   description: "FK đến lớp đào tạo nghiệp vụ chứng khoán"
   data_domain: "Surrogate Key"
   nullable: false
@@ -68,12 +68,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID"
-  comment: "FK target: Securities Practitioner Professional Training Class.Securities Practitioner Professional Training Class Id. Hash: hash_id('NHNCK.SPECIALIZATION_COURSES', SPECIALIZATION_COURSE_ID)."
+  comment: "FK target: Securities Practitioner Professional Training Class.Securities\
+    \ Practitioner Professional Training Class Id. Hash: hash_id('NHNCK.SPECIALIZATION_COURSES',\
+    \ SPECIALIZATION_COURSE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Professional Training Class Code"
-  physical_name: "scr_prac_prof_trn_clss_code"
+  physical_name: "securities_practitioner_professional_training_class_code"
   description: "Mã lớp đào tạo"
   data_domain: "Text"
   nullable: false
@@ -88,7 +90,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "FK đến người hành nghề chứng khoán"
   data_domain: "Surrogate Key"
   nullable: false
@@ -96,12 +98,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã người hành nghề"
   data_domain: "Text"
   nullable: false
@@ -115,7 +118,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Specialization Type Code"
-  physical_name: "specialization_tp_code"
+  physical_name: "specialization_type_code"
   description: "Loại chuyên ngành đào tạo"
   data_domain: "Classification Value"
   nullable: false
@@ -128,7 +131,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Exam Number"
-  physical_name: "exam_nbr"
+  physical_name: "exam_number"
   description: "Số báo danh dự thi"
   data_domain: "Text"
   nullable: true
@@ -141,7 +144,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Name At Enrollment"
-  physical_name: "prac_nm_at_enrollment"
+  physical_name: "practitioner_nm_at_enrollment"
   description: "Họ tên học viên tại thời điểm đăng ký (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -154,7 +157,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Birth Date At Enrollment"
-  physical_name: "prac_brth_dt_at_enrollment"
+  physical_name: "practitioner_birth_dt_at_enrollment"
   description: "Ngày sinh tại thời điểm đăng ký (snapshot)"
   data_domain: "Date"
   nullable: true
@@ -167,7 +170,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Place of Birth"
-  physical_name: "plc_of_brth"
+  physical_name: "place_of_birth"
   description: "Nơi sinh (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -180,7 +183,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Permanent Residence Country Id"
-  physical_name: "perm_rsdnc_cty_id"
+  physical_name: "permanent_residence_country_id"
   description: "FK đến quốc gia thường trú (snapshot)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -188,12 +191,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm\
+    \ đăng ký. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Permanent Residence Country Code"
-  physical_name: "perm_rsdnc_cty_code"
+  physical_name: "permanent_residence_country_code"
   description: "Mã quốc gia thường trú"
   data_domain: "Text"
   nullable: true
@@ -207,7 +211,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Permanent Residence Province Id"
-  physical_name: "perm_rsdnc_prov_id"
+  physical_name: "permanent_residence_province_id"
   description: "FK đến tỉnh/thành thường trú (snapshot)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -215,12 +219,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm\
+    \ đăng ký. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Permanent Residence Province Code"
-  physical_name: "perm_rsdnc_prov_code"
+  physical_name: "permanent_residence_province_code"
   description: "Mã tỉnh/thành thường trú"
   data_domain: "Text"
   nullable: true
@@ -234,7 +239,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Permanent Residence District Id"
-  physical_name: "perm_rsdnc_dstc_id"
+  physical_name: "permanent_residence_district_id"
   description: "FK đến quận/huyện thường trú (snapshot)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -242,12 +247,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Snapshot tại thời điểm\
+    \ đăng ký. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Permanent Residence District Code"
-  physical_name: "perm_rsdnc_dstc_code"
+  physical_name: "permanent_residence_district_code"
   description: "Mã quận/huyện thường trú"
   data_domain: "Text"
   nullable: true
@@ -261,7 +267,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Identity Type Code At Enrollment"
-  physical_name: "prac_id_tp_code_at_enrollment"
+  physical_name: "practitioner_identity_type_code_at_enrollment"
   description: "Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)"
   data_domain: "Classification Value"
   nullable: true
@@ -275,7 +281,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Identity Number At Enrollment"
-  physical_name: "prac_id_nbr_at_enrollment"
+  physical_name: "practitioner_identity_number_at_enrollment"
   description: "Số định danh tại thời điểm đăng ký (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -288,7 +294,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Identity Issue Date At Enrollment"
-  physical_name: "prac_id_issu_dt_at_enrollment"
+  physical_name: "practitioner_identity_issue_dt_at_enrollment"
   description: "Ngày cấp giấy tờ định danh (snapshot)"
   data_domain: "Date"
   nullable: true
@@ -301,7 +307,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Practitioner Identity Issue Place At Enrollment"
-  physical_name: "prac_id_issu_plc_at_enrollment"
+  physical_name: "practitioner_identity_issue_place_at_enrollment"
   description: "Nơi cấp giấy tờ định danh (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -314,7 +320,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Exam Score"
-  physical_name: "exam_scor"
+  physical_name: "exam_score"
   description: "Điểm thi"
   data_domain: "Percentage"
   nullable: true
@@ -328,7 +334,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(5,2)"
 - attribute_name: "Training Result Code"
-  physical_name: "trn_rslt_code"
+  physical_name: "training_result_code"
   description: "Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt)"
   data_domain: "Classification Value"
   nullable: true
@@ -341,7 +347,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái bản ghi"
   data_domain: "Classification Value"
   nullable: true
@@ -350,11 +356,11 @@ attributes:
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.RECORD_STATUS"
   comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"
-  physical_name: "dsc"
+  physical_name: "description"
   description: "Mô tả"
   data_domain: "Text"
   nullable: true
@@ -380,7 +386,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Assignee Officer Id"
-  physical_name: "assignee_ofcr_id"
+  physical_name: "assignee_officer_id"
   description: "FK đến cán bộ phụ trách (nullable)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -388,12 +394,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Assignee Officer Code"
-  physical_name: "assignee_ofcr_code"
+  physical_name: "assignee_officer_code"
   description: "Mã cán bộ phụ trách"
   data_domain: "Text"
   nullable: true
@@ -407,7 +414,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo bản ghi"
   data_domain: "Timestamp"
   nullable: true
@@ -420,7 +427,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật bản ghi"
   data_domain: "Timestamp"
   nullable: true
@@ -433,7 +440,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến cán bộ tạo bản ghi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -441,12 +448,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã cán bộ tạo bản ghi"
   data_domain: "Text"
   nullable: true
@@ -460,7 +468,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến cán bộ cập nhật bản ghi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -468,12 +476,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã cán bộ cập nhật bản ghi"
   data_domain: "Text"
   nullable: true

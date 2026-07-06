@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
-  entity_physical_name: "scr_prac_license_ap_emp_exrnc"
+  entity_physical_name: "sp_license_application_employment_experience"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
@@ -21,7 +21,7 @@ metadata:
 attributes:
 - attribute_name: "Securities Practitioner License Application Employment Experience\
     \ Id"
-  physical_name: "scr_prac_license_ap_emp_exrnc_id"
+  physical_name: "securities_practitioner_license_application_employment_experience_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,7 +35,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Employment Experience\
     \ Code"
-  physical_name: "scr_prac_license_ap_emp_exrnc_code"
+  physical_name: "securities_practitioner_license_application_employment_experience_code"
   description: "Mã định danh kinh nghiệm làm việc. BK"
   data_domain: "Text"
   nullable: false
@@ -60,7 +60,7 @@ attributes:
   etl_derived_value: "NHNCK.APPLICATION_EXPERIENCES"
   data_type: "string"
 - attribute_name: "License Application Id"
-  physical_name: "license_ap_id"
+  physical_name: "license_application_id"
   description: "FK đến hồ sơ đăng ký CCHN"
   data_domain: "Surrogate Key"
   nullable: false
@@ -68,12 +68,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_EXPERIENCES.APPLICATION_ID"
-  comment: "FK target: Securities Practitioner License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.License Application\
+    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Application Code"
-  physical_name: "license_ap_code"
+  physical_name: "license_application_code"
   description: "Mã hồ sơ đăng ký CCHN"
   data_domain: "Text"
   nullable: false
@@ -87,7 +88,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Document Type Code"
-  physical_name: "doc_tp_code"
+  physical_name: "document_type_code"
   description: "Mã loại tài liệu yêu cầu (Classification Value từ Documents)"
   data_domain: "Classification Value"
   nullable: true
@@ -101,7 +102,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Id"
-  physical_name: "scr_org_refr_id"
+  physical_name: "securities_organization_reference_id"
   description: "FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable — nếu\
     \ nơi làm việc là CTCK/QLQ đã đăng ký)"
   data_domain: "Surrogate Key"
@@ -110,12 +111,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_EXPERIENCES.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
+  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
+    \ Id. Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Code"
-  physical_name: "scr_org_refr_code"
+  physical_name: "securities_organization_reference_code"
   description: "Mã tổ chức kinh doanh chứng khoán (dư thừa)"
   data_domain: "Text"
   nullable: true
@@ -129,7 +131,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Name"
-  physical_name: "org_nm"
+  physical_name: "organization_nm"
   description: "Tên tổ chức nơi làm việc (snapshot text — giữ kể cả khi ORGANIZATION_ID\
     \ có giá trị)"
   data_domain: "Text"
@@ -144,7 +146,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Department Name"
-  physical_name: "dept_nm"
+  physical_name: "department_nm"
   description: "Tên phòng ban nơi làm việc"
   data_domain: "Text"
   nullable: true
@@ -157,7 +159,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Position"
-  physical_name: "pos"
+  physical_name: "position"
   description: "Chức vụ tại tổ chức"
   data_domain: "Text"
   nullable: true
@@ -170,7 +172,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Employment Start Date"
-  physical_name: "emp_strt_dt"
+  physical_name: "employment_start_dt"
   description: "Ngày bắt đầu làm việc tại tổ chức"
   data_domain: "Date"
   nullable: false
@@ -183,7 +185,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Employment End Date"
-  physical_name: "emp_end_dt"
+  physical_name: "employment_end_dt"
   description: "Ngày kết thúc làm việc tại tổ chức (null nếu đang làm việc)"
   data_domain: "Date"
   nullable: true
@@ -196,7 +198,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Work Duration Months"
-  physical_name: "wrk_drtn_mo"
+  physical_name: "work_duration_months"
   description: "Thời gian làm việc tại tổ chức (số tháng)"
   data_domain: "Small Counter"
   nullable: false
@@ -209,7 +211,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Experience Duration Months"
-  physical_name: "tot_exrnc_drtn_mo"
+  physical_name: "total_experience_duration_months"
   description: "Tổng thời gian kinh nghiệm tích lũy (số tháng)"
   data_domain: "Small Counter"
   nullable: false
@@ -222,7 +224,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Insurance Number"
-  physical_name: "ins_nbr"
+  physical_name: "insurance_number"
   description: "Số bảo hiểm xã hội"
   data_domain: "Text"
   nullable: true
@@ -235,7 +237,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Labor Contract Info"
-  physical_name: "labor_ctr_info"
+  physical_name: "labor_contract_info"
   description: "Thông tin hợp đồng lao động"
   data_domain: "Text"
   nullable: true
@@ -248,7 +250,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Director Confirmation"
-  physical_name: "director_cfrm"
+  physical_name: "director_confirmation"
   description: "Thông tin xác nhận của giám đốc tổ chức"
   data_domain: "Text"
   nullable: true

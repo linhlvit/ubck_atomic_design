@@ -3,7 +3,7 @@
 **Source system:** SCMS (Quản lý Giám sát Công ty Chứng khoán)
 **Tier 3:** Các entity có FK đến Tier 2 — bao gồm người đại diện cổ đông, thay đổi sở hữu cổ đông, chuyển nhượng cổ phần, quan hệ cổ đông, chi tiết điểm rủi ro, báo cáo định kỳ chi nhánh/VPDD NN, nhân sự chi nhánh/VPDD NN.
 
-> **Lưu ý cập nhật:** `Securities Company Major Shareholder Relation` và `Securities Company Risk Summary` đã được **hạ xuống Tier 2** sau khi xác nhận từ BRD: SHAREHOLDER_ID và RISK_SCORING_SC_FIRM_ID đều có `key: null, fk_note: null` — không phải FK khai báo. Hai entity này đã được chuyển vào `SCMS_HLD_Tier2.md`. `Securities Company Risk Summary Detail`, `Securities Company Foreign Branch Personnel`, `Securities Company Foreign Representative Office Personnel` đã được **loại khỏi scope** sau review — xem SCMS_HLD_Overview.md mục 7f.
+> **Lưu ý cập nhật:** `Securities Company Major Shareholder Relation` và `Securities Company Risk Summary` đã được **hạ xuống Tier 2** sau khi xác nhận từ BRD: SHAREHOLDER_ID và RISK_SCORING_SC_FIRM_ID đều có `key: null, fk_note: null` — không phải FK khai báo. Hai entity này đã được chuyển vào `SCMS_HLD_Tier2.md`. `Securities Company Risk Summary Detail` đã được **loại khỏi scope** sau review — xem SCMS_HLD_Overview.md mục 7f. `Securities Company Foreign Branch Personnel` và `Securities Company Foreign Representative Office Personnel` — sau khi resolve mâu thuẫn Append/SCD4A (table_type đổi thành Fundamental), đã **chuyển lên Tier 2** (nhóm B Personnel, cùng nhóm với Senior Personnel/Licensed Practitioner) — xem `SCMS_HLD_Tier2.md`.
 
 ---
 
@@ -20,8 +20,8 @@
 ~~| Event | [Event] Business Activity | Event | RISK_SUMMARY | ... | Securities Company Risk Summary | Fact Snapshot | Đã chuyển xuống Tier 2 — xem SCMS_HLD_Tier2.md |~~
 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT | Báo cáo định kỳ của chi nhánh CTCK nước ngoài | Securities Company Foreign Branch Periodic Report | Relative | (1) BCV có `Transaction` (submission/event) trong Event. (2) SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT lưu từng lần nộp báo cáo định kỳ của chi nhánh NN: FK SC_FIRM_FOREIGN_BRANCH_ID, năm, kỳ, trạng thái. (3) Chọn `[Event] Transaction`. |
 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT | Báo cáo định kỳ của VPDD CTCK nước ngoài | Securities Company Foreign Representative Office Periodic Report | Relative | (1) Tương tự SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT. (2) FK → SC_FIRM_FOREIGN_REP_OFFICE_ID. (3) Chọn `[Event] Transaction`. |
-~~| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | ... | Securities Company Foreign Branch Personnel | Relative | Loại sau review — xem SCMS_HLD_Overview.md mục 7f. |~~
-~~| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | ... | Securities Company Foreign Representative Office Personnel | Relative | Loại sau review — xem SCMS_HLD_Overview.md mục 7f. |~~
+~~| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | ... | Securities Company Foreign Branch Personnel | Fundamental | Đã chuyển lên Tier 2 — xem SCMS_HLD_Tier2.md |~~
+~~| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | ... | Securities Company Foreign Representative Office Personnel | Fundamental | Đã chuyển lên Tier 2 — xem SCMS_HLD_Tier2.md |~~
 
 ---
 

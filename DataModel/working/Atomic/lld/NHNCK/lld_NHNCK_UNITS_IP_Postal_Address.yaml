@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "UNITS"
   atomic_entity: "Involved Party Postal Address"
-  entity_physical_name: "ip_pst_adr"
+  entity_physical_name: "ip_postal_address"
   bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
+  physical_name: "involved_party_id"
   description: "FK đến Regulatory Authority Organization Unit"
   data_domain: "Surrogate Key"
   nullable: false
@@ -28,12 +28,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.UNITS.ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
+  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
+  physical_name: "involved_party_code"
   description: "Mã đơn vị"
   data_domain: "Text"
   nullable: false
@@ -59,7 +61,7 @@ attributes:
   etl_derived_value: "NHNCK.UNITS"
   data_type: "string"
 - attribute_name: "Address Type Code"
-  physical_name: "adr_tp_code"
+  physical_name: "address_type_code"
   description: "Loại địa chỉ — trụ sở chính"
   data_domain: "Classification Value"
   nullable: false
@@ -71,7 +73,7 @@ attributes:
   etl_derived_value: "HEAD_OFFICE"
   data_type: "string"
 - attribute_name: "Address Value"
-  physical_name: "adr_val"
+  physical_name: "address_value"
   description: "Địa chỉ trụ sở đơn vị"
   data_domain: "Text"
   nullable: true

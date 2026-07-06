@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH"
   atomic_entity: "Involved Party Electronic Address"
-  entity_physical_name: "ip_elc_adr"
+  entity_physical_name: "ip_electronic_address"
   bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
@@ -18,212 +17,123 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Electronic Address của Securities Company Foreign Branch. 3 loại: PHONE, FAX, EMAIL (không có WEBSITE). Mỗi loại kênh liên lạc là 1 block riêng. Format đồng bộ theo chuẩn NHNCK."
-
+  notes: "IP Electronic Address của Securities Company Foreign Branch. 3 loại: PHONE,\
+    \ FAX, EMAIL (không có WEBSITE). Mỗi loại kênh liên lạc là 1 block riêng. Format\
+    \ đồng bộ theo chuẩn NHNCK."
 attributes:
-  # ══ CONTEXT: PHONE ══════════════════════════════════════════════════
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Securities Company Foreign Branch (Involved Party)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
-    comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', ID)."
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Involved Party Code"
-    physical_name: "ip_code"
-    description: "Mã Securities Company Foreign Branch."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
-    comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign Branch Code. Pair with Involved Party Id."
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Electronic Address Type Code"
-    physical_name: "elc_adr_tp_code"
-    description: "Loại kênh liên lạc — điện thoại."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
-    etl_derived_value: "PHONE"
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH"
-    etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH"
-    data_type: "string"
-
-  - attribute_name: "Electronic Address Value"
-    physical_name: "elc_adr_val"
-    description: "Số điện thoại."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.PHONE"
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
-    etl_derived_value: null
-    data_type: "string"
-
-  # ══ CONTEXT: FAX ════════════════════════════════════════════════════
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Securities Company Foreign Branch (Involved Party)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
-    comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', ID)."
-    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Involved Party Code"
-    physical_name: "ip_code"
-    description: "Mã Securities Company Foreign Branch."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
-    comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign Branch Code. Pair with Involved Party Id."
-    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Electronic Address Type Code"
-    physical_name: "elc_adr_tp_code"
-    description: "Loại kênh liên lạc — fax."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-    etl_derived_value: "FAX"
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH"
-    etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH"
-    data_type: "string"
-
-  - attribute_name: "Electronic Address Value"
-    physical_name: "elc_adr_val"
-    description: "Số fax."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.FAX"
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-    etl_derived_value: null
-    data_type: "string"
-
-  # ══ CONTEXT: EMAIL ══════════════════════════════════════════════════
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Securities Company Foreign Branch (Involved Party)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
-    comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', ID)."
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Involved Party Code"
-    physical_name: "ip_code"
-    description: "Mã Securities Company Foreign Branch."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
-    comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign Branch Code. Pair with Involved Party Id."
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Electronic Address Type Code"
-    physical_name: "elc_adr_tp_code"
-    description: "Loại kênh liên lạc — email."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: "EMAIL"
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH"
-    etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH"
-    data_type: "string"
-
-  - attribute_name: "Electronic Address Value"
-    physical_name: "elc_adr_val"
-    description: "Địa chỉ email."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_FOREIGN_BRANCH.EMAIL"
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Securities Company Foreign Branch (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
+  comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã Securities Company Foreign Branch."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
+  comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign\
+    \ Branch Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH"
+  etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — điện thoại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ELEC_ADDR_TYPE."
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: "PHONE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_value"
+  description: "Số điện thoại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.PHONE"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — fax."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ELEC_ADDR_TYPE."
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: "FAX"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_value"
+  description: "Số fax."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.FAX"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — email."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ELEC_ADDR_TYPE."
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: "EMAIL"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_value"
+  description: "Địa chỉ email."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.EMAIL"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: null
+  data_type: "string"

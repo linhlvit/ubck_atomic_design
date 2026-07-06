@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_TRAININGS"
   atomic_entity: "Securities Practitioner Professional Training History"
-  entity_physical_name: "scr_prac_prof_trn_hist"
+  entity_physical_name: "sp_professional_training_history"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner Professional Training History Id"
-  physical_name: "scr_prac_prof_trn_hist_id"
+  physical_name: "securities_practitioner_professional_training_history_id"
   description: "Khóa đại diện cho bản ghi lịch sử đào tạo / bồi dưỡng chuyên môn của\
     \ người hành nghề chứng khoán (surrogate key)."
   data_domain: "Surrogate Key"
@@ -34,7 +34,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Professional Training History Code"
-  physical_name: "scr_prac_prof_trn_hist_code"
+  physical_name: "securities_practitioner_professional_training_history_code"
   description: "Mã định danh kỹ thuật. BK của entity. Map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -59,7 +59,7 @@ attributes:
   etl_derived_value: "NHNCK.PROFESSIONAL_TRAININGS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "Surrogate key FK đến người hành nghề chứng khoán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -67,12 +67,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_TRAININGS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã kỹ thuật của người hành nghề (dư thừa)."
   data_domain: "Text"
   nullable: false
@@ -86,7 +87,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Training Start Date"
-  physical_name: "trn_strt_dt"
+  physical_name: "training_start_dt"
   description: "Ngày bắt đầu khóa đào tạo / bồi dưỡng chuyên môn."
   data_domain: "Text"
   nullable: false
@@ -100,7 +101,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Training End Date"
-  physical_name: "trn_end_dt"
+  physical_name: "training_end_dt"
   description: "Ngày kết thúc khóa đào tạo / bồi dưỡng chuyên môn."
   data_domain: "Text"
   nullable: true
@@ -114,7 +115,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Training Place"
-  physical_name: "trn_plc"
+  physical_name: "training_place"
   description: "Nơi tổ chức đào tạo / bồi dưỡng."
   data_domain: "Text"
   nullable: true
@@ -127,7 +128,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Specialization Description"
-  physical_name: "specialization_dsc"
+  physical_name: "specialization_description"
   description: "Chuyên ngành được đào tạo (text tự do từ nguồn)."
   data_domain: "Text"
   nullable: true

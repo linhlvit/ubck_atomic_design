@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "REPORT_VIOLATION"
   atomic_entity: "Securities Company Report Violation"
-  entity_physical_name: "scr_co_rprt_vlt"
+  entity_physical_name: "sc_report_violation"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Business Activity"
   table_type: "Fact Append"
@@ -18,147 +17,142 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Vi phạm phát hiện từ báo cáo CTCK nộp (không phải từ cảnh báo hệ thống). Fact Append — mỗi dòng là 1 vi phạm, insert-only. Bảng nguồn rất đơn giản: chỉ có SC_FIRM_INFO_ID, REASON, VIOLATION_DATE, USER_ID, LAST_MODIFIED_AT. Không có CREATED_AT/CREATED_BY. LAST_MODIFIED_AT data type là DATE (không phải TIMESTAMP) — ETL widening sang Timestamp. USER_ID là người dùng liên quan → pending (SYS_USER out of scope)."
-
+  notes: "Vi phạm phát hiện từ báo cáo CTCK nộp (không phải từ cảnh báo hệ thống).\
+    \ Fact Append — mỗi dòng là 1 vi phạm, insert-only. Bảng nguồn rất đơn giản: chỉ\
+    \ có SC_FIRM_INFO_ID, REASON, VIOLATION_DATE, USER_ID, LAST_MODIFIED_AT. Không\
+    \ có CREATED_AT/CREATED_BY. LAST_MODIFIED_AT data type là DATE (không phải TIMESTAMP)\
+    \ — ETL widening sang Timestamp. USER_ID là người dùng liên quan → pending (SYS_USER\
+    \ out of scope)."
 attributes:
-  - attribute_name: "Securities Company Report Violation Id"
-    physical_name: "scr_co_rprt_vlt_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Report Violation Code"
-    physical_name: "scr_co_rprt_vlt_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.ID"
-    comment: "BK. NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.REPORT_VIOLATION"
-    etl_derived_value: "SCMS.REPORT_VIOLATION"
-    data_type: "string"
-
-  # ── FK TO PARENT ─────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán có vi phạm."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── VIOLATION DETAILS ─────────────────────────────────────────────────
-  - attribute_name: "Reason"
-    physical_name: "rsn"
-    description: "Lý do/mô tả vi phạm từ báo cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.REASON"
-    comment: "NVARCHAR2(2000). Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Violation Date"
-    physical_name: "vlt_dt"
-    description: "Ngày phát hiện vi phạm."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.VIOLATION_DATE"
-    comment: "Mô tả gốc BRD trống."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  # ── USER FK (PENDING) ─────────────────────────────────────────────────
-  - attribute_name: "User SCMS User Id"
-    physical_name: "usr_scms_usr_id"
-    description: "FK đến người dùng hệ thống SCMS liên quan."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.USER_ID"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', USER_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "User SCMS User Code"
-    physical_name: "usr_scms_usr_code"
-    description: "Mã người dùng hệ thống SCMS liên quan."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.USER_ID"
-    comment: "Pending — Pair with User SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.REPORT_VIOLATION.LAST_MODIFIED_AT"
-    comment: "Nguồn data type DATE (không phải TIMESTAMP) — widening conversion. Bảng nguồn không có CREATED_AT/CREATED_BY."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
+- attribute_name: "Securities Company Report Violation Id"
+  physical_name: "securities_company_report_violation_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Report Violation Code"
+  physical_name: "securities_company_report_violation_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.REPORT_VIOLATION"
+  etl_derived_value: "SCMS.REPORT_VIOLATION"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán có vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reason"
+  physical_name: "reason"
+  description: "Lý do/mô tả vi phạm từ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.REASON"
+  comment: "NVARCHAR2(2000). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Date"
+  physical_name: "violation_dt"
+  description: "Ngày phát hiện vi phạm."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.VIOLATION_DATE"
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "User SCMS User Id"
+  physical_name: "user_scms_user_id"
+  description: "FK đến người dùng hệ thống SCMS liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.USER_ID"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ USER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "User SCMS User Code"
+  physical_name: "user_scms_user_code"
+  description: "Mã người dùng hệ thống SCMS liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.USER_ID"
+  comment: "Pending — Pair with User SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_VIOLATION.LAST_MODIFIED_AT"
+  comment: "Nguồn data type DATE (không phải TIMESTAMP) — widening conversion. Bảng\
+    \ nguồn không có CREATED_AT/CREATED_BY."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

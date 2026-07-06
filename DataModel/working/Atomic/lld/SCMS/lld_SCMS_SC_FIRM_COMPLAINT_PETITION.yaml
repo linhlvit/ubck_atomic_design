@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_COMPLAINT_PETITION"
   atomic_entity: "Securities Company Complaint Petition"
-  entity_physical_name: "scr_co_cmplnt_ptn"
+  entity_physical_name: "sc_complaint_petition"
   bcv_core_object: "Event"
   bcv_concept: "[Event] Business Activity"
   table_type: "Relative"
@@ -18,301 +17,288 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Đơn khiếu nại/tố cáo/kiến nghị/phản ánh liên quan đến CTCK. Mỗi dòng = 1 đơn. SENDER_INFO_JSON (CLOB) excluded. SC_FIRM_NAME là tên CTCK denormalized tại thời điểm ghi — lưu nguyên vẹn. SUMMARY (NCLOB) = tóm tắt nội dung đơn. DATA_SOURCE → SCMS_DATA_SOURCE. SYNC_DATE: ngày đồng bộ từ nguồn ngoài (SCMS nhận từ hệ thống bên ngoài). Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT; nguồn DATE — widening sang Timestamp."
-
+  notes: "Đơn khiếu nại/tố cáo/kiến nghị/phản ánh liên quan đến CTCK. Mỗi dòng = 1\
+    \ đơn. SENDER_INFO_JSON (CLOB) excluded. SC_FIRM_NAME là tên CTCK denormalized\
+    \ tại thời điểm ghi — lưu nguyên vẹn. SUMMARY (NCLOB) = tóm tắt nội dung đơn.\
+    \ DATA_SOURCE → SCMS_DATA_SOURCE. SYNC_DATE: ngày đồng bộ từ nguồn ngoài (SCMS\
+    \ nhận từ hệ thống bên ngoài). Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT; nguồn\
+    \ DATE — widening sang Timestamp."
 attributes:
-  - attribute_name: "Securities Company Complaint Petition Id"
-    physical_name: "scr_co_cmplnt_ptn_id"
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: true
-    status: "draft"
-    source_columns: []
-    comment: "PK surrogate."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Complaint Petition Code"
-    physical_name: "scr_co_cmplnt_ptn_code"
-    description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.ID"
-    comment: "BK. NUMBER(10) — ETL convert sang string."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_COMPLAINT_PETITION"
-    etl_derived_value: "SCMS.SC_FIRM_COMPLAINT_PETITION"
-    data_type: "string"
-
-  # ── FK TO PARENT ─────────────────────────────────────────────────────
-  - attribute_name: "Securities Company Id"
-    physical_name: "scr_co_id"
-    description: "FK đến Công ty chứng khoán liên quan đến đơn."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.SC_FIRM_INFO_ID"
-    comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Code"
-    physical_name: "scr_co_code"
-    description: "Mã Công ty chứng khoán."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.SC_FIRM_INFO_ID"
-    comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities Company Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── CLASSIFICATION ────────────────────────────────────────────────────
-  - attribute_name: "Petition Type Code"
-    physical_name: "ptn_tp_code"
-    description: "Loại đơn: KHIEU_NAI=Khiếu nại; TO_CAO=Tố cáo; KIEN_NGHI=Kiến nghị; PHAN_ANH=Phản ánh."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.PETITION_TYPE"
-    comment: "Scheme: SCMS_PETITION_TYPE. VARCHAR2(50)."
-    classification_context: "SCMS_PETITION_TYPE"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Processing Status Code"
-    physical_name: "prcs_st_code"
-    description: "Trạng thái xử lý đơn: DANG_XU_LY=Đang xử lý; DA_XU_LY=Đã xử lý; CHO_PHAN_HOI=Chờ phản hồi; KHONG_DU_DIEU_KIEN=Không đủ điều kiện."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.PROCESSING_STATUS"
-    comment: "Scheme: SCMS_COMPLAINT_PROCESSING_STATUS. VARCHAR2(50)."
-    classification_context: "SCMS_COMPLAINT_PROCESSING_STATUS"
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Data Source Code"
-    physical_name: "dt_src_code"
-    description: "Nguồn dữ liệu của đơn."
-    data_domain: "Classification Value"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.DATA_SOURCE"
-    comment: "Scheme: SCMS_DATA_SOURCE. VARCHAR2(50)."
-    classification_context: "SCMS_DATA_SOURCE"
-    etl_derived_value: null
-    data_type: "string"
-
-  # ── PETITION DETAILS ──────────────────────────────────────────────────
-  - attribute_name: "Petition Number"
-    physical_name: "ptn_nbr"
-    description: "Số hiệu đơn/công văn khiếu nại tố cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.PETITION_NUMBER"
-    comment: "VARCHAR2(200)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Case Code"
-    physical_name: "case_code"
-    description: "Mã vụ việc/hồ sơ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.CASE_CODE"
-    comment: "VARCHAR2(200)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Received Date"
-    physical_name: "rcvd_dt"
-    description: "Ngày nhận đơn."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.RECEIVED_DATE"
-    comment: "DATE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  - attribute_name: "Summary"
-    physical_name: "smry"
-    description: "Tóm tắt nội dung đơn khiếu nại tố cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.SUMMARY"
-    comment: "NCLOB. Large text."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Securities Company Name"
-    physical_name: "scr_co_nm"
-    description: "Tên Công ty chứng khoán tại thời điểm ghi đơn (denormalized)."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.SC_FIRM_NAME"
-    comment: "NVARCHAR2(500). Snapshot denormalized — không join FK. Mô tả gốc BRD: Tên CTCK."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Processing Unit"
-    physical_name: "prcs_unt"
-    description: "Đơn vị xử lý đơn khiếu nại tố cáo."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.PROCESSING_UNIT"
-    comment: "NVARCHAR2(200)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Sync Date"
-    physical_name: "sync_dt"
-    description: "Ngày đồng bộ dữ liệu từ nguồn ngoài vào SCMS."
-    data_domain: "Date"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.SYNC_DATE"
-    comment: "DATE."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "date"
-
-  # ── AUDIT BLOCK ───────────────────────────────────────────────────────
-  - attribute_name: "Created Timestamp"
-    physical_name: "crt_tms"
-    description: "Thời điểm tạo bản ghi."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.CREATED_AT"
-    comment: "Nguồn data type DATE — widening sang Timestamp."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Updated Timestamp"
-    physical_name: "udt_tms"
-    description: "Thời điểm cập nhật bản ghi gần nhất."
-    data_domain: "Timestamp"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.LAST_MODIFIED_AT"
-    comment: "Nguồn data type DATE — widening sang Timestamp."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "timestamp"
-
-  - attribute_name: "Created By SCMS User Id"
-    physical_name: "crt_by_scms_usr_id"
-    description: "FK đến người tạo bản ghi."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.CREATED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Created By SCMS User Code"
-    physical_name: "crt_by_scms_usr_code"
-    description: "Mã người tạo bản ghi."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.CREATED_BY"
-    comment: "Pending — Pair with Created By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Id"
-    physical_name: "udt_by_scms_usr_id"
-    description: "FK đến người cập nhật bản ghi gần nhất."
-    data_domain: "Surrogate Key"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.LAST_MODIFIED_BY"
-    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
-
-  - attribute_name: "Updated By SCMS User Code"
-    physical_name: "udt_by_scms_usr_code"
-    description: "Mã người cập nhật bản ghi gần nhất."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "pending"
-    source_columns:
-      - "SCMS.SC_FIRM_COMPLAINT_PETITION.LAST_MODIFIED_BY"
-    comment: "Pending — Pair with Updated By SCMS User Id."
-    classification_context: null
-    etl_derived_value: null
-    data_type: "string"
+- attribute_name: "Securities Company Complaint Petition Id"
+  physical_name: "securities_company_complaint_petition_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Complaint Petition Code"
+  physical_name: "securities_company_complaint_petition_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_COMPLAINT_PETITION"
+  etl_derived_value: "SCMS.SC_FIRM_COMPLAINT_PETITION"
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "securities_company_id"
+  description: "FK đến Công ty chứng khoán liên quan đến đơn."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "securities_company_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Type Code"
+  physical_name: "petition_type_code"
+  description: "Loại đơn: KHIEU_NAI=Khiếu nại; TO_CAO=Tố cáo; KIEN_NGHI=Kiến nghị;\
+    \ PHAN_ANH=Phản ánh."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.PETITION_TYPE"
+  comment: "Scheme: SCMS_PETITION_TYPE. VARCHAR2(50)."
+  classification_context: "SCMS_PETITION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processing Status Code"
+  physical_name: "processing_status_code"
+  description: "Trạng thái xử lý đơn: DANG_XU_LY=Đang xử lý; DA_XU_LY=Đã xử lý; CHO_PHAN_HOI=Chờ\
+    \ phản hồi; KHONG_DU_DIEU_KIEN=Không đủ điều kiện."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.PROCESSING_STATUS"
+  comment: "Scheme: SCMS_COMPLAINT_PROCESSING_STATUS. VARCHAR2(50)."
+  classification_context: "SCMS_COMPLAINT_PROCESSING_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Source Code"
+  physical_name: "data_src_code"
+  description: "Nguồn dữ liệu của đơn."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.DATA_SOURCE"
+  comment: "Scheme: SCMS_DATA_SOURCE. VARCHAR2(50)."
+  classification_context: "SCMS_DATA_SOURCE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Number"
+  physical_name: "petition_number"
+  description: "Số hiệu đơn/công văn khiếu nại tố cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.PETITION_NUMBER"
+  comment: "VARCHAR2(200)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Case Code"
+  physical_name: "case_code"
+  description: "Mã vụ việc/hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.CASE_CODE"
+  comment: "VARCHAR2(200)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Received Date"
+  physical_name: "received_dt"
+  description: "Ngày nhận đơn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.RECEIVED_DATE"
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Summary"
+  physical_name: "summary"
+  description: "Tóm tắt nội dung đơn khiếu nại tố cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.SUMMARY"
+  comment: "NCLOB. Large text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Name"
+  physical_name: "securities_company_nm"
+  description: "Tên Công ty chứng khoán tại thời điểm ghi đơn (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.SC_FIRM_NAME"
+  comment: "NVARCHAR2(500). Snapshot denormalized — không join FK. Mô tả gốc BRD:\
+    \ Tên CTCK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processing Unit"
+  physical_name: "processing_unit"
+  description: "Đơn vị xử lý đơn khiếu nại tố cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.PROCESSING_UNIT"
+  comment: "NVARCHAR2(200)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sync Date"
+  physical_name: "sync_dt"
+  description: "Ngày đồng bộ dữ liệu từ nguồn ngoài vào SCMS."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.SYNC_DATE"
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.CREATED_AT"
+  comment: "Nguồn data type DATE — widening sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.LAST_MODIFIED_AT"
+  comment: "Nguồn data type DATE — widening sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By SCMS User Id"
+  physical_name: "created_by_scms_user_id"
+  description: "FK đến người tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.CREATED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By SCMS User Code"
+  physical_name: "created_by_scms_user_code"
+  description: "Mã người tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.CREATED_BY"
+  comment: "Pending — Pair with Created By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Id"
+  physical_name: "updated_by_scms_user_id"
+  description: "FK đến người cập nhật bản ghi gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.LAST_MODIFIED_BY"
+  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
+    \ LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By SCMS User Code"
+  physical_name: "updated_by_scms_user_code"
+  description: "Mã người cập nhật bản ghi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "SCMS.SC_FIRM_COMPLAINT_PETITION.LAST_MODIFIED_BY"
+  comment: "Pending — Pair with Updated By SCMS User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

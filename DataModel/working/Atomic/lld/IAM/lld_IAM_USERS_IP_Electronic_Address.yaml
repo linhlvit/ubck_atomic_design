@@ -1,11 +1,10 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "IAM"
   source_table: "USERS"
   atomic_entity: "Involved Party Electronic Address"
-  entity_physical_name: "ip_elc_adr"
+  entity_physical_name: "ip_electronic_address"
   bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
@@ -18,197 +17,206 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Shared entity — extend từ IAM.USERS. 3 loại kênh: EMAIL, PHONE, MOBILE (DIAL_NUMBER + PHONE = PHONE; OFFICE_PHONE = WORK_PHONE riêng). Mỗi loại = 1 block."
-
+  notes: "Shared entity — extend từ IAM.USERS. 3 loại kênh: EMAIL, PHONE, MOBILE (DIAL_NUMBER\
+    \ + PHONE = PHONE; OFFICE_PHONE = WORK_PHONE riêng). Mỗi loại = 1 block."
 attributes:
-  # --- EMAIL block ---
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Identity and Access Management User."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.ID"
-    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: "Involved Party Code"
-    physical_name: "ip_code"
-    description: "Mã người dùng IAM."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.ID"
-    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Involved Party Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=IAM.USERS"
-    etl_derived_value: "IAM.USERS"
-
-  - attribute_name: "Electronic Address Type Code"
-    physical_name: "elc_adr_tp_code"
-    description: "Loại địa chỉ điện tử — email."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: "EMAIL"
-
-  - attribute_name: "Electronic Address Value"
-    physical_name: "elc_adr_val"
-    description: "Địa chỉ email người dùng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.EMAIL"
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: null
-
-  # --- PHONE (mobile) block ---
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Identity and Access Management User."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.ID"
-    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: "Involved Party Code"
-    physical_name: "ip_code"
-    description: "Mã người dùng IAM."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.ID"
-    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Involved Party Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=IAM.USERS"
-    etl_derived_value: "IAM.USERS"
-
-  - attribute_name: "Electronic Address Type Code"
-    physical_name: "elc_adr_tp_code"
-    description: "Loại địa chỉ điện tử — điện thoại di động."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
-    etl_derived_value: "MOBILE"
-
-  - attribute_name: "Electronic Address Value"
-    physical_name: "elc_adr_val"
-    description: "Số điện thoại di động của người dùng. DIAL_NUMBER (mã vùng) ghép với PHONE để tạo số đầy đủ."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.PHONE"
-    comment: "ETL ghép DIAL_NUMBER (mã vùng VARCHAR2(4)) + PHONE thành số đầy đủ nếu cần."
-    classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
-    etl_derived_value: null
-
-  # --- WORK_PHONE block ---
-  - attribute_name: "Involved Party Id"
-    physical_name: "ip_id"
-    description: "FK đến Identity and Access Management User."
-    data_domain: "Surrogate Key"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.ID"
-    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: "Involved Party Code"
-    physical_name: "ip_code"
-    description: "Mã người dùng IAM."
-    data_domain: "Text"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.ID"
-    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Involved Party Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "SOURCE_SYSTEM=IAM.USERS"
-    etl_derived_value: "IAM.USERS"
-
-  - attribute_name: "Electronic Address Type Code"
-    physical_name: "elc_adr_tp_code"
-    description: "Loại địa chỉ điện tử — điện thoại cơ quan."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE_OFFICE"
-    etl_derived_value: "PHONE_OFFICE"
-
-  - attribute_name: "Electronic Address Value"
-    physical_name: "elc_adr_val"
-    description: "Số điện thoại văn phòng của người dùng."
-    data_domain: "Text"
-    nullable: true
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IAM.IAM.USERS.OFFICE_PHONE"
-    comment: null
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE_OFFICE"
-    etl_derived_value: null
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IAM.USERS"
+  etl_derived_value: "IAM.USERS"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại địa chỉ điện tử — email."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: "EMAIL"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_value"
+  description: "Địa chỉ email người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.EMAIL"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IAM.USERS"
+  etl_derived_value: "IAM.USERS"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại địa chỉ điện tử — điện thoại di động."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
+  etl_derived_value: "MOBILE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_value"
+  description: "Số điện thoại di động của người dùng. DIAL_NUMBER (mã vùng) ghép với\
+    \ PHONE để tạo số đầy đủ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.PHONE"
+  comment: "ETL ghép DIAL_NUMBER (mã vùng VARCHAR2(4)) + PHONE thành số đầy đủ nếu\
+    \ cần."
+  classification_context: "IP_ELEC_ADDR_TYPE=MOBILE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Identity and Access Management User."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã người dùng IAM."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IAM.USERS"
+  etl_derived_value: "IAM.USERS"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại địa chỉ điện tử — điện thoại cơ quan."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE_OFFICE"
+  etl_derived_value: "PHONE_OFFICE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_value"
+  description: "Số điện thoại văn phòng của người dùng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IAM.IAM.USERS.OFFICE_PHONE"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE_OFFICE"
+  etl_derived_value: null
+  data_type: "string"

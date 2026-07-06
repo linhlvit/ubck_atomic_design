@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  entity_physical_name: "scr_prac_license_ctf_doc"
+  entity_physical_name: "sp_license_certificate_document"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Document Id"
-  physical_name: "scr_prac_license_ctf_doc_id"
+  physical_name: "securities_practitioner_license_certificate_document_id"
   description: "Surrogate key cho chứng chỉ hành nghề chứng khoán"
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Document Code"
-  physical_name: "scr_prac_license_ctf_doc_code"
+  physical_name: "securities_practitioner_license_certificate_document_code"
   description: "Business key từ CERTIFICATE_RECORDS.ID"
   data_domain: "Text"
   nullable: false
@@ -45,7 +45,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Number"
-  physical_name: "ctf_nbr"
+  physical_name: "certificate_number"
   description: "Số chứng chỉ hành nghề"
   data_domain: "Text"
   nullable: false
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Type Code"
-  physical_name: "ctf_tp_code"
+  physical_name: "certificate_type_code"
   description: "Phân loại loại chứng chỉ (CCHN)"
   data_domain: "Classification Value"
   nullable: false
@@ -71,7 +71,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "scr_prac_id"
+  physical_name: "securities_practitioner_id"
   description: "FK đến Securities Practitioner"
   data_domain: "Surrogate Key"
   nullable: false
@@ -79,12 +79,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "scr_prac_code"
+  physical_name: "securities_practitioner_code"
   description: "Mã nghiệp vụ của người hành nghề"
   data_domain: "Text"
   nullable: false
@@ -98,7 +99,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Issue License Decision Id"
-  physical_name: "issu_license_dcsn_id"
+  physical_name: "issue_license_decision_id"
   description: "FK đến quyết định cấp chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: false
@@ -106,12 +107,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Issue License Decision Code"
-  physical_name: "issu_license_dcsn_code"
+  physical_name: "issue_license_decision_code"
   description: "Mã nghiệp vụ của quyết định cấp"
   data_domain: "Text"
   nullable: false
@@ -125,7 +127,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Revocation License Decision Id"
-  physical_name: "revocation_license_dcsn_id"
+  physical_name: "revocation_license_decision_id"
   description: "FK đến quyết định thu hồi chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -133,12 +135,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Revocation License Decision Code"
-  physical_name: "revocation_license_dcsn_code"
+  physical_name: "revocation_license_decision_code"
   description: "Mã nghiệp vụ của quyết định thu hồi"
   data_domain: "Text"
   nullable: true
@@ -152,7 +155,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Cancellation License Decision Id"
-  physical_name: "cncl_license_dcsn_id"
+  physical_name: "cancellation_license_decision_id"
   description: "FK đến quyết định hủy chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -160,12 +163,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
+  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
+    \ hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Cancellation License Decision Code"
-  physical_name: "cncl_license_dcsn_code"
+  physical_name: "cancellation_license_decision_code"
   description: "Mã nghiệp vụ của quyết định hủy"
   data_domain: "Text"
   nullable: true
@@ -179,7 +183,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Issue Date"
-  physical_name: "issu_dt"
+  physical_name: "issue_dt"
   description: "Ngày cấp chứng chỉ hành nghề"
   data_domain: "Date"
   nullable: false
@@ -205,7 +209,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Revocation Reason"
-  physical_name: "revocation_rsn"
+  physical_name: "revocation_reason"
   description: "Lý do thu hồi chứng chỉ hành nghề"
   data_domain: "Text"
   nullable: true
@@ -218,7 +222,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Name At Issuance"
-  physical_name: "prac_nm_at_issn"
+  physical_name: "practitioner_nm_at_issuance"
   description: "Tên người hành nghề tại thời điểm cấp chứng chỉ (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -232,7 +236,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Reissuance Allowed Count"
-  physical_name: "reissuance_allowed_cnt"
+  physical_name: "reissuance_allowed_count"
   description: "Số lần được phép cấp lại chứng chỉ (0 = không được cấp lại)"
   data_domain: "Small Counter"
   nullable: false
@@ -245,7 +249,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Process Status Code"
-  physical_name: "pcs_st_code"
+  physical_name: "process_status_code"
   description: "Trạng thái xử lý chứng chỉ (1=Đã cấp 2=Đã ký nháy 3=Đã ký 4=Đã trả)"
   data_domain: "Classification Value"
   nullable: false
@@ -258,7 +262,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate File Path"
-  physical_name: "ctf_file_path"
+  physical_name: "certificate_file_path"
   description: "Đường dẫn file chứng chỉ số"
   data_domain: "Text"
   nullable: true
@@ -271,7 +275,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Conversion Status Code"
-  physical_name: "cnvr_st_code"
+  physical_name: "conversion_status_code"
   description: "Trạng thái chuyển đổi chứng chỉ (1=Giấy 2=Chờ điện tử 3=Chứng chỉ\
     \ số)"
   data_domain: "Classification Value"
@@ -285,7 +289,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái hiệu lực của bản ghi chứng chỉ (1=Hoạt động)"
   data_domain: "Classification Value"
   nullable: false
@@ -294,11 +298,11 @@ attributes:
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.RECORD_STATUS"
   comment: null
-  classification_context: RECORD_STATUS
+  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"
-  physical_name: "dsc"
+  physical_name: "description"
   description: "Mô tả bổ sung cho chứng chỉ hành nghề"
   data_domain: "Text"
   nullable: true

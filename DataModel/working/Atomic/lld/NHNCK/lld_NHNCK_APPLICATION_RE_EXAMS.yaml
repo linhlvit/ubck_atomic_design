@@ -4,7 +4,7 @@ metadata:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  entity_physical_name: "scr_prac_license_ap_re_exam_rqs"
+  entity_physical_name: "sp_license_application_re_exam_request"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: "Fundamental"
@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner License Application Re-Exam Request Id"
-  physical_name: "scr_prac_license_ap_re_exam_rqs_id"
+  physical_name: "securities_practitioner_license_application_re_exam_request_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Re-Exam Request Code"
-  physical_name: "scr_prac_license_ap_re_exam_rqs_code"
+  physical_name: "securities_practitioner_license_application_re_exam_request_code"
   description: "Mã định danh. BK"
   data_domain: "Text"
   nullable: false
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "NHNCK.APPLICATION_RE_EXAMS"
   data_type: "string"
 - attribute_name: "License Application Id"
-  physical_name: "license_ap_id"
+  physical_name: "license_application_id"
   description: "FK đến hồ sơ gốc đã thi trượt"
   data_domain: "Surrogate Key"
   nullable: false
@@ -66,12 +66,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
-  comment: "FK target: Securities Practitioner License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.License Application\
+    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Application Code"
-  physical_name: "license_ap_code"
+  physical_name: "license_application_code"
   description: "Mã hồ sơ gốc"
   data_domain: "Text"
   nullable: false
@@ -85,7 +86,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Assessment Result Id"
-  physical_name: "exam_ases_rslt_id"
+  physical_name: "examination_assessment_result_id"
   description: "FK đến kết quả thi trượt"
   data_domain: "Surrogate Key"
   nullable: false
@@ -93,12 +94,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
+  comment: "FK target: Securities Practitioner Qualification Examination Assessment\
+    \ Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS',\
+    \ EXAM_DETAIL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Assessment Result Code"
-  physical_name: "exam_ases_rslt_code"
+  physical_name: "examination_assessment_result_code"
   description: "Mã kết quả thi trượt"
   data_domain: "Text"
   nullable: false
@@ -113,7 +116,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Re-Exam License Application Id"
-  physical_name: "re_exam_license_ap_id"
+  physical_name: "re_exam_license_application_id"
   description: "FK đến hồ sơ thi lại mới (nullable — chưa nộp)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -121,12 +124,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
-  comment: "FK target: Securities Practitioner License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.License Application\
+    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Re-Exam License Application Code"
-  physical_name: "re_exam_license_ap_code"
+  physical_name: "re_exam_license_application_code"
   description: "Mã hồ sơ thi lại mới"
   data_domain: "Text"
   nullable: true
@@ -140,7 +144,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Record Status Code"
-  physical_name: "rcrd_st_code"
+  physical_name: "record_status_code"
   description: "Trạng thái bản ghi (1=Hoạt động)"
   data_domain: "Classification Value"
   nullable: false
@@ -153,7 +157,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Id"
-  physical_name: "crt_by_ofcr_id"
+  physical_name: "created_by_officer_id"
   description: "FK đến Officer tạo bản ghi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -161,12 +165,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created By Officer Code"
-  physical_name: "crt_by_ofcr_code"
+  physical_name: "created_by_officer_code"
   description: "Mã người tạo"
   data_domain: "Text"
   nullable: true
@@ -180,7 +185,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Id"
-  physical_name: "udt_by_ofcr_id"
+  physical_name: "updated_by_officer_id"
   description: "FK đến Officer cập nhật bản ghi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -188,12 +193,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Updated By Officer Code"
-  physical_name: "udt_by_ofcr_code"
+  physical_name: "updated_by_officer_code"
   description: "Mã người cập nhật"
   data_domain: "Text"
   nullable: true
@@ -207,7 +213,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Created Timestamp"
-  physical_name: "crt_tms"
+  physical_name: "created_tms"
   description: "Thời điểm tạo"
   data_domain: "Timestamp"
   nullable: true
@@ -220,7 +226,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Updated Timestamp"
-  physical_name: "udt_tms"
+  physical_name: "updated_tms"
   description: "Thời điểm cập nhật"
   data_domain: "Timestamp"
   nullable: true
