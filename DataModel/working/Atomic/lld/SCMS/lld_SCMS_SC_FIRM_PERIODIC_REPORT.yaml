@@ -24,7 +24,7 @@ metadata:
     \ APPROVED_BY/SENDER_ID/CANCELLED_BY → pending (SYS_USER out of scope)."
 attributes:
 - attribute_name: "Securities Company Periodic Report Id"
-  physical_name: "securities_company_periodic_report_id"
+  physical_name: "sc_periodic_report_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -36,7 +36,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Periodic Report Code"
-  physical_name: "securities_company_periodic_report_code"
+  physical_name: "sc_periodic_report_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -511,29 +511,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PERIODIC_REPORT.CREATED_AT"
-  comment: "TIMESTAMP(6). Bảng nguồn không có CREATED_BY — chỉ capture timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_PERIODIC_REPORT.LAST_MODIFIED_AT"
-  comment: "TIMESTAMP(6). Bảng nguồn không có LAST_MODIFIED_BY — chỉ capture timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

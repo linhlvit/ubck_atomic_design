@@ -26,7 +26,7 @@ metadata:
     \ (BLOB) excluded."
 attributes:
 - attribute_name: "Securities Company Disclosure Report Id"
-  physical_name: "securities_company_disclosure_report_id"
+  physical_name: "sc_disclosure_report_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -38,7 +38,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Disclosure Report Code"
-  physical_name: "securities_company_disclosure_report_code"
+  physical_name: "sc_disclosure_report_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -91,7 +91,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Periodic Report Id"
-  physical_name: "securities_company_periodic_report_id"
+  physical_name: "sc_periodic_report_id"
   description: "FK đến báo cáo định kỳ liên quan (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -105,7 +105,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Periodic Report Code"
-  physical_name: "securities_company_periodic_report_code"
+  physical_name: "sc_periodic_report_code"
   description: "Mã báo cáo định kỳ."
   data_domain: "Text"
   nullable: true
@@ -119,7 +119,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Adhoc Report Id"
-  physical_name: "securities_company_adhoc_report_id"
+  physical_name: "sc_adhoc_report_id"
   description: "FK đến báo cáo đột xuất liên quan (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -133,7 +133,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Adhoc Report Code"
-  physical_name: "securities_company_adhoc_report_code"
+  physical_name: "sc_adhoc_report_code"
   description: "Mã báo cáo đột xuất."
   data_domain: "Text"
   nullable: true
@@ -348,7 +348,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Period Value"
-  physical_name: "report_period_value"
+  physical_name: "report_period_val"
   description: "Giá trị kỳ báo cáo (VD: '2024-Q1', '2024-06')."
   data_domain: "Text"
   nullable: true
@@ -633,86 +633,6 @@ attributes:
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
   comment: "Pending — Pair with Cancelled By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_REPORT.CREATED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_REPORT.UPDATED_AT"
-  comment: "TIMESTAMP(6). Tên cột UPDATED_AT (không phải LAST_MODIFIED_AT)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người tạo bản ghi CBTT."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_REPORT.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người tạo bản ghi CBTT."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_REPORT.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người cập nhật bản ghi CBTT gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_REPORT.UPDATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ UPDATED_BY). Tên cột UPDATED_BY."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người cập nhật bản ghi CBTT gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_REPORT.UPDATED_BY"
-  comment: "Pending — Pair with Updated By SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

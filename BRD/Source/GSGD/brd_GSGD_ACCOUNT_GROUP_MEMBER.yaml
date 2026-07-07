@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ACCOUNT_GROUP_MEMBER
+brd_ref: BRD-SRC-GSGD-ACCOUNT_GROUP_MEMBER
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: GROUP_ID
+    data_type: "VARCHAR2(36)"
+    description: "Foreign key (account_group.id)"
+    key: FK
+    fk_note: "FK suy luận → ACCOUNT_GROUP.ID"
+  - name: ACCOUNT_ID
+    data_type: "VARCHAR2(36)"
+    description: "Foreign key (investor_account.id)"
+    key: FK
+    fk_note: "FK suy luận → INVESTOR_ACCOUNT.ID"
+  - name: STATUS
+    data_type: "NUMBER(2)"
+    description: "Trạng thái tài khoản trong nhóm"
+    key: null
+    fk_note: null
+  - name: RELATIONSHIP_TYPE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mối quan hệ: Danh tính, IP, MAC, Tiền"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

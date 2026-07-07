@@ -1,30 +1,29 @@
 schema_type: data_model
-schema_version: '1.0'
+schema_version: "1.0"
+
 ldm:
   id: ATM-market_index_snapshot-MDDS.JAD_MARKETINFOR
   logical_name: Market Index Snapshot
   physical_name: market_index_snapshot
   layer: Atomic
   version: "1.0"
-  status: approved
+  status: draft
   bcv_core_object: Group
-  bcv_concept: '[Group] Share Index'
+  bcv_concept: "[Group] Share Index"
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
   source: MDDS
-  description: 'Snapshot trạng thái của một chỉ số thị trường (VNINDEX, HNX-Index,
-    UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá
-    trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch.
-
-    '
+  description: |
+    Snapshot trạng thái của một chỉ số thị trường (VNINDEX, HNX-Index, UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
     brd: BRD-SRC-MDDS-JAD_MARKETINFOR
+
 attributes:
   - name: Market Index Snapshot Id
-    physical_name: market_index_snapshot_id
+    physical_name: market_index_snpst_id
     business_meaning: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -38,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: Market Index Snapshot Code
-    physical_name: market_index_snapshot_code
+    physical_name: market_index_snpst_code
     business_meaning: ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot entity.
     data_domain: Text
     data_type: string
@@ -192,7 +191,7 @@ attributes:
     etl_derived_value: null
 
   - name: Market Index Value
-    physical_name: market_index_value
+    physical_name: market_index_val
     business_meaning: Giá trị index tại thời điểm ghi nhận.
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -290,7 +289,7 @@ attributes:
     etl_derived_value: null
 
   - name: Total Volume
-    physical_name: total_volume
+    physical_name: total_vol
     business_meaning: Tổng khối lượng đã khớp.
     data_domain: Small Counter
     data_type: int
@@ -304,7 +303,7 @@ attributes:
     etl_derived_value: null
 
   - name: Total Value
-    physical_name: total_value
+    physical_name: total_val
     business_meaning: Tổng giá trị đã khớp.
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -388,7 +387,7 @@ attributes:
     etl_derived_value: null
 
   - name: Advances Volume
-    physical_name: advances_volume
+    physical_name: advances_vol
     business_meaning: Tổng khối lượng đã khớp của các mã tăng.
     data_domain: Small Counter
     data_type: int
@@ -402,7 +401,7 @@ attributes:
     etl_derived_value: null
 
   - name: Declines Volume
-    physical_name: declines_volume
+    physical_name: declines_vol
     business_meaning: Tổng khối lượng đã khớp của các mã giảm.
     data_domain: Small Counter
     data_type: int
@@ -416,7 +415,7 @@ attributes:
     etl_derived_value: null
 
   - name: No Change Volume
-    physical_name: no_change_volume
+    physical_name: no_change_vol
     business_meaning: Khối lượng khớp mã không tăng/giảm.
     data_domain: Small Counter
     data_type: int
@@ -430,7 +429,7 @@ attributes:
     etl_derived_value: null
 
   - name: Odd Lot Total Value
-    physical_name: odd_lot_total_value
+    physical_name: odd_lot_total_val
     business_meaning: Giá trị khớp lô lẻ.
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -444,7 +443,7 @@ attributes:
     etl_derived_value: null
 
   - name: Odd Lot Total Volume
-    physical_name: odd_lot_total_volume
+    physical_name: odd_lot_total_vol
     business_meaning: Khối lượng khớp lô lẻ.
     data_domain: Small Counter
     data_type: int
@@ -458,7 +457,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Total Volume
-    physical_name: pt_total_volume
+    physical_name: pt_total_vol
     business_meaning: Tổng khối lượng giao dịch thỏa thuận.
     data_domain: Small Counter
     data_type: int
@@ -472,7 +471,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Total Value
-    physical_name: pt_total_value
+    physical_name: pt_total_val
     business_meaning: Tổng giá trị giao dịch thỏa thuận.
     data_domain: Currency Amount
     data_type: decimal(23,2)

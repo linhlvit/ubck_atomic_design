@@ -1,0 +1,470 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "FUNDS"
+  atomic_entity: "Investment Fund"
+  entity_physical_name: "investment_fund"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Funds"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Alt Identification (ENTERPRISE_CODE, không có Postal/Electronic\
+    \ do nguồn không có cột địa chỉ/liên lạc). Denormalize distribution_agent_ids\
+    \ ARRAY<Struct> từ junction AGEN_FUNDS (đã xác nhận tồn tại trong BRD, 2 FK: AGENCY_ID\
+    \ + FUND_ID). [PHÁT HIỆN] HLD Overview 7d còn nhắc bảng FNDSBMN (junction FUND↔BANK_MONI)\
+    \ nhưng bảng này KHÔNG tồn tại trong BRD/Source/FMS đã khảo sát (không tìm thấy\
+    \ brd_FMS_FNDSBMN.yaml, không có junction nào khác FK đến BANK_MONI ngoài SECURITIES/VIOLT)\
+    \ — không thiết kế custodian_banks ARRAY, giữ nguyên FK đơn Custodian Bank Id/Code\
+    \ từ cột BANK_ID trên chính FUNDS. Cần xác nhận lại HLD 7d. CREATED_BY, MODIFY_BY,\
+    \ FILE_NAME/FILE_DATA, DELETED, DATA_MIGRATION, ID_DB_OLD document trong pending_design.yaml."
+attributes:
+- attribute_name: "Investment Fund Id"
+  physical_name: "investment_fund_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Funds\" (id 10821). Quỹ đầu tư chứng\
+    \ khoán — định chế đầu tư đóng vai trò Involved Party."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Code"
+  physical_name: "investment_fund_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.FUNDS"
+  etl_derived_value: "FMS.FUNDS"
+  data_type: "string"
+- attribute_name: "Fund Management Company Id"
+  physical_name: "fund_management_company_id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.SEC_ID"
+  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Code"
+  physical_name: "fund_management_company_code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.SEC_ID"
+  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
+    \ with Fund Management Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Id"
+  physical_name: "custodian_bank_id"
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.BANK_ID"
+  comment: "FK target: Custodian Bank.Custodian Bank Id. Hash: hash_id('FMS.BANK_MONI',\
+    \ BANK_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Code"
+  physical_name: "custodian_bank_code"
+  description: "Mã ngân hàng lưu ký/giám sát liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.BANK_ID"
+  comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Operation Status Code"
+  physical_name: "operation_status_code"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.STATUS_ID"
+  comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK — ETL resolve\
+    \ sang mã STATUS.CODE tương ứng."
+  classification_context: "FMS_OPERATION_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Full Name"
+  physical_name: "investment_fund_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund English Name"
+  physical_name: "investment_fund_english_nm"
+  description: "Tên tiếng Anh đầy đủ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.ENAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Short Name"
+  physical_name: "investment_fund_short_nm"
+  description: "Tên viết tắt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.SHORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Certificate Ticker Code"
+  physical_name: "fund_certificate_ticker_code"
+  description: "Mã chứng chỉ quỹ (ticker symbol trên sàn giao dịch)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.CER_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Type Code"
+  physical_name: "fund_type_code"
+  description: "FK -> FUND_TYPE: Loại quỹ đầu tư."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.FTYPE_ID"
+  comment: "Scheme: FMS_FUND_TYPE (đã đăng ký). Nguồn FTYPE_ID là UUID FK — ETL resolve\
+    \ sang mã FUND_TYPE.CODE tương ứng."
+  classification_context: "FMS_FUND_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Charter Capital Amount"
+  physical_name: "charter_capital_amount"
+  description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.CAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Total Outstanding Unit Quantity"
+  physical_name: "total_outstanding_unit_quantity"
+  description: "Tổng số lượng CCQ/cổ phiếu đang lưu hành."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.TOTAL_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Type Decision Number"
+  physical_name: "fund_type_decision_number"
+  description: "Số quyết định về loại hình quỹ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.TYPE_OF_FUND_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Type Par Value Description"
+  physical_name: "fund_type_par_val_description"
+  description: "Mệnh giá CCQ theo loại quỹ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.TYPE_OF_FUND_MNP"
+  comment: "Mô tả nguồn gợi ý giá trị tiền tệ nhưng data type là NVARCHAR2 và tên\
+    \ cột lẫn giữa 'type' và 'mệnh giá' — giữ Text denormalized, cần xác nhận nghiệp\
+    \ vụ trước khi tách sang Currency Amount."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Type Identifier Description"
+  physical_name: "fund_type_identifier_description"
+  description: "Loại quỹ theo định danh nội bộ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.TYPE_OF_FUND_DENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Duration Description"
+  physical_name: "fund_duration_description"
+  description: "Thời hạn hoạt động của quỹ (số năm hoặc 'Vô thời hạn')."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.TIME_OF_FUND"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Amendment Document Number"
+  physical_name: "amendment_document_number"
+  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.VOUCHER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Net Asset Value Amount"
+  physical_name: "net_asset_val_amount"
+  description: "Giá trị tài sản ròng (NAV) của quỹ (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.NAV"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Net Asset Value Per Unit Amount"
+  physical_name: "net_asset_val_per_unit_amount"
+  description: "NAV trên mỗi chứng chỉ quỹ - NAV/CCQ (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.NAV_CCQ"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Decision Issue Date"
+  physical_name: "decision_issue_dt"
+  description: "Ngày ban hành quyết định/nghị quyết."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.DEC_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Unit Par Value Amount"
+  physical_name: "unit_par_val_amount"
+  description: "Mệnh giá CCQ (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.PAR_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Investment Strategy Description"
+  physical_name: "investment_strategy_description"
+  description: "Chiến lược đầu tư của quỹ (mô tả)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.INVES_STRATEGY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Change Description"
+  physical_name: "change_description"
+  description: "Mô tả thay đổi hồ sơ quỹ khi cập nhật."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.DESCHANGE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Listing Date"
+  physical_name: "listing_dt"
+  description: "Ngày niêm yết CCQ trên sàn giao dịch chứng khoán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.LISTING_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Initial Offering Unit Quantity"
+  physical_name: "initial_offering_unit_quantity"
+  description: "Số lượng CCQ phát hành lần đầu tiên."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.NUMBER_FUND_CER_FIRST"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Listing Market Code"
+  physical_name: "listing_market_code"
+  description: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.STOCK_EXCHANGE"
+  comment: "Scheme: FMS_LISTING_MARKET (tái sử dụng — đã đăng ký Tier 1 từ SECURITIES.MARKET).\
+    \ Khác với SECURITIES.MARKET (numeric 1/2/3), cột này lưu trực tiếp literal HOSE/HNX/UPCOM\
+    \ — ETL passthrough, không cần bảng map."
+  classification_context: "FMS_LISTING_MARKET"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Distribution Agent Ids"
+  physical_name: "distribution_agent_ids"
+  description: "Danh sách đại lý phân phối CCQ của quỹ."
+  data_domain: "Array<Struct>"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGEN_FUNDS.FUND_ID"
+  comment: "Pure junction AGEN_FUNDS (AGENCY_ID + FUND_ID) → denormalize thành ARRAY.\
+    \ Struct: {distribution_agent_id: Surrogate Key; distribution_agent_code: Text}.\
+    \ HLD decision: FMS_HLD_Overview.md 7d. Hash mỗi phần tử: hash_id('FMS.AGENCIES',\
+    \ AGENCY_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "array<struct<...>>"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FUNDS.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

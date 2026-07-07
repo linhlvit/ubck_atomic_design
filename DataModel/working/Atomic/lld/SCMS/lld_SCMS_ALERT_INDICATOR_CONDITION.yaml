@@ -27,7 +27,7 @@ metadata:
     \ (new). SORT_ORDER (NUMBER 10): thứ tự sắp xếp."
 attributes:
 - attribute_name: "Securities Company Alert Indicator Condition Id"
-  physical_name: "securities_company_alert_indicator_condition_id"
+  physical_name: "sc_alert_indicator_condition_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -39,7 +39,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Indicator Condition Code"
-  physical_name: "securities_company_alert_indicator_condition_code"
+  physical_name: "sc_alert_indicator_condition_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -120,7 +120,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Comparison Value Type Code"
-  physical_name: "comparison_value_type_code"
+  physical_name: "comparison_val_type_code"
   description: "Loại giá trị so sánh: FIXED=Giá trị cố định; PERCENTAGE=Tỷ lệ phần\
     \ trăm; FORMULA=Công thức tính toán."
   data_domain: "Classification Value"
@@ -201,7 +201,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Comparison Value"
-  physical_name: "comparison_value"
+  physical_name: "comparison_val"
   description: "Cột gia_tri_so_sanh — giá trị ngưỡng so sánh chính."
   data_domain: "Small Counter"
   nullable: true
@@ -215,7 +215,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Item Value"
-  physical_name: "item_value"
+  physical_name: "item_val"
   description: "Giá trị phần tử của điều kiện (ngưỡng số thập phân)."
   data_domain: "Percentage"
   nullable: true
@@ -228,7 +228,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(5,2)"
 - attribute_name: "Value 2"
-  physical_name: "value_2"
+  physical_name: "val_2"
   description: "Giá trị so sánh thứ hai (cho điều kiện kết hợp với OPERATOR_2)."
   data_domain: "Percentage"
   nullable: true
@@ -344,86 +344,6 @@ attributes:
   source_columns:
   - "SCMS.ALERT_INDICATOR_CONDITION.NGUOI_SUA_ID"
   comment: "Pending — Pair with Legacy Updated By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR_CONDITION.CREATED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR_CONDITION.LAST_MODIFIED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR_CONDITION.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR_CONDITION.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người cập nhật bản ghi lần cuối."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR_CONDITION.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người cập nhật bản ghi lần cuối."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_INDICATOR_CONDITION.LAST_MODIFIED_BY"
-  comment: "Pending — Pair with Updated By SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

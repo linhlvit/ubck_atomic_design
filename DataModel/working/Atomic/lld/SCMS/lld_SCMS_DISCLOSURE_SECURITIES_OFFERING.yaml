@@ -26,7 +26,7 @@ metadata:
     \ excluded. Audit canonical: CREATED_BY/AT + LAST_MODIFIED_BY/AT."
 attributes:
 - attribute_name: "Securities Company Disclosure Securities Offering Id"
-  physical_name: "securities_company_disclosure_securities_offering_id"
+  physical_name: "sc_disclosure_securities_offering_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -38,7 +38,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Disclosure Securities Offering Code"
-  physical_name: "securities_company_disclosure_securities_offering_code"
+  physical_name: "sc_disclosure_securities_offering_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -397,7 +397,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Item Value Amount"
-  physical_name: "item_value_amount"
+  physical_name: "item_val_amount"
   description: "Giá trị mặt hàng chào bán."
   data_domain: "Currency Amount"
   nullable: true
@@ -423,7 +423,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Total Value Amount"
-  physical_name: "total_value_amount"
+  physical_name: "total_val_amount"
   description: "Tổng giá trị đợt chào bán (đồng)."
   data_domain: "Currency Amount"
   nullable: true
@@ -697,7 +697,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bond Face Value Amount"
-  physical_name: "bond_face_value_amount"
+  physical_name: "bond_face_val_amount"
   description: "Mệnh giá trái phiếu (đồng/trái phiếu)."
   data_domain: "Currency Amount"
   nullable: true
@@ -971,7 +971,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Collateral Settlement Value Amount"
-  physical_name: "collateral_settlement_value_amount"
+  physical_name: "collateral_settlement_val_amount"
   description: "Giá trị thanh toán tài sản bảo đảm chứng quyền."
   data_domain: "Currency Amount"
   nullable: true
@@ -1112,86 +1112,6 @@ attributes:
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.NGUOI_SUA_ID"
   comment: "NUMBER(10) — ETL convert sang string. Legacy audit duplicate của LAST_MODIFIED_BY."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.CREATED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.LAST_MODIFIED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người cập nhật bản ghi gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người cập nhật bản ghi gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.LAST_MODIFIED_BY"
-  comment: "Pending — Pair with Updated By SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

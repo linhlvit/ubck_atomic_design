@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_REG_REPRESENTATIVE
+brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: REPRESENTATIVE_NAME
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Họ tên người đại diện/chủ hộ kinh doanh"
+  key: null
+  fk_note: null
+- name: POSITION
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Chức vụ (tên hoặc mã)"
+  key: null
+  fk_note: null
+- name: ID_DOCUMENT_TYPE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu"
+  key: null
+  fk_note: null
+- name: ID_DOCUMENT_NUMBER
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Số giấy tờ định danh"
+  key: null
+  fk_note: null
+- name: ISSUE_DATE
+  data_type: "DATE"
+  description: "Ngày cấp giấy phép thành lập"
+  key: null
+  fk_note: null
+- name: PHONE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Số điện thoại liên hệ"
+  key: null
+  fk_note: null
+- name: FAX
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Số fax"
+  key: null
+  fk_note: null
+- name: EMAIL
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Địa chỉ email liên hệ"
+  key: null
+  fk_note: null
+- name: TAX_REGISTRATION_ID
+  data_type: "NUMBER"
+  description: "FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan"
+  key: FK
+  fk_note: "FK → TAX_REGISTRATION_INFO.ID"

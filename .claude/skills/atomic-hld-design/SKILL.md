@@ -147,6 +147,13 @@ Quy trình tra BCV:
 - Tất cả entity cùng nhóm nghiệp vụ phải dùng chung prefix.
 - Entity con phải chứa đầy đủ tên entity cha (substring liên tục).
 - Khi bảng nguồn chứa nhiều loại đơn vị (VD: CN + VPĐD, CN + PGD), dùng BCV Term chung thay vì tên loại cụ thể từ bảng nguồn.
+- **Xác định Domain Prefix tường minh:** Ghi rõ giá trị Domain Prefix đã chọn (không chỉ ngầm hiểu
+  qua việc lặp từ đầu) — Domain Prefix dùng để sinh `entity_physical_name` (xem
+  `atomic-lld-design/SKILL.md` mục "QUY TẮC ĐẶT `physical_name`").
+  - Entity không có sibling nào cùng nhóm nghiệp vụ → Domain Prefix = rỗng.
+  - Shared entity dùng chung toàn dự án (IP Postal Address, IP Electronic Address, IP Alt
+    Identification) → Domain Prefix cố định = `Involved Party`.
+  - Ghi giá trị này vào `atomic_entities.yaml` cột `domain_prefix` ở Bước 8.
 
 ### Bước 5 — Rà soát shared entity
 
@@ -243,6 +250,7 @@ Format bắt buộc cho mỗi entity:
 ```markdown
 ### N. {Atomic Entity Name}
 **Tier:** {1/2/3/...} | **Source:** `{SOURCE_TABLE}` | **BCV Concept:** {[Concept] Term} | **BCO:** {Core Object} | **Table Type:** {Fundamental/...}
+**Domain Prefix:** {giá trị Domain Prefix đã chọn, hoặc "(none)" nếu entity không có sibling}
 **Description:** {1–2 câu tiếng Việt — BCV Term + ý nghĩa nghiệp vụ bảng nguồn}
 ```
 
@@ -271,13 +279,15 @@ Hai file này là bảng tổng hợp toàn dự án. Encoding + workflow xem [`
 
 **Cấu trúc:**
 ```
-bcv_core_object,bcv_concept,atomic_entity,table_type,status,description,source_table
+bcv_core_object,bcv_concept,atomic_entity,table_type,domain_prefix,entity_physical_name,status,description,source_table
 ```
 
 **Quy tắc cột:**
 - `bcv_core_object`: 1 trong 15 BCV Core Object (Involved Party, Location, Condition, Arrangement, Product, Transaction, Communication, Event, Business Activity, Documentation, Property, Business Direction, Common, Group, Accounting). Business Activity là Core Object độc lập, không phải sub-type của Event.
 - `bcv_concept`: BCV Concept đã gán (ví dụ: `[Involved Party] Portfolio Fund Management Company`).
 - `atomic_entity`: Tên Atomic entity đầy đủ (ví dụ: `Fund Management Company`).
+- `domain_prefix`: Phần đầu tên entity dùng chung cho cả nhóm nghiệp vụ (xem Bước 4). Rỗng nếu entity không có sibling nào.
+- `entity_physical_name`: Tính theo quy tắc A tại `atomic-lld-design/SKILL.md` mục "QUY TẮC ĐẶT `physical_name`" — `abbreviate_domain_prefix(domain_prefix) + "_" + full_words(BCV Term)` (chỉ viết tắt cụm từ có trong curated list `system/rules/rule_domain_prefix_abbreviations.csv`, không lấy initials mù quáng).
 - `description`: Tiếng Việt **CÓ DẤU đầy đủ** (Unicode UTF-8), súc tích, kết hợp BCV Term + ý nghĩa nghiệp vụ bảng nguồn. Không viết Việt-không-dấu, không viết tắt. Hiển thị trực tiếp trong tài liệu Word handover (`atomic-gen-docs`).
 - `source_table`: Bảng nguồn dạng `SOURCE_SYSTEM.TABLE`. Nhiều bảng → phân cách bằng dấu phẩy.
 
@@ -291,6 +301,8 @@ bcv_core_object,bcv_concept,atomic_entity,table_type,status,description,source_t
 | `table_type` | Có thể sửa | **LOCKED** |
 | `bcv_core_object` | Có thể sửa | **LOCKED** |
 | `bcv_concept` | Có thể sửa | **LOCKED** |
+| `domain_prefix` | Có thể sửa | **LOCKED** — đổi kéo theo phải rename `entity_physical_name` và toàn bộ downstream |
+| `entity_physical_name` | Có thể sửa | **LOCKED** |
 | `description` | Có thể sửa | Có thể bổ sung / làm giàu thêm |
 | `source_table` | Có thể sửa | Có thể bổ sung source mới |
 

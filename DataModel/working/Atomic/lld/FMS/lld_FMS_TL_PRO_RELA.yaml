@@ -1,0 +1,150 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: TL_PRO_RELA
+  atomic_entity: Fund Management Company Key Person Related Person
+  entity_physical_name: fund_management_company_key_person_related_person
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Related Family Individual"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Postal Address + IP Alt Identification (NATIONAL_ID mặc định). CREATED_BY, MODIFY_BY, DELETED document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Fund Management Company Key Person Related Person Id
+    physical_name: fund_management_company_key_person_related_person_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Involved Party] Related Family Individual\" (id 11308). Người có quan hệ gia đình/liên quan với Fund Management Company Key Person."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Fund Management Company Key Person Related Person Code
+    physical_name: fund_management_company_key_person_related_person_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.TL_PRO_RELA"
+    etl_derived_value: "FMS.TL_PRO_RELA"
+
+  - attribute_name: Fund Management Company Key Person Id
+    physical_name: fund_management_company_key_person_id
+    description: "FK -> TL_PROFILES: Người hành nghề liên quan."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.TLPRO_ID"
+    comment: "FK target: Fund Management Company Key Person.Fund Management Company Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Fund Management Company Key Person Code
+    physical_name: fund_management_company_key_person_code
+    description: "Mã người hành nghề liên quan."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.TLPRO_ID"
+    comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company Key Person Code. Pair with Fund Management Company Key Person Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Relationship Type Code
+    physical_name: relationship_type_code
+    description: "FK -> RELATION: Loại quan hệ."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.RELA_ID"
+    comment: "Scheme: FMS_RELATION_TYPE (tái sử dụng — đã đăng ký Tier 1, nguồn FMS.RELATION). Nguồn RELA_ID là UUID FK — ETL resolve sang mã tương ứng."
+    classification_context: "FMS_RELATION_TYPE"
+    etl_derived_value: null
+
+  - attribute_name: Related Person Full Name
+    physical_name: related_person_full_nm
+    description: "Tên hiển thị chính."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ITEM_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Description
+    physical_name: description
+    description: "Mô tả chi tiết."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.DESCRIPTION"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

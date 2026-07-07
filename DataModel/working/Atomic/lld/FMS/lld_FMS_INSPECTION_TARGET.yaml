@@ -1,0 +1,150 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: INSPECTION_TARGET
+  atomic_entity: Member Inspection Target
+  entity_physical_name: member_inspection_target
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity Target Involved Party"
+  table_type: Relative
+  group: T6
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "T6-01 chờ xác nhận: TARGET_ID là FK đa hình (polymorphic theo OBJECT_TYPE) — giữ dạng UUID tham chiếu mềm (Text), không resolve sang FK cụ thể ở LLD (cần ETL resolve theo OBJECT_TYPE). Không phải Involved Party — không tách shared entity. CREATED_BY, MODIFY_BY, DELETED document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Member Inspection Target Id
+    physical_name: member_inspection_target_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity Target Involved Party\" (id 7973). Đối tượng cụ thể chịu thanh tra trong 1 Member Inspection Round."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Inspection Target Code
+    physical_name: member_inspection_target_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.INSPECTION_TARGET"
+    etl_derived_value: "FMS.INSPECTION_TARGET"
+
+  - attribute_name: Member Inspection Round Id
+    physical_name: member_inspection_round_id
+    description: "FK -> INSPECTION_ROUND: Đợt thanh tra."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.INSPECTION_ROUND_ID"
+    comment: "FK target: Member Inspection Round.Member Inspection Round Id. Hash: hash_id('FMS.INSPECTION_ROUND', INSPECTION_ROUND_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Inspection Round Code
+    physical_name: member_inspection_round_code
+    description: "Mã đợt thanh tra."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.INSPECTION_ROUND_ID"
+    comment: "Lookup pair: Member Inspection Round.Member Inspection Round Code. Pair with Member Inspection Round Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Object Type Code
+    physical_name: inspection_object_type_code
+    description: "Loại đối tượng thanh tra: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=Khác."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.OBJECT_TYPE"
+    comment: "Scheme: FMS_INSPECTION_OBJECT_TYPE (tái sử dụng — đã đăng ký Tier 5). Discriminator cho Target Reference Id."
+    classification_context: "FMS_INSPECTION_OBJECT_TYPE"
+    etl_derived_value: null
+
+  - attribute_name: Target Reference Id
+    physical_name: target_reference_id
+    description: "ID của đối tượng thanh tra (UUID tham chiếu bảng tương ứng theo OBJECT_TYPE)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.TARGET_ID"
+    comment: "T6-01: FK đa hình — giữ dạng UUID tham chiếu mềm (Text), không tách thành FK cụ thể vì bảng đích phụ thuộc Inspection Object Type Code (Fund Management Company/Investment Fund/Custodian Bank/Fund Distribution Agent). ETL cần resolve theo ngữ cảnh nếu dùng cho join."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Target Name Snapshot
+    physical_name: target_name_snapshot
+    description: "Tên đối tượng thanh tra (snapshot tại thời điểm tạo đợt thanh tra)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.TARGET_NAME"
+    comment: "Denormalized snapshot — không tự cập nhật theo entity đích."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_TARGET.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

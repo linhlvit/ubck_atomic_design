@@ -15,13 +15,14 @@ metadata:
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: Chien Nguyen
+  approved_by: "Chien Nguyen"
   approved_at: 2026-07-03
-  notes: "Snapshot bảng giá TPDN. Grain = 1 lần chụp của 1 mã trái phiếu. Quyết định D-01: tách entity riêng vì có ~20 trường bond-specific. kid là BK kỹ thuật; (symbol, tradingdate) là business key nghiệp vụ — xác nhận T1-03 còn mở."
-
+  notes: "Snapshot bảng giá TPDN. Grain = 1 lần chụp của 1 mã trái phiếu. Quyết định\
+    \ D-01: tách entity riêng vì có ~20 trường bond-specific. kid là BK kỹ thuật;\
+    \ (symbol, tradingdate) là business key nghiệp vụ — xác nhận T1-03 còn mở."
 attributes:
 - attribute_name: "Corporate Bond Trading Snapshot Id"
-  physical_name: "corporate_bond_trading_snapshot_id"
+  physical_name: "corporate_bond_trading_snpst_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -34,7 +35,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Corporate Bond Trading Snapshot Code"
-  physical_name: "corporate_bond_trading_snapshot_code"
+  physical_name: "corporate_bond_trading_snpst_code"
   description: "ID mã do jadapter sinh. BK của Snapshot entity."
   data_domain: "Text"
   nullable: true
@@ -305,7 +306,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Close Volume"
-  physical_name: "close_volume"
+  physical_name: "close_vol"
   description: "Khối lượng đóng cửa."
   data_domain: "Small Counter"
   nullable: true
@@ -377,7 +378,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Total Trading Volume"
-  physical_name: "total_trading_volume"
+  physical_name: "total_trading_vol"
   description: "Tổng khối lượng giao dịch."
   data_domain: "Small Counter"
   nullable: true
@@ -389,7 +390,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Trading Value"
-  physical_name: "total_trading_value"
+  physical_name: "total_trading_val"
   description: "Tổng giá trị giao dịch."
   data_domain: "Currency Amount"
   nullable: true
@@ -401,7 +402,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Total Listing Volume"
-  physical_name: "total_listing_volume"
+  physical_name: "total_listing_vol"
   description: "Khối lượng niêm yết."
   data_domain: "Small Counter"
   nullable: true
@@ -413,7 +414,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Foreign Remain Volume"
-  physical_name: "foreign_remain_volume"
+  physical_name: "foreign_remain_vol"
   description: "Room NĐTNN còn lại."
   data_domain: "Small Counter"
   nullable: true
@@ -425,7 +426,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Match Volume"
-  physical_name: "pt_match_volume"
+  physical_name: "pt_match_vol"
   description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -449,7 +450,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "PT Total Traded Volume"
-  physical_name: "pt_total_traded_volume"
+  physical_name: "pt_total_traded_vol"
   description: "Tổng khối lượng GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -461,7 +462,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Total Traded Value"
-  physical_name: "pt_total_traded_value"
+  physical_name: "pt_total_traded_val"
   description: "Tổng giá trị GD thỏa thuận Outright."
   data_domain: "Currency Amount"
   nullable: true
@@ -473,7 +474,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "PT Best Bid Volume"
-  physical_name: "pt_best_bid_volume"
+  physical_name: "pt_best_bid_vol"
   description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -497,7 +498,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "PT Best Offer Volume"
-  physical_name: "pt_best_offer_volume"
+  physical_name: "pt_best_offer_vol"
   description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -521,7 +522,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "PT Total Bid Volume"
-  physical_name: "pt_total_bid_volume"
+  physical_name: "pt_total_bid_vol"
   description: "Tổng KL chào mua GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -533,7 +534,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Total Offer Volume"
-  physical_name: "pt_total_offer_volume"
+  physical_name: "pt_total_offer_vol"
   description: "Tổng KL chào bán GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -545,7 +546,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Max Volume"
-  physical_name: "pt_max_volume"
+  physical_name: "pt_max_vol"
   description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -569,7 +570,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "PT Min Volume"
-  physical_name: "pt_min_volume"
+  physical_name: "pt_min_vol"
   description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright."
   data_domain: "Small Counter"
   nullable: true
@@ -631,7 +632,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Par Value"
-  physical_name: "par_value"
+  physical_name: "par_val"
   description: "Mệnh giá trái phiếu."
   data_domain: "Currency Amount"
   nullable: false

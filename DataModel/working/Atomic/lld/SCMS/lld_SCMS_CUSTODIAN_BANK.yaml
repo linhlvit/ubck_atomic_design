@@ -27,7 +27,7 @@ metadata:
     \ → IP shared entities."
 attributes:
 - attribute_name: "Securities Company Custodian Bank Id"
-  physical_name: "securities_company_custodian_bank_id"
+  physical_name: "sc_custodian_bank_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -40,7 +40,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Custodian Bank Code"
-  physical_name: "securities_company_custodian_bank_code"
+  physical_name: "sc_custodian_bank_code"
   description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -93,7 +93,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Custodian Bank Name"
-  physical_name: "securities_company_custodian_bank_nm"
+  physical_name: "sc_custodian_bank_nm"
   description: "Tên đầy đủ ngân hàng lưu ký bằng tiếng Việt."
   data_domain: "Text"
   nullable: true
@@ -106,7 +106,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Custodian Bank English Name"
-  physical_name: "securities_company_custodian_bank_english_nm"
+  physical_name: "sc_custodian_bank_english_nm"
   description: "Tên đầy đủ ngân hàng lưu ký bằng tiếng Anh."
   data_domain: "Text"
   nullable: true
@@ -119,7 +119,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Custodian Bank Short Name"
-  physical_name: "securities_company_custodian_bank_short_nm"
+  physical_name: "sc_custodian_bank_short_nm"
   description: "Tên viết tắt ngân hàng lưu ký."
   data_domain: "Text"
   nullable: true
@@ -353,86 +353,6 @@ attributes:
   source_columns:
   - "SCMS.CUSTODIAN_BANK.NOTE"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.CUSTODIAN_BANK.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.CUSTODIAN_BANK.LAST_MODIFIED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.CUSTODIAN_BANK.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.CUSTODIAN_BANK.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.CUSTODIAN_BANK.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.CUSTODIAN_BANK.LAST_MODIFIED_BY"
-  comment: "Pending — Pair with Updated By SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

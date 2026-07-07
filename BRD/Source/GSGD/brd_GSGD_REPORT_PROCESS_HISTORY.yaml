@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: REPORT_PROCESS_HISTORY
+brd_ref: BRD-SRC-GSGD-REPORT_PROCESS_HISTORY
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: REPORT_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID báo cáo (compliance_report_master.id hoặc abnormal_report_master.id)"
+    key: null
+    fk_note: null
+  - name: REPORT_TYPE
+    data_type: "NUMBER(1)"
+    description: "1=Báo cáo tuân thủ, 2=Báo cáo bất thường"
+    key: null
+    fk_note: null
+  - name: ACTION_TYPE
+    data_type: "NUMBER(2)"
+    description: "1=Nộp báo cáo,  2=Kiểm tra tự động,  3=Chờ duyệt,  4=Phê duyệt,  5=Từ chối,  6=Phân công xử lý,  7=Huỷ phân công,  8=Yêu cầu nộp bổ sung,  9=Nộp bổ sung"
+    key: null
+    fk_note: null
+  - name: ACTION_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người/hệ thống thực hiện. NULL nếu tự động"
+    key: null
+    fk_note: null
+  - name: ACTION_BY_NAME
+    data_type: "VARCHAR2(250 CHAR)"
+    description: "Tên người thực hiện. \"Hệ thống\" nếu tự động"
+    key: null
+    fk_note: null
+  - name: ACTION_BY_TITLE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Chức vụ người thực hiện"
+    key: null
+    fk_note: null
+  - name: ACTION_DATE
+    data_type: "TIMESTAMP"
+    description: "Thời gian thực hiện"
+    key: null
+    fk_note: null
+  - name: ACTION_RESULT
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Kết quả: PASS, FAIL, APPROVED, REJECTED,  ASSIGNED,  REVOKED"
+    key: null
+    fk_note: null
+  - name: REASON
+    data_type: "VARCHAR2(2000 CHAR)"
+    description: "Lý do (từ chối, không đạt kiểm tra)"
+    key: null
+    fk_note: null
+  - name: RESUBMIT_FROM_DATE
+    data_type: "DATE"
+    description: "Ngày bắt đầu cho phép nộp lại"
+    key: null
+    fk_note: null
+  - name: RESUBMIT_TO_DATE
+    data_type: "DATE"
+    description: "Ngày kết thúc cho phép nộp lại"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

@@ -1,16 +1,15 @@
-﻿schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: ThanhTra
-  source_table: LEGAL_DOCUMENT
-  atomic_entity: Legal Document
-  entity_physical_name: lgl_doc
-  bcv_core_object: Business Direction
+  source_system: "ThanhTra"
+  source_table: "LEGAL_DOCUMENT"
+  atomic_entity: "Legal Document"
+  entity_physical_name: "legal_document"
+  bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Law"
-  table_type: Fundamental
-  group: T1
-  design_status: draft
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,171 +18,176 @@ metadata:
   approved_by: null
   approved_at: null
   notes: null
-
 attributes:
-  - attribute_name: Legal Document Id
-    physical_name: lgl_doc_id
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. Hash: hash_id('ThanhTra.LEGAL_DOCUMENT', ID). BCV: [Business Direction] Law."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Legal Document Unique Key
-    physical_name: lgl_doc_uk
-    description: "Unique Key nghiệp vụ. Mã văn bản pháp luật tự sinh UNIQUE (VD: VBPL-XXXX)."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.CODE
-    comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Legal Document Code
-    physical_name: lgl_doc_code
-    description: "Khóa chính UUID của bảng nguồn. BK của entity."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.ID
-    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=ThanhTra.LEGAL_DOCUMENT
-    etl_derived_value: ThanhTra.LEGAL_DOCUMENT
-
-  - attribute_name: Legal Document Name
-    physical_name: lgl_doc_nm
-    description: "Tên văn bản pháp luật (nghị định, thông tư, quyết định...)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Issued Date
-    physical_name: issu_dt
-    description: "Ngày ban hành văn bản pháp luật."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.ISSUED_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Life Cycle Status Code
-    physical_name: lcs_code
-    description: "Trạng thái hiệu lực: ACTIVE (Đang hiệu lực), INACTIVE (Hết hiệu lực)."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.STATUS
-    comment: "Scheme: ENTITY_STATUS."
-    classification_context: ENTITY_STATUS
-    etl_derived_value: null
-
-  - attribute_name: Created Timestamp
-    physical_name: crt_tms
-    description: "Thời điểm tạo bản ghi."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.CREATED_AT
-    comment: "Nguồn DATE — widening sang Timestamp."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated Timestamp
-    physical_name: udt_tms
-    description: "Thời điểm cập nhật gần nhất."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.LAST_MODIFIED_AT
-    comment: "Nguồn DATE — widening sang Timestamp."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Id
-    physical_name: crt_by_ofcr_id
-    description: "ID người dùng tạo bản ghi."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.CREATED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Code
-    physical_name: crt_by_ofcr_code
-    description: "Mã người dùng tạo bản ghi."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.CREATED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Id
-    physical_name: udt_by_ofcr_id
-    description: "ID người dùng cập nhật gần nhất."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.LAST_MODIFIED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Code
-    physical_name: udt_by_ofcr_code
-    description: "Mã người dùng cập nhật gần nhất."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.LEGAL_DOCUMENT.LAST_MODIFIED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Legal Document Id"
+  physical_name: "legal_document_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('ThanhTra.LEGAL_DOCUMENT', ID). BCV: [Business\
+    \ Direction] Law."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Document Unique Key"
+  physical_name: "legal_document_unique_key"
+  description: "Unique Key nghiệp vụ. Mã văn bản pháp luật tự sinh UNIQUE (VD: VBPL-XXXX)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.CODE"
+  comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Document Code"
+  physical_name: "legal_document_code"
+  description: "Khóa chính UUID của bảng nguồn. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=ThanhTra.LEGAL_DOCUMENT"
+  etl_derived_value: "ThanhTra.LEGAL_DOCUMENT"
+  data_type: "string"
+- attribute_name: "Legal Document Name"
+  physical_name: "legal_document_nm"
+  description: "Tên văn bản pháp luật (nghị định, thông tư, quyết định...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issued Date"
+  physical_name: "issued_dt"
+  description: "Ngày ban hành văn bản pháp luật."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.ISSUED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Life Cycle Status Code"
+  physical_name: "life_cycle_status_code"
+  description: "Trạng thái hiệu lực: ACTIVE (Đang hiệu lực), INACTIVE (Hết hiệu lực)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.STATUS"
+  comment: "Scheme: ENTITY_STATUS."
+  classification_context: "ENTITY_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.CREATED_AT"
+  comment: "Nguồn DATE — widening sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.LAST_MODIFIED_AT"
+  comment: "Nguồn DATE — widening sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By Officer Id"
+  physical_name: "created_by_officer_id"
+  description: "ID người dùng tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.CREATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Code"
+  physical_name: "created_by_officer_code"
+  description: "Mã người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.CREATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "updated_by_officer_id"
+  description: "ID người dùng cập nhật gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.LAST_MODIFIED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "updated_by_officer_code"
+  description: "Mã người dùng cập nhật gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.LEGAL_DOCUMENT.LAST_MODIFIED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

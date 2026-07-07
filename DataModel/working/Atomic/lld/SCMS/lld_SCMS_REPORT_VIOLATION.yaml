@@ -25,7 +25,7 @@ metadata:
     \ out of scope)."
 attributes:
 - attribute_name: "Securities Company Report Violation Id"
-  physical_name: "securities_company_report_violation_id"
+  physical_name: "sc_report_violation_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -37,7 +37,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Report Violation Code"
-  physical_name: "securities_company_report_violation_code"
+  physical_name: "sc_report_violation_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -142,17 +142,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.REPORT_VIOLATION.LAST_MODIFIED_AT"
-  comment: "Nguồn data type DATE (không phải TIMESTAMP) — widening conversion. Bảng\
-    \ nguồn không có CREATED_AT/CREATED_BY."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

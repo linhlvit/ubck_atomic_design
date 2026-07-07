@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: REPORT_TEMPLATE_PARAMETER
+brd_ref: BRD-SRC-GSGD-REPORT_TEMPLATE_PARAMETER
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id mẫu báo cáo gốc tham chiếu report_template.id"
+    key: FK
+    fk_note: "FK suy luận → REPORT_TEMPLATE.ID"
+  - name: REPORT_PARAMETER_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id tham số tham chiếu report_parameter.id"
+    key: FK
+    fk_note: "FK suy luận → REPORT_PARAMETER.ID"
+  - name: PARAM_SCOPE
+    data_type: "NUMBER(1)"
+    description: "1=Mẫu báo cáo gốc, 2=Workflow template, 3=Workflow báo cáo theo vụ việc"
+    key: null
+    fk_note: null
+  - name: PARAM_SCE
+    data_type: "NUMBER(1)"
+    description: ""
+    key: null
+    fk_note: null
+  - name: ATTRIBUTE_CATALOG_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id attribute của metric attribute_catalog.id"
+    key: FK
+    fk_note: "FK suy luận → ATTRIBUTE_CATALOG.ID"
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

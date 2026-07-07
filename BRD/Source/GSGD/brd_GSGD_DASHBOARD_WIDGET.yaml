@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: DASHBOARD_WIDGET
+brd_ref: BRD-SRC-GSGD-DASHBOARD_WIDGET
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: DASHBOARD_WIDGET_GROUP_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id nhóm widget cố định"
+    key: FK
+    fk_note: "FK suy luận → DASHBOARD_WIDGET_GROUP.ID"
+  - name: WIDGET_CODE
+    data_type: "VARCHAR2(100)"
+    description: "Mã widget"
+    key: null
+    fk_note: null
+  - name: WIDGET_NAME
+    data_type: "VARCHAR2(255)"
+    description: "Tên widget hiển thị trên UI"
+    key: null
+    fk_note: null
+  - name: WIDGET_TYPE
+    data_type: "NUMBER(1)"
+    description: "Nhóm widget. 1=Biểu đồ, 2=Số liệu"
+    key: null
+    fk_note: null
+  - name: API_CODE
+    data_type: "VARCHAR2(100)"
+    description: "Mã API hoặc mã nguồn dữ liệu của widget"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: "CLOB"
+    description: "Mô tả widget"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1)"
+    description: "Trạng thái hoạt động. 1=Hoạt động, 0=Không hoạt động"
+    key: null
+    fk_note: null
+  - name: DISPLAY_ORDER
+    data_type: "NUMBER(5)"
+    description: "Thứ tự hiển thị"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

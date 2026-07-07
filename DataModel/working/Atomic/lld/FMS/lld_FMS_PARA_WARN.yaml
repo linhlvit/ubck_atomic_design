@@ -1,0 +1,176 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "PARA_WARN"
+  atomic_entity: "Member Warning Parameter"
+  entity_physical_name: "member_warning_parameter"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Scoring Criterion"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[CẬP NHẬT 2026-07-06 theo HLD Tier1 revision] Đổi tên entity từ 'Warning\
+    \ Parameter' → 'Member Warning Parameter' theo quyết định review: cấu trúc gần\
+    \ trùng FIMS.PARAWARN nhưng GIỮ ENTITY RIÊNG cho FMS (không gộp với FIMS) — đặt\
+    \ tên theo domain 'Member' dùng xuyên suốt FMS (Member Rating, Member Inspection...).\
+    \ domain_prefix=Member Warning, dùng chung với Member Warning Condition (Tier\
+    \ 2, nguồn CDT_WARN). Trước đây bị đưa nhầm vào HLD 7f nhóm Isolated — đã sửa\
+    \ vì VIOLT có FK đến PARA_WARN. Được FK từ Fund Management Conduct Violation (VIOLT.PR_WID\
+    \ — nay ở Tier 6, xem lld_FMS_VIOLT.yaml) và Member Warning Condition (CDT_WARN.PR_WID/OTHER_WID,\
+    \ Tier 2). CREATED_BY, MODIFY_BY document trong pending_design.yaml."
+attributes:
+- attribute_name: "Member Warning Parameter Id"
+  physical_name: "member_warning_parameter_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Condition] Scoring Criterion\". Tham số cảnh báo\
+    \ giám sát áp dụng cho từng loại thành viên thị trường."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Warning Parameter Code"
+  physical_name: "member_warning_parameter_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.PARA_WARN"
+  etl_derived_value: "FMS.PARA_WARN"
+  data_type: "string"
+- attribute_name: "Member Warning Parameter Full Name"
+  physical_name: "member_warning_parameter_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Reference Code"
+  physical_name: "legal_reference_code"
+  description: "Mã văn bản pháp lý cơ sở của tham số cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.LEGAL_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.RECORD_STATUS"
+  comment: "Scheme: FMS_WARNING_RECORD_STATUS (theo HLD Tier1 6d — dùng chung cho\
+    \ Member Warning Parameter + Member Warning Condition, khác pattern Boolean dùng\
+    \ cho RECORD_STATUS ở các entity FMS khác)."
+  classification_context: "FMS_WARNING_RECORD_STATUS"
+  etl_derived_value: "1=ACTIVE;0=INACTIVE"
+  data_type: "string"
+- attribute_name: "Calculation Formula Description"
+  physical_name: "calculation_formula_description"
+  description: "Công thức tính giá trị tham số cảnh báo (NCLOB: JSON hoặc mô tả công\
+    \ thức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.FORMULA_INFO"
+  comment: "Nguồn NCLOB — ETL lưu nguyên chuỗi text, không tách cấu trúc ở Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "System Object Type Code"
+  physical_name: "stm_object_type_code"
+  description: "Đối tượng hệ thống: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN..."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.SYSTEM_OBJECT"
+  comment: "Scheme: FMS_WARNING_SYSTEM_OBJECT_TYPE (đã đăng ký sẵn trong classification_schemes.yaml\
+    \ — 5 giá trị đầu xác nhận, mô tả nguồn còn '...' nên có thể chưa đầy đủ)."
+  classification_context: "FMS_WARNING_SYSTEM_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PARA_WARN.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: REPORT_ASSIGNMENT
+brd_ref: BRD-SRC-GSGD-REPORT_ASSIGNMENT
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: REPORT_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID báo cáo (compliance_report_master.id hoặc abnormal_report_master.id)"
+    key: null
+    fk_note: null
+  - name: REPORT_TYPE
+    data_type: "NUMBER(1)"
+    description: "1=Báo cáo tuân thủ, 2=Báo cáo bất thường"
+    key: null
+    fk_note: null
+  - name: ASSIGNMENT_TYPE
+    data_type: "NUMBER(1)"
+    description: "1=Phê duyệt (chỉ 1 người/báo cáo), 2=Nhận xét (nhiều người/báo cáo)"
+    key: null
+    fk_note: null
+  - name: ASSIGNEE_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người được phân công (user thuộc Ban Giám sát thị trường)"
+    key: null
+    fk_note: "FK suy luận → SYSTEM_USER.ID"
+  - name: ASSIGNEE_NAME
+    data_type: "VARCHAR2(250 CHAR)"
+    description: "Họ và tên người được phân công"
+    key: null
+    fk_note: null
+  - name: ASSIGNEE_TITLE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Chức vụ người được phân công"
+    key: null
+    fk_note: null
+  - name: ASSIGNED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người thực hiện phân công (Trưởng ban/Phó Trưởng ban)"
+    key: null
+    fk_note: null
+  - name: ASSIGNED_BY_NAME
+    data_type: "VARCHAR2(250 CHAR)"
+    description: "Họ và tên người phân công"
+    key: null
+    fk_note: null
+  - name: ASSIGNED_BY_TITLE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Chức vụ người phân công"
+    key: null
+    fk_note: null
+  - name: ASSIGNED_DATE
+    data_type: "TIMESTAMP"
+    description: "Thời gian phân công"
+    key: null
+    fk_note: null
+  - name: REVOKED_BY_TITLE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Chức vụ người huỷ phân công"
+    key: null
+    fk_note: null
+  - name: REVOKED_DATE
+    data_type: "TIMESTAMP"
+    description: "Thời gian thu hồi quyền (NULL nếu chưa bị thu hồi)"
+    key: null
+    fk_note: null
+  - name: REVOKED_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người thu hồi"
+    key: null
+    fk_note: null
+  - name: REVOKED_BY_NAME
+    data_type: "VARCHAR2(250 CHAR)"
+    description: "Tên người thu hồi"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1)"
+    description: "1=Đang hiệu lực, 0=Đã thu hồi"
+    key: null
+    fk_note: null
+  - name: NOTIFICATION_SENT
+    data_type: "NUMBER(1)"
+    description: "Đã gửi thông báo/email chưa: 0=Chưa, 1=Đã gửi"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

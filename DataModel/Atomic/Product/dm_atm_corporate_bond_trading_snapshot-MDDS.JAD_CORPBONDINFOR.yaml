@@ -1,31 +1,29 @@
 schema_type: data_model
-schema_version: '1.0'
+schema_version: "1.0"
+
 ldm:
   id: ATM-corporate_bond_trading_snapshot-MDDS.JAD_CORPBONDINFOR
   logical_name: Corporate Bond Trading Snapshot
   physical_name: corporate_bond_trading_snapshot
   layer: Atomic
   version: "1.0"
-  status: approved
+  status: draft
   bcv_core_object: Product
-  bcv_concept: '[Product] Financial Market Instrument'
+  bcv_concept: "[Product] Financial Market Instrument"
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
   source: MDDS
-  description: 'Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm yết
-    tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright,
-    thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát hành/đáo
-    hạn).
-
-    '
+  description: |
+    Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm yết tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright, thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát hành/đáo hạn).
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
     brd: BRD-SRC-MDDS-JAD_CORPBONDINFOR
+
 attributes:
   - name: Corporate Bond Trading Snapshot Id
-    physical_name: corporate_bond_trading_snapshot_id
+    physical_name: corporate_bond_trading_snpst_id
     business_meaning: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
     data_type: string
@@ -39,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: Corporate Bond Trading Snapshot Code
-    physical_name: corporate_bond_trading_snapshot_code
+    physical_name: corporate_bond_trading_snpst_code
     business_meaning: ID mã do jadapter sinh. BK của Snapshot entity.
     data_domain: Text
     data_type: string
@@ -333,7 +331,7 @@ attributes:
     etl_derived_value: null
 
   - name: Close Volume
-    physical_name: close_volume
+    physical_name: close_vol
     business_meaning: Khối lượng đóng cửa.
     data_domain: Small Counter
     data_type: int
@@ -417,7 +415,7 @@ attributes:
     etl_derived_value: null
 
   - name: Total Trading Volume
-    physical_name: total_trading_volume
+    physical_name: total_trading_vol
     business_meaning: Tổng khối lượng giao dịch.
     data_domain: Small Counter
     data_type: int
@@ -431,7 +429,7 @@ attributes:
     etl_derived_value: null
 
   - name: Total Trading Value
-    physical_name: total_trading_value
+    physical_name: total_trading_val
     business_meaning: Tổng giá trị giao dịch.
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -445,7 +443,7 @@ attributes:
     etl_derived_value: null
 
   - name: Total Listing Volume
-    physical_name: total_listing_volume
+    physical_name: total_listing_vol
     business_meaning: Khối lượng niêm yết.
     data_domain: Small Counter
     data_type: int
@@ -459,7 +457,7 @@ attributes:
     etl_derived_value: null
 
   - name: Foreign Remain Volume
-    physical_name: foreign_remain_volume
+    physical_name: foreign_remain_vol
     business_meaning: Room NĐTNN còn lại.
     data_domain: Small Counter
     data_type: int
@@ -473,7 +471,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Match Volume
-    physical_name: pt_match_volume
+    physical_name: pt_match_vol
     business_meaning: Khối lượng thực hiện gần nhất GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -501,7 +499,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Total Traded Volume
-    physical_name: pt_total_traded_volume
+    physical_name: pt_total_traded_vol
     business_meaning: Tổng khối lượng GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -515,7 +513,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Total Traded Value
-    physical_name: pt_total_traded_value
+    physical_name: pt_total_traded_val
     business_meaning: Tổng giá trị GD thỏa thuận Outright.
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -529,7 +527,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Best Bid Volume
-    physical_name: pt_best_bid_volume
+    physical_name: pt_best_bid_vol
     business_meaning: Tổng KL chào mua cao nhất GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -557,7 +555,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Best Offer Volume
-    physical_name: pt_best_offer_volume
+    physical_name: pt_best_offer_vol
     business_meaning: Tổng KL chào bán thấp nhất GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -585,7 +583,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Total Bid Volume
-    physical_name: pt_total_bid_volume
+    physical_name: pt_total_bid_vol
     business_meaning: Tổng KL chào mua GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -599,7 +597,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Total Offer Volume
-    physical_name: pt_total_offer_volume
+    physical_name: pt_total_offer_vol
     business_meaning: Tổng KL chào bán GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -613,7 +611,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Max Volume
-    physical_name: pt_max_volume
+    physical_name: pt_max_vol
     business_meaning: KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -641,7 +639,7 @@ attributes:
     etl_derived_value: null
 
   - name: PT Min Volume
-    physical_name: pt_min_volume
+    physical_name: pt_min_vol
     business_meaning: KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright.
     data_domain: Small Counter
     data_type: int
@@ -711,7 +709,7 @@ attributes:
     etl_derived_value: null
 
   - name: Par Value
-    physical_name: par_value
+    physical_name: par_val
     business_meaning: Mệnh giá trái phiếu.
     data_domain: Currency Amount
     data_type: decimal(23,2)

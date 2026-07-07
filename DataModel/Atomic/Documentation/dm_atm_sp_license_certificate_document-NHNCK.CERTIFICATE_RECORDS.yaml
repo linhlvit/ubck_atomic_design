@@ -1,0 +1,345 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sp_license_certificate_document-NHNCK.CERTIFICATE_RECORDS
+  logical_name: Securities Practitioner License Certificate Document
+  physical_name: sp_license_certificate_document
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Chứng chỉ hành nghề chứng khoán được cấp cho người hành nghề. Ghi nhận số CCHN, loại, ngày cấp, trạng thái và 3 quyết định liên quan (cấp/thu hồi/hủy). FK đến Practitioner.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-CERTIFICATE_RECORDS
+
+attributes:
+  - name: Securities Practitioner License Certificate Document Id
+    physical_name: sp_license_certificate_document_id
+    business_meaning: Surrogate key cho chứng chỉ hành nghề chứng khoán
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Certificate Document Code
+    physical_name: sp_license_certificate_document_code
+    business_meaning: Business key từ CERTIFICATE_RECORDS.ID
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.ID
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Certificate Number
+    physical_name: certificate_number
+    business_meaning: Số chứng chỉ hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Certificate Type Code
+    physical_name: certificate_type_code
+    business_meaning: Phân loại loại chứng chỉ (CCHN)
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Id
+    physical_name: securities_practitioner_id
+    business_meaning: FK đến Securities Practitioner
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID
+    comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Code
+    physical_name: securities_practitioner_code
+    business_meaning: Mã nghiệp vụ của người hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_ID
+    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with securities_practitioner_id."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Issue License Decision Id
+    physical_name: issue_license_decision_id
+    business_meaning: FK đến quyết định cấp chứng chỉ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
+    comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Issue License Decision Code
+    physical_name: issue_license_decision_code
+    business_meaning: Mã nghiệp vụ của quyết định cấp
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
+    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with Issue License Decision Id."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Revocation License Decision Id
+    physical_name: revocation_license_decision_id
+    business_meaning: FK đến quyết định thu hồi chứng chỉ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
+    comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Revocation License Decision Code
+    physical_name: revocation_license_decision_code
+    business_meaning: Mã nghiệp vụ của quyết định thu hồi
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
+    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with Revocation License Decision Id."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Cancellation License Decision Id
+    physical_name: cancellation_license_decision_id
+    business_meaning: FK đến quyết định hủy chứng chỉ
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
+    comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Cancellation License Decision Code
+    physical_name: cancellation_license_decision_code
+    business_meaning: Mã nghiệp vụ của quyết định hủy
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
+    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with Cancellation License Decision Id."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issue_dt
+    business_meaning: Ngày cấp chứng chỉ hành nghề
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DATE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Revocation Date
+    physical_name: revocation_dt
+    business_meaning: Ngày thu hồi chứng chỉ hành nghề
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DATE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Revocation Reason
+    physical_name: revocation_reason
+    business_meaning: Lý do thu hồi chứng chỉ hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_REASON
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Practitioner Name At Issuance
+    physical_name: practitioner_nm_at_issuance
+    business_meaning: Tên người hành nghề tại thời điểm cấp chứng chỉ (snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.PROFESSIONAL_FULL_NAME
+    comment: Snapshot value captured at time of issuance; not updated when practitioner name changes.
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Reissuance Allowed Count
+    physical_name: reissuance_allowed_count
+    business_meaning: "Số lần được phép cấp lại chứng chỉ (0 = không được cấp lại)"
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.ALLOW_REISSUE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Process Status Code
+    physical_name: process_status_code
+    business_meaning: "Trạng thái xử lý chứng chỉ (1=Đã cấp 2=Đã ký nháy 3=Đã ký 4=Đã trả)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Certificate File Path
+    physical_name: certificate_file_path
+    business_meaning: Đường dẫn file chứng chỉ số
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.CER_PATH
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Conversion Status Code
+    physical_name: conversion_status_code
+    business_meaning: "Trạng thái chuyển đổi chứng chỉ (1=Giấy 2=Chờ điện tử 3=Chứng chỉ số)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái hiệu lực của bản ghi chứng chỉ (1=Hoạt động)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.RECORD_STATUS
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả bổ sung cho chứng chỉ hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: "Mã hệ thống nguồn ETL-derived"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: NHNCK.CERTIFICATE_RECORDS

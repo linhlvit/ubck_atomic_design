@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: COMPLIANCE_REPORT_FORM_TEMPLATE
+brd_ref: BRD-SRC-GSGD-COMPLIANCE_REPORT_FORM_TEMPLATE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "FK → compliance_report_template.id (Phụ lục cha)"
+    key: FK
+    fk_note: "FK → COMPLIANCE_REPORT_TEMPLATE.ID"
+  - name: FORM_CODE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mã biểu mẫu (VD: PL01_W_F01, PL01_W_F02)"
+    key: null
+    fk_note: null
+  - name: FORM_NAME
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Tên biểu mẫu (VD: \"Mẫu số 1 - Báo cáo tổng hợp giao dịch\")"
+    key: null
+    fk_note: null
+  - name: IS_MANDATORY
+    data_type: "NUMBER(1)"
+    description: "Bắt buộc upload: 0=Tùy chọn, 1=Bắt buộc"
+    key: null
+    fk_note: null
+  - name: DISPLAY_ORDER
+    data_type: "NUMBER(3)"
+    description: "Thứ tự hiển thị trong danh sách biểu mẫu"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: "VARCHAR2(1000 CHAR)"
+    description: "Mô tả biểu mẫu"
+    key: null
+    fk_note: null
+  - name: TABLE_HEADER_LAYOUT
+    data_type: "CLOB"
+    description: "Cấu trúc header table dạng JSON, mô tả merge col/row của header phức tạp"
+    key: null
+    fk_note: null
+  - name: FILE_NAME
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Tên file mẫu Excel"
+    key: null
+    fk_note: null
+  - name: FILE_PATH
+    data_type: "VARCHAR2(1000 CHAR)"
+    description: "Đường dẫn MinIO/Storage"
+    key: null
+    fk_note: null
+  - name: FILE_SIZE
+    data_type: "NUMBER(19)"
+    description: "Kích thước (bytes)"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1)"
+    description: "Trạng thái: 0=Không hoạt động, 1=Hoạt động"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

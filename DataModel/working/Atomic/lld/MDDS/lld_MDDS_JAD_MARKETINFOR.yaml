@@ -15,13 +15,13 @@ metadata:
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: Chien Nguyen
+  approved_by: "Chien Nguyen"
   approved_at: 2026-07-03
-  notes: "Snapshot trạng thái chỉ số thị trường (VNINDEX/HNX-Index/UPCOM-Index). Grain = 1 lần chụp của 1 chỉ số (historyid). Tier 1 độc lập."
-
+  notes: "Snapshot trạng thái chỉ số thị trường (VNINDEX/HNX-Index/UPCOM-Index). Grain\
+    \ = 1 lần chụp của 1 chỉ số (historyid). Tier 1 độc lập."
 attributes:
 - attribute_name: "Market Index Snapshot Id"
-  physical_name: "market_index_snapshot_id"
+  physical_name: "market_index_snpst_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -34,7 +34,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Market Index Snapshot Code"
-  physical_name: "market_index_snapshot_code"
+  physical_name: "market_index_snpst_code"
   description: "ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot entity."
   data_domain: "Text"
   nullable: false
@@ -177,7 +177,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Market Index Value"
-  physical_name: "market_index_value"
+  physical_name: "market_index_val"
   description: "Giá trị index tại thời điểm ghi nhận."
   data_domain: "Currency Amount"
   nullable: false
@@ -263,7 +263,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Total Volume"
-  physical_name: "total_volume"
+  physical_name: "total_vol"
   description: "Tổng khối lượng đã khớp."
   data_domain: "Small Counter"
   nullable: false
@@ -277,7 +277,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Value"
-  physical_name: "total_value"
+  physical_name: "total_val"
   description: "Tổng giá trị đã khớp."
   data_domain: "Currency Amount"
   nullable: false
@@ -349,7 +349,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Advances Volume"
-  physical_name: "advances_volume"
+  physical_name: "advances_vol"
   description: "Tổng khối lượng đã khớp của các mã tăng."
   data_domain: "Small Counter"
   nullable: false
@@ -361,7 +361,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Declines Volume"
-  physical_name: "declines_volume"
+  physical_name: "declines_vol"
   description: "Tổng khối lượng đã khớp của các mã giảm."
   data_domain: "Small Counter"
   nullable: false
@@ -373,7 +373,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "No Change Volume"
-  physical_name: "no_change_volume"
+  physical_name: "no_change_vol"
   description: "Khối lượng khớp mã không tăng/giảm."
   data_domain: "Small Counter"
   nullable: false
@@ -385,7 +385,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Odd Lot Total Value"
-  physical_name: "odd_lot_total_value"
+  physical_name: "odd_lot_total_val"
   description: "Giá trị khớp lô lẻ."
   data_domain: "Currency Amount"
   nullable: false
@@ -397,7 +397,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Odd Lot Total Volume"
-  physical_name: "odd_lot_total_volume"
+  physical_name: "odd_lot_total_vol"
   description: "Khối lượng khớp lô lẻ."
   data_domain: "Small Counter"
   nullable: false
@@ -409,7 +409,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Total Volume"
-  physical_name: "pt_total_volume"
+  physical_name: "pt_total_vol"
   description: "Tổng khối lượng giao dịch thỏa thuận."
   data_domain: "Small Counter"
   nullable: false
@@ -421,7 +421,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Total Value"
-  physical_name: "pt_total_value"
+  physical_name: "pt_total_val"
   description: "Tổng giá trị giao dịch thỏa thuận."
   data_domain: "Currency Amount"
   nullable: false

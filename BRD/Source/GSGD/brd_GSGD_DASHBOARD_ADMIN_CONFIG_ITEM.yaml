@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: DASHBOARD_ADMIN_CONFIG_ITEM
+brd_ref: BRD-SRC-GSGD-DASHBOARD_ADMIN_CONFIG_ITEM
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: CONFIG_VERSION_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id version cấu hình dashboard"
+    key: FK
+    fk_note: null
+  - name: CONFIG_ROW_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id hàng cấu hình dashboard"
+    key: FK
+    fk_note: null
+  - name: WIDGET_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id widget được kéo thả vào dashboard"
+    key: FK
+    fk_note: null
+  - name: COLUMN_NO
+    data_type: "NUMBER(2)"
+    description: "Vị trí cột của widget trong hàng"
+    key: null
+    fk_note: null
+  - name: COLUMN_SPAN
+    data_type: "NUMBER(2)"
+    description: "Số cột mà widget chiếm trong hàng"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

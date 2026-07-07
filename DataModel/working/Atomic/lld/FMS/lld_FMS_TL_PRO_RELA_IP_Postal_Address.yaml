@@ -1,0 +1,85 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: TL_PRO_RELA
+  atomic_entity: Involved Party Postal Address
+  entity_physical_name: ip_postal_address
+  bcv_core_object: Involved Party
+  bcv_concept: "Shared Entity"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: involved_party_id
+    description: "FK đến Fund Management Company Key Person Related Person."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID"
+    comment: "FK target: Fund Management Company Key Person Related Person.Fund Management Company Key Person Related Person Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.TL_PRO_RELA', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: involved_party_code
+    description: "Mã người liên quan."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID"
+    comment: "Lookup pair: Fund Management Company Key Person Related Person.Fund Management Company Key Person Related Person Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=FMS.TL_PRO_RELA"
+    etl_derived_value: "FMS.TL_PRO_RELA"
+
+  - attribute_name: Address Type Code
+    physical_name: address_type_code
+    description: "Loại địa chỉ — địa chỉ chung."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ADDR_TYPE=ADDRESS"
+    etl_derived_value: "ADDRESS"
+
+  - attribute_name: Address Value
+    physical_name: address_value
+    description: "Địa chỉ trụ sở."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ADDRESS"
+    comment: null
+    classification_context: "IP_ADDR_TYPE=ADDRESS"
+    etl_derived_value: null

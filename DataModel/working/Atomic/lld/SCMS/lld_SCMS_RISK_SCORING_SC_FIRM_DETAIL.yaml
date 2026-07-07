@@ -31,7 +31,7 @@ metadata:
     \ công thức tính toán dạng code — EXCLUDED. Audit: canonical 6-attr (all BY pending)."
 attributes:
 - attribute_name: "Securities Company Risk Scoring Detail Id"
-  physical_name: "securities_company_risk_scoring_detail_id"
+  physical_name: "sc_risk_scoring_detail_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -43,7 +43,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Risk Scoring Detail Code"
-  physical_name: "securities_company_risk_scoring_detail_code"
+  physical_name: "sc_risk_scoring_detail_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -124,7 +124,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Risk Indicator Scoring Scale Id"
-  physical_name: "securities_company_risk_indicator_scoring_scale_id"
+  physical_name: "sc_risk_indicator_scoring_scale_id"
   description: "FK đến Thang điểm chỉ tiêu rủi ro được áp dụng."
   data_domain: "Surrogate Key"
   nullable: true
@@ -139,7 +139,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Risk Indicator Scoring Scale Code"
-  physical_name: "securities_company_risk_indicator_scoring_scale_code"
+  physical_name: "sc_risk_indicator_scoring_scale_code"
   description: "Mã Thang điểm chỉ tiêu rủi ro."
   data_domain: "Text"
   nullable: true
@@ -154,7 +154,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Risk Reporting Period Id"
-  physical_name: "securities_company_risk_reporting_period_id"
+  physical_name: "sc_risk_reporting_period_id"
   description: "FK đến Kỳ báo cáo rủi ro."
   data_domain: "Surrogate Key"
   nullable: true
@@ -169,7 +169,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Risk Reporting Period Code"
-  physical_name: "securities_company_risk_reporting_period_code"
+  physical_name: "sc_risk_reporting_period_code"
   description: "Mã Kỳ báo cáo rủi ro."
   data_domain: "Text"
   nullable: true
@@ -267,7 +267,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(5,2)"
 - attribute_name: "Item Value"
-  physical_name: "item_value"
+  physical_name: "item_val"
   description: "Giá trị thực tế của chỉ tiêu (dạng text — có thể số hoặc chuỗi tùy\
     \ chỉ tiêu)."
   data_domain: "Text"
@@ -344,86 +344,6 @@ attributes:
   source_columns:
   - "SCMS.RISK_SCORING_SC_FIRM_DETAIL.NOTE"
   comment: "NVARCHAR2(2000). Mô tả gốc BRD null."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.RISK_SCORING_SC_FIRM_DETAIL.CREATED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.RISK_SCORING_SC_FIRM_DETAIL.LAST_MODIFIED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.RISK_SCORING_SC_FIRM_DETAIL.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.RISK_SCORING_SC_FIRM_DETAIL.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người cập nhật bản ghi lần cuối."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.RISK_SCORING_SC_FIRM_DETAIL.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người cập nhật bản ghi lần cuối."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.RISK_SCORING_SC_FIRM_DETAIL.LAST_MODIFIED_BY"
-  comment: "Pending — Pair with Updated By SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

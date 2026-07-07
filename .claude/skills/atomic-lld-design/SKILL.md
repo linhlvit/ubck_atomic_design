@@ -83,9 +83,40 @@ Từ HLD đã duyệt, xác định:
 
 **Thứ tự thiết kế theo Tier:** Hoàn thành LLD Tier N trước khi bắt đầu Tier N+1. Entity Tier sau có FK đến entity Tier trước — cần LLD Tier trước để lấy đúng tên attribute FK.
 
+### Bước 2c — Kiểm tra bộ trường audit/system chuẩn (technical bundle)
+
+Trước khi thiết kế attribute, kiểm tra danh sách cột của bảng nguồn đang xét với bộ 9 cột sau
+(không phân biệt hoa/thường):
+
+`STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME, VERSION`
+
+| Tình huống | Hành động |
+|---|---|
+| Bảng nguồn có **ĐỦ CẢ 9 cột** | **Loại trừ hoàn toàn** — KHÔNG thiết kế Atomic attribute cho 9 cột này. Ghi **9 dòng riêng** (1 dòng/cột, không gộp comma-list) vào `pending_design.yaml`. |
+| Bảng nguồn có **MỘT PHẦN** bộ 9 cột (thiếu ≥1 cột) | KHÔNG tự loại trừ. Thiết kế attribute bình thường cho các cột đang có, đồng thời ghi 1 dòng vào mục "Điểm cần xác nhận" của HLD Tier tương ứng: liệt kê cột nào có/thiếu, đề nghị Data Modeler xác nhận đây có phải business field thật (VD: `STATUS` có thể là trạng thái nghiệp vụ) hay chỉ là audit bundle không đầy đủ. |
+
+**Mẫu ghi `pending_design.yaml` khi loại trừ đủ bộ (lặp lại cho từng cột trong 9 cột):**
+
+```yaml
+  - source_system: "{SOURCE}"
+    source_table: "{TABLE}"
+    source_column: "STATUS"
+    description: "Cột trạng thái bản ghi (technical bundle)"
+    reason: "Đủ bộ 9 cột audit/soft-delete/optimistic-locking chuẩn (STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME, VERSION) — loại trừ theo quy tắc Bước 2c."
+    action: "Excluded — standard technical bundle. Không thiết kế Atomic attribute."
+```
+
+**Phân biệt với Bước 3k (Audit block chuẩn):** Bước 3k áp dụng cho pattern T24/legacy
+(`CREATED_AT/CREATED_BY/UPDATED_AT/UPDATED_BY` — 1 field BY dùng chung cho cả Id/Name, MAP vào 6
+attribute chuẩn có FK hash). Bước 2c áp dụng cho pattern app hiện đại, tách riêng
+`..._BY_ID`/`..._BY_NAME`, kèm `STATUS`/`DELETED`/`VERSION` — khi đủ bộ thì KHÔNG map, không phải
+map-rồi-derive-FK. Hai bước không xung đột: nếu bảng chỉ có
+`CREATED_AT/CREATED_BY/UPDATED_AT/UPDATED_BY` (không có `..._BY_ID/..._BY_NAME`, không có
+`STATUS/DELETED/VERSION`) → vẫn dùng Bước 3k như cũ.
+
 ### Bước 3 — Thiết kế attribute-level
 
-Copy [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới. Sinh `physical_name` cho mỗi attribute theo thuật toán longest-match-first từ `system/rules/rule_transform_logical_name.csv` (xem mục **Physical name** bên dưới). `data_type` để trống — `transform_physical_names.py` sẽ tự điền dựa vào `data_domain`.
+Copy [`templates/lld_main_entity.yaml`](templates/lld_main_entity.yaml) làm starting point. Replace placeholder, điền từng attribute theo quy tắc dưới. Sinh `physical_name` cho mỗi attribute theo quy tắc B (join full word + file ngoại lệ) tại mục **[QUY TẮC ĐẶT `physical_name`](#quy-tắc-đặt-physical_name)** bên dưới. `data_type` để trống — `transform_physical_names.py` sẽ tự điền dựa vào `data_domain`.
 
 #### 3a. Mô tả (description)
 - Ghép 2 phần: **mô tả gốc từ CSDL nguồn (giữ nguyên)** + mô tả bổ sung trên model (nếu có).
@@ -143,6 +174,11 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
 #### 3e. PK nguồn và BK
 - PK bảng nguồn (VD: `ID`) → map vào **Entity Code (BK)**, không đưa vào technical field.
 - Mã nghiệp vụ khác có tính unique (VD: `MA_SO_THUE`) → trường nghiệp vụ riêng, không phải BK.
+- **Bảng nguồn có cả `ID` và `CODE`** (PK kỹ thuật tự tăng/UUID + cột mã nghiệp vụ unique riêng,
+  VD: `CODE`, `MA_CTCK`): `ID` → `{Entity} Code` (BK chính, theo bullet trên); `CODE` → `{Entity}
+  Unique Key` (data domain `Text`) — **KHÔNG** đặt tên generic kiểu `Organization Code`. Pattern
+  tham khảo (`lld_ThanhTra_VIOLATION_CASE.yaml`): `Violation Case Id` (surrogate) + `Violation Case
+  Unique Key` (từ `CODE` — "Unique Key nghiệp vụ") + `Violation Case Code` (từ `ID` — "BK chính").
 
 #### 3f. Source System Code
 
@@ -304,6 +340,8 @@ Trước khi xuất file:
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
 - [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, ghi lý do NULL.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
+- [ ] **Technical bundle** (xem Bước 2c): Nếu bảng nguồn có đủ 9 cột audit/soft-delete/optimistic-locking chuẩn (`STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME, VERSION`) → đã loại trừ và ghi 9 dòng `pending_design.yaml` chưa? Nếu chỉ có một phần → đã ghi "Điểm cần xác nhận" trong HLD Tier chưa?
+- [ ] **ID + CODE pattern** (xem Bước 3e): Nếu bảng nguồn có cả `ID` và `CODE` → `CODE` map vào `{Entity} Unique Key` (không đặt tên generic như `Organization Code`)?
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest.
@@ -339,7 +377,7 @@ metadata:
   source_system: NHNCK
   source_table: PROFESSIONALS
   atomic_entity: Securities Practitioner
-  entity_physical_name: scr_practitioner
+  entity_physical_name: securities_practitioner
   bcv_core_object: Involved Party
   bcv_concept: "[Involved Party]"
   table_type: Fundamental
@@ -356,7 +394,7 @@ metadata:
 
 attributes:
   - attribute_name: Securities Practitioner Id
-    physical_name: scr_practitioner_id
+    physical_name: securities_practitioner_id
     description: "Khóa đại diện (surrogate key)."
     data_domain: Surrogate Key
     nullable: false
@@ -368,7 +406,7 @@ attributes:
     etl_derived_value: null
 
   - attribute_name: Securities Practitioner Code
-    physical_name: scr_practitioner_code
+    physical_name: securities_practitioner_code
     description: "Mã NHN do UBCKNN cấp. Map từ PK bảng nguồn."
     data_domain: Text
     nullable: false
@@ -393,7 +431,7 @@ attributes:
     etl_derived_value: NHNCK.PROFESSIONALS
 ```
 
-**Physical name:** Sinh `physical_name` theo quy tắc B1→B2→B3 trong section **[QUY TẮC ĐẶT `physical_name`](#quy-tắc-đặt-physical_name)** ở cuối file. `data_type` để trống — `transform_physical_names.py` tự patch sau.
+**Physical name:** Sinh `physical_name` theo quy tắc B trong section **[QUY TẮC ĐẶT `physical_name`](#quy-tắc-đặt-physical_name)** ở cuối file. `entity_physical_name` lấy từ cột tương ứng trong `atomic_entities.yaml` (quy tắc A), không tự tính lại. `data_type` để trống — `transform_physical_names.py` tự patch sau.
 
 ### Cập nhật manifest.yaml
 
@@ -598,99 +636,111 @@ Không giả định scope từ tên bảng. Đọc kỹ mô tả nguồn trư�
 
 ## QUY TẮC ĐẶT `physical_name`
 
-### Nguyên tắc ưu tiên (B1 → B2 → B3)
+Physical name của **table** và **column** dùng 2 thuật toán **tách biệt** — không còn dùng
+`system/rules/rule_transform_logical_name.csv` (file đó chỉ còn phục vụ `datamart-gen-docs` cho
+Gold/Datamart layer, ngoài phạm vi Atomic).
 
-> **B1 — `system/rules/rule_transform_logical_name.csv`** (ưu tiên tuyệt đối)
-> Tra từng từ (và cụm từ) trong logical name theo thuật toán longest-match-first.
->
-> **B2 — Bảng tra cứu trong SKILL này** (chỉ dùng khi từ KHÔNG có trong CSV)
-> Bao gồm: audit block chuẩn, danh từ agent (-er/-or), past participle đặc biệt.
->
-> **B3 — Giữ nguyên lowercase** nếu không có ở B1/B2 (tuyệt đối không tự suy luận).
+### A. Physical name của ENTITY (table)
 
-### Format chung
-- snake_case, toàn chữ thường
-- `entity_prefix` + `_` + `field_abbreviation`
-- KHÔNG dùng từ đầy đủ khi có từ viết tắt chuẩn
+```
+entity_physical_name = abbreviate_domain_prefix(Domain Prefix) + "_" + full_words(BCV Term)
+```
 
-### Thuật toán transform (longest-match-first) — áp dụng B1
-
-1. Lowercase toàn bộ logical name.
-2. Duyệt từ trái sang phải; tại mỗi vị trí thử match **cụm dài nhất** có trong `rule_transform_logical_name.csv` (cột `Name`) tại word boundary.
-3. Nếu match → thay bằng `Abbreviation` tương ứng (lowercase).
-4. Nếu không match → giữ nguyên word đó (lowercase, `-` → `_`).
-5. Nối các token bằng `_`.
+- **Domain Prefix**: phần đầu tên entity dùng chung cho 1 nhóm entity cùng nghiệp vụ — quyết định
+  ở HLD Bước 4 (xem `atomic-hld-design/SKILL.md`), lưu tường minh tại cột `domain_prefix` trong
+  `atomic_entities.yaml`.
+- **abbreviate_domain_prefix()** = áp dụng danh sách cụm từ **curated**
+  [`system/rules/rule_domain_prefix_abbreviations.csv`](../../../system/rules/rule_domain_prefix_abbreviations.csv)
+  lên Domain Prefix theo thuật toán longest-match-first (duyệt trái sang phải, mỗi vị trí thử
+  match cụm dài nhất có trong CSV tại word boundary; match → thay bằng `Abbreviation`; không
+  match → **giữ nguyên cả từ** đó, viết thường). KHÔNG lấy chữ cái đầu của mọi từ một cách mù
+  quáng — chỉ cụm từ có tên trong CSV mới bị rút gọn, phần còn lại của Domain Prefix giữ nguyên
+  full word để người đọc hiểu được.
+  - File CSV là danh sách **mở, bổ sung dần** — phát sinh cụm mới cần viết tắt toàn dự án thì
+    thêm 1 dòng CSV, **không** viết thêm bảng abbreviation trong SKILL.md này.
+  - VD: `Securities Company` → `sc` (có trong CSV); `Qualification Examination Assessment` →
+    giữ nguyên `qualification_examination_assessment` (không có trong CSV).
+- **full_words()** = viết thường toàn bộ, nối bằng `_`, **giữ nguyên đầy đủ từ — KHÔNG viết tắt**.
+- **BCV Term** = phần còn lại của `atomic_entity` sau khi bỏ Domain Prefix.
+- **Domain Prefix rỗng** (entity không có sibling nào cùng nhóm nghiệp vụ) →
+  `entity_physical_name = full_words(atomic_entity)` (không có phần abbreviate_domain_prefix).
+- **BCV Term rỗng** (entity chính là "gốc" của cả nhóm — tên entity trùng khớp Domain Prefix) →
+  `entity_physical_name = full_words(Domain Prefix)` (KHÔNG dùng abbreviation trơ trụi như `sc` —
+  quá ngắn, dễ trùng giữa các nhóm khác nhau).
 
 **Ví dụ:**
-- `Securities Practitioner` → `scr` + `prac` → `scr_prac`
-- `Source System` → `src` + `stm` → `src_stm`
-- `Date Of Birth` → `dob` (cụm 3 từ match trực tiếp)
-- `Sent Timestamp` → `snd` + `tms` → `snd_tms` (Sent→SND trong CSV)
 
-**Quy tắc đặt tên:**
-- Entity physical name: `[domain_prefix]_[bcv_term]` — transform trên logical entity name.
-- Attribute physical name: `[entity_prefix]_[field_tokens]` — transform trên logical attribute name, **không** lặp lại prefix entity nếu tên attribute đã bao gồm.
-
-### Quy tắc past participle (-ed) — B2 khi từ KHÔNG có trong CSV
-
-> **BỎ hậu tố `-ed`, dùng viết tắt của ROOT động từ.** KHÔNG thêm `d` sau viết tắt root.
-
-| Từ đầy đủ | Root | Viết tắt (B2) | Ví dụ |
+| Domain Prefix | BCV Term | atomic_entity | entity_physical_name |
 |---|---|---|---|
-| signed | sign | `sgn` | `sgn_by_ofcr_id` |
-| forwarded | forward | `fwrd` | `fwrd_tms` |
-| submitted | submit | `subm` | `subm_by_ofcr_id` |
-| confirmed | confirm | `cnfrm` | `cnfrm_tms` |
-| announced | announce | `ancm` | `ancm_dt` |
+| Securities Company | Practitioner | Securities Company Practitioner | `sc_practitioner` |
+| Involved Party | Postal Address | Involved Party Postal Address | `ip_postal_address` |
+| Securities Company | (rỗng) | Securities Company | `securities_company` |
+| (rỗng — không sibling) | — | Geographic Area | `geographic_area` |
+| Securities Practitioner Qualification Examination Assessment | Result | Securities Practitioner Qualification Examination Assessment Result | `sp_qualification_examination_assessment_result` |
+| Securities Company Administrative | Sanction | Securities Company Administrative Sanction | `sc_administrative_sanction` |
+| Securities Company Alert | Violation | Securities Company Alert Violation | `sc_alert_violation` |
+| Penalty Decision Subject | Behavior | Penalty Decision Subject Behavior | `penalty_decision_subject_behavior` |
 
-> Các past participle đã có trong CSV (dùng B1): `issued→ISSU`, `assigned→ASGN`, `received→RCV`, `transferred→TFRD`, `prepared→PREP`, `created→CRT`, `updated→UDT`, `numbered→NBR`.
+Hai dòng cuối cùng minh họa lý do đổi thuật toán: `Securities Company Administrative` và
+`Securities Company Alert` trước đây đều rút gọn về initials `sca` (đụng độ, không phân biệt
+được) — nay tách rõ `sc_administrative_*` / `sc_alert_*` vì chỉ `Securities Company` được viết
+tắt, phần `Administrative`/`Alert` giữ nguyên. `Penalty Decision Subject` không chứa cụm nào
+trong CSV nên giữ nguyên full words thay vì rút gọn mù quáng thành `pds`.
 
-### Bảng từ viết tắt bổ sung (B2 — từ KHÔNG có trong CSV)
+`entity_physical_name` phải **giống hệt nhau** trên mọi `lld_*.yaml` map cùng 1 `atomic_entity`
+(kể cả khi entity đến từ nhiều source system). Nguồn giá trị chuẩn duy nhất: cột
+`entity_physical_name` tương ứng trong `DataModel/working/Atomic/hld/atomic_entities.yaml` — copy
+lại y nguyên, KHÔNG tự tính lại ở LLD nếu entity đã có sẵn trong file đó.
 
-| Từ đầy đủ | Viết tắt | Ví dụ |
+### B. Physical name của ATTRIBUTE (column)
+
+Attribute logical name luôn bắt đầu bằng đúng tên đầy đủ 1 Atomic Entity đã đăng ký (pattern
+`[Entity] Id` + `[Entity] Code` bắt buộc ở Bước 3c, cũng như `[Entity] Name` và mọi attribute khác
+mang prefix entity). Vì vậy thuật toán B gồm 2 bước:
+
+1. **Thay prefix entity (nếu có):** Nếu logical name khớp (longest-match-first) với đúng tên đầy đủ
+   1 `atomic_entity` đã đăng ký trong `atomic_entities.yaml`, thay phần prefix đó bằng
+   `entity_physical_name` của entity đó — **đúng giá trị đã dùng cho table (rule A)**, không tính
+   lại. Chỉ áp dụng cho entity thực sự bị viết tắt (`entity_physical_name` khác full-word) — entity
+   "root" (nơi `atomic_entity == domain_prefix`, VD "Securities Practitioner") vẫn giữ full word,
+   không có gì để thay.
+2. **Nối phần từ còn lại** bằng `_`, viết thường, **giữ nguyên đầy đủ từ** — TRỪ từ có trong file
+   ngoại lệ
+   [`system/rules/rule_physical_name_exceptions.csv`](../../../system/rules/rule_physical_name_exceptions.csv),
+   áp dụng theo thuật toán longest-match-first (duyệt trái sang phải, mỗi vị trí thử match cụm dài
+   nhất có trong CSV tại word boundary; match → thay bằng `Abbreviation`; không match → giữ nguyên
+   word, viết thường).
+
+- File ngoại lệ là danh sách **mở, bổ sung dần** — phát sinh viết tắt chuẩn mới cần áp dụng toàn
+  dự án thì thêm 1 dòng vào CSV đó, **không** viết thêm bảng abbreviation trong SKILL.md này.
+- **Không phải "không bao giờ viết tắt như table":** phiên bản trước của tài liệu này ghi sai rằng
+  physical column name luôn giữ đầy đủ từ của entity kể cả khi entity đó bị viết tắt ở rule A
+  (VD từng ghi `Securities Company Alert Financial Indicator Id → securities_company_alert_financial_indicator_id`).
+  Đây là bug đã sửa — physical_name của Id/Code/Name... phải nhất quán với `entity_physical_name`
+  dùng cho table, không tách biệt 2 giá trị cho cùng 1 entity.
+
+**Ví dụ (xem CSV để có danh sách ngoại lệ mới nhất):**
+
+| Logical name | Entity có bị viết tắt? | physical_name |
 |---|---|---|
-| **Audit block chuẩn** | | |
-| Created Timestamp | `crt_tms` | thay `created_ts` |
-| Updated Timestamp | `udt_tms` | thay `updated_ts` |
-| Created By … Id | `crt_by_…_id` | `crt_by_ofcr_id` |
-| Created By … Code | `crt_by_…_code` | `crt_by_ofcr_code` |
-| Updated By … Id | `udt_by_…_id` | `udt_by_ofcr_id` |
-| Updated By … Code | `udt_by_…_code` | `udt_by_ofcr_code` |
-| **Danh từ agent (-er/-or) và nghiệp vụ đặc thù** | | |
-| violator | `vltr` | `vltr_cnfrm_rcpt_tms`, `vltr_cnfrm_by` |
-| signer (noun) | `sgnr` | `sgnr_ofcr_id`, `sgnr_nm` |
-| recorder (noun) | `rcdr` | `rcdr_nm`, `rcdr_title` |
-| approver (noun) | `aprv` | `aprv_ofcr_id`, `aprv_dcsn_nbr` |
-| sender (noun) | `sndr` | `sndr_nm`, `sndr_adr`, `sndr_ofcr_id` |
-| monitoring (noun) | `mon` | `mon_ofcr_id`, `mon_ofcr_code` |
-| forwarding (noun/adj) | `fwdng` | `fwdng_unit` |
-| reporter (noun) | `rptr` | `rptr_nm` |
-| **Từ kỹ thuật không có trong CSV** | | |
-| life cycle status code | `lcs_code` | thay `life_cycle_st_code` |
-| unique key | `uk` | `peti_uk`, `vln_case_uk` |
-| party | `p` | `rel_p_id`, `rspl_p` |
-| member | `mbr` | `mbr_ofcr_id`, `mbr_full_nm` |
-| enforcement | `nfrc` | `nfrc_st`, `nfrc_tp_code` |
-| attached / attach | `attch` | `attch_file`, `peti_attch_ind` |
-| guidance | `gdnc` | `gdnc_doc_nbr`, `gdnc_doc_dt` |
-| archived | `archv` | `archv_nbr`, `archv_ind` |
-| **Prefix nhóm nghiệp vụ** | | |
-| Complaint … | `cpln_` | `cpln_exists_ind`, `cpln_cntnt`, `cpln_rcv_dt`, `cpln_st_code`, `cpln_rslt` |
-| violation | `vln` | `vln_case_id`, `vln_bhvr_id`, `vln_rcrd_id` |
-| behavior | `bhvr` | `vln_bhvr_id`, `vln_bhvr_code` |
-| record (entity) | `rcrd` | `vln_rcrd_id`, `rcrd_tp_code` |
-| conclusion | `cncl` | `cncl_nbr`, `insp_cncl_id` |
-| circumstance | `crcm` | `crcm_tp_code` |
-| execution | `exec` | `exec_st_code`, `exec_dsc` |
-| implementation | `impl` | `impl_note` |
-| payment | `pymt` | `pymt_rcv_dt`, `pymt_proof_upload_tms` |
-| supervising leader | `sprvsg_ldr` | `sprvsg_ldr_id` |
-| announcement | `ancm` | `ancm_dt`, `ancm_ttl` |
-| remedial (adj/noun) | `rmdl` | `rmdl_msr`, `rmdl_ddln_dt` |
-| abnormal | `abnrm` | `abnrm_txn_chk_ind` |
-| coerced | `crc` | `crc_amt` |
-| lawsuit | `lwst` | `lwst_exists_ind`, `lwst_cntnt` |
-| reception | `rcptn` | `rcptn_dt`, `ctzn_rcptn_id` |
-| verification | `verf` | `verf_mins_sign_dt` |
-| minutes (biên bản) | `mins` | `verf_mins_sign_dt` |
+| Securities Company Alert Financial Indicator Id | Có (`sc_alert_financial_indicator`) | `sc_alert_financial_indicator_id` |
+| Securities Company Alert Financial Indicator Name | Có (`sc_alert_financial_indicator`) | `sc_alert_financial_indicator_nm` |
+| Securities Practitioner Related Party Id (FK) | Có (`sp_related_party`) | `sp_related_party_id` |
+| Securities Practitioner Full Name | Không — root entity | `securities_practitioner_full_nm` |
+| Source System Code | — (không phải entity prefix) | `src_stm_code` |
+| Created Timestamp | — | `created_tms` |
+| Full Name | — | `full_nm` |
+| Issue Date | — | `issue_dt` |
+
+### C. `transform_physical_names.py`
+
+Script tự động recompute (B) cho mọi attribute trong mọi `lld_*.yaml` (luôn tính lại, không chỉ
+điền khi trống), và điền (A) bằng cách tra `entity_physical_name` từ `atomic_entities.yaml`
+(không tự transform lại tên entity). Chạy sau mỗi lần sửa LLD.
+
+Với (B), script tự build 1 dictionary bổ sung `{atomic_entity (đã viết tắt) → entity_physical_name}`
+từ `atomic_entities.yaml` (chỉ entity nào thực sự bị viết tắt ở rule A), gộp với
+`rule_physical_name_exceptions.csv` thành 1 dictionary duy nhất trước khi chạy longest-match-first
+— nhờ vậy bước 1 (thay prefix entity) và bước 2 (áp exceptions cho phần còn lại) chạy trong cùng 1
+lượt tokenize, không cần logic đặc biệt riêng cho Id/Code.
 

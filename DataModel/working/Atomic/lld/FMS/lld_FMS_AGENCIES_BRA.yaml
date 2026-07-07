@@ -1,0 +1,142 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "AGENCIES_BRA"
+  atomic_entity: "Fund Distribution Agent Organization Unit"
+  entity_physical_name: "fund_distribution_agent_organization_unit"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Postal Address + IP Electronic Address (bổ sung so với HLD 6a —\
+    \ chỉ nhắc Postal, nhưng nguồn có thêm TELEPHONE/FAX nên áp dụng quy tắc bắt buộc).\
+    \ CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
+attributes:
+- attribute_name: "Fund Distribution Agent Organization Unit Id"
+  physical_name: "fund_distribution_agent_organization_unit_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization\". CN/PGD trực thuộc\
+    \ Fund Distribution Agent."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Organization Unit Code"
+  physical_name: "fund_distribution_agent_organization_unit_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES_BRA.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.AGENCIES_BRA"
+  etl_derived_value: "FMS.AGENCIES_BRA"
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Id"
+  physical_name: "fund_distribution_agent_id"
+  description: "FK -> AGENCIES: Đại lý phân phối liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES_BRA.AGEN_ID"
+  comment: "FK target: Fund Distribution Agent.Fund Distribution Agent Id. Hash: hash_id('FMS.AGENCIES',\
+    \ AGEN_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Code"
+  physical_name: "fund_distribution_agent_code"
+  description: "Mã đại lý phân phối liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES_BRA.AGEN_ID"
+  comment: "Lookup pair: Fund Distribution Agent.Fund Distribution Agent Code. Pair\
+    \ with Fund Distribution Agent Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Organization Unit Full Name"
+  physical_name: "fund_distribution_agent_organization_unit_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES_BRA.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES_BRA.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES_BRA.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES_BRA.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

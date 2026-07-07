@@ -26,7 +26,7 @@ metadata:
     \ có LAST_MODIFIED_BY/AT."
 attributes:
 - attribute_name: "Securities Company Alert Violation Id"
-  physical_name: "securities_company_alert_violation_id"
+  physical_name: "sc_alert_violation_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -38,7 +38,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Violation Code"
-  physical_name: "securities_company_alert_violation_code"
+  physical_name: "sc_alert_violation_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -243,7 +243,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Comparison Value"
-  physical_name: "comparison_value"
+  physical_name: "comparison_val"
   description: "Giá trị so sánh dùng trong điều kiện cảnh báo."
   data_domain: "Small Counter"
   nullable: true
@@ -257,7 +257,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Actual Value"
-  physical_name: "actual_value"
+  physical_name: "actual_val"
   description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo."
   data_domain: "Currency Amount"
   nullable: true
@@ -271,7 +271,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Threshold Value"
-  physical_name: "threshold_value"
+  physical_name: "threshold_val"
   description: "Ngưỡng cảnh báo được cấu hình."
   data_domain: "Currency Amount"
   nullable: true
@@ -337,7 +337,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Period Value"
-  physical_name: "report_period_value"
+  physical_name: "report_period_val"
   description: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12)."
   data_domain: "Small Counter"
   nullable: true
@@ -428,46 +428,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_AT"
-  comment: "TIMESTAMP."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người dùng tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người dùng tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Processor SCMS User Id"
   physical_name: "processor_scms_user_id"
   description: "FK đến người xử lý vi phạm cảnh báo."

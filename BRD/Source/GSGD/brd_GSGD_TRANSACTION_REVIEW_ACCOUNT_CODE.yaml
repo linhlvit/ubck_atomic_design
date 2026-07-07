@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: TRANSACTION_REVIEW_ACCOUNT_CODE
+brd_ref: BRD-SRC-GSGD-TRANSACTION_REVIEW_ACCOUNT_CODE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "report_template.id"
+    key: FK
+    fk_note: "FK suy luận → REPORT_TEMPLATE.ID"
+  - name: TRANSACTION_REVIEW_ID
+    data_type: "VARCHAR2(36)"
+    description: "Transaction_review.id"
+    key: FK
+    fk_note: "FK suy luận → TRANSACTION_REVIEW.ID"
+  - name: WORKFLOW_TYPE
+    data_type: "NUMBER(2)"
+    description: "1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
+    key: null
+    fk_note: null
+  - name: ACCOUNT_CODE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mã tài khoản"
+    key: null
+    fk_note: null
+  - name: ACCOUNT_NAME
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Họ và tên"
+    key: null
+    fk_note: null
+  - name: ACCOUNT_TYPE
+    data_type: "NUMBER(1,0)"
+    description: "Loại tài khoản"
+    key: null
+    fk_note: null
+  - name: CONTACT_ADDRESS
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Địa chỉ liên lạc (từ CTCK, có thể sửa)"
+    key: null
+    fk_note: null
+  - name: IDENTITY_NUMBER
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Số CCCD/Số đăng ký sở hữu"
+    key: null
+    fk_note: null
+  - name: IDENTITY_ISSUE_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày cấp"
+    key: null
+    fk_note: null
+  - name: IDENTITY_ISSUE_PLACE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Nơi cấp"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_FOREIGN_FLAG
+    data_type: "NUMBER(1)"
+    description: "Trong nước/Nước ngoài: 0=Trong nước, 1=Nước ngoài"
+    key: null
+    fk_note: null
+  - name: PHONE_NUMBER
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Số điện thoại (từ CTCK, có thể sửa)"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Email (từ CTCK, có thể sửa)"
+    key: null
+    fk_note: null
+  - name: ACCOUNT_STATUS
+    data_type: "NUMBER(1)"
+    description: "Trạng thái: 0=Đóng, 1=Mở"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id chứng khoán"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mã chứng khoán"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

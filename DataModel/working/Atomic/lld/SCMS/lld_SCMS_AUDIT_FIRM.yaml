@@ -60,16 +60,17 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.AUDIT_FIRM"
   etl_derived_value: "SCMS.AUDIT_FIRM"
   data_type: "string"
-- attribute_name: "Organization Code"
-  physical_name: "organization_code"
-  description: "Mã định danh (mã viết tắt, mã nghiệp vụ)."
+- attribute_name: "Audit Firm Unique Key"
+  physical_name: "audit_firm_unique_key"
+  description: "Mã định danh (mã viết tắt, mã nghiệp vụ). Unique Key nghiệp vụ, khác\
+    \ BK."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.AUDIT_FIRM.CODE"
-  comment: "Mã nghiệp vụ — khác BK (CODE khác ID nguồn)."
+  comment: "UK nghiệp vụ — mã định danh, khác BK (BK = ID nguồn)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -201,88 +202,6 @@ attributes:
   - "SCMS.AUDIT_FIRM.RECORD_STATUS"
   comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang\
     \ string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.AUDIT_FIRM.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.AUDIT_FIRM.LAST_MODIFIED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.AUDIT_FIRM.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.AUDIT_FIRM.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By\
-    \ SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.AUDIT_FIRM.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.AUDIT_FIRM.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By\
-    \ SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

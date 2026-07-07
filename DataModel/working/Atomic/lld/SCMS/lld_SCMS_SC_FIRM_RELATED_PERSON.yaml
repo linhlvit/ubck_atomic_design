@@ -26,7 +26,7 @@ metadata:
     \ Audit: CREATED_AT + CREATED_BY + LAST_MODIFIED_AT (bảng nguồn không có LAST_MODIFIED_BY)."
 attributes:
 - attribute_name: "Securities Company Related Person Id"
-  physical_name: "securities_company_related_person_id"
+  physical_name: "sc_related_person_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -38,7 +38,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Related Person Code"
-  physical_name: "securities_company_related_person_code"
+  physical_name: "sc_related_person_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -391,59 +391,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_RELATED_PERSON.NOTE"
   comment: "NCLOB."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.CREATED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.LAST_MODIFIED_AT"
-  comment: "TIMESTAMP(6). Bảng nguồn không có LAST_MODIFIED_BY."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_RELATED_PERSON.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

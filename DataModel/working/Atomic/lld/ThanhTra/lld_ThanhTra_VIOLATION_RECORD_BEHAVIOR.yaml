@@ -1,16 +1,15 @@
-﻿schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: ThanhTra
-  source_table: VIOLATION_RECORD_BEHAVIOR
-  atomic_entity: Violation Record Behavior
-  entity_physical_name: vln_rcrd_bhvr
-  bcv_core_object: Business Activity
+  source_system: "ThanhTra"
+  source_table: "VIOLATION_RECORD_BEHAVIOR"
+  atomic_entity: "Violation Record Behavior"
+  entity_physical_name: "violation_record_behavior"
+  bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
-  table_type: Fundamental
-  group: T4
-  design_status: draft
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,197 +18,205 @@ metadata:
   approved_by: null
   approved_at: null
   notes: null
-
 attributes:
-  - attribute_name: Violation Record Behavior Id
-    physical_name: vln_rcrd_bhvr_id
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Violation Record Behavior Code
-    physical_name: vln_rcrd_bhvr_code
-    description: "BK chính. PK nguồn (VARCHAR2 UUID)."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.ID
-    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=ThanhTra.VIOLATION_RECORD_BEHAVIOR
-    etl_derived_value: ThanhTra.VIOLATION_RECORD_BEHAVIOR
-
-  - attribute_name: Violation Record Id
-    physical_name: vln_rcrd_id
-    description: "FK đến biên bản vi phạm hành chính."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID
-    comment: "FK target: Violation Record.Violation Record Id. Hash: hash_id('ThanhTra.VIOLATION_RECORD', VIOLATION_RECORD_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Violation Record Code
-    physical_name: vln_rcrd_code
-    description: "Mã biên bản VPHC liên kết (snapshot)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID
-    comment: "Lookup pair: Violation Record.Violation Record Code. Pair with Violation Record Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Violation Behavior Id
-    physical_name: vln_bhvr_id
-    description: "FK đến danh mục hành vi vi phạm."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID
-    comment: "FK target: Violation Behavior.Violation Behavior Id. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR', VIOLATION_BEHAVIOR_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Violation Behavior Code
-    physical_name: vln_bhvr_code
-    description: "Mã hành vi vi phạm liên kết (snapshot)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID
-    comment: "Lookup pair: Violation Behavior.Violation Behavior Code. Pair with Violation Behavior Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Description
-    physical_name: dsc
-    description: "Mô tả chi tiết hành vi vi phạm (bao gồm thời gian, địa điểm)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.DESCRIPTION
-    comment: "Nguồn CLOB — ETL truncate."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Legal Basis
-    physical_name: lgl_bss
-    description: "Căn cứ quy định pháp luật bị vi phạm."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.LEGAL_BASIS
-    comment: "Nguồn CLOB — ETL truncate."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created Timestamp
-    physical_name: crt_tms
-    description: "Thời điểm tạo bản ghi."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.CREATED_AT
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated Timestamp
-    physical_name: udt_tms
-    description: "Thời điểm cập nhật gần nhất."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.LAST_MODIFIED_AT
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Id
-    physical_name: crt_by_ofcr_id
-    description: "ID người dùng tạo bản ghi."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.CREATED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Code
-    physical_name: crt_by_ofcr_code
-    description: "Mã người dùng tạo bản ghi."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.CREATED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Id
-    physical_name: udt_by_ofcr_id
-    description: "ID người dùng cập nhật gần nhất."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.LAST_MODIFIED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Code
-    physical_name: udt_by_ofcr_code
-    description: "Mã người dùng cập nhật gần nhất."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.VIOLATION_RECORD_BEHAVIOR.LAST_MODIFIED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Violation Record Behavior Id"
+  physical_name: "violation_record_behavior_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Business Activity] Conduct Violation."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Behavior Code"
+  physical_name: "violation_record_behavior_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=ThanhTra.VIOLATION_RECORD_BEHAVIOR"
+  etl_derived_value: "ThanhTra.VIOLATION_RECORD_BEHAVIOR"
+  data_type: "string"
+- attribute_name: "Violation Record Id"
+  physical_name: "violation_record_id"
+  description: "FK đến biên bản vi phạm hành chính."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID"
+  comment: "FK target: Violation Record.Violation Record Id. Hash: hash_id('ThanhTra.VIOLATION_RECORD',\
+    \ VIOLATION_RECORD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Code"
+  physical_name: "violation_record_code"
+  description: "Mã biên bản VPHC liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_RECORD_ID"
+  comment: "Lookup pair: Violation Record.Violation Record Code. Pair with Violation\
+    \ Record Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Behavior Id"
+  physical_name: "violation_behavior_id"
+  description: "FK đến danh mục hành vi vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID"
+  comment: "FK target: Violation Behavior.Violation Behavior Id. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR',\
+    \ VIOLATION_BEHAVIOR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Behavior Code"
+  physical_name: "violation_behavior_code"
+  description: "Mã hành vi vi phạm liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID"
+  comment: "Lookup pair: Violation Behavior.Violation Behavior Code. Pair with Violation\
+    \ Behavior Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết hành vi vi phạm (bao gồm thời gian, địa điểm)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.DESCRIPTION"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Basis"
+  physical_name: "legal_basis"
+  description: "Căn cứ quy định pháp luật bị vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.LEGAL_BASIS"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.LAST_MODIFIED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By Officer Id"
+  physical_name: "created_by_officer_id"
+  description: "ID người dùng tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.CREATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Code"
+  physical_name: "created_by_officer_code"
+  description: "Mã người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.CREATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "updated_by_officer_id"
+  description: "ID người dùng cập nhật gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.LAST_MODIFIED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "updated_by_officer_code"
+  description: "Mã người dùng cập nhật gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.VIOLATION_RECORD_BEHAVIOR.LAST_MODIFIED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -1,0 +1,85 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: PENSION_PROVIDER
+  atomic_entity: Involved Party Postal Address
+  entity_physical_name: ip_postal_address
+  bcv_core_object: Involved Party
+  bcv_concept: "Shared Entity"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: involved_party_id
+    description: "FK đến Pension Service Organization."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_PROVIDER.ID"
+    comment: "FK target: Pension Service Organization.Pension Service Organization Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_PROVIDER', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: involved_party_code
+    description: "Mã đại lý/tổ chức hưu trí."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_PROVIDER.ID"
+    comment: "Lookup pair: Pension Service Organization.Pension Service Organization Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=FMS.PENSION_PROVIDER"
+    etl_derived_value: "FMS.PENSION_PROVIDER"
+
+  - attribute_name: Address Type Code
+    physical_name: address_type_code
+    description: "Loại địa chỉ — trụ sở chính."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: "HEAD_OFFICE"
+
+  - attribute_name: Address Value
+    physical_name: address_value
+    description: "Địa chỉ trụ sở."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_PROVIDER.ADDRESS"
+    comment: null
+    classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+    etl_derived_value: null

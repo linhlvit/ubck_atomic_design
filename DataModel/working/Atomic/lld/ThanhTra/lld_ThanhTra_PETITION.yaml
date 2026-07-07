@@ -1,16 +1,15 @@
-﻿schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: ThanhTra
-  source_table: PETITION
-  atomic_entity: Petition
-  entity_physical_name: peti
-  bcv_core_object: Communication
+  source_system: "ThanhTra"
+  source_table: "PETITION"
+  atomic_entity: "Petition"
+  entity_physical_name: "petition"
+  bcv_core_object: "Communication"
   bcv_concept: "[Communication] Feedback"
-  table_type: Fundamental
-  group: T1
-  design_status: draft
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,432 +17,444 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Self-reference qua ORIGINAL_PETITION_ID khi duplicate_type=DUPLICATE. Grain: 1 dòng = 1 hồ sơ đơn thư."
-
+  notes: "Self-reference qua ORIGINAL_PETITION_ID khi duplicate_type=DUPLICATE. Grain:\
+    \ 1 dòng = 1 hồ sơ đơn thư."
 attributes:
-  - attribute_name: Petition Id
-    physical_name: peti_id
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. Hash: hash_id('ThanhTra.PETITION', ID). BCV: [Communication] Feedback."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Petition Unique Key
-    physical_name: peti_uk
-    description: "Unique Key nghiệp vụ. Mã vụ việc tự sinh UNIQUE (VD: DA2540)."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.CODE
-    comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Petition Code
-    physical_name: peti_code
-    description: "Khóa chính UUID của bảng nguồn. BK của entity."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ID
-    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=ThanhTra.PETITION
-    etl_derived_value: ThanhTra.PETITION
-
-  - attribute_name: Received Date
-    physical_name: rcv_dt
-    description: "Ngày tiếp nhận đơn thư."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.RECEIVED_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Forwarding Unit
-    physical_name: fwdng_unit
-    description: "Đơn vị/cơ quan chuyển đơn thư đến Thanh tra."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.FORWARDING_UNIT
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Sender Name
-    physical_name: sndr_nm
-    description: "Họ tên người gửi đơn thư."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.SENDER_NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Sender Address
-    physical_name: sndr_adr
-    description: "Địa chỉ người gửi đơn thư."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.SENDER_ADDRESS
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Content
-    physical_name: cntnt
-    description: "Nội dung tóm tắt đơn thư."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.CONTENT
-    comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Petition Category Code
-    physical_name: peti_cat_code
-    description: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo)."
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.PETITION_CATEGORY
-    comment: "Scheme: PETITION_CATEGORY."
-    classification_context: PETITION_CATEGORY
-    etl_derived_value: null
-
-  - attribute_name: Related To Corporate Bond Indicator
-    physical_name: rel_to_corp_bond_ind
-    description: "Liên quan TPDN: 0=Không, 1=Có."
-    data_domain: Indicator
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.RELATED_TO_CORPORATE_BOND
-    comment: "Nguồn NUMBER(1,0) — map sang indicator."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Eligible For Processing Indicator
-    physical_name: elig_for_pcs_ind
-    description: "Đủ điều kiện xử lý: 0=Không, 1=Có."
-    data_domain: Indicator
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ELIGIBLE_FOR_PROCESSING
-    comment: "Nguồn NUMBER(1,0) — map sang indicator."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Within Jurisdiction Indicator
-    physical_name: wi_jrsd_ind
-    description: "Thuộc thẩm quyền: 0=Không, 1=Có."
-    data_domain: Indicator
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.WITHIN_JURISDICTION
-    comment: "Nguồn NUMBER(1,0) — map sang indicator."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Assigned Officer Id
-    physical_name: asgn_ofcr_id
-    description: "ID chuyên viên được phân công xử lý đơn thư."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ASSIGNED_OFFICER_ID
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Assigned Officer Code
-    physical_name: asgn_ofcr_code
-    description: "Tên chuyên viên được phân công xử lý đơn thư (snapshot)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ASSIGNED_OFFICER_NAME
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Assigned Officer Id. Nguồn lưu ASSIGNED_OFFICER_NAME — ETL map sang code."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Duplicate Type Code
-    physical_name: dup_tp_code
-    description: "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)."
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.DUPLICATE_TYPE
-    comment: "Scheme: PETITION_DUPLICATE_TYPE."
-    classification_context: PETITION_DUPLICATE_TYPE
-    etl_derived_value: null
-
-  - attribute_name: Original Petition Id
-    physical_name: orig_peti_id
-    description: "FK tự tham chiếu đến đơn gốc. Bắt buộc khi duplicate_type=DUPLICATE."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ORIGINAL_PETITION_ID
-    comment: "FK target: Petition.Petition Id. Self-reference. Hash: hash_id('ThanhTra.PETITION', ORIGINAL_PETITION_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Original Petition Code
-    physical_name: orig_peti_code
-    description: "Mã đơn gốc (snapshot denormalized)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ORIGINAL_PETITION_ID
-    comment: "Lookup pair: Petition.Petition Code. Pair with Original Petition Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Submission Number
-    physical_name: subm_nbr
-    description: "Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.SUBMISSION_NUMBER
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Transferred Authority
-    physical_name: tfrd_auth
-    description: "Tên cơ quan có thẩm quyền nhận chuyển đơn."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.TRANSFERRED_AUTHORITY
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Internal Transfer Unit Name
-    physical_name: int_tfr_unit_nm
-    description: "Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.INTERNAL_TRANSFER_UNIT_NAME
-    comment: "Denormalized — không có link FK sang đơn vị nội bộ trên Atomic. Nguồn có INTERNAL_TRANSFER_UNIT_ID nhưng thiếu FK formal."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Archived Indicator
-    physical_name: archv_ind
-    description: "Lưu đơn: 0=Không, 1=Có."
-    data_domain: Indicator
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.ARCHIVED
-    comment: "Nguồn NUMBER(1,0) — map sang indicator."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Guidance Document Number
-    physical_name: gdnc_doc_nbr
-    description: "Số văn bản hướng dẫn nhà đầu tư (văn bản đi)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.GUIDANCE_DOCUMENT_NUMBER
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Guidance Document Date
-    physical_name: gdnc_doc_dt
-    description: "Ngày văn bản hướng dẫn nhà đầu tư."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.GUIDANCE_DOCUMENT_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Life Cycle Status Code
-    physical_name: lcs_code
-    description: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)."
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.STATUS
-    comment: "Scheme: PETITION_STATUS."
-    classification_context: PETITION_STATUS
-    etl_derived_value: null
-
-  - attribute_name: End Date
-    physical_name: end_dt
-    description: "Ngày kết thúc xử lý đơn thư."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.END_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Note
-    physical_name: note
-    description: "Ghi chú bổ sung."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.NOTE
-    comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created Timestamp
-    physical_name: crt_tms
-    description: "Thời điểm tạo bản ghi."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.CREATED_AT
-    comment: "Nguồn DATE — widening sang Timestamp."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated Timestamp
-    physical_name: udt_tms
-    description: "Thời điểm cập nhật gần nhất."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.LAST_MODIFIED_AT
-    comment: "Nguồn DATE — widening sang Timestamp."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Id
-    physical_name: crt_by_ofcr_id
-    description: "ID người dùng tạo bản ghi."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.CREATED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Code
-    physical_name: crt_by_ofcr_code
-    description: "Mã người dùng tạo bản ghi."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.CREATED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Id
-    physical_name: udt_by_ofcr_id
-    description: "ID người dùng cập nhật gần nhất."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.LAST_MODIFIED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Code
-    physical_name: udt_by_ofcr_code
-    description: "Mã người dùng cập nhật gần nhất."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.PETITION.LAST_MODIFIED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Petition Id"
+  physical_name: "petition_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('ThanhTra.PETITION', ID). BCV: [Communication]\
+    \ Feedback."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Unique Key"
+  physical_name: "petition_unique_key"
+  description: "Unique Key nghiệp vụ. Mã vụ việc tự sinh UNIQUE (VD: DA2540)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.CODE"
+  comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Code"
+  physical_name: "petition_code"
+  description: "Khóa chính UUID của bảng nguồn. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=ThanhTra.PETITION"
+  etl_derived_value: "ThanhTra.PETITION"
+  data_type: "string"
+- attribute_name: "Received Date"
+  physical_name: "received_dt"
+  description: "Ngày tiếp nhận đơn thư."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.RECEIVED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Forwarding Unit"
+  physical_name: "forwarding_unit"
+  description: "Đơn vị/cơ quan chuyển đơn thư đến Thanh tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.FORWARDING_UNIT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sender Name"
+  physical_name: "sender_nm"
+  description: "Họ tên người gửi đơn thư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.SENDER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sender Address"
+  physical_name: "sender_address"
+  description: "Địa chỉ người gửi đơn thư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.SENDER_ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Content"
+  physical_name: "content"
+  description: "Nội dung tóm tắt đơn thư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.CONTENT"
+  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Petition Category Code"
+  physical_name: "petition_category_code"
+  description: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT (Khiếu\
+    \ nại), DENUNCIATION (Tố cáo)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.PETITION_CATEGORY"
+  comment: "Scheme: PETITION_CATEGORY."
+  classification_context: "PETITION_CATEGORY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related To Corporate Bond Indicator"
+  physical_name: "related_to_corporate_bond_indicator"
+  description: "Liên quan TPDN: 0=Không, 1=Có."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.RELATED_TO_CORPORATE_BOND"
+  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Eligible For Processing Indicator"
+  physical_name: "eligible_for_processing_indicator"
+  description: "Đủ điều kiện xử lý: 0=Không, 1=Có."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.ELIGIBLE_FOR_PROCESSING"
+  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Within Jurisdiction Indicator"
+  physical_name: "within_jurisdiction_indicator"
+  description: "Thuộc thẩm quyền: 0=Không, 1=Có."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.WITHIN_JURISDICTION"
+  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Officer Id"
+  physical_name: "assigned_officer_id"
+  description: "ID chuyên viên được phân công xử lý đơn thư."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.ASSIGNED_OFFICER_ID"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Assigned Officer Code"
+  physical_name: "assigned_officer_code"
+  description: "Tên chuyên viên được phân công xử lý đơn thư (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.ASSIGNED_OFFICER_NAME"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Assigned Officer Id. Nguồn lưu ASSIGNED_OFFICER_NAME — ETL map\
+    \ sang code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Duplicate Type Code"
+  physical_name: "duplicate_type_code"
+  description: "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.DUPLICATE_TYPE"
+  comment: "Scheme: PETITION_DUPLICATE_TYPE."
+  classification_context: "PETITION_DUPLICATE_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Petition Id"
+  physical_name: "original_petition_id"
+  description: "FK tự tham chiếu đến đơn gốc. Bắt buộc khi duplicate_type=DUPLICATE."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.ORIGINAL_PETITION_ID"
+  comment: "FK target: Petition.Petition Id. Self-reference. Hash: hash_id('ThanhTra.PETITION',\
+    \ ORIGINAL_PETITION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Petition Code"
+  physical_name: "original_petition_code"
+  description: "Mã đơn gốc (snapshot denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.ORIGINAL_PETITION_ID"
+  comment: "Lookup pair: Petition.Petition Code. Pair with Original Petition Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Number"
+  physical_name: "submission_number"
+  description: "Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.SUBMISSION_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transferred Authority"
+  physical_name: "transferred_authority"
+  description: "Tên cơ quan có thẩm quyền nhận chuyển đơn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.TRANSFERRED_AUTHORITY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Internal Transfer Unit Name"
+  physical_name: "internal_transfer_unit_nm"
+  description: "Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.INTERNAL_TRANSFER_UNIT_NAME"
+  comment: "Denormalized — không có link FK sang đơn vị nội bộ trên Atomic. Nguồn\
+    \ có INTERNAL_TRANSFER_UNIT_ID nhưng thiếu FK formal."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Archived Indicator"
+  physical_name: "archived_indicator"
+  description: "Lưu đơn: 0=Không, 1=Có."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.ARCHIVED"
+  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Guidance Document Number"
+  physical_name: "guidance_document_number"
+  description: "Số văn bản hướng dẫn nhà đầu tư (văn bản đi)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.GUIDANCE_DOCUMENT_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Guidance Document Date"
+  physical_name: "guidance_document_dt"
+  description: "Ngày văn bản hướng dẫn nhà đầu tư."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.GUIDANCE_DOCUMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Life Cycle Status Code"
+  physical_name: "life_cycle_status_code"
+  description: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.STATUS"
+  comment: "Scheme: PETITION_STATUS."
+  classification_context: "PETITION_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "End Date"
+  physical_name: "end_dt"
+  description: "Ngày kết thúc xử lý đơn thư."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.NOTE"
+  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.CREATED_AT"
+  comment: "Nguồn DATE — widening sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.LAST_MODIFIED_AT"
+  comment: "Nguồn DATE — widening sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By Officer Id"
+  physical_name: "created_by_officer_id"
+  description: "ID người dùng tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.CREATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Code"
+  physical_name: "created_by_officer_code"
+  description: "Mã người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.CREATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "updated_by_officer_id"
+  description: "ID người dùng cập nhật gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.LAST_MODIFIED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "updated_by_officer_code"
+  description: "Mã người dùng cập nhật gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.PETITION.LAST_MODIFIED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

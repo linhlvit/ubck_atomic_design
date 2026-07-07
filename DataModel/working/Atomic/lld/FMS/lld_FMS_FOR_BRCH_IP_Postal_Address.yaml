@@ -1,0 +1,112 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "FOR_BRCH"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Foreign Fund Management Organization Unit."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.ID"
+  comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FOR_BRCH',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã VPĐD/CN QLQ nước ngoài."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.ID"
+  comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=FMS.FOR_BRCH"
+  etl_derived_value: "FMS.FOR_BRCH"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "address_type_code"
+  description: "Loại địa chỉ — trụ sở VPĐD/CN nước ngoài."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ADDR_TYPE=FOREIGN_BRANCH"
+  etl_derived_value: "FOREIGN_BRANCH"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "address_val"
+  description: "Địa chỉ trụ sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.ADDRESS"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=FOREIGN_BRANCH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "address_type_code"
+  description: "Loại địa chỉ — công ty mẹ nước ngoài."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
+  etl_derived_value: "PARENT_ADDRESS"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "address_val"
+  description: "Địa chỉ công ty mẹ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.PARENT_ADDRESS"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=PARENT_ADDRESS"
+  etl_derived_value: null
+  data_type: "string"

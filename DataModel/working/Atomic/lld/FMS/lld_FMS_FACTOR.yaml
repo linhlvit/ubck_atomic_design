@@ -1,0 +1,267 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: FACTOR
+  atomic_entity: Member Rating Criterion
+  entity_physical_name: member_rating_criterion
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Scoring Criterion"
+  table_type: Fundamental
+  group: T6
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[SỬA LỖI — xem T1-05] Nguồn đúng là FMS.FACTOR (không phải FMS.RNK_FACTOR như thiết kế cũ). Self-ref PARENT_ID (cây tiêu chí cha/con). Không phải Involved Party — không tách shared entity. CREATED_BY, MODIFY_BY document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Member Rating Criterion Id
+    physical_name: member_rating_criterion_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Condition] Scoring Criterion\". Tiêu chí chấm điểm xếp hạng chi tiết, thuộc 1 Member Rating Criterion Group, cấu trúc cây cha/con."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Rating Criterion Code
+    physical_name: member_rating_criterion_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.FACTOR"
+    etl_derived_value: "FMS.FACTOR"
+
+  - attribute_name: Member Rating Criterion Group Id
+    physical_name: member_rating_criterion_group_id
+    description: "FK -> GRP_FACTOR: Nhóm tiêu chí đánh giá."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.GRP_FTOR_ID"
+    comment: "FK target: Member Rating Criterion Group.Member Rating Criterion Group Id. Hash: hash_id('FMS.GRP_FACTOR', GRP_FTOR_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Rating Criterion Group Code
+    physical_name: member_rating_criterion_group_code
+    description: "Mã nhóm tiêu chí đánh giá."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.GRP_FTOR_ID"
+    comment: "Lookup pair: Member Rating Criterion Group.Member Rating Criterion Group Code. Pair with Member Rating Criterion Group Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Parent Member Rating Criterion Id
+    physical_name: parent_member_rating_criterion_id
+    description: "FK -> FACTOR: Tiêu chí cha trong hệ thống phân cấp tiêu chí đánh giá."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.PARENT_ID"
+    comment: "Self-reference. FK target: Member Rating Criterion.Member Rating Criterion Id. Hash: hash_id('FMS.FACTOR', PARENT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Parent Member Rating Criterion Code
+    physical_name: parent_member_rating_criterion_code
+    description: "Mã tiêu chí cha."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.PARENT_ID"
+    comment: "Self-reference. Lookup pair: Member Rating Criterion.Member Rating Criterion Code. Pair with Parent Member Rating Criterion Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Rating Criterion Full Name
+    physical_name: member_rating_criterion_full_nm
+    description: "Tên hiển thị chính."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.ITEM_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Weight Percentage
+    physical_name: weight_percentage
+    description: "Trọng số của tiêu chí/nhóm tiêu chí trong đánh giá (%)."
+    data_domain: Percentage
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.WEIGHT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Rating Criterion Short Code
+    physical_name: member_rating_criterion_short_code
+    description: "Mã định danh ngắn gọn."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.CODE"
+    comment: "Mã nghiệp vụ do nội bộ cấp — khác Member Rating Criterion Code (BK derived từ ID kỹ thuật)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Active Status Flag
+    physical_name: active_status_flag
+    description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.RECORD_STATUS"
+    comment: "Giá trị 1 → true; 0 → false."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Grading Method Code
+    physical_name: grading_method_code
+    description: "Phương pháp chấm điểm: 1=Thang điểm, 2=Điểm cộng, 3=Điểm trừ."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.GRADING_METHOD"
+    comment: "Scheme: FMS_GRADING_METHOD (đã đăng ký)."
+    classification_context: "FMS_GRADING_METHOD"
+    etl_derived_value: null
+
+  - attribute_name: Based Grading Code
+    physical_name: based_grading_code
+    description: "Cơ sở chấm điểm: 1=Giá trị thực tế, 2=Xếp hạng."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.BASED_GRADING"
+    comment: "Scheme: FMS_BASED_GRADING (đã đăng ký)."
+    classification_context: "FMS_BASED_GRADING"
+    etl_derived_value: null
+
+  - attribute_name: Ranking Order
+    physical_name: ranking_order
+    description: "Thứ tự xếp hạng (1=Tốt nhất, số lớn hơn=Kém hơn)."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.RANKING_ORDER"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Note
+    physical_name: note
+    description: "Ghi chú bổ sung."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.NOTE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Calculation Formula Description
+    physical_name: calculation_formula_description
+    description: "Công thức tính giá trị tham số cảnh báo (NCLOB: JSON hoặc mô tả công thức)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.FORMULA_INFO"
+    comment: "Nguồn NCLOB — ETL lưu nguyên chuỗi text, không tách cấu trúc ở Atomic."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: E4 Risk Management Flag
+    physical_name: e4_risk_management_flag
+    description: "Cờ tiêu chí thuộc nhóm E4 (Quản lý rủi ro): 1=Tiêu chí E4, 0=Không phải."
+    data_domain: Boolean
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.E4_FACTOR"
+    comment: "Giá trị 1 → true; 0 → false."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.FACTOR.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

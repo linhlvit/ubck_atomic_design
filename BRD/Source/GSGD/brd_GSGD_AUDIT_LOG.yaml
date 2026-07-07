@@ -1,0 +1,76 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: AUDIT_LOG
+brd_ref: BRD-SRC-GSGD-AUDIT_LOG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: USER_ID
+    data_type: "VARCHAR2(36)"
+    description: "Foreign key(system_user.id)"
+    key: FK
+    fk_note: null
+  - name: USERNAME
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "Tên đăng nhập"
+    key: null
+    fk_note: null
+  - name: ACTION_TYPE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: ""
+    key: null
+    fk_note: null
+  - name: ENTITY_TYPE
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "Loại thực thể"
+    key: null
+    fk_note: null
+  - name: ENTITY_ID
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "ID thực thể"
+    key: null
+    fk_note: null
+  - name: ACTION_DESCRIPTION
+    data_type: "VARCHAR2(2000 CHAR)"
+    description: "Mô tả hành động"
+    key: null
+    fk_note: null
+  - name: IP_ADDRESS
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Địa chỉ IP"
+    key: null
+    fk_note: null
+  - name: USER_AGENT
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "User agent"
+    key: null
+    fk_note: null
+  - name: ACTION_STATUS
+    data_type: "NUMBER(1)"
+    description: "0=Thất bại, 1=Thành công"
+    key: null
+    fk_note: null
+  - name: BEFORE_DATA
+    data_type: "CLOB"
+    description: "Snapshot dữ liệu trước thay đổi nếu có"
+    key: null
+    fk_note: null
+  - name: AFTER_DATA
+    data_type: "CLOB"
+    description: "Snapshot dữ liệu sau thay đổi nếu có"
+    key: null
+    fk_note: null
+  - name: LOG_DATE
+    data_type: "DATE"
+    description: "Ngày ghi log"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null

@@ -1,0 +1,186 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "RANK"
+  atomic_entity: "Member Rating"
+  entity_physical_name: "member_rating"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Không phải Involved Party — không tách shared entity. RANK_TYPE dùng scheme\
+    \ FMS_RATING_PERIOD_TYPE với encoding GỐC đã đăng ký (1=YEAR_END;2=MID_YEAR) —\
+    \ khác chiều với RATING_PD.PERIOD (1=MID_YEAR;2=YEAR_END, xem lld_FMS_RATING_PD.yaml).\
+    \ CREATED_BY, MODIFY_BY document trong pending_design.yaml."
+attributes:
+- attribute_name: "Member Rating Id"
+  physical_name: "member_rating_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\". Kết quả\
+    \ xếp hạng của 1 Fund Management Company trong 1 kỳ đánh giá."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Code"
+  physical_name: "member_rating_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.RANK"
+  etl_derived_value: "FMS.RANK"
+  data_type: "string"
+- attribute_name: "Fund Management Company Id"
+  physical_name: "fund_management_company_id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.SEC_ID"
+  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Code"
+  physical_name: "fund_management_company_code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.SEC_ID"
+  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
+    \ with Fund Management Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Period Id"
+  physical_name: "member_rating_period_id"
+  description: "FK -> RATING_PD: Kỳ đánh giá xếp loại."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.RT_PD_ID"
+  comment: "FK target: Member Rating Period.Member Rating Period Id. Hash: hash_id('FMS.RATING_PD',\
+    \ RT_PD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Period Code"
+  physical_name: "member_rating_period_code"
+  description: "Mã kỳ đánh giá xếp loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.RT_PD_ID"
+  comment: "Lookup pair: Member Rating Period.Member Rating Period Code. Pair with\
+    \ Member Rating Period Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Total Score Amount"
+  physical_name: "total_score_amount"
+  description: "Tổng điểm đánh giá xếp loại của công ty QLQ trong kỳ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.TOTAL_SCORE"
+  comment: "[PROPOSE NEW DOMAIN] Bản chất là điểm số (score), không phải currency\
+    \ hay counter — 12 domain chuẩn không có \"Numeric Score\" riêng, tạm dùng Small\
+    \ Counter (cùng data type int/decimal), cần reviewer xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Rank Index"
+  physical_name: "rank_index"
+  description: "Thứ hạng xếp loại trong nhóm cùng loại (1=Tốt nhất)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.RANK_INDEX"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Rating Period Type Code"
+  physical_name: "rating_period_type_code"
+  description: "Loại xếp hạng: 1=Xếp hạng cuối năm, 2=Xếp hạng giữa năm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.RANK_TYPE"
+  comment: "Scheme: FMS_RATING_PERIOD_TYPE (tái sử dụng — đã đăng ký Tier 1, values\
+    \ gốc YEAR_END=1/MID_YEAR=2 khớp đúng cột này). ETL map: 1=YEAR_END;2=MID_YEAR."
+  classification_context: "FMS_RATING_PERIOD_TYPE"
+  etl_derived_value: "1=YEAR_END;2=MID_YEAR"
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RANK.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

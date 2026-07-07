@@ -1,0 +1,146 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_REPORT_DETAIL
+brd_ref: BRD-SRC-KNT-TAX_REPORT_DETAIL
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: TAX_REPORT_ID
+  data_type: "NUMBER"
+  description: "FK -> tax_report: Báo cáo tài chính TCT liên quan"
+  key: FK
+  fk_note: "FK → TAX_REPORT.ID"
+- name: INDICATOR_CODE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Mã chỉ tiêu trong biểu mẫu báo cáo"
+  key: null
+  fk_note: null
+- name: INDICATOR_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên chỉ tiêu trong biểu mẫu báo cáo"
+  key: null
+  fk_note: null
+- name: EXPLANATION_NOTE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Thuyết minh/ghi chú cho chỉ tiêu báo cáo"
+  key: null
+  fk_note: null
+- name: YEAR_END_VALUE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Giá trị cuối năm báo cáo (đầu kỳ của năm sau)"
+  key: null
+  fk_note: null
+- name: YEAR_BEGIN_VALUE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Giá trị đầu năm báo cáo (số dư đầu kỳ)"
+  key: null
+  fk_note: null
+- name: CURRENT_YEAR_VALUE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Giá trị năm nay (kỳ hiện tại)"
+  key: null
+  fk_note: null
+- name: PRIOR_YEAR_VALUE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Giá trị năm trước (kỳ so sánh)"
+  key: null
+  fk_note: null
+- name: SHEET_NAME
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mã sheet báo cáo (LoaiBaoCaoChiTietEnum/TEN_SHEET): 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH"
+  key: null
+  fk_note: null
+- name: PREPARER_NAME
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Họ tên người lập biểu"
+  key: null
+  fk_note: null
+- name: CHIEF_ACCOUNTANT
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Họ tên kế toán trưởng"
+  key: null
+  fk_note: null
+- name: PREPARATION_DATE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Ngày lập biểu"
+  key: null
+  fk_note: null
+- name: DIRECTOR_NAME
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Họ tên Giám đốc/Tổng giám đốc ký báo cáo"
+  key: null
+  fk_note: null
+- name: PRACTICE_CERT_NUMBER
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Số chứng chỉ hành nghề kiểm toán"
+  key: null
+  fk_note: null
+- name: AUDIT_SERVICE_UNIT
+  data_type: "VARCHAR2(255 CHAR)"
+  description: "Đơn vị cung cấp dịch vụ kiểm toán"
+  key: null
+  fk_note: null
+- name: GOING_CONCERN_YES
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Cờ hoạt động liên tục: true/false"
+  key: null
+  fk_note: null
+- name: GOING_CONCERN_NO
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Cờ không hoạt động liên tục: true/false"
+  key: null
+  fk_note: null
+- name: INCREASE_PRIOR_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số tăng năm trước"
+  key: null
+  fk_note: null
+- name: CURRENT_YEAR_AMOUNT
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số tiền/giá trị năm nay"
+  key: null
+  fk_note: null
+- name: PREVIOUS_YEAR_AMOUNT
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số tiền/giá trị năm ngoái"
+  key: null
+  fk_note: null
+- name: BEGIN_BALANCE_CURRENT_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số dư đầu năm nay"
+  key: null
+  fk_note: null
+- name: END_BALANCE_CURRENT_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số dư cuối năm nay"
+  key: null
+  fk_note: null
+- name: END_BALANCE_PRIOR_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số dư cuối năm trước"
+  key: null
+  fk_note: null
+- name: BEGIN_BALANCE_PRIOR_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số dư đầu năm trước"
+  key: null
+  fk_note: null
+- name: INCREASE_CURRENT_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số tăng năm nay"
+  key: null
+  fk_note: null
+- name: DECREASE_CURRENT_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số giảm năm nay"
+  key: null
+  fk_note: null
+- name: DECREASE_PRIOR_YEAR
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Số giảm năm trước"
+  key: null
+  fk_note: null

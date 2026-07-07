@@ -1,0 +1,578 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "VIOLT"
+  atomic_entity: "Fund Management Conduct Violation"
+  entity_physical_name: "fund_management_conduct_violation"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: "Fundamental"
+  group: "T6"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[CẬP NHẬT 2026-07-06 theo HLD Tier1 revision, T1-06/T1-03]: VIOLT đã RETIER\
+    \ từ Tier 1 → Tier 6 (xem FMS_HLD_Tier6.md) sau khi đọc đủ FK khi thiết kế CDT_WARN\
+    \ — FK đến Member Warning Parameter (Tier 1) + Member Warning Condition (Tier\
+    \ 2) + 6 entity Tier 5 vượt quá phạm vi Tier 1. Grain vẫn 'chờ xác nhận' — xem\
+    \ Tier6 6f. Grain dự kiến = 1 bản ghi cảnh báo/vi phạm gắn với ĐÚNG 1 thành viên\
+    \ thị trường, xác định qua System Object Type Code (SYSTEM_OBJECT). 9 cặp FK đối\
+    \ tượng (Fund Management Company/Investment Fund/Custodian Bank/Foreign Fund Management\
+    \ Organization Unit/Securities Distribution Agent/Transfer Agent/Pension Service\
+    \ Organization x2/Other Intermediary Organization/Pension Fund) đều nullable,\
+    \ tại 1 thời điểm chỉ 1 cặp có giá trị — cùng pattern với Member Disclosure Announcement\
+    \ (Tier 6). PR_WID FK đến Member Warning Parameter (PARA_WARN, Tier 1 — xem lld_FMS_PARA_WARN.yaml).\
+    \ CDT_WID FK đến Member Warning Condition (CDT_WARN) — entity thiết kế ở Tier\
+    \ 2, status=pending. USER_ID, RUN_BATCH_ID document trong pending_design.yaml.\
+    \ File này thiết kế trước khi đến lượt Tier 6 trong quy trình tuần tự — giữ nguyên\
+    \ cấu trúc FK đã xác định, cần review lại khi chính thức xử lý Tier 6."
+attributes:
+- attribute_name: "Fund Management Conduct Violation Id"
+  physical_name: "fund_management_conduct_violation_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Conduct Violation\". Vi phạm/cảnh\
+    \ báo của thành viên thị trường (CTQLQ, quỹ, NH LKGS, VPĐD NN, đại lý...)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Conduct Violation Code"
+  physical_name: "fund_management_conduct_violation_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.VIOLT"
+  etl_derived_value: "FMS.VIOLT"
+  data_type: "string"
+- attribute_name: "System Object Type Code"
+  physical_name: "stm_object_type_code"
+  description: "Đối tượng hệ thống: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN..."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.SYSTEM_OBJECT"
+  comment: "Scheme: FMS_WARNING_SYSTEM_OBJECT_TYPE (tái sử dụng — cùng bộ giá trị\
+    \ với PARA_WARN.SYSTEM_OBJECT, xem lld_FMS_PARA_WARN.yaml). Mô tả nguồn còn '...'\
+    \ — chỉ 5/9 giá trị đã xác nhận trong scheme, cần profile dữ liệu bổ sung FOR_BRCH/PENSION_AGENT/PENSION_PROVIDER/OTHER_AGENT/PENSION_FUND.\
+    \ Discriminator xác định cặp FK đối tượng nào có giá trị (xem notes)."
+  classification_context: "FMS_WARNING_SYSTEM_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Id"
+  physical_name: "fund_management_company_id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.SEC_ID"
+  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+    \ SEC_ID). Nullable — chỉ có giá trị khi System Object Type Code = QLQ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Code"
+  physical_name: "fund_management_company_code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.SEC_ID"
+  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
+    \ with Fund Management Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Warning Parameter Id"
+  physical_name: "member_warning_parameter_id"
+  description: "FK -> PARA_WARN: Tham số cảnh báo chính."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.PR_WID"
+  comment: "FK target: Member Warning Parameter.Member Warning Parameter Id. Hash:\
+    \ hash_id('FMS.PARA_WARN', PR_WID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Warning Parameter Code"
+  physical_name: "member_warning_parameter_code"
+  description: "Mã tham số cảnh báo chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.PR_WID"
+  comment: "Lookup pair: Member Warning Parameter.Member Warning Parameter Code. Pair\
+    \ with Member Warning Parameter Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Warning Condition Id"
+  physical_name: "member_warning_condition_id"
+  description: "FK -> CDT_WARN: Chi tiết điều kiện cảnh báo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.CDT_WID"
+  comment: "FK target: Member Warning Condition.Member Warning Condition Id. Hash:\
+    \ hash_id('FMS.CDT_WARN', CDT_WID). Pending — entity thiết kế ở Tier 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Warning Condition Code"
+  physical_name: "member_warning_condition_code"
+  description: "Mã điều kiện cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.CDT_WID"
+  comment: "Lookup pair: Member Warning Condition.Member Warning Condition Code. Pair\
+    \ with Member Warning Condition Id. Pending — entity thiết kế ở Tier 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Id"
+  physical_name: "investment_fund_id"
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan đến vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.FUD_ID"
+  comment: "FK target: Investment Fund.Investment Fund Id. Hash: hash_id('FMS.FUNDS',\
+    \ FUD_ID). Pending — entity thiết kế ở Tier 2. Nullable — chỉ có giá trị khi System\
+    \ Object Type Code = QĐT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Code"
+  physical_name: "investment_fund_code"
+  description: "Mã quỹ đầu tư liên quan đến vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.FUD_ID"
+  comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment\
+    \ Fund Id. Pending — entity thiết kế ở Tier 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Id"
+  physical_name: "custodian_bank_id"
+  description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.BKM_ID"
+  comment: "FK target: Custodian Bank.Custodian Bank Id. Hash: hash_id('FMS.BANK_MONI',\
+    \ BKM_ID). Nullable — chỉ có giá trị khi System Object Type Code = BKGS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Code"
+  physical_name: "custodian_bank_code"
+  description: "Mã ngân hàng lưu ký/giám sát liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.BKM_ID"
+  comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Fund Management Organization Unit Id"
+  physical_name: "foreign_fund_management_organization_unit_id"
+  description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.FR_BR_ID"
+  comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Id. Hash: hash_id('FMS.FOR_BRCH', FR_BR_ID). Pending — entity\
+    \ thiết kế ở Tier 2. Nullable — chỉ có giá trị khi đối tượng là VPĐD/CN QLQ nước\
+    \ ngoài."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Fund Management Organization Unit Code"
+  physical_name: "foreign_fund_management_organization_unit_code"
+  description: "Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.FR_BR_ID"
+  comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Code. Pair with Foreign Fund Management Organization Unit\
+    \ Id. Pending — entity thiết kế ở Tier 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Distribution Agent Id"
+  physical_name: "securities_distribution_agent_id"
+  description: "FK -> DISTRIBUTOR_AGENT: Đại lý phân phối liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.DISTRIBUTOR_ID"
+  comment: "FK target: Securities Distribution Agent.Securities Distribution Agent\
+    \ Id. Hash: hash_id('FMS.DISTRIBUTOR_AGENT', DISTRIBUTOR_ID). Pending — entity\
+    \ thiết kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Distribution Agent Code"
+  physical_name: "securities_distribution_agent_code"
+  description: "Mã đại lý phân phối liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.DISTRIBUTOR_ID"
+  comment: "Lookup pair: Securities Distribution Agent.Securities Distribution Agent\
+    \ Code. Pair with Securities Distribution Agent Id. Pending — entity thiết kế\
+    \ ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transfer Agent Id"
+  physical_name: "transfer_agent_id"
+  description: "FK -> TRANSFER_AGENT: Đại lý chuyển nhượng liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.TRANSFER_AGENT_ID"
+  comment: "FK target: Transfer Agent.Transfer Agent Id. Hash: hash_id('FMS.TRANSFER_AGENT',\
+    \ TRANSFER_AGENT_ID). Pending — entity thiết kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transfer Agent Code"
+  physical_name: "transfer_agent_code"
+  description: "Mã đại lý chuyển nhượng liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.TRANSFER_AGENT_ID"
+  comment: "Lookup pair: Transfer Agent.Transfer Agent Code. Pair with Transfer Agent\
+    \ Id. Pending — entity thiết kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Distribution Agent Id"
+  physical_name: "pension_distribution_agent_id"
+  description: "FK -> PENSION_AGENT: Đại lý hưu trí liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.PENSION_AGENT_ID"
+  comment: "FK target: Pension Service Organization.Pension Service Organization Id.\
+    \ Hash: hash_id('FMS.PENSION_AGENT', PENSION_AGENT_ID). Pending — entity thiết\
+    \ kế ở Tier 5 (gộp PENSION_AGENT + PENSION_PROVIDER, phân biệt bằng pension_role_type_code).\
+    \ Prefix Pension Distribution để phân biệt với Pension Service Provider Id (PENSION_PROVIDER_ID)\
+    \ cùng target entity."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Distribution Agent Code"
+  physical_name: "pension_distribution_agent_code"
+  description: "Mã đại lý hưu trí liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.PENSION_AGENT_ID"
+  comment: "Lookup pair: Pension Service Organization.Pension Service Organization\
+    \ Code. Pair with Pension Distribution Agent Id. Pending — entity thiết kế ở Tier\
+    \ 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Service Provider Id"
+  physical_name: "pension_service_provider_id"
+  description: "FK -> PENSION_PROVIDER: Tổ chức cung cấp dịch vụ hưu trí."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.PENSION_PROVIDER_ID"
+  comment: "FK target: Pension Service Organization.Pension Service Organization Id.\
+    \ Hash: hash_id('FMS.PENSION_PROVIDER', PENSION_PROVIDER_ID). Pending — entity\
+    \ thiết kế ở Tier 5. Cùng target entity với Pension Distribution Agent Id nhưng\
+    \ khác role nguồn (PENSION_PROVIDER khác PENSION_AGENT)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Service Provider Code"
+  physical_name: "pension_service_provider_code"
+  description: "Mã tổ chức cung cấp dịch vụ hưu trí."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.PENSION_PROVIDER_ID"
+  comment: "Lookup pair: Pension Service Organization.Pension Service Organization\
+    \ Code. Pair with Pension Service Provider Id. Pending — entity thiết kế ở Tier\
+    \ 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Intermediary Organization Id"
+  physical_name: "other_intermediary_organization_id"
+  description: "FK -> OTHER_AGENT: Đại lý khác liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.OTHER_AGENT_ID"
+  comment: "FK target: Other Intermediary Organization.Other Intermediary Organization\
+    \ Id. Hash: hash_id('FMS.OTHER_AGENT', OTHER_AGENT_ID). Pending — entity thiết\
+    \ kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Intermediary Organization Code"
+  physical_name: "other_intermediary_organization_code"
+  description: "Mã đại lý khác liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.OTHER_AGENT_ID"
+  comment: "Lookup pair: Other Intermediary Organization.Other Intermediary Organization\
+    \ Code. Pair with Other Intermediary Organization Id. Pending — entity thiết kế\
+    \ ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Fund Id"
+  physical_name: "pension_fund_id"
+  description: "FK -> PENSION_FUND: Quỹ hưu trí liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.PENSION_FUND_ID"
+  comment: "FK target: Pension Fund.Pension Fund Id. Hash: hash_id('FMS.PENSION_FUND',\
+    \ PENSION_FUND_ID). Pending — entity thiết kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Fund Code"
+  physical_name: "pension_fund_code"
+  description: "Mã quỹ hưu trí liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.VIOLT.PENSION_FUND_ID"
+  comment: "Lookup pair: Pension Fund.Pension Fund Code. Pair with Pension Fund Id.\
+    \ Pending — entity thiết kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "report_year"
+  description: "Năm báo cáo (định dạng YYYY)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Violation Item Value Amount"
+  physical_name: "violation_item_val_amount"
+  description: "Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.ITEM_VALUE"
+  comment: "[PROPOSE NEW DOMAIN] Mô tả nguồn cho thấy giá trị có thể là tiền, mệnh\
+    \ giá hoặc điểm số tùy loại vi phạm (không thuần túy tiền tệ) — 12 domain chuẩn\
+    \ không có \"Numeric Value\" tổng quát, tạm chọn Currency Amount, cần reviewer\
+    \ xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Period Type Code"
+  physical_name: "period_type_code"
+  description: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm,\
+    \ 7=Nửa tháng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.PERIOD_TYPE"
+  comment: "Scheme: FMS_PERIOD_TYPE (đã đăng ký sẵn trong classification_schemes.yaml,\
+    \ dùng chung với Member Disclosure Announcement/FMS.ANNOUNCE — bổ sung used_in_entities\
+    \ + values). ETL map: 1=DAY;2=WEEK;3=MONTH;4=QUARTER;5=SEMI_ANNUAL;6=YEAR;7=HALF_MONTH."
+  classification_context: "FMS_PERIOD_TYPE"
+  etl_derived_value: "1=DAY;2=WEEK;3=MONTH;4=QUARTER;5=SEMI_ANNUAL;6=YEAR;7=HALF_MONTH"
+  data_type: "string"
+- attribute_name: "Period Value"
+  physical_name: "period_val"
+  description: "Giá trị kỳ báo cáo dạng chuỗi (VD: Q1/2024, T03/2024, 2024...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Comparison Period Type Code"
+  physical_name: "comparison_period_type_code"
+  description: "Loại kỳ của tham số so sánh thứ hai trong cảnh báo vi phạm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.PERIOD_TYPE_OTHER"
+  comment: "Scheme: FMS_PERIOD_TYPE. Cùng scheme với Period Type Code."
+  classification_context: "FMS_PERIOD_TYPE"
+  etl_derived_value: "1=DAY;2=WEEK;3=MONTH;4=QUARTER;5=SEMI_ANNUAL;6=YEAR;7=HALF_MONTH"
+  data_type: "string"
+- attribute_name: "Comparison Period Value"
+  physical_name: "comparison_period_val"
+  description: "Giá trị kỳ của tham số so sánh thứ hai trong cảnh báo vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.PERIOD_VALUE_OTHER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Comparison Item Value Amount"
+  physical_name: "comparison_item_val_amount"
+  description: "Giá trị thực tế của tham số so sánh thứ hai trong cảnh báo vi phạm."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.VALUE_OTHER"
+  comment: "Cùng ghi chú ambiguity với Violation Item Value Amount — tạm chọn Currency\
+    \ Amount, cần reviewer xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Violation Recovered Flag"
+  physical_name: "violation_recovered_flag"
+  description: "Trạng thái khắc phục vi phạm: 1=Đã khắc phục, 0=Chưa khắc phục."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.RECOVERY_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.VIOLT.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

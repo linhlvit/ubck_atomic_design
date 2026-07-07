@@ -1,0 +1,236 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "INVES"
+  atomic_entity: "Discretionary Investment Investor"
+  entity_physical_name: "discretionary_investment_investor"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Postal Address + IP Alt Identification (type động qua ID_TYPE).\
+    \ NAT_ID là UUID FK thực sự đến FMS.NATIONAL — map FK pair Nationality Id/Code\
+    \ đến Geographic Area. CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document\
+    \ trong pending_design.yaml."
+attributes:
+- attribute_name: "Discretionary Investment Investor Id"
+  physical_name: "discretionary_investment_investor_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư cá nhân/tổ\
+    \ chức ủy thác đầu tư cho Fund Management Company."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Discretionary Investment Investor Code"
+  physical_name: "discretionary_investment_investor_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.INVES"
+  etl_derived_value: "FMS.INVES"
+  data_type: "string"
+- attribute_name: "Fund Management Company Id"
+  physical_name: "fund_management_company_id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.SEC_ID"
+  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+    \ SEC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Code"
+  physical_name: "fund_management_company_code"
+  description: "Mã công ty QLQ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.SEC_ID"
+  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
+    \ with Fund Management Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.NAT_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('FMS.NATIONAL',\
+    \ NAT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.NAT_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Stockholder Type Code"
+  physical_name: "stockholder_type_code"
+  description: "FK -> STOCKHOLDER_TYPE: Loại cổ đông."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.STO_ID"
+  comment: "Scheme: FMS_STOCKHOLDER_TYPE (tái sử dụng — đã đăng ký, nguồn FMS.STOCKHOLDERTYPE).\
+    \ Nguồn STO_ID là UUID FK — ETL resolve sang mã tương ứng."
+  classification_context: "FMS_STOCKHOLDER_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Discretionary Investment Investor Full Name"
+  physical_name: "discretionary_investment_investor_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Organization Territory Type Code"
+  physical_name: "organization_territory_type_code"
+  description: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.DORF"
+  comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng). ETL derived: 1=DOMESTIC;2=FOREIGN."
+  classification_context: "FMS_ORG_TERRITORY_TYPE"
+  etl_derived_value: "1=DOMESTIC;2=FOREIGN"
+  data_type: "string"
+- attribute_name: "Relationship Description"
+  physical_name: "relationship_description"
+  description: "Mô tả quan hệ của nhà đầu tư với công ty QLQ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.RELATION_SHIP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Committed Entrustment Scale Amount"
+  physical_name: "committed_entrustment_scale_amount"
+  description: "Quy mô uỷ thác cam kết (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.AD_SCALE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Actual Entrustment Scale Amount"
+  physical_name: "actual_entrustment_scale_amount"
+  description: "Quy mô uỷ thác thực tế (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.ACT_SCALE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Portfolio Value Amount"
+  physical_name: "portfolio_val_amount"
+  description: "Giá trị danh mục đầu tư (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.LIST_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

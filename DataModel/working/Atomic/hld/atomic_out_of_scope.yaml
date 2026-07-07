@@ -1,6 +1,909 @@
 schema_type: atomic_out_of_scope
 schema_version: '1.0'
 entries:
+- source_system: FIMS
+  source_table: ANNOUNCEINVESHIS
+  description: Lịch sử NĐT NN trong ủy quyền CBTT
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — snapshot lịch sử thành viên ủy quyền.
+- source_system: FIMS
+  source_table: AUDIT_LOGS
+  description: Nhật ký kiểm toán hệ thống
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
+    kiện nghiệp vụ.
+- source_system: FIMS
+  source_table: AUTHOANNOUNCEHIS
+  description: Lịch sử ủy quyền CBTT
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — snapshot lịch sử ủy quyền CBTT.
+- source_system: FIMS
+  source_table: CATEGORIESSTOCKHIS
+  description: Lịch sử sở hữu chứng khoán NĐT NN
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — snapshot lịch sử danh mục.
+- source_system: FIMS
+  source_table: ERRORLOG
+  description: Lịch sử lỗi hệ thống
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — log kỹ thuật, không phải sự kiện nghiệp vụ.
+- source_system: FIMS
+  source_table: INVESTORHIS
+  description: Lịch sử thông tin nhà đầu tư nước ngoài
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — bảng snapshot lịch sử thông tin NĐT; thông tin hiện tại
+    lấy từ INVESTOR. Nếu cần lịch sử → ETL parsing từ INVESTORHIS vào cột tường minh
+    của entity.
+- source_system: FIMS
+  source_table: SECURITIESACCOUNTHIS
+  description: Lịch sử tài khoản chứng khoán NĐT NN
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — snapshot lịch sử tài khoản.
+- source_system: FIMS
+  source_table: TRADINGAUTHORIZATIONHIS
+  description: Lịch sử ủy quyền giao dịch
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — snapshot lịch sử ủy quyền giao dịch.
+- source_system: FIMS
+  source_table: TRADINGAUTHORIZATIONINVESHIS
+  description: Lịch sử NĐT NN trong ủy quyền giao dịch
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — snapshot lịch sử thành viên ủy quyền giao dịch.
+- source_system: FIMS
+  source_table: ANNOUNCEINVES
+  description: Danh sách NĐT NN trong ủy quyền CBTT
+  group: Cascade drop
+  reason: Cascade drop từ AUTHOANNOUNCE — denormalize thành ARRAY trên Info Disclosure
+    Authorization (xem 7d).
+- source_system: FIMS
+  source_table: TRADINGAUTHORIZATIONINVES
+  description: Danh sách NĐT NN trong ủy quyền giao dịch
+  group: Cascade drop
+  reason: Cascade drop từ TRADINGAUTHORIZATION — denormalize thành ARRAY trên Trading
+    Authorization (xem 7d).
+- source_system: FIMS
+  source_table: RPT_EVENT_TYPE_LEGAL_BASIS
+  description: Danh sách căn cứ pháp lý của loại sự vụ
+  group: Chưa có cột
+  reason: Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope.
+- source_system: FIMS
+  source_table: RPT_EVENT_TYPE_SCHEDULE
+  description: Lịch nộp báo cáo theo loại sự vụ
+  group: Chưa có cột
+  reason: Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope.
+- source_system: FIMS
+  source_table: RPT_EVENT_TYPE_STATUS_LINK
+  description: Liên kết trạng thái loại sự vụ
+  group: Chưa có cột
+  reason: Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope.
+- source_system: FIMS
+  source_table: FORM_SCHEMAS
+  description: Schema biểu mẫu động
+  group: Form Metadata
+  reason: Form Metadata — cấu hình biểu mẫu eform, không phải instance data.
+- source_system: FIMS
+  source_table: FORM_SCHEMA_VERSIONS
+  description: Lịch sử phiên bản schema biểu mẫu động
+  group: Form Metadata
+  reason: Form Metadata — version control biểu mẫu.
+- source_system: FIMS
+  source_table: REPORT_TEMPLATES
+  description: Mẫu báo cáo (template file)
+  group: Form Metadata
+  reason: Form Metadata — template xuất file báo cáo, không phải entity nghiệp vụ.
+- source_system: FIMS
+  source_table: RPTHTORY
+  description: Lịch sử thay đổi biểu mẫu báo cáo đầu vào
+  group: Form Metadata
+  reason: Audit Log nguồn — lịch sử phiên bản biểu mẫu. Chưa xác định entity Atomic
+    tương ứng.
+- source_system: FIMS
+  source_table: RPTPDSHT
+  description: Bảng trung gian SHEET ↔ RPTPERIOD
+  group: Form Metadata
+  reason: Junction Table — xử lý thành ARRAY trên Reporting Period (xem 7d).
+- source_system: FIMS
+  source_table: RPTTEMP
+  description: '*(xem mục 7a — in scope)*'
+  group: Form Metadata
+  reason: '*(in scope)*'
+- source_system: FIMS
+  source_table: RPTTPOUT
+  description: Danh sách biểu mẫu báo cáo đầu ra
+  group: Form Metadata
+  reason: Form Metadata — template báo cáo đầu ra UBCK tự xuất.
+- source_system: FIMS
+  source_table: RPT_FIELD_CATALOG
+  description: Danh mục trường báo cáo
+  group: Form Metadata
+  reason: Form Metadata — cấu hình field biểu mẫu.
+- source_system: FIMS
+  source_table: RPT_FIELD_CATALOG_USAGE
+  description: Thông tin sử dụng trường báo cáo
+  group: Form Metadata
+  reason: Form Metadata — usage log của field catalog.
+- source_system: FIMS
+  source_table: RPT_VALUE_CATALOG
+  description: Danh mục giá trị báo cáo
+  group: Form Metadata
+  reason: Form Metadata — danh mục giá trị cho dropdown trong biểu mẫu.
+- source_system: FIMS
+  source_table: SELFSETPD
+  description: Cấu hình kỳ báo cáo do cán bộ UB tự thiết lập
+  group: Form Metadata
+  reason: Form Metadata — cấu hình kỳ đặc biệt gắn với biểu mẫu.
+- source_system: FIMS
+  source_table: SHEET
+  description: Danh sách các sheet trong biểu mẫu báo cáo đầu vào
+  group: Form Metadata
+  reason: 'Cần xác nhận: có thể là Tier 2 entity hoặc denormalize vào Reporting Template.
+    Chờ kết luận mục 7e-2.'
+- source_system: FIMS
+  source_table: SHEETOUT
+  description: Danh sách sheet của báo cáo đầu ra
+  group: Form Metadata
+  reason: Form Metadata — cấu hình sheet output.
+- source_system: FIMS
+  source_table: TPOUTHTORY
+  description: Lịch sử thay đổi biểu mẫu báo cáo đầu ra
+  group: Form Metadata
+  reason: Form Metadata — version control biểu mẫu output.
+- source_system: FIMS
+  source_table: API_MAPPINGS
+  description: Cấu hình ánh xạ API
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: CERTFCATE
+  description: Chứng thư số PKI của người dùng
+  group: Operational / System
+  reason: Operational/system data — chứng thư số xác thực, không phải CCHN.
+- source_system: FIMS
+  source_table: DOCUMENT
+  description: Tài liệu hệ thống
+  group: Operational / System
+  reason: Operational/system data — lưu trữ tài liệu hạ tầng.
+- source_system: FIMS
+  source_table: DYNAMICCOLUMNS
+  description: Cấu hình cột động
+  group: Operational / System
+  reason: Operational/system data — hạ tầng cấu hình biểu mẫu động.
+- source_system: FIMS
+  source_table: DYNAMICCONNECTIONS
+  description: Cấu hình kết nối động
+  group: Operational / System
+  reason: Operational/system data — hạ tầng cấu hình biểu mẫu động.
+- source_system: FIMS
+  source_table: DYNAMICTABLES
+  description: Cấu hình bảng động
+  group: Operational / System
+  reason: Operational/system data — hạ tầng cấu hình biểu mẫu động.
+- source_system: FIMS
+  source_table: EMAILSENTSYSTEM
+  description: Danh sách email trao đổi thông tin
+  group: Operational / System
+  reason: Operational/system data — log giao tiếp email.
+- source_system: FIMS
+  source_table: GROUPROLES
+  description: Phân quyền nhóm theo vai trò
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: GROUPS
+  description: Nhóm người dùng trong hệ thống
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: GROUPUSERS
+  description: Liên kết người dùng vào nhóm
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: MENUS
+  description: Danh sách menu/quyền trong hệ thống
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: MENUS_BU
+  description: Danh sách menu theo đơn vị
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: MENU_CLONE
+  description: Bản sao danh sách menu
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: MODULES
+  description: Danh sách module hệ thống
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: NOTIFICATION
+  description: Thông báo trong hệ thống FIMS
+  group: Operational / System
+  reason: Operational/system data — thông báo UI, không phải nghiệp vụ.
+- source_system: FIMS
+  source_table: PERMISSIONS
+  description: Danh sách phân quyền chi tiết
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: REFRESHTOKEN
+  description: Phiên làm việc (session) của người dùng
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: ROLES
+  description: Danh mục vai trò trong hệ thống
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: ROLESMENUS
+  description: Liên kết vai trò với menu quyền
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: RPTOUTFILESAVE
+  description: Danh sách file thống kê đã gen tự động
+  group: Operational / System
+  reason: Operational/system data — danh sách file output.
+- source_system: FIMS
+  source_table: RPTOUTMANAGEMENT
+  description: Cấu hình gen file thống kê tự động
+  group: Operational / System
+  reason: Operational/system data — config tác vụ sinh file tự động.
+- source_system: FIMS
+  source_table: RPTVALUESMANAGERMENT
+  description: Quản lý bảng phân vùng lưu giá trị báo cáo
+  group: Operational / System
+  reason: Operational/system data — metadata quản lý partition.
+- source_system: FIMS
+  source_table: SHEDLOCK
+  description: Bảng khóa lịch tác vụ phân tán
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: SYSEMAIL
+  description: Danh sách trao đổi thông tin qua mail
+  group: Operational / System
+  reason: Operational/system data — log email nội bộ.
+- source_system: FIMS
+  source_table: SYSTEMINTEGRATIONCONFIG
+  description: Cấu hình kết nối tích hợp hệ thống
+  group: Operational / System
+  reason: Operational/system data — config kết nối MSS/ngoài.
+- source_system: FIMS
+  source_table: SYSTEMINTEGRATIONDATA
+  description: Dữ liệu kết nối MSS
+  group: Operational / System
+  reason: Operational/system data — log giao tiếp tích hợp.
+- source_system: FIMS
+  source_table: USERRPTI
+  description: Phân quyền sử dụng biểu mẫu báo cáo đầu vào
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: USERRPTO
+  description: Phân quyền sử dụng biểu mẫu báo cáo đầu ra
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: USERS
+  description: Tài khoản người dùng đăng nhập hệ thống FIMS
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: USERSESSIONS
+  description: Theo dõi tài khoản đang truy cập
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: USERSMENUS
+  description: Phân quyền menu cho từng người dùng
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: USERSMENUS_CLONE
+  description: Bản sao phân quyền menu người dùng
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: USER_DATA_PERMISSION
+  description: Phân quyền dữ liệu của người dùng
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FIMS
+  source_table: CALENDAR
+  description: Lịch hệ thống
+  group: Reference Data
+  reason: Operational/system data — lịch ngày làm việc phục vụ tính hạn nộp.
+- source_system: FIMS
+  source_table: CALENDARMANAGERMENT
+  description: Thay đổi lịch hệ thống
+  group: Reference Data
+  reason: Operational/system data — log thay đổi lịch.
+- source_system: FIMS
+  source_table: DEPARTMENT
+  description: Danh mục phòng ban nội bộ FIMS (phân quyền)
+  group: Reference Data
+  reason: Không có quan hệ FK đến bảng nghiệp vụ nào — phục vụ phân quyền người dùng
+    hệ thống FIMS, không phải thành viên thị trường.
+- source_system: FIMS
+  source_table: SYSVAR
+  description: Tham số cấu hình hệ thống
+  group: Reference Data
+  reason: Operational/system data — config hệ thống.
+- source_system: FMS
+  source_table: BANK_EMPLOY_HISTORY
+  description: Lịch sử thay đổi field nhân sự ngân hàng lưu ký
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGED_FIELD + OLD_VALUE/NEW_VALUE generic, không phải
+    sự kiện nghiệp vụ.
+- source_system: FMS
+  source_table: BANK_HISTORY
+  description: Lịch sử thay đổi field ngân hàng lưu ký
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGED_FIELD + OLD_VALUE/NEW_VALUE generic.
+- source_system: FMS
+  source_table: DISTRIBUTOR_AGENT_HISTORY
+  description: Lịch sử thay đổi hồ sơ đại lý phân phối (nhóm mới)
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGE_DETAIL JSON diff array generic.
+- source_system: FMS
+  source_table: FGBRBUP
+  description: Lịch sử chi tiết VPĐD/CN QLQ NN
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system.
+- source_system: FMS
+  source_table: FG_BR_HISTORY
+  description: Lịch sử thay đổi hồ sơ chi nhánh/VPĐD nước ngoài
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — VALUE_CHANGE/PREV_VALUE (NCLOB/JSON) generic.
+- source_system: FMS
+  source_table: FUNDHISTORY
+  description: Lịch sử thông tin quỹ đầu tư
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system.
+- source_system: FMS
+  source_table: INSDER_RELA_CHG_LOG
+  description: Log thay đổi quan hệ người có liên quan nội bộ
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — PREV_VALUE/VALUE_CHANGE + SNAPSHOT_JSON generic, khác
+    MB_CHANGE (không có cột số liệu tường minh).
+- source_system: FMS
+  source_table: INSIDER_CHG_LOG
+  description: Log thay đổi thông tin cổ đông nội bộ
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — PREV_VALUE/VALUE_CHANGE/SNAPSHOT_JSON generic.
+- source_system: FMS
+  source_table: OTHER_AGENT_HISTORY
+  description: Lịch sử thay đổi hồ sơ đại lý khác
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGE_DETAIL JSON diff array generic.
+- source_system: FMS
+  source_table: PENSION_AGENT_HISTORY
+  description: Lịch sử thay đổi hồ sơ đại lý hưu trí
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGE_DETAIL + EVENT_PAYLOAD (JSON) generic.
+- source_system: FMS
+  source_table: PENSION_PROVIDER_HISTORY
+  description: Lịch sử thay đổi hồ sơ tổ chức cung cấp dịch vụ hưu trí
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGE_DETAIL generic.
+- source_system: FMS
+  source_table: SECHISTORY
+  description: Lịch sử thông tin công ty QLQ
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
+    kiện nghiệp vụ.
+- source_system: FMS
+  source_table: STF_FG_BRCH_HISTORY
+  description: Lịch sử thay đổi hồ sơ nhân sự chi nhánh/VPĐD nước ngoài
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGED_FIELD + OLD_VALUE/NEW_VALUE generic.
+- source_system: FMS
+  source_table: STF_REP_OFFICE_HISTORY
+  description: Lịch sử thay đổi hồ sơ nhân sự VPĐD nước ngoài
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — PREV_VALUE/VALUE_CHANGE generic.
+- source_system: FMS
+  source_table: TLPRHISTORY
+  description: Lịch sử thay đổi nhân sự QLQ
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system.
+- source_system: FMS
+  source_table: TRANSFER_AGENT_HISTORY
+  description: Lịch sử thay đổi hồ sơ đại lý chuyển nhượng
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — CHANGE_DETAIL JSON diff array generic.
+- source_system: FMS
+  source_table: TRS_FER_INDER_CHG_LOG
+  description: Log thay đổi cổ đông/người nội bộ đại lý chuyển nhượng
+  group: Audit Log nguồn
+  reason: Audit Log nguồn — PREV_VALUE/VALUE_CHANGE/SNAPSHOT_JSON generic.
+- source_system: FMS
+  source_table: STAKE
+  description: Danh sách các bên liên quan của công ty QLQ
+  group: Chưa có cột
+  reason: Chưa có thông tin cột nguồn — chờ thiết kế.
+- source_system: FMS
+  source_table: AUDIT_FIRM_REMINDER_ATTACHMENT
+  description: File đính kèm công văn nhắc nhở kiểm toán
+  group: File Attachment
+  reason: Chỉ FILE_NAME/FILE_PATH/FILE_SIZE — pure con trỏ file, không có attribute
+    nghiệp vụ khác.
+- source_system: FMS
+  source_table: DOCUMENT
+  description: Tài liệu lưu trữ trong thư mục
+  group: File Attachment
+  reason: FILE_DATA + metadata, chỉ FK đến FOLDER (container) — không có attribute
+    nghiệp vụ độc lập.
+- source_system: FMS
+  source_table: GUIDE_FILE
+  description: Tài liệu hướng dẫn nghiệp vụ theo đối tượng áp dụng
+  group: File Attachment
+  reason: Metadata mô tả file hướng dẫn — không có attribute nghiệp vụ độc lập ngoài
+    file.
+- source_system: FMS
+  source_table: DT_SC_AGENCY
+  description: Gán đại lý phân phối cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system, cùng nhóm với DTSCOPE đã có.
+- source_system: FMS
+  source_table: DT_SC_AUDIT_FIRM
+  description: Gán công ty kiểm toán cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: DT_SC_DISTRIBUTOR_AGENT
+  description: Gán đại lý phân phối (nhóm mới) cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: DT_SC_OTHER_AGENT
+  description: Gán đại lý khác cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: DT_SC_PENSION_AGENT
+  description: Gán đại lý hưu trí cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: DT_SC_PENSION_FUND
+  description: Gán quỹ hưu trí cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: DT_SC_PENSION_PROVIDER
+  description: Gán tổ chức cung cấp dịch vụ hưu trí cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: DT_SC_SEC
+  description: Gán công ty QLQ cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: DT_SC_TRANSFER_AGENT
+  description: Gán đại lý chuyển nhượng cho cấu hình phân quyền dữ liệu
+  group: Hệ thống / Phân quyền
+  reason: Data scope permission — operational/system.
+- source_system: FMS
+  source_table: GROUPS
+  description: Danh mục nhóm người dùng
+  group: Hệ thống / Phân quyền
+  reason: RBAC ứng dụng — operational/system, cùng nhóm với ROLES/USERS đã có.
+- source_system: FMS
+  source_table: GROUP_ROLES
+  description: Gán vai trò cho nhóm người dùng
+  group: Hệ thống / Phân quyền
+  reason: RBAC ứng dụng — operational/system, cùng nhóm với ROLESMENUS đã có.
+- source_system: FMS
+  source_table: GROUP_USERS
+  description: Gán người dùng vào nhóm
+  group: Hệ thống / Phân quyền
+  reason: RBAC ứng dụng — operational/system.
+- source_system: FMS
+  source_table: USER_RPT_I
+  description: Phân quyền truy cập biểu mẫu báo cáo đầu vào cho user
+  group: Hệ thống / Phân quyền
+  reason: RBAC ứng dụng — cùng nhóm với USERRPTO đã có.
+- source_system: FMS
+  source_table: CALENDAR
+  description: Danh sách lịch làm việc và lịch nghỉ
+  group: Isolated
+  reason: Không có quan hệ FK đến bảng nghiệp vụ nào trong scope.
+- source_system: FMS
+  source_table: CERTFCATE
+  description: Danh sách chứng thư số của thành viên thị trường
+  group: Isolated
+  reason: Không có quan hệ FK đến bảng nghiệp vụ nào trong scope.
+- source_system: FMS
+  source_table: FOLDER
+  description: Thư mục tổ chức tài liệu
+  group: Isolated
+  reason: Không có FK inbound/outbound đến bảng nghiệp vụ nào trong scope.
+- source_system: FMS
+  source_table: LOCATION
+  description: Danh sách tỉnh/thành phố
+  group: Isolated
+  reason: Reference data địa giới thu thập từ ECAT — không collect tại FMS.
+- source_system: FMS
+  source_table: PARVALUE
+  description: Danh sách mệnh giá cổ phần
+  group: Isolated
+  reason: Không có quan hệ FK đến bảng nghiệp vụ nào trong scope.
+- source_system: FMS
+  source_table: SYSVAR
+  description: Danh sách tham số cấu hình hệ thống
+  group: Isolated
+  reason: Không có quan hệ FK đến bảng nghiệp vụ nào trong scope.
+- source_system: FMS
+  source_table: AGEN_TF_MBF
+  description: Gán đại lý phân phối cho thành viên quỹ đầu tư
+  group: Junction
+  reason: Pure junction 2 FK (AGENCIES, MB_FUND) — không có business attribute; denormalize
+    trên Investment Fund Investor Membership nếu cần.
+- source_system: FMS
+  source_table: BRA_BUSINESS
+  description: Ngành nghề kinh doanh của chi nhánh CTQLQ
+  group: Junction
+  reason: Pure junction 2 FK (BRANCHS, BUSINESS) — cùng pattern SEC_BUSINESS/FG_BUSINESS
+    đã denormalize.
+- source_system: FMS
+  source_table: EVENT_TYPE_AGENCY_TYPE
+  description: Loại sự vụ áp dụng cho loại đại lý
+  group: Junction
+  reason: Pure junction 2 FK (EVENT_TYPE, AGENCY_TYPE) — không có business attribute.
+- source_system: FMS
+  source_table: FUD_AG_AGT
+  description: Bảng trung gian quỹ, loại đại lý và đại lý phân phối (kèm cấp trên)
+  group: Junction
+  reason: Không có attribute nghiệp vụ ngoài 4 FK — mở rộng STRUCT `distribution_agents`
+    trên Investment Fund đã có từ AGEN_FUNDS (xem 7d).
+- source_system: FMS
+  source_table: FUD_TAGT
+  description: Liên kết quỹ với loại đại lý chuyển nhượng
+  group: Junction
+  reason: Pure junction 2 FK (FUNDS, AGENCY_TYPE) — không có business attribute.
+- source_system: FMS
+  source_table: FUND_TL_PRO
+  description: Người hành nghề liên quan đến quỹ đầu tư
+  group: Junction
+  reason: Pure junction 2 FK (FUNDS, TL_PROFILES) — không có business attribute.
+- source_system: FMS
+  source_table: JOB_TL_PRO
+  description: Chức danh công việc của người hành nghề
+  group: Junction
+  reason: Pure junction 2 FK (JOBS, TL_PROFILES) — không có business attribute.
+- source_system: FMS
+  source_table: SEC_FUND_MANAGER
+  description: Gán người hành nghề làm người quản lý quỹ được chỉ định
+  group: Junction
+  reason: Pure junction 2 FK (SECURITIES, TL_PROFILES) — không có business attribute.
+- source_system: FMS
+  source_table: CONFIG
+  description: Cấu hình mapping cột nguồn-đích cho ETL/đồng bộ dữ liệu
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FMS
+  source_table: CONFIG_CONVERT_DATA
+  description: Cấu hình migration dữ liệu từ DB cũ sang DB mới theo báo cáo/kỳ
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FMS
+  source_table: DYNAMIC_COLUMNS
+  description: Metadata mô tả cột của bảng động do người dùng tự định nghĩa
+  group: Operational / System
+  reason: Operational/system data — metadata catalog kỹ thuật ứng dụng.
+- source_system: FMS
+  source_table: DYNAMIC_TABLES
+  description: Metadata khai báo bảng động do người dùng tự tạo trong schema
+  group: Operational / System
+  reason: Operational/system data — metadata catalog kỹ thuật ứng dụng.
+- source_system: FMS
+  source_table: ERROR_LOG
+  description: Log lỗi hệ thống theo module/action/user
+  group: Operational / System
+  reason: Operational/system data — log kỹ thuật, không phải sự kiện nghiệp vụ.
+- source_system: FMS
+  source_table: FLAG_RUN_CF
+  description: Cấu hình tham số chạy job theo kỳ báo cáo
+  group: Operational / System
+  reason: Operational/system data — config vận hành job/ETL.
+- source_system: FMS
+  source_table: FLYWAY_SCHEMA_HISTORY
+  description: Bảng hệ thống Flyway quản lý version migration schema DB
+  group: Operational / System
+  reason: Operational/system data — bảng kỹ thuật framework migration.
+- source_system: FMS
+  source_table: FMS_INDICATOR_CATALOG
+  description: Danh mục định nghĩa chỉ tiêu dữ liệu báo cáo
+  group: Operational / System
+  reason: Operational/system data — metadata catalog kỹ thuật, phục vụ vận hành hệ
+    thống báo cáo.
+- source_system: FMS
+  source_table: FMS_SHEDLOCK
+  description: Bảng kỹ thuật ShedLock quản lý distributed lock cho scheduled job
+  group: Operational / System
+  reason: Operational/system data — cơ chế khóa kỹ thuật ứng dụng.
+- source_system: FMS
+  source_table: INTEGRATION_CONFIG
+  description: Cấu hình tích hợp giữa FMS và các phân hệ khác (TTHC, SCMS, IDS...)
+  group: Operational / System
+  reason: Operational/system data — config kỹ thuật tích hợp hệ thống.
+- source_system: FMS
+  source_table: LOG_CONVERT_DATA
+  description: Log tiến trình convert dữ liệu báo cáo theo kỳ/sheet
+  group: Operational / System
+  reason: Operational/system data — log kỹ thuật ETL/migration.
+- source_system: FMS
+  source_table: LOG_CONVERT_DATA_2
+  description: Log tổng hợp kết quả convert dữ liệu theo báo cáo/năm
+  group: Operational / System
+  reason: Operational/system data — log kỹ thuật ETL/migration dạng tổng hợp.
+- source_system: FMS
+  source_table: FMS_REFERENCE_CATALOG
+  description: Danh mục nguồn tham chiếu (Code + Name + Description)
+  group: Reference Data
+  reason: Không có FK inbound từ bảng nghiệp vụ — chỉ phục vụ FMS_INDICATOR_CATALOG
+    (metadata kỹ thuật).
+- source_system: FMS
+  source_table: DISTRIBUTOR_LOCATION
+  description: Địa điểm giao dịch/chi nhánh của Securities Distribution Agent
+  group: Shared Entity
+  reason: Không thiết kế Atomic entity riêng theo quyết định review 2026-07-03 — ADDRESS/PHONE
+    denormalize vào IP Postal Address + IP Electronic Address gắn với Securities Distribution
+    Agent (cha). ITEM_NAME chờ xác nhận ở LLD (xem Tier6 T6-04).
+- source_system: FMS
+  source_table: BRCHBUP
+  description: Lịch sử chi tiết CN/VPĐD công ty QLQ trong nước
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — không phải entity nghiệp vụ Atomic.
+- source_system: FMS
+  source_table: FACTOR_SNAPSHOT
+  description: Snapshot dữ liệu đánh giá dạng JSON
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — chỉ ID + SNAPSHOT_JSON blob, không có cột nghiệp vụ structured.
+- source_system: FMS
+  source_table: FNDBUP
+  description: Bản ghi chi tiết lịch sử quỹ đầu tư
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — không phải entity nghiệp vụ Atomic.
+- source_system: FMS
+  source_table: FUND_BUP
+  description: Bản backup snapshot toàn bộ hồ sơ quỹ tại thời điểm thay đổi
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — cột trùng lặp với FUNDS + JSON snapshot list liên quan,
+    không phải entity độc lập.
+- source_system: FMS
+  source_table: RNK_FACT_HISTORY
+  description: Lịch sử lưu bảng tính đánh giá xếp loại theo kỳ
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — DATA_LABEL/CELLS_META là JSON blob cấu hình bảng tính,
+    không phải fact số liệu structured.
+- source_system: FMS
+  source_table: SECBUP
+  description: Lịch sử chi tiết công ty QLQ (bản trước/sau)
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — không phải entity nghiệp vụ Atomic.
+- source_system: FMS
+  source_table: SHEET_OUT_BAK_BMBCDR
+  description: Cấu hình layout sheet Excel báo cáo tổng hợp
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — toàn bộ là blob cấu hình UI/layout.
+- source_system: FMS
+  source_table: TLPROBUP
+  description: Chi tiết lịch sử nhân sự (bản trước/sau)
+  group: Snapshot nguồn
+  reason: Snapshot nguồn — không phải entity nghiệp vụ Atomic.
+- source_system: FMS
+  source_table: DTSCBMN
+  description: Phân quyền dữ liệu NH LKGS cho chuyên viên
+  group: System / Auth
+  reason: Operational/system data — phân quyền dữ liệu.
+- source_system: FMS
+  source_table: DTSCFND
+  description: Phân quyền dữ liệu quỹ đầu tư cho chuyên viên
+  group: System / Auth
+  reason: Operational/system data — phân quyền dữ liệu.
+- source_system: FMS
+  source_table: DTSCFR
+  description: Phân quyền dữ liệu VPĐD QLQ NN cho chuyên viên
+  group: System / Auth
+  reason: Operational/system data — phân quyền dữ liệu.
+- source_system: FMS
+  source_table: DTSCOPE
+  description: Phạm vi phân quyền dữ liệu theo đối tượng
+  group: System / Auth
+  reason: Operational/system data — phân quyền dữ liệu.
+- source_system: FMS
+  source_table: MENUS
+  description: Danh mục chức năng giao diện FMS
+  group: System / Auth
+  reason: Operational/system data — menu UI.
+- source_system: FMS
+  source_table: REFRESHTOKEN
+  description: Token đăng nhập phiên làm việc
+  group: System / Auth
+  reason: Operational/system data — session token xác thực.
+- source_system: FMS
+  source_table: ROLES
+  description: Nhóm quyền chức năng trong hệ thống FMS
+  group: System / Auth
+  reason: Operational/system data — RBAC ứng dụng.
+- source_system: FMS
+  source_table: ROLESMENUS
+  description: Phân quyền menu theo nhóm quyền
+  group: System / Auth
+  reason: Operational/system data — mapping menu-nhóm quyền.
+- source_system: FMS
+  source_table: USERRPTO
+  description: Phân quyền người dùng UBCK với báo cáo đầu ra
+  group: System / Auth
+  reason: Operational/system data — phân quyền xem báo cáo.
+- source_system: FMS
+  source_table: USERS
+  description: Quản lý người dùng hệ thống FMS
+  group: System / Auth
+  reason: Operational/system data — không có giá trị nghiệp vụ.
+- source_system: FMS
+  source_table: USERSESSIONS
+  description: Quản lý tài khoản đang truy cập hệ thống
+  group: System / Auth
+  reason: Operational/system data — session tracking.
+- source_system: FMS
+  source_table: USERSMENUS
+  description: Phân quyền chức năng cho người dùng
+  group: System / Auth
+  reason: Operational/system data — phân quyền cá nhân.
+- source_system: FMS
+  source_table: CHART_OUT
+  description: Cấu hình hiển thị biểu đồ cho báo cáo tổng hợp đầu ra
+  group: UI Metadata
+  reason: Cấu hình UI — thiết lập hiển thị, không có giá trị nghiệp vụ.
+- source_system: FMS
+  source_table: NOTIFICATION
+  description: Thông báo trong hệ thống FMS
+  group: UI Metadata
+  reason: Operational/notification data.
+- source_system: FMS
+  source_table: SECURITIESREPORT
+  description: Thiết lập hiển thị báo cáo công ty QLQ trên FMS
+  group: UI Metadata
+  reason: Cấu hình UI — thiết lập hiển thị, không có giá trị nghiệp vụ.
+- source_system: FMS
+  source_table: SYSEMAIL
+  description: Nội dung trao đổi thông tin (template email hệ thống)
+  group: UI Metadata
+  reason: Operational/system data — template email ứng dụng.
+- source_system: FMS
+  source_table: TABSINFO
+  description: Thiết lập hiển thị dữ liệu theo tab giao diện
+  group: UI Metadata
+  reason: Cấu hình UI — thiết lập hiển thị, không có giá trị nghiệp vụ.
+- source_system: FMS
+  source_table: AUDITOR
+  description: Kiểm toán viên hành nghề trực thuộc công ty kiểm toán
+  group: Xử lý luồng khác
+  reason: Dữ liệu gốc tại IDS — thu thập tại phân hệ IDS, không thiết kế lại tại FMS
+    (quyết định review 2026-07-03). Cascade drop từ AUDIT_FIRM.
+- source_system: FMS
+  source_table: AUDIT_FIRM
+  description: Công ty kiểm toán được UBCKNN chấp thuận
+  group: Xử lý luồng khác
+  reason: Dữ liệu gốc tại IDS — thu thập tại phân hệ IDS, không thiết kế lại tại FMS
+    (quyết định review 2026-07-03).
+- source_system: FMS
+  source_table: AUDIT_FIRM_REMINDER
+  description: Văn bản/công văn nhắc nhở công ty kiểm toán hoặc kiểm toán viên
+  group: Xử lý luồng khác
+  reason: Dữ liệu gốc tại IDS — thu thập tại phân hệ IDS, không thiết kế lại tại FMS
+    (quyết định review 2026-07-03). Cascade drop từ AUDIT_FIRM.
+- source_system: FMS
+  source_table: EVENT_TYPE_DATA_PERIOD
+  description: Cấu hình kỳ dữ liệu và lịch gửi báo cáo theo từng loại sự vụ
+  group: Xử lý luồng khác
+  reason: Cấu hình lịch/rule báo cáo định kỳ — cùng nhóm với RPT_* đã xử lý ở luồng
+    khác.
+- source_system: FMS
+  source_table: FUND_REPORT
+  description: Báo cáo định kỳ NAV/tổng tài sản/tỷ trọng danh mục của quỹ đầu tư
+  group: Xử lý luồng khác
+  reason: Cấu trúc kỳ báo cáo (PERIOD_TYPE + PERIOD_REPORT) cùng nhóm với luồng báo
+    cáo định kỳ RPT_* đã xử lý ở luồng khác (quyết định review 2026-07-03).
+- source_system: FMS
+  source_table: INVES_REPORT
+  description: Báo cáo định kỳ quy mô/giá trị danh mục ủy thác của nhà đầu tư ủy thác
+  group: Xử lý luồng khác
+  reason: Cấu trúc kỳ báo cáo (PERIOD_TYPE + PERIOD_REPORT) cùng nhóm với luồng báo
+    cáo định kỳ RPT_* đã xử lý ở luồng khác (quyết định review 2026-07-03).
+- source_system: FMS
+  source_table: RPT_HTORY
+  description: Lịch sử thay đổi phiên bản biểu mẫu báo cáo đầu vào
+  group: Xử lý luồng khác
+  reason: Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: RPT_MB_HS
+  description: Lịch sử thay đổi trạng thái báo cáo thành viên
+  group: Xử lý luồng khác
+  reason: Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic
+    (quyết định review 2026-07-02).
+- source_system: FMS
+  source_table: RPT_MEMBER
+  description: Báo cáo định kỳ của thành viên thị trường nộp lên UBCK
+  group: Xử lý luồng khác
+  reason: Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic
+    (quyết định review 2026-07-02).
+- source_system: FMS
+  source_table: RPT_PD_SHT
+  description: Bảng trung gian SHEET và RPT_PERIOD
+  group: Xử lý luồng khác
+  reason: Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: RPT_PERIOD
+  description: Kỳ báo cáo định kỳ của thành viên thị trường
+  group: Xử lý luồng khác
+  reason: Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic
+    (quyết định review 2026-07-02).
+- source_system: FMS
+  source_table: RPT_PROCESS
+  description: Lịch sử xử lý báo cáo thành viên (comment, file import)
+  group: Xử lý luồng khác
+  reason: Thuộc luồng xử lý báo cáo định kỳ (RPT_MEMBER) — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: RPT_TEMP
+  description: Danh mục biểu mẫu báo cáo đầu vào (cơ sở pháp lý, loại báo cáo)
+  group: Xử lý luồng khác
+  reason: Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: RPT_TP_OUT
+  description: Danh mục biểu mẫu báo cáo tổng hợp đầu ra
+  group: Xử lý luồng khác
+  reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: RPT_VALUES
+  description: Dữ liệu import báo cáo theo ô dữ liệu (cell)
+  group: Xử lý luồng khác
+  reason: Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic
+    (quyết định review 2026-07-02).
+- source_system: FMS
+  source_table: SELF_SET_PD
+  description: Thành viên tự thiết lập kỳ gửi báo cáo
+  group: Xử lý luồng khác
+  reason: Thuộc luồng báo cáo định kỳ — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: SHEET
+  description: Danh sách sheet trong biểu mẫu báo cáo đầu vào
+  group: Xử lý luồng khác
+  reason: Thuộc luồng biểu mẫu báo cáo định kỳ — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: SHEET_CELL_CONFIG
+  description: Cấu hình từng ô (cell) trong biểu mẫu báo cáo
+  group: Xử lý luồng khác
+  reason: Con trực tiếp của SHEET — cùng nhóm biểu mẫu báo cáo đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: SHEET_OUT
+  description: Danh sách sheet trong biểu mẫu báo cáo đầu ra
+  group: Xử lý luồng khác
+  reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: ST_TRGT_OUT
+  description: Cấu hình công thức tính giá trị đầu ra theo nhóm đối tượng mục tiêu
+  group: Xử lý luồng khác
+  reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: TOT_ST_TG
+  description: Bảng trung gian nhóm mục tiêu và mục tiêu con báo cáo tổng hợp
+  group: Xử lý luồng khác
+  reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
+- source_system: FMS
+  source_table: TP_OUT_HTORY
+  description: Lịch sử thay đổi phiên bản biểu mẫu báo cáo tổng hợp đầu ra
+  group: Xử lý luồng khác
+  reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
 - source_system: IDS
   source_table: '`company_change_role_his`'
   description: Lịch sử thay đổi vai trò user theo công ty
@@ -131,6 +1034,21 @@ entries:
   group: '`Reference Data`'
   reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành FK đến shared Geographic
     Area (PROVINCE)
+- source_system: KNT
+  source_table: MSG_PACKET
+  description: Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính (nội
+    dung XML, trạng thái gửi/nhận)
+  group: Operational / System
+  reason: Operational/system data — bảng quản lý lifecycle gói tin truyền nhận, không
+    có giá trị nghiệp vụ. Là FK reference chung của toàn bộ entity Tier 1.
+- source_system: KNT
+  source_table: TAX_REG_ADDRESS_TYPE
+  description: Loại địa chỉ trong thông tin đăng ký thuế của doanh nghiệp (trụ sở/chi
+    nhánh/địa điểm kinh doanh)
+  group: Shared Entity
+  reason: Không thiết kế Atomic entity riêng — ADDRESS/WARD/DISTRICT/PROVINCE/COUNTRY
+    denormalize vào IP Postal Address, EMAIL/PHONE/FAX/WEBSITE denormalize vào IP
+    Electronic Address, gắn với Tax Registration (cha).
 - source_system: NHNCK
   source_table: CERTIFICATE_DEPARTMENTS
   description: Liên kết phòng ban với loại chứng chỉ
@@ -385,6 +1303,451 @@ entries:
   description: Nhật ký gửi SMS trong hệ thống
   group: System / Log
   reason: Operational log.
+- source_system: SCMS
+  source_table: BANK_HISTORY
+  description: Lịch sử ngân hàng đối tác
+  group: Audit Log nguồn
+  reason: Audit log nguồn.
+- source_system: SCMS
+  source_table: SC_FIRM_ADHOC_REPORT_HISTORY
+  description: Lịch sử báo cáo đột xuất
+  group: Audit Log nguồn
+  reason: Audit log nguồn.
+- source_system: SCMS
+  source_table: SC_FIRM_DELETION_HISTORY
+  description: Lịch sử xóa hồ sơ CTCK
+  group: Audit Log nguồn
+  reason: Audit log kỹ thuật — không có instance nghiệp vụ.
+- source_system: SCMS
+  source_table: SC_FIRM_FOREIGN_BRANCH_HISTORY
+  description: Lịch sử chi nhánh CTCK nước ngoài
+  group: Audit Log nguồn
+  reason: Cấu trúc BEFORE_DATA_JSON/AFTER_DATA_JSON + ACTION — Audit log nguồn.
+- source_system: SCMS
+  source_table: SC_FIRM_FOREIGN_BRANCH_PERSONNEL_HISTORY
+  description: Lịch sử nhân sự chi nhánh NN
+  group: Audit Log nguồn
+  reason: Audit log nguồn.
+- source_system: SCMS
+  source_table: SC_FIRM_FOREIGN_REP_OFFICE_HISTORY
+  description: Lịch sử VPĐD CTCK nước ngoài
+  group: Audit Log nguồn
+  reason: Cấu trúc BEFORE_DATA_JSON/AFTER_DATA_JSON + ACTION — Audit log nguồn.
+- source_system: SCMS
+  source_table: SC_FIRM_INSIDER_RELATION_HISTORY
+  description: Lịch sử người nội bộ CTCK
+  group: Audit Log nguồn
+  reason: Audit log nguồn — CHANGE_TYPE + CONTENT generic.
+- source_system: SCMS
+  source_table: SC_FIRM_PERIODIC_REPORT_HISTORY
+  description: Lịch sử nộp báo cáo định kỳ
+  group: Audit Log nguồn
+  reason: Audit log nguồn ghi trạng thái từng action.
+- source_system: SCMS
+  source_table: SC_FIRM_PROFILE_HISTORY
+  description: Lịch sử phê duyệt hồ sơ CTCK
+  group: Audit Log nguồn
+  reason: Cấu trúc BEFORE_DATA/AFTER_DATA blob generic + LINKED_TABLE — Audit log
+    nguồn.
+- source_system: SCMS
+  source_table: SYS_AUDIT_LOG
+  description: Log kiểm tra hệ thống tổng quát
+  group: Audit Log nguồn
+  reason: Cấu trúc OLD_DATA/NEW_DATA JSON + ACTION_TYPE — Audit log kỹ thuật.
+- source_system: SCMS
+  source_table: FORM_INDICATOR_DATA_SOURCE
+  description: Nguồn dữ liệu chỉ tiêu biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_INDICATOR_FIELD_META
+  description: Metadata trường chỉ tiêu biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_INDICATOR_INPUT
+  description: Dữ liệu nhập chỉ tiêu biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_INDICATOR_REFERENCE_VALUE
+  description: Giá trị tham chiếu chỉ tiêu biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_REPORT
+  description: Biểu mẫu báo cáo
+  group: Form Metadata
+  reason: Loại theo yêu cầu người thiết kế — form metadata không cần trên Atomic.
+- source_system: SCMS
+  source_table: FORM_REPORT_DEEP_CONFIG
+  description: Cấu hình chi tiết biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_REPORT_HISTORY
+  description: Lịch sử phiên bản biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_REPORT_PERIODIC
+  description: Cấu hình kỳ báo cáo của biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại theo yêu cầu người thiết kế.
+- source_system: SCMS
+  source_table: FORM_ROW_HEADER
+  description: Tiêu đề hàng biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_ROW_HEADER_COLUMN
+  description: Cột tiêu đề hàng biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_SHEET
+  description: Danh sách sheet trong biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_SHEET_CELL
+  description: Ô chỉ tiêu với vị trí hàng/cột trong sheet
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_SHEET_COLUMN
+  description: Định nghĩa cột trong sheet biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: FORM_SHEET_ROW
+  description: Định nghĩa hàng trong sheet biểu mẫu
+  group: Form Metadata
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: MEMBER_REPORT
+  description: Báo cáo đã nộp của đơn vị thành viên
+  group: Form Metadata
+  reason: Loại theo yêu cầu người thiết kế.
+- source_system: SCMS
+  source_table: REPORT_CELL_VALUE
+  description: Giá trị dữ liệu từng ô báo cáo
+  group: Form Metadata
+  reason: Loại theo yêu cầu người thiết kế.
+- source_system: SCMS
+  source_table: DISCLOSURE_NEWS
+  description: Tin tức công bố thông tin
+  group: Isolated
+  reason: Không tìm thấy FK rõ ràng đến SC_FIRM_INFO — cần xác nhận thêm.
+- source_system: SCMS
+  source_table: DISCLOSURE_NEWS_FILE
+  description: Tệp đính kèm tin tức CBTT
+  group: Isolated
+  reason: Cascade từ DISCLOSURE_NEWS chưa xác định.
+- source_system: SCMS
+  source_table: SMSNEWS
+  description: Dữ liệu tin tức từ schema SMS cũ
+  group: Isolated
+  reason: Schema SMS cũ, không có FK đến bảng nghiệp vụ SCMS.
+- source_system: SCMS
+  source_table: SMSOFFEROFSTOCKS
+  description: Dữ liệu đề nghị cổ phiếu từ schema SMS cũ
+  group: Isolated
+  reason: Schema SMS cũ, isolated.
+- source_system: SCMS
+  source_table: SMSREPORTDATA
+  description: Dữ liệu báo cáo từ schema SMS cũ
+  group: Isolated
+  reason: Schema SMS cũ, isolated.
+- source_system: SCMS
+  source_table: SMSTLLOG
+  description: Log tăng trưởng từ schema SMS cũ
+  group: Isolated
+  reason: Schema SMS cũ, isolated.
+- source_system: SCMS
+  source_table: SMSVW_SECURITIES
+  description: View danh sách chứng khoán từ schema SMS
+  group: Isolated
+  reason: View/shadow từ schema SMS cũ.
+- source_system: SCMS
+  source_table: SMSVW_TLPROFILES
+  description: View hồ sơ TL từ schema SMS
+  group: Isolated
+  reason: View/shadow từ schema SMS cũ.
+- source_system: SCMS
+  source_table: ALERT_RUN
+  description: Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm
+  group: Loại sau review
+  reason: Không có trong danh sách entity đã review — entity operational batch execution,
+    không có giá trị nghiệp vụ độc lập cần khai thác trên Atomic.
+- source_system: SCMS
+  source_table: RISK_REPORTING_PERIOD_SC_FIRM
+  description: Gán kỳ đánh giá rủi ro cho từng CTCK cụ thể
+  group: Loại sau review
+  reason: Không có trong danh sách entity đã review — quan hệ gán kỳ được xử lý trực
+    tiếp qua FK trên RISK_SUMMARY và RISK_SCORING_SC_FIRM_DETAIL, không cần entity
+    trung gian.
+- source_system: SCMS
+  source_table: RISK_SUMMARY_DETAIL
+  description: Chi tiết điểm tổng hợp rủi ro theo từng nhóm chỉ tiêu CAMEL
+  group: Loại sau review
+  reason: Không có trong danh sách entity đã review — thông tin điểm nhóm CAMEL có
+    thể suy ra từ RISK_SCORING_SC_FIRM_DETAIL group by RISK_INDICATOR_GROUP.
+- source_system: SCMS
+  source_table: BANK_PERIODIC_REPORT
+  description: Báo cáo định kỳ ngân hàng đối tác
+  group: Operational / System
+  reason: Cấu trúc cột chưa đủ rõ để thiết kế entity — cần khảo sát thêm.
+- source_system: SCMS
+  source_table: BANK_PERIODIC_REPORT_HISTORY
+  description: Lịch sử báo cáo định kỳ ngân hàng
+  group: Operational / System
+  reason: Cascade từ BANK_PERIODIC_REPORT chưa xác định.
+- source_system: SCMS
+  source_table: LNK_EVENT_TYPE_FORM
+  description: Liên kết loại sự kiện và biểu mẫu
+  group: Operational / System
+  reason: Cascade từ FORM_REPORT đã loại.
+- source_system: SCMS
+  source_table: LNK_FUNCTION_USER
+  description: Liên kết chức năng và người dùng
+  group: Operational / System
+  reason: ACL metadata.
+- source_system: SCMS
+  source_table: LNK_FUNCTION_USER_GROUP
+  description: Liên kết chức năng và nhóm người dùng
+  group: Operational / System
+  reason: ACL metadata.
+- source_system: SCMS
+  source_table: LNK_SC_FIRM_REPORT
+  description: Liên kết CTCK và báo cáo định kỳ
+  group: Operational / System
+  reason: Operational link phục vụ quy trình nộp báo cáo tại nguồn.
+- source_system: SCMS
+  source_table: LNK_SC_FIRM_STATUS_REPORT
+  description: Liên kết trạng thái CTCK và loại báo cáo
+  group: Operational / System
+  reason: Operational config.
+- source_system: SCMS
+  source_table: LNK_SERVICE_SC_FIRM_REPORT
+  description: Liên kết dịch vụ, CTCK và báo cáo
+  group: Operational / System
+  reason: Operational config.
+- source_system: SCMS
+  source_table: LNK_USER_BANK
+  description: Liên kết người dùng và ngân hàng
+  group: Operational / System
+  reason: User-bank assignment operational.
+- source_system: SCMS
+  source_table: LNK_USER_GROUP
+  description: Liên kết người dùng và nhóm
+  group: Operational / System
+  reason: User group membership operational.
+- source_system: SCMS
+  source_table: LNK_USER_GROUP_REPORT
+  description: Liên kết nhóm người dùng và báo cáo
+  group: Operational / System
+  reason: ACL report access.
+- source_system: SCMS
+  source_table: LNK_USER_REPORT
+  description: Liên kết người dùng và báo cáo
+  group: Operational / System
+  reason: ACL report access.
+- source_system: SCMS
+  source_table: LNK_USER_SC_FIRM
+  description: Liên kết người dùng và CTCK
+  group: Operational / System
+  reason: User-firm assignment operational.
+- source_system: SCMS
+  source_table: MESSAGE
+  description: Tin nhắn nội bộ hệ thống
+  group: Operational / System
+  reason: Internal messaging — operational.
+- source_system: SCMS
+  source_table: MESSAGE_RECIPIENT
+  description: Người nhận tin nhắn nội bộ
+  group: Operational / System
+  reason: Cascade từ MESSAGE operational.
+- source_system: SCMS
+  source_table: NOTIFICATION
+  description: Thông báo hệ thống chung
+  group: Operational / System
+  reason: Operational notification — không có entity nghiệp vụ độc lập.
+- source_system: SCMS
+  source_table: PERMISSION_DATA
+  description: Phân quyền truy cập dữ liệu
+  group: Operational / System
+  reason: ACL/security metadata.
+- source_system: SCMS
+  source_table: PERMISSION_INPUT_REPORT
+  description: Phân quyền nhập liệu báo cáo
+  group: Operational / System
+  reason: ACL metadata.
+- source_system: SCMS
+  source_table: PERMISSION_INPUT_REPORT_EVENT
+  description: Phân quyền sự kiện nhập liệu báo cáo
+  group: Operational / System
+  reason: ACL metadata.
+- source_system: SCMS
+  source_table: PERMISSION_OUTPUT_REPORT
+  description: Phân quyền khai thác báo cáo
+  group: Operational / System
+  reason: ACL metadata.
+- source_system: SCMS
+  source_table: PERMISSION_OUTPUT_REPORT_FORM
+  description: Phân quyền biểu mẫu khai thác báo cáo
+  group: Operational / System
+  reason: ACL metadata.
+- source_system: SCMS
+  source_table: SCMS_SHEDLOCK
+  description: Khóa phân tán tác vụ định kỳ (Shedlock)
+  group: Operational / System
+  reason: Operational lock — không có giá trị nghiệp vụ.
+- source_system: SCMS
+  source_table: SCMS_SYSTEM_PARAM
+  description: Tham số cấu hình hệ thống SCMS
+  group: Operational / System
+  reason: System configuration.
+- source_system: SCMS
+  source_table: SCMS_WORKING_DAY
+  description: Ngày làm việc trong hệ thống SCMS
+  group: Operational / System
+  reason: Operational calendar.
+- source_system: SCMS
+  source_table: SSC_NOTIFICATION
+  description: Thông báo phát đi từ UBCKNN
+  group: Operational / System
+  reason: Operational notification — không có entity nghiệp vụ độc lập.
+- source_system: SCMS
+  source_table: SSC_NOTIFICATION_RECIPIENT
+  description: Người nhận thông báo UBCKNN
+  group: Operational / System
+  reason: Cascade từ SSC_NOTIFICATION operational.
+- source_system: SCMS
+  source_table: SYS_CONFIG_PARAM
+  description: Tham số cấu hình hệ thống
+  group: Operational / System
+  reason: System configuration.
+- source_system: SCMS
+  source_table: SYS_EXPORT_FULL_01
+  description: Metadata export Oracle DataPump (phần 1)
+  group: Operational / System
+  reason: Oracle internal export metadata.
+- source_system: SCMS
+  source_table: SYS_EXPORT_FULL_02
+  description: Metadata export Oracle DataPump (phần 2)
+  group: Operational / System
+  reason: Oracle internal export metadata.
+- source_system: SCMS
+  source_table: SYS_FUNCTION
+  description: Danh mục chức năng hệ thống (menu/API route)
+  group: Operational / System
+  reason: Application function metadata.
+- source_system: SCMS
+  source_table: SYS_FUNCTION_DETAIL
+  description: Chi tiết chức năng (API endpoint)
+  group: Operational / System
+  reason: Application function metadata.
+- source_system: SCMS
+  source_table: SYS_ORGANIZATION
+  description: Cơ cấu tổ chức nội bộ UBCKNN
+  group: Operational / System
+  reason: Internal org chart — đã có Regulatory Authority Organization Unit từ NHNCK.
+- source_system: SCMS
+  source_table: SYS_USER
+  description: Tài khoản người dùng hệ thống SCMS
+  group: Operational / System
+  reason: Application user account — không phải entity nghiệp vụ.
+- source_system: SCMS
+  source_table: SYS_USER_BACKUP
+  description: Dữ liệu backup tài khoản người dùng
+  group: Operational / System
+  reason: Backup table — không load lên Atomic.
+- source_system: SCMS
+  source_table: SYS_USER_GROUP
+  description: Nhóm người dùng hệ thống
+  group: Operational / System
+  reason: Application user group.
+- source_system: SCMS
+  source_table: SYS_USER_LOGIN_LOG
+  description: Log đăng nhập người dùng hệ thống
+  group: Operational / System
+  reason: Operational security log.
+- source_system: SCMS
+  source_table: SYS_WORKING_CALENDAR
+  description: Lịch làm việc hệ thống
+  group: Operational / System
+  reason: Operational calendar.
+- source_system: SCMS
+  source_table: flyway_schema_history
+  description: Lịch sử cập nhật schema CSDL
+  group: Operational / System
+  reason: DB migration metadata.
+- source_system: SCMS
+  source_table: DIGITAL_CERTIFICATE
+  description: Chứng thư số (metadata PKI xác thực)
+  group: UI Metadata
+  reason: Metadata kỹ thuật PKI — không có instance nghiệp vụ độc lập.
+- source_system: SCMS
+  source_table: DOCUMENT_FOLDER
+  description: Thư mục tài liệu hệ thống
+  group: UI Metadata
+  reason: UI/storage metadata.
+- source_system: SCMS
+  source_table: DOCUMENT_STORAGE
+  description: Lưu trữ tài liệu (file storage)
+  group: UI Metadata
+  reason: File storage metadata.
+- source_system: SCMS
+  source_table: HELP_DOCUMENT
+  description: Tài liệu hỗ trợ người dùng
+  group: UI Metadata
+  reason: UI help content.
+- source_system: SCMS
+  source_table: LEGAL_DOCUMENT_LOOKUP
+  description: Tra cứu văn bản pháp luật
+  group: UI Metadata
+  reason: Reference lookup UI.
+- source_system: SCMS
+  source_table: MEMBER_REPORT_HISTORY
+  description: Lịch sử báo cáo đơn vị thành viên
+  group: UI Metadata
+  reason: Cascade từ MEMBER_REPORT đã loại.
+- source_system: SCMS
+  source_table: MEMBER_REPORT_PROCESSING
+  description: Xử lý báo cáo đơn vị thành viên
+  group: UI Metadata
+  reason: Workflow processing state.
+- source_system: SCMS
+  source_table: OUTPUT_REPORT_EXTRACTION
+  description: Metadata trích xuất báo cáo đầu ra
+  group: UI Metadata
+  reason: Output report engine metadata.
+- source_system: SCMS
+  source_table: OUTPUT_REPORT_EXTRACTION_VALUE
+  description: Giá trị trích xuất báo cáo đầu ra
+  group: UI Metadata
+  reason: Output report engine metadata.
+- source_system: SCMS
+  source_table: REPORT_DYNAMIC_ROW_VALUE
+  description: Giá trị hàng động trong báo cáo
+  group: UI Metadata
+  reason: Dynamic report rendering metadata.
+- source_system: SCMS
+  source_table: REPORT_INPUT_CELL_VALUE
+  description: Giá trị ô nhập liệu báo cáo
+  group: UI Metadata
+  reason: Cascade từ MEMBER_REPORT đã loại.
+- source_system: SCMS
+  source_table: REPORT_INPUT_SUBMISSION
+  description: Lần nộp báo cáo nhập liệu
+  group: UI Metadata
+  reason: Workflow submission state — operational.
+- source_system: SCMS
+  source_table: REPORT_INPUT_SUBMISSION_FILE
+  description: Tệp đính kèm lần nộp báo cáo
+  group: UI Metadata
+  reason: File attachment metadata.
 - source_system: THANHTRA
   source_table: ADHOC_ADMIN_VIOLATION_REPORT
   description: Báo cáo vi phạm hành chính ad-hoc

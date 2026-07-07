@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ACCOUNT_RELATIONSHIP
+brd_ref: BRD-SRC-GSGD-ACCOUNT_RELATIONSHIP
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: ACCOUNT_ID_1
+    data_type: "VARCHAR2(36)"
+    description: "investor_accunt.id"
+    key: FK
+    fk_note: null
+  - name: ACCOUNT_ID_2
+    data_type: "VARCHAR2(36)"
+    description: "investor_account.id"
+    key: FK
+    fk_note: "FK suy luận → INVESTOR_ACCOUNT.ID"
+  - name: ACCOUNT_GROUP_ID
+    data_type: "VARCHAR2(36)"
+    description: "account_group.id"
+    key: FK
+    fk_note: "FK suy luận → ACCOUNT_GROUP.ID"
+  - name: CATEGORY_ITEM_ID
+    data_type: "VARCHAR2(36)"
+    description: "category_item.id - Là ID loại kiểu quan hệ"
+    key: FK
+    fk_note: "FK suy luận → CATEGORY_ITEM.ID"
+  - name: RELATIONSHIP_VALUE
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Giá trị quan hệ (IP address, MAC address, etc.)"
+    key: null
+    fk_note: null
+  - name: STRENGTH
+    data_type: "NUMBER(3)"
+    description: "Độ mạnh quan hệ (1-100)"
+    key: null
+    fk_note: null
+  - name: TRANSACTION_REVIEW_ID
+    data_type: "VARCHAR2(36)"
+    description: "transaction_review.id"
+    key: null
+    fk_note: "FK suy luận → TRANSACTION_REVIEW.ID"
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

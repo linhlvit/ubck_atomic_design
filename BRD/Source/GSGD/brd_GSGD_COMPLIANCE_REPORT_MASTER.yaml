@@ -1,0 +1,151 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: COMPLIANCE_REPORT_MASTER
+brd_ref: BRD-SRC-GSGD-COMPLIANCE_REPORT_MASTER
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "FK → compliance_report_template.id (Phụ lục nào)"
+    key: FK
+    fk_note: "FK → COMPLIANCE_REPORT_TEMPLATE.ID"
+  - name: PERIOD_TYPE
+    data_type: "VARCHAR2(20)"
+    description: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY"
+    key: null
+    fk_note: null
+  - name: PERIOD_VALUE
+    data_type: "NUMBER(4)"
+    description: "Giá trị kỳ (VD: tuần 5, tháng 1)"
+    key: null
+    fk_note: null
+  - name: PERIOD_YEAR
+    data_type: "NUMBER(4)"
+    description: "Năm báo cáo"
+    key: null
+    fk_note: null
+  - name: REPORT_PERIOD_LABEL
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Nhãn hiển thị kỳ (VD: \"Tháng 1 năm 2026\")"
+    key: null
+    fk_note: null
+  - name: SUBMITTER_TYPE
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "Đơn vị phải nộp, phân cách dấu phẩy"
+    key: null
+    fk_note: null
+  - name: SUBMITTER_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người nộp"
+    key: null
+    fk_note: "FK suy luận → SYSTEM_USER.ID"
+  - name: SUBMITTER_NAME
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Họ tên người nộp"
+    key: null
+    fk_note: null
+  - name: SUBMITTER_TITLE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Chức vụ người nộp"
+    key: null
+    fk_note: null
+  - name: SUBMISSION_DATE
+    data_type: "TIMESTAMP"
+    description: "Thời gian hệ thống tiếp nhận báo cáo"
+    key: null
+    fk_note: null
+  - name: AUTO_CHECK_STATUS
+    data_type: "NUMBER(1)"
+    description: "Kết quả kiểm tra tự động: 0=Không đạt, 1=Đạt. NULL=Chưa kiểm tra"
+    key: null
+    fk_note: null
+  - name: AUTO_CHECK_REASON
+    data_type: "VARCHAR2(2000 CHAR)"
+    description: "Lý do kiểm tra tự động không đạt"
+    key: null
+    fk_note: null
+  - name: AUTO_CHECK_DATE
+    data_type: "TIMESTAMP"
+    description: "Thời gian hoàn thành kiểm tra tự động"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS
+    data_type: "NUMBER(2)"
+    description: "Trạng thái phê duyệt thủ công: 0=Chờ duyệt, 1=Đã duyệt, 2=Bị từ chối"
+    key: null
+    fk_note: null
+  - name: APPROVAL_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày phê duyệt/từ chối"
+    key: null
+    fk_note: null
+  - name: APPROVER_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID người phê duyệt"
+    key: null
+    fk_note: "FK suy luận → SYSTEM_USER.ID"
+  - name: APPROVER_NAME
+    data_type: "VARCHAR2(250 CHAR)"
+    description: "Tên người phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVER_TITLE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Chức vụ người phê duyệt"
+    key: null
+    fk_note: null
+  - name: REJECTION_REASON
+    data_type: "VARCHAR2(1000 CHAR)"
+    description: "Lý do từ chối"
+    key: null
+    fk_note: null
+  - name: RESUBMIT_FROM_DATE
+    data_type: "DATE"
+    description: "Ngày bắt đầu cho phép nộp lại (khi bị từ chối)"
+    key: null
+    fk_note: null
+  - name: RESUBMIT_TO_DATE
+    data_type: "DATE"
+    description: "Ngày kết thúc cho phép nộp lại (khi bị từ chối)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

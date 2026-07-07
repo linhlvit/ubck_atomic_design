@@ -1,0 +1,135 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: INSIDER
+  atomic_entity: Involved Party Electronic Address
+  entity_physical_name: ip_electronic_address
+  bcv_core_object: Involved Party
+  bcv_concept: "Shared Entity"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: involved_party_id
+    description: "FK đến Fund Management Company Insider."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSIDER.ID"
+    comment: "FK target: Fund Management Company Insider.Fund Management Company Insider Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.INSIDER', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: involved_party_code
+    description: "Mã cổ đông nội bộ."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSIDER.ID"
+    comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=FMS.INSIDER"
+    etl_derived_value: "FMS.INSIDER"
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: electronic_address_type_code
+    description: "Loại kênh liên lạc — điện thoại."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: "PHONE"
+
+  - attribute_name: Electronic Address Value
+    physical_name: electronic_address_value
+    description: "Số điện thoại."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSIDER.TELEPHONE"
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: null
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: electronic_address_type_code
+    description: "Loại kênh liên lạc — fax."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+    etl_derived_value: "FAX"
+
+  - attribute_name: Electronic Address Value
+    physical_name: electronic_address_value
+    description: "Số fax."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSIDER.FAX"
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+    etl_derived_value: null
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: electronic_address_type_code
+    description: "Loại kênh liên lạc — email."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+    etl_derived_value: "EMAIL"
+
+  - attribute_name: Electronic Address Value
+    physical_name: electronic_address_value
+    description: "Địa chỉ email."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSIDER.EMAIL"
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+    etl_derived_value: null

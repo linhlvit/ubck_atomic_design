@@ -33,14 +33,14 @@ metadata:
   source_system: NHNCK
   source_table: PROFESSIONALS
   atomic_entity: Securities Practitioner
-  entity_physical_name: scr_prac
+  entity_physical_name: securities_practitioner   # copy từ atomic_entities.yaml, không tự tính
   bcv_core_object: Involved Party
   group: T1
   design_status: draft   # draft | reviewed | approved
 
 attributes:
   - attribute_name: Securities Practitioner Id
-    physical_name: scr_prac_id        # auto-patch bởi transform_physical_names.py
+    physical_name: securities_practitioner_id  # auto-patch bởi transform_physical_names.py
     data_type: string                  # auto-patch bởi transform_physical_names.py
     description: Khóa đại diện (surrogate key).
     data_domain: Surrogate Key
@@ -69,9 +69,9 @@ schema_version: "1.0"
 attributes:
   - bcv_core_object: Involved Party
     atomic_entity: Securities Practitioner
-    atomic_table: scr_prac
+    atomic_table: securities_practitioner
     atomic_attribute: Securities Practitioner Id
-    atomic_column: scr_prac_id
+    atomic_column: securities_practitioner_id
     description: "Khóa đại diện (surrogate key)."
     data_domain: Surrogate Key
     data_type: bigint

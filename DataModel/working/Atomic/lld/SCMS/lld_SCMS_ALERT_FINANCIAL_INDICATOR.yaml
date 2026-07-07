@@ -22,7 +22,7 @@ metadata:
     \ target rõ ràng trong BRD."
 attributes:
 - attribute_name: "Securities Company Alert Financial Indicator Id"
-  physical_name: "securities_company_alert_financial_indicator_id"
+  physical_name: "sc_alert_financial_indicator_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,7 +35,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Financial Indicator Code"
-  physical_name: "securities_company_alert_financial_indicator_code"
+  physical_name: "sc_alert_financial_indicator_code"
   description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -73,7 +73,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Financial Indicator Name"
-  physical_name: "securities_company_alert_financial_indicator_nm"
+  physical_name: "sc_alert_financial_indicator_nm"
   description: "Tên chỉ tiêu tài chính."
   data_domain: "Text"
   nullable: true
@@ -202,88 +202,6 @@ attributes:
   - "SCMS.ALERT_FINANCIAL_INDICATOR.RECORD_STATUS"
   comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert sang\
     \ string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_FINANCIAL_INDICATOR.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.ALERT_FINANCIAL_INDICATOR.LAST_MODIFIED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_FINANCIAL_INDICATOR.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_FINANCIAL_INDICATOR.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Created By\
-    \ SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_FINANCIAL_INDICATOR.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.ALERT_FINANCIAL_INDICATOR.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Pair with Updated By\
-    \ SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

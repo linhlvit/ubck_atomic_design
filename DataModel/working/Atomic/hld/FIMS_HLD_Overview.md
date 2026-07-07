@@ -5,9 +5,9 @@
 > **Phạm vi:** Đăng ký và theo dõi thành viên thị trường chứng khoán (Công ty QLQ, Công ty CK, Ngân hàng lưu ký, VSDC, Sở GD, CN QLQ NN), nhà đầu tư nước ngoài, người hành nghề chứng khoán, báo cáo định kỳ và sự vụ CBTT, cảnh báo giám sát và vi phạm, ủy quyền CBTT/giao dịch.
 >
 > **File chi tiết theo tầng:**
-> - [FIMS_HLD_Tier1.md](FIMS_HLD_Tier1.md) — Independent Entities: Market Participant Organization, Geographic Area (shared), Foreign Investor, Reporting Template, Reporting Period, Reporting Obligation Type, Warning Parameter
+> - [FIMS_HLD_Tier1.md](FIMS_HLD_Tier1.md) — Independent Entities: Market Participant Organization, Geographic Area (shared), Foreign Investor, Reporting Template, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price
 > - [FIMS_HLD_Tier2.md](FIMS_HLD_Tier2.md) — FK đến Tier 1: Foreign FM Branch Organization, Info Disclosure Representative, Market Participant Key Person, Member Periodic Report, Warning Condition
-> - [FIMS_HLD_Tier3.md](FIMS_HLD_Tier3.md) — FK đến Tier 2: Foreign Investor Securities Account, Report Import Value, Report Processing Activity Log, Market Participant Conduct Violation, Info Disclosure Authorization, Trading Authorization
+> - [FIMS_HLD_Tier3.md](FIMS_HLD_Tier3.md) — FK đến Tier 2: Foreign Investor Securities Account, Report Import Value, Report Processing Activity Log, Market Participant Conduct Violation, Info Disclosure Authorization, Trading Authorization, Info Disclosure Announcement
 
 ---
 
@@ -27,17 +27,21 @@
 | 1 | Business Activity | [Business Activity] Assessment Period | Period | RPTPERIOD | Update | Danh sách kỳ của báo cáo đầu vào (kỳ tháng/quý/năm) | Reporting Period | Fundamental | Assessment Period — kỳ báo cáo định kỳ của biểu mẫu. Mỗi kỳ có ngày bắt đầu, ngày kết thúc, hạn nộp. FK đến RPTTEMP. |
 | 1 | Business Activity | [Business Activity] Business Activity | Business Activity | RPT_EVENT_TYPE | Update | Danh sách loại sự vụ/nghĩa vụ báo cáo (CBTT, hồ sơ, báo cáo định kỳ) | Reporting Obligation Type | Fundamental | Business Activity — danh mục loại nghĩa vụ mà thành viên thị trường phải thực hiện theo quy định pháp luật. Ghi nhận mã sự vụ, tên, phân loại, loại nghĩa vụ, căn cứ pháp lý và cờ cho phép tự thiết lập kỳ báo cáo. |
 | 1 | Condition | [Condition] Scoring Criterion | Scoring Criterion | PARAWARN | Update | Danh sách tham số cảnh báo giám sát thành viên thị trường | Warning Parameter | Fundamental | Scoring Criterion — tham số cảnh báo giám sát định nghĩa chỉ tiêu theo dõi (có công thức tính cho từng loại thành viên). Là nền tảng cho Warning Condition (Tier 2) và Conduct Violation (Tier 3). |
+| 1 | Involved Party | [Involved Party] Registered Representative | Agent | TRADINGREPRESENTATIVE | Update | Danh sách đại diện giao dịch cho NĐT nước ngoài tại công ty chứng khoán | Trading Representative | Fundamental | Registered Representative — cá nhân đại diện thực hiện giao dịch cho NĐT NN, được ủy quyền qua Trading Authorization (T3) và tham chiếu trong Member Periodic Report (T2). Tách IP Postal Address + IP Electronic Address + IP Alt Identification. Chỉ FK đến NATIONAL + STATUS → Tier 1. |
+| 1 | Condition | [Condition] Product Price Condition | Product Price Condition | CLOSING_PRICE_SECURITIES | Append | Giá đóng cửa chứng khoán theo phiên, nhận từ HOSE/HNX/UPCOM hoặc nhập tay | Securities Closing Price | Fact Snapshot | Product Price Condition — bảng giá cuối ngày theo mã chứng khoán, ví dụ mẫu chuẩn của Fact Snapshot pattern. Không FK đến entity nghiệp vụ nào (chỉ denormalize mã CK) → Tier 1. |
 | 2 | Involved Party | [Involved Party] Organization | Organization | BRANCHS | Update | Danh sách chi nhánh/VPĐD của công ty QLQ nước ngoài tại Việt Nam | Foreign FM Branch Organization | Fundamental | Organization — VPĐD hoặc chi nhánh của công ty QLQ nước ngoài tại VN. Không FK đến FUNDCOMPANY (entity độc lập với thông tin giấy phép riêng, công ty mẹ nước ngoài). Tách IP Postal Address + IP Electronic Address. |
 | 2 | Involved Party | [Involved Party] Organization | Organization | INFODISCREPRES | Update | Danh sách đối tượng ủy quyền CBTT/giao dịch (cá nhân và tổ chức) | Info Disclosure Representative | Fundamental | Organization — đại diện CBTT/giao dịch được thành viên thị trường ủy quyền. Cấu trúc cây self-referencing (RepresentedInfodiscrepresId). ProfileKind phân biệt 10 loại đối tượng. FK đến NATIONAL, STATUS. |
 | 2 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | TLPROFILES | Update | Danh sách nhân sự chủ chốt tại các tổ chức thành viên thị trường | Market Participant Key Person | Fundamental | Individual Employment Status — nhân sự giữ vị trí quan trọng tại thành viên thị trường (cán bộ chủ chốt, đại diện pháp luật, người hành nghề). FK đa hướng đến FUNDCOMPANY / SECURITIESCOMPANY / BANKMONI / DEPOSITORYCENTER / STOCKEXCHANGE / INFODISCREPRES. Tách IP Alt Identification. |
 | 2 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTMEMBER | Update | Hồ sơ kỳ báo cáo thành viên thị trường — 1 bản ghi per thành viên per kỳ | Member Periodic Report | Fundamental | Gov. Registration Document — báo cáo định kỳ pháp lý của thành viên thị trường gửi UBCKNN. FK đa hướng đến 7 loại thành viên + RPTTEMP + RPTPERIOD + RPT_EVENT_TYPE. Grain = 1 thành viên × 1 kỳ × 1 biểu mẫu. |
 | 2 | Condition | [Condition] Scoring Criterion | Scoring Criterion | CDTWARN | Update | Danh sách điều kiện cảnh báo giám sát (ngưỡng min/max cho từng tham số) | Warning Condition | Fundamental | Scoring Criterion — điều kiện cảnh báo cụ thể (ngưỡng FromValue/ToValue, tham số so sánh kép). FK đến Warning Parameter. Là nền tảng cho Conduct Violation (Tier 3). |
 | 3 | Arrangement | [Arrangement] Investment Account | Investment Account | SECURITIESACCOUNT | Update | Danh sách tài khoản giao dịch chứng khoán của NĐT nước ngoài | Foreign Investor Securities Account | Relative | Investment Account — tài khoản chứng khoán của NĐT NN mở tại công ty CK. FK đến Foreign Investor + Market Participant Organization (SECURITIESCOMPANY). SCD2. |
+| 3 | Arrangement | [Arrangement] Investment Account | Investment Account | CATEGORIESSTOCK | Update | Số lượng và tỷ lệ sở hữu chứng khoán hiện tại của NĐT NN tại 1 CTCK | Foreign Investor Securities Account | Relative | Investment Account — cùng grain (Investor × Securities Company) với SECURITIESACCOUNT, chỉ khác thuộc tính. Gộp làm `current_holding_quantity` + `current_ownership_rate` trên entity đã có, không tạo entity riêng. |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTVALUES | Update | Dữ liệu giá trị từng ô trong báo cáo thành viên (bảng phân vùng theo năm) | Report Import Value | Fact Append | Gov. Registration Document — giá trị chi tiết từng cell trong báo cáo định kỳ. FK đến Member Periodic Report + Sheet + Period. Grain = 1 field per báo cáo. ETL: bảng phân vùng năm RPTVALUES_YYYY → consolidate. |
 | 3 | Business Activity | [Business Activity] Status Log | Status Log | RPTPROCESS | Update | Lịch sử xử lý báo cáo của chuyên viên UBCKNN (duyệt/từ chối/yêu cầu gửi lại) | Report Processing Activity Log | Fact Append | Business Activity — ETL Pattern Status Log ghi nhận sự kiện xử lý báo cáo của cán bộ UBCKNN. FK đến Member Periodic Report + USERS. Mỗi hành động là 1 sự kiện insert-only. |
 | 3 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | VIOLT | Append | Danh sách vi phạm điều kiện cảnh báo của thành viên thị trường | Market Participant Conduct Violation | Fact Append | Conduct Violation — vi phạm tham số giám sát của thành viên thị trường (QLQ, CTCK, NHLK, VSDC, Sở GD, CN QLQ NN). FK đa hướng đến Market Participant Organization + Warning Parameter + Warning Condition. Source Mode=Append → Fact Append. |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | AUTHOANNOUNCE | Update | Danh sách ủy quyền CBTT — thành viên thị trường ủy quyền cho đại diện CBTT | Info Disclosure Authorization | Fundamental | Gov. Registration Document — giấy ủy quyền CBTT của thành viên thị trường cho Info Disclosure Representative. FK đa hướng đến Market Participant Organization + Info Disclosure Representative. |
-| 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | TRADINGAUTHORIZATION | Update | Danh sách ủy quyền giao dịch cho đại diện giao dịch | Trading Authorization | Fundamental | Gov. Registration Document — giấy ủy quyền giao dịch của NĐT NN ủy quyền cho đại diện giao dịch. FK đến Foreign Investor + Market Participant Organization. |
+| 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | TRADINGAUTHORIZATION | Update | Danh sách ủy quyền giao dịch cho đại diện giao dịch | Trading Authorization | Fundamental | Gov. Registration Document — giấy ủy quyền giao dịch của NĐT NN ủy quyền cho đại diện giao dịch. FK đến Foreign Investor + Market Participant Organization + Trading Representative (T1). |
+| 3 | Communication | [Communication] Announcement | Announcement | ANNOUNCE | Update | Tin công bố thông tin (CBTT) của thành viên thị trường | Info Disclosure Announcement | Fundamental | Announcement — bản tin CBTT cụ thể, FK đa hướng đến Market Participant Organization + Info Disclosure Representative + Foreign Investor + Member Periodic Report (T2) + Reporting Obligation Type (T1). |
 
 ---
 
@@ -57,6 +61,8 @@ graph TD
     RPRD["**Reporting Period**\n(RPTPERIOD)\n(T1)"]:::atomic
     ROBTYPE["**Reporting Obligation Type**\n(RPT_EVENT_TYPE)\n(T1)"]:::atomic
     WARN["**Warning Parameter**\n(PARAWARN)\n(T1)"]:::atomic
+    TRADREP["**Trading Representative**\n(TRADINGREPRESENTATIVE)\n(T1)"]:::atomic
+    CLOSEPRICE["**Securities Closing Price**\n(CLOSING_PRICE_SECURITIES)\n(T1)"]:::pattern
 
     %% Shared entities
     ADDR["IP Postal Address"]:::shared
@@ -77,6 +83,7 @@ graph TD
     VIOLT["**Market Participant Conduct Violation**\n(VIOLT)\n(T3)"]:::pattern
     AUTHANN["**Info Disclosure Authorization**\n(AUTHOANNOUNCE)\n(T3)"]:::atomic
     TRADAUTH["**Trading Authorization**\n(TRADINGAUTHORIZATION)\n(T3)"]:::atomic
+    ANNOUNCE["**Info Disclosure Announcement**\n(ANNOUNCE)\n(T3)"]:::atomic
 
     %% Tier 1 relationships
     MKT -->|Geographic Area FK| GEOAREA
@@ -92,6 +99,7 @@ graph TD
     RPTMB -->|Reporting Period FK| RPRD
     RPTMB -->|Reporting Obligation Type FK| ROBTYPE
     RPTMB -->|Market Participant FK| MKT
+    RPTMB -->|Trading Representative FK| TRADREP
     WARNC -->|Warning Parameter FK| WARN
     WARNC -->|Warning Parameter 2 FK| WARN
     ADDR -.->|shared| FBRANCH
@@ -109,6 +117,12 @@ graph TD
     AUTHANN -->|Info Disclosure Representative FK| IDREP
     TRADAUTH -->|Foreign Investor FK| FINV
     TRADAUTH -->|Market Participant FK| MKT
+    TRADAUTH -->|Trading Representative FK| TRADREP
+    ANNOUNCE -->|Market Participant FK| MKT
+    ANNOUNCE -->|Info Disclosure Representative FK| IDREP
+    ANNOUNCE -->|Foreign Investor FK| FINV
+    ANNOUNCE -->|Member Periodic Report FK| RPTMB
+    ANNOUNCE -->|Reporting Obligation Type FK| ROBTYPE
 ```
 
 ---
@@ -165,7 +179,10 @@ graph TD
 | 5 | T3 | `RPTVALUES` — Change Mode = `Update` nhưng nghiệp vụ ghi giá trị báo cáo (cell value). Xác nhận: khi thành viên gửi lại → row được update hay insert new? ETL pattern cần làm rõ. | Ảnh hưởng Table Type: Fact Append (immutable) vs Fundamental (SCD4A nếu update). |
 | 6 | T3 | `TRADINGAUTHORIZATION` — FK đến `LO` (bảng loại hình quỹ — chưa xác định rõ). Xác nhận LO là Classification Value hay entity ngoài scope. | Nếu LO là entity nghiệp vụ → Trading Authorization cần review tier. |
 | 7 | T1 | `RPT_EVENT_TYPE_LEGAL_BASIS`, `RPT_EVENT_TYPE_SCHEDULE`, `RPT_EVENT_TYPE_STATUS_LINK` đều FK đến `BC_SU_VU` (alias RPT_EVENT_TYPE). Xác nhận 3 bảng con này có attribute nghiệp vụ đủ để tạo entity riêng hay chỉ là config metadata của sự vụ. | Nếu chỉ là config → ngoài scope. Nếu có giá trị phân tích (lịch nộp báo cáo) → Tier 2. |
-| 8 | T1 | `CLOSING_PRICE_SECURITIES` (giá đóng cửa chứng khoán — Change Mode: Append) — FIMS hay nguồn chuyên biệt khác (HNX/HOSE)? Xác nhận FIMS có phải source gốc của giá chứng khoán không. | Nếu FIMS chỉ nhận data từ sàn → ngoài scope (dữ liệu gốc tại nguồn khác). |
+| 8 | T1 | ~~`CLOSING_PRICE_SECURITIES` — FIMS có phải source gốc của giá chứng khoán không?~~ **Đã chốt: in scope.** Áp dụng nguyên tắc Fact Snapshot chuẩn (bảng giá cuối ngày) bất kể FIMS là nguồn gốc hay chỉ cache lại từ HOSE/HNX/UPCOM — bản ghi phục vụ tính toán giám sát nội bộ (VD: giá trị NAV/room ngoại). | Thiết kế thành `Securities Closing Price` (Tier 1, Fact Snapshot). Xem Tier1.md mục T1-06 về cách ghi nhận nguồn giá thực tế trên `price_source_code`. |
+| 9 | T1 | `TRADINGREPRESENTATIVE` (Trading Representative) bị bỏ sót ở lần thiết kế trước dù được FK trực tiếp từ `RPTMEMBER` (T2) và `TRADINGAUTHORIZATION` (T3). Đồng thời `INFODISCREPRES.ProfileKind = 6` cũng có giá trị "Đại diện giao dịch" — cần xác nhận đây có phải 2 cách lưu trùng lặp cho cùng vai trò hay không. | Đã bổ sung `Trading Representative` (Tier 1). Tạm giữ tách biệt với `Info Disclosure Representative` vì có PK/FK độc lập. Xem Tier1.md mục T1-05 — cần đội FIMS xác nhận để quyết định có gộp lại không. |
+| 10 | T3 | Gộp `CATEGORIESSTOCK` vào `Foreign Investor Securities Account` dựa trên giả định 1 NĐT NN chỉ có 1 tài khoản tại 1 CTCK (cùng cặp FK Investor+SecuritiesCompany với `SECURITIESACCOUNT`). | Nếu giả định sai (1 NĐT NN có nhiều tài khoản tại cùng 1 CTCK) → cần tách lại thành entity `Foreign Investor Securities Holding` riêng. Xem Tier3.md mục T3-06. |
+| 11 | T3 | `ANNOUNCE` trước đây bị treo ở trạng thái "Isolated — cần đánh giá lại". Rà soát lại cho thấy có FK rõ ràng đến `Member Periodic Report` (T2), `Info Disclosure Representative` (T2), `Foreign Investor` (T1) — không hề cô lập. | Đã thiết kế thành `Info Disclosure Announcement` (Tier 3, Fundamental, BCV `[Communication] Announcement`). Xem Tier3.md mục 6a. |
 
 ---
 
@@ -226,7 +243,6 @@ graph TD
 | Audit Log nguồn | ANNOUNCEINVESHIS | Lịch sử NĐT NN trong ủy quyền CBTT | Audit Log nguồn — snapshot lịch sử thành viên ủy quyền. |
 | Audit Log nguồn | TRADINGAUTHORIZATIONHIS | Lịch sử ủy quyền giao dịch | Audit Log nguồn — snapshot lịch sử ủy quyền giao dịch. |
 | Audit Log nguồn | TRADINGAUTHORIZATIONINVESHIS | Lịch sử NĐT NN trong ủy quyền giao dịch | Audit Log nguồn — snapshot lịch sử thành viên ủy quyền giao dịch. |
-| Cascade drop | CATEGORIESSTOCK | Danh mục chứng khoán của NĐT NN (sở hữu hiện tại) | Cascade drop từ INVESTOR — thông tin danh mục chứng khoán gắn với NĐT NN; cần xác nhận thêm trước khi quyết định scope. |
 | Cascade drop | ANNOUNCEINVES | Danh sách NĐT NN trong ủy quyền CBTT | Cascade drop từ AUTHOANNOUNCE — denormalize thành ARRAY trên Info Disclosure Authorization (xem 7d). |
 | Cascade drop | TRADINGAUTHORIZATIONINVES | Danh sách NĐT NN trong ủy quyền giao dịch | Cascade drop từ TRADINGAUTHORIZATION — denormalize thành ARRAY trên Trading Authorization (xem 7d). |
 | Operational / System | NOTIFICATION | Thông báo trong hệ thống FIMS | Operational/system data — thông báo UI, không phải nghiệp vụ. |
@@ -238,8 +254,6 @@ graph TD
 | Chưa có cột | RPT_EVENT_TYPE_LEGAL_BASIS | Danh sách căn cứ pháp lý của loại sự vụ | Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope. |
 | Chưa có cột | RPT_EVENT_TYPE_SCHEDULE | Lịch nộp báo cáo theo loại sự vụ | Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope. |
 | Chưa có cột | RPT_EVENT_TYPE_STATUS_LINK | Liên kết trạng thái loại sự vụ | Chưa có thông tin cột đầy đủ — xem điểm 7e-7 để xác nhận scope. |
-| Isolated | CLOSING_PRICE_SECURITIES | Giá đóng cửa chứng khoán | Xem điểm 7e-8 — xác nhận nguồn gốc dữ liệu trước khi quyết định scope. |
-| Isolated | ANNOUNCE | Tin CBTT của thành viên thị trường | Cần đánh giá lại — FK đến nhiều loại thành viên và RPT_EVENT_TYPE. Xem điểm 7e sau khi xác nhận. |
 | Reference Data | DEPARTMENT | Danh mục phòng ban nội bộ FIMS (phân quyền) | Không có quan hệ FK đến bảng nghiệp vụ nào — phục vụ phân quyền người dùng hệ thống FIMS, không phải thành viên thị trường. |
 
 <!--
@@ -290,56 +304,74 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 **Description:** Tham số cảnh báo giám sát thành viên thị trường theo quy định pháp luật — định nghĩa chỉ tiêu theo dõi cùng công thức tính cho từng loại đối tượng. Là nền tảng cho Warning Condition và Conduct Violation.
 
 
-### 8. Foreign FM Branch Organization
+### 8. Trading Representative
+**Tier:** 1 | **Source:** `TRADINGREPRESENTATIVE` | **BCV Concept:** [Involved Party] Registered Representative | **BCO:** Involved Party | **Table Type:** Fundamental
+**Domain Prefix:** (none)
+**Description:** Cá nhân đại diện giao dịch cho nhà đầu tư nước ngoài tại công ty chứng khoán. Ghi nhận thông tin nhân thân, quốc tịch, địa chỉ, liên lạc và trạng thái hoạt động. Được tham chiếu từ Member Periodic Report và Trading Authorization.
+
+
+### 9. Securities Closing Price
+**Tier:** 1 | **Source:** `CLOSING_PRICE_SECURITIES` | **BCV Concept:** [Condition] Product Price Condition | **BCO:** Condition | **Table Type:** Fact Snapshot
+**Domain Prefix:** (none)
+**Description:** Giá đóng cửa chứng khoán theo từng phiên giao dịch, nhận từ HOSE/HNX/UPCOM hoặc nhập tay. Mỗi dòng là 1 lần chụp giá tại 1 ngày giao dịch cho 1 mã chứng khoán, phục vụ tính toán giám sát nội bộ (VD: giá trị nắm giữ, tỷ lệ sở hữu nước ngoài).
+
+
+### 10. Foreign FM Branch Organization
 **Tier:** 2 | **Source:** `BRANCHS` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Chi nhánh hoặc văn phòng đại diện của công ty quản lý quỹ nước ngoài tại Việt Nam. Entity độc lập (không FK đến Market Participant Organization) — có giấy phép riêng, thông tin công ty mẹ nước ngoài và nghiệp vụ kinh doanh đăng ký.
 
 
-### 9. Info Disclosure Representative
+### 11. Info Disclosure Representative
 **Tier:** 2 | **Source:** `INFODISCREPRES` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Đại diện công bố thông tin hoặc đại diện giao dịch được thành viên thị trường ủy quyền. Phân biệt bằng Profile Kind Code (10 loại: Sở GD, VSDC, QLQ NN, CTCK, NHLK, đại diện GD, đại diện CBTT, chi nhánh, tổ chức khác, cá nhân). Cấu trúc self-referencing.
 
 
-### 10. Market Participant Key Person
+### 12. Market Participant Key Person
 **Tier:** 2 | **Source:** `TLPROFILES` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Nhân sự chủ chốt tại tổ chức thành viên thị trường chứng khoán — cán bộ đăng ký với UBCKNN, ghi nhận thông tin nhân thân, ngày làm việc, chức vụ và chứng chỉ hành nghề. FK đa hướng đến Market Participant Organization.
 
 
-### 11. Member Periodic Report
+### 13. Member Periodic Report
 **Tier:** 2 | **Source:** `RPTMEMBER` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Hồ sơ kỳ báo cáo định kỳ của thành viên thị trường nộp lên UBCKNN. Grain = 1 thành viên × 1 kỳ × 1 biểu mẫu. Ghi nhận trạng thái nộp, ngày nộp thực tế, hạn nộp và loại sự vụ liên quan. FK đa hướng đến 7 loại thành viên.
+**Description:** Hồ sơ kỳ báo cáo định kỳ của thành viên thị trường nộp lên UBCKNN. Grain = 1 thành viên × 1 kỳ × 1 biểu mẫu. Ghi nhận trạng thái nộp, ngày nộp thực tế, hạn nộp và loại sự vụ liên quan. FK đa hướng đến 7 loại thành viên và Trading Representative.
 
 
-### 12. Warning Condition
+### 14. Warning Condition
 **Tier:** 2 | **Source:** `CDTWARN` | **BCV Concept:** [Condition] Scoring Criterion | **BCO:** Condition | **Table Type:** Fundamental
 **Description:** Điều kiện cảnh báo cụ thể xác định ngưỡng vi phạm cho từng tham số giám sát — ngưỡng tối thiểu/tối đa, điều kiện kép và số ngày vi phạm liên tiếp. FK đến Warning Parameter.
 
 
-### 13. Foreign Investor Securities Account
-**Tier:** 3 | **Source:** `SECURITIESACCOUNT` | **BCV Concept:** [Arrangement] Investment Account | **BCO:** Arrangement | **Table Type:** Relative
-**Description:** Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công ty chứng khoán. Ghi nhận số tài khoản và nơi mở. FK đến Foreign Investor và Market Participant Organization (SECURITIESCOMPANY).
+### 15. Foreign Investor Securities Account
+**Tier:** 3 | **Source:** `SECURITIESACCOUNT, CATEGORIESSTOCK` | **BCV Concept:** [Arrangement] Investment Account | **BCO:** Arrangement | **Table Type:** Relative
+**Description:** Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công ty chứng khoán. Ghi nhận số tài khoản, nơi mở, số lượng và tỷ lệ sở hữu chứng khoán hiện tại (từ CATEGORIESSTOCK — cùng grain Investor × Securities Company). FK đến Foreign Investor và Market Participant Organization (SECURITIESCOMPANY).
 
 
-### 14. Report Import Value
+### 16. Report Import Value
 **Tier:** 3 | **Source:** `RPTVALUES` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fact Append
 **Description:** Giá trị chi tiết từng ô (cell) trong báo cáo định kỳ thành viên. Grain = 1 field × 1 báo cáo thành viên. Nguồn phân vùng theo năm (RPTVALUES_YYYY) — ETL consolidate toàn bộ vào entity đơn nhất.
 
 
-### 15. Report Processing Activity Log
+### 17. Report Processing Activity Log
 **Tier:** 3 | **Source:** `RPTPROCESS` | **BCV Concept:** [Business Activity] Status Log | **BCO:** Business Activity | **Table Type:** Fact Append
 **Description:** Nhật ký xử lý báo cáo của chuyên viên UBCKNN — ghi nhận từng hành động duyệt/từ chối/yêu cầu gửi lại kèm ghi chú. Mỗi dòng là 1 sự kiện insert-only. FK đến Member Periodic Report.
 
 
-### 16. Market Participant Conduct Violation
+### 18. Market Participant Conduct Violation
 **Tier:** 3 | **Source:** `VIOLT` | **BCV Concept:** [Business Activity] Conduct Violation | **BCO:** Business Activity | **Table Type:** Fact Append
 **Description:** Vi phạm điều kiện cảnh báo giám sát của thành viên thị trường chứng khoán được UBCKNN ghi nhận. FK đa hướng đến Market Participant Organization, Warning Parameter và Warning Condition. Mỗi dòng là 1 sự kiện vi phạm.
 
 
-### 17. Info Disclosure Authorization
+### 19. Info Disclosure Authorization
 **Tier:** 3 | **Source:** `AUTHOANNOUNCE` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fundamental
 **Description:** Giấy ủy quyền công bố thông tin của thành viên thị trường cho Info Disclosure Representative. Ghi nhận thời hạn ủy quyền, phạm vi và hình thức liên quan. FK đến Market Participant Organization và Info Disclosure Representative.
 
 
-### 18. Trading Authorization
+### 20. Trading Authorization
 **Tier:** 3 | **Source:** `TRADINGAUTHORIZATION` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Giấy ủy quyền giao dịch của nhà đầu tư nước ngoài cho đại diện giao dịch tại thành viên thị trường. Ghi nhận phạm vi ủy quyền và thời hạn. FK đến Foreign Investor và Market Participant Organization.
+**Description:** Giấy ủy quyền giao dịch của nhà đầu tư nước ngoài cho đại diện giao dịch tại thành viên thị trường. Ghi nhận phạm vi ủy quyền, thời hạn và người được ủy quyền (Trading Representative). FK đến Foreign Investor, Market Participant Organization và Trading Representative.
+
+
+### 21. Info Disclosure Announcement
+**Tier:** 3 | **Source:** `ANNOUNCE` | **BCV Concept:** [Communication] Announcement | **BCO:** Communication | **Table Type:** Fundamental
+**Domain Prefix:** Info Disclosure
+**Description:** Bản tin công bố thông tin (CBTT) cụ thể do thành viên thị trường công bố, gắn với 1 sự vụ/kỳ báo cáo. Ghi nhận loại CBTT, nội dung tóm tắt, ngày công bố, file đính kèm. FK đa hướng đến Market Participant Organization, Info Disclosure Representative, Foreign Investor, Member Periodic Report và Reporting Obligation Type.

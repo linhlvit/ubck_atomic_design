@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_VIOLATION_HANDLING
+brd_ref: BRD-SRC-KNT-TAX_VIOLATION_HANDLING
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: HANDLING_DECISION_NUMBER
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Số quyết định xử lý vi phạm pháp luật về thuế"
+  key: null
+  fk_note: null
+- name: SUBJECT_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên tổ chức/cá nhân đối tượng"
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: "Liên kết ngầm → TAX_REGISTRATION_INFO.TAX_CODE"
+- name: INSPECTION_PERIOD
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Kỳ thanh tra/kiểm tra thuế tại trụ sở doanh nghiệp"
+  key: null
+  fk_note: null
+- name: VIOLATION_FINE
+  data_type: "VARCHAR2(4000 CHAR)"
+  description: "Số tiền phạt hành vi vi phạm"
+  key: null
+  fk_note: null
+- name: ADMIN_VIOLATION_FINE
+  data_type: "VARCHAR2(4000 CHAR)"
+  description: "Số tiền phạt hành vi vi phạm hành chính về thuế"
+  key: null
+  fk_note: null
+- name: TAX_RECOVERY_AMOUNT
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Số tiền truy thu (thuế, tiền nộp chậm)"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "FK -> msg_packet: Gói tin trao đổi liên quan"
+  key: FK
+  fk_note: "FK → MSG_PACKET.ID"
+- name: ISSUING_ORG
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Cơ quan ban hành quyết định"
+  key: null
+  fk_note: null
+- name: ISSUING_TAX_AUTHORITY_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên cơ quan thuế ban hành quyết định xử lý"
+  key: null
+  fk_note: null
+- name: DECISION_TYPE
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Loại quyết định: xử phạt hành chính, truy thu, đình chỉ..."
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: "DATE"
+  description: "Ngày ban hành quyết định"
+  key: null
+  fk_note: null
+- name: TOTAL_FINE_AMOUNT
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)"
+  key: null
+  fk_note: null
+- name: OTHER_FINE_AMOUNT
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tổng tiền phạt khác (không phải phạt hành chính)"
+  key: null
+  fk_note: null

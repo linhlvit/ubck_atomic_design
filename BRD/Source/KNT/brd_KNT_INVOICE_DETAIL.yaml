@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: INVOICE_DETAIL
+brd_ref: BRD-SRC-KNT-INVOICE_DETAIL
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: INVOICE_TEMPLATE_SYMBOL
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Ký hiệu mẫu hóa đơn"
+  key: null
+  fk_note: null
+- name: INVOICE_SYMBOL
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Ký hiệu hóa đơn"
+  key: null
+  fk_note: null
+- name: INVOICE_NUMBER
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Số hóa đơn"
+  key: null
+  fk_note: null
+- name: TAX_ENFORCEMENT_INVOICE_ID
+  data_type: "NUMBER"
+  description: "FK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng hóa đơn"
+  key: FK
+  fk_note: "FK → TAX_ENFORCEMENT_INVOICE.ID"
+- name: INVOICE_TYPE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Loại hóa đơn bị cưỡng chế ngừng sử dụng"
+  key: null
+  fk_note: null
+- name: OBJ_ID
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "ID đối tượng trong hệ thống Cục Thuế"
+  key: null
+  fk_note: null

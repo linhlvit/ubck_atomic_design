@@ -12,7 +12,7 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Transaction | [Event] Transaction | Transaction | MB_CHANGE | Append | Lịch sử thay đổi vốn góp của nhà đầu tư trong quỹ | Investment Fund Investor Capital Change Log | Fact Append | (1) Term candidate: `Transaction` — BCV mô tả sự kiện tài chính thực tế phát sinh (thay đổi vốn góp). (2) Cấu trúc trường: MB_CHANGE có FK đến MB_FUND (NĐT trong quỹ), số tiền thay đổi, loại thay đổi (góp thêm/rút bớt), ngày phát sinh → append theo ngày, mỗi dòng = 1 sự kiện thay đổi vốn. (3) Chọn `Transaction` → Fact Append. |
+| Business Activity | [Business Activity] Business Activity | Transaction | MB_CHANGE | Append | Lịch sử thay đổi vốn góp của nhà đầu tư trong quỹ | Investment Fund Investor Capital Change Log | Fact Append | (1) Term candidate ban đầu: `Transaction` (Event). (2) Cấu trúc trường: MB_CHANGE có FK đến MB_FUND (NĐT trong quỹ), số tiền thay đổi, loại thay đổi (góp thêm/rút bớt), ngày phát sinh → append theo ngày, mỗi dòng = 1 sự kiện thay đổi vốn. (3) BCO điều chỉnh theo review: `Business Activity` (tạm dùng, tương tự MEMBER_RATING/RANK — cần tra lại BCV term chính xác hơn cho sự kiện thay đổi vốn góp). Table Type giữ `Fact Append`. |
 | Transaction | [Event] Transaction | Transaction | TRANSFER_MBF | Append | Giao dịch mua/bán chứng chỉ quỹ | Investment Fund Certificate Transfer | Fact Append | (1) Term candidate: `Transaction` — BCV mô tả giao dịch chuyển nhượng CCQ. (2) Cấu trúc trường: TRANSFER_MBF có FK đến FUNDS (quỹ), FK đến MB_FUND (NĐT), loại giao dịch, số lượng CCQ, ngày giao dịch, giá trị giao dịch → mỗi dòng = 1 giao dịch CCQ, insert-only. (3) Chọn `Transaction` → Fact Append. |
 | Transaction | [Event] Transaction | Transaction | TRS_FER_INDER | Append | Giao dịch chuyển nhượng cổ phần nội bộ công ty QLQ | Fund Management Company Share Transfer | Fact Append | (1) Term candidate: `Transaction` — giao dịch chuyển nhượng cổ phần. (2) Cấu trúc trường: TRS_FER_INDER có FK đến SECURITIES (CTQLQ), ngày giao dịch, số lượng, giá trị → mỗi dòng = 1 giao dịch chuyển nhượng cổ phần, insert-only. Lưu ý BRD note: mất FK InFrmId/InToId (INSIDER bị bỏ). (3) Chọn `Transaction` → Fact Append. |
 
@@ -48,7 +48,7 @@ graph TD
     classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    IFCCL["**Investment Fund Investor Capital Change Log**\n[Event] Transaction\nMBCHANGE"]:::pattern
+    IFCCL["**Investment Fund Investor Capital Change Log**\n[Business Activity] Business Activity\nMBCHANGE"]:::pattern
     IFCT["**Investment Fund Certificate Transfer**\n[Event] Transaction\nTRANSFERMBF"]:::pattern
     FMCST["**Fund Management Company Share Transfer**\n[Event] Transaction\nTRSFERINDER"]:::pattern
 
@@ -86,3 +86,4 @@ Không có bảng nào trong Tier 4 chưa đủ thông tin cột.
 | T4-01 | TRS_FER_INDER mất FK InFrmId/InToId (INSIDER table bị bỏ khỏi scope) — entity Share Transfer sẽ không biết bên mua và bên bán là ai. Xác nhận: có thể load dữ liệu thiếu FK này không, hay cần xem xét scope lại? | **Chờ xác nhận.** GAP đã ghi nhận trong BRD notes. Tạm thiết kế entity không có FK bên mua/bán — ghi nhận trong pending_design.yaml ở bước LLD. |
 | T4-02 | TRANSFER_MBF FK đến MB_FUND — nếu NĐT chưa có record trong MB_FUND thì giao dịch đầu tiên có thể bị orphan. Xác nhận: MB_FUND luôn tồn tại trước TRANSFER_MBF? | **Chờ xác nhận.** |
 | T4-03 | MB_CHANGE vs TRANSFER_MBF — hai bảng cùng ghi về vốn góp NĐT. Xác nhận phân biệt: MB_CHANGE = thay đổi vốn góp (tài chính); TRANSFER_MBF = giao dịch CCQ (thị trường). Đây là 2 entity khác nhau? | **Chờ xác nhận.** Tạm thiết kế 2 entity riêng. |
+| T4-04 | MB_CHANGE — BCO đã chốt `Business Activity` theo review (thay cho `Transaction`). Term BCV cụ thể vẫn cần tra lại. | **Đã chốt BCO, term chờ tra lại.** |

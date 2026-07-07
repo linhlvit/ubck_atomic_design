@@ -1,0 +1,215 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: INSPECTION_ROUND
+  atomic_entity: Member Inspection Round
+  entity_physical_name: member_inspection_round
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Audit Investigation"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Master entity đợt thanh tra — không FK cố định đến 1 entity nghiệp vụ (OBJECT_TYPE polymorphic, đối tượng cụ thể xác định ở Member Inspection Target, Tier 6). Không phải Involved Party — không tách shared entity. CREATED_BY, MODIFY_BY, DELETED document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Member Inspection Round Id
+    physical_name: member_inspection_round_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Business Activity] Audit Investigation\". Đợt thanh tra/kiểm tra định kỳ hoặc đột xuất do UBCKNN tổ chức."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Inspection Round Code
+    physical_name: member_inspection_round_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.INSPECTION_ROUND"
+    etl_derived_value: "FMS.INSPECTION_ROUND"
+
+  - attribute_name: Inspection Object Type Code
+    physical_name: inspection_object_type_code
+    description: "Loại đối tượng thanh tra: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=Khác."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.OBJECT_TYPE"
+    comment: "Scheme: FMS_INSPECTION_OBJECT_TYPE (đã đăng ký). Discriminator cho FK polymorphic ở Member Inspection Target (Tier 6)."
+    classification_context: "FMS_INSPECTION_OBJECT_TYPE"
+    etl_derived_value: null
+
+  - attribute_name: Other Object Name
+    physical_name: other_object_nm
+    description: "Tên đối tượng thanh tra khác (khi OBJECT_TYPE=5=Khác)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.OTHER_OBJECT_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Year
+    physical_name: inspection_year
+    description: "Năm tiến hành thanh tra/kiểm tra."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.INSPECTION_YEAR"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Start Date
+    physical_name: inspection_start_dt
+    description: "Ngày bắt đầu."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.START_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection End Date
+    physical_name: inspection_end_dt
+    description: "Ngày kết thúc."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.END_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Decision Number
+    physical_name: decision_number
+    description: "Số quyết định thanh tra của cơ quan có thẩm quyền."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.DECISION_NO"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Decision Date
+    physical_name: decision_dt
+    description: "Ngày ban hành quyết định thanh tra."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.DECISION_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Period Start Date
+    physical_name: inspection_period_start_dt
+    description: "Thời kỳ kiểm tra từ ngày."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.PERIOD_FROM"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Period End Date
+    physical_name: inspection_period_end_dt
+    description: "Thời kỳ kiểm tra đến ngày."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.PERIOD_TO"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Inspection Kind Code
+    physical_name: inspection_kind_code
+    description: "Hình thức thanh tra: 1=Thanh tra định kỳ, 2=Đột xuất, 3=Kiểm tra."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.INSPECTION_KIND"
+    comment: "Scheme: FMS_INSPECTION_KIND (đã đăng ký)."
+    classification_context: "FMS_INSPECTION_KIND"
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_ROUND.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

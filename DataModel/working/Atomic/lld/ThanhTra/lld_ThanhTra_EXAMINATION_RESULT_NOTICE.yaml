@@ -1,16 +1,15 @@
-﻿schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: ThanhTra
-  source_table: EXAMINATION_RESULT_NOTICE
-  atomic_entity: Examination Result Notice
-  entity_physical_name: exam_rslt_ntc
-  bcv_core_object: Documentation
+  source_system: "ThanhTra"
+  source_table: "EXAMINATION_RESULT_NOTICE"
+  atomic_entity: "Examination Result Notice"
+  entity_physical_name: "examination_result_notice"
+  bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
-  table_type: Fundamental
-  group: T3
-  design_status: draft
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,276 +17,284 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thông báo kết quả kiểm tra — tương đương Inspection Conclusion nhưng cho đoàn kiểm tra. FK→Examination Team (T2)."
-
+  notes: "Thông báo kết quả kiểm tra — tương đương Inspection Conclusion nhưng cho\
+    \ đoàn kiểm tra. FK→Examination Team (T2)."
 attributes:
-  - attribute_name: Examination Result Notice Id
-    physical_name: exam_rslt_ntc_id
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. BCV: [Documentation] Form Document."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Examination Result Notice Code
-    physical_name: exam_rslt_ntc_code
-    description: "PK nguồn (VARCHAR2 UUID). BK của entity."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.ID
-    comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: SOURCE_SYSTEM=ThanhTra.EXAMINATION_RESULT_NOTICE
-    etl_derived_value: ThanhTra.EXAMINATION_RESULT_NOTICE
-
-  - attribute_name: Examination Team Id
-    physical_name: exam_tm_id
-    description: "FK đến đoàn kiểm tra ban hành thông báo kết quả."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID
-    comment: "FK target: Examination Team.Examination Team Id. Hash: hash_id('ThanhTra.EXAMINATION_TEAM', EXAMINATION_TEAM_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Examination Team Code
-    physical_name: exam_tm_code
-    description: "Mã đoàn kiểm tra liên kết (snapshot)."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID
-    comment: "Lookup pair: Examination Team.Examination Team Code. Pair with Examination Team Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Notice Number
-    physical_name: exam_rslt_ntc_nbr
-    description: "Số công văn thông báo kết quả kiểm tra."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.NOTICE_NUMBER
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Issued Date
-    physical_name: issu_dt
-    description: "Ngày ban hành thông báo kết quả kiểm tra."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.ISSUED_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Announced Date
-    physical_name: ancm_dt
-    description: "Ngày công bố thông báo kết quả kiểm tra."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.ANNOUNCED_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Target Type Code
-    physical_name: trgt_tp_code
-    description: "Loại đối tượng kiểm tra: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY."
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.TARGET_TYPE
-    comment: "Scheme: CONCLUSION_TARGET_TYPE. Dùng chung với INSPECTION_CONCLUSION."
-    classification_context: CONCLUSION_TARGET_TYPE
-    etl_derived_value: null
-
-  - attribute_name: Target Reference Id
-    physical_name: trgt_ref_id
-    description: "ID tham chiếu đối tượng kiểm tra trong hệ thống nguồn."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.TARGET_REFERENCE_ID
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Target Name
-    physical_name: trgt_nm
-    description: "Tên đối tượng kiểm tra."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.TARGET_NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Content
-    physical_name: cntnt
-    description: "Nội dung thông báo kết quả kiểm tra."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.CONTENT
-    comment: "Nguồn CLOB — ETL truncate."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Recommendation
-    physical_name: rcmnd
-    description: "Ý kiến kiến nghị trong thông báo kết quả kiểm tra."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.RECOMMENDATION
-    comment: "Nguồn CLOB — ETL truncate."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Execution Status Code
-    physical_name: exec_st_code
-    description: "Trạng thái thực hiện: NOT_EXECUTED, FULLY_EXECUTED, PARTIALLY_EXECUTED."
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.EXECUTION_STATUS
-    comment: "Scheme: CONCLUSION_EXECUTION_STATUS. Dùng chung với INSPECTION_CONCLUSION."
-    classification_context: CONCLUSION_EXECUTION_STATUS
-    etl_derived_value: null
-
-  - attribute_name: Execution Description
-    physical_name: exec_dsc
-    description: "Mô tả tình hình thực hiện thông báo kết quả kiểm tra."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.EXECUTION_DESCRIPTION
-    comment: "Nguồn CLOB — ETL truncate."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created Timestamp
-    physical_name: crt_tms
-    description: "Thời điểm tạo bản ghi."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.CREATED_AT
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated Timestamp
-    physical_name: udt_tms
-    description: "Thời điểm cập nhật gần nhất."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.LAST_MODIFIED_AT
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Id
-    physical_name: crt_by_ofcr_id
-    description: "ID người dùng tạo bản ghi."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.CREATED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created By Officer Code
-    physical_name: crt_by_ofcr_code
-    description: "Mã người dùng tạo bản ghi."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.CREATED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Id
-    physical_name: udt_by_ofcr_id
-    description: "ID người dùng cập nhật gần nhất."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.LAST_MODIFIED_BY
-    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated By Officer Code
-    physical_name: udt_by_ofcr_code
-    description: "Mã người dùng cập nhật gần nhất."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - ThanhTra.EXAMINATION_RESULT_NOTICE.LAST_MODIFIED_BY
-    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Examination Result Notice Id"
+  physical_name: "examination_result_notice_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Documentation] Form Document."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Result Notice Code"
+  physical_name: "examination_result_notice_code"
+  description: "PK nguồn (VARCHAR2 UUID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=ThanhTra.EXAMINATION_RESULT_NOTICE"
+  etl_derived_value: "ThanhTra.EXAMINATION_RESULT_NOTICE"
+  data_type: "string"
+- attribute_name: "Examination Team Id"
+  physical_name: "examination_team_id"
+  description: "FK đến đoàn kiểm tra ban hành thông báo kết quả."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID"
+  comment: "FK target: Examination Team.Examination Team Id. Hash: hash_id('ThanhTra.EXAMINATION_TEAM',\
+    \ EXAMINATION_TEAM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Team Code"
+  physical_name: "examination_team_code"
+  description: "Mã đoàn kiểm tra liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.EXAMINATION_TEAM_ID"
+  comment: "Lookup pair: Examination Team.Examination Team Code. Pair with Examination\
+    \ Team Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Notice Number"
+  physical_name: "notice_number"
+  description: "Số công văn thông báo kết quả kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.NOTICE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issued Date"
+  physical_name: "issued_dt"
+  description: "Ngày ban hành thông báo kết quả kiểm tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.ISSUED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Announced Date"
+  physical_name: "announced_dt"
+  description: "Ngày công bố thông báo kết quả kiểm tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.ANNOUNCED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Target Type Code"
+  physical_name: "target_type_code"
+  description: "Loại đối tượng kiểm tra: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY,\
+    \ PUBLIC_COMPANY."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.TARGET_TYPE"
+  comment: "Scheme: CONCLUSION_TARGET_TYPE. Dùng chung với INSPECTION_CONCLUSION."
+  classification_context: "CONCLUSION_TARGET_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Reference Id"
+  physical_name: "target_reference_id"
+  description: "ID tham chiếu đối tượng kiểm tra trong hệ thống nguồn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.TARGET_REFERENCE_ID"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Name"
+  physical_name: "target_nm"
+  description: "Tên đối tượng kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.TARGET_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Content"
+  physical_name: "content"
+  description: "Nội dung thông báo kết quả kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.CONTENT"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recommendation"
+  physical_name: "recommendation"
+  description: "Ý kiến kiến nghị trong thông báo kết quả kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.RECOMMENDATION"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Execution Status Code"
+  physical_name: "execution_status_code"
+  description: "Trạng thái thực hiện: NOT_EXECUTED, FULLY_EXECUTED, PARTIALLY_EXECUTED."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.EXECUTION_STATUS"
+  comment: "Scheme: CONCLUSION_EXECUTION_STATUS. Dùng chung với INSPECTION_CONCLUSION."
+  classification_context: "CONCLUSION_EXECUTION_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Execution Description"
+  physical_name: "execution_description"
+  description: "Mô tả tình hình thực hiện thông báo kết quả kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.EXECUTION_DESCRIPTION"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.LAST_MODIFIED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By Officer Id"
+  physical_name: "created_by_officer_id"
+  description: "ID người dùng tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.CREATED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Code"
+  physical_name: "created_by_officer_code"
+  description: "Mã người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.CREATED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "updated_by_officer_id"
+  description: "ID người dùng cập nhật gần nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.LAST_MODIFIED_BY"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "updated_by_officer_code"
+  description: "Mã người dùng cập nhật gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ThanhTra.EXAMINATION_RESULT_NOTICE.LAST_MODIFIED_BY"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

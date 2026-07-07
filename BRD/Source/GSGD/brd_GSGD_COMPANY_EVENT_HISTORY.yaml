@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: COMPANY_EVENT_HISTORY
+brd_ref: BRD-SRC-GSGD-COMPANY_EVENT_HISTORY
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: COMPANY_EVENT_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id của sự kiện tổ chức niêm yết"
+    key: FK
+    fk_note: "FK suy luận → COMPANY_EVENT.ID"
+  - name: CHANGE_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày thay đổi"
+    key: null
+    fk_note: null
+  - name: CHANGE_TYPE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Loại thay đổi"
+    key: null
+    fk_note: null
+  - name: OLD_VALUE
+    data_type: "CLOB"
+    description: "Giá trị cũ"
+    key: null
+    fk_note: null
+  - name: NEW_VALUE
+    data_type: "CLOB"
+    description: "Giá trị mới"
+    key: null
+    fk_note: null
+  - name: CHANGED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "Id người thay đổi"
+    key: null
+    fk_note: null
+  - name: APPROVAL_STATUS
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVAL_COMMENT
+    data_type: "VARCHAR(1000 CHAR)"
+    description: "Nội dung phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVAL_BY_ID
+    data_type: "VARCHAR(255)"
+    description: "Id người phê duyệt"
+    key: null
+    fk_note: null
+  - name: APPROVAL_NAME
+    data_type: "VARCHAR(255)"
+    description: "Tên người phê duyệt"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

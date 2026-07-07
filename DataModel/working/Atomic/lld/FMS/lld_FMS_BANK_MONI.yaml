@@ -1,0 +1,233 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "BANK_MONI"
+  atomic_entity: "Custodian Bank"
+  entity_physical_name: "custodian_bank"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Postal Address + IP Electronic Address (xem lld_FMS_BANK_MONI_IP_*.yaml).\
+    \ CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION, ID_DB_OLD, FILE_NAME, FILE_DATA\
+    \ document trong pending_design.yaml."
+attributes:
+- attribute_name: "Custodian Bank Id"
+  physical_name: "custodian_bank_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng lưu ký,\
+    \ giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Code"
+  physical_name: "custodian_bank_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.BANK_MONI"
+  etl_derived_value: "FMS.BANK_MONI"
+  data_type: "string"
+- attribute_name: "Operation Status Code"
+  physical_name: "operation_status_code"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.STATUS_ID"
+  comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK đến bảng danh\
+    \ mục STATUS — ETL resolve sang mã STATUS.CODE tương ứng."
+  classification_context: "FMS_OPERATION_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Full Name"
+  physical_name: "custodian_bank_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank English Name"
+  physical_name: "custodian_bank_english_nm"
+  description: "Tên tiếng Anh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.EN_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Short Name"
+  physical_name: "custodian_bank_short_nm"
+  description: "Tên viết tắt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.SHORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bank Swift Code"
+  physical_name: "bank_swift_code"
+  description: "Mã ngân hàng lưu ký (SWIFT code hoặc mã BIC)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.BANK_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Certificate Number"
+  physical_name: "custodian_certificate_number"
+  description: "Số chứng nhận/giấy phép đủ điều kiện hoạt động lưu ký, giám sát của\
+    \ ngân hàng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.CERT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Classification Text"
+  physical_name: "record_classification_text"
+  description: "Loại/phân loại của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.RECORD_TYPE"
+  comment: "Mô tả nguồn chung chung — giữ dạng Text denormalized, cần xác nhận nghiệp\
+    \ vụ nếu có domain giá trị cố định."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Amendment Document Number"
+  physical_name: "amendment_document_number"
+  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.VOUCHER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Issue Date"
+  physical_name: "decision_issue_dt"
+  description: "Ngày ban hành quyết định/nghị quyết."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.DEC_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Change Description"
+  physical_name: "change_description"
+  description: "Mô tả nội dung thay đổi khi cập nhật hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.DES_CHANGE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.BANK_MONI.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

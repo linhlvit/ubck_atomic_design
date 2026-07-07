@@ -1,0 +1,232 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "INVES_ACC"
+  atomic_entity: "Discretionary Investment Account"
+  entity_physical_name: "discretionary_investment_account"
+  bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Investment Account"
+  table_type: "Relative"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Không phải Involved Party — không tách shared entity. CREATED_BY, MODIFY_BY,\
+    \ DELETED, DATA_MIGRATION document trong pending_design.yaml."
+attributes:
+- attribute_name: "Discretionary Investment Account Id"
+  physical_name: "discretionary_investment_account_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Arrangement] Investment Account\". Tài khoản được\
+    \ mở cho Discretionary Investment Investor."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Discretionary Investment Account Code"
+  physical_name: "discretionary_investment_account_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.INVES_ACC"
+  etl_derived_value: "FMS.INVES_ACC"
+  data_type: "string"
+- attribute_name: "Discretionary Investment Investor Id"
+  physical_name: "discretionary_investment_investor_id"
+  description: "FK -> INVESTOR: Nhà đầu tư ủy thác sở hữu tài khoản."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.INVES_ID"
+  comment: "FK target: Discretionary Investment Investor.Discretionary Investment\
+    \ Investor Id. Hash: hash_id('FMS.INVES', INVES_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Discretionary Investment Investor Code"
+  physical_name: "discretionary_investment_investor_code"
+  description: "Mã nhà đầu tư ủy thác sở hữu tài khoản."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.INVES_ID"
+  comment: "Lookup pair: Discretionary Investment Investor.Discretionary Investment\
+    \ Investor Code. Pair with Discretionary Investment Investor Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Number"
+  physical_name: "account_number"
+  description: "Số tài khoản đầu tư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.ACCOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Contract Number"
+  physical_name: "contract_number"
+  description: "Số hợp đồng đầu tư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.CONTRACT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Opening Place"
+  physical_name: "account_opening_place"
+  description: "Tổ chức/địa điểm mở tài khoản đầu tư."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.ACC_PLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Date"
+  physical_name: "report_dt"
+  description: "Ngày lập báo cáo tài khoản đầu tư."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.DATE_REPORT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Committed Entrustment Scale Amount"
+  physical_name: "committed_entrustment_scale_amount"
+  description: "Quy mô uỷ thác cam kết (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.AD_SCALE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Actual Entrustment Scale Amount"
+  physical_name: "actual_entrustment_scale_amount"
+  description: "Quy mô uỷ thác thực tế (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.ACT_SCALE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Portfolio Value Amount"
+  physical_name: "portfolio_val_amount"
+  description: "Giá trị danh mục đầu tư (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.LIST_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Management Fee Percentage"
+  physical_name: "management_fee_percentage"
+  description: "Phí quản lý danh mục (%/năm)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.MANAGER_FEE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INVES_ACC.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

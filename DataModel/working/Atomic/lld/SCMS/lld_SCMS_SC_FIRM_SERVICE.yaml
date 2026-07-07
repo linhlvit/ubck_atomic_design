@@ -6,7 +6,7 @@ metadata:
   atomic_entity: "Securities Company Licensed Service"
   entity_physical_name: "sc_licensed_service"
   bcv_core_object: "Event"
-  bcv_concept: "[Event] Business Activity"
+  bcv_concept: "[Event] Party Registration"
   table_type: "Fundamental"
   group: "T2"
   design_status: "draft"
@@ -18,28 +18,33 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "SC_FIRM_SERVICE → Securities Company Licensed Service. Dịch vụ chứng khoán\
-    \ được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi). Resolve open question 7e-04\
-    \ (SCMS_HLD_Overview.md) — giữ SC_FIRM_SERVICE làm entity chính thức, loại LNK_SC_FIRM_SERVICE\
-    \ (junction đơn giản hơn, thiếu vòng đời văn bản). BCV Core Object = Event, [Event]\
-    \ Business Activity — theo đúng pattern đã implement cho SC_FIRM_ADMIN_PENALTY_DECISION/SC_FIRM_ADMIN_SANCTION.\
-    \ SERVICE_ID → CAT_SERVICE dùng pattern Classification Value (scheme SCMS_SERVICE_TYPE,\
-    \ đã có, chỉ 1 trường Code). DM_DICH_VU_ID nghi ngờ trùng SERVICE_ID — xem pending_design.yaml."
+    \ được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi). Xác nhận lại 7e-04 (SCMS_HLD_Overview.md,\
+    \ 2026-07-07): SC_FIRM_SERVICE và LNK_SC_FIRM_SERVICE phản ánh 2 dữ liệu nghiệp\
+    \ vụ khác nhau (không trùng) — SC_FIRM_SERVICE là hồ sơ đăng ký/thu hồi dịch vụ,\
+    \ LNK_SC_FIRM_SERVICE là danh mục giấy phép hiện hành (giữ scope_status: pending,\
+    \ thiết kế entity riêng sau). BCV Core Object = Event, [Event] Party Registration\
+    \ (knowledge/terms.csv #9819 — formal granting of rights bởi authorized body cho\
+    \ 1 Involved Party) — sát nghĩa hơn [Event] Business Activity dùng trước đây (pattern\
+    \ mượn từ SC_FIRM_ADMIN_PENALTY_DECISION/SC_FIRM_ADMIN_SANCTION vốn là biện pháp\
+    \ chế tài, khác bản chất). SERVICE_ID → CAT_SERVICE dùng pattern Classification\
+    \ Value (scheme SCMS_SERVICE_TYPE, đã có, chỉ 1 trường Code). DM_DICH_VU_ID nghi\
+    \ ngờ trùng SERVICE_ID — xem pending_design.yaml."
 attributes:
 - attribute_name: "Securities Company Licensed Service Id"
-  physical_name: "securities_company_licensed_service_id"
+  physical_name: "sc_licensed_service_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Event] Business Activity\". Dịch vụ chứng khoán\
+  comment: "PK surrogate. BCV: \"[Event] Party Registration\". Dịch vụ chứng khoán\
     \ được UBCKNN cấp phép cho CTCK."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Licensed Service Code"
-  physical_name: "securities_company_licensed_service_code"
+  physical_name: "sc_licensed_service_code"
   description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -246,86 +251,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.NOTE"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SERVICE.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SERVICE.LAST_MODIFIED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By SCMS User Id"
-  physical_name: "created_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_SERVICE.CREATED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By SCMS User Code"
-  physical_name: "created_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_SERVICE.CREATED_BY"
-  comment: "Pending — Pair with Created By SCMS User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Id"
-  physical_name: "updated_by_scms_user_id"
-  description: "FK đến người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_SERVICE.LAST_MODIFIED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope SCMS. Hash: hash_id('SCMS.SYS_USER',\
-    \ LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By SCMS User Code"
-  physical_name: "updated_by_scms_user_code"
-  description: "Mã người dùng hệ thống SCMS cập nhật bản ghi gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_SERVICE.LAST_MODIFIED_BY"
-  comment: "Pending — Pair with Updated By SCMS User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

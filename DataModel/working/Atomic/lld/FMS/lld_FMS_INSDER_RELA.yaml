@@ -1,0 +1,176 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: INSDER_RELA
+  atomic_entity: Fund Management Company Insider Related Person
+  entity_physical_name: fund_management_company_insider_related_person
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Related Family Individual"
+  table_type: Fundamental
+  group: T6
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Postal Address + IP Alt Identification (NATIONAL_ID mặc định). CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Fund Management Company Insider Related Person Id
+    physical_name: fund_management_company_insider_related_person_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Involved Party] Related Family Individual\" (id 11308). Người có quan hệ gia đình/liên quan với Fund Management Company Insider."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Fund Management Company Insider Related Person Code
+    physical_name: fund_management_company_insider_related_person_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.INSDER_RELA"
+    etl_derived_value: "FMS.INSDER_RELA"
+
+  - attribute_name: Fund Management Company Insider Id
+    physical_name: fund_management_company_insider_id
+    description: "FK -> INSIDER: Cổ đông nội bộ liên kết."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.INSDER_ID"
+    comment: "FK target: Fund Management Company Insider.Fund Management Company Insider Id. Hash: hash_id('FMS.INSIDER', INSDER_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Fund Management Company Insider Code
+    physical_name: fund_management_company_insider_code
+    description: "Mã cổ đông nội bộ liên kết."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.INSDER_ID"
+    comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider Code. Pair with Fund Management Company Insider Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Relationship Type Code
+    physical_name: relationship_type_code
+    description: "FK -> RELATION: Loại quan hệ."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.RELA_ID"
+    comment: "Scheme: FMS_RELATION_TYPE (tái sử dụng — đã đăng ký Tier 1)."
+    classification_context: "FMS_RELATION_TYPE"
+    etl_derived_value: null
+
+  - attribute_name: Related Person Full Name
+    physical_name: related_person_full_nm
+    description: "Tên hiển thị chính."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.ITEM_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Description
+    physical_name: description
+    description: "Mô tả chi tiết."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.DESCRIPTION"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Decision Document Number
+    physical_name: decision_document_number
+    description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.GP_QD_NO"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Approval Date
+    physical_name: approval_dt
+    description: "Ngày chấp thuận/phê duyệt của UBCKNN."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.APPROVAL_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSDER_RELA.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

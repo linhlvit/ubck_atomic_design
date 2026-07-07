@@ -1,0 +1,291 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_REPORT
+brd_ref: BRD-SRC-KNT-TAX_REPORT
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: SERVICE_CODE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mã dịch vụ trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: SERVICE_NAME
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Tên dịch vụ trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: SERVICE_VERSION
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Phiên bản dịch vụ trao đổi dữ liệu"
+  key: null
+  fk_note: null
+- name: SERVICE_PROVIDER_INFO
+  data_type: "VARCHAR2(500 CHAR)"
+  description: "Thông tin nhà cung cấp dịch vụ"
+  key: null
+  fk_note: null
+- name: DECLARATION_CODE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Mã tờ khai thuế trong hệ thống Cục Thuế"
+  key: null
+  fk_note: null
+- name: DECLARATION_NAME
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Tên tờ khai thuế"
+  key: null
+  fk_note: null
+- name: FORM_DESCRIPTION
+  data_type: "VARCHAR2(250 CHAR)"
+  description: "Mô tả biểu mẫu tờ khai"
+  key: null
+  fk_note: null
+- name: DECLARATION_XML_VERSION
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Phiên bản tờ khai dạng XML"
+  key: null
+  fk_note: null
+- name: DECLARATION_TYPE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Loại tờ khai thuế"
+  key: null
+  fk_note: null
+- name: ATTEMPT_COUNT
+  data_type: "NUMBER"
+  description: "Số lần nộp tờ khai (lần đầu, bổ sung lần 1, 2...)"
+  key: null
+  fk_note: null
+- name: PERIOD_TYPE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Kiểu kỳ báo cáo: Y=Năm, H=Bán niên, Q=Quý, M=Tháng"
+  key: null
+  fk_note: null
+- name: DECLARATION_PERIOD
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Kỳ kê khai thuế"
+  key: null
+  fk_note: null
+- name: DECLARATION_FROM_DATE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Kỳ kê khai từ ngày"
+  key: null
+  fk_note: null
+- name: DECLARATION_TO_DATE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Kỳ kê khai đến ngày"
+  key: null
+  fk_note: null
+- name: DECLARATION_FROM_MONTH
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Kỳ kê khai từ tháng"
+  key: null
+  fk_note: null
+- name: DECLARATION_TO_MONTH
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Kỳ kê khai đến tháng"
+  key: null
+  fk_note: null
+- name: TAX_OFFICE_CODE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Mã cơ quan thuế nơi nộp"
+  key: null
+  fk_note: null
+- name: TAX_OFFICE_NAME
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Tên cơ quan thuế nơi nộp"
+  key: null
+  fk_note: null
+- name: DECLARATION_DATE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Ngày lập tờ khai"
+  key: null
+  fk_note: null
+- name: EXTENSION_REASON_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã lý do gia hạn nộp báo cáo"
+  key: null
+  fk_note: null
+- name: EXTENSION_REASON
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Nội dung lý do gia hạn nộp báo cáo"
+  key: null
+  fk_note: null
+- name: SIGNATORY
+  data_type: "NVARCHAR2(50 CHAR)"
+  description: "Người ký báo cáo (Giám đốc/TGĐ)"
+  key: null
+  fk_note: null
+- name: SIGNED_AT
+  data_type: "DATE"
+  description: "Ngày ký báo cáo"
+  key: null
+  fk_note: null
+- name: BUSINESS_LINE
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Ngành nghề kinh doanh chính"
+  key: null
+  fk_note: null
+- name: TAX_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: "Liên kết ngầm → TAX_REGISTRATION_INFO.TAX_CODE"
+- name: REPRESENTATIVE_NAME
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Họ tên người đại diện/chủ hộ kinh doanh"
+  key: null
+  fk_note: null
+- name: TAXPAYER_ADDRESS
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Địa chỉ người nộp thuế"
+  key: null
+  fk_note: null
+- name: WARD
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Phường/xã người nộp thuế"
+  key: null
+  fk_note: null
+- name: TAXPAYER_DISTRICT_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã quận/huyện người nộp thuế"
+  key: null
+  fk_note: null
+- name: TAXPAYER_DISTRICT_NAME
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tên quận/huyện người nộp thuế"
+  key: null
+  fk_note: null
+- name: TAXPAYER_PROVINCE_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã tỉnh/thành phố người nộp thuế"
+  key: null
+  fk_note: null
+- name: TAXPAYER_PROVINCE_NAME
+  data_type: "NVARCHAR2(100 CHAR)"
+  description: "Tên tỉnh/thành phố người nộp thuế"
+  key: null
+  fk_note: null
+- name: TAXPAYER_PHONE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Số điện thoại người nộp thuế"
+  key: null
+  fk_note: null
+- name: TAXPAYER_FAX
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Số fax người nộp thuế"
+  key: null
+  fk_note: null
+- name: TAXPAYER_EMAIL
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Email người nộp thuế"
+  key: null
+  fk_note: null
+- name: AUDIT_STATUS_TEXT
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Trạng thái kiểm toán dạng văn bản (từ Cục Thuế)"
+  key: null
+  fk_note: null
+- name: AUDIT_FIRM_TAX_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã số thuế của tổ chức kiểm toán"
+  key: null
+  fk_note: "Liên kết ngầm → AUDIT_FIRM (out of scope hiện tại)"
+- name: AUDIT_FIRM_NAME
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Tên tổ chức kiểm toán thực hiện kiểm toán báo cáo"
+  key: null
+  fk_note: null
+- name: AUDITOR_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã kiểm toán viên"
+  key: null
+  fk_note: "Liên kết ngầm → AUDITOR (out of scope hiện tại)"
+- name: AUDITOR_NAME
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Họ tên kiểm toán viên"
+  key: null
+  fk_note: null
+- name: AUDITED
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Cờ báo cáo tài chính đã được kiểm toán: true/false"
+  key: null
+  fk_note: null
+- name: AUDIT_OPINION_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán)"
+  key: null
+  fk_note: null
+- name: AUDIT_OPINION
+  data_type: "NVARCHAR2(500 CHAR)"
+  description: "Nội dung ý kiến kiểm toán"
+  key: null
+  fk_note: null
+- name: AUDIT_DATE
+  data_type: "DATE"
+  description: "Ngày ký báo cáo kiểm toán"
+  key: null
+  fk_note: null
+- name: CREATED_AT
+  data_type: "NUMBER"
+  description: "Thời điểm tạo bản ghi"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "FK -> msg_packet: Gói tin trao đổi liên quan"
+  key: FK
+  fk_note: "FK → MSG_PACKET.ID"
+- name: ADD_INFO_SUBMISSION_DATE
+  data_type: "DATE"
+  description: "Thông tin bổ sung: ngày nộp tờ khai"
+  key: null
+  fk_note: null
+- name: ADD_INFO_RECEIVED_DATE
+  data_type: "DATE"
+  description: "Thông tin bổ sung: ngày tiếp nhận tờ khai"
+  key: null
+  fk_note: null
+- name: ADD_INFO_PREPARATION_PERIOD
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Thông tin bổ sung: kỳ lập bộ hồ sơ"
+  key: null
+  fk_note: null
+- name: ADD_INFO_SOURCE
+  data_type: "VARCHAR2(255 CHAR)"
+  description: "Thông tin bổ sung: nguồn gốc tờ khai"
+  key: null
+  fk_note: null
+- name: ADD_INFO_ENTERED_BY
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Thông tin bổ sung: người nhập tờ khai"
+  key: null
+  fk_note: null
+- name: ADD_INFO_RECEIVED_AT
+  data_type: "DATE"
+  description: "Thông tin bổ sung: ngày nhận tờ khai"
+  key: null
+  fk_note: null
+- name: ADD_INFO_DECLARATION_ID
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Thông tin bổ sung: ID tờ khai trong hệ thống Cục Thuế"
+  key: null
+  fk_note: null
+- name: ADD_INFO_SENT_FROM
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Thông tin bổ sung: nơi gửi tờ khai"
+  key: null
+  fk_note: null
+- name: ADD_INFO_RECEIVED_AT_LOCATION
+  data_type: "NVARCHAR2(255 CHAR)"
+  description: "Thông tin bổ sung: nơi nhận tờ khai"
+  key: null
+  fk_note: null
+- name: GUID
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi"
+  key: null
+  fk_note: null

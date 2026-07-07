@@ -1,0 +1,252 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "MB_CHANGE"
+  atomic_entity: "Investment Fund Investor Capital Change Log"
+  entity_physical_name: "investment_fund_investor_capital_change_log"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: "Fact Append"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[PHÁT HIỆN] HLD Tier4 6d nhắc cột CHANGE_TYPE (scheme FMS_CAPITAL_CHANGE_TYPE)\
+    \ nhưng BRD columns thực tế của MB_CHANGE KHÔNG có CHANGE_TYPE — chỉ có AOORP\
+    \ (A=Mua vào, O=Bán ra, R/P=Đăng ký). Tạm map AOORP vào scheme FMS_CAPITAL_CHANGE_TYPE\
+    \ đã đăng ký (SUBSCRIPTION/REDEMPTION/TRANSFER_IN/TRANSFER_OUT) nhưng mapping\
+    \ A/O/R/P → 4 giá trị này CHƯA rõ ràng — cần Data Modeler xác nhận trước khi chốt\
+    \ etl_derived_value. Không phải Involved Party — không tách shared entity. CREATED_BY,\
+    \ MODIFY_BY document trong pending_design.yaml."
+attributes:
+- attribute_name: "Investment Fund Investor Capital Change Log Id"
+  physical_name: "investment_fund_investor_capital_change_log_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\". Sự kiện\
+    \ thay đổi vốn góp của Investment Fund Investor Membership."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Investor Capital Change Log Code"
+  physical_name: "investment_fund_investor_capital_change_log_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.MB_CHANGE"
+  etl_derived_value: "FMS.MB_CHANGE"
+  data_type: "string"
+- attribute_name: "Investment Fund Investor Membership Id"
+  physical_name: "investment_fund_investor_membership_id"
+  description: "FK -> MB_FUND: Thành viên quỹ liên quan đến biến động."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.MBF_ID"
+  comment: "FK target: Investment Fund Investor Membership.Investment Fund Investor\
+    \ Membership Id. Hash: hash_id('FMS.MB_FUND', MBF_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Investor Membership Code"
+  physical_name: "investment_fund_investor_membership_code"
+  description: "Mã thành viên quỹ liên quan đến biến động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.MBF_ID"
+  comment: "Lookup pair: Investment Fund Investor Membership.Investment Fund Investor\
+    \ Membership Code. Pair with Investment Fund Investor Membership Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Transaction Timestamp"
+  physical_name: "transaction_tms"
+  description: "Thời điểm giao dịch chuyển nhượng."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.TX_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Transaction Number"
+  physical_name: "transaction_number"
+  description: "Số hiệu giao dịch chuyển nhượng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.TX_NUM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Capital Change Type Code"
+  physical_name: "capital_change_type_code"
+  description: "Mua vào (A) hoặc Bán ra (O) hoặc Đăng ký (R/P) trong giao dịch."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.AOORP"
+  comment: "Scheme: FMS_CAPITAL_CHANGE_TYPE (tái sử dụng — đã đăng ký Tier 1 cho entity\
+    \ này nhưng ban đầu dự kiến nguồn là CHANGE_TYPE). Mapping tạm: A=SUBSCRIPTION;O=REDEMPTION\
+    \ — R/P chưa xác định rõ tương ứng TRANSFER_IN hay TRANSFER_OUT, cần Data Modeler\
+    \ xác nhận."
+  classification_context: "FMS_CAPITAL_CHANGE_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Settlement Timestamp"
+  physical_name: "settlement_tms"
+  description: "Ngày thanh toán/giải quyết giao dịch (business date)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.BUS_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Pre-Transaction Ownership Percentage"
+  physical_name: "pre_transaction_ownership_percentage"
+  description: "Tỷ lệ sở hữu trước giao dịch (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.PREPERCENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Post-Transaction Ownership Percentage"
+  physical_name: "post_transaction_ownership_percentage"
+  description: "Tỷ lệ sở hữu sau giao dịch (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.AFT_PERCENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Pre-Transaction Unit Quantity"
+  physical_name: "pre_transaction_unit_quantity"
+  description: "Số lượng CCQ/cổ phần trước giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.PRE_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Post-Transaction Unit Quantity"
+  physical_name: "post_transaction_unit_quantity"
+  description: "Số lượng CCQ/cổ phần sau giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.AFT_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Pre-Transaction Capital Amount"
+  physical_name: "pre_transaction_capital_amount"
+  description: "Vốn góp trước giao dịch (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.PRECAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Post-Transaction Capital Amount"
+  physical_name: "post_transaction_capital_amount"
+  description: "Vốn góp sau giao dịch (đơn vị: VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.AFT_CAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.MB_CHANGE.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

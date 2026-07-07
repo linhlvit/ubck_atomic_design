@@ -1,0 +1,85 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: DISTRIBUTOR_PERSONNEL
+  atomic_entity: Involved Party Electronic Address
+  entity_physical_name: ip_electronic_address
+  bcv_core_object: Involved Party
+  bcv_concept: "Shared Entity"
+  table_type: Fundamental
+  group: T7
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách PHONE thành IP Electronic Address, gắn với Securities Distribution Agent Personnel (cha — dùng chính ID của DISTRIBUTOR_PERSONNEL, không cần JOIN qua DISTRIBUTOR_LOCATION)."
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: involved_party_id
+    description: "FK đến Securities Distribution Agent Personnel."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.ID"
+    comment: "FK target: Securities Distribution Agent Personnel.Securities Distribution Agent Personnel Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_PERSONNEL', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: involved_party_code
+    description: "Mã nhân sự đại lý phân phối."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.ID"
+    comment: "Lookup pair: Securities Distribution Agent Personnel.Securities Distribution Agent Personnel Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=FMS.DISTRIBUTOR_PERSONNEL"
+    etl_derived_value: "FMS.DISTRIBUTOR_PERSONNEL"
+
+  - attribute_name: Electronic Address Type Code
+    physical_name: electronic_address_type_code
+    description: "Loại kênh liên lạc — điện thoại."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: "PHONE"
+
+  - attribute_name: Electronic Address Value
+    physical_name: electronic_address_value
+    description: "Số điện thoại."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.PHONE"
+    comment: null
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: null

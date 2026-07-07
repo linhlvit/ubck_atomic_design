@@ -17,6 +17,7 @@ Danh sách group dùng trong cột "Nhóm" của mục 7f HLD Overview. Group nh
 | `Hệ thống / Phân quyền` | IT infrastructure |
 | `Chưa có cột` | Chưa có thông tin cột nguồn |
 | `UI metadata` | Cấu hình hiển thị UI |
+| `Xử lý luồng khác` | Dữ liệu đã được thiết kế/xử lý ở một luồng ETL/nghiệp vụ khác ngoài Atomic — không thiết kế lại tại đây |
 
 ## Quy tắc bổ sung group mới
 
@@ -33,3 +34,4 @@ Group mới phải bổ sung vào file này trước khi dùng trong HLD Overvie
 | Audit Log nguồn (OldValue/NewValue) | `Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ` |
 | Snapshot nguồn (IsBefore + blob) | `Snapshot nguồn — không phải entity nghiệp vụ Atomic` |
 | Cascade từ bảng đã drop | `Cascade drop từ [anchor_table]` |
+| Đã xử lý ở luồng khác | `Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic` |

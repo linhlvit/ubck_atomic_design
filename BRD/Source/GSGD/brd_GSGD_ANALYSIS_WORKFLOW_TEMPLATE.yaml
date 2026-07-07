@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ANALYSIS_WORKFLOW_TEMPLATE
+brd_ref: BRD-SRC-GSGD-ANALYSIS_WORKFLOW_TEMPLATE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: WORKFLOW_ID
+    data_type: "VARCHAR2(36)"
+    description: "analysis_workflow.id"
+    key: FK
+    fk_note: "FK suy luận → ANALYSIS_WORKFLOW.ID"
+  - name: REPORT_TEMPLATE_ID
+    data_type: "VARCHAR2(36)"
+    description: "report_templaate.id"
+    key: FK
+    fk_note: "FK suy luận → REPORT_TEMPLATE.ID"
+  - name: TEMPLATE_ROLE
+    data_type: "NUMBER(1)"
+    description: "1=Báo cáo tổng hợp, 2=Báo cáo phân tích"
+    key: null
+    fk_note: null
+  - name: PARAMETERS
+    data_type: "CLOB"
+    description: "Tham số cấu hình biểu mẫu báo cáo cho từng vụ việc"
+    key: null
+    fk_note: null
+  - name: DISPLAY_ORDER
+    data_type: "NUMBER(3)"
+    description: "Thứ tự hiển thị trên màn hình cấu hình báo cáo"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

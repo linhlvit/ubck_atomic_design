@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: REPORT_PARAMETER_HISTORY_LOG
+brd_ref: BRD-SRC-GSGD-REPORT_PARAMETER_HISTORY_LOG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: REPORT_PARAMETER_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id tham số được ghi lịch sử"
+    key: FK
+    fk_note: "FK suy luận → REPORT_PARAMETER.ID"
+  - name: ACTION_TYPE
+    data_type: "NUMBER(1)"
+    description: "0= DELETE 1=UPDATE"
+    key: null
+    fk_note: null
+  - name: ACTION_REASON
+    data_type: "CLOB"
+    description: "Lý do cập nhật/xóa hoặc lý do thao tác thất bại"
+    key: null
+    fk_note: null
+  - name: BEFORE_DATA
+    data_type: "CLOB"
+    description: "Snapshot dữ liệu trước thay đổi"
+    key: null
+    fk_note: null
+  - name: AFTER_DATA
+    data_type: "CLOB"
+    description: "Snapshot dữ liệu sau thay đổi"
+    key: null
+    fk_note: null
+  - name: ACTION_AT
+    data_type: "TIMESTAMP"
+    description: "Thời điểm thực hiện thao tác"
+    key: null
+    fk_note: null
+  - name: ACTION_BY_ID
+    data_type: "VARCHAR2(36)"
+    description: "User_id người thực hiện"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo log"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

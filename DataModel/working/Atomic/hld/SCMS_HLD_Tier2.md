@@ -22,7 +22,7 @@
 | Involved Party | [Involved Party] Custodian | Involved Party | CUSTODIAN_BANK | Ngân hàng lưu ký được CTCK chỉ định (quan hệ CTCK—Ngân hàng lưu ký) | Securities Company Custodian Bank | Relative | (1) BCV có `Securities Service Agreement` hoặc `Custodian Arrangement` trong Arrangement. (2) CUSTODIAN_BANK không phải thực thể Ngân hàng — mà là quan hệ giữa CTCK và Ngân hàng lưu ký (SC_FIRM_INFO_ID + BANK_ID). Đây là arrangement/thỏa thuận lưu ký. (3) Chọn `[Arrangement] Securities Service Agreement` — mô tả quan hệ lưu ký. |
 | Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | Nhân sự tại chi nhánh CTCK nước ngoài tại Việt Nam | Securities Company Foreign Branch Personnel | Fundamental | (1) Đưa lại vào scope từ Tier 3 sau khi resolve mâu thuẫn Append/SCD4A (xem SCMS_HLD_Overview.md mục 7e #10) — table_type đổi thành Fundamental, không cần track SCD4A qua UPDATED_AT. (2) FK → SC_FIRM_FOREIGN_BRANCH.ID (Securities Company Foreign Branch). (3) Grain = Involved Party (cá nhân) → tách Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification. (4) Chọn `[Involved Party] Key Personnel`. |
 | Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | Nhân sự tại VPĐD CTCK nước ngoài tại Việt Nam | Securities Company Foreign Representative Office Personnel | Fundamental | (1) Đưa lại vào scope từ Tier 3, cùng lý do với SC_FIRM_FOREIGN_BRANCH_PERSONNEL. (2) FK → SC_FIRM_FOREIGN_REP_OFFICE.ID (Securities Company Organization Unit). (3) Grain = Involved Party (cá nhân) → tách Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification. (4) Chọn `[Involved Party] Key Personnel`. |
-| Event | [Event] Business Activity | Event | SC_FIRM_SERVICE | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi dịch vụ) | Securities Company Licensed Service | Fundamental | (1) Đã resolve open question 7e-04 (SCMS_HLD_Overview.md) — giữ SC_FIRM_SERVICE, loại LNK_SC_FIRM_SERVICE (junction đơn giản hơn, thiếu vòng đời văn bản). (2) SC_FIRM_SERVICE có REGISTRATION_DOC_NUMBER/DATE, TERMINATION_DOC_NUMBER, EFFECTIVE_DATE, DOCUMENT_NUMBER — vòng đời cấp phép/thu hồi dịch vụ. (3) BCV Core Object = Event, theo đúng pattern đã implement thực tế cho SC_FIRM_ADMIN_PENALTY_DECISION/SC_FIRM_ADMIN_SANCTION (LLD 2 entity này dùng `bcv_core_object: Event`, `[Event] Business Activity` — khác với ghi chú Documentation trong bảng BCV ban đầu của 2 entity đó). (4) FK → SC_FIRM_INFO.ID (Securities Company); SERVICE_ID → CAT_SERVICE (Classification Value scheme SCMS_SERVICE_TYPE, đã có). (5) Chọn `[Event] Business Activity`. |
+| Event | [Event] Party Registration | Event | SC_FIRM_SERVICE | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi dịch vụ) | Securities Company Licensed Service | Fundamental | (1) Term candidate `Party Registration` (knowledge/terms.csv #9819) — BCV: "an Event that is a formal granting, by an authorized body, of rights/privileges/statuses to an Involved Party; a Party Registration may be backed up by a Registration Document". Property đi kèm: Registration Life Cycle Status (Effective/Revoked/Suspended), Registration Last Verified Date. (2) SC_FIRM_SERVICE: FK→SC_FIRM_INFO (Involved Party được cấp quyền), FK→CAT_SERVICE (dịch vụ được cấp), REGISTRATION_DOC_NUMBER/DATE (văn bản cấp), TERMINATION_DOC_NUMBER + END_DATE (văn bản/ngày thu hồi), RECORD_STATUS (trạng thái hiệu lực), PROVISIONAL (cờ bản nháp) — khớp đúng cấu trúc vòng đời cấp/thu hồi của 1 Party Registration. (3) Chọn `[Event] Party Registration` — sát nghĩa hơn `[Event] Business Activity` dùng trước đây (pattern mượn từ PENALTY_DECISION/SANCTION vốn là biện pháp chế tài, khác bản chất với việc cấp quyền hoạt động dịch vụ). Trả lời 7e-04: SC_FIRM_SERVICE và LNK_SC_FIRM_SERVICE phản ánh 2 dữ liệu nghiệp vụ khác nhau — SC_FIRM_SERVICE là hồ sơ đăng ký/thu hồi dịch vụ (Party Registration), LNK_SC_FIRM_SERVICE là danh mục số giấy phép hiện hành (LICENSE_NUMBER/LICENSE_DATE) theo từng CTCK×dịch vụ — cần thiết kế entity riêng, không loại bỏ (xem mục 6e). |
 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_PERIODIC_REPORT | Báo cáo định kỳ CTCK nộp lên UBCKNN (mỗi kỳ = 1 event nộp báo cáo) | Securities Company Periodic Report | Relative | (1) BCV có `Transaction` hoặc `Submission` trong Event — sự kiện nộp tài liệu. (2) SC_FIRM_PERIODIC_REPORT ghi nhận từng lần nộp báo cáo định kỳ: REPORT_YEAR, PERIOD, RECORD_STATUS (0=chưa gửi,1=đã gửi,2=đã duyệt). Đây là event nộp báo cáo, có trạng thái lifecycle. (3) Chọn `[Event] Transaction`. |
 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_ADHOC_REPORT | Báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN | Securities Company Adhoc Report | Relative | (1) Tương tự SC_FIRM_PERIODIC_REPORT — event nộp báo cáo đột xuất theo yêu cầu hoặc bất thường. (2) SC_FIRM_ADHOC_REPORT có RECORD_STATUS, EVENT_TYPE_ID, DETAIL_TYPE — mô tả event nghiệp vụ. (3) Chọn `[Event] Transaction`. |
 | Business Activity | [Business Activity] Communication | Business Activity | DISCLOSURE_REPORT | Báo cáo công bố thông tin (CBTT) của CTCK | Securities Company Disclosure Report | Relative | (1) BCV có `Communication` trong Event — sự kiện truyền đạt thông tin ra bên ngoài. (2) DISCLOSURE_REPORT = sự kiện CBTT: gắn SC_FIRM_INFO_ID, loại CBTT, nội dung. (3) Chọn `[Event] Communication`. |
@@ -306,6 +306,12 @@ erDiagram
         string securities_company_code
         bigint securities_company_depositary_bank_id FK
     }
+    Securities_Company_Licensed_Service {
+        bigint ds_sc_licensed_service_id PK
+        bigint securities_company_id FK
+        string securities_company_code
+        string service_code
+    }
     Securities_Company_Periodic_Report {
         bigint ds_periodic_report_id PK
         bigint securities_company_id FK
@@ -391,6 +397,7 @@ erDiagram
     Securities_Company ||--o{ Securities_Company_Organization_Unit : "securities_company_id"
     Securities_Company ||--o{ Securities_Company_Foreign_Branch : "securities_company_id"
     Securities_Company ||--o{ Securities_Company_Senior_Personnel : "securities_company_id"
+    Securities_Company ||--o{ Securities_Company_Licensed_Service : "securities_company_id"
     Audit_Firm ||--o{ Audit_Firm_Auditor : "audit_firm_id"
     Securities_Company_Risk_Indicator ||--o{ Securities_Company_Risk_Scoring_Scale : "securities_company_risk_indicator_id"
     Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Indicator_Condition : "securities_company_alert_indicator_id"
@@ -412,7 +419,9 @@ erDiagram
 
 ## 6e. Bảng chờ thiết kế
 
-*(Để trống)*
+| Source Table | Mô tả bảng nguồn | Lý do chưa thiết kế |
+|---|---|---|
+| LNK_SC_FIRM_SERVICE | Danh mục số giấy phép hiện hành theo CTCK × dịch vụ chứng khoán (LICENSE_NUMBER, LICENSE_DATE, RECORD_STATUS) | Đã xác nhận (7e-04 Overview / T2-05) phản ánh dữ liệu khác với SC_FIRM_SERVICE — cần thiết kế thành entity riêng, chưa thực hiện trong lượt thiết kế này |
 
 ---
 
@@ -424,4 +433,4 @@ erDiagram
 | T2-02 | SC_FIRM_FOREIGN_REP_OFFICE_VN không có SC_FIRM_INFO_ID trong CSV — quan hệ với SC_FIRM_INFO là gì? | Cần xác nhận: VPDD NN tại VN có BUSINESS_LICENSE_NUMBER riêng do UBCKNN cấp — có thể là entity độc lập không FK trực tiếp đến SC_FIRM_INFO. Tạm để T2; nếu không có business FK đến SC_FIRM_INFO, hạ xuống T1. |
 | T2-03 | SC_FIRM_LICENSED_PRACTITIONER có FK đến SC_FIRM_BRANCH, SC_FIRM_TRANSACTION_OFFICE, SC_FIRM_REP_OFFICE (đều T2) — tạo circular với Tier 2 không? | Xem xét: SC_FIRM_LICENSED_PRACTITIONER chính FK đến SC_FIRM_INFO_ID (T1) → đặt T2. Các FK đến BRANCH/REP_OFFICE/TRANSACTION_OFFICE là optional location FK, không tạo dependency bắt buộc. |
 | T2-04 | SC_FIRM_SENIOR_PERSONNEL cũng có FK đến SC_FIRM_BRANCH, SC_FIRM_REP_OFFICE, SC_FIRM_TRANSACTION_OFFICE (T2) — cùng issue với T2-03 | Cùng xử lý như T2-03 — chính FK là SC_FIRM_INFO_ID (T1); FK đến sub-office là optional. |
-| T2-05 | SC_FIRM_SERVICE là bảng riêng bên cạnh LNK_SC_FIRM_SERVICE — 2 bảng này quan hệ gì? | SC_FIRM_SERVICE có REGISTRATION_DOC_NUMBER, EFFECTIVE_DATE + FK đến CAT_SERVICE; LNK_SC_FIRM_SERVICE có LICENSE_NUMBER, LICENSE_DATE. Có thể là 2 giai đoạn đăng ký khác nhau hoặc dữ liệu trùng. Thiết kế 1 entity `Securities Company Licensed Service` từ LNK_SC_FIRM_SERVICE; SC_FIRM_SERVICE merge vào hoặc loại nếu trùng dữ liệu. Cần xác nhận. |
+| T2-05 | SC_FIRM_SERVICE là bảng riêng bên cạnh LNK_SC_FIRM_SERVICE — 2 bảng này quan hệ gì? | **Đã xác nhận:** 2 bảng phản ánh 2 dữ liệu nghiệp vụ khác nhau. SC_FIRM_SERVICE = hồ sơ đăng ký/thu hồi dịch vụ theo từng văn bản (REGISTRATION_DOC_NUMBER/DATE, TERMINATION_DOC_NUMBER, END_DATE) → thiết kế thành entity `Securities Company Licensed Service` (`[Event] Party Registration`, Fundamental). LNK_SC_FIRM_SERVICE = danh mục số giấy phép hiện hành theo CTCK × dịch vụ (LICENSE_NUMBER, LICENSE_DATE) → giữ `scope_status: pending`, thiết kế thành entity riêng ở lượt sau (xem mục 6e). |

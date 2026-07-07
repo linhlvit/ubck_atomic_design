@@ -1,27 +1,26 @@
 schema_type: data_model
-schema_version: '1.0'
+schema_version: "1.0"
+
 ldm:
   id: ATM-security_match_log-MDDS.JAD_TRANSLOG
   logical_name: Security Match Log
   physical_name: security_match_log
   layer: Atomic
   version: "1.0"
-  status: approved
+  status: draft
   bcv_core_object: Transaction
-  bcv_concept: '[Transaction] Financial Market Transaction'
+  bcv_concept: "[Transaction] Financial Market Transaction"
   table_type: Fact Append
   etl_pattern: Fact Append
   source: MDDS
-  description: 'Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong
-    ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động, và
-    lũy kế khối lượng/giá trị từ đầu ngày.
-
-    '
+  description: |
+    Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động, và lũy kế khối lượng/giá trị từ đầu ngày.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
     brd: BRD-SRC-MDDS-JAD_TRANSLOG
+
 attributes:
   - name: Security Match Log Id
     physical_name: security_match_log_id
@@ -164,7 +163,7 @@ attributes:
     etl_derived_value: null
 
   - name: Match Volume
-    physical_name: match_volume
+    physical_name: match_vol
     business_meaning: Khối lượng khớp.
     data_domain: Small Counter
     data_type: int
@@ -178,7 +177,7 @@ attributes:
     etl_derived_value: null
 
   - name: Accumulated Volume
-    physical_name: accumulated_volume
+    physical_name: accumulated_vol
     business_meaning: Tổng khối lượng khớp lũy kế trong ngày (lô chẵn).
     data_domain: Small Counter
     data_type: int
@@ -192,7 +191,7 @@ attributes:
     etl_derived_value: null
 
   - name: Accumulated Value
-    physical_name: accumulated_value
+    physical_name: accumulated_val
     business_meaning: Tổng giá trị khớp lũy kế trong ngày (lô chẵn).
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -206,7 +205,7 @@ attributes:
     etl_derived_value: null
 
   - name: Total Buy Volume
-    physical_name: total_buy_volume
+    physical_name: total_buy_vol
     business_meaning: Tổng khối lượng mua chủ động.
     data_domain: Small Counter
     data_type: int
@@ -220,7 +219,7 @@ attributes:
     etl_derived_value: null
 
   - name: Total Sell Volume
-    physical_name: total_sell_volume
+    physical_name: total_sell_vol
     business_meaning: Tổng khối lượng bán chủ động.
     data_domain: Small Counter
     data_type: int

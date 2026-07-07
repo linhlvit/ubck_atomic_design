@@ -1,0 +1,140 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "NATIONAL"
+  atomic_entity: "Geographic Area"
+  entity_physical_name: "geographic_area"
+  bcv_core_object: "Location"
+  bcv_concept: "[Location] Geographic Area"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bổ sung source_table cho shared entity Geographic Area (đã approved từ NHNCK).\
+    \ Theo HLD, FMS.NATIONAL chỉ chứa danh mục quốc gia (không có tỉnh/thành) — toàn\
+    \ bộ dòng gán Geographic Area Type Code=COUNTRY."
+attributes:
+- attribute_name: "Geographic Area Id"
+  physical_name: "geographic_area_id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Geographic Area Code"
+  physical_name: "geographic_area_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.NATIONAL.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.NATIONAL"
+  etl_derived_value: "FMS.NATIONAL"
+  data_type: "string"
+- attribute_name: "Geographic Area Type Code"
+  physical_name: "geographic_area_type_code"
+  description: "Phân loại vùng địa lý — Quốc gia."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: GEOGRAPHIC_AREA_TYPE. Hardcode COUNTRY — FMS.NATIONAL chỉ lưu\
+    \ danh mục quốc gia theo quyết định HLD."
+  classification_context: "GEOGRAPHIC_AREA_TYPE=COUNTRY"
+  etl_derived_value: "COUNTRY"
+  data_type: "string"
+- attribute_name: "Geographic Area Name"
+  physical_name: "geographic_area_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.NATIONAL.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "ISO Country Code"
+  physical_name: "iso_country_code"
+  description: "Tên ngắn/mã quốc gia."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.NATIONAL.SNAME"
+  comment: "Nguồn không đảm bảo chuẩn ISO 3166-1 — chỉ là mã ngắn nội bộ, tái sử dụng\
+    \ tên attribute chuẩn của shared entity."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Geographic Area Id"
+  physical_name: "parent_geographic_area_id"
+  description: "FK đến vùng địa lý cha (self-ref). NULL cho quốc gia."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "FK target: Geographic Area.Geographic Area Id. NULL vì NATIONAL (cấp quốc\
+    \ gia) không có parent."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Geographic Area Code"
+  physical_name: "parent_geographic_area_code"
+  description: "Mã vùng địa lý cha."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic\
+    \ Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.NATIONAL.RECORD_STATUS"
+  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE. Nhất quán với lld_NHNCK_COUNTRIES.yaml/lld_NHNCK_PROVINCES.yaml."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

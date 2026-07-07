@@ -1,0 +1,345 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "STF_FG_BRCH"
+  atomic_entity: "Foreign Fund Management Organization Unit Staff"
+  entity_physical_name: "foreign_fund_management_organization_unit_staff"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[PHÁT HIỆN] HLD Tier3 6b/T3-01 mô tả FK TL_ID (kiêm nhiệm, nullable) đến\
+    \ TL_PROFILES nhưng BRD columns thực tế của STF_FG_BRCH KHÔNG có cột TL_ID — chỉ\
+    \ có JOBS_ID (khác JOBTYPE). Không tạo FK Fund Management Company Key Person,\
+    \ cần xác nhận lại HLD. Tách IP Postal Address + IP Electronic Address (EMAIL/EMAIL_PERSONAL)\
+    \ + IP Alt Identification (NATIONAL_ID mặc định). CREATED_BY, MODIFY_BY, FILE_DATA,\
+    \ DELETED, DATA_MIGRATION document trong pending_design.yaml."
+attributes:
+- attribute_name: "Foreign Fund Management Organization Unit Staff Id"
+  physical_name: "foreign_fund_management_organization_unit_staff_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\".\
+    \ Cá nhân giữ vị trí trong VPĐD/CN QLQ nước ngoài."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Fund Management Organization Unit Staff Code"
+  physical_name: "foreign_fund_management_organization_unit_staff_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.STF_FG_BRCH"
+  etl_derived_value: "FMS.STF_FG_BRCH"
+  data_type: "string"
+- attribute_name: "Foreign Fund Management Organization Unit Id"
+  physical_name: "foreign_fund_management_organization_unit_id"
+  description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.FOR_BRCH_ID"
+  comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Id. Hash: hash_id('FMS.FOR_BRCH', FOR_BRCH_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Fund Management Organization Unit Code"
+  physical_name: "foreign_fund_management_organization_unit_code"
+  description: "Mã chi nhánh/VPĐD nước ngoài liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.FOR_BRCH_ID"
+  comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Code. Pair with Foreign Fund Management Organization Unit\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Job Title Code"
+  physical_name: "job_title_code"
+  description: "FK -> JOBS: Chức danh/vị trí công tác của nhân sự."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.JOBS_ID"
+  comment: "Scheme: FMS_JOB_TITLE. [PROPOSE NEW SCHEME] — nguồn FMS.JOBS khác FMS.JOBTYPE\
+    \ (đã đăng ký FMS_JOB_TYPE ở Tier 1). Nguồn JOBS_ID là UUID FK — ETL resolve sang\
+    \ mã JOBS tương ứng."
+  classification_context: "FMS_JOB_TITLE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.NAT_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('FMS.NATIONAL',\
+    \ NAT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.NAT_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Staff Branch Flag"
+  physical_name: "staff_branch_flag"
+  description: "Cờ là nhân sự chi nhánh: 1=Nhân sự CN, 0=Nhân sự VPĐD."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.STAFF_BRANCH"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Foreign Fund Management Organization Unit Staff Full Name"
+  physical_name: "foreign_fund_management_organization_unit_staff_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Gender Code"
+  physical_name: "gender_code"
+  description: "Giới tính: 1=Nam, 0=Nữ (hoặc chuỗi Nam/Nữ tùy bảng)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.SEX"
+  comment: "Scheme: FMS_GENDER (tái sử dụng — đã đăng ký Tier 2)."
+  classification_context: "FMS_GENDER"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Legal Representative Flag"
+  physical_name: "legal_representative_flag"
+  description: "Cờ là người đại diện theo pháp luật: 1=Có, 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.REPRESENT"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Operating License Number"
+  physical_name: "operating_license_number"
+  description: "Số giấy phép hoạt động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.LICENSE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Operating License Date"
+  physical_name: "operating_license_dt"
+  description: "Ngày cấp giấy phép."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.LICENSE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Held Unit Quantity"
+  physical_name: "held_unit_quantity"
+  description: "Số lượng cổ phiếu/CCQ nắm giữ của người hành nghề."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.ISP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Practice Certificate Number"
+  physical_name: "practice_certificate_number"
+  description: "Số chứng chỉ hành nghề của nhân sự chi nhánh/VPĐD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.PRACTICE_CERT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Practice Certificate Issue Date"
+  physical_name: "practice_certificate_issue_dt"
+  description: "Ngày cấp chứng chỉ hành nghề."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.PRACTICE_CERT_ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Branch Director Flag"
+  physical_name: "branch_director_flag"
+  description: "Cờ là Giám đốc chi nhánh: 1=Là GĐ CN, 0=Nhân viên thường."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.BRANCH_DIRECTOR"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Director Appointment License Number"
+  physical_name: "director_appointment_license_number"
+  description: "Số GP/QĐ bổ nhiệm Giám đốc chi nhánh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.DIRECTOR_APPOINT_LICENSE_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Director Appointment Approval Date"
+  physical_name: "director_appointment_approval_dt"
+  description: "Ngày phê duyệt bổ nhiệm Giám đốc chi nhánh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.DIRECTOR_APPROVAL_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

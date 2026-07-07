@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ANALYSIS_ACCOUNT_RELATIONSHIP
+brd_ref: BRD-SRC-GSGD-ANALYSIS_ACCOUNT_RELATIONSHIP
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: CASE_FILE_ID
+    data_type: "VARCHAR2(36)"
+    description: "case_file.id"
+    key: FK
+    fk_note: "FK suy luận → CASE_FILE.ID"
+  - name: SECURITIES_CODE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Mã chứng khoán"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mã chứng khoán"
+    key: null
+    fk_note: null
+  - name: WORKFLOW_TYPE
+    data_type: "NUMBER(1)"
+    description: "1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
+    key: null
+    fk_note: null
+  - name: RESULT_TYPE
+    data_type: "NUMBER(1)"
+    description: "1=Kết quả phân tích  2=Kết quả kiểm tra"
+    key: null
+    fk_note: null
+  - name: RELATIONSHIP_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id mối quan hệ giữa các tài khoản nghi vấn"
+    key: null
+    fk_note: null
+  - name: ANALYSIS_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày phân tích"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

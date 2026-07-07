@@ -1,0 +1,294 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "REPRESENT"
+  atomic_entity: "Investment Fund Representative Board Member"
+  entity_physical_name: "investment_fund_representative_board_member"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[PHÁT HIỆN] HLD Tier3 6c mô tả FK 'Key Person FK' đến Fund Management Company\
+    \ Key Person nhưng BRD columns thực tế của REPRESENT KHÔNG có cột TL_ID/TL_PROFILES\
+    \ — entity lưu thông tin cá nhân độc lập (ITEM_NAME/ID_NO riêng), không phải quan\
+    \ hệ đến TL_PROFILES. Không tạo FK Fund Management Company Key Person, cần xác\
+    \ nhận lại HLD. Tách IP Postal Address + IP Electronic Address + IP Alt Identification\
+    \ (NATIONAL_ID mặc định). CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document\
+    \ trong pending_design.yaml."
+attributes:
+- attribute_name: "Investment Fund Representative Board Member Id"
+  physical_name: "investment_fund_representative_board_member_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\".\
+    \ Thành viên ban đại diện/HĐQT của Investment Fund."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Representative Board Member Code"
+  physical_name: "investment_fund_representative_board_member_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.REPRESENT"
+  etl_derived_value: "FMS.REPRESENT"
+  data_type: "string"
+- attribute_name: "Investment Fund Id"
+  physical_name: "investment_fund_id"
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.FUND_ID"
+  comment: "FK target: Investment Fund.Investment Fund Id. Hash: hash_id('FMS.FUNDS',\
+    \ FUND_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Code"
+  physical_name: "investment_fund_code"
+  description: "Mã quỹ đầu tư liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.FUND_ID"
+  comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment\
+    \ Fund Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Job Title Code"
+  physical_name: "job_title_code"
+  description: "FK -> JOBS: Chức danh/vị trí công việc."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.JOB_ID"
+  comment: "Scheme: FMS_JOB_TITLE (tái sử dụng — đã đăng ký cùng Tier từ STF_FG_BRCH.JOBS_ID,\
+    \ cùng nguồn FMS.JOBS). Nguồn JOB_ID là UUID FK — ETL resolve sang mã tương ứng."
+  classification_context: "FMS_JOB_TITLE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.NAT_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('FMS.NATIONAL',\
+    \ NAT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.NAT_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Board Member Full Name"
+  physical_name: "board_member_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Name"
+  physical_name: "province_nm"
+  description: "Tỉnh/thành phố của thành viên quỹ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.PROVINCE"
+  comment: "Denormalized text — không có FK rõ ràng đến Geographic Area (không phải\
+    \ UUID, chỉ text tự do)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Current Position Title"
+  physical_name: "current_position_title"
+  description: "Chức vụ/vị trí công tác hiện tại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.POSITION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Education Level Description"
+  physical_name: "education_level_description"
+  description: "Trình độ học vấn (cử nhân, thạc sĩ, tiến sĩ...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.EDUCATION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Professional Qualification Description"
+  physical_name: "professional_qualification_description"
+  description: "Trình độ chuyên môn/bằng cấp của người đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.PROF_QUALIFI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Experience Description"
+  physical_name: "other_experience_description"
+  description: "Kinh nghiệm khác của người đại diện ngoài chuyên ngành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.OTHER_EXP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Concurrent Position Description"
+  physical_name: "other_concurrent_position_description"
+  description: "Chức vụ/vị trí kiêm nhiệm khác của người đại diện."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.OTHER_POSITION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Board Member Type Code"
+  physical_name: "board_member_type_code"
+  description: "Loại thành viên: 1=Người đại diện cá nhân, 2=Người đại diện tổ chức."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.MEMBER_TYPE"
+  comment: "Scheme: FMS_BOARD_MEMBER_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD\
+    \ 6d — bổ sung classification_schemes.yaml. ETL map: 1=INDIVIDUAL_REPRESENTATIVE;2=ORGANIZATION_REPRESENTATIVE."
+  classification_context: "FMS_BOARD_MEMBER_TYPE"
+  etl_derived_value: "1=INDIVIDUAL_REPRESENTATIVE;2=ORGANIZATION_REPRESENTATIVE"
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPRESENT.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

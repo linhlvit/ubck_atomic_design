@@ -1,0 +1,202 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: BANK_EMPLOY
+  atomic_entity: Custodian Bank Employee
+  entity_physical_name: custodian_bank_employee
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Alt Identification (NATIONAL_ID mặc định — không có cột phân biệt loại giấy tờ). Không có cột địa chỉ/liên lạc — không tách IP Postal/Electronic Address. CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Custodian Bank Employee Id
+    physical_name: custodian_bank_employee_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\". Nhân sự giữ vị trí tại Custodian Bank."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Custodian Bank Employee Code
+    physical_name: custodian_bank_employee_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.BANK_EMPLOY"
+    etl_derived_value: "FMS.BANK_EMPLOY"
+
+  - attribute_name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    description: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.BANK_ID"
+    comment: "FK target: Custodian Bank.Custodian Bank Id. Hash: hash_id('FMS.BANK_MONI', BANK_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    description: "Mã ngân hàng lưu ký/giám sát liên quan."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.BANK_ID"
+    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Custodian Bank Employee Full Name
+    physical_name: custodian_bank_employee_full_nm
+    description: "Tên hiển thị chính."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.ITEM_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practice Certificate Number
+    physical_name: practice_certificate_number
+    description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.CERT_NO"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Legal Certificate Number
+    physical_name: legal_certificate_number
+    description: "Số chứng chỉ pháp lý/luật của nhân sự ngân hàng."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.CERT_LAW"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Audit Certificate Number
+    physical_name: audit_certificate_number
+    description: "Số chứng chỉ kiểm toán nội bộ của nhân sự ngân hàng."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.CERT_AUDIT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practice Certificate Date
+    physical_name: practice_certificate_dt
+    description: "Ngày cấp chứng chỉ hành nghề."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.CERT_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Active Status Flag
+    physical_name: active_status_flag
+    description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.RECORD_STATUS"
+    comment: "Giá trị 1 → true; 0 → false."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Current Position Title
+    physical_name: current_position_title
+    description: "Chức vụ/vị trí công tác hiện tại."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.POSITION"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.BANK_EMPLOY.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

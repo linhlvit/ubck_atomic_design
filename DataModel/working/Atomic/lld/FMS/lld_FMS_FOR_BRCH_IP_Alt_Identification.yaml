@@ -1,0 +1,125 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "FOR_BRCH"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Foreign Fund Management Organization Unit."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.ID"
+  comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FOR_BRCH',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã VPĐD/CN QLQ nước ngoài."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.ID"
+  comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=FMS.FOR_BRCH"
+  etl_derived_value: "FMS.FOR_BRCH"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_type_code"
+  description: "Loại giấy tờ — giấy phép hoạt động."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATING_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  etl_derived_value: "OPERATING_LICENSE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_number"
+  description: "Số giấy phép hoạt động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.LICENSE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy phép."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.LICENSE_DATE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_type_code"
+  description: "Loại giấy tờ — mã số thuế."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
+  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+  etl_derived_value: "TAX_ID"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_number"
+  description: "Mã số thuế doanh nghiệp (MST)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.TAX_CODE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+  etl_derived_value: null
+  data_type: "string"

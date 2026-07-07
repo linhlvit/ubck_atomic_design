@@ -26,7 +26,7 @@ metadata:
     \ Nguồn chỉ có CREATED_AT — không có CREATED_BY/UPDATED_AT/UPDATED_BY (xem pending_design.yaml)."
 attributes:
 - attribute_name: "Securities Company Foreign Branch Personnel Id"
-  physical_name: "securities_company_foreign_branch_personnel_id"
+  physical_name: "sc_foreign_branch_personnel_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -39,7 +39,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Foreign Branch Personnel Code"
-  physical_name: "securities_company_foreign_branch_personnel_code"
+  physical_name: "sc_foreign_branch_personnel_code"
   description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -375,17 +375,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống)."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.CREATED_AT"
-  comment: "Nguồn chỉ có CREATED_AT — không có CREATED_BY/UPDATED_AT/UPDATED_BY, không\
-    \ đủ audit block 6-attribute chuẩn (xem pending_design.yaml)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

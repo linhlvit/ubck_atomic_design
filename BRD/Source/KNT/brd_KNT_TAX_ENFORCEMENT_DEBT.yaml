@@ -1,0 +1,146 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_ENFORCEMENT_DEBT
+brd_ref: BRD-SRC-KNT-TAX_ENFORCEMENT_DEBT
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: TAXPAYER_TAX_CODE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mã số thuế người nộp thuế bị cưỡng chế"
+  key: null
+  fk_note: "Liên kết ngầm → TAX_REGISTRATION_INFO.TAX_CODE"
+- name: TAXPAYER_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)"
+  key: null
+  fk_note: null
+- name: TAX_AUTHORITY_CODE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mã cơ quan thuế ban hành thông báo cưỡng chế"
+  key: null
+  fk_note: null
+- name: TAX_AUTHORITY_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên cơ quan thuế ban hành thông báo cưỡng chế"
+  key: null
+  fk_note: null
+- name: ENFORCEMENT_METHOD_CODE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Mã hình thức cưỡng chế"
+  key: null
+  fk_note: null
+- name: ENFORCEMENT_METHOD_NAME
+  data_type: "VARCHAR2(250 CHAR)"
+  description: "Tên hình thức cưỡng chế"
+  key: null
+  fk_note: null
+- name: E_TRANSACTION_CODE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Mã giao dịch điện tử trong hệ thống Cục Thuế"
+  key: null
+  fk_note: null
+- name: DECISION_NUMBER
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Số quyết định thành lập/xử phạt"
+  key: null
+  fk_note: null
+- name: DECISION_DATE
+  data_type: "DATE"
+  description: "Ngày ban hành quyết định"
+  key: null
+  fk_note: null
+- name: ENFORCED_AMOUNT
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Số tiền bị cưỡng chế (đơn vị: đồng)"
+  key: null
+  fk_note: null
+- name: ENFORCED_ENTITY_BANK_ACCOUNT
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Số tài khoản ngân hàng của đối tượng bị cưỡng chế"
+  key: null
+  fk_note: null
+- name: ACCOUNT_OPENING_PLACE
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Nơi mở tài khoản chứng khoán"
+  key: null
+  fk_note: null
+- name: INCOME_MANAGING_ENTITY_NAME
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Tên đối tượng quản lý thu nhập (VD: ngân hàng, đơn vị sử dụng lao động)"
+  key: null
+  fk_note: null
+- name: INCOME_MANAGING_ENTITY_ADDRESS
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Địa chỉ đối tượng quản lý thu nhập"
+  key: null
+  fk_note: null
+- name: SEIZED_ASSETS
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mô tả tài sản bị kê biên trong biện pháp cưỡng chế"
+  key: null
+  fk_note: null
+- name: ASSET_VALUE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Giá trị tài sản bị kê biên (đơn vị: đồng)"
+  key: null
+  fk_note: null
+- name: ENFORCEMENT_DATE
+  data_type: "DATE"
+  description: "Thời gian thực hiện cưỡng chế"
+  key: null
+  fk_note: null
+- name: ENFORCEMENT_LOCATION
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Địa điểm thực hiện cưỡng chế"
+  key: null
+  fk_note: null
+- name: ASSET_HOLDER_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên đối tượng đang giữ tài sản bị cưỡng chế"
+  key: null
+  fk_note: null
+- name: ASSET_HOLDER_CODE
+  data_type: "VARCHAR2(50 CHAR)"
+  description: "Mã đối tượng đang giữ tài sản bị cưỡng chế"
+  key: null
+  fk_note: null
+- name: ASSET_HOLDER_ADDRESS
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Địa chỉ đối tượng đang giữ tài sản bị cưỡng chế"
+  key: null
+  fk_note: null
+- name: ENFORCED_ENTITY_BUSINESS_LINE
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Ngành kinh doanh của đối tượng bị cưỡng chế"
+  key: null
+  fk_note: null
+- name: DECISION_EFFECTIVE_FROM
+  data_type: "DATE"
+  description: "Ngày bắt đầu hiệu lực quyết định cưỡng chế"
+  key: null
+  fk_note: null
+- name: DECISION_EFFECTIVE_TO
+  data_type: "DATE"
+  description: "Ngày kết thúc hiệu lực quyết định cưỡng chế"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "FK -> msg_packet: Gói tin trao đổi liên quan"
+  key: FK
+  fk_note: "FK → MSG_PACKET.ID"
+- name: DIRECT_TAX_AUTHORITY_CODE
+  data_type: "VARCHAR2(100 CHAR)"
+  description: "Mã cơ quan thuế quản lý trực tiếp"
+  key: null
+  fk_note: null
+- name: DIRECT_TAX_AUTHORITY_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên cơ quan thuế quản lý trực tiếp"
+  key: null
+  fk_note: null

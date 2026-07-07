@@ -114,17 +114,18 @@ ATTR_FIELDS = [
 
 ENTITY_FIELDS = [
     "bcv_core_object", "bcv_concept", "atomic_entity",
-    "table_type", "status", "description", "source_table",
+    "table_type", "domain_prefix", "entity_physical_name",
+    "status", "description", "source_table",
 ]
 
 
 # ---------------------------------------------------------------------------
-# Parse **Description:** từ section "## Entities" trong HLD Overview file
+# Parse **Description:** và **Domain Prefix:** từ section "## Entities" trong HLD Overview file
 # Source of truth: {SOURCE}_HLD_Overview.md → ## Entities → ### N. {Entity Name}
-# Returns: dict { atomic_entity_name → description_text }
+# Returns: dict { atomic_entity_name → {"description":..., "domain_prefix":...} }
 # ---------------------------------------------------------------------------
-def parse_hld_descriptions(source_system: str) -> dict[str, str]:
-    result: dict[str, str] = {}
+def parse_hld_descriptions(source_system: str) -> dict[str, dict]:
+    result: dict[str, dict] = {}
     overview_path = HLD_DIR / f"{source_system}_HLD_Overview.md"
     if not overview_path.exists():
         return result
@@ -145,15 +146,19 @@ def parse_hld_descriptions(source_system: str) -> dict[str, str]:
     for m in re.finditer(r"^###\s+\d+\.\s+(.+)$", section, re.MULTILINE):
         entity_name = m.group(1).strip()
         rest = section[m.end():]
-        desc_match = re.search(
-            r"^\*\*Description:\*\*\s*(.+)$",
-            rest[:500],
-            re.MULTILINE,
-        )
+        window = rest[:500]
+        desc_match = re.search(r"^\*\*Description:\*\*\s*(.+)$", window, re.MULTILINE)
+        prefix_match = re.search(r"^\*\*Domain Prefix:\*\*\s*(.+)$", window, re.MULTILINE)
+        if entity_name in result:
+            continue
+        meta = {}
         if desc_match:
-            desc = desc_match.group(1).strip()
-            if entity_name not in result:
-                result[entity_name] = desc
+            meta["description"] = desc_match.group(1).strip()
+        if prefix_match:
+            dp = prefix_match.group(1).strip()
+            meta["domain_prefix"] = "" if dp.lower() in ("(none)", "none", "rỗng") else dp
+        if meta:
+            result[entity_name] = meta
 
     return result
 
@@ -561,18 +566,26 @@ def build_entities(manifest_rows: list[dict],
 
         if atomic_entity not in entity_map:
             existing = existing_entities.get(atomic_entity, {})
+            hld_meta = hld_desc.get(atomic_entity, {})
             # Description priority: existing file > HLD Tier > empty
             existing_desc = existing.get("description", "").strip()
-            description = existing_desc or hld_desc.get(atomic_entity, "")
+            description = existing_desc or hld_meta.get("description", "")
+            # Domain Prefix priority: existing file > HLD Tier > empty
+            domain_prefix = existing.get("domain_prefix", "").strip() or hld_meta.get("domain_prefix", "")
 
             entity_map[atomic_entity] = {
-                "bcv_core_object": existing.get("bcv_core_object", ""),
-                "bcv_concept":     existing.get("bcv_concept", ""),
-                "atomic_entity":   atomic_entity,
-                "table_type":      existing.get("table_type", ""),
-                "description":     description,
-                "source_table":    source_table,
-                "status":          existing.get("status", "draft"),
+                "bcv_core_object":      existing.get("bcv_core_object", ""),
+                "bcv_concept":          existing.get("bcv_concept", ""),
+                "atomic_entity":        atomic_entity,
+                "table_type":           existing.get("table_type", ""),
+                "domain_prefix":        domain_prefix,
+                # entity_physical_name không bao giờ tự derive — chỉ preserve giá trị đã có
+                # (AI/Data Modeler ghi trực tiếp vào atomic_entities.yaml theo Bước 8 của
+                # atomic-hld-design/SKILL.md).
+                "entity_physical_name": existing.get("entity_physical_name", ""),
+                "description":          description,
+                "source_table":         source_table,
+                "status":               existing.get("status", "draft"),
             }
             existing_st = existing.get("source_table", "")
             if existing.get("status", "draft") == "approved" and source_table not in [s.strip() for s in existing_st.split(",")]:
@@ -638,9 +651,11 @@ def main():
             _spec = _ilu.spec_from_file_location("transform_physical_names", _tfn_path)
             _tfn = _ilu.module_from_spec(_spec)
             _spec.loader.exec_module(_tfn)
-            _entries = _tfn.load_dict(_tfn.DICT_PATH)
+            _entries = _tfn.load_dict(_tfn.EXCEPTIONS_PATH)
             _domain_map = _tfn.load_data_type_rules(_tfn.DATA_TYPE_PATH)
-            n = _tfn.patch_atomic_attributes(_entries, _domain_map, dry_run=False)
+            _registry = _tfn.load_entity_registry(_tfn.ATOMIC_ENTITIES)
+            _entries = _tfn.merge_column_dict(_entries, _registry)
+            n = _tfn.patch_atomic_attributes(_entries, _domain_map, _registry, dry_run=False)
             print(f"  Physical names: {n} dong", file=sys.stderr)
 
     print("Hoàn thành.", file=sys.stderr)

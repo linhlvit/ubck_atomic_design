@@ -1,7 +1,7 @@
 # FIMS HLD — Tier 2
 
 **Source system:** FIMS (Hệ thống quản lý giám sát và công bố thông tin thành viên thị trường — Oracle)
-**Tier 2:** Entity có FK đến Tier 1. Gồm 5 entity: Foreign FM Branch Organization (FK đến Geographic Area), Info Disclosure Representative (self-ref + FK Geographic Area), Market Participant Key Person (FK đến Market Participant Organization), Member Periodic Report (FK đến Reporting Template + Reporting Period + Market Participant Organization + Reporting Obligation Type), Warning Condition (FK đến Warning Parameter).
+**Tier 2:** Entity có FK đến Tier 1. Gồm 5 entity: Foreign FM Branch Organization (FK đến Geographic Area), Info Disclosure Representative (self-ref + FK Geographic Area), Market Participant Key Person (FK đến Market Participant Organization), Member Periodic Report (FK đến Reporting Template + Reporting Period + Market Participant Organization + Reporting Obligation Type + Trading Representative), Warning Condition (FK đến Warning Parameter).
 
 ---
 
@@ -12,7 +12,7 @@
 | Involved Party | [Involved Party] Organization | Organization | BRANCHS | Chi nhánh hoặc văn phòng đại diện tại Việt Nam của công ty quản lý quỹ nước ngoài | Foreign FM Branch Organization | Fundamental | (1) BCV term `[Involved Party] Organization` — chi nhánh/VPĐD là tổ chức pháp nhân tại Việt Nam. (2) BRANCHS: CompanyNameParent, CertNoParent, AddParent, NaId (FK→NATIONAL cho quốc gia công ty mẹ), có IdNo/IdDate/IdAdd và profile địa chỉ VN riêng. (3) Entity độc lập — không FK đến FUNDCOMPANY (công ty mẹ nước ngoài, không phải FUNDCOMPANY trong hệ thống). Tier 2 vì FK đến NATIONAL (Geographic Area T1). Chọn `[Involved Party] Organization`. |
 | Involved Party | [Involved Party] Organization | Organization | INFODISCREPRES | Danh sách đại diện CBTT/giao dịch được thành viên thị trường ủy quyền — 10 loại đối tượng | Info Disclosure Representative | Fundamental | (1) BCV term `[Involved Party] Organization` — đại diện CBTT là tổ chức/cá nhân được ủy quyền. (2) INFODISCREPRES: ProfileKind (10 loại), ObjectType, NaId, IdNo, CertNo, RepresentedInfodiscrepresId (self-ref), StatusId. (3) Self-referencing cây ủy quyền. ProfileKind gộp nhiều loại đối tượng → 1 entity phân biệt bằng `FIMS_PROFILE_KIND`. Tier 2 vì FK đến NATIONAL + STATUS. |
 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | TLPROFILES | Danh sách nhân sự chủ chốt tại các tổ chức thành viên thị trường đăng ký với UBCKNN | Market Participant Key Person | Fundamental | (1) BCV term `[Involved Party] Individual Employment Status` — nhân sự hành nghề tại tổ chức thành viên. (2) TLPROFILES: SystemObject (1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN), FundComId/SecComId/BankId/DepCenId/StockCenId (FK đa hướng đến 5 loại tổ chức), Name, IdNo, DateOfBirth, Sex, Tel, Email, IsRepresentative, CertNo, DegreeId, StatusId. (3) Đây là "employment status" — nhân sự đang làm việc tại tổ chức thành viên cụ thể. Tier 2 vì FK đến Market Participant Organization (T1). |
-| Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTMEMBER | Hồ sơ kỳ báo cáo của thành viên thị trường gửi UBCKNN — 1 bản ghi per thành viên per kỳ per biểu mẫu | Member Periodic Report | Fundamental | (1) BCV term `[Documentation] Gov. Registration Document` — báo cáo định kỳ pháp lý gửi cơ quan quản lý. (2) RPTMEMBER: FK đến 7 loại thành viên + RPTTEMP + RPTPERIOD + INFODISCREPRES + BRANCHS + REPORTTYPE + RPT_EVENT_TYPE + INVESTOR + TRADINGREPRESENTATIVE; Status, ObjectType, DeadlineSend, DateSubmitted. (3) Đây là hồ sơ pháp lý (gov. registration document) — báo cáo bắt buộc theo quy định pháp luật. Change Mode = Update → Fundamental SCD4A (trạng thái hiện tại). Tier 2 vì FK đến T1 entities. |
+| Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTMEMBER | Hồ sơ kỳ báo cáo của thành viên thị trường gửi UBCKNN — 1 bản ghi per thành viên per kỳ per biểu mẫu | Member Periodic Report | Fundamental | (1) BCV term `[Documentation] Gov. Registration Document` — báo cáo định kỳ pháp lý gửi cơ quan quản lý. (2) RPTMEMBER: FK đến 7 loại thành viên + RPTTEMP + RPTPERIOD + INFODISCREPRES + BRANCHS + REPORTTYPE + RPT_EVENT_TYPE + INVESTOR + TRADINGREPRESENTATIVE; Status, ObjectType, DeadlineSend, DateSubmitted. (3) Đây là hồ sơ pháp lý (gov. registration document) — báo cáo bắt buộc theo quy định pháp luật. Change Mode = Update → Fundamental SCD4A (trạng thái hiện tại). Tier 2 vì FK đến T1 entities. FK `TradingRepresentativeId` → `Trading Representative` (Tier 1, xem Tier1.md) — bổ sung vào diagram 6b/6c (trước đây chỉ ghi trong mô tả, thiếu trên diagram). |
 | Condition | [Condition] Scoring Criterion | Scoring Criterion | CDTWARN | Danh sách điều kiện cảnh báo giám sát — ngưỡng min/max cho từng tham số cảnh báo | Warning Condition | Fundamental | (1) BCV term `[Condition] Scoring Criterion` — điều kiện cảnh báo là tiêu chí đánh giá ngưỡng. (2) CDTWARN: PrWId (FK→PARAWARN primary), OtherWId (FK→PARAWARN secondary), FromValue, ToValue, NumberDayRun, CompareType, Status. (3) Đây là điều kiện cụ thể hóa tham số thành ngưỡng kích hoạt cảnh báo → `[Condition] Scoring Criterion`. FK đến Warning Parameter (T1) → Tier 2. |
 
 ---
@@ -85,6 +85,7 @@ erDiagram
         NUMBER BranchId FK
         NUMBER InvestorId FK
         NUMBER TLProId FK
+        NUMBER TradingRepresentativeId FK
         NUMBER ReportTypeId FK
         NUMBER RptEventTypeId FK
         NUMBER Status
@@ -145,6 +146,10 @@ erDiagram
         NUMBER Id PK
     }
 
+    TRADINGREPRESENTATIVE {
+        NUMBER ID PK
+    }
+
     BRANCHS ||--o{ NATIONAL : "NaId"
     INFODISCREPRES ||--o{ NATIONAL : "NaId"
     INFODISCREPRES ||--o{ INFODISCREPRES : "RepresentedInfodiscrepresId"
@@ -163,6 +168,7 @@ erDiagram
     RPTMEMBER ||--o{ INFODISCREPRES : "InfoDisRepId"
     RPTMEMBER ||--o{ BRANCHS : "BranchId"
     RPTMEMBER ||--o{ INVESTOR : "InvestorId"
+    RPTMEMBER ||--o{ TRADINGREPRESENTATIVE : "TradingRepresentativeId"
     CDTWARN ||--o{ PARAWARN : "PrWId"
     CDTWARN ||--o{ PARAWARN : "OtherWId"
 ```
@@ -246,6 +252,8 @@ erDiagram
         string market_participant_type_code
         bigint ds_reporting_obligation_type_id FK
         string reporting_obligation_type_code
+        bigint ds_trading_representative_id FK
+        string trading_representative_code
         string report_submission_status_code
         string report_type_code
         date deadline_date
@@ -297,6 +305,10 @@ erDiagram
         bigint ds_warning_parameter_id PK
     }
 
+    Trading_Representative {
+        bigint ds_trading_representative_id PK
+    }
+
     Foreign_FM_Branch_Organization ||--o{ Geographic_Area : "geographic_area_id"
     Info_Disclosure_Representative ||--o{ Geographic_Area : "geographic_area_id"
     Info_Disclosure_Representative ||--o{ Info_Disclosure_Representative : "parent_info_disclosure_rep_id"
@@ -305,6 +317,7 @@ erDiagram
     Member_Periodic_Report ||--o{ Reporting_Period : "ds_reporting_period_id"
     Member_Periodic_Report ||--o{ Market_Participant_Organization : "ds_market_participant_org_id"
     Member_Periodic_Report ||--o{ Reporting_Obligation_Type : "ds_reporting_obligation_type_id"
+    Member_Periodic_Report ||--o{ Trading_Representative : "ds_trading_representative_id"
     Warning_Condition ||--o{ Warning_Parameter : "primary_warning_parameter_id"
     Warning_Condition ||--o{ Warning_Parameter : "secondary_warning_parameter_id"
 ```

@@ -1,0 +1,85 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: DISTRIBUTOR_LOCATION
+  atomic_entity: Involved Party Postal Address
+  entity_physical_name: ip_postal_address
+  bcv_core_object: Involved Party
+  bcv_concept: "Shared Entity"
+  table_type: Fundamental
+  group: T6
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[QUYẾT ĐỊNH HLD Tier6] DISTRIBUTOR_LOCATION không tạo Atomic entity riêng — denormalize ADDRESS vào IP Postal Address gắn với Securities Distribution Agent (cha, qua DISTRIBUTOR_AGENT_ID, KHÔNG dùng DISTRIBUTOR_LOCATION.ID làm Involved Party Id). [T6-04 — chờ xác nhận] DISTRIBUTOR_LOCATION.ITEM_NAME (tên địa điểm giao dịch) không có cột tương ứng trên schema chuẩn IP Postal Address — không map, document pending_design.yaml. [CẢNH BÁO CARDINALITY] Nếu 1 Securities Distribution Agent có NHIỀU địa điểm giao dịch (1:N), nhiều dòng DISTRIBUTOR_LOCATION sẽ tạo ra nhiều dòng shared entity trùng composite key (Involved Party Id + Address Type Code = TRANSACTION_OFFICE) — cần Data Modeler xác nhận có chấp nhận được không hay cần khóa tổ hợp khác (VD: thêm DISTRIBUTOR_LOCATION.ID vào composite key thực tế dù không map thành attribute)."
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: involved_party_id
+    description: "FK đến Securities Distribution Agent (qua DISTRIBUTOR_AGENT_ID)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_LOCATION.DISTRIBUTOR_AGENT_ID"
+    comment: "FK target: Securities Distribution Agent.Securities Distribution Agent Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.DISTRIBUTOR_AGENT', DISTRIBUTOR_AGENT_ID). LƯU Ý: dùng FK cha (DISTRIBUTOR_AGENT_ID), không dùng DISTRIBUTOR_LOCATION.ID vì không tạo entity riêng cho location."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: involved_party_code
+    description: "Mã đại lý phân phối."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_LOCATION.DISTRIBUTOR_AGENT_ID"
+    comment: "Lookup pair: Securities Distribution Agent.Securities Distribution Agent Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=FMS.DISTRIBUTOR_LOCATION"
+    etl_derived_value: "FMS.DISTRIBUTOR_LOCATION"
+
+  - attribute_name: Address Type Code
+    physical_name: address_type_code
+    description: "Loại địa chỉ — địa điểm giao dịch."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
+    etl_derived_value: "TRANSACTION_OFFICE"
+
+  - attribute_name: Address Value
+    physical_name: address_value
+    description: "Địa chỉ trụ sở."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_LOCATION.ADDRESS"
+    comment: null
+    classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
+    etl_derived_value: null

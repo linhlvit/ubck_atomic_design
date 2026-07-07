@@ -1,0 +1,116 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ANALYSIS_MM_STOCK_ACCOUNT
+brd_ref: BRD-SRC-GSGD-ANALYSIS_MM_STOCK_ACCOUNT
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: STOCK_DETAIL_ID
+    data_type: "VARCHAR2(36)"
+    description: "analysis_mm_stock_window_detail.id"
+    key: FK
+    fk_note: "FK suy luận → ANALYSIS_MM_STOCK_WINDOW_DETAIL.ID"
+  - name: CASE_FILE_ID
+    data_type: "VARCHAR2(36)"
+    description: "case_file.id"
+    key: FK
+    fk_note: "FK suy luận → CASE_FILE.ID"
+  - name: WORKFLOW_TYPE
+    data_type: "NUMBER(2)"
+    description: "Quy trình: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
+    key: null
+    fk_note: null
+  - name: RESULT_TYPE
+    data_type: "NUMBER(1)"
+    description: "Loại kết quả phân tích"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE_ID
+    data_type: "VARCHAR2(36)"
+    description: "Id mã chứng khoán"
+    key: null
+    fk_note: null
+  - name: SECURITIES_CODE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mã chứng khoán"
+    key: null
+    fk_note: null
+  - name: ACCOUNT_CODE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mã tài khoản"
+    key: null
+    fk_note: null
+  - name: TRADING_VALUE
+    data_type: "NUMBER(19,4)"
+    description: "Giá trị giao dịch"
+    key: null
+    fk_note: null
+  - name: TRADING_VALUE_DISPLAY
+    data_type: "NUMBER(19,4)"
+    description: "Giá trị giao dịch (hiển thị)"
+    key: null
+    fk_note: null
+  - name: TRADING_VOLUME
+    data_type: "NUMBER(19,4)"
+    description: "Khối lượng giao dịch"
+    key: null
+    fk_note: null
+  - name: BC01_MATCHED
+    data_type: "NUMBER(1)"
+    description: "Khớp điều kiện BC01"
+    key: null
+    fk_note: null
+  - name: BC02_MATCHED
+    data_type: "NUMBER(1)"
+    description: "Khớp điều kiện BC02"
+    key: null
+    fk_note: null
+  - name: BC03_MATCHED
+    data_type: "NUMBER(1)"
+    description: "Khớp điều kiện BC03"
+    key: null
+    fk_note: null
+  - name: BC04_MATCHED
+    data_type: "NUMBER(1)"
+    description: "Khớp điều kiện BC04"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

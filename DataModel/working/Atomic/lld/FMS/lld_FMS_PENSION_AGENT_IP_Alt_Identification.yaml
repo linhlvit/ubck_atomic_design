@@ -1,0 +1,136 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: PENSION_AGENT
+  atomic_entity: Involved Party Alternative Identification
+  entity_physical_name: ip_alternative_identification
+  bcv_core_object: Involved Party
+  bcv_concept: "Shared Entity"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: involved_party_id
+    description: "FK đến Pension Service Organization."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_AGENT.ID"
+    comment: "FK target: Pension Service Organization.Pension Service Organization Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.PENSION_AGENT', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: involved_party_code
+    description: "Mã đại lý/tổ chức hưu trí."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_AGENT.ID"
+    comment: "Lookup pair: Pension Service Organization.Pension Service Organization Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=FMS.PENSION_AGENT"
+    etl_derived_value: "FMS.PENSION_AGENT"
+
+  - attribute_name: Identification Type Code
+    physical_name: identification_type_code
+    description: "Loại giấy tờ — giấy phép hoạt động."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATING_LICENSE."
+    classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+    etl_derived_value: "OPERATING_LICENSE"
+
+  - attribute_name: Identification Number
+    physical_name: identification_number
+    description: "Số giấy phép kinh doanh/GCN đăng ký doanh nghiệp."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+    etl_derived_value: null
+
+  - attribute_name: Identification Issue Date
+    physical_name: identification_issue_dt
+    description: "Ngày cấp giấy phép thành lập doanh nghiệp."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+    etl_derived_value: null
+
+  - attribute_name: Identification Issue Place
+    physical_name: identification_issue_place
+    description: "Cơ quan cấp giấy phép thành lập."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+    etl_derived_value: null
+
+  - attribute_name: Identification Type Code
+    physical_name: identification_type_code
+    description: "Loại giấy tờ — mã số thuế."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
+    classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+    etl_derived_value: "TAX_ID"
+
+  - attribute_name: Identification Number
+    physical_name: identification_number
+    description: "Mã số thuế doanh nghiệp (MST)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_AGENT.TAX_CODE"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+    etl_derived_value: null

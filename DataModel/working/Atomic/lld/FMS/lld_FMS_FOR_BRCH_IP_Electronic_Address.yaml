@@ -1,0 +1,162 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "FOR_BRCH"
+  atomic_entity: "Involved Party Electronic Address"
+  entity_physical_name: "ip_electronic_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Foreign Fund Management Organization Unit."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.ID"
+  comment: "FK target: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.FOR_BRCH',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã VPĐD/CN QLQ nước ngoài."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.ID"
+  comment: "Lookup pair: Foreign Fund Management Organization Unit.Foreign Fund Management\
+    \ Organization Unit Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=FMS.FOR_BRCH"
+  etl_derived_value: "FMS.FOR_BRCH"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — điện thoại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: "PHONE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_val"
+  description: "Số điện thoại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.PHONE"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — fax."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: "FAX"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_val"
+  description: "Số fax."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.FAX"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — email."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: "EMAIL"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_val"
+  description: "Địa chỉ email."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.EMAIL"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — website."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+  etl_derived_value: "WEBSITE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_val"
+  description: "Địa chỉ website."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.FOR_BRCH.WEBSITE"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+  etl_derived_value: null
+  data_type: "string"

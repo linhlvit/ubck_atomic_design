@@ -1,0 +1,111 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: TL_PRO_RELA
+  atomic_entity: Involved Party Alternative Identification
+  entity_physical_name: ip_alternative_identification
+  bcv_core_object: Involved Party
+  bcv_concept: "Shared Entity"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nguồn không có cột phân biệt loại giấy tờ — hardcode NATIONAL_ID mặc định. Document pending_design.yaml."
+
+attributes:
+  - attribute_name: Involved Party Id
+    physical_name: involved_party_id
+    description: "FK đến Fund Management Company Key Person Related Person."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID"
+    comment: "FK target: Fund Management Company Key Person Related Person.Fund Management Company Key Person Related Person Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.TL_PRO_RELA', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Involved Party Code
+    physical_name: involved_party_code
+    description: "Mã người liên quan."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID"
+    comment: "Lookup pair: Fund Management Company Key Person Related Person.Fund Management Company Key Person Related Person Code. Pair with Involved Party Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: null
+    classification_context: "SOURCE_SYSTEM=FMS.TL_PRO_RELA"
+    etl_derived_value: "FMS.TL_PRO_RELA"
+
+  - attribute_name: Identification Type Code
+    physical_name: identification_type_code
+    description: "Loại giấy tờ định danh."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại giấy tờ."
+    classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+    etl_derived_value: "NATIONAL_ID"
+
+  - attribute_name: Identification Number
+    physical_name: identification_number
+    description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID_NO"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+    etl_derived_value: null
+
+  - attribute_name: Identification Issue Date
+    physical_name: identification_issue_dt
+    description: "Ngày cấp CMND/CCCD/Hộ chiếu."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID_DATE"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+    etl_derived_value: null
+
+  - attribute_name: Identification Issue Place
+    physical_name: identification_issue_place
+    description: "Nơi cấp giấy tờ định danh."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.TL_PRO_RELA.ID_PLACE"
+    comment: null
+    classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+    etl_derived_value: null

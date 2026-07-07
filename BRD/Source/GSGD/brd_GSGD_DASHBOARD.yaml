@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: DASHBOARD
+brd_ref: BRD-SRC-GSGD-DASHBOARD
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: DASHBOARD_CODE
+    data_type: "VARCHAR2(100)"
+    description: "Mã dashboard"
+    key: null
+    fk_note: null
+  - name: DASHBOARD_NAME
+    data_type: "VARCHAR2(255)"
+    description: "Tên dashboard"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: "CLOB"
+    description: "Mô tả dashboard"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1)"
+    description: "Trạng thái hoạt động. 1=Hoạt động, 0=Không hoạt động"
+    key: null
+    fk_note: null
+  - name: DEFAULT_CONFIG_VERSION_ID
+    data_type: "VARCHAR2(36)"
+    description: "Version cấu hình mặc định của dashboard dùng cho trường hợp user chưa có cấu hình riêng"
+    key: FK
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

@@ -1,0 +1,254 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: INSPECTION_PENALTY_DECISION
+  atomic_entity: Member Inspection Penalty Decision
+  entity_physical_name: member_inspection_penalty_decision
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  group: T7
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Domain prefix dùng chung với Member Inspection Round (Tier 5)/Member Inspection Target (Tier 6). [T7-01 — chờ xác nhận] Cần đối chiếu với Fund Management Conduct Violation (VIOLT, Tier 1) — cùng ghi nhận vi phạm/xử phạt, xác nhận đây là 2 nguồn độc lập (VIOLT = vi phạm ghi nhận trực tiếp; entity này = vi phạm phát hiện qua thanh tra) hay cùng 1 nghiệp vụ ghi 2 nơi. Không phải Involved Party — không tách shared entity. DELETED, CREATED_BY, MODIFY_BY document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Member Inspection Penalty Decision Id
+    physical_name: member_inspection_penalty_decision_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Business Activity] Conduct Violation\". Quyết định xử phạt vi phạm hành chính phát sinh từ đợt thanh tra."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Inspection Penalty Decision Code
+    physical_name: member_inspection_penalty_decision_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.INSPECTION_PENALTY_DECISION"
+    etl_derived_value: "FMS.INSPECTION_PENALTY_DECISION"
+
+  - attribute_name: Member Inspection Round Id
+    physical_name: member_inspection_round_id
+    description: "FK -> INSPECTION_ROUND: Đợt thanh tra phát sinh quyết định xử phạt."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.INSPECTION_ROUND_ID"
+    comment: "FK target: Member Inspection Round.Member Inspection Round Id. Hash: hash_id('FMS.INSPECTION_ROUND', INSPECTION_ROUND_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Inspection Round Code
+    physical_name: member_inspection_round_code
+    description: "Mã đợt thanh tra phát sinh quyết định xử phạt."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.INSPECTION_ROUND_ID"
+    comment: "Lookup pair: Member Inspection Round.Member Inspection Round Code. Pair with Member Inspection Round Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Inspection Target Id
+    physical_name: member_inspection_target_id
+    description: "FK -> INSPECTION_TARGET: Đối tượng thanh tra chịu quyết định xử phạt."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.TARGET_ID"
+    comment: "FK target: Member Inspection Target.Member Inspection Target Id. Hash: hash_id('FMS.INSPECTION_TARGET', TARGET_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Member Inspection Target Code
+    physical_name: member_inspection_target_code
+    description: "Mã đối tượng thanh tra chịu quyết định xử phạt."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.TARGET_ID"
+    comment: "Lookup pair: Member Inspection Target.Member Inspection Target Code. Pair with Member Inspection Target Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Penalty Decision Number
+    physical_name: penalty_decision_number
+    description: "Số quyết định xử phạt vi phạm hành chính."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.PENALTY_DECISION_NO"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Penalty Decision Date
+    physical_name: penalty_decision_dt
+    description: "Ngày ban hành quyết định xử phạt."
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.PENALTY_DECISION_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Violation Behavior Description
+    physical_name: violation_behavior_description
+    description: "Hành vi vi phạm bị xử phạt (mô tả chi tiết)."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.VIOLATION_BEHAVIOR"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Penalty Form Description
+    physical_name: penalty_form_description
+    description: "Hình thức phạt chính: cảnh cáo, phạt tiền, đình chỉ..."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.PENALTY_FORM"
+    comment: "Nguồn dạng mô tả tự do, không kèm danh mục cố định trong HLD 6d — giữ Text, không tạo Classification Value."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Penalty Amount
+    physical_name: penalty_amount
+    description: "Số tiền phạt vi phạm hành chính (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.PENALTY_AMOUNT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Additional Penalty Form Description
+    physical_name: additional_penalty_form_description
+    description: "Hình thức phạt bổ sung: đình chỉ hoạt động, tước giấy phép..."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.ADDITIONAL_PENALTY_FORM"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Remedy Measure Description
+    physical_name: remedy_measure_description
+    description: "Biện pháp khắc phục hậu quả bắt buộc thực hiện."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.REMEDY_MEASURE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Execution Status Code
+    physical_name: execution_status_code
+    description: "Trạng thái thi hành quyết định xử phạt: PENDING, EXECUTING, DONE."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.EXECUTION_STATUS"
+    comment: "Scheme: FMS_INSPECTION_EXECUTION_STATUS (đã đăng ký)."
+    classification_context: "FMS_INSPECTION_EXECUTION_STATUS"
+    etl_derived_value: null
+
+  - attribute_name: Remedy Status Code
+    physical_name: remedy_status_code
+    description: "Trạng thái thực hiện biện pháp khắc phục: PENDING, DONE, OVERDUE."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.REMEDY_STATUS"
+    comment: "Scheme: FMS_INSPECTION_REMEDY_STATUS (đã đăng ký)."
+    classification_context: "FMS_INSPECTION_REMEDY_STATUS"
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSPECTION_PENALTY_DECISION.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

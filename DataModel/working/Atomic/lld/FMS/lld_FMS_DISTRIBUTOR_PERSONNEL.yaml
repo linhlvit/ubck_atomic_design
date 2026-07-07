@@ -1,0 +1,150 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: DISTRIBUTOR_PERSONNEL
+  atomic_entity: Securities Distribution Agent Personnel
+  entity_physical_name: securities_distribution_agent_personnel
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  group: T7
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Domain prefix dùng chung với Securities Distribution Agent (Tier 5). [QUYẾT ĐỊNH HLD Tier7] DISTRIBUTOR_LOCATION không phải Atomic entity riêng (xem Tier 6) — FK Securities Distribution Agent phải resolve qua JOIN 2 bước: DISTRIBUTOR_PERSONNEL.DISTRIBUTOR_LOCATION_ID → FMS.DISTRIBUTOR_LOCATION.ID (lấy DISTRIBUTOR_AGENT_ID) → FMS.DISTRIBUTOR_AGENT.ID. Tách IP Electronic Address (PHONE). Không có cột giấy tờ định danh cá nhân (ID_NO/ID_DATE như BANK_EMPLOY) — không tách IP Alt Identification. DELETED, CREATED_BY, MODIFY_BY document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Securities Distribution Agent Personnel Id
+    physical_name: securities_distribution_agent_personnel_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\". Nhân sự giữ vị trí tại địa điểm giao dịch của Securities Distribution Agent."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Securities Distribution Agent Personnel Code
+    physical_name: securities_distribution_agent_personnel_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.DISTRIBUTOR_PERSONNEL"
+    etl_derived_value: "FMS.DISTRIBUTOR_PERSONNEL"
+
+  - attribute_name: Securities Distribution Agent Id
+    physical_name: securities_distribution_agent_id
+    description: "FK -> DISTRIBUTOR_AGENT (qua DISTRIBUTOR_LOCATION): Đại lý phân phối quản lý nhân sự này."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.DISTRIBUTOR_LOCATION_ID"
+    comment: "FK target: Securities Distribution Agent.Securities Distribution Agent Id. LƯU Ý 2-HOP: DISTRIBUTOR_LOCATION không phải Atomic entity riêng — ETL JOIN DISTRIBUTOR_LOCATION_ID → FMS.DISTRIBUTOR_LOCATION.ID để lấy DISTRIBUTOR_AGENT_ID, sau đó Hash: hash_id('FMS.DISTRIBUTOR_AGENT', DISTRIBUTOR_AGENT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Securities Distribution Agent Code
+    physical_name: securities_distribution_agent_code
+    description: "Mã đại lý phân phối quản lý nhân sự này."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.DISTRIBUTOR_LOCATION_ID"
+    comment: "Lookup pair: Securities Distribution Agent.Securities Distribution Agent Code. Pair with Securities Distribution Agent Id. Cùng JOIN 2-hop như trên."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Full Name
+    physical_name: full_nm
+    description: "Họ và tên đầy đủ."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.FULL_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Practice Certificate Number
+    physical_name: practice_certificate_number
+    description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.CERT_NO"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Current Position Title
+    physical_name: current_position_title
+    description: "Chức vụ/vị trí công tác hiện tại."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.POSITION"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.DISTRIBUTOR_PERSONNEL.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

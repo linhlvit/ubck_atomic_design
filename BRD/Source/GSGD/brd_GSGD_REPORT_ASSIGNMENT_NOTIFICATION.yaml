@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: REPORT_ASSIGNMENT_NOTIFICATION
+brd_ref: BRD-SRC-GSGD-REPORT_ASSIGNMENT_NOTIFICATION
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: REPORT_ASSIGNMENT_ID
+    data_type: "VARCHAR2(36)"
+    description: "ID phân công xử lý báo cáo"
+    key: FK
+    fk_note: "FK suy luận → REPORT_ASSIGNMENT.ID"
+  - name: NOTIFICATION_TYPE
+    data_type: "NUMBER(1)"
+    description: "1=Toast, 2=Bell, 3=Email"
+    key: null
+    fk_note: null
+  - name: TITLE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Tiêu đề thông báo"
+    key: null
+    fk_note: null
+  - name: CONTENT
+    data_type: "VARCHAR2(2000 CHAR)"
+    description: "Nội dung thông báo"
+    key: null
+    fk_note: null
+  - name: RECIPIENT_USER_ID
+    data_type: "VARCHAR2(36)"
+    description: "User nhận notification (cho type=1,2)"
+    key: null
+    fk_note: null
+  - name: RECIPIENT_EMAIL
+    data_type: "VARCHAR2(255)"
+    description: "Email (cho type=3)"
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: "TIMESTAMP"
+    description: "Thời điểm gửi"
+    key: null
+    fk_note: null
+  - name: SEND_STATUS
+    data_type: "NUMBER(1)"
+    description: "1=SENT  2=FAILED"
+    key: null
+    fk_note: null
+  - name: SEND_ERROR
+    data_type: "VARCHAR2(1000)"
+    description: "Lỗi khi gửi (nếu có)"
+    key: null
+    fk_note: null
+  - name: READ_STATUS
+    data_type: "NUMBER(1)"
+    description: "0=Chưa đọc  1=Đã đọc"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

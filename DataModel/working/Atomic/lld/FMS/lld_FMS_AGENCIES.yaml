@@ -1,0 +1,249 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "AGENCIES"
+  atomic_entity: "Fund Distribution Agent"
+  entity_physical_name: "fund_distribution_agent"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tách IP Postal Address + IP Electronic Address (xem lld_FMS_AGENCIES_IP_*.yaml\
+    \ — Electronic Address bổ sung so với HLD Tier1 diagram 6c do BRD columns thực\
+    \ tế có TELEPHONE/FAX). HLD 6b/7c nêu FK đến AGENCY_TYPE nhưng BRD columns thực\
+    \ tế của AGENCIES không có cột AGENCYTYPE_ID — không tạo FK, cần xác nhận lại\
+    \ HLD. CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
+attributes:
+- attribute_name: "Fund Distribution Agent Id"
+  physical_name: "fund_distribution_agent_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Tổ chức phân phối\
+    \ chứng chỉ quỹ (CCQ) cho nhà đầu tư."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Code"
+  physical_name: "fund_distribution_agent_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.AGENCIES"
+  etl_derived_value: "FMS.AGENCIES"
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Full Name"
+  physical_name: "fund_distribution_agent_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Short Name"
+  physical_name: "fund_distribution_agent_short_nm"
+  description: "Tên viết tắt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.SHORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent English Name"
+  physical_name: "fund_distribution_agent_english_nm"
+  description: "Tên tiếng Anh đầy đủ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.ENAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "License Decision Number"
+  physical_name: "license_decision_number"
+  description: "Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.DECISION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "License Decision Date"
+  physical_name: "license_decision_dt"
+  description: "Ngày ban hành quyết định/giấy phép chấp thuận hoạt động đại lý."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.DECISION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "License Decision Issuing Place"
+  physical_name: "license_decision_issuing_place"
+  description: "Nơi ban hành quyết định/giấy phép."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.DECISION_PLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Description Content"
+  physical_name: "description_content"
+  description: "Nội dung/ghi chú chi tiết về đại lý phân phối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.CONTENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Suspension Date"
+  physical_name: "suspension_dt"
+  description: "Ngày ngừng/đình chỉ hoạt động."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.STOP_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Operation Commencement Date"
+  physical_name: "operation_commencement_dt"
+  description: "Ngày bắt đầu hoạt động chính thức."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.ACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Distribution Staff List Text"
+  physical_name: "distribution_staff_list_text"
+  description: "Danh sách nhân sự phân phối CCQ của đại lý (JSON hoặc danh sách ID\
+    \ người hành nghề)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.LIST_DISTRIBUTION_STAFF"
+  comment: "Denormalized text — nguồn không có cấu trúc FK rõ ràng đến entity nhân\
+    \ sự."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Registered Fund Certificate Count"
+  physical_name: "registered_fund_certificate_count"
+  description: "Số lượng quỹ đầu tư đăng ký hoạt động phân phối CCQ tại đại lý này."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.NUMBER_REG_FUND_CER"
+  comment: "Nguồn lưu dạng string (NVARCHAR2) — ETL cần cast/parse sang số nguyên.\
+    \ Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

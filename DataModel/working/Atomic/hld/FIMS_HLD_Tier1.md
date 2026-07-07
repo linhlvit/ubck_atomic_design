@@ -1,7 +1,7 @@
 # FIMS HLD — Tier 1
 
 **Source system:** FIMS (Hệ thống quản lý giám sát và công bố thông tin thành viên thị trường — Oracle)
-**Tier 1:** Entity độc lập, không FK đến entity nghiệp vụ khác — chỉ FK đến Classification Value. Gồm 7 entity: Market Participant Organization (5 bảng nguồn gộp), Geographic Area (shared), Foreign Investor, Reporting Template, Reporting Period, Reporting Obligation Type, Warning Parameter.
+**Tier 1:** Entity độc lập, không FK đến entity nghiệp vụ khác — chỉ FK đến Classification Value. Gồm 9 entity: Market Participant Organization (5 bảng nguồn gộp), Geographic Area (shared), Foreign Investor, Reporting Template, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price.
 
 ---
 
@@ -21,6 +21,8 @@
 | Business Activity | [Business Activity] Assessment Period | Period | RPTPERIOD | Danh sách kỳ báo cáo định kỳ gắn với biểu mẫu — xác định ngày bắt đầu, kết thúc, hạn nộp | Reporting Period | Fundamental | (1) BCV term `[Business Activity] Assessment Period` — kỳ đánh giá/báo cáo. (2) RPTPERIOD: mã kỳ, ngày bắt đầu, ngày kết thúc, hạn nộp, FK đến RPTTEMP. (3) Kỳ báo cáo pháp lý mang ngữ nghĩa "assessment period" rõ ràng → chọn `[Business Activity] Assessment Period`. |
 | Business Activity | [Business Activity] Business Activity | Business Activity | RPT_EVENT_TYPE | Danh mục loại sự vụ/nghĩa vụ báo cáo mà thành viên thị trường phải thực hiện theo pháp luật | Reporting Obligation Type | Fundamental | (1) BCV term `[Business Activity] Business Activity` — loại sự vụ định nghĩa một nghĩa vụ hoạt động. (2) RPT_EVENT_TYPE: MA_SU_VU, TEN_SU_VU, PHAN_LOAI_SU_VU, LOAI_NGHIA_VU — phân loại nghĩa vụ báo cáo/CBTT/hồ sơ. (3) Đây là danh mục loại nghĩa vụ (master reference) chứ không phải instance → Fundamental (Classification có cấu trúc rộng hơn Code+Name). |
 | Condition | [Condition] Scoring Criterion | Scoring Criterion | PARAWARN | Danh sách tham số cảnh báo giám sát — định nghĩa chỉ tiêu theo dõi thành viên thị trường kèm công thức tính | Warning Parameter | Fundamental | (1) BCV term `[Condition] Scoring Criterion` — tham số cảnh báo là tiêu chí chấm điểm/đánh giá. (2) PARAWARN: Name, LegalCode, FormulaInfo (NCLOB), SystemObject — tham số kỹ thuật với công thức. (3) Đây là "criterion" định nghĩa ngưỡng đánh giá, không phải Condition instance → `[Condition] Scoring Criterion`. Nền tảng cho Warning Condition (Tier 2). |
+| Involved Party | [Involved Party] Registered Representative | Agent | TRADINGREPRESENTATIVE | Danh sách đại diện giao dịch — cá nhân đại diện cho NĐT nước ngoài thực hiện giao dịch chứng khoán tại công ty CK | Trading Representative | Fundamental | (1) Term candidate `Registered Representative` (BCV Involved Party > Agent): "an Agent who is associated with a broker or dealer, who acts as an account executive for clients, advising them on trading investment products". (2) TRADINGREPRESENTATIVE: FullName, Sex, DateOfBirth, IdNo, NaId (FK→NATIONAL), Address, Telephone/Email/Fax, StatusId — đúng là hồ sơ cá nhân (Individual) đóng vai trò đại diện giao dịch tại CTCK cho NĐT NN, khớp cấu trúc `Registered Representative`. (3) Chọn `[Involved Party] Registered Representative`. Bị bỏ sót ở lần thiết kế trước dù được FK trực tiếp từ `RPTMEMBER.TradingRepresentativeId` (Tier 2) và `TRADINGAUTHORIZATION.TradingRepresentativeId` (Tier 3). Chỉ FK đến NATIONAL + STATUS (Classification/shared) → Tier 1. Grain = 1 Individual → tách IP Postal Address (Address) + IP Electronic Address (Telephone/Email/Fax) + IP Alt Identification (IdNo). Xem T1-05. |
+| Condition | [Condition] Product Price Condition | Product Price Condition | CLOSING_PRICE_SECURITIES | Giá đóng cửa chứng khoán theo phiên giao dịch, nhận từ HOSE/HNX/UPCOM hoặc nhập tay | Securities Closing Price | Fact Snapshot | (1) Term candidate `Product Price Condition` (BCV Condition): "specifies the amount to be charged/valued for... a Financial Market Instrument" — giá chứng khoán là 1 dạng Product Price Condition. (2) CLOSING_PRICE_SECURITIES: SecCode (mã CK, không FK cấu trúc — chỉ denormalize Classification Value SECURITIES), TradeDate, ClosePrice, Source (HOSE/HNX/UPCOM/MANUAL), IsFake. Change Mode = Append, filter theo DateCreated — mỗi phiên 1 dòng giá, không update dòng cũ. (3) Đây chính là ví dụ mẫu "bảng giá cuối ngày" của Fact Snapshot pattern → Table Type = Fact Snapshot. Không FK đến entity nghiệp vụ nào (SecCode chỉ denormalize mã CK) → Tier 1. Xem T1-06 về nguồn gốc dữ liệu. |
 
 ---
 
@@ -144,6 +146,29 @@ erDiagram
         NVARCHAR2 Name
     }
 
+    TRADINGREPRESENTATIVE {
+        NUMBER ID PK
+        NVARCHAR2 FULLNAME
+        NVARCHAR2 SEX
+        DATE DATEOFBIRTH
+        NVARCHAR2 IDNO
+        NUMBER NAID FK
+        NVARCHAR2 ADDRESS
+        NVARCHAR2 TELEPHONE
+        NVARCHAR2 EMAIL
+        NVARCHAR2 FAX
+        NUMBER STATUSID FK
+    }
+
+    CLOSING_PRICE_SECURITIES {
+        NUMBER Id PK
+        VARCHAR2 SecCode
+        DATE TradeDate
+        NUMBER ClosePrice
+        VARCHAR2 Source
+        NUMBER IsFake
+    }
+
     FUNDCOMPANY ||--o{ NATIONAL : "NaId"
     SECURITIESCOMPANY ||--o{ NATIONAL : "NaId"
     BANKMONI ||--o{ NATIONAL : "NaId"
@@ -153,6 +178,7 @@ erDiagram
     INVESTOR ||--o{ SECURITIESCOMPANY : "SecId"
     INVESTOR ||--o{ BANKMONI : "BankId"
     RPTPERIOD ||--o{ RPTTEMP : "RptTempId"
+    TRADINGREPRESENTATIVE ||--o{ NATIONAL : "NAID"
 ```
 
 ---
@@ -268,6 +294,32 @@ erDiagram
         timestamp ds_loaded_at
     }
 
+    Trading_Representative {
+        bigint ds_trading_representative_id PK
+        string trading_representative_code
+        string full_name
+        string gender_code
+        date date_of_birth
+        bigint geographic_area_id FK
+        string geographic_area_code
+        string activity_status_code
+        date ds_effective_from
+        date ds_effective_to
+        string ds_source_system
+        timestamp ds_loaded_at
+    }
+
+    Securities_Closing_Price {
+        bigint ds_securities_closing_price_id PK
+        string securities_code
+        date trade_date
+        decimal close_price
+        string price_source_code
+        int is_estimated_flag
+        string ds_source_system
+        timestamp ds_loaded_at
+    }
+
     Market_Participant_Organization ||--o{ Geographic_Area : "geographic_area_id"
     Market_Participant_Organization ||--o{ IP_Postal_Address : "ds_involved_party_id"
     Market_Participant_Organization ||--o{ IP_Electronic_Address : "ds_involved_party_id"
@@ -275,6 +327,10 @@ erDiagram
     Foreign_Investor ||--o{ Geographic_Area : "geographic_area_id"
     Foreign_Investor ||--o{ IP_Alt_Identification : "ds_involved_party_id"
     Reporting_Period ||--o{ Reporting_Template : "ds_reporting_template_id"
+    Trading_Representative ||--o{ Geographic_Area : "geographic_area_id"
+    Trading_Representative ||--o{ IP_Postal_Address : "ds_involved_party_id"
+    Trading_Representative ||--o{ IP_Electronic_Address : "ds_involved_party_id"
+    Trading_Representative ||--o{ IP_Alt_Identification : "ds_involved_party_id"
 ```
 
 ---
@@ -294,6 +350,7 @@ erDiagram
 | PARAWARN.SystemObject | Loại đối tượng áp dụng tham số cảnh báo | `FIMS_SYSTEM_OBJECT_TYPE` | etl_derived | 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN |
 | NATIONAL | Danh mục quốc gia/quốc tịch | `GEOGRAPHIC_AREA_TYPE` | etl_derived | Shared scheme — bổ sung FIMS.NATIONAL vào COUNTRY type |
 | LOCATION | Danh mục tỉnh/thành phố VN | `GEOGRAPHIC_AREA_TYPE` | etl_derived | Shared scheme — bổ sung FIMS.LOCATION vào PROVINCE type |
+| CLOSING_PRICE_SECURITIES.Source | Nguồn dữ liệu giá đóng cửa (HOSE/HNX/UPCOM/MANUAL) | `FIMS_PRICE_SOURCE` | source_table | |
 
 ---
 
@@ -311,3 +368,5 @@ erDiagram
 | T1-02 | INVESTOR.ObjectType = 1 (cá nhân) và 2 (tổ chức) — có cần tách thành 2 entity riêng (Foreign Investor Individual + Foreign Investor Organization) không? | Đề xuất: Giữ 1 entity, phân biệt bằng `investor_object_type_code`. Cấu trúc cột đồng nhất — không có cột riêng cho từng loại. |
 | T1-03 | RPTTEMP và RPTPERIOD — xác nhận đây là entity nghiệp vụ (không phải config IT) cần thiết kế Atomic? | Cần xác nhận. Nếu RPTTEMP là template cố định do UBCKNN ban hành → in scope. Nếu là config UI của hệ thống → ngoài scope. |
 | T1-04 | Geographic Area — FIMS.NATIONAL và FIMS.LOCATION: đã được bổ sung vào shared entity `Geographic Area` từ NHNCK. Xác nhận ETL không tạo duplicate với NATIONAL từ FMS. | Cần profile data: FIMS.NATIONAL.Code vs FMS.NATIONAL.Code — nếu dùng cùng chuẩn ISO 3166 thì deduplicate; nếu khác → ghi nhận riêng với `ds_source_system = FIMS`. |
+| T1-05 | `TRADINGREPRESENTATIVE` là bảng riêng cho đại diện giao dịch, nhưng `INFODISCREPRES.ProfileKind = 6` (`FIMS_PROFILE_KIND` scheme, Tier 2) cũng có giá trị "Đại diện giao dịch" (`TRADING_REPRESENTATIVE`). Đây có phải 2 cách lưu trùng lặp cho cùng 1 vai trò nghiệp vụ, hay `INFODISCREPRES` chỉ dùng ProfileKind=6 cho mục đích phân loại lịch sử/di trú dữ liệu còn `TRADINGREPRESENTATIVE` mới là bảng vận hành hiện tại? | Cần xác nhận với đội FIMS. Nếu trùng lặp → cân nhắc gộp `Trading Representative` vào `Info Disclosure Representative` (dùng Profile Kind Code phân biệt) thay vì giữ 2 entity riêng. Tạm thời giữ tách biệt vì `TRADINGREPRESENTATIVE` có PK và FK độc lập, được `RPTMEMBER`/`TRADINGAUTHORIZATION` FK trực tiếp (không qua `INFODISCREPRES`). |
+| T1-06 | `CLOSING_PRICE_SECURITIES.Source` = HOSE/HNX/UPCOM/MANUAL — xác nhận FIMS có phải nguồn gốc dữ liệu giá hay chỉ cache lại từ sàn giao dịch để tính toán nội bộ (VD: tính tỷ lệ sở hữu/room ngoại trên `Foreign Investor Securities Account`)? | Không ảnh hưởng quyết định scope (đã in-scope vì FIMS lưu bản ghi giá cục bộ phục vụ nghiệp vụ giám sát), nhưng cần ghi rõ trong LLD: `ds_source_system = FIMS` chỉ phản ánh nơi bản ghi được lưu, `price_source_code` mới là nguồn gốc giá thực tế (HOSE/HNX/UPCOM/MANUAL). |

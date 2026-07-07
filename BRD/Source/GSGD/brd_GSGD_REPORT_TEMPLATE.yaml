@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: REPORT_TEMPLATE
+brd_ref: BRD-SRC-GSGD-REPORT_TEMPLATE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: TEMPLATE_CODE
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Mã mẫu báo cáo (BM001, BM002, etc.)"
+    key: null
+    fk_note: null
+  - name: TEMPLATE_NAME
+    data_type: "VARCHAR2(500 CHAR)"
+    description: ""
+    key: null
+    fk_note: null
+  - name: TEMPLATE_TYPE
+    data_type: "NUMBER(2)"
+    description: "Loại: 1=Quản lý thông tin, 2=Tổng hợp dữ liệu, 3=Phân tích chuyên sâu"
+    key: null
+    fk_note: null
+  - name: TEMPLATE_CONFIG
+    data_type: "CLOB"
+    description: "Cấu hình mẫu (JSON)"
+    key: null
+    fk_note: null
+  - name: DATA_SOURCE
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Nguồn dữ liệu"
+    key: null
+    fk_note: null
+  - name: PARAMETERS
+    data_type: "CLOB"
+    description: "Tham số báo cáo (JSON)"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1)"
+    description: "Trạng thái: 0=Không hoạt động, 1=Hoạt động"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

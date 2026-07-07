@@ -1,0 +1,113 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "AGENCIES"
+  atomic_entity: "Involved Party Electronic Address"
+  entity_physical_name: "ip_electronic_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bổ sung so với HLD Tier1 (diagram 6c chỉ liệt kê ADDR cho FDA) — BRD columns\
+    \ thực tế AGENCIES có TELEPHONE + FAX, áp dụng quy tắc bắt buộc tách shared entity\
+    \ theo grain Involved Party."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "involved_party_id"
+  description: "FK đến Fund Distribution Agent."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.ID"
+  comment: "FK target: Fund Distribution Agent.Fund Distribution Agent Id. Shared\
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS.AGENCIES', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "involved_party_code"
+  description: "Mã đại lý phân phối."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.ID"
+  comment: "Lookup pair: Fund Distribution Agent.Fund Distribution Agent Code. Pair\
+    \ with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=FMS.AGENCIES"
+  etl_derived_value: "FMS.AGENCIES"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — điện thoại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: "PHONE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_val"
+  description: "Số điện thoại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.TELEPHONE"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_address_type_code"
+  description: "Loại kênh liên lạc — fax."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: "FAX"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_address_val"
+  description: "Số fax."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGENCIES.FAX"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: null
+  data_type: "string"

@@ -26,7 +26,7 @@ metadata:
     \ LAST_MODIFIED_AT only — bảng nguồn không có CREATED_BY/LAST_MODIFIED_BY."
 attributes:
 - attribute_name: "Securities Company Major Shareholder Relation Id"
-  physical_name: "securities_company_major_shareholder_relation_id"
+  physical_name: "sc_major_shareholder_relation_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -38,7 +38,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Major Shareholder Relation Code"
-  physical_name: "securities_company_major_shareholder_relation_code"
+  physical_name: "sc_major_shareholder_relation_code"
   description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -286,29 +286,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.CREATED_AT"
-  comment: "TIMESTAMP(6). Bảng nguồn không có CREATED_BY/LAST_MODIFIED_BY."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.LAST_MODIFIED_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

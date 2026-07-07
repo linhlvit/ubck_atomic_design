@@ -1,0 +1,66 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: SUSPICIOUS_ACCOUNT
+brd_ref: BRD-SRC-GSGD-SUSPICIOUS_ACCOUNT
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: CASE_FILE_ID
+    data_type: "VARCHAR2(36)"
+    description: "case_file.id"
+    key: FK
+    fk_note: "FK suy luận → CASE_FILE.ID"
+  - name: ACCOUNT_ID
+    data_type: "VARCHAR2(36)"
+    description: "investor_account.id"
+    key: FK
+    fk_note: "FK suy luận → INVESTOR_ACCOUNT.ID"
+  - name: CRITERIA_FLAGS
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Các tiêu chí đánh giá (JSON hoặc comma-separated)"
+    key: null
+    fk_note: null
+  - name: SOURCE
+    data_type: "NUMBER(1)"
+    description: "Nguồn: 1=Hệ thống tự động, 2=User thêm"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

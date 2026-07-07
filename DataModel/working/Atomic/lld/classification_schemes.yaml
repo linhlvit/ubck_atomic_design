@@ -202,17 +202,41 @@ schemes:
       - code: "ADDRESS"
         name: "Địa chỉ chung (không phân biệt loại)"
         source_table: null
+      - code: "BRANCH"
+        name: "Địa chỉ chi nhánh (trong nước)"
+        source_table: null
       - code: "BUSINESS"
         name: "Địa chỉ kinh doanh"
         source_table: null
       - code: "CURRENT"
         name: "Nơi ở hiện tại"
         source_table: null
+      - code: "FOREIGN_BRANCH"
+        name: "Địa chỉ chi nhánh của tổ chức nước ngoài được cấp phép hoạt động tại Việt Nam"
+        source_table: null
+      - code: "FOREIGN_REP_OFFICE"
+        name: "Địa chỉ văn phòng đại diện của tổ chức nước ngoài"
+        source_table: null
       - code: "HEAD_OFFICE"
         name: "Địa chỉ trụ sở chính"
         source_table: null
+      - code: "HOUSEHOLD_REGISTRY"
+        name: "Địa chỉ hộ khẩu thường trú"
+        source_table: null
+      - code: "PARENT_ADDRESS"
+        name: "Địa chỉ công ty mẹ (nước ngoài)"
+        source_table: null
       - code: "PERMANENT"
         name: "Nơi thường trú"
+        source_table: null
+      - code: "REGISTERED"
+        name: "Địa chỉ đăng ký kinh doanh"
+        source_table: null
+      - code: "REP_OFFICE"
+        name: "Địa chỉ văn phòng đại diện (trong nước)"
+        source_table: null
+      - code: "TRANSACTION_OFFICE"
+        name: "Địa chỉ phòng giao dịch"
         source_table: null
 
   - scheme_code: "IP_ALT_ID_TYPE"
@@ -228,8 +252,17 @@ schemes:
       - code: "CITIZEN_ID"
         name: "CCCD"
         source_table: null
+      - code: "DISTRIBUTION_CERTIFICATE"
+        name: "Giấy chứng nhận đăng ký hoạt động phân phối chứng chỉ quỹ — bổ sung khi thiết kế FMS.DISTRIBUTOR_AGENT"
+        source_table: null
+      - code: "ENTERPRISE_CODE"
+        name: "Mã số doanh nghiệp — bổ sung khi thiết kế FMS.SECURITIES (ID_NO không phân biệt CMND/CCCD/Hộ chiếu/Mã số DN, đối tượng là tổ chức nên chọn giá trị này)"
+        source_table: null
       - code: "ESTABLISHMENT_DECISION"
         name: "Quyết định thành lập"
+        source_table: null
+      - code: "LEGACY_CMND"
+        name: "CMND cũ (hệ thống legacy, trước khi đổi sang CCCD/NATIONAL_ID)"
         source_table: null
       - code: "NATIONAL_ID"
         name: "CMND"
@@ -262,6 +295,9 @@ schemes:
         source_table: null
       - code: "EMAIL_DISCLOSURE"
         name: "Email công bố thông tin"
+        source_table: null
+      - code: "EMAIL_PERSONAL"
+        name: "Email cá nhân/đăng nhập — bổ sung khi thiết kế FMS.TL_PROFILES.PL_EMAIL"
         source_table: null
       - code: "FAX"
         name: "Fax"
@@ -472,6 +508,7 @@ schemes:
     source_table: "FMS.AGENCYTYPE"
     used_in_entities:
       - "Fund Distribution Agent"
+      - "Other Intermediary Organization Unit"
     values: []
 
   - scheme_code: "FMS_BUSINESS_TYPE"
@@ -481,6 +518,7 @@ schemes:
     used_in_entities:
       - "Fund Management Company"
       - "Foreign Fund Management Organization Unit"
+      - "Fund Management Company Key Person"
     values: []
 
   - scheme_code: "FMS_CAPITAL_CHANGE_TYPE"
@@ -537,6 +575,43 @@ schemes:
       - "Foreign Fund Management Organization Unit Staff"
     values: []
 
+  - scheme_code: "FMS_JOB_TITLE"
+    name: "Chức danh/vị trí công tác cụ thể — khác FMS_JOB_TYPE (loại chức vụ tổng quát), nguồn FMS.JOBS là danh mục UUID riêng"
+    source_type: "source_table"
+    source_table: "FMS.JOBS"
+    used_in_entities:
+      - "Foreign Fund Management Organization Unit Staff"
+      - "Investment Fund Representative Board Member"
+    values: []
+
+  - scheme_code: "FMS_BOARD_MEMBER_TYPE"
+    name: "Loại thành viên ban đại diện/HĐQT quỹ: người đại diện cá nhân / tổ chức"
+    source_type: "etl_derived"
+    source_table: "FMS.REPRESENT.MEMBER_TYPE"
+    used_in_entities:
+      - "Investment Fund Representative Board Member"
+    values:
+      - code: "INDIVIDUAL_REPRESENTATIVE"
+        name: "Người đại diện cá nhân"
+        source_value: "1"
+      - code: "ORGANIZATION_REPRESENTATIVE"
+        name: "Người đại diện tổ chức"
+        source_value: "2"
+
+  - scheme_code: "FMS_FUND_MEMBER_TYPE"
+    name: "Loại thành viên quỹ — mô tả nguồn liệt kê '...', chưa đầy đủ, cần profile dữ liệu"
+    source_type: "modeler_defined"
+    source_table: "FMS.MB_FUND.MB_TYPE"
+    used_in_entities:
+      - "Investment Fund Investor Membership"
+    values:
+      - code: "DOMESTIC_INDIVIDUAL"
+        name: "Cá nhân trong nước"
+        source_value: "1"
+      - code: "DOMESTIC_ORGANIZATION"
+        name: "Tổ chức trong nước"
+        source_value: "2"
+
   - scheme_code: "FMS_OPERATION_STATUS"
     name: "Trạng thái hoạt động của thành viên/quỹ/đại lý"
     source_type: "source_table"
@@ -548,6 +623,8 @@ schemes:
       - "Fund Distribution Agent"
       - "Member Periodic Report"
       - "Discretionary Investment Account"
+      - "Foreign Fund Management Organization Unit"
+      - "Pension Fund"
     values: []
 
   - scheme_code: "FMS_ORG_TERRITORY_TYPE"
@@ -556,13 +633,70 @@ schemes:
     source_table: null
     used_in_entities:
       - "Fund Management Company"
+      - "Fund Management Company Organization Unit"
+      - "Discretionary Investment Investor"
+      - "Investment Fund Investor Membership"
     values:
       - code: "DOMESTIC"
-        name: "Tổ chức trong nước (BORF_FLAG=1)"
+        name: "Tổ chức trong nước (BORF_FLAG=1 hoặc DORF=1)"
         source_table: null
       - code: "FOREIGN"
-        name: "Tổ chức nước ngoài (BORF_FLAG=0)"
+        name: "Tổ chức nước ngoài (BORF_FLAG=0 hoặc DORF=2)"
         source_table: null
+
+  - scheme_code: "FMS_ORG_UNIT_TYPE"
+    name: "Loại đơn vị trực thuộc: chi nhánh / văn phòng đại diện"
+    source_type: "etl_derived"
+    source_table: "FMS.BRANCHS.BR_TYPE"
+    used_in_entities:
+      - "Fund Management Company Organization Unit"
+    values:
+      - code: "BRANCH"
+        name: "Chi nhánh"
+        source_value: "1"
+      - code: "REPRESENTATIVE_OFFICE"
+        name: "Văn phòng đại diện"
+        source_value: "2"
+
+  - scheme_code: "FMS_GENDER"
+    name: "Giới tính nhân sự chủ chốt công ty QLQ — cần profile dữ liệu (encoding nguồn không nhất quán: số hoặc chuỗi)"
+    source_type: "modeler_defined"
+    source_table: "FMS.TL_PROFILES.SEX"
+    used_in_entities:
+      - "Fund Management Company Key Person"
+    values:
+      - code: "MALE"
+        name: "Nam"
+        source_table: null
+      - code: "FEMALE"
+        name: "Nữ"
+        source_table: null
+
+  - scheme_code: "FMS_LISTING_MARKET"
+    name: "Sàn giao dịch niêm yết công ty QLQ / quỹ đầu tư"
+    source_type: "etl_derived"
+    source_table: "FMS.SECURITIES.MARKET, FMS.FUNDS.STOCK_EXCHANGE"
+    used_in_entities:
+      - "Fund Management Company"
+      - "Investment Fund"
+    values:
+      - code: "HOSE"
+        name: "Sở Giao dịch Chứng khoán TP.HCM"
+        source_value: "1"
+      - code: "HNX"
+        name: "Sở Giao dịch Chứng khoán Hà Nội"
+        source_value: "2"
+      - code: "UPCOM"
+        name: "Thị trường UPCoM"
+        source_value: "3"
+
+  - scheme_code: "FMS_COMPANY_TYPE"
+    name: "Loại hình công ty quản lý quỹ — values từ FMS.COMPANY_TYPE"
+    source_type: "source_table"
+    source_table: "FMS.COMPANY_TYPE"
+    used_in_entities:
+      - "Fund Management Company"
+    values: []
 
   - scheme_code: "FMS_RATING_PERIOD_TYPE"
     name: "Loại kỳ xếp hạng: cuối năm / giữa năm"
@@ -584,14 +718,7 @@ schemes:
     source_table: "FMS.RELATION"
     used_in_entities:
       - "Investment Fund Investor Membership"
-    values: []
-
-  - scheme_code: "FMS_REPORT_STATUS"
-    name: "Trạng thái báo cáo thành viên (nộp/phê duyệt/từ chối...)"
-    source_type: "source_table"
-    source_table: "FMS.STATUS"
-    used_in_entities:
-      - "Member Periodic Report Status Log"
+      - "Fund Management Company Key Person Related Person"
     values: []
 
   - scheme_code: "FMS_STOCKHOLDER_TYPE"
@@ -600,7 +727,414 @@ schemes:
     source_table: "FMS.STOCKHOLDERTYPE"
     used_in_entities:
       - "Investment Fund Investor Membership"
+      - "Discretionary Investment Investor"
     values: []
+
+  - scheme_code: "FMS_INSIDER_TYPE"
+    name: "Loại cổ đông nội bộ: cổ đông lớn / ban điều hành / HĐQT"
+    source_type: "etl_derived"
+    source_table: "FMS.INSIDER"
+    used_in_entities:
+      - "Fund Management Company Insider"
+    values:
+      - code: "MAJOR_SHAREHOLDER"
+        name: "Cổ đông lớn"
+        source_table: null
+      - code: "EXECUTIVE"
+        name: "Ban điều hành"
+        source_table: null
+      - code: "BOARD_MEMBER"
+        name: "HĐQT"
+        source_table: null
+
+  - scheme_code: "FMS_EMPLOYMENT_STATUS"
+    name: "Trạng thái hợp đồng lao động của Fund Management Company Insider"
+    source_type: "etl_derived"
+    source_table: "FMS.INSIDER.EMPLOY_STATUS"
+    used_in_entities:
+      - "Fund Management Company Insider"
+    values:
+      - code: "ACTIVE"
+        name: "Còn hiệu lực"
+        source_value: "1"
+      - code: "EXPIRED"
+        name: "Hết hiệu lực"
+        source_value: "2"
+      - code: "INDEFINITE"
+        name: "Vô thời hạn"
+        source_value: "3"
+
+  - scheme_code: "FMS_INSPECTION_OBJECT_TYPE"
+    name: "Loại đối tượng thanh tra: QLQ/QĐT/BKGS/ĐLPP/Khác"
+    source_type: "etl_derived"
+    source_table: "FMS.INSPECTION_ROUND"
+    used_in_entities:
+      - "Member Inspection Round"
+      - "Member Inspection Target"
+    values: []
+
+  - scheme_code: "FMS_INSPECTION_KIND"
+    name: "Hình thức thanh tra: định kỳ/đột xuất/kiểm tra"
+    source_type: "etl_derived"
+    source_table: "FMS.INSPECTION_ROUND"
+    used_in_entities:
+      - "Member Inspection Round"
+    values: []
+
+  - scheme_code: "FMS_OFFERING_TYPE"
+    name: "Loại chào bán: chào bán ra công chúng / riêng lẻ"
+    source_type: "source_table"
+    source_table: "FMS.OFFERING"
+    used_in_entities:
+      - "Fund Management Company Securities Offering"
+    values: []
+
+  - scheme_code: "FMS_OFFERING_SECURITIES_TYPE"
+    name: "Loại chứng khoán chào bán: cổ phần / trái phiếu"
+    source_type: "source_table"
+    source_table: "FMS.OFFERING"
+    used_in_entities:
+      - "Fund Management Company Securities Offering"
+    values: []
+
+  - scheme_code: "FMS_OFFERING_DATA_SOURCE"
+    name: "Nguồn dữ liệu đợt chào bán: nhập trên FMS / đồng bộ từ TTHC"
+    source_type: "etl_derived"
+    source_table: "FMS.OFFERING"
+    used_in_entities:
+      - "Fund Management Company Securities Offering"
+    values: []
+
+  - scheme_code: "FMS_STOCK_CLASS"
+    name: "Loại cổ phần chào bán: phổ thông / ưu đãi"
+    source_type: "etl_derived"
+    source_table: "FMS.OFFERING.STOCK_CLASS"
+    used_in_entities:
+      - "Fund Management Company Securities Offering"
+    values:
+      - code: "COMMON"
+        name: "Cổ phần phổ thông"
+        source_value: "01"
+      - code: "PREFERRED"
+        name: "Cổ phần ưu đãi"
+        source_value: "02"
+
+  - scheme_code: "FMS_BOND_TYPE"
+    name: "Loại trái phiếu chào bán — mô tả nguồn còn '...', chưa đầy đủ"
+    source_type: "modeler_defined"
+    source_table: "FMS.OFFERING.BOND_TYPE"
+    used_in_entities:
+      - "Fund Management Company Securities Offering"
+    values:
+      - code: "NON_CONVERTIBLE"
+        name: "Không chuyển đổi"
+        source_value: "01"
+      - code: "NO_WARRANT"
+        name: "Không kèm chứng quyền"
+        source_value: "02"
+      - code: "WITH_WARRANT"
+        name: "Có chứng quyền"
+        source_value: "03"
+
+  - scheme_code: "FMS_PENSION_ROLE_TYPE"
+    name: "Vai trò tổ chức hưu trí: đại lý phân phối / tổ chức cung cấp dịch vụ"
+    source_type: "etl_derived"
+    source_table: "FMS.PENSION_AGENT, FMS.PENSION_PROVIDER"
+    used_in_entities:
+      - "Pension Service Organization"
+    values:
+      - code: "AGENT"
+        name: "Đại lý hưu trí"
+        source_table: null
+      - code: "PROVIDER"
+        name: "Tổ chức cung cấp dịch vụ hưu trí"
+        source_table: null
+
+  - scheme_code: "FMS_AGENT_COMPANY_TYPE"
+    name: "Loại hình công ty đại lý/trung gian: CK/NHTM/Bảo hiểm/Khác"
+    source_type: "etl_derived"
+    source_table: "FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT"
+    used_in_entities:
+      - "Pension Service Organization"
+      - "Securities Distribution Agent"
+      - "Other Intermediary Organization Unit"
+    values: []
+
+  - scheme_code: "FMS_TRANSFER_AGENT_COMPANY_TYPE"
+    name: "Loại hình công ty đại lý chuyển nhượng — encoding riêng, khác FMS_AGENT_COMPANY_TYPE"
+    source_type: "etl_derived"
+    source_table: "FMS.TRANSFER_AGENT.COMPANY_TYPE"
+    used_in_entities:
+      - "Transfer Agent"
+    values:
+      - code: "VSDC"
+        name: "Trung tâm Lưu ký Chứng khoán"
+        source_value: "1"
+      - code: "COMMERCIAL_BANK"
+        name: "Ngân hàng thương mại"
+        source_value: "2"
+      - code: "OTHER"
+        name: "Tổ chức khác"
+        source_value: "3"
+
+  - scheme_code: "FMS_INSIDER_TX_TYPE"
+    name: "Loại giao dịch chuyển nhượng nội bộ: mua/bán/đăng ký"
+    source_type: "etl_derived"
+    source_table: "FMS.INSID_CHANGE"
+    used_in_entities:
+      - "Fund Management Company Insider Shareholding Change Log"
+    values:
+      - code: "BUY"
+        name: "Mua vào"
+        source_table: null
+      - code: "SELL"
+        name: "Bán ra"
+        source_table: null
+      - code: "REGISTER"
+        name: "Đăng ký"
+        source_table: null
+
+  - scheme_code: "FMS_GRADING_METHOD"
+    name: "Phương pháp chấm điểm: thang điểm/điểm cộng/điểm trừ"
+    source_type: "etl_derived"
+    source_table: "FMS.FACTOR"
+    used_in_entities:
+      - "Member Rating Criterion"
+    values: []
+
+  - scheme_code: "FMS_BASED_GRADING"
+    name: "Cơ sở chấm điểm: giá trị thực tế / xếp hạng"
+    source_type: "etl_derived"
+    source_table: "FMS.FACTOR"
+    used_in_entities:
+      - "Member Rating Criterion"
+      - "Member Rating Criterion Scale"
+    values: []
+
+  - scheme_code: "FMS_OFFERING_PLAN_METHOD"
+    name: "Hình thức chào bán trong kế hoạch phân bổ"
+    source_type: "modeler_defined"
+    source_table: "FMS.OFFERING_PLAN"
+    used_in_entities:
+      - "Fund Management Company Securities Offering Plan"
+    values: []
+
+  - scheme_code: "FMS_AUDIT_REMINDER_TARGET_TYPE"
+    name: "Loại đối tượng nhắc nhở kiểm toán: công ty kiểm toán / kiểm toán viên"
+    source_type: "source_table"
+    source_table: "FMS.AUDIT_FIRM_REMINDER"
+    used_in_entities:
+      - "Audit Firm Reminder"
+    values: []
+
+  - scheme_code: "FMS_REMINDER_IMPLEMENTATION_STATUS"
+    name: "Trạng thái thực hiện nhắc nhở kiểm toán"
+    source_type: "source_table"
+    source_table: "FMS.AUDIT_FIRM_REMINDER"
+    used_in_entities:
+      - "Audit Firm Reminder"
+    values: []
+
+  - scheme_code: "FMS_INSPECTION_EXECUTION_STATUS"
+    name: "Trạng thái thi hành quyết định xử phạt thanh tra"
+    source_type: "source_table"
+    source_table: "FMS.INSPECTION_PENALTY_DECISION"
+    used_in_entities:
+      - "Member Inspection Penalty Decision"
+    values: []
+
+  - scheme_code: "FMS_INSPECTION_REMEDY_STATUS"
+    name: "Trạng thái thực hiện biện pháp khắc phục sau thanh tra"
+    source_type: "source_table"
+    source_table: "FMS.INSPECTION_PENALTY_DECISION"
+    used_in_entities:
+      - "Member Inspection Penalty Decision"
+    values: []
+
+  - scheme_code: "FMS_SCALE_COMPARISON_OPERATOR"
+    name: "Toán tử so sánh ngưỡng thang điểm: >=, >, <=, <"
+    source_type: "etl_derived"
+    source_table: "FMS.FTOR_SCALE"
+    used_in_entities:
+      - "Member Rating Criterion Scale"
+    values: []
+
+  - scheme_code: "FMS_ANNOUNCE_TYPE"
+    name: "Loại hình công bố thông tin: định kỳ/bất thường/theo yêu cầu/khác"
+    source_type: "etl_derived"
+    source_table: "FMS.ANNOUNCE"
+    used_in_entities:
+      - "Member Disclosure Announcement"
+    values: []
+
+  - scheme_code: "FMS_ANNOUNCE_REPORT_TYPE"
+    name: "Loại báo cáo đính kèm CBTT: định kỳ/bất thường/theo yêu cầu/khác"
+    source_type: "etl_derived"
+    source_table: "FMS.ANNOUNCE"
+    used_in_entities:
+      - "Member Disclosure Announcement"
+    values: []
+
+  - scheme_code: "FMS_PERIOD_TYPE"
+    name: "Loại kỳ báo cáo: ngày/tuần/tháng/quý/bán niên/năm/nửa tháng"
+    source_type: "etl_derived"
+    source_table: "FMS.ANNOUNCE, FMS.VIOLT"
+    used_in_entities:
+      - "Member Disclosure Announcement"
+      - "Fund Management Conduct Violation"
+    values:
+      - code: "DAY"
+        name: "Ngày"
+        source_value: "1"
+      - code: "WEEK"
+        name: "Tuần"
+        source_value: "2"
+      - code: "MONTH"
+        name: "Tháng"
+        source_value: "3"
+      - code: "QUARTER"
+        name: "Quý"
+        source_value: "4"
+      - code: "SEMI_ANNUAL"
+        name: "Bán niên"
+        source_value: "5"
+      - code: "YEAR"
+        name: "Năm"
+        source_value: "6"
+      - code: "HALF_MONTH"
+        name: "Nửa tháng"
+        source_value: "7"
+
+  - scheme_code: "FMS_EVENT_TYPE"
+    name: "Danh mục loại sự vụ báo cáo/công bố thông tin"
+    source_type: "source_table"
+    source_table: "FMS.EVENT_TYPE"
+    used_in_entities:
+      - "Member Disclosure Announcement"
+      - "Fund Management Company"
+      - "Foreign Fund Management Organization Unit"
+      - "Fund Management Company Key Person"
+    values: []
+
+  - scheme_code: "FMS_WARNING_SYSTEM_OBJECT_TYPE"
+    name: "Loại đối tượng áp dụng tham số cảnh báo giám sát — 1=QLQ, 2=Quỹ đầu tư, 3=NH LKGS, 4=ĐLPP, 5=ĐLCN (mô tả nguồn liệt kê '...', chưa đầy đủ)"
+    source_type: "etl_derived"
+    source_table: "FMS.PARA_WARN, FMS.VIOLT"
+    used_in_entities:
+      - "Member Warning Parameter"
+      - "Fund Management Conduct Violation"
+    values:
+      - code: "FUND_MANAGEMENT_COMPANY"
+        name: "Công ty quản lý quỹ"
+        source_value: "1"
+      - code: "INVESTMENT_FUND"
+        name: "Quỹ đầu tư"
+        source_value: "2"
+      - code: "CUSTODIAN_BANK"
+        name: "Ngân hàng lưu ký giám sát"
+        source_value: "3"
+      - code: "DISTRIBUTION_AGENT"
+        name: "Đại lý phân phối"
+        source_value: "4"
+      - code: "TRANSFER_AGENT"
+        name: "Đại lý chuyển nhượng"
+        source_value: "5"
+
+  - scheme_code: "FMS_WARNING_RECORD_STATUS"
+    name: "Trạng thái hoạt động Member Warning Parameter/Member Warning Condition: 1=Đang hoạt động, 0=Ngừng hoạt động"
+    source_type: "etl_derived"
+    source_table: "FMS.PARA_WARN"
+    used_in_entities:
+      - "Member Warning Parameter"
+      - "Member Warning Condition"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Ngừng hoạt động"
+        source_value: "0"
+
+  - scheme_code: "FMS_WARNING_COMPARE_TYPE"
+    name: "Kiểu so sánh điều kiện cảnh báo: 1=Lớn hơn, 2=Nhỏ hơn, 3=Bằng"
+    source_type: "etl_derived"
+    source_table: "FMS.CDT_WARN"
+    used_in_entities:
+      - "Member Warning Condition"
+    values:
+      - code: "GREATER_THAN"
+        name: "Lớn hơn"
+        source_value: "1"
+      - code: "LESS_THAN"
+        name: "Nhỏ hơn"
+        source_value: "2"
+      - code: "EQUAL"
+        name: "Bằng"
+        source_value: "3"
+
+  - scheme_code: "FMS_WARNING_FROM_VALUE_OPERATOR"
+    name: "Toán tử so sánh ngưỡng dưới của điều kiện cảnh báo: 1=>=, 2=>"
+    source_type: "etl_derived"
+    source_table: "FMS.CDT_WARN"
+    used_in_entities:
+      - "Member Warning Condition"
+    values:
+      - code: "GTE"
+        name: ">="
+        source_value: "1"
+      - code: "GT"
+        name: ">"
+        source_value: "2"
+
+  - scheme_code: "FMS_WARNING_TO_VALUE_OPERATOR"
+    name: "Toán tử so sánh ngưỡng trên của điều kiện cảnh báo: 1=<=, 2=<"
+    source_type: "etl_derived"
+    source_table: "FMS.CDT_WARN"
+    used_in_entities:
+      - "Member Warning Condition"
+    values:
+      - code: "LTE"
+        name: "<="
+        source_value: "1"
+      - code: "LT"
+        name: "<"
+        source_value: "2"
+
+  - scheme_code: "FMS_WARNING_COMBINATION_TYPE"
+    name: "Điều kiện kết hợp với tham số cảnh báo thứ hai (nghi ngờ AND/OR, cùng pattern FIMS.CDTWARN.OtherWIdCondition) — mô tả BRD chưa có giá trị cụ thể"
+    source_type: "modeler_defined"
+    source_table: "FMS.CDT_WARN"
+    used_in_entities:
+      - "Member Warning Condition"
+    values: []
+
+  - scheme_code: "FMS_WARNING_TYPE"
+    name: "Loại cảnh báo: 0=Cảnh báo so sánh số liệu, 1=Cảnh báo nội dung bất thường"
+    source_type: "etl_derived"
+    source_table: "FMS.CDT_WARN"
+    used_in_entities:
+      - "Member Warning Condition"
+    values:
+      - code: "DATA_COMPARISON"
+        name: "Cảnh báo so sánh số liệu"
+        source_value: "0"
+      - code: "ANOMALOUS_CONTENT"
+        name: "Cảnh báo nội dung bất thường"
+        source_value: "1"
+
+  - scheme_code: "FMS_WARNING_PERIOD_TYPE"
+    name: "Loại kỳ tương đối của tham số cảnh báo: 1=Kỳ hiện tại, 2=Kỳ liền trước (mô tả nguồn liệt kê '...', chưa đầy đủ)"
+    source_type: "etl_derived"
+    source_table: "FMS.CDT_WARN"
+    used_in_entities:
+      - "Member Warning Condition"
+    values:
+      - code: "CURRENT_PERIOD"
+        name: "Kỳ hiện tại"
+        source_value: "1"
+      - code: "PREVIOUS_PERIOD"
+        name: "Kỳ liền trước"
+        source_value: "2"
 
   - scheme_code: "RELATIONSHIP_TYPE"
     name: "Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà) — cần xác nhận từ data"
@@ -1039,6 +1573,20 @@ schemes:
       - "Securities Company Custodian Bank"
     values: []
 
+  - scheme_code: "SCMS_SERVICE_RECORD_STATUS"
+    name: "Trạng thái dịch vụ được cấp phép: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_SERVICE.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Licensed Service"
+    values:
+      - code: "ACTIVE"
+        label: "Đang hoạt động/còn hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Ngừng hoạt động/hết hiệu lực"
+        source_value: "0"
+
   - scheme_code: "SCMS_BUSINESS_LINE"
     name: "Nghiệp vụ kinh doanh chứng khoán"
     source_type: "source_table"
@@ -1125,17 +1673,6 @@ schemes:
       - "Securities Company Adhoc Report"
     values: []
 
-  - scheme_code: "SCMS_REPORT_SUBMISSION_STATUS"
-    name: "Trạng thái nộp báo cáo (đúng hạn/trễ hạn/chưa nộp)"
-    source_type: "source_table"
-    source_table: "SCMS.SC_FIRM_PERIODIC_REPORT"
-    used_in_entities:
-      - "Securities Company Periodic Report"
-      - "Securities Company Adhoc Report"
-      - "Securities Company Foreign Branch Periodic Report"
-      - "Securities Company Foreign Representative Office Periodic Report"
-    values: []
-
   - scheme_code: "SCMS_INSPECTION_TYPE"
     name: "Hình thức kiểm tra/thanh tra (định kỳ/đột xuất/chuyên đề)"
     source_type: "source_table"
@@ -1161,13 +1698,25 @@ schemes:
     values: []
 
   - scheme_code: "SCMS_SHAREHOLDER_TXN_TYPE"
-    name: "Loại giao dịch cổ đông"
+    name: "Loại giao dịch thay đổi sở hữu cổ đông CTCK: Tăng vốn góp, Giảm vốn góp, Chuyển nhượng cổ phần, Tăng vốn điều lệ"
     source_type: "source_table"
-    source_table: "SCMS.CAT_SHAREHOLDER_TRANSACTION_TYPE"
+    source_table: "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.TRANSACTION_TYPE"
     used_in_entities:
       - "Securities Company Shareholder Ownership Change"
       - "Securities Company Shareholder Transfer"
-    values: []
+    values:
+      - code: "TANG_VON"
+        label: "Tăng vốn góp"
+        source_value: "TANG_VON"
+      - code: "GIAM_VON"
+        label: "Giảm vốn góp"
+        source_value: "GIAM_VON"
+      - code: "CHUYEN_NHUONG"
+        label: "Chuyển nhượng cổ phần"
+        source_value: "CHUYEN_NHUONG"
+      - code: "TANG_VON_DIEU_LE"
+        label: "Tăng vốn điều lệ"
+        source_value: "TANG_VON_DIEU_LE"
 
   # --- Tier 3 schemes ---
 
@@ -1305,6 +1854,7 @@ schemes:
     source_table: "SCMS.SC_FIRM_SENIOR_PERSONNEL.GENDER"
     used_in_entities:
       - "Securities Company Senior Personnel"
+      - "Securities Company Foreign Branch Personnel"
     values:
       - code: "NAM"
         label: "Nam"
@@ -1312,6 +1862,55 @@ schemes:
       - code: "NU"
         label: "Nữ"
         source_value: "2"
+
+  - scheme_code: "SCMS_FOREIGN_PERSONNEL_RECORD_STATUS"
+    name: "Trạng thái bản ghi nhân sự chi nhánh/VPĐD CTCK nước ngoài: 1=DUONG_NHIEM (đương nhiệm); 0=MIEN_NHIEM (miễn nhiệm)"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Foreign Branch Personnel"
+      - "Securities Company Foreign Representative Office Personnel"
+    values:
+      - code: "DUONG_NHIEM"
+        label: "Đương nhiệm"
+        source_value: "1"
+      - code: "MIEN_NHIEM"
+        label: "Miễn nhiệm"
+        source_value: "0"
+
+  - scheme_code: "SCMS_FOREIGN_BRANCH_PERSONNEL_WORK_STATUS"
+    name: "Trạng thái làm việc hiện tại của nhân sự chi nhánh CTCK nước ngoài: 1=DUONG_NHIEM; 2=MIEN_NHIEM; 3=NGHI_VIEC"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.WORK_STATUS"
+    used_in_entities:
+      - "Securities Company Foreign Branch Personnel"
+    values:
+      - code: "DUONG_NHIEM"
+        label: "Đương nhiệm"
+        source_value: "1"
+      - code: "MIEN_NHIEM"
+        label: "Miễn nhiệm"
+        source_value: "2"
+      - code: "NGHI_VIEC"
+        label: "Đã nghỉ việc"
+        source_value: "3"
+
+  - scheme_code: "SCMS_LICENSE_VERIFICATION_STATUS"
+    name: "Trạng thái xác minh chứng chỉ hành nghề chứng khoán: CHO_XAC_MINH/KHOP/KHONG_KHOP"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.VERIFICATION_STATUS"
+    used_in_entities:
+      - "Securities Company Foreign Branch Personnel"
+    values:
+      - code: "CHO_XAC_MINH"
+        label: "Chờ xác minh"
+        source_value: "CHO_XAC_MINH"
+      - code: "KHOP"
+        label: "Khớp (đã xác minh)"
+        source_value: "KHOP"
+      - code: "KHONG_KHOP"
+        label: "Không khớp"
+        source_value: "KHONG_KHOP"
 
   - scheme_code: "SCMS_ENTITY_TYPE"
     name: "Loại chủ thể nhân sự: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức"
@@ -1359,12 +1958,14 @@ schemes:
         source_value: "DA_NGHI_VIEC"
 
   - scheme_code: "SCMS_REPORT_SUBMISSION_STATUS"
-    name: "Trạng thái nộp báo cáo CTCK: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt; -1=Từ chối; 3=Bị hủy. Dùng chung periodic/adhoc/foreign branch report."
+    name: "Trạng thái nộp báo cáo CTCK: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt; -1=Từ chối; 3=Bị hủy. Dùng chung periodic/adhoc/foreign branch/rep office report."
     source_type: "source_table"
     source_table: "SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS"
     used_in_entities:
       - "Securities Company Periodic Report"
       - "Securities Company Adhoc Report"
+      - "Securities Company Foreign Branch Periodic Report"
+      - "Securities Company Foreign Representative Office Periodic Report"
     values:
       - code: "CHUA_GUI"
         label: "Chưa gửi"
@@ -1852,6 +2453,31 @@ schemes:
       - code: "CO_DONG"
         label: "Cổ đông"
         source_value: "CO_DONG"
+
+  # ── SCMS — Tier 3 ──────────────────────────────────────────────────
+
+  - scheme_code: "SCMS_CAMEL_GROUP_TYPE"
+    name: "Nhóm chỉ tiêu rủi ro CAMEL: C=Capital (Vốn), A=Asset (Tài sản), M=Management (Quản trị), E=Earnings (Lợi nhuận), L=Liquidity (Thanh khoản)"
+    source_type: "source_table"
+    source_table: "SCMS.RISK_SCORING_SC_FIRM_DETAIL.RECORD_TYPE"
+    used_in_entities:
+      - "Securities Company Risk Scoring Detail"
+    values:
+      - code: "C"
+        label: "Capital — Vốn tự có"
+        source_value: "C"
+      - code: "A"
+        label: "Asset — Chất lượng tài sản"
+        source_value: "A"
+      - code: "M"
+        label: "Management — Năng lực quản trị"
+        source_value: "M"
+      - code: "E"
+        label: "Earnings — Khả năng sinh lời"
+        source_value: "E"
+      - code: "L"
+        label: "Liquidity — Thanh khoản"
+        source_value: "L"
 
   # --- Tier 7 schemes ---
 
@@ -3037,6 +3663,59 @@ schemes:
         name: "Cá nhân"
         source_value: "10"
 
+  - scheme_code: "FIMS_PRICE_SOURCE"
+    name: "Nguồn dữ liệu giá đóng cửa chứng khoán (CLOSING_PRICE_SECURITIES.Source)"
+    source_type: "source_table"
+    source_table: "FIMS.CLOSING_PRICE_SECURITIES"
+    used_in_entities:
+      - "Securities Closing Price"
+    values:
+      - code: "HOSE"
+        name: "Sở GDCK TP.HCM"
+      - code: "HNX"
+        name: "Sở GDCK Hà Nội"
+      - code: "UPCOM"
+        name: "Sàn UPCoM"
+      - code: "MANUAL"
+        name: "Nhập tay (không có giá thực tế)"
+
+  - scheme_code: "FIMS_PERIOD_TYPE"
+    name: "Loại kỳ CBTT/báo cáo (ANNOUNCE.PeriodType)"
+    source_type: "etl_derived"
+    source_table: "FIMS.ANNOUNCE"
+    used_in_entities:
+      - "Info Disclosure Announcement"
+    values:
+      - code: "DAY"
+        name: "Ngày"
+        source_value: "1"
+      - code: "WEEK"
+        name: "Tuần"
+        source_value: "2"
+      - code: "HALF_MONTH"
+        name: "Nửa tháng"
+        source_value: "3"
+      - code: "MONTH"
+        name: "Tháng"
+        source_value: "4"
+      - code: "QUARTER"
+        name: "Quý"
+        source_value: "5"
+      - code: "HALF_YEAR"
+        name: "Bán niên"
+        source_value: "6"
+      - code: "YEAR"
+        name: "Năm"
+        source_value: "7"
+
+  - scheme_code: "FIMS_INCIDENT_MATTER_TYPE"
+    name: "Loại sự cố/sự vụ phát sinh khi CBTT là báo cáo sự vụ (ANNOUNCE.IncidentMatterType)"
+    source_type: "etl_derived"
+    source_table: "FIMS.ANNOUNCE"
+    used_in_entities:
+      - "Info Disclosure Announcement"
+    values: []
+
   - scheme_code: "GEOGRAPHIC_AREA_TYPE"
     name: null
     source_type: "etl_derived"
@@ -3065,3 +3744,417 @@ schemes:
       - code: "WARD_OLD"
         name: "Phường/Xã/Thị trấn (cũ — pre-2025) — từ ECAT_06_WardOld"
         source_table: "ECAT.ECAT_06_WardOld"
+
+  - scheme_code: "RECORD_STATUS"
+    name: "Trạng thái bản ghi chung (active/inactive) — dùng cho cột RECORD_STATUS dạng cờ 1/0 xuất hiện lặp lại ở nhiều bảng danh mục nguồn (đã tham chiếu ở lld_NHNCK_COUNTRIES.yaml/lld_NHNCK_PROVINCES.yaml nhưng chưa đăng ký scheme — bổ sung khi thiết kế FMS)"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Geographic Area"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_table: null
+      - code: "INACTIVE"
+        name: "Ngừng hoạt động/Hết hiệu lực"
+        source_table: null
+
+  - scheme_code: "GSGD_APPROVAL_STATUS"
+    name: "Trạng thái phê duyệt (tài khoản/sự kiện/nhóm) — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.INVESTOR_ACCOUNT.APPROVAL_STATUS, GSGD.COMPANY_EVENT.APPROVAL_STATUS, GSGD.ACCOUNT_GROUP.APPROVAL_STATUS"
+    used_in_entities:
+      - "Account Investor"
+      - "Listed Company Corporate Event"
+      - "Account Investor Group"
+    values: []
+
+  - scheme_code: "GSGD_DATA_SOURCE"
+    name: "Nguồn dữ liệu chính của tài khoản — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.INVESTOR_ACCOUNT.DATA_SOURCE"
+    used_in_entities:
+      - "Account Investor"
+    values:
+      - code: "VSDC"
+        label: "Trung tâm Lưu ký Chứng khoán"
+        source_value: "VSDC"
+      - code: "CTCK"
+        label: "Công ty Chứng khoán"
+        source_value: "CTCK"
+
+  - scheme_code: "GSGD_SERVICE_ENABLED_FLAG"
+    name: "Cờ dịch vụ tài chính đăng ký trên tài khoản — GSGD (cần profile, data type nguồn VARCHAR2(200))"
+    source_type: "modeler_defined"
+    source_table: "GSGD.INVESTOR_ACCOUNT.MARGIN_SERVICE_ENABLED, GSGD.INVESTOR_ACCOUNT.ADVANCE_PAYMENT_SERVICE_ENABLED, GSGD.INVESTOR_ACCOUNT.ACCOUNT_AUTHORIZATION_ENABLED"
+    used_in_entities:
+      - "Account Investor"
+    values: []
+
+  - scheme_code: "GSGD_COMPANY_EVENT_TYPE"
+    name: "Loại sự kiện tổ chức niêm yết — GSGD (cần profile, cột free text)"
+    source_type: "source_table"
+    source_table: "GSGD.COMPANY_EVENT.EVENT_TYPE"
+    used_in_entities:
+      - "Listed Company Corporate Event"
+    values: []
+
+  - scheme_code: "GSGD_SECURITIES_GROUP_TYPE"
+    name: "Loại nhóm chứng khoán — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.SECURITIES_GROUP.GROUP_TYPE"
+    used_in_entities:
+      - "Securities Watchlist Group"
+    values:
+      - code: "1"
+        label: "Thường"
+        source_value: "1"
+      - code: "2"
+        label: "Theo ngành"
+        source_value: "2"
+
+  - scheme_code: "GSGD_GROUP_STATUS"
+    name: "Trạng thái nhóm chứng khoán — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.SECURITIES_GROUP.STATUS"
+    used_in_entities:
+      - "Securities Watchlist Group"
+    values:
+      - code: "1"
+        label: "Chờ duyệt"
+        source_value: "1"
+      - code: "2"
+        label: "Phê duyệt"
+        source_value: "2"
+      - code: "3"
+        label: "Từ chối"
+        source_value: "3"
+
+  - scheme_code: "GSGD_CASE_TYPE"
+    name: "Loại vụ việc giám sát / loại quy trình xử lý — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.CASE_FILE.CASE_FILE_TYPE, GSGD.CASE_FILE_WORKFLOW.WORKFLOW_TYPE"
+    used_in_entities:
+      - "Market Surveillance Case"
+      - "Market Surveillance Case Workflow Step"
+    values:
+      - code: "1"
+        label: "Sơ bộ"
+        source_value: "1"
+      - code: "2"
+        label: "Thao túng"
+        source_value: "2"
+      - code: "3"
+        label: "Nội gián"
+        source_value: "3"
+      - code: "4"
+        label: "Liên thị trường"
+        source_value: "4"
+
+  - scheme_code: "GSGD_INFORMATION_SOURCE"
+    name: "Nguồn thông tin vụ việc giám sát — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.CASE_FILE.INFORMATION_SOURCE"
+    used_in_entities:
+      - "Market Surveillance Case"
+    values:
+      - code: "1"
+        label: "Nguồn từ báo cáo của Sở"
+        source_value: "1"
+      - code: "2"
+        label: "Nguồn từ hoạt động của UBCKNN"
+        source_value: "2"
+      - code: "3"
+        label: "Nguồn dữ liệu xác nhận từ CTCK"
+        source_value: "3"
+
+  - scheme_code: "GSGD_CASE_STATUS"
+    name: "Trạng thái vụ việc giám sát — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.CASE_FILE.CASE_FILE_STATUS"
+    used_in_entities:
+      - "Market Surveillance Case"
+    values:
+      - code: "0"
+        label: "Chưa phân tích"
+        source_value: "0"
+      - code: "1"
+        label: "Đang phân tích ban đầu"
+        source_value: "1"
+      - code: "2"
+        label: "Đang tổng hợp dữ liệu từ CTCK"
+        source_value: "2"
+      - code: "3"
+        label: "Đang tổ chức kiểm tra"
+        source_value: "3"
+      - code: "4"
+        label: "Đã xử phạt"
+        source_value: "4"
+      - code: "5"
+        label: "Đã chuyển cơ quan CA"
+        source_value: "5"
+      - code: "6"
+        label: "Đã đóng hồ sơ"
+        source_value: "6"
+
+  - scheme_code: "GSGD_FINANCIAL_SERVICE_TYPE"
+    name: "Loại dịch vụ tài chính đăng ký trên tài khoản — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.ACCOUNT_FINANCIAL_SERVICE.SERVICE_TYPE"
+    used_in_entities:
+      - "Account Investor Financial Service"
+    values:
+      - code: "1"
+        label: "Ký quỹ"
+        source_value: "1"
+      - code: "2"
+        label: "Ứng trước tiền bán"
+        source_value: "2"
+      - code: "3"
+        label: "Hợp đồng tài chính khác"
+        source_value: "3"
+
+  - scheme_code: "GSGD_ACCOUNT_GROUP_TYPE"
+    name: "Loại nhóm tài khoản giám sát — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.ACCOUNT_GROUP.GROUP_TYPE"
+    used_in_entities:
+      - "Account Investor Group"
+    values:
+      - code: "1"
+        label: "Thường"
+        source_value: "1"
+      - code: "2"
+        label: "Nghi vấn"
+        source_value: "2"
+
+  - scheme_code: "GSGD_ACCOUNT_RELATION_TYPE"
+    name: "Loại quan hệ giữa các tài khoản (Danh tính/IP/MAC/Tiền) — GSGD (FK suy luận → CATEGORY_ITEM, ngoài phạm vi task)"
+    source_type: "modeler_defined"
+    source_table: "GSGD.ACCOUNT_GROUP.RELATION_TYPE_ID, GSGD.ACCOUNT_RELATIONSHIP.CATEGORY_ITEM_ID"
+    used_in_entities:
+      - "Account Investor Group"
+      - "Account Investor Relationship"
+    values: []
+
+  - scheme_code: "GSGD_FILE_TYPE"
+    name: "Loại file đính kèm vụ việc — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.CASE_ATTACH_FILE.FILE_TYPE"
+    used_in_entities:
+      - "Market Surveillance Case Document Attachment"
+    values:
+      - code: "CSV"
+        label: "CSV"
+        source_value: "CSV"
+      - code: "XLSX"
+        label: "XLSX"
+        source_value: "XLSX"
+      - code: "PDF"
+        label: "PDF"
+        source_value: "PDF"
+
+  - scheme_code: "GSGD_FILE_GROUP"
+    name: "Nhóm file đính kèm vụ việc — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.CASE_ATTACH_FILE.FILE_GROUP"
+    used_in_entities:
+      - "Market Surveillance Case Document Attachment"
+    values:
+      - code: "1"
+        label: "Hồ sơ của Sở"
+        source_value: "1"
+      - code: "2"
+        label: "Danh sách tài khoản nghi vấn"
+        source_value: "2"
+
+  - scheme_code: "GSGD_APPROVAL_STEP_CODE"
+    name: "Mã bước duyệt vụ việc — GSGD"
+    source_type: "source_table"
+    source_table: "GSGD.CASE_APPROVAL_STEP.STEP_CODE"
+    used_in_entities:
+      - "Market Surveillance Case Approval Step Log"
+    values:
+      - code: "1"
+        label: "Chuyên viên khởi tạo"
+        source_value: "1"
+      - code: "2"
+        label: "Trưởng ban phê duyệt"
+        source_value: "2"
+      - code: "3"
+        label: "Phó Trưởng ban phân công"
+        source_value: "3"
+      - code: "4"
+        label: "Chuyên viên xử lý"
+        source_value: "4"
+
+  - scheme_code: "GSGD_APPROVAL_STEP_STATUS"
+    name: "Trạng thái bước duyệt/quy trình vụ việc — GSGD (CASE_APPROVAL_STEP có 4 giá trị, CASE_FILE_WORKFLOW chỉ có 3 — cần profile riêng nếu khác nhau thật)"
+    source_type: "source_table"
+    source_table: "GSGD.CASE_APPROVAL_STEP.STATUS, GSGD.CASE_FILE_WORKFLOW.STATUS"
+    used_in_entities:
+      - "Market Surveillance Case Approval Step Log"
+      - "Market Surveillance Case Workflow Step"
+    values:
+      - code: "0"
+        label: "Chưa xử lý / Chưa thực hiện"
+        source_value: "0"
+      - code: "1"
+        label: "Đang xử lý / Đang thực hiện"
+        source_value: "1"
+      - code: "2"
+        label: "Đã duyệt / Hoàn thành"
+        source_value: "2"
+      - code: "3"
+        label: "Từ chối (chỉ CASE_APPROVAL_STEP)"
+        source_value: "3"
+
+  - scheme_code: "GSGD_ACCOUNT_STATUS"
+    name: "Trạng thái tài khoản trong nhóm giám sát — GSGD (cần profile)"
+    source_type: "modeler_defined"
+    source_table: "GSGD.ACCOUNT_GROUP_MEMBER.STATUS"
+    used_in_entities:
+      - "Account Investor Group Member"
+    values: []
+
+  - scheme_code: "KNT_OPERATION_STATUS"
+    name: "Trạng thái hoạt động doanh nghiệp (TrangThaiHoatDongEnum) — KNT"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REGISTRATION_INFO.OPERATION_STATUS"
+    used_in_entities:
+      - "Tax Registration"
+    values:
+      - code: "0"
+        label: "Đang hoạt động"
+        source_value: "0"
+      - code: "4"
+        label: "Đang hoạt động"
+        source_value: "4"
+      - code: "1"
+        label: "Ngừng hoạt động đã hoàn thành thủ tục MST"
+        source_value: "1"
+      - code: "3"
+        label: "Ngừng hoạt động chưa hoàn thành thủ tục MST"
+        source_value: "3"
+      - code: "5"
+        label: "Ngừng kinh doanh có thời hạn"
+        source_value: "5"
+      - code: "6"
+        label: "Không hoạt động tại địa chỉ đăng ký"
+        source_value: "6"
+
+  - scheme_code: "KNT_SUSPENSION_TYPE"
+    name: "Lý do ngừng hoạt động (LyDoNgungHoatDongEnum) — KNT"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REGISTRATION_INFO.SUSPENSION_TYPE"
+    used_in_entities:
+      - "Tax Registration"
+    values:
+      - code: "1"
+        label: "Giải thể"
+        source_value: "1"
+      - code: "2"
+        label: "Phá sản"
+        source_value: "2"
+      - code: "3"
+        label: "Chuyển đổi loại hình"
+        source_value: "3"
+
+  - scheme_code: "KNT_BUSINESS_LINE"
+    name: "Ngành nghề kinh doanh trong đăng ký thuế — KNT (cần profile)"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REG_BUSINESS_LINE"
+    used_in_entities:
+      - "Tax Registration"
+    values: []
+
+  - scheme_code: "KNT_REPORT_PERIOD_TYPE"
+    name: "Kiểu kỳ báo cáo tài chính — KNT"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REPORT.PERIOD_TYPE"
+    used_in_entities:
+      - "Tax Declaration Report"
+    values:
+      - code: "Y"
+        label: "Năm"
+        source_value: "Y"
+      - code: "H"
+        label: "Bán niên"
+        source_value: "H"
+      - code: "Q"
+        label: "Quý"
+        source_value: "Q"
+      - code: "M"
+        label: "Tháng"
+        source_value: "M"
+
+  - scheme_code: "KNT_ENFORCEMENT_METHOD"
+    name: "Hình thức cưỡng chế thuế — KNT (cần profile)"
+    source_type: "source_table"
+    source_table: "KNT.TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_CODE"
+    used_in_entities:
+      - "Tax Enforcement Debt Decision"
+      - "Tax Enforcement Invoice Decision"
+    values: []
+
+  - scheme_code: "KNT_REPORT_SHEET"
+    name: "Loại sheet báo cáo tài chính (LoaiBaoCaoChiTietEnum) — KNT"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REPORT_DETAIL.SHEET_NAME"
+    used_in_entities:
+      - "Tax Declaration Report Indicator"
+    values:
+      - code: "1"
+        label: "Bảng cân đối kế toán (BCDKT)"
+        source_value: "1"
+      - code: "2"
+        label: "Kết quả kinh doanh (KQKD)"
+        source_value: "2"
+      - code: "3"
+        label: "Kết quả kinh doanh hợp nhất (KQKDHD)"
+        source_value: "3"
+      - code: "4"
+        label: "Lưu chuyển tiền tệ — trực tiếp (LCTT-TT)"
+        source_value: "4"
+      - code: "5"
+        label: "Lưu chuyển tiền tệ — gián tiếp (LCTT-GT)"
+        source_value: "5"
+      - code: "6"
+        label: "Chỉ tiêu tài chính khác (CTTKC)"
+        source_value: "6"
+      - code: "9"
+        label: "Thuyết minh biến động vốn chủ sở hữu (THBDVCSH)"
+        source_value: "9"
+
+  - scheme_code: "KNT_REPRESENTATIVE_POSITION"
+    name: "Chức vụ người đại diện trong đăng ký thuế — KNT (cần profile: free text hay danh mục cố định)"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REG_REPRESENTATIVE.POSITION"
+    used_in_entities:
+      - "Tax Registration Representative"
+    values: []
+
+  - scheme_code: "KNT_INFO_REQUEST_STATUS"
+    name: "Trạng thái phản hồi WebService (TrangThaiResponseWsEnum) — KNT"
+    source_type: "source_table"
+    source_table: "KNT.INFO_REQUEST_DETAIL.STATUS"
+    used_in_entities:
+      - "Tax Information Request"
+    values:
+      - code: "1"
+        label: "Thành công"
+        source_value: "1"
+      - code: "2"
+        label: "Không thành công"
+        source_value: "2"
+      - code: "3"
+        label: "Lỗi webservice"
+        source_value: "3"
+
+  - scheme_code: "KNT_INVOICE_TYPE"
+    name: "Loại hóa đơn bị cưỡng chế ngừng sử dụng — KNT (cần profile)"
+    source_type: "source_table"
+    source_table: "KNT.INVOICE_DETAIL.INVOICE_TYPE"
+    used_in_entities:
+      - "Tax Enforcement Invoice Decision Item"
+    values: []

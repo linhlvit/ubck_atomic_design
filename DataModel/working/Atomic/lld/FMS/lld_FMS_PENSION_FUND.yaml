@@ -1,0 +1,241 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: PENSION_FUND
+  atomic_entity: Pension Fund
+  entity_physical_name: pension_fund
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Pension Fund"
+  table_type: Fundamental
+  group: T5
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Không có cột địa chỉ/liên lạc — không tách shared entity (giống pattern Investment Fund). T5-03: chưa thấy FK trực tiếp đến Pension Service Organization trong cấu trúc cột hiện có. CREATED_BY, MODIFY_BY, DELETED, FILE_NAME/FILE_DATA document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Pension Fund Id
+    physical_name: pension_fund_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Involved Party] Pension Fund\" (id 10492). Quỹ hưu trí bổ sung tự nguyện do Fund Management Company quản lý — 1 pháp nhân độc lập."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Pension Fund Code
+    physical_name: pension_fund_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.PENSION_FUND"
+    etl_derived_value: "FMS.PENSION_FUND"
+
+  - attribute_name: Fund Management Company Id
+    physical_name: fund_management_company_id
+    description: "FK -> SECURITIES: Công ty QLQ liên quan."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.SEC_ID"
+    comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES', SEC_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Fund Management Company Code
+    physical_name: fund_management_company_code
+    description: "Mã công ty QLQ liên quan."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.SEC_ID"
+    comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair with Fund Management Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Business Certificate Number
+    physical_name: business_certificate_number
+    description: "Số GCN thành lập quỹ hưu trí."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.BUSINESS_CERT_NO"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Pension Fund Full Name
+    physical_name: pension_fund_full_nm
+    description: "Tên hiển thị chính."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.ITEM_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Pension Fund English Name
+    physical_name: pension_fund_english_nm
+    description: "Tên tiếng Anh."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.NAME_EN"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Pension Fund Short Name
+    physical_name: pension_fund_short_nm
+    description: "Tên viết tắt."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.SHORT_NAME"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    description: "FK -> BANK_MONI: Ngân hàng lưu ký của quỹ hưu trí."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.CUSTODIAN_BANK_ID"
+    comment: "FK target: Custodian Bank.Custodian Bank Id. Hash: hash_id('FMS.BANK_MONI', CUSTODIAN_BANK_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    description: "Mã ngân hàng lưu ký của quỹ hưu trí."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.CUSTODIAN_BANK_ID"
+    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Custodian Bank Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Supervisor Bank Id
+    physical_name: supervisor_bank_id
+    description: "FK -> BANK_MONI: Ngân hàng giám sát của quỹ hưu trí."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.SUPERVISOR_BANK_ID"
+    comment: "FK target: Custodian Bank.Custodian Bank Id. Hash: hash_id('FMS.BANK_MONI', SUPERVISOR_BANK_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Supervisor Bank Code
+    physical_name: supervisor_bank_code
+    description: "Mã ngân hàng giám sát của quỹ hưu trí."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.SUPERVISOR_BANK_ID"
+    comment: "Lookup pair: Custodian Bank.Custodian Bank Code. Pair with Supervisor Bank Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Operation Status Code
+    physical_name: operation_status_code
+    description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.STATUS_ID"
+    comment: "Scheme: FMS_OPERATION_STATUS (tái sử dụng). Nguồn STATUS_ID là UUID FK — ETL resolve sang mã STATUS.CODE tương ứng."
+    classification_context: "FMS_OPERATION_STATUS"
+    etl_derived_value: null
+
+  - attribute_name: Note
+    physical_name: note
+    description: "Ghi chú bổ sung."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.NOTE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.PENSION_FUND.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

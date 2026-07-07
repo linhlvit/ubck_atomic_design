@@ -1,0 +1,254 @@
+schema_type: lld_source_table
+schema_version: "2.0"
+
+metadata:
+  source_system: FMS
+  source_table: INSID_CHANGE
+  atomic_entity: Fund Management Company Insider Shareholding Change Log
+  entity_physical_name: fund_management_company_insider_shareholding_change_log
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fact Append
+  group: T6
+  design_status: draft
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "T6-03 chờ xác nhận: cấu trúc tương tự TRS_FER_INDER (Tier 4, Fund Management Company Share Transfer) — cần đối chiếu tránh double-model. Không phải Involved Party — không tách shared entity. CREATED_BY, MODIFY_BY, DATA_MIGRATION document trong pending_design.yaml."
+
+attributes:
+  - attribute_name: Fund Management Company Insider Shareholding Change Log Id
+    physical_name: fund_management_company_insider_shareholding_change_log_id
+    description: "Khóa đại diện (surrogate key)."
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\". Giao dịch chuyển nhượng cổ phần/CCQ của Fund Management Company Insider."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Fund Management Company Insider Shareholding Change Log Code
+    physical_name: fund_management_company_insider_shareholding_change_log_code
+    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.ID"
+    comment: "BK chính. PK nguồn."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: "Mã hệ thống nguồn dữ liệu."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "SOURCE_SYSTEM=FMS.INSID_CHANGE"
+    etl_derived_value: "FMS.INSID_CHANGE"
+
+  - attribute_name: Fund Management Company Insider Id
+    physical_name: fund_management_company_insider_id
+    description: "FK -> INSIDER: Cổ đông nội bộ liên quan."
+    data_domain: Surrogate Key
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.INSDR_ID"
+    comment: "FK target: Fund Management Company Insider.Fund Management Company Insider Id. Hash: hash_id('FMS.INSIDER', INSDR_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Fund Management Company Insider Code
+    physical_name: fund_management_company_insider_code
+    description: "Mã cổ đông nội bộ liên quan."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.INSDR_ID"
+    comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider Code. Pair with Fund Management Company Insider Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Transaction Timestamp
+    physical_name: transaction_tms
+    description: "Thời điểm giao dịch chuyển nhượng."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.TX_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Transaction Number
+    physical_name: transaction_number
+    description: "Số hiệu giao dịch chuyển nhượng."
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.TX_NUM"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Insider Transaction Type Code
+    physical_name: insider_transaction_type_code
+    description: "Mua vào (A) hoặc Bán ra (O) hoặc Đăng ký (R/P) trong giao dịch."
+    data_domain: Classification Value
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.AOORP"
+    comment: "Scheme: FMS_INSIDER_TX_TYPE (đã đăng ký). ETL map: A=BUY;O=SELL;R=REGISTER;P=REGISTER."
+    classification_context: "FMS_INSIDER_TX_TYPE"
+    etl_derived_value: "A=BUY;O=SELL;R=REGISTER;P=REGISTER"
+
+  - attribute_name: Settlement Timestamp
+    physical_name: settlement_tms
+    description: "Ngày thanh toán/giải quyết giao dịch (business date)."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.BUS_DATE"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Pre-Transaction Ownership Percentage
+    physical_name: pre_transaction_ownership_percentage
+    description: "Tỷ lệ sở hữu trước giao dịch (%)."
+    data_domain: Percentage
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.PREPERCENT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Post-Transaction Ownership Percentage
+    physical_name: post_transaction_ownership_percentage
+    description: "Tỷ lệ sở hữu sau giao dịch (%)."
+    data_domain: Percentage
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.AFT_PERCENT"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Pre-Transaction Unit Quantity
+    physical_name: pre_transaction_unit_quantity
+    description: "Số lượng CCQ/cổ phần trước giao dịch."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.PRE_QTTY"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Post-Transaction Unit Quantity
+    physical_name: post_transaction_unit_quantity
+    description: "Số lượng CCQ/cổ phần sau giao dịch."
+    data_domain: Small Counter
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.AFT_QTTY"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Pre-Transaction Capital Amount
+    physical_name: pre_transaction_capital_amount
+    description: "Vốn góp trước giao dịch (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.PRECAPITAL"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Post-Transaction Capital Amount
+    physical_name: post_transaction_capital_amount
+    description: "Vốn góp sau giao dịch (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.AFT_CAPITAL"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Transfer From Insider Flag
+    physical_name: transfer_from_insider_flag
+    description: "Cờ giao dịch chuyển nhượng từ người nội bộ: 1=Nội bộ, 0=Bên ngoài."
+    data_domain: Boolean
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.TRANSFER_INSIDER"
+    comment: "Giá trị 1 → true; 0 → false."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Created Timestamp
+    physical_name: created_tms
+    description: "Thời điểm tạo bản ghi."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.DATE_CREATED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: Updated Timestamp
+    physical_name: updated_tms
+    description: "Thời điểm cập nhật bản ghi lần cuối."
+    data_domain: Timestamp
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - "FMS.INSID_CHANGE.DATE_MODIFIED"
+    comment: null
+    classification_context: null
+    etl_derived_value: null

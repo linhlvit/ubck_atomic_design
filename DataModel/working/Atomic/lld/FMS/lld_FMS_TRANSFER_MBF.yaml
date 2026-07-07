@@ -1,0 +1,370 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "TRANSFER_MBF"
+  atomic_entity: "Investment Fund Certificate Transfer"
+  entity_physical_name: "investment_fund_certificate_transfer"
+  bcv_core_object: "Transaction"
+  bcv_concept: "[Event] Transaction"
+  table_type: "Fact Append"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[PHÁT HIỆN] HLD Tier4 6d nhắc cột TRANSFER_TYPE (scheme FMS_CERTIFICATE_TRANSFER_TYPE)\
+    \ nhưng BRD columns thực tế của TRANSFER_MBF KHÔNG có cột này — không map Classification\
+    \ Value, scheme FMS_CERTIFICATE_TRANSFER_TYPE tạm chưa dùng cho entity này, cần\
+    \ xác nhận lại HLD. Không phải Involved Party — không tách shared entity (ID_NO\
+    \ giữ dạng Text denormalized). CREATED_BY, MODIFY_BY, DELETED, FILE_NAME/FILE_DATA,\
+    \ DATA_MIGRATION document trong pending_design.yaml."
+attributes:
+- attribute_name: "Investment Fund Certificate Transfer Id"
+  physical_name: "investment_fund_certificate_transfer_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Event] Transaction\". Giao dịch mua/bán/chuyển nhượng\
+    \ chứng chỉ quỹ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Certificate Transfer Code"
+  physical_name: "investment_fund_certificate_transfer_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.TRANSFER_MBF"
+  etl_derived_value: "FMS.TRANSFER_MBF"
+  data_type: "string"
+- attribute_name: "Investment Fund Id"
+  physical_name: "investment_fund_id"
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.FUND_ID"
+  comment: "FK target: Investment Fund.Investment Fund Id. Hash: hash_id('FMS.FUNDS',\
+    \ FUND_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Code"
+  physical_name: "investment_fund_code"
+  description: "Mã quỹ đầu tư liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.FUND_ID"
+  comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment\
+    \ Fund Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "To Investment Fund Investor Membership Id"
+  physical_name: "to_investment_fund_investor_membership_id"
+  description: "FK -> MB_FUND: Thành viên nhận chuyển nhượng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.MB_FTO_ID"
+  comment: "FK target: Investment Fund Investor Membership.Investment Fund Investor\
+    \ Membership Id. Hash: hash_id('FMS.MB_FUND', MB_FTO_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "To Investment Fund Investor Membership Code"
+  physical_name: "to_investment_fund_investor_membership_code"
+  description: "Mã thành viên nhận chuyển nhượng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.MB_FTO_ID"
+  comment: "Lookup pair: Investment Fund Investor Membership.Investment Fund Investor\
+    \ Membership Code. Pair with To Investment Fund Investor Membership Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "From Investment Fund Investor Membership Id"
+  physical_name: "from_investment_fund_investor_membership_id"
+  description: "FK -> MB_FUND: Thành viên chuyển nhượng đi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.MB_FFRM_ID"
+  comment: "FK target: Investment Fund Investor Membership.Investment Fund Investor\
+    \ Membership Id. Hash: hash_id('FMS.MB_FUND', MB_FFRM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "From Investment Fund Investor Membership Code"
+  physical_name: "from_investment_fund_investor_membership_code"
+  description: "Mã thành viên chuyển nhượng đi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.MB_FFRM_ID"
+  comment: "Lookup pair: Investment Fund Investor Membership.Investment Fund Investor\
+    \ Membership Code. Pair with From Investment Fund Investor Membership Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Current Unit Quantity"
+  physical_name: "current_unit_quantity"
+  description: "Số lượng hiện tại."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CURR_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Current Percentage"
+  physical_name: "current_percentage"
+  description: "Tỷ lệ sở hữu hiện tại (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CURR_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Post-Transfer Unit Quantity"
+  physical_name: "post_transfer_unit_quantity"
+  description: "Số lượng sau giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.AF_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Post-Transfer Percentage"
+  physical_name: "post_transfer_percentage"
+  description: "Tỷ lệ sau giao dịch (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.AF_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Current Value Date"
+  physical_name: "current_val_dt"
+  description: "Ngày xác định giá trị hiện tại."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CURR_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Committed Current Unit Quantity"
+  physical_name: "committed_current_unit_quantity"
+  description: "Số lượng cam kết hiện tại."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CO_CURR_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Committed Current Percentage"
+  physical_name: "committed_current_percentage"
+  description: "Tỷ lệ cam kết hiện tại (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CO_CURR_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Committed Current Date"
+  physical_name: "committed_current_dt"
+  description: "Ngày cam kết hiện tại."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CO_CURR_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Committed Post-Transfer Unit Quantity"
+  physical_name: "committed_post_transfer_unit_quantity"
+  description: "Số lượng cam kết sau giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CO_AF_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Committed Post-Transfer Percentage"
+  physical_name: "committed_post_transfer_percentage"
+  description: "Tỷ lệ cam kết sau giao dịch (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.CO_AF_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Transferred Unit Quantity"
+  physical_name: "transferred_unit_quantity"
+  description: "Số lượng CCQ/cổ phần chuyển nhượng."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.TRANS_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Percentage Determination Date"
+  physical_name: "percentage_determination_dt"
+  description: "Ngày xác định tỷ lệ sở hữu/đại diện."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.PER_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Ownership Percentage"
+  physical_name: "ownership_percentage"
+  description: "Tỷ lệ phần trăm sở hữu (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.PER_CENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Related Party Identification Number"
+  physical_name: "related_party_identification_number"
+  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.ID_NO"
+  comment: "Denormalized — không tách shared entity vì grain của TRANSFER_MBF là Transaction,\
+    \ không phải Involved Party."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Fund Transaction Flag"
+  physical_name: "member_fund_transaction_flag"
+  description: "Cờ giao dịch quỹ thành viên: 1=Quỹ thành viên, 0=Khác."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.MB_FUND_FLAG"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRANSFER_MBF.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

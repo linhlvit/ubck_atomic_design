@@ -1,0 +1,111 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: ANALYSIS_ATTRIBUTE_DEFINE
+brd_ref: BRD-SRC-GSGD-ANALYSIS_ATTRIBUTE_DEFINE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: ATTRIBUTE_CODE
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "Mã tiêu chí (ví dụ: CT_01_THRESHOLD_A)"
+    key: null
+    fk_note: null
+  - name: ATTRIBUTE_NAME
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "Tên hiển thị tiêu chí (ví dụ: Tỷ trọng đặt/khớp lệnh > A% trong X ngày)"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: "VARCHAR2(1000 CHAR)"
+    description: "Mô tả chi tiết tiêu chí, dùng cho BA/SA"
+    key: null
+    fk_note: null
+  - name: WORKFLOW_TYPE
+    data_type: "NUMBER(2)"
+    description: "Quy trình áp dụng: 1=Sơ bộ, 2=Thao túng, 3=Nội gián, 4=Liên thị trường"
+    key: null
+    fk_note: null
+  - name: DATA_TYPE
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "Kiểu dữ liệu: NUMBER, STRING, DATE, BOOLEAN"
+    key: null
+    fk_note: null
+  - name: DEFAULT_VALUE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Giá trị mặc định (lưu dạng text, parse theo data_type)"
+    key: null
+    fk_note: null
+  - name: MIN_VALUE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Giá trị tối thiểu (nếu là NUMBER/DATE)"
+    key: null
+    fk_note: null
+  - name: MAX_VALUE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Giá trị tối đa (nếu là NUMBER/DATE)"
+    key: null
+    fk_note: null
+  - name: UNIT
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Đơn vị: %, ngày, phiên, ..."
+    key: null
+    fk_note: null
+  - name: STEP
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Bước nhảy cho slider (nếu áp dụng)"
+    key: null
+    fk_note: null
+  - name: DISPLAY_GROUP
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "Nhóm hiển thị trên màn hình (ví dụ: \"Tham số cấu hình báo cáo\")"
+    key: null
+    fk_note: null
+  - name: DISPLAY_ORDER
+    data_type: "NUMBER(5)"
+    description: "Thứ tự hiển thị"
+    key: null
+    fk_note: null
+  - name: ACTIVE_FLAG
+    data_type: "NUMBER(1)"
+    description: "0=Không dùng, 1=Đang dùng"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

@@ -15,13 +15,14 @@ metadata:
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: Chien Nguyen
+  approved_by: "Chien Nguyen"
   approved_at: 2026-07-03
-  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc lập."
-
+  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp\
+    \ trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc\
+    \ lập."
 attributes:
 - attribute_name: "Security Trading Snapshot Id"
-  physical_name: "security_trading_snapshot_id"
+  physical_name: "security_trading_snpst_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -34,7 +35,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Security Trading Snapshot Code"
-  physical_name: "security_trading_snapshot_code"
+  physical_name: "security_trading_snpst_code"
   description: "ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity."
   data_domain: "Text"
   nullable: false
@@ -236,7 +237,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Close Volume"
-  physical_name: "close_volume"
+  physical_name: "close_vol"
   description: "Khối lượng khớp gần nhất."
   data_domain: "Small Counter"
   nullable: true
@@ -322,7 +323,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Bid Volume 1"
-  physical_name: "bid_volume_1"
+  physical_name: "bid_vol_1"
   description: "Khối lượng mua top 1."
   data_domain: "Small Counter"
   nullable: true
@@ -346,7 +347,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Bid Volume 2"
-  physical_name: "bid_volume_2"
+  physical_name: "bid_vol_2"
   description: "Khối lượng mua top 2."
   data_domain: "Small Counter"
   nullable: true
@@ -370,7 +371,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Bid Volume 3"
-  physical_name: "bid_volume_3"
+  physical_name: "bid_vol_3"
   description: "Khối lượng mua top 3."
   data_domain: "Small Counter"
   nullable: true
@@ -394,7 +395,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Offer Volume 1"
-  physical_name: "offer_volume_1"
+  physical_name: "offer_vol_1"
   description: "Khối lượng bán top 1."
   data_domain: "Small Counter"
   nullable: true
@@ -418,7 +419,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Offer Volume 2"
-  physical_name: "offer_volume_2"
+  physical_name: "offer_vol_2"
   description: "Khối lượng bán top 2."
   data_domain: "Small Counter"
   nullable: true
@@ -442,7 +443,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Offer Volume 3"
-  physical_name: "offer_volume_3"
+  physical_name: "offer_vol_3"
   description: "Khối lượng bán top 3."
   data_domain: "Small Counter"
   nullable: true
@@ -454,7 +455,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Trading Volume"
-  physical_name: "total_trading_volume"
+  physical_name: "total_trading_vol"
   description: "Tổng khối lượng khớp từ đầu ngày."
   data_domain: "Small Counter"
   nullable: true
@@ -466,7 +467,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Trading Value"
-  physical_name: "total_trading_value"
+  physical_name: "total_trading_val"
   description: "Tổng giá trị khớp từ đầu ngày."
   data_domain: "Currency Amount"
   nullable: true
@@ -478,7 +479,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Total Offer Volume"
-  physical_name: "total_offer_volume"
+  physical_name: "total_offer_vol"
   description: "Tổng khối lượng dư bán."
   data_domain: "Small Counter"
   nullable: true
@@ -490,7 +491,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Bid Volume"
-  physical_name: "total_bid_volume"
+  physical_name: "total_bid_vol"
   description: "Tổng khối lượng dư mua."
   data_domain: "Small Counter"
   nullable: true
@@ -502,7 +503,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Foreign Buy Volume"
-  physical_name: "foreign_buy_volume"
+  physical_name: "foreign_buy_vol"
   description: "Khối lượng NĐTNN mua."
   data_domain: "Small Counter"
   nullable: true
@@ -514,7 +515,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Foreign Sell Volume"
-  physical_name: "foreign_sell_volume"
+  physical_name: "foreign_sell_vol"
   description: "Khối lượng NĐTNN bán."
   data_domain: "Small Counter"
   nullable: true
@@ -526,7 +527,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Foreign Remain Volume"
-  physical_name: "foreign_remain_volume"
+  physical_name: "foreign_remain_vol"
   description: "Room còn lại cho NĐTNN."
   data_domain: "Small Counter"
   nullable: true
@@ -538,7 +539,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Foreign Room Volume"
-  physical_name: "foreign_room_volume"
+  physical_name: "foreign_room_vol"
   description: "Tổng room NĐTNN."
   data_domain: "Small Counter"
   nullable: true
@@ -550,7 +551,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Match Volume"
-  physical_name: "pt_match_volume"
+  physical_name: "pt_match_vol"
   description: "Khối lượng khớp thỏa thuận gần nhất."
   data_domain: "Small Counter"
   nullable: true
@@ -576,7 +577,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "PT Total Traded Volume"
-  physical_name: "pt_total_traded_volume"
+  physical_name: "pt_total_traded_vol"
   description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày."
   data_domain: "Small Counter"
   nullable: true
@@ -588,7 +589,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "PT Total Traded Value"
-  physical_name: "pt_total_traded_value"
+  physical_name: "pt_total_traded_val"
   description: "Tổng giá trị khớp thỏa thuận từ đầu ngày."
   data_domain: "Currency Amount"
   nullable: true
@@ -640,7 +641,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Listing Volume"
-  physical_name: "total_listing_volume"
+  physical_name: "total_listing_vol"
   description: "Khối lượng CK niêm yết."
   data_domain: "Small Counter"
   nullable: true

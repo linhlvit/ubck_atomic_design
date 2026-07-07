@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: TAX_REG_BUSINESS_LINE
+brd_ref: BRD-SRC-KNT-TAX_REG_BUSINESS_LINE
+columns:
+- name: TAX_CODE
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Mã số thuế doanh nghiệp"
+  key: null
+  fk_note: "Liên kết ngầm → TAX_REGISTRATION_INFO.TAX_CODE (không có PK/FK vật lý trên bảng này)"
+- name: BUSINESS_LINE_CODE
+  data_type: "VARCHAR2(100 BYTE)"
+  description: "Mã ngành nghề kinh doanh"
+  key: null
+  fk_note: null
+- name: BUSINESS_LINE_NAME
+  data_type: "VARCHAR2(1000 BYTE)"
+  description: "Tên ngành nghề kinh doanh"
+  key: null
+  fk_note: null
+- name: PACKET_CODE
+  data_type: "VARCHAR2(50 BYTE)"
+  description: "Mã gói tin trao đổi dữ liệu (do hệ thống sinh tự động)"
+  key: null
+  fk_note: null

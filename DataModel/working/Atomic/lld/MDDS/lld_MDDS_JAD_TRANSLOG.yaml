@@ -15,10 +15,11 @@ metadata:
   designed_at: null
   reviewed_by: null
   reviewed_at: null
-  approved_by: Chien Nguyen
+  approved_by: "Chien Nguyen"
   approved_at: 2026-07-03
-  notes: "Log tick-by-tick từng lần khớp lệnh cổ phiếu. Grain = 1 lần khớp lệnh (1 tick). BRD Append — insert-only. Quyết định D-02: không tạo FK surrogate sang Security Trading Snapshot. Join với snapshot tại Gold layer qua (symbol, trading_date)."
-
+  notes: "Log tick-by-tick từng lần khớp lệnh cổ phiếu. Grain = 1 lần khớp lệnh (1\
+    \ tick). BRD Append — insert-only. Quyết định D-02: không tạo FK surrogate sang\
+    \ Security Trading Snapshot. Join với snapshot tại Gold layer qua (symbol, trading_date)."
 attributes:
 - attribute_name: "Security Match Log Id"
   physical_name: "security_match_log_id"
@@ -153,7 +154,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Match Volume"
-  physical_name: "match_volume"
+  physical_name: "match_vol"
   description: "Khối lượng khớp."
   data_domain: "Small Counter"
   nullable: false
@@ -165,7 +166,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Accumulated Volume"
-  physical_name: "accumulated_volume"
+  physical_name: "accumulated_vol"
   description: "Tổng khối lượng khớp lũy kế trong ngày (lô chẵn)."
   data_domain: "Small Counter"
   nullable: false
@@ -177,7 +178,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Accumulated Value"
-  physical_name: "accumulated_value"
+  physical_name: "accumulated_val"
   description: "Tổng giá trị khớp lũy kế trong ngày (lô chẵn)."
   data_domain: "Currency Amount"
   nullable: false
@@ -189,7 +190,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Total Buy Volume"
-  physical_name: "total_buy_volume"
+  physical_name: "total_buy_vol"
   description: "Tổng khối lượng mua chủ động."
   data_domain: "Small Counter"
   nullable: false
@@ -201,7 +202,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Total Sell Volume"
-  physical_name: "total_sell_volume"
+  physical_name: "total_sell_vol"
   description: "Tổng khối lượng bán chủ động."
   data_domain: "Small Counter"
   nullable: false

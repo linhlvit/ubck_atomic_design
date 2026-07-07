@@ -1,0 +1,81 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: GSGD
+table: USER_TABLE_CONFIG
+brd_ref: BRD-SRC-GSGD-USER_TABLE_CONFIG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Primary key"
+    key: PK
+    fk_note: null
+  - name: USER_ID
+    data_type: "VARCHAR2(100)"
+    description: "ID người dùng"
+    key: FK
+    fk_note: null
+  - name: TABLE_NAME
+    data_type: "VARCHAR2(100)"
+    description: "Tên bảng/màn hình (VD: case_file, securities_code)"
+    key: null
+    fk_note: null
+  - name: TABLE_CODE
+    data_type: "VARCHAR2(50)"
+    description: "Mã màn hình"
+    key: null
+    fk_note: null
+  - name: TAB_NAME
+    data_type: "VARCHAR2(100)"
+    description: "Tên tab trong màn hình (VD: tab 1, 2, 3 thuộc màn hình A)"
+    key: null
+    fk_note: null
+  - name: TAB_CODE
+    data_type: "VARCHAR2(50)"
+    description: "Tab code"
+    key: null
+    fk_note: null
+  - name: CONFIG_DATA
+    data_type: "CLOB"
+    description: "Trạng thái cột (lưu dạng json. VD: {“columnA”: true, “columnB”:false}"
+    key: null
+    fk_note: null
+  - name: NOTES
+    data_type: "CLOB"
+    description: "Ghi chú"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP"
+    description: "Ngày sửa cuối"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(255)"
+    description: "User_id người cập nhật"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Soft delete: 0=Active, 1=Deleted"
+    key: null
+    fk_note: null

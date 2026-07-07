@@ -1,25 +1,31 @@
-﻿source: KNT
-description: "Dữ liệu Cơ quan Thuế từ Tổng cục Thuế"
+schema_type: brd_source
+schema_version: '1.0'
+source: KNT
+description: "Dữ liệu trao đổi giữa UBCKNN và Tổng cục Thuế (Cơ quan Thuế): đăng ký thuế, báo cáo tài chính, cưỡng chế nợ/hóa đơn, xử lý vi phạm pháp luật về thuế, doanh nghiệp rủi ro cao."
 brd_entries:
   # ─── KNT-01 Quản lý thông tin đăng ký thuế ───────────────────────────────
 
-  - brd_id: BRD-SRC-KNT-THONG_TIN_DK_THUE
-    brd_name: "Design Atomic từ nguồn KNT bảng THONG_TIN_DK_THUE"
+  - brd_id: BRD-SRC-KNT-TAX_REGISTRATION_INFO
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_REGISTRATION_INFO"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu thông tin đăng ký thuế được lấy từ Cục Thuế"
+      table_meaning: "Thông tin đăng ký thuế do Cục Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm ngừng kinh doanh"
       functional_group: "KNT-01 Quản lý thông tin đăng ký thuế"
-      scope_status: in_scope
-      scope_reason: null
-      table: THONG_TIN_DK_THUE
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_REGISTRATION_INFO
       related_tables:
-        - table: TTKDT_NGUOI_DAI_DIEN
-          relation: "Bảng con — người đại diện theo pháp luật"
-        - table: GOI_TIN
+        - table: TAX_REG_REPRESENTATIVE
+          relation: "FK con — người đại diện/chủ hộ kinh doanh"
+        - table: TAX_REG_ADDRESS_TYPE
+          relation: "Liên kết ngầm qua TAX_CODE — chi tiết địa chỉ theo loại"
+        - table: TAX_REG_BUSINESS_LINE
+          relation: "Liên kết ngầm qua TAX_CODE — danh sách ngành nghề kinh doanh"
+        - table: MSG_PACKET
           relation: "FK reference — gói tin truyền nhận (out of scope)"
-      notes: null
+      notes: "Grain = 1 Involved Party (1 doanh nghiệp/hộ kinh doanh). Có trường địa chỉ (HQ_ADDRESS, BUSINESS_*) và liên lạc (PHONE/FAX/BUSINESS_EMAIL) → tách IP Postal Address / IP Electronic Address theo rule 5."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -27,21 +33,65 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-KNT-TTKDT_NGUOI_DAI_DIEN
-    brd_name: "Design Atomic từ nguồn KNT bảng TTKDT_NGUOI_DAI_DIEN"
+  - brd_id: BRD-SRC-KNT-TAX_REG_ADDRESS_TYPE
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_REG_ADDRESS_TYPE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin người đại diện của tổ chức/ doanh nghiệp nộp thuế"
+      table_meaning: "Loại địa chỉ trong thông tin đăng ký thuế của doanh nghiệp: địa chỉ trụ sở, địa chỉ kinh doanh, địa chỉ khác"
       functional_group: "KNT-01 Quản lý thông tin đăng ký thuế"
-      scope_status: in_scope
-      scope_reason: null
-      table: TTKDT_NGUOI_DAI_DIEN
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_REG_ADDRESS_TYPE
       related_tables:
-        - table: THONG_TIN_DK_THUE
-          relation: "Bảng cha — thông tin đăng ký thuế của tổ chức"
-      notes: null
+        - table: TAX_REGISTRATION_INFO
+          relation: "Liên kết ngầm qua TAX_CODE — không có PK/FK vật lý, không có ID tự sinh"
+      notes: "Không tạo Atomic entity riêng — grain = 1 địa chỉ theo loại của 1 taxpayer, map thẳng vào shared entity IP Postal Address (ADDRESS/WARD/DISTRICT/PROVINCE/COUNTRY theo TYPE) + IP Electronic Address (EMAIL/FAX/WEBSITE/PHONE)."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-KNT-TAX_REG_BUSINESS_LINE
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_REG_BUSINESS_LINE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ngành nghề kinh doanh trong thông tin đăng ký thuế: mã ngành, tên ngành theo mã gói tin"
+      functional_group: "KNT-01 Quản lý thông tin đăng ký thuế"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_REG_BUSINESS_LINE
+      related_tables:
+        - table: TAX_REGISTRATION_INFO
+          relation: "Liên kết ngầm qua TAX_CODE — không có PK/FK vật lý"
+      notes: "Pure junction giữa Registered Taxpayer và danh mục ngành nghề (BUSINESS_LINE_CODE + BUSINESS_LINE_NAME) — không tạo Atomic entity, denormalize ARRAY<Classification Value Code> trên entity Tax Registration."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_REG_REPRESENTATIVE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin người đại diện/chủ hộ kinh doanh trong đăng ký thuế: họ tên, chức vụ, loại giấy tờ, số giấy tờ"
+      functional_group: "KNT-01 Quản lý thông tin đăng ký thuế"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_REG_REPRESENTATIVE
+      related_tables:
+        - table: TAX_REGISTRATION_INFO
+          relation: "FK cha — hồ sơ đăng ký thuế liên quan"
+      notes: "Grain = 1 Involved Party (người đại diện). Có ID_DOCUMENT_TYPE/NUMBER → IP Alt Identification; PHONE/FAX/EMAIL → IP Electronic Address."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -51,71 +101,233 @@ brd_entries:
 
   # ─── KNT-02 Báo cáo tài chính từ Tổng cục Thuế ──────────────────────────
 
-  - brd_id: BRD-SRC-KNT-TCT_BAO_CAO
-    brd_name: "Design Atomic từ nguồn KNT bảng TCT_BAO_CAO"
+  - brd_id: BRD-SRC-KNT-TAX_REPORT
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_REPORT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các báo cáo tài chỉnh lấy từ Cục Thuế"
+      table_meaning: "Báo cáo tài chính do Cục Thuế cung cấp cho UBCKNN: thông tin tờ khai, kỳ kê khai, MST, thông tin kiểm toán"
       functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
-      scope_status: in_scope
-      scope_reason: null
-      table: TCT_BAO_CAO
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_REPORT
       related_tables:
-        - table: TCT_BAO_CAO_CHI_TIET
-          relation: "Bảng con — chi tiết từng chỉ tiêu tài chính"
-        - table: GOI_TIN
+        - table: TAX_REPORT_DETAIL
+          relation: "FK con — chi tiết từng chỉ tiêu báo cáo"
+        - table: TAX_REGISTRATION_INFO
+          relation: "Liên kết ngầm qua TAX_CODE — doanh nghiệp nộp báo cáo"
+        - table: AUDIT_FIRM
+          relation: "Liên kết ngầm qua AUDIT_FIRM_TAX_CODE — tổ chức kiểm toán (out of scope hiện tại)"
+        - table: AUDITOR
+          relation: "Liên kết ngầm qua AUDITOR_CODE — kiểm toán viên (out of scope hiện tại)"
+        - table: MSG_PACKET
           relation: "FK reference — gói tin truyền nhận (out of scope)"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Báo cáo tài chính từ Cục Thuế — append khi nhận gói tin mới"
+        filter_logic: "CREATED_AT >= {etl_date}"
+        filter_note: "Mỗi lần nộp tờ khai (kể cả bổ sung — xem ATTEMPT_COUNT) là 1 bản ghi mới — append khi nhận gói tin"
 
-  - brd_id: BRD-SRC-KNT-TCT_BAO_CAO_CHI_TIET
-    brd_name: "Design Atomic từ nguồn KNT bảng TCT_BAO_CAO_CHI_TIET"
+  - brd_id: BRD-SRC-KNT-TAX_REPORT_DETAIL
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_REPORT_DETAIL"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin chi tiết của báo cáo tài chỉnh lấy từ Cục Thuế"
+      table_meaning: "Chi tiết chỉ tiêu trong báo cáo tài chính từ Cục Thuế: giá trị đầu năm, cuối năm, năm nay, năm trước theo từng sheet"
       functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
-      scope_status: in_scope
-      scope_reason: null
-      table: TCT_BAO_CAO_CHI_TIET
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_REPORT_DETAIL
       related_tables:
-        - table: TCT_BAO_CAO
-          relation: "Bảng cha — header báo cáo tài chính"
+        - table: TAX_REPORT
+          relation: "FK cha — báo cáo tài chính TCT liên quan"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Chi tiết báo cáo tài chính — append theo báo cáo cha"
+        filter_logic: null
+        filter_note: "Append theo báo cáo cha (TAX_REPORT)"
 
-  # ─── KNT-03 Cưỡng chế nợ thuế ───────────────────────────────────────────
-
-  - brd_id: BRD-SRC-KNT-TCT_TT_CUONG_CHE_NO
-    brd_name: "Design Atomic từ nguồn KNT bảng TCT_TT_CUONG_CHE_NO"
+  - brd_id: BRD-SRC-KNT-REPORT_COMPARISON
+    brd_name: "Design Atomic từ nguồn KNT bảng REPORT_COMPARISON"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin cưỡng chế nợ lấy từ Cục Thuế"
-      functional_group: "KNT-03 Cưỡng chế nợ thuế"
-      scope_status: in_scope
+      table_meaning: "Kết quả đối chiếu dữ liệu báo cáo tài chính giữa UBCKNN và Cục Thuế: so sánh từng chỉ tiêu theo gói tin"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
       scope_reason: null
-      table: TCT_TT_CUONG_CHE_NO
+      table: REPORT_COMPARISON
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-REPORT_CYCLE
+    brd_name: "Design Atomic từ nguồn KNT bảng REPORT_CYCLE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chu kỳ báo cáo: mã, giá trị, tháng và năm tương ứng"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_CYCLE
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-REPORT_FORM
+    brd_name: "Design Atomic từ nguồn KNT bảng REPORT_FORM"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục biểu mẫu báo cáo tài chính định nghĩa trong hệ thống KNT"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_FORM
       related_tables:
-        - table: THONG_TIN_DK_THUE
-          relation: "Liên kết ngầm qua mã số thuế — người nộp thuế bị cưỡng chế"
-        - table: TCT_TTCCN_HOA_DON
-          relation: "Liên kết logic qua SO_QD — quyết định cưỡng chế gốc của biện pháp ngừng hóa đơn"
-        - table: GOI_TIN
+        - table: REPORT_FORM_INDICATOR
+          relation: "1-N — chỉ tiêu thuộc biểu mẫu"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-REPORT_FORM_INDICATOR
+    brd_name: "Design Atomic từ nguồn KNT bảng REPORT_FORM_INDICATOR"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Liên kết chỉ tiêu với biểu mẫu báo cáo: thứ tự và tên sheet tương ứng"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_FORM_INDICATOR
+      related_tables:
+        - table: REPORT_FORM
+          relation: "FK cha — biểu mẫu báo cáo"
+        - table: REPORT_INDICATOR
+          relation: "FK cha — chỉ tiêu báo cáo"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-REPORT_FORM_TEMPLATE
+    brd_name: "Design Atomic từ nguồn KNT bảng REPORT_FORM_TEMPLATE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ánh xạ chỉ tiêu giữa biểu mẫu báo cáo UBCKNN và tờ khai thuế của Cục Thuế (dùng để đối chiếu dữ liệu)"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_FORM_TEMPLATE
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-REPORT_INDICATOR
+    brd_name: "Design Atomic từ nguồn KNT bảng REPORT_INDICATOR"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục chỉ tiêu báo cáo: mã và tên chỉ tiêu dùng trong các biểu mẫu báo cáo"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: REPORT_INDICATOR
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-INDICATOR_MAPPING
+    brd_name: "Design Atomic từ nguồn KNT bảng INDICATOR_MAPPING"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Ánh xạ mã chỉ tiêu giữa tờ khai UBCKNN và Cục Thuế theo từng sheet biểu mẫu"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: INDICATOR_MAPPING
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SSC_REPORT
+    brd_name: "Design Atomic từ nguồn KNT bảng SSC_REPORT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Báo cáo tài chính của đơn vị do UBCKNN tổng hợp từ phân hệ IDS/SCMS/FMS để gửi Cục Thuế và Bộ Tài chính"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: SSC_REPORT
+      related_tables:
+        - table: SSC_REPORT_DETAIL
+          relation: "1-N — chi tiết chỉ tiêu báo cáo"
+        - table: MSG_PACKET
+          relation: "FK reference — gói tin truyền nhận (out of scope)"
+      notes: "Dữ liệu tổng hợp từ IDS/SCMS/FMS — cần xác nhận có trùng lặp với entity đã thiết kế ở các source đó không."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SSC_REPORT_DETAIL
+    brd_name: "Design Atomic từ nguồn KNT bảng SSC_REPORT_DETAIL"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chi tiết chỉ tiêu trong báo cáo tài chính UBCKNN: giá trị đầu năm, cuối năm, năm nay, năm trước, thông tin kiểm toán"
+      functional_group: "KNT-02 Báo cáo tài chính từ Tổng cục Thuế"
+      scope_status: pending
+      scope_reason: null
+      table: SSC_REPORT_DETAIL
+      related_tables:
+        - table: SSC_REPORT
+          relation: "FK cha — báo cáo tài chính UBCKNN"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── KNT-03 Cưỡng chế nợ thuế / hóa đơn ─────────────────────────────────
+
+  - brd_id: BRD-SRC-KNT-TAX_ENFORCEMENT_DEBT
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_ENFORCEMENT_DEBT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin quyết định cưỡng chế nợ thuế do Cục Thuế ban hành: phương thức cưỡng chế, số tiền, tài sản kê biên"
+      functional_group: "KNT-03 Cưỡng chế nợ thuế / hóa đơn"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_ENFORCEMENT_DEBT
+      related_tables:
+        - table: TAX_REGISTRATION_INFO
+          relation: "Liên kết ngầm qua TAXPAYER_TAX_CODE — đối tượng bị cưỡng chế"
+        - table: TAX_ENFORCEMENT_INVOICE
+          relation: "Nghi ngờ liên kết logic qua BASIS_DECISION_NUMBER (căn cứ quyết định gốc) — chưa xác nhận"
+        - table: MSG_PACKET
           relation: "FK reference — gói tin truyền nhận (out of scope)"
       notes: null
       data_volume_hint: null
@@ -123,25 +335,25 @@ brd_entries:
       ingestion:
         data_change_mode: Append
         filter_logic: "created_at >= {etl_date}"
-        filter_note: "Cưỡng chế nợ thuế — append khi nhận quyết định mới"
+        filter_note: "Mỗi quyết định cưỡng chế mới là 1 bản ghi — append khi nhận gói tin"
 
-  - brd_id: BRD-SRC-KNT-TCT_TTCCN_HOA_DON
-    brd_name: "Design Atomic từ nguồn KNT bảng TCT_TTCCN_HOA_DON"
+  - brd_id: BRD-SRC-KNT-TAX_ENFORCEMENT_INVOICE
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_ENFORCEMENT_INVOICE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin cưỡng chế nợ thông qua hóa đơn"
-      functional_group: "KNT-03 Cưỡng chế nợ thuế"
-      scope_status: in_scope
-      scope_reason: null
-      table: TCT_TTCCN_HOA_DON
+      table_meaning: "Thông tin quyết định cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế ban hành: số QĐ, đối tượng bị cưỡng chế, thời gian hiệu lực"
+      functional_group: "KNT-03 Cưỡng chế nợ thuế / hóa đơn"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_ENFORCEMENT_INVOICE
       related_tables:
-        - table: HOA_DON_CHI_TIET
-          relation: "Bảng con — danh sách từng hóa đơn bị ngừng"
-        - table: TCT_TT_CUONG_CHE_NO
-          relation: "Liên kết logic qua CAN_CU_QDSO — quyết định cưỡng chế nợ cơ sở"
-        - table: GOI_TIN
+        - table: INVOICE_DETAIL
+          relation: "FK con — danh sách từng hóa đơn bị ngừng sử dụng (chưa thiết kế)"
+        - table: TAX_REGISTRATION_INFO
+          relation: "Liên kết ngầm qua TAXPAYER_TAX_CODE — đối tượng bị cưỡng chế"
+        - table: MSG_PACKET
           relation: "FK reference — gói tin truyền nhận (out of scope)"
       notes: null
       data_volume_hint: null
@@ -149,47 +361,47 @@ brd_entries:
       ingestion:
         data_change_mode: Append
         filter_logic: "created_at >= {etl_date}"
-        filter_note: "Cưỡng chế qua hóa đơn — append theo quyết định cưỡng chế"
+        filter_note: "Mỗi quyết định cưỡng chế mới là 1 bản ghi — append khi nhận gói tin"
 
-  - brd_id: BRD-SRC-KNT-HOA_DON_CHI_TIET
-    brd_name: "Design Atomic từ nguồn KNT bảng HOA_DON_CHI_TIET"
+  - brd_id: BRD-SRC-KNT-INVOICE_DETAIL
+    brd_name: "Design Atomic từ nguồn KNT bảng INVOICE_DETAIL"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin cấu hình hóa đơn"
-      functional_group: "KNT-03 Cưỡng chế nợ thuế"
-      scope_status: in_scope
-      scope_reason: null
-      table: HOA_DON_CHI_TIET
+      table_meaning: "Chi tiết hóa đơn trong thông tin cưỡng chế ngừng sử dụng hóa đơn do Cục Thuế cung cấp"
+      functional_group: "KNT-03 Cưỡng chế nợ thuế / hóa đơn"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: INVOICE_DETAIL
       related_tables:
-        - table: TCT_TTCCN_HOA_DON
-          relation: "Bảng cha — quyết định cưỡng chế qua ngừng hóa đơn"
+        - table: TAX_ENFORCEMENT_INVOICE
+          relation: "FK cha — quyết định cưỡng chế ngừng hóa đơn"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
         data_change_mode: Append
-        filter_logic: "created_at >= {etl_date}"
-        filter_note: "Chi tiết hóa đơn bị ngừng — append theo cưỡng chế cha"
+        filter_logic: null
+        filter_note: "Append theo quyết định cha (TAX_ENFORCEMENT_INVOICE)"
 
-  # ─── KNT-04 Xử lý vi phạm pháp luật về thuế ────────────────────────────
+  # ─── KNT-04 Xử lý vi phạm & xử phạt ─────────────────────────────────────
 
-  - brd_id: BRD-SRC-KNT-TT_XLY_VI_PHAM
-    brd_name: "Design Atomic từ nguồn KNT bảng TT_XLY_VI_PHAM"
+  - brd_id: BRD-SRC-KNT-TAX_VIOLATION_HANDLING
+    brd_name: "Design Atomic từ nguồn KNT bảng TAX_VIOLATION_HANDLING"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin xử lý vi phạm pháp luật về thuế"
-      functional_group: "KNT-04 Xử lý vi phạm pháp luật về thuế"
-      scope_status: in_scope
-      scope_reason: null
-      table: TT_XLY_VI_PHAM
+      table_meaning: "Thông tin xử lý vi phạm pháp luật về thuế do Cục Thuế cung cấp: số QĐ xử lý, tên đối tượng, kỳ thanh tra, tiền phạt"
+      functional_group: "KNT-04 Xử lý vi phạm & xử phạt"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: TAX_VIOLATION_HANDLING
       related_tables:
-        - table: THONG_TIN_DK_THUE
-          relation: "Liên kết ngầm qua mã số thuế — đối tượng vi phạm"
-        - table: GOI_TIN
+        - table: TAX_REGISTRATION_INFO
+          relation: "Liên kết ngầm qua TAX_CODE — đối tượng vi phạm"
+        - table: MSG_PACKET
           relation: "FK reference — gói tin truyền nhận (out of scope)"
       notes: null
       data_volume_hint: null
@@ -197,287 +409,295 @@ brd_entries:
       ingestion:
         data_change_mode: Append
         filter_logic: "created_at >= {etl_date}"
-        filter_note: "Xử lý vi phạm thuế — append khi nhận thông tin vi phạm mới"
+        filter_note: "Mỗi quyết định xử lý vi phạm mới là 1 bản ghi — append khi nhận gói tin"
+
+  - brd_id: BRD-SRC-KNT-PENALTY_DECISION
+    brd_name: "Design Atomic từ nguồn KNT bảng PENALTY_DECISION"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quyết định xử phạt vi phạm hành chính trong lĩnh vực chứng khoán: số QĐ, đối tượng, hành vi vi phạm, tổng tiền phạt"
+      functional_group: "KNT-04 Xử lý vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: PENALTY_DECISION
+      related_tables: []
+      notes: "Xử phạt VPHC lĩnh vực chứng khoán do UBCKNN ban hành — có thể trùng nghiệp vụ với ThanhTra.PENALTY_DECISION, cần đối chiếu khi đánh giá scope."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SSC_PENALTY
+    brd_name: "Design Atomic từ nguồn KNT bảng SSC_PENALTY"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin xử phạt vi phạm hành chính trong lĩnh vực chứng khoán của UBCKNN gửi Cục Thuế: số QĐ, đối tượng, hành vi, tiền phạt"
+      functional_group: "KNT-04 Xử lý vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: SSC_PENALTY
+      related_tables:
+        - table: MSG_PACKET
+          relation: "FK reference — gói tin truyền nhận (out of scope)"
+      notes: "Có thể trùng lặp nghiệp vụ với PENALTY_DECISION (cùng là xử phạt VPHC do UBCKNN ban hành, khác là bảng này dùng để gửi đi Cục Thuế) — cần đối chiếu khi đánh giá scope."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-VIOLATION_ACT
+    brd_name: "Design Atomic từ nguồn KNT bảng VIOLATION_ACT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chi tiết hành vi vi phạm trong hồ sơ thanh tra hoặc quyết định xử phạt: mã CK, số tài khoản, số tiền phạt, biện pháp khắc phục"
+      functional_group: "KNT-04 Xử lý vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: VIOLATION_ACT
+      related_tables:
+        - table: CAT_VIOLATION_ACT
+          relation: "Liên kết ngầm — danh mục hành vi vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-CAT_VIOLATION_ACT
+    brd_name: "Design Atomic từ nguồn KNT bảng CAT_VIOLATION_ACT"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục hành vi vi phạm pháp luật chứng khoán: mã, tên, văn bản pháp lý áp dụng và xử lý"
+      functional_group: "KNT-04 Xử lý vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: CAT_VIOLATION_ACT
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SUBJECT_PROFILE
+    brd_name: "Design Atomic từ nguồn KNT bảng SUBJECT_PROFILE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ đối tượng bị thanh tra/kiểm tra: tổ chức hoặc cá nhân tham gia thị trường chứng khoán"
+      functional_group: "KNT-04 Xử lý vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: SUBJECT_PROFILE
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
 
   # ─── KNT-05 Giám sát doanh nghiệp rủi ro cao ────────────────────────────
 
-  - brd_id: BRD-SRC-KNT-DN_RUI_RO_CAO
-    brd_name: "Design Atomic từ nguồn KNT bảng DN_RUI_RO_CAO"
+  - brd_id: BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
+    brd_name: "Design Atomic từ nguồn KNT bảng HIGH_RISK_ENTERPRISE"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thông tin về Doanh nghiệp rủi ro cao được lấy về từ Cục Thuế"
+      table_meaning: "Danh sách doanh nghiệp rủi ro cao về thuế do Cục Thuế cung cấp: MST, tên, địa chỉ, cơ quan thuế quản lý, năm đánh giá"
       functional_group: "KNT-05 Giám sát doanh nghiệp rủi ro cao"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: DN_RUI_RO_CAO
+      table: HIGH_RISK_ENTERPRISE
       related_tables:
-        - table: THONG_TIN_DK_THUE
-          relation: "Liên kết ngầm qua mã số doanh nghiệp"
-        - table: GOI_TIN
+        - table: MSG_PACKET
+          relation: "FK reference — gói tin truyền nhận (out of scope)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── KNT-06 Thông tin công ty & kiểm toán ───────────────────────────────
+
+  - brd_id: BRD-SRC-KNT-COMPANY_INFO
+    brd_name: "Design Atomic từ nguồn KNT bảng COMPANY_INFO"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin công ty tham gia thị trường chứng khoán gửi sang Cục Thuế: tên, MST, loại công ty, vốn, người đại diện, thông tin niêm yết"
+      functional_group: "KNT-06 Thông tin công ty & kiểm toán"
+      scope_status: pending
+      scope_reason: null
+      table: COMPANY_INFO
+      related_tables:
+        - table: MSG_PACKET
+          relation: "FK reference — gói tin truyền nhận (out of scope)"
+      notes: "Dữ liệu công ty UBCKNN gửi đi Cục Thuế — cần đối chiếu trùng lặp với entity Organization đã thiết kế ở SCMS/FMS/IDS."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-AUDITOR
+    brd_name: "Design Atomic từ nguồn KNT bảng AUDITOR"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách kiểm toán viên được UBCKNN chấp thuận: thuộc công ty kiểm toán nào, số GCN hành nghề, ngày chấp thuận/hủy"
+      functional_group: "KNT-06 Thông tin công ty & kiểm toán"
+      scope_status: pending
+      scope_reason: null
+      table: AUDITOR
+      related_tables:
+        - table: AUDIT_FIRM
+          relation: "FK cha — công ty kiểm toán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-AUDIT_FIRM
+    brd_name: "Design Atomic từ nguồn KNT bảng AUDIT_FIRM"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Hồ sơ tổ chức kiểm toán được UBCKNN chấp thuận kiểm toán cho đơn vị có lợi ích công chúng: số QĐ, ngày QĐ, MST, số lượng KTV"
+      functional_group: "KNT-06 Thông tin công ty & kiểm toán"
+      scope_status: pending
+      scope_reason: null
+      table: AUDIT_FIRM
+      related_tables:
+        - table: AUDITOR
+          relation: "1-N — kiểm toán viên thuộc công ty"
+        - table: MSG_PACKET
+          relation: "FK reference — gói tin truyền nhận (out of scope)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  # ─── KNT-07 Trao đổi yêu cầu thông tin ──────────────────────────────────
+
+  - brd_id: BRD-SRC-KNT-INFO_REQUEST_DETAIL
+    brd_name: "Design Atomic từ nguồn KNT bảng INFO_REQUEST_DETAIL"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Chi tiết yêu cầu thông tin từ Cục Thuế gửi UBCKNN: tên yêu cầu, MST, trạng thái xử lý"
+      functional_group: "KNT-07 Trao đổi yêu cầu thông tin"
+      scope_status: out_of_scope
+      scope_reason: "Chờ thiết kế LLD"
+      table: INFO_REQUEST_DETAIL
+      related_tables:
+        - table: TAX_REGISTRATION_INFO
+          relation: "Liên kết ngầm qua TAX_CODE — doanh nghiệp liên quan đến yêu cầu thông tin"
+        - table: MSG_PACKET
           relation: "FK reference — gói tin truyền nhận (out of scope)"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
+        data_change_mode: Append
+        filter_logic: "created_at >= {etl_date}"
+        filter_note: "Mỗi yêu cầu thông tin mới là 1 bản ghi — append khi nhận gói tin"
 
-  # ─── Phụ lục: Danh mục dùng chung ────────────────────────────────────────
+  # ─── KNT-REF Danh mục dùng chung ────────────────────────────────────────
 
-  - brd_id: BRD-SRC-KNT-DANH_MUC
-    brd_name: "Design Atomic từ nguồn KNT bảng DANH_MUC"
+  - brd_id: BRD-SRC-KNT-CATALOG
+    brd_name: "Design Atomic từ nguồn KNT bảng CATALOG"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin cấu hình danh mục"
+      table_meaning: "Danh mục điện tử dùng chung trong phân hệ KNT: mã, tên, nhóm danh mục"
       functional_group: "KNT-REF Danh mục dùng chung"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: DANH_MUC
+      table: CATALOG
       related_tables:
-        - table: NHOM_DANH_MUC
-          relation: "Bảng cha — nhóm danh mục (scheme)"
-      notes: "Là nguồn cho Classification Value — load theo NHOM_DANH_MUC.MA = Scheme Code"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-KNT-NHOM_DANH_MUC
-    brd_name: "Design Atomic từ nguồn KNT bảng NHOM_DANH_MUC"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Bảng lưu các thông tin cấu hình nhóm danh mục"
-      functional_group: "KNT-REF Danh mục dùng chung"
-      scope_status: in_scope
-      scope_reason: null
-      table: NHOM_DANH_MUC
-      related_tables:
-        - table: DANH_MUC
-          relation: "Bảng con — giá trị danh mục thuộc nhóm"
-      notes: "Scheme header của Classification Value KNT"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # ─── KNT-SYS Quản trị hệ thống & truyền nhận (out of scope) ─────────────
-
-  - brd_id: BRD-SRC-KNT-GOI_TIN
-    brd_name: "Design Atomic từ nguồn KNT bảng GOI_TIN"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu các thông tin về dữ liệu gói tin truyền nhận giữa UBCKNN và Cục Thuế"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "System operational table — quản lý lifecycle gói tin truyền nhận, không chứa dữ liệu nghiệp vụ"
-      table: GOI_TIN
-      related_tables:
-        - table: CAU_HINH_GOI_TIN
-          relation: "Bảng con — cấu hình gói tin"
-        - table: THIET_LAP_LICH
-          relation: "Bảng con — lịch truyền nhận"
+        - table: CATALOG_GROUP
+          relation: "FK cha — nhóm danh mục (scheme)"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-CAU_HINH_GOI_TIN
-    brd_name: "Design Atomic từ nguồn KNT bảng CAU_HINH_GOI_TIN"
+  - brd_id: BRD-SRC-KNT-CATALOG_GROUP
+    brd_name: "Design Atomic từ nguồn KNT bảng CATALOG_GROUP"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thông tin về cấu hình gói tin trao đổi giữa UBCKNN và Cục Thuế"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "System operational table — cấu hình kỹ thuật truyền nhận"
-      table: CAU_HINH_GOI_TIN
+      table_meaning: "Nhóm danh mục điện tử: phân nhóm các danh mục dùng chung trong hệ thống KNT"
+      functional_group: "KNT-REF Danh mục dùng chung"
+      scope_status: pending
+      scope_reason: null
+      table: CATALOG_GROUP
       related_tables:
-        - table: GOI_TIN
-          relation: "Bảng cha — gói tin sử dụng cấu hình này"
+        - table: CATALOG
+          relation: "1-N — giá trị danh mục thuộc nhóm"
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-THIET_LAP_LICH
-    brd_name: "Design Atomic từ nguồn KNT bảng THIET_LAP_LICH"
+  - brd_id: BRD-SRC-KNT-CAT_ORG_UNIT
+    brd_name: "Design Atomic từ nguồn KNT bảng CAT_ORG_UNIT"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu cấu hình lịch truyền/ nhận dữ liệu giữa UBCKNN và Cục Thuế"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "System operational table — lịch tự động hóa truyền nhận"
-      table: THIET_LAP_LICH
+      table_meaning: "Danh mục đơn vị tổ chức: UBCKNN, Cục Thuế, Bộ Tài chính và các đơn vị báo cáo trong hệ thống"
+      functional_group: "KNT-REF Danh mục dùng chung"
+      scope_status: pending
+      scope_reason: null
+      table: CAT_ORG_UNIT
       related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-HT_THAM_SO
-    brd_name: "Design Atomic từ nguồn KNT bảng HT_THAM_SO"
+  - brd_id: BRD-SRC-KNT-CAT_POSITION
+    brd_name: "Design Atomic từ nguồn KNT bảng CAT_POSITION"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thông tin về tham số hệ thống"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — tham số cấu hình ứng dụng"
-      table: HT_THAM_SO
+      table_meaning: "Danh mục chức vụ: dùng cho phân loại nhân sự trong hệ thống KNT"
+      functional_group: "KNT-REF Danh mục dùng chung"
+      scope_status: pending
+      scope_reason: null
+      table: CAT_POSITION
       related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-NGUOIDUNG
-    brd_name: "Design Atomic từ nguồn KNT bảng NGUOIDUNG"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu các thông tin về người dùng hệ thống"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — quản lý người dùng ứng dụng"
-      table: NGUOIDUNG
-      related_tables:
-        - table: NGUOIDUNG_NHOMNGUOIDUNG
-          relation: "Junction — mapping người dùng và nhóm người dùng"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-KNT-NGUOIDUNG_NHOMNGUOIDUNG
-    brd_name: "Design Atomic từ nguồn KNT bảng NGUOIDUNG_NHOMNGUOIDUNG"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Bảng mapping giữa người dùng và nhóm người dùng"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — phân quyền ứng dụng"
-      table: NGUOIDUNG_NHOMNGUOIDUNG
-      related_tables:
-        - table: NGUOIDUNG
-          relation: "FK — người dùng"
-        - table: NHOMNGUOIDUNG
-          relation: "FK — nhóm người dùng"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-KNT-NHOMNGUOIDUNG
-    brd_name: "Design Atomic từ nguồn KNT bảng NHOMNGUOIDUNG"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu các thông tin về nhóm người dùng trên hệ thống"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — quản lý nhóm quyền ứng dụng"
-      table: NHOMNGUOIDUNG
-      related_tables:
-        - table: NHOMNGUOIDUNG_CHUCNANG
-          relation: "Junction — mapping nhóm người dùng và chức năng"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-KNT-NHOMNGUOIDUNG_CHUCNANG
-    brd_name: "Design Atomic từ nguồn KNT bảng NHOMNGUOIDUNG_CHUCNANG"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Bảng mapping giữa nhóm người dùng và chức năng hệ thống"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — phân quyền chức năng ứng dụng"
-      table: NHOMNGUOIDUNG_CHUCNANG
-      related_tables:
-        - table: NHOMNGUOIDUNG
-          relation: "FK — nhóm người dùng"
-        - table: CHUCNANG
-          relation: "FK — chức năng/menu hệ thống"
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
+  # ─── KNT-SYS Quản trị hệ thống & truyền nhận ────────────────────────────
 
   - brd_id: BRD-SRC-KNT-CHUCNANG
     brd_name: "Design Atomic từ nguồn KNT bảng CHUCNANG"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thông tin danh sách các menu hệ thống"
+      table_meaning: null
       functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "UI metadata — danh sách menu/chức năng giao diện ứng dụng"
+      scope_status: pending
+      scope_reason: null
       table: CHUCNANG
       related_tables: []
-      notes: null
+      notes: "Không có mô tả trong Source/KNT_Tables.csv — tên bảng gợi ý danh sách menu/chức năng UI (tương tự CHUCNANG trong bản khảo sát cũ)."
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-DM_CHUCVU
-    brd_name: "Design Atomic từ nguồn KNT bảng DM_CHUCVU"
+  - brd_id: BRD-SRC-KNT-CONFIG_PARAM
+    brd_name: "Design Atomic từ nguồn KNT bảng CONFIG_PARAM"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thông tin về danh mục chức vụ"
+      table_meaning: "Tham số cấu hình nghiệp vụ hệ thống KNT: mã tham số, giá trị ENUM, loại báo cáo, mã hệ thống tương ứng"
       functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — danh mục chức vụ nội bộ ứng dụng KNT"
-      table: DM_CHUCVU
-      related_tables: []
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-KNT-DM_DON_VI
-    brd_name: "Design Atomic từ nguồn KNT bảng DM_DON_VI"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu các thông tin về danh mục đơn vị"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Operational/system data — danh mục đơn vị nội bộ ứng dụng KNT"
-      table: DM_DON_VI
-      related_tables: []
-      notes: null
-      data_volume_hint: null
-      refresh_frequency: null
-
-  - brd_id: BRD-SRC-KNT-NHAT_KY_HE_THONG
-    brd_name: "Design Atomic từ nguồn KNT bảng NHAT_KY_HE_THONG"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Lưu các thông tin về nhật ký hệ thống, các thao tác của người dùng trên hệ thống"
-      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Audit log nguồn — nhật ký vận hành ứng dụng KNT"
-      table: NHAT_KY_HE_THONG
+      scope_status: pending
+      scope_reason: null
+      table: CONFIG_PARAM
       related_tables: []
       notes: null
       data_volume_hint: null
@@ -486,121 +706,297 @@ brd_entries:
   - brd_id: BRD-SRC-KNT-DB_LOG
     brd_name: "Design Atomic từ nguồn KNT bảng DB_LOG"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu log truy vẫn trên database"
+      table_meaning: "Nhật ký kỹ thuật ghi nhận sự kiện database: mã, giá trị và thời gian tạo"
       functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
-      scope_status: out_of_scope
-      scope_reason: "Audit log nguồn — log truy vấn database cấp ứng dụng"
+      scope_status: pending
+      scope_reason: null
       table: DB_LOG
       related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  # ─── KNT-OUT Dữ liệu UBCKNN gửi đi (out of scope) ───────────────────────
-
-  - brd_id: BRD-SRC-KNT-THONG_TIN_CONG_TY
-    brd_name: "Design Atomic từ nguồn KNT bảng THONG_TIN_CONG_TY"
+  - brd_id: BRD-SRC-KNT-LNK_GROUP_FUNCTION
+    brd_name: "Design Atomic từ nguồn KNT bảng LNK_GROUP_FUNCTION"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu thông tin công ty bao gồm thông tin công ty đại chúng, công ty chứng khoán, công ty quản lý quỹ"
-      functional_group: "KNT-OUT Dữ liệu UBCKNN gửi đi"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu phát sinh từ nguồn gốc khác (SCMS/FMS/IDS) — thu thập tại source gốc"
-      table: THONG_TIN_CONG_TY
+      table_meaning: "Phân quyền chức năng cho nhóm người dùng: nhóm nào được truy cập chức năng nào"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: LNK_GROUP_FUNCTION
       related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-UBCK_XU_PHAT
-    brd_name: "Design Atomic từ nguồn KNT bảng UBCK_XU_PHAT"
+  - brd_id: BRD-SRC-KNT-LNK_USER_GROUP
+    brd_name: "Design Atomic từ nguồn KNT bảng LNK_USER_GROUP"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin về xử phạt tại UBCKNN"
-      functional_group: "KNT-OUT Dữ liệu UBCKNN gửi đi"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu phát sinh từ nguồn gốc khác (Hệ thống Thanh tra) — thu thập tại source gốc"
-      table: UBCK_XU_PHAT
+      table_meaning: "Liên kết người dùng với nhóm người dùng trong hệ thống KNT"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: LNK_USER_GROUP
       related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-CONG_TY_KIEM_TOAN
-    brd_name: "Design Atomic từ nguồn KNT bảng CONG_TY_KIEM_TOAN"
+  - brd_id: BRD-SRC-KNT-LOG_MQ
+    brd_name: "Design Atomic từ nguồn KNT bảng LOG_MQ"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thông tin về công ty kiểm toán"
-      functional_group: "KNT-OUT Dữ liệu UBCKNN gửi đi"
-      scope_status: out_of_scope
-      scope_reason: "Thu thập tại source gốc — chờ thiết kế"
-      table: CONG_TY_KIEM_TOAN
-      related_tables:
-        - table: KIEM_TOAN_VIEN
-          relation: "Bảng con — kiểm toán viên thuộc công ty"
+      table_meaning: "Nhật ký giao tiếp qua Message Queue (MQ): ghi nhận lỗi, nội dung message, mã giao dịch giữa UBCKNN và Cục Thuế"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: LOG_MQ
+      related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-KIEM_TOAN_VIEN
-    brd_name: "Design Atomic từ nguồn KNT bảng KIEM_TOAN_VIEN"
+  - brd_id: BRD-SRC-KNT-LOG_REQUEST_SSC
+    brd_name: "Design Atomic từ nguồn KNT bảng LOG_REQUEST_SSC"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Lưu các thông tin về Kiểm toán viên"
-      functional_group: "KNT-OUT Dữ liệu UBCKNN gửi đi"
-      scope_status: out_of_scope
-      scope_reason: "Thu thập tại source gốc — chờ thiết kế"
-      table: KIEM_TOAN_VIEN
-      related_tables:
-        - table: CONG_TY_KIEM_TOAN
-          relation: "Bảng cha — công ty kiểm toán"
+      table_meaning: "Nhật ký yêu cầu UBCKNN gửi sang Cục Thuế: mã gói tin, MST, trạng thái, ngày yêu cầu"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: LOG_REQUEST_SSC
+      related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-UBCK_BAO_CAO
-    brd_name: "Design Atomic từ nguồn KNT bảng UBCK_BAO_CAO"
+  - brd_id: BRD-SRC-KNT-LOG_SEND_MOF
+    brd_name: "Design Atomic từ nguồn KNT bảng LOG_SEND_MOF"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các báo cáo tài chính lấy từ các hệ thống của UBCKNN"
-      functional_group: "KNT-OUT Dữ liệu UBCKNN gửi đi"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu phát sinh từ nguồn gốc khác (FMS/IDS) — thu thập tại source gốc"
-      table: UBCK_BAO_CAO
-      related_tables:
-        - table: UBCK_BAO_CAO_CHI_TIET
-          relation: "Bảng con — chi tiết báo cáo tài chính UBCK"
+      table_meaning: "Nhật ký gửi dữ liệu sang Bộ Tài chính (BTC): mã gói tin, trạng thái, ngày gửi, msg_id"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: LOG_SEND_MOF
+      related_tables: []
       notes: null
       data_volume_hint: null
       refresh_frequency: null
 
-  - brd_id: BRD-SRC-KNT-UBCK_BAO_CAO_CHI_TIET
-    brd_name: "Design Atomic từ nguồn KNT bảng UBCK_BAO_CAO_CHI_TIET"
+  - brd_id: BRD-SRC-KNT-MSG_PACKET
+    brd_name: "Design Atomic từ nguồn KNT bảng MSG_PACKET"
     type: Theo Source
-    ba_email: username@fssc.com.vn
+    ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Bảng lưu các thông tin chi tiết của báo cáo tài chỉnh lấy từ các hệ thống tại UBCKNN"
-      functional_group: "KNT-OUT Dữ liệu UBCKNN gửi đi"
-      scope_status: out_of_scope
-      scope_reason: "Dữ liệu phát sinh từ nguồn gốc khác (FMS/IDS) — thu thập tại source gốc"
-      table: UBCK_BAO_CAO_CHI_TIET
+      table_meaning: "Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính: nội dung XML, trạng thái gửi/nhận, mã giao dịch"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: MSG_PACKET
       related_tables:
-        - table: UBCK_BAO_CAO
-          relation: "Bảng cha — header báo cáo tài chính UBCK"
+        - table: MSG_PACKET_CONFIG
+          relation: "FK cha — cấu hình gói tin"
+      notes: "FK reference chung của hầu hết bảng nghiệp vụ Tier 1 (TAX_REGISTRATION_INFO, TAX_REPORT, TAX_ENFORCEMENT_DEBT, TAX_ENFORCEMENT_INVOICE, TAX_VIOLATION_HANDLING...) — bảng quản lý lifecycle gói tin truyền nhận, không chứa dữ liệu nghiệp vụ."
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-MSG_PACKET_CONFIG
+    brd_name: "Design Atomic từ nguồn KNT bảng MSG_PACKET_CONFIG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình gói tin trao đổi: định nghĩa chức năng, đơn vị, hệ thống, phương thức truyền nhận dữ liệu"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: MSG_PACKET_CONFIG
+      related_tables:
+        - table: MSG_PACKET
+          relation: "1-N — gói tin sử dụng cấu hình này"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SCHEDULE_CONFIG
+    brd_name: "Design Atomic từ nguồn KNT bảng SCHEDULE_CONFIG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch thiết lập truyền/nhận dữ liệu tự động với Cục Thuế và Bộ Tài chính: tần suất, giờ chạy, biểu thức CRON"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SCHEDULE_CONFIG
+      related_tables:
+        - table: CAT_ORG_UNIT
+          relation: "Liên kết ngầm — đơn vị áp dụng lịch truyền nhận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_AUDIT_LOG
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_AUDIT_LOG"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhật ký thao tác hệ thống KNT: ghi nhận hành động của người dùng (đăng nhập, xem, sửa dữ liệu...)"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_AUDIT_LOG
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_EXPORT_SCHEMA_01
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_EXPORT_SCHEMA_01"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng kỹ thuật Oracle Data Pump Export schema 01 (không dùng cho nghiệp vụ)"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_EXPORT_SCHEMA_01
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_EXPORT_SCHEMA_02
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_EXPORT_SCHEMA_02"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng kỹ thuật Oracle Data Pump Export schema 02 (không dùng cho nghiệp vụ)"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_EXPORT_SCHEMA_02
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_EXPORT_SCHEMA_03
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_EXPORT_SCHEMA_03"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng kỹ thuật Oracle Data Pump Export schema 03 (không dùng cho nghiệp vụ)"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_EXPORT_SCHEMA_03
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_FUNCTION_ROLE
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_FUNCTION_ROLE"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách chức năng hệ thống KNT kèm phân quyền role: tên, đường dẫn, role áp dụng"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_FUNCTION_ROLE
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_HENV
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_HENV"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng kỹ thuật lưu trữ biến môi trường hệ thống (CLOB và DATE)"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_HENV
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_PARAM
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_PARAM"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tham số cấu hình hệ thống KNT: mã, giá trị, kiểu dữ liệu, trạng thái (thay thế bảng THAM_SO)"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_PARAM
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_USER
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_USER"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Tài khoản người dùng hệ thống KNT: cán bộ UBCKNN đăng nhập quản lý dữ liệu trao đổi với Cục Thuế và Bộ Tài chính"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_USER
+      related_tables:
+        - table: SYS_USER_GROUP
+          relation: "Junction — mapping người dùng và nhóm người dùng"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+
+  - brd_id: BRD-SRC-KNT-SYS_USER_GROUP
+    brd_name: "Design Atomic từ nguồn KNT bảng SYS_USER_GROUP"
+    type: Theo Source
+    ba_email: huy.pham@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Nhóm người dùng hệ thống KNT: dùng để phân quyền truy cập chức năng"
+      functional_group: "KNT-SYS Quản trị hệ thống & truyền nhận"
+      scope_status: pending
+      scope_reason: null
+      table: SYS_USER_GROUP
+      related_tables:
+        - table: SYS_USER
+          relation: "Junction — mapping người dùng và nhóm người dùng"
       notes: null
       data_volume_hint: null
       refresh_frequency: null

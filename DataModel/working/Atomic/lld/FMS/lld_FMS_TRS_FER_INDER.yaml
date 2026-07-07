@@ -1,0 +1,401 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "TRS_FER_INDER"
+  atomic_entity: "Fund Management Company Share Transfer"
+  entity_physical_name: "fund_management_company_share_transfer"
+  bcv_core_object: "Transaction"
+  bcv_concept: "[Event] Transaction"
+  table_type: "Fact Append"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[SỬA GAP T4-01] HLD Overview 7e#5 và Tier4 T4-01 ghi nhận GAP 'mất FK InFrmId/InToId\
+    \ (INSIDER ngoài scope)' nhưng BRD columns thực tế của TRS_FER_INDER CÓ ĐỦ cột\
+    \ IN_FRM_ID + IN_TO_ID. Đã map FK pair đến Fund Management Company Insider (Tier\
+    \ 5), status=pending do entity đích chưa thiết kế — GAP được giải quyết khi Tier\
+    \ 5 hoàn tất, không phải load thiếu vĩnh viễn như ghi nhận cũ. Không phải Involved\
+    \ Party — không tách shared entity (ID_NO giữ dạng Text denormalized). CREATED_BY,\
+    \ MODIFY_BY, DELETED, FILE_NAME/FILE_DATA, DATA_MIGRATION document trong pending_design.yaml."
+attributes:
+- attribute_name: "Fund Management Company Share Transfer Id"
+  physical_name: "fund_management_company_share_transfer_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Event] Transaction\". Giao dịch chuyển nhượng cổ\
+    \ phần nội bộ Fund Management Company."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Share Transfer Code"
+  physical_name: "fund_management_company_share_transfer_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.TRS_FER_INDER"
+  etl_derived_value: "FMS.TRS_FER_INDER"
+  data_type: "string"
+- attribute_name: "Fund Management Company Id"
+  physical_name: "fund_management_company_id"
+  description: "FK -> SECURITIES: Công ty QLQ liên quan đến giao dịch nội bộ."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.SC_ID"
+  comment: "FK target: Fund Management Company.Fund Management Company Id. Hash: hash_id('FMS.SECURITIES',\
+    \ SC_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Code"
+  physical_name: "fund_management_company_code"
+  description: "Mã công ty QLQ liên quan đến giao dịch nội bộ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.SC_ID"
+  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
+    \ with Fund Management Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "From Fund Management Company Insider Id"
+  physical_name: "from_fund_management_company_insider_id"
+  description: "FK -> INSIDER: Người bán (chuyển nhượng đi) quyền sở hữu."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.TRS_FER_INDER.IN_FRM_ID"
+  comment: "FK target: Fund Management Company Insider.Fund Management Company Insider\
+    \ Id. Hash: hash_id('FMS.INSIDER', IN_FRM_ID). Pending — entity thiết kế ở Tier\
+    \ 5. Giải quyết GAP T4-01 (BRD thực tế có cột này)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "From Fund Management Company Insider Code"
+  physical_name: "from_fund_management_company_insider_code"
+  description: "Mã người bán (chuyển nhượng đi)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.TRS_FER_INDER.IN_FRM_ID"
+  comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider\
+    \ Code. Pair with From Fund Management Company Insider Id. Pending — entity thiết\
+    \ kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "To Fund Management Company Insider Id"
+  physical_name: "to_fund_management_company_insider_id"
+  description: "FK -> INSIDER: Người mua (nhận chuyển nhượng) quyền sở hữu."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.TRS_FER_INDER.IN_TO_ID"
+  comment: "FK target: Fund Management Company Insider.Fund Management Company Insider\
+    \ Id. Hash: hash_id('FMS.INSIDER', IN_TO_ID). Pending — entity thiết kế ở Tier\
+    \ 5. Giải quyết GAP T4-01 (BRD thực tế có cột này)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "To Fund Management Company Insider Code"
+  physical_name: "to_fund_management_company_insider_code"
+  description: "Mã người mua (nhận chuyển nhượng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FMS.TRS_FER_INDER.IN_TO_ID"
+  comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider\
+    \ Code. Pair with To Fund Management Company Insider Id. Pending — entity thiết\
+    \ kế ở Tier 5."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Party Identification Number"
+  physical_name: "related_party_identification_number"
+  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.ID_NO"
+  comment: "Denormalized — không tách shared entity vì grain của TRS_FER_INDER là\
+    \ Transaction, không phải Involved Party."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Insider Flag"
+  physical_name: "insider_flag"
+  description: "Cờ là người nội bộ: 1=Người nội bộ, 0=Người ngoài."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.INSIDER_FLAG"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Current Unit Quantity"
+  physical_name: "current_unit_quantity"
+  description: "Số lượng hiện tại."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CURR_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Current Percentage"
+  physical_name: "current_percentage"
+  description: "Tỷ lệ sở hữu hiện tại (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CURR_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Post-Transfer Unit Quantity"
+  physical_name: "post_transfer_unit_quantity"
+  description: "Số lượng sau giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.AF_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Post-Transfer Percentage"
+  physical_name: "post_transfer_percentage"
+  description: "Tỷ lệ sau giao dịch (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.AF_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Current Value Date"
+  physical_name: "current_val_dt"
+  description: "Ngày xác định giá trị hiện tại."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CURR_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Committed Current Unit Quantity"
+  physical_name: "committed_current_unit_quantity"
+  description: "Số lượng cam kết hiện tại."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CO_CURR_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Committed Current Percentage"
+  physical_name: "committed_current_percentage"
+  description: "Tỷ lệ cam kết hiện tại (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CO_CURR_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Committed Current Date"
+  physical_name: "committed_current_dt"
+  description: "Ngày cam kết hiện tại."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CO_CURR_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Committed Post-Transfer Unit Quantity"
+  physical_name: "committed_post_transfer_unit_quantity"
+  description: "Số lượng cam kết sau giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CO_AF_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Committed Post-Transfer Percentage"
+  physical_name: "committed_post_transfer_percentage"
+  description: "Tỷ lệ cam kết sau giao dịch (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.CO_AF_PER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Transferred Unit Quantity"
+  physical_name: "transferred_unit_quantity"
+  description: "Số lượng CCQ/cổ phần chuyển nhượng."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.TRANS_QTTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Percentage Determination Date"
+  physical_name: "percentage_determination_dt"
+  description: "Ngày xác định tỷ lệ sở hữu/đại diện."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.PER_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Ownership Percentage"
+  physical_name: "ownership_percentage"
+  description: "Tỷ lệ phần trăm sở hữu (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.PER_CENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Decision Document Number"
+  physical_name: "decision_document_number"
+  description: "Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.GP_QD_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Date"
+  physical_name: "approval_dt"
+  description: "Ngày chấp thuận/phê duyệt của UBCKNN."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.APPROVAL_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.TRS_FER_INDER.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
