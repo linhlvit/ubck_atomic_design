@@ -1,0 +1,247 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sp_license_certificate_type-NHNCK.CERTIFICATES
+  logical_name: Securities Practitioner License Certificate Type
+  physical_name: sp_license_certificate_type
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity License Application/Certificate Document/Organization Employment Report và cross-source từ IAM User (Practice Certificate Type Id).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-CERTIFICATES
+
+attributes:
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: null
+    comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
+    business_meaning: Mã loại chứng chỉ. BK từ PK bảng nguồn
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.ID
+    comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner License Certificate Type Unique Key
+    physical_name: sp_license_certificate_type_unique_key
+    business_meaning: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: QLQY, PTDT, MTCK)"
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
+    comment: Unique Key nghiệp vụ — không phải BK. Bảng nguồn có cả ID (BK) và CERTIFICATE_CODE (unique key) theo Bước 3e SKILL.
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: NHNCK.CERTIFICATES
+
+  - name: Certificate Name
+    physical_name: certificate_nm
+    business_meaning: "Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi giới CK)"
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.CERTIFICATE_NAME
+    comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Processing Days
+    physical_name: processing_days
+    business_meaning: Số ngày làm việc xử lý hồ sơ theo quy định
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.PROCESSING_DAYS
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Sort Order
+    physical_name: sort_order
+    business_meaning: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.SORT_ORDER
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Displayed Indicator
+    physical_name: displayed_indicator
+    business_meaning: "Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn"
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.DISPLAYED
+    comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn NUMBER(1)."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Original Data Indicator
+    physical_name: original_data_indicator
+    business_meaning: "Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người dùng tạo"
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.ORIGINAL_DATA
+    comment: "BCV: không có term riêng. Nguồn NUMBER(1)."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.UPDATED_AT
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: created_by_officer_id
+    business_meaning: ID tài khoản người tạo bản ghi
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.CREATED_BY
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: created_by_officer_code
+    business_meaning: Mã tài khoản người tạo bản ghi (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.CREATED_BY
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: updated_by_officer_id
+    business_meaning: ID tài khoản người cập nhật bản ghi lần cuối
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.UPDATED_BY
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: updated_by_officer_code
+    business_meaning: Mã tài khoản người cập nhật bản ghi lần cuối (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATES
+    source_column: NHNCK.CERTIFICATES.UPDATED_BY
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
+    etl_derived_value: null

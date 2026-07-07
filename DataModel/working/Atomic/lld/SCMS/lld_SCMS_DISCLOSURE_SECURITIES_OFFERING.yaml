@@ -63,7 +63,7 @@ attributes:
   etl_derived_value: "SCMS.DISCLOSURE_SECURITIES_OFFERING"
   data_type: "string"
 - attribute_name: "Securities Company Id"
-  physical_name: "securities_company_id"
+  physical_name: "sc_id"
   description: "FK đến Công ty chứng khoán chào bán chứng khoán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -77,7 +77,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Code"
-  physical_name: "securities_company_code"
+  physical_name: "sc_code"
   description: "Mã Công ty chứng khoán."
   data_domain: "Text"
   nullable: false
@@ -91,7 +91,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Event Type Code"
-  physical_name: "event_type_code"
+  physical_name: "event_tp_code"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Text"
   nullable: true
@@ -117,7 +117,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Offering Type Code"
-  physical_name: "offering_type_code"
+  physical_name: "offering_tp_code"
   description: "Loại chào bán: 1=Công chúng; 2=CP thường; 3=Trả cổ tức CP; 4=CTLC>100\
     \ NLĐ; 5=CTLC<100 NLĐ; 6=Đấu giá; 7=Riêng lẻ; 8=Khác; 9=CP hoán đổi; 10=CB cổ\
     \ đông lớn."
@@ -132,7 +132,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Type Code"
-  physical_name: "securities_type_code"
+  physical_name: "securities_tp_code"
   description: "Loại chứng khoán: CP_THUONG=Cổ phiếu phổ thông; CP_UU_DAI=Cổ phiếu\
     \ ưu đãi; TP=Trái phiếu; CW=Chứng quyền có bảo đảm."
   data_domain: "Classification Value"
@@ -213,7 +213,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Document Number"
-  physical_name: "document_number"
+  physical_name: "document_nbr"
   description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
   data_domain: "Text"
   nullable: true
@@ -397,7 +397,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Item Value Amount"
-  physical_name: "item_val_amount"
+  physical_name: "item_val_amt"
   description: "Giá trị mặt hàng chào bán."
   data_domain: "Currency Amount"
   nullable: true
@@ -410,7 +410,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Offering Price Amount"
-  physical_name: "offering_price_amount"
+  physical_name: "offering_price_amt"
   description: "Giá chào bán (đồng/cổ phiếu hoặc trái phiếu)."
   data_domain: "Currency Amount"
   nullable: true
@@ -423,7 +423,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Total Value Amount"
-  physical_name: "total_val_amount"
+  physical_name: "total_val_amt"
   description: "Tổng giá trị đợt chào bán (đồng)."
   data_domain: "Currency Amount"
   nullable: true
@@ -436,7 +436,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Expected Total Amount"
-  physical_name: "expected_total_amount"
+  physical_name: "expected_total_amt"
   description: "Tổng giá trị dự kiến thu về."
   data_domain: "Currency Amount"
   nullable: true
@@ -449,7 +449,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Proceeds Collected Amount"
-  physical_name: "proceeds_collected_amount"
+  physical_name: "proceeds_collected_amt"
   description: "Tổng tiền thực tế thu được."
   data_domain: "Currency Amount"
   nullable: true
@@ -670,7 +670,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Bond Type Code"
-  physical_name: "bond_type_code"
+  physical_name: "bond_tp_code"
   description: "Loại trái phiếu: CO_BAO_DAM=Có bảo đảm; KHONG_BAO_DAM=Không bảo đảm;\
     \ CHUYEN_DOI=Chuyển đổi."
   data_domain: "Classification Value"
@@ -697,7 +697,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bond Face Value Amount"
-  physical_name: "bond_face_val_amount"
+  physical_name: "bond_face_val_amt"
   description: "Mệnh giá trái phiếu (đồng/trái phiếu)."
   data_domain: "Currency Amount"
   nullable: true
@@ -762,7 +762,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Covered Warrant Type Code"
-  physical_name: "covered_warrant_type_code"
+  physical_name: "covered_warrant_tp_code"
   description: "Loại chứng quyền có bảo đảm: CW_MUA=Chứng quyền mua; CW_BAN=Chứng\
     \ quyền bán."
   data_domain: "Classification Value"
@@ -919,7 +919,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Registered Offering Price Amount"
-  physical_name: "registered_offering_price_amount"
+  physical_name: "registered_offering_price_amt"
   description: "Giá chào bán đã đăng ký."
   data_domain: "Currency Amount"
   nullable: true
@@ -932,7 +932,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "CW Actual Offering Price Amount"
-  physical_name: "cw_actual_offering_price_amount"
+  physical_name: "cw_actual_offering_price_amt"
   description: "Giá chào bán thực tế chứng quyền."
   data_domain: "Currency Amount"
   nullable: true
@@ -971,7 +971,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Collateral Settlement Value Amount"
-  physical_name: "collateral_settlement_val_amount"
+  physical_name: "collateral_settlement_val_amt"
   description: "Giá trị thanh toán tài sản bảo đảm chứng quyền."
   data_domain: "Currency Amount"
   nullable: true
@@ -997,7 +997,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "CW Deposit Amount"
-  physical_name: "cw_deposit_amount"
+  physical_name: "cw_deposit_amt"
   description: "Số tiền ký quỹ chứng quyền."
   data_domain: "Currency Amount"
   nullable: true
@@ -1010,7 +1010,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "CW Proceeds Amount"
-  physical_name: "cw_proceeds_amount"
+  physical_name: "cw_proceeds_amt"
   description: "Tiền thu được từ chứng quyền."
   data_domain: "Currency Amount"
   nullable: true

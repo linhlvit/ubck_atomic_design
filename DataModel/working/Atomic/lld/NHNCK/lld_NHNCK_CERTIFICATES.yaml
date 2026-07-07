@@ -1,0 +1,246 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "CERTIFICATES"
+  atomic_entity: "Securities Practitioner License Certificate Type"
+  entity_physical_name: "sp_license_certificate_type"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế mới (2026-07-07): trước đây NHNCK.CERTIFICATES chỉ tồn tại dưới\
+    \ dạng Classification Value scheme rỗng (CERTIFICATE_TYPE/NHNCK_CERTIFICATE_TYPE,\
+    \ đã xóa khỏi classification_schemes.yaml). Bảng có PROCESSING_DAYS/SORT_ORDER/\
+    \ DESCRIPTION nên là entity concept thật (rule 11 CLAUDE.md), không phải reference\
+    \ data set thuần. Là FK target cross-source cho IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID\
+    \ (xem lld_IAM_USERS.yaml) và cho 5 file NHNCK retrofit (APPLICATIONS, CERTIFICATE_RECORDS,\
+    \ EXAM_DETAILS, EXAM_SESSION_FEES, ORGANIZATION_REPORTS)."
+attributes:
+- attribute_name: "Securities Practitioner License Certificate Type Id"
+  physical_name: "sp_license_certificate_type_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Type Code"
+  physical_name: "sp_license_certificate_type_code"
+  description: "Mã loại chứng chỉ. BK từ PK bảng nguồn"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.ID"
+  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Certificate Type Unique Key"
+  physical_name: "sp_license_certificate_type_unique_key"
+  description: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: QLQY, PTDT,\
+    \ MTCK)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.CERTIFICATE_CODE"
+  comment: "Unique Key nghiệp vụ — không phải BK. Bảng nguồn có cả ID (BK) và CERTIFICATE_CODE\
+    \ (unique key) theo Bước 3e SKILL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATES"
+  etl_derived_value: "NHNCK.CERTIFICATES"
+  data_type: "string"
+- attribute_name: "Certificate Name"
+  physical_name: "certificate_nm"
+  description: "Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư,\
+    \ Môi giới CK)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.CERTIFICATE_NAME"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processing Days"
+  physical_name: "processing_days"
+  description: "Số ngày làm việc xử lý hồ sơ theo quy định"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.PROCESSING_DAYS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Sort Order"
+  physical_name: "sort_order"
+  description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.SORT_ORDER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Displayed Indicator"
+  physical_name: "displayed_indicator"
+  description: "Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn"
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.DISPLAYED"
+  comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn\
+    \ NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Data Indicator"
+  physical_name: "original_data_indicator"
+  description: "Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu gốc, 0=Người\
+    \ dùng tạo"
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.ORIGINAL_DATA"
+  comment: "BCV: không có term riêng. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.CREATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATES.UPDATED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By Officer Id"
+  physical_name: "created_by_officer_id"
+  description: "ID tài khoản người tạo bản ghi"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.CERTIFICATES.CREATED_BY"
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By Officer Code"
+  physical_name: "created_by_officer_code"
+  description: "Mã tài khoản người tạo bản ghi (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.CERTIFICATES.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Id"
+  physical_name: "updated_by_officer_id"
+  description: "ID tài khoản người cập nhật bản ghi lần cuối"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.CERTIFICATES.UPDATED_BY"
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By Officer Code"
+  physical_name: "updated_by_officer_code"
+  description: "Mã tài khoản người cập nhật bản ghi lần cuối (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.CERTIFICATES.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

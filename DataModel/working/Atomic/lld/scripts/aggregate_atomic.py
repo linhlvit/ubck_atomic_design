@@ -654,7 +654,7 @@ def main():
             _entries = _tfn.load_dict(_tfn.EXCEPTIONS_PATH)
             _domain_map = _tfn.load_data_type_rules(_tfn.DATA_TYPE_PATH)
             _registry = _tfn.load_entity_registry(_tfn.ATOMIC_ENTITIES)
-            _entries = _tfn.merge_column_dict(_entries, _registry)
+            _entries = _tfn.merge_column_dict(_entries, _tfn._domain_prefix_dict(), _registry)
             n = _tfn.patch_atomic_attributes(_entries, _domain_map, _registry, dry_run=False)
             print(f"  Physical names: {n} dong", file=sys.stderr)
 

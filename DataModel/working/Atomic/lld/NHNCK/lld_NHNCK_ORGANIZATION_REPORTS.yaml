@@ -85,7 +85,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến người hành nghề chứng khoán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -99,7 +99,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã người hành nghề (denormalized)."
   data_domain: "Text"
   nullable: false
@@ -140,17 +140,33 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Code"
-  physical_name: "certificate_type_code"
-  description: "Loại chứng chỉ hành nghề tại thời điểm báo cáo."
-  data_domain: "Classification Value"
+- attribute_name: "Certificate Type Id"
+  physical_name: "certificate_tp_id"
+  description: "FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID"
-  comment: "Scheme: CERTIFICATE_TYPE. Map từ FK CERTIFICATE_ID — lưu mã loại chứng\
-    \ chỉ không tạo FK entity."
+  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Type Code"
+  physical_name: "certificate_tp_code"
+  description: "Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized\
+    \ lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID"
+  comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -210,7 +226,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Practitioner Identity Number At Report"
-  physical_name: "practitioner_identity_number_at_report"
+  physical_name: "practitioner_identity_nbr_at_report"
   description: "Số định danh cá nhân tại thời điểm lập báo cáo (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -262,7 +278,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Number At Report"
-  physical_name: "certificate_number_at_report"
+  physical_name: "certificate_nbr_at_report"
   description: "Số chứng chỉ hành nghề tại thời điểm lập báo cáo (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -418,19 +434,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Record Type Code"
-  physical_name: "record_type_code"
-  description: "Phân loại loại bản ghi báo cáo."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.ORGANIZATION_REPORTS.RECORD_TYPE"
-  comment: "Scheme: REPORT_TYPE. Nguồn lưu dạng NUMBER — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Organization Status Code At Report"
   physical_name: "organization_status_code_at_report"
   description: "Trạng thái tổ chức tại thời điểm lập báo cáo."
@@ -441,19 +444,6 @@ attributes:
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.STATUS_ORGANIZATION"
   comment: "Scheme: WORK_STATUS_ORGANIZATION. Nguồn lưu dạng NUMBER — ETL convert"
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi báo cáo (1=Hoạt động)."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.ORGANIZATION_REPORTS.RECORD_STATUS"
-  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -505,8 +495,7 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -519,8 +508,7 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.CREATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Created By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pending — xem ghi chú ở Created By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -546,8 +534,7 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -560,8 +547,7 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.ORGANIZATION_REPORTS.UPDATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Updated By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

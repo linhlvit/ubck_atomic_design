@@ -24,7 +24,7 @@ metadata:
     \ (khác với SOCMT ở SENIOR_PERSONNEL). Format đồng bộ theo chuẩn NHNCK."
 attributes:
 - attribute_name: "Involved Party Id"
-  physical_name: "involved_party_id"
+  physical_name: "ip_id"
   description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -39,7 +39,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
-  physical_name: "involved_party_code"
+  physical_name: "ip_code"
   description: "Mã Securities Practitioner."
   data_domain: "Text"
   nullable: false
@@ -65,7 +65,7 @@ attributes:
   etl_derived_value: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
   data_type: "string"
 - attribute_name: "Identification Type Code"
-  physical_name: "identification_type_code"
+  physical_name: "identification_tp_code"
   description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND hiện hành."
   data_domain: "Classification Value"
   nullable: false
@@ -77,7 +77,7 @@ attributes:
   etl_derived_value: "NATIONAL_ID"
   data_type: "string"
 - attribute_name: "Identification Number"
-  physical_name: "identification_number"
+  physical_name: "identification_nbr"
   description: "Số CCCD/CMND hiện hành."
   data_domain: "Text"
   nullable: true
@@ -90,7 +90,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Type Code"
-  physical_name: "identification_type_code"
+  physical_name: "identification_tp_code"
   description: "Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ từ hệ thống legacy."
   data_domain: "Classification Value"
   nullable: false
@@ -102,7 +102,7 @@ attributes:
   etl_derived_value: "LEGACY_CMND"
   data_type: "string"
 - attribute_name: "Identification Number"
-  physical_name: "identification_number"
+  physical_name: "identification_nbr"
   description: "Số CMND cũ (hệ thống legacy)."
   data_domain: "Text"
   nullable: true

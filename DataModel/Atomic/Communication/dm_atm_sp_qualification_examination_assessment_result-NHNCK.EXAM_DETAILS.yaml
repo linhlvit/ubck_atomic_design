@@ -65,7 +65,7 @@ attributes:
     etl_derived_value: NHNCK.EXAM_DETAILS
 
   - name: Securities Practitioner Qualification Examination Assessment Id
-    physical_name: securities_practitioner_qualification_examination_assessment_id
+    physical_name: sp_qualification_examination_assessment_id
     business_meaning: FK đến đợt thi sát hạch
     data_domain: Surrogate Key
     data_type: string
@@ -79,7 +79,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Qualification Examination Assessment Code
-    physical_name: securities_practitioner_qualification_examination_assessment_code
+    physical_name: sp_qualification_examination_assessment_code
     business_meaning: Mã đợt thi sát hạch
     data_domain: Text
     data_type: string
@@ -93,7 +93,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Id
-    physical_name: securities_practitioner_id
+    physical_name: sp_id
     business_meaning: FK đến người hành nghề
     data_domain: Surrogate Key
     data_type: string
@@ -107,7 +107,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Code
-    physical_name: securities_practitioner_code
+    physical_name: sp_code
     business_meaning: Mã người hành nghề
     data_domain: Text
     data_type: string
@@ -120,17 +120,31 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: Certificate Type Code
-    physical_name: certificate_type_code
-    business_meaning: Mã loại chứng chỉ dự thi
-    data_domain: Classification Value
+  - name: Certificate Type Id
+    physical_name: certificate_tp_id
+    business_meaning: FK đến loại chứng chỉ dự thi
+    data_domain: Surrogate Key
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.CERTIFICATE_ID
-    comment: "Scheme: CERTIFICATE_TYPE."
+    comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id. Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
+    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
+    etl_derived_value: null
+
+  - name: Certificate Type Code
+    physical_name: certificate_tp_code
+    business_meaning: Mã loại chứng chỉ dự thi (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: EXAM_DETAILS
+    source_column: NHNCK.EXAM_DETAILS.CERTIFICATE_ID
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with Certificate Type Id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
@@ -163,7 +177,7 @@ attributes:
     etl_derived_value: null
 
   - name: Sequence Number
-    physical_name: sequence_number
+    physical_name: sequence_nbr
     business_meaning: Số thứ tự dự thi trong đợt thi
     data_domain: Small Counter
     data_type: int
@@ -177,7 +191,7 @@ attributes:
     etl_derived_value: null
 
   - name: Exam Number
-    physical_name: exam_number
+    physical_name: exam_nbr
     business_meaning: Số báo danh
     data_domain: Text
     data_type: string
@@ -312,7 +326,7 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.CREATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
@@ -326,7 +340,7 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.CREATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Created By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
@@ -340,7 +354,7 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.UPDATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
@@ -354,6 +368,6 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.UPDATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Updated By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null

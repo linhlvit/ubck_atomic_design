@@ -57,7 +57,7 @@ attributes:
   etl_derived_value: "NHNCK.PROFESSIONAL_RELATIONSHIPS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến Securities Practitioner"
   data_domain: "Surrogate Key"
   nullable: false
@@ -71,7 +71,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã người hành nghề chứng khoán"
   data_domain: "Text"
   nullable: false
@@ -85,7 +85,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Relationship Type Code"
-  physical_name: "relationship_type_code"
+  physical_name: "relationship_tp_code"
   description: "Loại quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông, 6: Bà)"
   data_domain: "Classification Value"
   nullable: false
@@ -124,7 +124,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Related Individual Address"
-  physical_name: "related_individual_address"
+  physical_name: "related_individual_adr"
   description: "Địa chỉ người thân"
   data_domain: "Text"
   nullable: true
@@ -163,7 +163,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Related Individual Identity Number"
-  physical_name: "related_individual_identity_number"
+  physical_name: "related_individual_identity_nbr"
   description: "Số CMND/CCCD người thân"
   data_domain: "Text"
   nullable: true
@@ -250,8 +250,10 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -264,8 +266,8 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Created By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -278,8 +280,10 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -292,8 +296,8 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Updated By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

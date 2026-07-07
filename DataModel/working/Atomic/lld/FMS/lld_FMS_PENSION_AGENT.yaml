@@ -1,16 +1,15 @@
-schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: FMS
-  source_table: PENSION_AGENT
-  atomic_entity: Pension Service Organization
-  entity_physical_name: pension_service_organization
-  bcv_core_object: Involved Party
+  source_system: "FMS"
+  source_table: "PENSION_AGENT"
+  atomic_entity: "Pension Service Organization"
+  entity_physical_name: "pension_service_organization"
+  bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  group: T5
-  design_status: draft
+  table_type: "Fundamental"
+  group: "T5"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,159 +17,167 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Gộp với PENSION_PROVIDER (cấu trúc ~100% giống nhau) thành 1 entity, phân biệt vai trò bằng Pension Role Type Code (AGENT). Tách IP Postal Address + IP Electronic Address + IP Alt Identification (OPERATING_LICENSE + TAX_ID). CREATED_BY, MODIFY_BY, DELETED document trong pending_design.yaml."
-
+  notes: "Gộp với PENSION_PROVIDER (cấu trúc ~100% giống nhau) thành 1 entity, phân\
+    \ biệt vai trò bằng Pension Role Type Code (AGENT). Tách IP Postal Address + IP\
+    \ Electronic Address + IP Alt Identification (OPERATING_LICENSE + TAX_ID). CREATED_BY,\
+    \ MODIFY_BY, DELETED document trong pending_design.yaml."
 attributes:
-  - attribute_name: Pension Service Organization Id
-    physical_name: pension_service_organization_id
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Đại lý phân phối/tổ chức cung cấp dịch vụ hưu trí (gộp PENSION_AGENT + PENSION_PROVIDER)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Pension Service Organization Code
-    physical_name: pension_service_organization_code
-    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.ID"
-    comment: "BK chính. PK nguồn."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM=FMS.PENSION_AGENT"
-    etl_derived_value: "FMS.PENSION_AGENT"
-
-  - attribute_name: Pension Role Type Code
-    physical_name: pension_role_type_code
-    description: "Loại đại lý: mặc định là 'Đại lý hưu trí' (giá trị cố định, read-only)."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.AGENT_TYPE"
-    comment: "Scheme: FMS_PENSION_ROLE_TYPE (đã đăng ký). Hardcode AGENT — toàn bộ bảng PENSION_AGENT đều có vai trò 'đại lý phân phối'."
-    classification_context: "FMS_PENSION_ROLE_TYPE=AGENT"
-    etl_derived_value: "AGENT"
-
-  - attribute_name: Company Type Code
-    physical_name: company_type_code
-    description: "Loại công ty đại lý hưu trí: 1=Công ty CK, 2=Ngân hàng TM, 3=Bảo hiểm, 4=Tổ chức khác."
-    data_domain: Classification Value
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.COMPANY_TYPE"
-    comment: "Scheme: FMS_AGENT_COMPANY_TYPE (đã đăng ký, dùng chung cho các entity dạng Organization đại lý/trung gian)."
-    classification_context: "FMS_AGENT_COMPANY_TYPE"
-    etl_derived_value: null
-
-  - attribute_name: Pension Service Organization Full Name
-    physical_name: pension_service_organization_full_nm
-    description: "Tên hiển thị chính."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.ITEM_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Pension Service Organization English Name
-    physical_name: pension_service_organization_english_nm
-    description: "Tên tiếng Anh."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.ENG_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Pension Service Organization Short Name
-    physical_name: pension_service_organization_short_nm
-    description: "Tên viết tắt."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.SHORT_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Active Status Flag
-    physical_name: active_status_flag
-    description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
-    data_domain: Boolean
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.RECORD_STATUS"
-    comment: "Giá trị 1 → true; 0 → false."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Termination Date
-    physical_name: termination_dt
-    description: "Ngày chấm dứt hoạt động."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.TERMINATION_DATE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created Timestamp
-    physical_name: created_tms
-    description: "Thời điểm tạo bản ghi."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.DATE_CREATED"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated Timestamp
-    physical_name: updated_tms
-    description: "Thời điểm cập nhật bản ghi lần cuối."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.PENSION_AGENT.DATE_MODIFIED"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Pension Service Organization Id"
+  physical_name: "pension_service_organization_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Đại lý phân phối/tổ\
+    \ chức cung cấp dịch vụ hưu trí (gộp PENSION_AGENT + PENSION_PROVIDER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Service Organization Code"
+  physical_name: "pension_service_organization_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.PENSION_AGENT"
+  etl_derived_value: "FMS.PENSION_AGENT"
+  data_type: "string"
+- attribute_name: "Pension Role Type Code"
+  physical_name: "pension_role_tp_code"
+  description: "Loại đại lý: mặc định là 'Đại lý hưu trí' (giá trị cố định, read-only)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.AGENT_TYPE"
+  comment: "Scheme: FMS_PENSION_ROLE_TYPE (đã đăng ký). Hardcode AGENT — toàn bộ bảng\
+    \ PENSION_AGENT đều có vai trò 'đại lý phân phối'."
+  classification_context: "FMS_PENSION_ROLE_TYPE=AGENT"
+  etl_derived_value: "AGENT"
+  data_type: "string"
+- attribute_name: "Company Type Code"
+  physical_name: "company_tp_code"
+  description: "Loại công ty đại lý hưu trí: 1=Công ty CK, 2=Ngân hàng TM, 3=Bảo hiểm,\
+    \ 4=Tổ chức khác."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.COMPANY_TYPE"
+  comment: "Scheme: FMS_AGENT_COMPANY_TYPE (đã đăng ký, dùng chung cho các entity\
+    \ dạng Organization đại lý/trung gian)."
+  classification_context: "FMS_AGENT_COMPANY_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Service Organization Full Name"
+  physical_name: "pension_service_organization_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Service Organization English Name"
+  physical_name: "pension_service_organization_english_nm"
+  description: "Tên tiếng Anh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.ENG_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pension Service Organization Short Name"
+  physical_name: "pension_service_organization_short_nm"
+  description: "Tên viết tắt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.SHORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Termination Date"
+  physical_name: "termination_dt"
+  description: "Ngày chấm dứt hoạt động."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.TERMINATION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.PENSION_AGENT.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

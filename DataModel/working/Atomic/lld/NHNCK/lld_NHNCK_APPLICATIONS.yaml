@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner License Application Id"
-  physical_name: "securities_practitioner_license_application_id"
+  physical_name: "sp_license_application_id"
   description: "Id tự sinh (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Application Code"
-  physical_name: "securities_practitioner_license_application_code"
+  physical_name: "sp_license_application_code"
   description: "Mã hồ sơ đăng ký do hệ thống sinh — BK của entity."
   data_domain: "Text"
   nullable: false
@@ -57,7 +57,7 @@ attributes:
   etl_derived_value: "NHNCK.APPLICATIONS"
   data_type: "string"
 - attribute_name: "Application Type Code"
-  physical_name: "application_type_code"
+  physical_name: "application_tp_code"
   description: "Loại hồ sơ."
   data_domain: "Classification Value"
   nullable: false
@@ -84,7 +84,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Registration Type Code"
-  physical_name: "registration_type_code"
+  physical_name: "registration_tp_code"
   description: "Nguồn tiếp nhận hồ sơ."
   data_domain: "Classification Value"
   nullable: false
@@ -97,17 +97,33 @@ attributes:
   classification_context: "NHNCK_REGISTRATION_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Code"
-  physical_name: "certificate_type_code"
-  description: "Loại chứng chỉ hành nghề đăng ký."
-  data_domain: "Classification Value"
+- attribute_name: "Certificate Type Id"
+  physical_name: "certificate_tp_id"
+  description: "FK đến loại chứng chỉ hành nghề đăng ký."
+  data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.CERTIFICATE_ID"
-  comment: "FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE."
-  classification_context: "NHNCK_CERTIFICATE_TYPE"
+  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Type Code"
+  physical_name: "certificate_tp_code"
+  description: "Mã loại chứng chỉ hành nghề đăng ký (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.CERTIFICATE_ID"
+  comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Title"
@@ -163,7 +179,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Certificate Number"
-  physical_name: "certificate_number"
+  physical_name: "certificate_nbr"
   description: "Số CCHN cấp cho người hành nghề."
   data_domain: "Text"
   nullable: true
@@ -189,7 +205,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Previous Certificate Number"
-  physical_name: "previous_certificate_number"
+  physical_name: "previous_certificate_nbr"
   description: "Số CCHN cũ trước khi cấp lại."
   data_domain: "Text"
   nullable: true
@@ -214,17 +230,34 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Previous Certificate Type Code"
-  physical_name: "previous_certificate_type_code"
-  description: "Loại CCHN cũ khi cấp lại."
-  data_domain: "Classification Value"
+- attribute_name: "Previous Certificate Type Id"
+  physical_name: "previous_certificate_tp_id"
+  description: "FK đến loại CCHN cũ khi cấp lại."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID"
-  comment: "FK → CERTIFICATES (Classification Value). Scheme: NHNCK_CERTIFICATE_TYPE."
-  classification_context: "NHNCK_CERTIFICATE_TYPE"
+  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
+    \ PREVIOUS_CERTIFICATE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Previous Certificate Type Code"
+  physical_name: "previous_certificate_tp_code"
+  description: "Mã loại CCHN cũ khi cấp lại (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID"
+  comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Code. Pair with Previous Certificate\
+    \ Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Reissue Reason"
@@ -268,7 +301,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Receipt Address"
-  physical_name: "certificate_receipt_address"
+  physical_name: "certificate_receipt_adr"
   description: "Địa chỉ nhận CCHN qua bưu điện."
   data_domain: "Text"
   nullable: true
@@ -359,7 +392,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến Securities Practitioner."
   data_domain: "Surrogate Key"
   nullable: false
@@ -373,7 +406,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã người hành nghề."
   data_domain: "Text"
   nullable: false
@@ -483,11 +516,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATIONS.ASSIGNEE_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột ASSIGNEE_ID) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -497,11 +532,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATIONS.ASSIGNEE_ID"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Assignee Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Assignee Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -511,11 +546,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', INFO_VERIFY_ID)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột INFO_VERIFY_ID) và IAM.USERS,\
+    \ và lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -525,11 +562,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Info Verify Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Info Verify Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

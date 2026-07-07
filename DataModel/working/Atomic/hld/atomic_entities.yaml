@@ -622,15 +622,27 @@ entities:
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
-  atomic_entity: "Regulatory Authority Officer"
+  atomic_entity: "Securities Practitioner Reason Change History"
   table_type: "Fundamental"
-  domain_prefix: "Regulatory Authority"
-  entity_physical_name: "ra_officer"
-  description: "Cán bộ, chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK. Ghi\
-    \ nhận thông tin nhân sự, đơn vị/phòng ban phụ trách và trạng thái tài khoản.\
-    \ Không lưu thông tin xác thực (PASSWORD)."
-  source_table: "NHNCK.USERS"
-  status: "approved"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_reason_change_history"
+  description: "Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề —\
+    \ ai bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với\
+    \ Securities Practitioner) theo quyết định Data Modeler."
+  source_table: "NHNCK.PROFESSIONAL_HISTORIES"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Certificate Type"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner License"
+  entity_physical_name: "sp_license_certificate_type"
+  description: "Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả,\
+    \ số ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity\
+    \ License Application/Certificate Document/Organization Employment Report và\
+    \ cross-source từ IAM User (Practice Certificate Type Id)."
+  source_table: "NHNCK.CERTIFICATES"
+  status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
   atomic_entity: "Regulatory Authority Organization Unit"

@@ -45,7 +45,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Number"
-  physical_name: "certificate_number"
+  physical_name: "certificate_nbr"
   description: "Số chứng chỉ hành nghề"
   data_domain: "Text"
   nullable: false
@@ -57,21 +57,37 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Code"
-  physical_name: "certificate_type_code"
-  description: "Phân loại loại chứng chỉ (CCHN)"
-  data_domain: "Classification Value"
+- attribute_name: "Certificate Type Id"
+  physical_name: "certificate_tp_id"
+  description: "FK đến loại chứng chỉ hành nghề (CCHN)"
+  data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
-  comment: null
-  classification_context: "CERTIFICATE_TYPE"
+  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Type Code"
+  physical_name: "certificate_tp_code"
+  description: "Mã loại chứng chỉ (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
+  comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến Securities Practitioner"
   data_domain: "Surrogate Key"
   nullable: false
@@ -85,7 +101,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã nghiệp vụ của người hành nghề"
   data_domain: "Text"
   nullable: false
@@ -286,19 +302,6 @@ attributes:
   - "NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
   comment: null
   classification_context: "CONVERSION_STATUS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái hiệu lực của bản ghi chứng chỉ (1=Hoạt động)"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.CERTIFICATE_RECORDS.RECORD_STATUS"
-  comment: null
-  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"

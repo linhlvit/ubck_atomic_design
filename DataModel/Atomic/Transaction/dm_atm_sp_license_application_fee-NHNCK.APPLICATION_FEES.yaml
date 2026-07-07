@@ -79,7 +79,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Id
-    physical_name: securities_practitioner_id
+    physical_name: sp_id
     business_meaning: FK đến Securities Practitioner (redundant — derive được từ Application)
     data_domain: Surrogate Key
     data_type: string
@@ -93,7 +93,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Code
-    physical_name: securities_practitioner_code
+    physical_name: sp_code
     business_meaning: Mã chuyên viên (lookup pair)
     data_domain: Text
     data_type: string
@@ -107,7 +107,7 @@ attributes:
     etl_derived_value: null
 
   - name: Fee Type Code
-    physical_name: fee_type_code
+    physical_name: fee_tp_code
     business_meaning: "Loại phí: 1=Phí thi 2=Phí phúc khảo 3=Phí cấp chứng chỉ"
     data_domain: Classification Value
     data_type: string
@@ -135,7 +135,7 @@ attributes:
     etl_derived_value: null
 
   - name: Fee Amount
-    physical_name: fee_amount
+    physical_name: fee_amt
     business_meaning: Số tiền phí (VNĐ)
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -187,20 +187,6 @@ attributes:
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.EXPIRY_DATE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-    etl_derived_value: null
-
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: "Trạng thái thanh toán (proxy từ RECORD_STATUS: 1=Hoạt động)"
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: APPLICATION_FEES
-    source_column: NHNCK.APPLICATION_FEES.RECORD_STATUS
-    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 
@@ -284,7 +270,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.CREATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 
@@ -298,7 +284,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.CREATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Created By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 
@@ -312,7 +298,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.UPDATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null
 
@@ -326,6 +312,6 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_FEES
     source_column: NHNCK.APPLICATION_FEES.UPDATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Updated By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
     etl_derived_value: null

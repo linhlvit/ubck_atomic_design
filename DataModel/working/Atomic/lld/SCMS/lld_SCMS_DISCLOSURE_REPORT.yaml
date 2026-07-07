@@ -63,7 +63,7 @@ attributes:
   etl_derived_value: "SCMS.DISCLOSURE_REPORT"
   data_type: "string"
 - attribute_name: "Securities Company Id"
-  physical_name: "securities_company_id"
+  physical_name: "sc_id"
   description: "FK đến Công ty chứng khoán công bố thông tin."
   data_domain: "Surrogate Key"
   nullable: false
@@ -77,7 +77,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Code"
-  physical_name: "securities_company_code"
+  physical_name: "sc_code"
   description: "Mã Công ty chứng khoán."
   data_domain: "Text"
   nullable: false
@@ -147,7 +147,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Foreign Branch Id"
-  physical_name: "securities_company_foreign_branch_id"
+  physical_name: "sc_foreign_branch_id"
   description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -161,7 +161,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Foreign Branch Code"
-  physical_name: "securities_company_foreign_branch_code"
+  physical_name: "sc_foreign_branch_code"
   description: "Mã chi nhánh CTCK nước ngoài."
   data_domain: "Text"
   nullable: true
@@ -217,7 +217,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Disclosure News Type Code"
-  physical_name: "disclosure_news_type_code"
+  physical_name: "disclosure_news_tp_code"
   description: "Loại tin công bố: 1=Định kỳ; 2=Bất thường; 3=Theo yêu cầu."
   data_domain: "Classification Value"
   nullable: true
@@ -230,7 +230,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Disclosure Channel Type Code"
-  physical_name: "disclosure_channel_type_code"
+  physical_name: "disclosure_channel_tp_code"
   description: "Loại hình công bố: 1=CBTT trên sàn; 2=UBCKNN; 3=Trang web công ty."
   data_domain: "Classification Value"
   nullable: true
@@ -256,7 +256,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Event Type Code"
-  physical_name: "event_type_code"
+  physical_name: "event_tp_code"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Text"
   nullable: true

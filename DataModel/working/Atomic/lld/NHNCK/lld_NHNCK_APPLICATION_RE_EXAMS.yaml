@@ -143,30 +143,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi (1=Hoạt động)"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.APPLICATION_RE_EXAMS.RECORD_STATUS"
-  comment: "Scheme: APPLICATION_STATUS."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Created By Officer Id"
   physical_name: "created_by_officer_id"
   description: "FK đến Officer tạo bản ghi"
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -176,11 +165,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.CREATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Created By Officer Id. Pending."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -190,11 +179,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Pending — nguồn USERS chưa map. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -204,11 +195,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Updated By Officer Id. Pending."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

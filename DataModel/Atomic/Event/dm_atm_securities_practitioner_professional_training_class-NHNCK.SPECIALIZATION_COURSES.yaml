@@ -23,7 +23,7 @@ ldm:
 
 attributes:
   - name: Securities Practitioner Professional Training Class Id
-    physical_name: securities_practitioner_professional_training_class_id
+    physical_name: sp_professional_training_class_id
     business_meaning: Surrogate key cho khóa học chuyên môn
     data_domain: Surrogate Key
     data_type: string
@@ -37,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Professional Training Class Code
-    physical_name: securities_practitioner_professional_training_class_code
+    physical_name: sp_professional_training_class_code
     business_meaning: Mã khóa học (business key)
     data_domain: Text
     data_type: string
@@ -79,7 +79,7 @@ attributes:
     etl_derived_value: null
 
   - name: Specialization Type Code
-    physical_name: specialization_type_code
+    physical_name: specialization_tp_code
     business_meaning: Loại chuyên môn của khóa học
     data_domain: Classification Value
     data_type: string
@@ -121,7 +121,7 @@ attributes:
     etl_derived_value: null
 
   - name: Exam Location Address
-    physical_name: exam_location_address
+    physical_name: exam_location_adr
     business_meaning: Địa điểm tổ chức thi
     data_domain: Text
     data_type: string
@@ -159,20 +159,6 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: Trạng thái bản ghi khóa học
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.RECORD_STATUS
-    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
@@ -228,7 +214,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
@@ -242,7 +228,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Created By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
@@ -256,7 +242,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
@@ -270,6 +256,6 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Updated By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null

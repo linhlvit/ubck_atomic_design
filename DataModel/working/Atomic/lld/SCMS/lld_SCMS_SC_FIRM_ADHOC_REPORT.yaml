@@ -61,7 +61,7 @@ attributes:
   etl_derived_value: "SCMS.SC_FIRM_ADHOC_REPORT"
   data_type: "string"
 - attribute_name: "Securities Company Id"
-  physical_name: "securities_company_id"
+  physical_name: "sc_id"
   description: "FK đến Công ty chứng khoán nộp báo cáo."
   data_domain: "Surrogate Key"
   nullable: false
@@ -75,7 +75,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Code"
-  physical_name: "securities_company_code"
+  physical_name: "sc_code"
   description: "Mã Công ty chứng khoán."
   data_domain: "Text"
   nullable: false
@@ -89,7 +89,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Foreign Branch Id"
-  physical_name: "securities_company_foreign_branch_id"
+  physical_name: "sc_foreign_branch_id"
   description: "FK đến chi nhánh CTCK nước ngoài liên quan (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -103,7 +103,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Foreign Branch Code"
-  physical_name: "securities_company_foreign_branch_code"
+  physical_name: "sc_foreign_branch_code"
   description: "Mã chi nhánh CTCK nước ngoài."
   data_domain: "Text"
   nullable: true
@@ -208,7 +208,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Document Number"
-  physical_name: "document_number"
+  physical_name: "document_nbr"
   description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
   data_domain: "Text"
   nullable: true
@@ -234,7 +234,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Adhoc Report Type Code"
-  physical_name: "adhoc_report_type_code"
+  physical_name: "adhoc_report_tp_code"
   description: "Loại báo cáo chi tiết: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu\
     \ cầu; KHAC=Khác."
   data_domain: "Classification Value"
@@ -262,7 +262,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Signature Type Code"
-  physical_name: "signature_type_code"
+  physical_name: "signature_tp_code"
   description: "Loại chữ ký: DIEN_TU=Chữ ký điện tử; SO_HOA=Số hóa/upload file ký;\
     \ NONE=Không yêu cầu chữ ký."
   data_domain: "Classification Value"
@@ -330,7 +330,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Event Type Code"
-  physical_name: "event_type_code"
+  physical_name: "event_tp_code"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Text"
   nullable: true

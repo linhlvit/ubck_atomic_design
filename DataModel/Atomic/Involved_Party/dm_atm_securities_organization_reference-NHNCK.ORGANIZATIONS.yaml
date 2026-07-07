@@ -121,7 +121,7 @@ attributes:
     etl_derived_value: null
 
   - name: Organization Type Code
-    physical_name: organization_type_code
+    physical_name: organization_tp_code
     business_meaning: "Loại tổ chức: 0=Khác, 1=CTCK, 2=QLQ, 3=Ngân hàng."
     data_domain: Classification Value
     data_type: string
@@ -219,7 +219,7 @@ attributes:
     etl_derived_value: null
 
   - name: License Number
-    physical_name: license_number
+    physical_name: license_nbr
     business_meaning: Số giấy phép hoạt động chứng khoán.
     data_domain: Text
     data_type: string
@@ -261,7 +261,7 @@ attributes:
     etl_derived_value: null
 
   - name: Charter Capital Amount
-    physical_name: charter_capital_amount
+    physical_name: charter_capital_amt
     business_meaning: Vốn điều lệ của tổ chức.
     data_domain: Currency Amount
     data_type: decimal(23,2)
@@ -285,20 +285,6 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-    etl_derived_value: null
-
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: "Trạng thái bản ghi: 1=Hoạt động."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.RECORD_STATUS
-    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
@@ -382,7 +368,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.CREATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
@@ -396,7 +382,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.CREATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Created By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
@@ -410,7 +396,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.UPDATED_BY
-    comment: "FK target: ra_officer.ra_officer_id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null
 
@@ -424,6 +410,6 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATIONS
     source_column: NHNCK.ORGANIZATIONS.UPDATED_BY
-    comment: "Lookup pair: ra_officer.ra_officer_code. Pair with Updated By Officer Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
     etl_derived_value: null

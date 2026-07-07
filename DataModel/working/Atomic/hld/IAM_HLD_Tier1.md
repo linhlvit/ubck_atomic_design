@@ -146,7 +146,7 @@ erDiagram
 | # | Câu hỏi | Kết quả |
 |---|---|---|
 | T1-01 | `DEPARTMENT_ID` và `POSTION_ID` (typo?) có FK đến bảng nào? Hiện không có FK constraint rõ trong schema IAM. Nếu có bảng DEPARTMENTS/POSITIONS riêng → cần bổ sung source. | Chờ xác nhận với team IAM |
-| T1-02 | `PRACTICE_CERTIFICATE_TYPE_ID` trỏ về bảng nào? Có phải bảng từ source NHNCK không? Nếu có → cần review FK cross-source. | Chờ xác nhận |
+| T1-02 | `PRACTICE_CERTIFICATE_TYPE_ID` trỏ về bảng nào? Có phải bảng từ source NHNCK không? Nếu có → cần review FK cross-source. | **Đã trả lời (2026-07-07):** trỏ tới `NHNCK.CERTIFICATES` — entity `Securities Practitioner License Certificate Type` (mới thiết kế, xem `lld_NHNCK_CERTIFICATES.yaml`). Attribute đổi thành `Practice Certificate Type Id`/`Code` (FK cross-source). Còn `status: pending` vì chưa xác nhận join key giá trị thực tế giữa `NHNCK.USERS`/`NHNCK.CERTIFICATES` (NUMBER) và `IAM.USERS` (UUID text). |
 | T1-03 | `REPRESENTATIVE_*` fields (tên, CCCD, SĐT, email, chức vụ người đại diện) — đây là người đại diện pháp lý của tổ chức (khi USER_TYPE = tổ chức) hay là người giám sát nội bộ? Có cần tách thành entity riêng không? | Tạm giữ denormalized trên `Identity and Access Management User`. Nếu xác nhận là Involved Party thực sự → cần tách Tier 2. |
 | T1-04 | `ORGANIZATION_CODE` + `ORGANIZATION_NAME` — có FK đến bảng tổ chức nào trong hệ thống (SCMS, NHNCK)? Hay chỉ là text denormalized? | Chờ xác nhận — ảnh hưởng đến cross-source FK |
 | T1-05 | `USERS.UPDATE` mode ↔ `Identity and Access Management User` Fundamental (SCD4A): cơ chế ETL cần xác nhận — SCD4A track lịch sử, phù hợp với Update mode. Không có issue. | OK — ghi nhận để review ETL. |

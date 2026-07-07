@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "NHNCK.DEPARTMENTS"
   data_type: "string"
 - attribute_name: "Organization Unit Type Code"
-  physical_name: "organization_unit_type_code"
+  physical_name: "ou_tp_code"
   description: "Phân loại — Phòng ban (Department)"
   data_domain: "Classification Value"
   nullable: false
@@ -150,16 +150,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái hoạt động của phòng ban"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.DEPARTMENTS.RECORD_STATUS"
-  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"

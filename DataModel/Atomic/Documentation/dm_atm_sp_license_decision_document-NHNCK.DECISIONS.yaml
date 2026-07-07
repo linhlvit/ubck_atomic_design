@@ -51,7 +51,7 @@ attributes:
     etl_derived_value: null
 
   - name: Decision Number
-    physical_name: decision_number
+    physical_name: decision_nbr
     business_meaning: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
     data_domain: Text
     data_type: string
@@ -191,7 +191,7 @@ attributes:
     etl_derived_value: null
 
   - name: Decision Type Code
-    physical_name: decision_type_code
+    physical_name: decision_tp_code
     business_meaning: Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại / ...)
     data_domain: Classification Value
     data_type: string
@@ -201,20 +201,6 @@ attributes:
     source_table: DECISIONS
     source_column: NHNCK.DECISIONS.DECISION_TYPE_ID
     comment: "Scheme: DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi; 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
-    classification_context: "Source System Code = 'NHNCK_DECISIONS'"
-    etl_derived_value: null
-
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: Trạng thái hiệu lực của bản ghi quyết định
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DECISIONS
-    source_column: NHNCK.DECISIONS.RECORD_STATUS
-    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     classification_context: "Source System Code = 'NHNCK_DECISIONS'"
     etl_derived_value: null
 

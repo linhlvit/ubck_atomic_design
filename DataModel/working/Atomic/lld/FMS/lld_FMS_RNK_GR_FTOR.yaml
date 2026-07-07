@@ -1,16 +1,15 @@
-schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: FMS
-  source_table: RNK_GR_FTOR
-  atomic_entity: Member Rating Ranking Criterion Group
-  entity_physical_name: member_rating_ranking_criterion_group
-  bcv_core_object: Business Activity
+  source_system: "FMS"
+  source_table: "RNK_GR_FTOR"
+  atomic_entity: "Member Rating Ranking Criterion Group"
+  entity_physical_name: "member_rating_ranking_criterion_group"
+  bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fundamental
-  group: T6
-  design_status: draft
+  table_type: "Fundamental"
+  group: "T6"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,147 +17,158 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[PHÁT HIỆN] Nguồn RNK_GR_FTOR KHÔNG có cột ID/PK kỹ thuật riêng — chỉ có composite (RK_ID, GR_FT_ID). BK phải do ETL sinh tổng hợp từ cặp (RK_ID, GR_FT_ID) thay vì map trực tiếp 1 cột nguồn. Không phải Involved Party — không tách shared entity. Nguồn không có audit fields nên không có mục pending_design cho bảng này."
-
+  notes: "[PHÁT HIỆN] Nguồn RNK_GR_FTOR KHÔNG có cột ID/PK kỹ thuật riêng — chỉ có\
+    \ composite (RK_ID, GR_FT_ID). BK phải do ETL sinh tổng hợp từ cặp (RK_ID, GR_FT_ID)\
+    \ thay vì map trực tiếp 1 cột nguồn. Không phải Involved Party — không tách shared\
+    \ entity. Nguồn không có audit fields nên không có mục pending_design cho bảng\
+    \ này."
 attributes:
-  - attribute_name: Member Rating Ranking Criterion Group Id
-    physical_name: member_rating_ranking_criterion_group_id
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\" (tái sử dụng concept Member Rating). Điểm số của 1 Member Rating theo từng Member Rating Criterion Group."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Member Rating Ranking Criterion Group Code
-    physical_name: member_rating_ranking_criterion_group_code
-    description: "Mã tổng hợp — nguồn không có cột PK kỹ thuật riêng."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.RK_ID"
-      - "FMS.RNK_GR_FTOR.GR_FT_ID"
-    comment: "BK tổng hợp — ETL sinh từ nối chuỗi (RK_ID, GR_FT_ID) vì nguồn không có cột ID/PK kỹ thuật riêng cho bảng này."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM=FMS.RNK_GR_FTOR"
-    etl_derived_value: "FMS.RNK_GR_FTOR"
-
-  - attribute_name: Member Rating Id
-    physical_name: member_rating_id
-    description: "FK -> RANK: Kết quả xếp hạng liên quan."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.RK_ID"
-    comment: "FK target: Member Rating.Member Rating Id. Hash: hash_id('FMS.RANK', RK_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Member Rating Code
-    physical_name: member_rating_code
-    description: "Mã kết quả xếp hạng liên quan."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.RK_ID"
-    comment: "Lookup pair: Member Rating.Member Rating Code. Pair with Member Rating Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Member Rating Criterion Group Id
-    physical_name: member_rating_criterion_group_id
-    description: "FK -> GRP_FACTOR: Nhóm tiêu chí đánh giá liên quan."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.GR_FT_ID"
-    comment: "FK target: Member Rating Criterion Group.Member Rating Criterion Group Id. Hash: hash_id('FMS.GRP_FACTOR', GR_FT_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Member Rating Criterion Group Code
-    physical_name: member_rating_criterion_group_code
-    description: "Mã nhóm tiêu chí đánh giá liên quan."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.GR_FT_ID"
-    comment: "Lookup pair: Member Rating Criterion Group.Member Rating Criterion Group Code. Pair with Member Rating Criterion Group Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Item Value Amount
-    physical_name: item_value_amount
-    description: "Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)."
-    data_domain: Currency Amount
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.ITEM_VALUE"
-    comment: "[PROPOSE NEW DOMAIN] Cùng ambiguity với VIOLT.ITEM_VALUE — bản chất có thể là điểm số, tạm chọn Currency Amount, cần reviewer xác nhận."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Member Rating Ranking Criterion Group Short Code
-    physical_name: member_rating_ranking_criterion_group_short_code
-    description: "Mã định danh ngắn gọn."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.CODE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Member Rating Ranking Criterion Group Full Name
-    physical_name: member_rating_ranking_criterion_group_full_nm
-    description: "Tên hiển thị chính."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.ITEM_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Weight Percentage
-    physical_name: weight_percentage
-    description: "Trọng số áp dụng thực tế cho kỳ đó (%)."
-    data_domain: Percentage
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.RNK_GR_FTOR.WEIGHT"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Member Rating Ranking Criterion Group Id"
+  physical_name: "member_rating_ranking_criterion_group_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\" (tái sử dụng\
+    \ concept Member Rating). Điểm số của 1 Member Rating theo từng Member Rating\
+    \ Criterion Group."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Ranking Criterion Group Code"
+  physical_name: "member_rating_ranking_criterion_group_code"
+  description: "Mã tổng hợp — nguồn không có cột PK kỹ thuật riêng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.RK_ID"
+  - "FMS.RNK_GR_FTOR.GR_FT_ID"
+  comment: "BK tổng hợp — ETL sinh từ nối chuỗi (RK_ID, GR_FT_ID) vì nguồn không có\
+    \ cột ID/PK kỹ thuật riêng cho bảng này."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.RNK_GR_FTOR"
+  etl_derived_value: "FMS.RNK_GR_FTOR"
+  data_type: "string"
+- attribute_name: "Member Rating Id"
+  physical_name: "member_rating_id"
+  description: "FK -> RANK: Kết quả xếp hạng liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.RK_ID"
+  comment: "FK target: Member Rating.Member Rating Id. Hash: hash_id('FMS.RANK', RK_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Code"
+  physical_name: "member_rating_code"
+  description: "Mã kết quả xếp hạng liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.RK_ID"
+  comment: "Lookup pair: Member Rating.Member Rating Code. Pair with Member Rating\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Criterion Group Id"
+  physical_name: "member_rating_criterion_group_id"
+  description: "FK -> GRP_FACTOR: Nhóm tiêu chí đánh giá liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.GR_FT_ID"
+  comment: "FK target: Member Rating Criterion Group.Member Rating Criterion Group\
+    \ Id. Hash: hash_id('FMS.GRP_FACTOR', GR_FT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Criterion Group Code"
+  physical_name: "member_rating_criterion_group_code"
+  description: "Mã nhóm tiêu chí đánh giá liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.GR_FT_ID"
+  comment: "Lookup pair: Member Rating Criterion Group.Member Rating Criterion Group\
+    \ Code. Pair with Member Rating Criterion Group Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Item Value Amount"
+  physical_name: "item_val_amt"
+  description: "Giá trị của bản ghi (số tiền, mệnh giá, điểm số...)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.ITEM_VALUE"
+  comment: "[PROPOSE NEW DOMAIN] Cùng ambiguity với VIOLT.ITEM_VALUE — bản chất có\
+    \ thể là điểm số, tạm chọn Currency Amount, cần reviewer xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Member Rating Ranking Criterion Group Short Code"
+  physical_name: "member_rating_ranking_criterion_group_short_code"
+  description: "Mã định danh ngắn gọn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Rating Ranking Criterion Group Full Name"
+  physical_name: "member_rating_ranking_criterion_group_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Weight Percentage"
+  physical_name: "weight_percentage"
+  description: "Trọng số áp dụng thực tế cho kỳ đó (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RNK_GR_FTOR.WEIGHT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"

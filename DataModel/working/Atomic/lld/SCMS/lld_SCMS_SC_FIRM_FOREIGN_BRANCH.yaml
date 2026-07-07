@@ -26,7 +26,7 @@ metadata:
     \ có PROVINCE_ID nên chỉ Street Address text). ALLOCATED_CAPITAL → Currency Amount."
 attributes:
 - attribute_name: "Securities Company Foreign Branch Id"
-  physical_name: "securities_company_foreign_branch_id"
+  physical_name: "sc_foreign_branch_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -39,7 +39,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Foreign Branch Code"
-  physical_name: "securities_company_foreign_branch_code"
+  physical_name: "sc_foreign_branch_code"
   description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -64,7 +64,7 @@ attributes:
   etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH"
   data_type: "string"
 - attribute_name: "Securities Company Id"
-  physical_name: "securities_company_id"
+  physical_name: "sc_id"
   description: "FK đến Công ty chứng khoán nội địa liên quan."
   data_domain: "Surrogate Key"
   nullable: true
@@ -78,7 +78,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Code"
-  physical_name: "securities_company_code"
+  physical_name: "sc_code"
   description: "Mã Công ty chứng khoán."
   data_domain: "Text"
   nullable: true
@@ -145,7 +145,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Event Type Code"
-  physical_name: "event_type_code"
+  physical_name: "event_tp_code"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Classification Value"
   nullable: true
@@ -158,7 +158,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Allocated Capital Amount"
-  physical_name: "allocated_capital_amount"
+  physical_name: "allocated_capital_amt"
   description: "Vốn được cấp cho chi nhánh (đơn vị: đồng)."
   data_domain: "Currency Amount"
   nullable: true
@@ -171,7 +171,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Financial Report Type Code"
-  physical_name: "financial_report_type_code"
+  physical_name: "financial_report_tp_code"
   description: "Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất."
   data_domain: "Classification Value"
   nullable: true
@@ -197,7 +197,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "License Number"
-  physical_name: "license_number"
+  physical_name: "license_nbr"
   description: "Số giấy phép hoạt động chi nhánh tại Việt Nam."
   data_domain: "Text"
   nullable: true
@@ -301,7 +301,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Company License Number"
-  physical_name: "parent_company_license_number"
+  physical_name: "parent_company_license_nbr"
   description: "Số giấy phép của công ty mẹ nước ngoài."
   data_domain: "Text"
   nullable: true
@@ -327,7 +327,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Parent Company Address"
-  physical_name: "parent_company_address"
+  physical_name: "parent_company_adr"
   description: "Địa chỉ trụ sở của công ty mẹ nước ngoài."
   data_domain: "Text"
   nullable: true
@@ -366,7 +366,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Amendment Document Number"
-  physical_name: "amendment_document_number"
+  physical_name: "amendment_document_nbr"
   description: "Số văn bản sửa đổi."
   data_domain: "Text"
   nullable: true
@@ -418,7 +418,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Service Type Codes"
-  physical_name: "service_type_codes"
+  physical_name: "service_tp_codes"
   description: "Danh sách loại dịch vụ được cấp phép cho chi nhánh (denormalized từ\
     \ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE)."
   data_domain: "Array<Text>"

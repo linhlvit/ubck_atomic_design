@@ -60,7 +60,7 @@ attributes:
   etl_derived_value: "NHNCK.SPECIALIZATION_COURSE_DETAILS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Professional Training Class Id"
-  physical_name: "securities_practitioner_professional_training_class_id"
+  physical_name: "sp_professional_training_class_id"
   description: "FK đến lớp đào tạo nghiệp vụ chứng khoán"
   data_domain: "Surrogate Key"
   nullable: false
@@ -75,7 +75,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Professional Training Class Code"
-  physical_name: "securities_practitioner_professional_training_class_code"
+  physical_name: "sp_professional_training_class_code"
   description: "Mã lớp đào tạo"
   data_domain: "Text"
   nullable: false
@@ -90,7 +90,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến người hành nghề chứng khoán"
   data_domain: "Surrogate Key"
   nullable: false
@@ -104,7 +104,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã người hành nghề"
   data_domain: "Text"
   nullable: false
@@ -118,7 +118,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Specialization Type Code"
-  physical_name: "specialization_type_code"
+  physical_name: "specialization_tp_code"
   description: "Loại chuyên ngành đào tạo"
   data_domain: "Classification Value"
   nullable: false
@@ -131,7 +131,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Exam Number"
-  physical_name: "exam_number"
+  physical_name: "exam_nbr"
   description: "Số báo danh dự thi"
   data_domain: "Text"
   nullable: true
@@ -267,7 +267,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Identity Type Code At Enrollment"
-  physical_name: "practitioner_identity_type_code_at_enrollment"
+  physical_name: "practitioner_identity_tp_code_at_enrollment"
   description: "Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)"
   data_domain: "Classification Value"
   nullable: true
@@ -281,7 +281,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Practitioner Identity Number At Enrollment"
-  physical_name: "practitioner_identity_number_at_enrollment"
+  physical_name: "practitioner_identity_nbr_at_enrollment"
   description: "Số định danh tại thời điểm đăng ký (snapshot)"
   data_domain: "Text"
   nullable: true
@@ -346,19 +346,6 @@ attributes:
   classification_context: "TRAINING_RESULT"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.SPECIALIZATION_COURSE_DETAILS.RECORD_STATUS"
-  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: "RECORD_STATUS"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Description"
   physical_name: "description"
   description: "Mô tả"
@@ -391,11 +378,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', ASSIGNEE_ID)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột ASSIGNEE_ID) và IAM.USERS,\
+    \ và lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -405,11 +394,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.ASSIGNEE_ID"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Assignee Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Assignee Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -445,11 +434,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -459,11 +450,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Created By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -473,11 +464,13 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -487,11 +480,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Updated By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

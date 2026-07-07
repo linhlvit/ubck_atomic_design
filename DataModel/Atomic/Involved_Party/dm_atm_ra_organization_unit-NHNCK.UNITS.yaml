@@ -65,7 +65,7 @@ attributes:
     etl_derived_value: NHNCK.UNITS
 
   - name: Organization Unit Type Code
-    physical_name: organization_unit_type_code
+    physical_name: ou_tp_code
     business_meaning: Phân loại — Đơn vị (Unit)
     data_domain: Classification Value
     data_type: string
@@ -145,20 +145,6 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.DESCRIPTION
     comment: null
-    classification_context: "Source System Code = 'NHNCK_UNITS'"
-    etl_derived_value: null
-
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: Trạng thái hoạt động của đơn vị
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: UNITS
-    source_column: NHNCK.UNITS.RECORD_STATUS
-    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     classification_context: "Source System Code = 'NHNCK_UNITS'"
     etl_derived_value: null
 

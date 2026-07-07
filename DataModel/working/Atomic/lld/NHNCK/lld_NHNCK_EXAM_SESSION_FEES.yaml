@@ -87,21 +87,37 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Code"
-  physical_name: "certificate_type_code"
-  description: "Mã loại chứng chỉ"
-  data_domain: "Classification Value"
+- attribute_name: "Certificate Type Id"
+  physical_name: "certificate_tp_id"
+  description: "FK đến loại chứng chỉ"
+  data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID"
-  comment: "Scheme: CERTIFICATE_TYPE."
-  classification_context: "CERTIFICATE_TYPE"
+  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Type Code"
+  physical_name: "certificate_tp_code"
+  description: "Mã loại chứng chỉ (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID"
+  comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Examination Fee Amount"
-  physical_name: "examination_fee_amount"
+  physical_name: "examination_fee_amt"
   description: "Mức phí dự thi (VNĐ)"
   data_domain: "Currency Amount"
   nullable: true
@@ -114,7 +130,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Appeal Fee Amount"
-  physical_name: "appeal_fee_amount"
+  physical_name: "appeal_fee_amt"
   description: "Mức phí phúc khảo (VNĐ)"
   data_domain: "Currency Amount"
   nullable: true
@@ -126,19 +142,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.EXAM_SESSION_FEES.RECORD_STATUS"
-  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: "RECORD_STATUS"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Created Timestamp"
   physical_name: "created_tms"
   description: "Thời điểm tạo"
@@ -174,8 +177,10 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -188,8 +193,8 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.CREATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Created By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -202,8 +207,10 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.UPDATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
+    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
+    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
+    \ lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -216,8 +223,8 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.UPDATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Updated By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
+    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

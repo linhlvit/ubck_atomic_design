@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Penalty Decision Subject Id"
-  physical_name: "penalty_decision_subject_id"
+  physical_name: "pd_subject_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Penalty Decision Subject Code"
-  physical_name: "penalty_decision_subject_code"
+  physical_name: "pd_subject_code"
   description: "BK chính. PK nguồn (VARCHAR2 UUID)."
   data_domain: "Text"
   nullable: false
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "ThanhTra.PENALTY_DECISION_SUBJECT"
   data_type: "string"
 - attribute_name: "Penalty Decision Id"
-  physical_name: "penalty_decision_id"
+  physical_name: "pd_id"
   description: "FK đến quyết định xử phạt."
   data_domain: "Surrogate Key"
   nullable: false
@@ -72,7 +72,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Penalty Decision Code"
-  physical_name: "penalty_decision_code"
+  physical_name: "pd_code"
   description: "Mã quyết định xử phạt liên kết (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -86,7 +86,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Subject Type Code"
-  physical_name: "subject_type_code"
+  physical_name: "subject_tp_code"
   description: "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)."
   data_domain: "Classification Value"
   nullable: true
@@ -112,7 +112,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Subject Id Number"
-  physical_name: "subject_id_number"
+  physical_name: "subject_id_nbr"
   description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)."
   data_domain: "Text"
   nullable: true
@@ -151,7 +151,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Subject Address"
-  physical_name: "subject_address"
+  physical_name: "subject_adr"
   description: "Địa chỉ đối tượng bị xử phạt."
   data_domain: "Text"
   nullable: true
@@ -190,7 +190,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Total Fine Amount"
-  physical_name: "total_fine_amount"
+  physical_name: "total_fine_amt"
   description: "Tổng mức phạt tiền đối với đối tượng này (VNĐ)."
   data_domain: "Currency Amount"
   nullable: true
@@ -203,7 +203,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Paid Amount"
-  physical_name: "paid_amount"
+  physical_name: "paid_amt"
   description: "Số tiền đã nộp phạt (VNĐ)."
   data_domain: "Currency Amount"
   nullable: true
@@ -216,7 +216,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Coerced Amount"
-  physical_name: "coerced_amount"
+  physical_name: "coerced_amt"
   description: "Số tiền đã cưỡng chế tài khoản (VNĐ)."
   data_domain: "Currency Amount"
   nullable: true

@@ -23,7 +23,7 @@ ldm:
 
 attributes:
   - name: Involved Party Id
-    physical_name: involved_party_id
+    physical_name: ip_id
     business_meaning: FK đến Securities Practitioner.
     data_domain: Surrogate Key
     data_type: string
@@ -37,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: Involved Party Code
-    physical_name: involved_party_code
+    physical_name: ip_code
     business_meaning: Mã người hành nghề.
     data_domain: Text
     data_type: string
@@ -65,7 +65,7 @@ attributes:
     etl_derived_value: NHNCK.PROFESSIONALS
 
   - name: Identification Type Code
-    physical_name: identification_type_code
+    physical_name: identification_tp_code
     business_meaning: Loại giấy tờ định danh.
     data_domain: Classification Value
     data_type: string
@@ -79,7 +79,7 @@ attributes:
     etl_derived_value: "1=CMND;2=CCCD;3=PASSPORT"
 
   - name: Previous Identification Number
-    physical_name: previous_identification_number
+    physical_name: previous_identification_nbr
     business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
     data_domain: Text
     data_type: string
@@ -93,7 +93,7 @@ attributes:
     etl_derived_value: null
 
   - name: Identification Number
-    physical_name: identification_number
+    physical_name: identification_nbr
     business_meaning: Số giấy tờ định danh (CMND/CCCD/Hộ chiếu).
     data_domain: Text
     data_type: string

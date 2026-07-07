@@ -27,7 +27,7 @@ metadata:
     \ (Array<Text>). FORM_DATA_JSON loại khỏi scope (raw form payload kỹ thuật)."
 attributes:
 - attribute_name: "Securities Company Id"
-  physical_name: "securities_company_id"
+  physical_name: "sc_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -40,7 +40,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Code"
-  physical_name: "securities_company_code"
+  physical_name: "sc_code"
   description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -65,7 +65,7 @@ attributes:
   etl_derived_value: "SCMS.SC_FIRM_INFO"
   data_type: "string"
 - attribute_name: "Parent Securities Company Id"
-  physical_name: "parent_securities_company_id"
+  physical_name: "parent_sc_id"
   description: "FK tự tham chiếu — CTCK cha trong cấu trúc phân cấp (nếu có)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -79,7 +79,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Securities Company Code"
-  physical_name: "parent_securities_company_code"
+  physical_name: "parent_sc_code"
   description: "Mã CTCK cha."
   data_domain: "Text"
   nullable: true
@@ -93,7 +93,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Unique Key"
-  physical_name: "securities_company_unique_key"
+  physical_name: "sc_unique_key"
   description: "Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK. Unique Key nghiệp\
     \ vụ, khác BK."
   data_domain: "Text"
@@ -107,7 +107,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Short Name"
-  physical_name: "securities_company_short_nm"
+  physical_name: "sc_short_nm"
   description: "Tên viết tắt (VD: SSI, VPS, MBS)."
   data_domain: "Text"
   nullable: true
@@ -120,7 +120,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Name"
-  physical_name: "securities_company_nm"
+  physical_name: "sc_nm"
   description: "Tên đầy đủ bằng tiếng Việt."
   data_domain: "Text"
   nullable: true
@@ -133,7 +133,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company English Name"
-  physical_name: "securities_company_english_nm"
+  physical_name: "sc_english_nm"
   description: "Tên đầy đủ bằng tiếng Anh."
   data_domain: "Text"
   nullable: true
@@ -146,7 +146,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Company Type Code"
-  physical_name: "company_type_code"
+  physical_name: "company_tp_code"
   description: "Loại hình doanh nghiệp CTCK (FK đến CAT_COMPANY_TYPE)."
   data_domain: "Classification Value"
   nullable: true
@@ -175,7 +175,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Event Type Code"
-  physical_name: "event_type_code"
+  physical_name: "event_tp_code"
   description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới CAT_EVENT_TYPE."
   data_domain: "Classification Value"
   nullable: true
@@ -188,7 +188,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Financial Report Type Code"
-  physical_name: "financial_report_type_code"
+  physical_name: "financial_report_tp_code"
   description: "Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất (nhiều\
     \ giá trị phân cách bởi dấu phẩy)."
   data_domain: "Classification Value"
@@ -229,7 +229,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Number"
-  physical_name: "decision_number"
+  physical_name: "decision_nbr"
   description: "Số quyết định phê duyệt/cấp phép."
   data_domain: "Text"
   nullable: true
@@ -255,7 +255,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Termination Decision Number"
-  physical_name: "termination_decision_number"
+  physical_name: "termination_decision_nbr"
   description: "Số quyết định chấm dứt hoạt động."
   data_domain: "Text"
   nullable: true
@@ -268,7 +268,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Charter Capital Amount"
-  physical_name: "charter_capital_amount"
+  physical_name: "charter_capital_amt"
   description: "Vốn điều lệ (đơn vị: đồng)."
   data_domain: "Currency Amount"
   nullable: true
@@ -429,7 +429,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Electronic Trading Decision Number"
-  physical_name: "electronic_trading_decision_number"
+  physical_name: "electronic_trading_decision_nbr"
   description: "Số quyết định về giao dịch điện tử."
   data_domain: "Text"
   nullable: true
@@ -494,7 +494,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Public Company Decision Number"
-  physical_name: "public_company_decision_number"
+  physical_name: "public_company_decision_nbr"
   description: "Số quyết định công ty đại chúng."
   data_domain: "Text"
   nullable: true
@@ -520,7 +520,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Public Company End Decision Number"
-  physical_name: "public_company_end_decision_number"
+  physical_name: "public_company_end_decision_nbr"
   description: "Số quyết định chấm dứt tư cách công ty đại chúng."
   data_domain: "Text"
   nullable: true
@@ -624,7 +624,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Amendment Document Number"
-  physical_name: "amendment_document_number"
+  physical_name: "amendment_document_nbr"
   description: "Số văn bản sửa đổi."
   data_domain: "Text"
   nullable: true

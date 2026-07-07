@@ -10,7 +10,8 @@
 
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
-| Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS, PROFESSIONAL_HISTORIES | Update | Thông tin người hành nghề chứng khoán được UBCKNN quản lý | Securities Practitioner | Fundamental | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã người hành nghề, họ tên, ngày sinh đầy đủ, giới tính, quốc tịch, nơi sinh, trình độ học vấn, hình thức đăng ký, trạng thái hành nghề, trạng thái tài khoản. Không FK đến bảng nghiệp vụ nào trong Tier 1 (chỉ dùng shared entities). **ETL note:** `PROFESSIONALS` cung cấp Practitioner Code và surrogate key; các attribute cá nhân chi tiết (BIRTH_DATE, GENDER, EDUCATION_LEVEL_ID, NATIONALITY_ID, REGISTRATION_TYPE...) lấy từ bản mới nhất của `PROFESSIONAL_HISTORIES` (ORDER BY CHANGE_DATE DESC, ID DESC). |
+| Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS | Update | Thông tin người hành nghề chứng khoán được UBCKNN quản lý | Securities Practitioner | Fundamental | Individual — *"Identifies an Involved Party who is a natural person."* Cấu trúc trường: mã người hành nghề, họ tên, ngày sinh đầy đủ, giới tính, quốc tịch, nơi sinh, trình độ học vấn, hình thức đăng ký, trạng thái hành nghề, trạng thái tài khoản. Không FK đến bảng nghiệp vụ nào trong Tier 1 (chỉ dùng shared entities). |
+| Involved Party | [Involved Party] Individual | Individual | PROFESSIONAL_HISTORIES | Update | Lịch sử thay đổi thông tin cá nhân của người hành nghề | Securities Practitioner Reason Change History | Fundamental | Individual — **Thiết kế lại 2026-07-07** (bản cũ map nhầm source_columns sang PROFESSIONALS). Grain: 1 dòng = 1 lần ghi nhận thay đổi thông tin — chỉ lưu ID/PROFESSIONAL_ID/CHANGE_DATE/REASON_UPDATE. FK đến Securities Practitioner qua PROFESSIONAL_ID. ~43 cột snapshot còn lại loại khỏi thiết kế (xem pending_design.yaml). |
 | Event | [Event] Training Course | Training Course | SPECIALIZATION_COURSES | Update | Danh mục khóa học chuyên môn bổ sung kiến thức cho người hành nghề | Securities Practitioner Professional Training Class | Fundamental | Training Course — *"Identifies an Event that is a course of instruction."* Cấu trúc trường: mã khóa học, tên khóa học, loại chuyên môn, thời gian thi, địa điểm, trạng thái. Master entity của khóa học — không gắn với người cụ thể. |
 | Communication | [Communication] Assessment | Assessment | EXAM_SESSIONS | Update | Danh mục các đợt thi sát hạch cấp CCHN do UBCKNN tổ chức | Securities Practitioner Qualification Examination Assessment | Fundamental | Assessment — *"Identifies a Communication that is an evaluation or appraisal."* Cấu trúc trường: Session CODE/ITEM_NAME/SESSION_, REPORT_YEAR, ORGANIZING_UNIT, APPLICATION_START_DATE/END_DATE, EXAM_START_DATE/END_DATE, EXAM_LOCATIONS, SUBMISSION_METHODS, RECORD_STATUS, FK đến DECISIONS, FK đến USERS (CREATED_BY + UPDATED_BY), BANK_ID (phí thi). FK đến Tier 1 (Decision + Officer). |
 
@@ -48,7 +49,8 @@ graph TD
     classDef shared fill:#fae8ff,stroke:#9333ea,color:#4a044e
     classDef outscope fill:#fef9c3,stroke:#ca8a04,color:#713f12
 
-    PRAC["**Securities Practitioner**\n[Involved Party] Individual\nPROFESSIONALS + PROFESSIONAL_HISTORIES"]:::atomic
+    PRAC["**Securities Practitioner**\n[Involved Party] Individual\nPROFESSIONALS"]:::atomic
+    REASONCHG["**Securities Practitioner\nReason Change History**\n[Involved Party] Individual\nPROFESSIONAL_HISTORIES"]:::atomic
     TRAINCLASS["**Securities Practitioner\nProfessional Training Class**\n[Event] Training Course\nSPECIALIZATION_COURSES"]:::atomic
     EXAM["**Securities Practitioner\nQualification Examination Assessment**\n[Communication] Assessment\nEXAM_SESSIONS"]:::atomic
 

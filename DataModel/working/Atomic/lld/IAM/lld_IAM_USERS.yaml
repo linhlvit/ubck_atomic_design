@@ -113,7 +113,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Type Code"
-  physical_name: "involved_party_type_code"
+  physical_name: "ip_tp_code"
   description: "Loại người dùng."
   data_domain: "Classification Value"
   nullable: true
@@ -127,7 +127,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Sub Type Code"
-  physical_name: "involved_party_sub_type_code"
+  physical_name: "ip_sub_tp_code"
   description: "Phân loại người dùng."
   data_domain: "Classification Value"
   nullable: true
@@ -236,18 +236,36 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Practice Certificate Type Code"
-  physical_name: "practice_certificate_type_code"
+- attribute_name: "Practice Certificate Type Id"
+  physical_name: "practice_certificate_tp_id"
   description: "Chứng chỉ hành nghề — loại chứng chỉ của người dùng."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "IAM.IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
-  comment: "Scheme: IAM_PRACTICE_CERT_TYPE. Nguồn VARCHAR2(36) — chưa rõ ref table\
-    \ gốc (xem T1-02 HLD). Nếu xác nhận FK cross-source NHNCK → cần review lại scheme."
-  classification_context: "IAM_PRACTICE_CERT_TYPE"
+  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Id. Cross-source FK (IAM → NHNCK), trả\
+    \ lời T1-02 HLD. Pending — nguồn IAM lưu VARCHAR2(36) dạng GUID, trong khi NHNCK.CERTIFICATES.ID\
+    \ là NUMBER tự tăng; chưa xác nhận join key giá trị thực tế giữa 2 hệ thống nên\
+    \ chưa thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Practice Certificate Type Code"
+  physical_name: "practice_certificate_tp_code"
+  description: "Mã loại chứng chỉ hành nghề (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IAM.IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
+  comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
+    \ Practitioner License Certificate Type Code. Pair with Practice Certificate\
+    \ Type Id. Pending — xem ghi chú ở Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Avatar Path"
@@ -332,7 +350,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Representative Citizen Id Number"
-  physical_name: "representative_citizen_id_number"
+  physical_name: "representative_citizen_id_nbr"
   description: "Số căn cước người đại diện."
   data_domain: "Text"
   nullable: true

@@ -12,12 +12,12 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 14
+  attribute_count: 12
   brd_ref: BRD-SRC-NHNCK-VIOLATIONS
 - subfolder: Business_Activity
-  file_name: dm_atm_spptc_enrollment-NHNCK.SPECIALIZATION_COURSE_DETAILS.yaml
-  id: ATM-spptc_enrollment-NHNCK.SPECIALIZATION_COURSE_DETAILS
-  physical_name: spptc_enrollment
+  file_name: dm_atm_sp_professional_training_class_enrollment-NHNCK.SPECIALIZATION_COURSE_DETAILS.yaml
+  id: ATM-sp_professional_training_class_enrollment-NHNCK.SPECIALIZATION_COURSE_DETAILS
+  physical_name: sp_professional_training_class_enrollment
   logical_name: Securities Practitioner Professional Training Class Enrollment
   bcv_core_object: Business Activity
   bcv_concept: "[Business Activity] Business Activity"
@@ -25,7 +25,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 35
+  attribute_count: 34
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSE_DETAILS
 - subfolder: Communication
   file_name: dm_atm_securities_order-ORDERTRADE.ORDER_BOOK_HNX.yaml
@@ -64,8 +64,21 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 27
+  attribute_count: 26
   brd_ref: BRD-SRC-NHNCK-EXAM_SESSIONS
+- subfolder: Communication
+  file_name: dm_atm_sp_qualification_examination_assessment_result-NHNCK.EXAM_DETAILS.yaml
+  id: ATM-sp_qualification_examination_assessment_result-NHNCK.EXAM_DETAILS
+  physical_name: sp_qualification_examination_assessment_result
+  logical_name: Securities Practitioner Qualification Examination Assessment Result
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Assessment"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 25
+  brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
 - subfolder: Communication
   file_name: dm_atm_spqea_result-NHNCK.EXAM_DETAILS.yaml
   id: ATM-spqea_result-NHNCK.EXAM_DETAILS
@@ -80,9 +93,9 @@ entries:
   attribute_count: 24
   brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
 - subfolder: Condition
-  file_name: dm_atm_spqea_fee-NHNCK.EXAM_SESSION_FEES.yaml
-  id: ATM-spqea_fee-NHNCK.EXAM_SESSION_FEES
-  physical_name: spqea_fee
+  file_name: dm_atm_sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES.yaml
+  id: ATM-sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES
+  physical_name: sp_qualification_examination_assessment_fee
   logical_name: Securities Practitioner Qualification Examination Assessment Fee
   bcv_core_object: Condition
   bcv_concept: "[Condition] Financial Charge"
@@ -103,8 +116,74 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 38
+  attribute_count: 40
   brd_ref: BRD-SRC-NHNCK-APPLICATIONS
+- subfolder: Documentation
+  file_name: dm_atm_sp_license_application_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS.yaml
+  id: ATM-sp_license_application_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS
+  physical_name: sp_license_application_education_certificate_document
+  logical_name: Securities Practitioner License Application Education Certificate
+    Document
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Education Certificate"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 13
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_SPECIALIZATIONS
+- subfolder: Documentation
+  file_name: dm_atm_sp_license_application_re_exam_request-NHNCK.APPLICATION_RE_EXAMS.yaml
+  id: ATM-sp_license_application_re_exam_request-NHNCK.APPLICATION_RE_EXAMS
+  physical_name: sp_license_application_re_exam_request
+  logical_name: Securities Practitioner License Application Re-Exam Request
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 15
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_RE_EXAMS
+- subfolder: Documentation
+  file_name: dm_atm_sp_license_certificate_document-NHNCK.CERTIFICATE_RECORDS.yaml
+  id: ATM-sp_license_certificate_document-NHNCK.CERTIFICATE_RECORDS
+  physical_name: sp_license_certificate_document
+  logical_name: Securities Practitioner License Certificate Document
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 23
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORDS
+- subfolder: Documentation
+  file_name: dm_atm_sp_license_certificate_type-NHNCK.CERTIFICATES.yaml
+  id: ATM-sp_license_certificate_type-NHNCK.CERTIFICATES
+  physical_name: sp_license_certificate_type
+  logical_name: Securities Practitioner License Certificate Type
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: draft
+  attribute_count: 16
+  brd_ref: BRD-SRC-NHNCK-CERTIFICATES
+- subfolder: Documentation
+  file_name: dm_atm_sp_license_decision_document-NHNCK.DECISIONS.yaml
+  id: ATM-sp_license_decision_document-NHNCK.DECISIONS
+  physical_name: sp_license_decision_document
+  logical_name: Securities Practitioner License Decision Document
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 16
+  brd_ref: BRD-SRC-NHNCK-DECISIONS
 - subfolder: Documentation
   file_name: dm_atm_sp_organization_employment_report-NHNCK.ORGANIZATION_REPORTS.yaml
   id: ATM-sp_organization_employment_report-NHNCK.ORGANIZATION_REPORTS
@@ -116,61 +195,8 @@ entries:
   etl_pattern: Fact Append
   source: NHNCK
   status: approved
-  attribute_count: 41
+  attribute_count: 40
   brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORTS
-- subfolder: Documentation
-  file_name: dm_atm_spl_certificate_document-NHNCK.CERTIFICATE_RECORDS.yaml
-  id: ATM-spl_certificate_document-NHNCK.CERTIFICATE_RECORDS
-  physical_name: spl_certificate_document
-  logical_name: Securities Practitioner License Certificate Document
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 23
-  brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORDS
-- subfolder: Documentation
-  file_name: dm_atm_spl_decision_document-NHNCK.DECISIONS.yaml
-  id: ATM-spl_decision_document-NHNCK.DECISIONS
-  physical_name: spl_decision_document
-  logical_name: Securities Practitioner License Decision Document
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 17
-  brd_ref: BRD-SRC-NHNCK-DECISIONS
-- subfolder: Documentation
-  file_name: dm_atm_spla_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS.yaml
-  id: ATM-spla_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS
-  physical_name: spla_education_certificate_document
-  logical_name: Securities Practitioner License Application Education Certificate
-    Document
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Education Certificate"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_SPECIALIZATIONS
-- subfolder: Documentation
-  file_name: dm_atm_spla_re_exam_request-NHNCK.APPLICATION_RE_EXAMS.yaml
-  id: ATM-spla_re_exam_request-NHNCK.APPLICATION_RE_EXAMS
-  physical_name: spla_re_exam_request
-  logical_name: Securities Practitioner License Application Re-Exam Request
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 16
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_RE_EXAMS
 - subfolder: Event
   file_name: dm_atm_securities_practitioner_professional_training_class-NHNCK.SPECIALIZATION_COURSES.yaml
   id: ATM-securities_practitioner_professional_training_class-NHNCK.SPECIALIZATION_COURSES
@@ -182,7 +208,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 18
+  attribute_count: 17
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
 - subfolder: Group
   file_name: dm_atm_index_constituent_snapshot-MDDS.JAD_CSIDXINFOR.yaml
@@ -190,7 +216,6 @@ entries:
   physical_name: index_constituent_snapshot
   logical_name: Index Constituent Snapshot
   bcv_core_object: Group
-  bcv_concept: "[Group] Share Index"
   bcv_concept: "[Group] Share Index"
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
@@ -204,7 +229,6 @@ entries:
   physical_name: market_index_snapshot
   logical_name: Market Index Snapshot
   bcv_core_object: Group
-  bcv_concept: "[Group] Share Index"
   bcv_concept: "[Group] Share Index"
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
@@ -223,7 +247,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 5
+  attribute_count: 8
   brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-NHNCK.ORGANIZATIONS.yaml
@@ -265,19 +289,6 @@ entries:
   attribute_count: 15
   brd_ref: BRD-SRC-NHNCK-UNITS
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-NHNCK.USERS.yaml
-  id: ATM-ip_electronic_address-NHNCK.USERS
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-NHNCK-USERS
-- subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-NHNCK.ORGANIZATIONS.yaml
   id: ATM-ip_postal_address-NHNCK.ORGANIZATIONS
   physical_name: ip_postal_address
@@ -317,19 +328,6 @@ entries:
   attribute_count: 13
   brd_ref: BRD-SRC-NHNCK-UNITS
 - subfolder: Involved_Party
-  file_name: dm_atm_ra_officer-NHNCK.USERS.yaml
-  id: ATM-ra_officer-NHNCK.USERS
-  physical_name: ra_officer
-  logical_name: Regulatory Authority Officer
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-NHNCK-USERS
-- subfolder: Involved_Party
   file_name: dm_atm_ra_organization_unit-NHNCK.DEPARTMENTS.yaml
   id: ATM-ra_organization_unit-NHNCK.DEPARTMENTS
   physical_name: ra_organization_unit
@@ -340,7 +338,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 11
+  attribute_count: 10
   brd_ref: BRD-SRC-NHNCK-DEPARTMENTS
 - subfolder: Involved_Party
   file_name: dm_atm_ra_organization_unit-NHNCK.UNITS.yaml
@@ -353,7 +351,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 11
+  attribute_count: 10
   brd_ref: BRD-SRC-NHNCK-UNITS
 - subfolder: Involved_Party
   file_name: dm_atm_securities_organization_reference-NHNCK.ORGANIZATIONS.yaml
@@ -366,21 +364,8 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 29
+  attribute_count: 28
   brd_ref: BRD-SRC-NHNCK-ORGANIZATIONS
-- subfolder: Involved_Party
-  file_name: dm_atm_securities_practitioner-NHNCK.PROFESSIONAL_HISTORIES.yaml
-  id: ATM-securities_practitioner-NHNCK.PROFESSIONAL_HISTORIES
-  physical_name: securities_practitioner
-  logical_name: Securities Practitioner
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 83
-  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_HISTORIES
 - subfolder: Involved_Party
   file_name: dm_atm_securities_practitioner-NHNCK.PROFESSIONALS.yaml
   id: ATM-securities_practitioner-NHNCK.PROFESSIONALS
@@ -392,7 +377,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 83
+  attribute_count: 77
   brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
 - subfolder: Involved_Party
   file_name: dm_atm_sp_employment_status-NHNCK.PROFESSIONAL_WORK_HISTORIES.yaml
@@ -407,6 +392,58 @@ entries:
   status: approved
   attribute_count: 15
   brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_WORK_HISTORIES
+- subfolder: Involved_Party
+  file_name: dm_atm_sp_license_application_employment_experience-NHNCK.APPLICATION_EXPERIENCES.yaml
+  id: ATM-sp_license_application_employment_experience-NHNCK.APPLICATION_EXPERIENCES
+  physical_name: sp_license_application_employment_experience
+  logical_name: Securities Practitioner License Application Employment Experience
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 19
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
+- subfolder: Involved_Party
+  file_name: dm_atm_sp_license_application_snapshot-NHNCK.APPLICATION_PROFESSIONALS.yaml
+  id: ATM-sp_license_application_snapshot-NHNCK.APPLICATION_PROFESSIONALS
+  physical_name: sp_license_application_snapshot
+  logical_name: Securities Practitioner License Application Snapshot
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 44
+  brd_ref: BRD-SRC-NHNCK-APPLICATION_PROFESSIONALS
+- subfolder: Involved_Party
+  file_name: dm_atm_sp_professional_training_history-NHNCK.PROFESSIONAL_TRAININGS.yaml
+  id: ATM-sp_professional_training_history-NHNCK.PROFESSIONAL_TRAININGS
+  physical_name: sp_professional_training_history
+  logical_name: Securities Practitioner Professional Training History
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: approved
+  attribute_count: 11
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_TRAININGS
+- subfolder: Involved_Party
+  file_name: dm_atm_sp_reason_change_history-NHNCK.PROFESSIONAL_HISTORIES.yaml
+  id: ATM-sp_reason_change_history-NHNCK.PROFESSIONAL_HISTORIES
+  physical_name: sp_reason_change_history
+  logical_name: Securities Practitioner Reason Change History
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_HISTORIES
 - subfolder: Involved_Party
   file_name: dm_atm_sp_related_party-NHNCK.PROFESSIONAL_RELATIONSHIPS.yaml
   id: ATM-sp_related_party-NHNCK.PROFESSIONAL_RELATIONSHIPS
@@ -433,19 +470,6 @@ entries:
   status: approved
   attribute_count: 19
   brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
-- subfolder: Involved_Party
-  file_name: dm_atm_spla_snapshot-NHNCK.APPLICATION_PROFESSIONALS.yaml
-  id: ATM-spla_snapshot-NHNCK.APPLICATION_PROFESSIONALS
-  physical_name: spla_snapshot
-  logical_name: Securities Practitioner License Application Snapshot
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 45
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_PROFESSIONALS
 - subfolder: Involved_Party
   file_name: dm_atm_sppt_history-NHNCK.PROFESSIONAL_TRAININGS.yaml
   id: ATM-sppt_history-NHNCK.PROFESSIONAL_TRAININGS
@@ -505,7 +529,6 @@ entries:
   logical_name: Corporate Bond Trading Snapshot
   bcv_core_object: Product
   bcv_concept: "[Product] Financial Market Instrument"
-  bcv_concept: "[Product] Financial Market Instrument"
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
   source: MDDS
@@ -518,7 +541,6 @@ entries:
   physical_name: security_trading_snapshot
   logical_name: Security Trading Snapshot
   bcv_core_object: Product
-  bcv_concept: "[Product] Financial Market Instrument"
   bcv_concept: "[Product] Financial Market Instrument"
   table_type: Fact Snapshot
   etl_pattern: Fact Snapshot
@@ -566,9 +588,9 @@ entries:
   attribute_count: 16
   brd_ref: BRD-SRC-MDDS-JAD_TRANSLOG
 - subfolder: Transaction
-  file_name: dm_atm_spla_fee-NHNCK.APPLICATION_FEES.yaml
-  id: ATM-spla_fee-NHNCK.APPLICATION_FEES
-  physical_name: spla_fee
+  file_name: dm_atm_sp_license_application_fee-NHNCK.APPLICATION_FEES.yaml
+  id: ATM-sp_license_application_fee-NHNCK.APPLICATION_FEES
+  physical_name: sp_license_application_fee
   logical_name: Securities Practitioner License Application Fee
   bcv_core_object: Transaction
   bcv_concept: "[Event] Transaction"
@@ -576,5 +598,5 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 22
+  attribute_count: 21
   brd_ref: BRD-SRC-NHNCK-APPLICATION_FEES

@@ -1,16 +1,15 @@
-schema_type: lld_source_table
+schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
-  source_system: FMS
-  source_table: INSDER_RPRST
-  atomic_entity: Fund Management Company Insider Representative
-  entity_physical_name: fund_management_company_insider_representative
-  bcv_core_object: Involved Party
+  source_system: "FMS"
+  source_table: "INSDER_RPRST"
+  atomic_entity: "Fund Management Company Insider Representative"
+  entity_physical_name: "fund_management_company_insider_representative"
+  bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Designated Representative"
-  table_type: Fundamental
-  group: T6
-  design_status: draft
+  table_type: "Fundamental"
+  group: "T6"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,172 +17,177 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Tách IP Alt Identification (NATIONAL_ID mặc định) — không có cột địa chỉ/liên lạc. CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
-
+  notes: "Tách IP Alt Identification (NATIONAL_ID mặc định) — không có cột địa chỉ/liên\
+    \ lạc. CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
 attributes:
-  - attribute_name: Fund Management Company Insider Representative Id
-    physical_name: fund_management_company_insider_representative_id
-    description: "Khóa đại diện (surrogate key)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\" (id 10842). Người đại diện theo ủy quyền của Fund Management Company Insider."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Fund Management Company Insider Representative Code
-    physical_name: fund_management_company_insider_representative_code
-    description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.ID"
-    comment: "BK chính. PK nguồn."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM=FMS.INSDER_RPRST"
-    etl_derived_value: "FMS.INSDER_RPRST"
-
-  - attribute_name: Fund Management Company Insider Id
-    physical_name: fund_management_company_insider_id
-    description: "FK -> INSIDER: Cổ đông nội bộ liên quan."
-    data_domain: Surrogate Key
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.INSDR_ID"
-    comment: "FK target: Fund Management Company Insider.Fund Management Company Insider Id. Hash: hash_id('FMS.INSIDER', INSDR_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Fund Management Company Insider Code
-    physical_name: fund_management_company_insider_code
-    description: "Mã cổ đông nội bộ liên quan."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.INSDR_ID"
-    comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider Code. Pair with Fund Management Company Insider Id."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Representative Full Name
-    physical_name: representative_full_nm
-    description: "Tên hiển thị chính."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.ITEM_NAME"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Job Title Description
-    physical_name: job_title_description
-    description: "Chức vụ/nghề nghiệp của người liên quan."
-    data_domain: Text
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.JOB"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Active Status Flag
-    physical_name: active_status_flag
-    description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
-    data_domain: Boolean
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.RECORD_STATUS"
-    comment: "Giá trị 1 → true; 0 → false."
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Representation Start Date
-    physical_name: representation_start_dt
-    description: "Ngày bắt đầu (from date)."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.FR_DATE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Representation End Date
-    physical_name: representation_end_dt
-    description: "Ngày kết thúc (to date)."
-    data_domain: Date
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.TO_DATE"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Representation Percentage
-    physical_name: representation_percentage
-    description: "Tỷ lệ đại diện theo ủy quyền (%)."
-    data_domain: Percentage
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.PER_REP"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Created Timestamp
-    physical_name: created_tms
-    description: "Thời điểm tạo bản ghi."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.DATE_CREATED"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - attribute_name: Updated Timestamp
-    physical_name: updated_tms
-    description: "Thời điểm cập nhật bản ghi lần cuối."
-    data_domain: Timestamp
-    nullable: true
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "FMS.INSDER_RPRST.DATE_MODIFIED"
-    comment: null
-    classification_context: null
-    etl_derived_value: null
+- attribute_name: "Fund Management Company Insider Representative Id"
+  physical_name: "fund_management_company_insider_representative_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\" (id\
+    \ 10842). Người đại diện theo ủy quyền của Fund Management Company Insider."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Insider Representative Code"
+  physical_name: "fund_management_company_insider_representative_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.INSDER_RPRST"
+  etl_derived_value: "FMS.INSDER_RPRST"
+  data_type: "string"
+- attribute_name: "Fund Management Company Insider Id"
+  physical_name: "fund_management_company_insider_id"
+  description: "FK -> INSIDER: Cổ đông nội bộ liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.INSDR_ID"
+  comment: "FK target: Fund Management Company Insider.Fund Management Company Insider\
+    \ Id. Hash: hash_id('FMS.INSIDER', INSDR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Insider Code"
+  physical_name: "fund_management_company_insider_code"
+  description: "Mã cổ đông nội bộ liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.INSDR_ID"
+  comment: "Lookup pair: Fund Management Company Insider.Fund Management Company Insider\
+    \ Code. Pair with Fund Management Company Insider Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Representative Full Name"
+  physical_name: "representative_full_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Job Title Description"
+  physical_name: "job_title_description"
+  description: "Chức vụ/nghề nghiệp của người liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.JOB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Status Flag"
+  physical_name: "active_status_flag"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.RECORD_STATUS"
+  comment: "Giá trị 1 → true; 0 → false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Representation Start Date"
+  physical_name: "representation_start_dt"
+  description: "Ngày bắt đầu (from date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.FR_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Representation End Date"
+  physical_name: "representation_end_dt"
+  description: "Ngày kết thúc (to date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.TO_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Representation Percentage"
+  physical_name: "representation_percentage"
+  description: "Tỷ lệ đại diện theo ủy quyền (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.PER_REP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.DATE_CREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RPRST.DATE_MODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

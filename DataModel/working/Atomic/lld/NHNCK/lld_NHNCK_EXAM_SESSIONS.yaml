@@ -20,7 +20,7 @@ metadata:
   notes: null
 attributes:
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
-  physical_name: "securities_practitioner_qualification_examination_assessment_id"
+  physical_name: "sp_qualification_examination_assessment_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Qualification Examination Assessment Code"
-  physical_name: "securities_practitioner_qualification_examination_assessment_code"
+  physical_name: "sp_qualification_examination_assessment_code"
   description: "Mã định danh nghiệp vụ đợt thi. BK"
   data_domain: "Text"
   nullable: false
@@ -72,7 +72,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Examination Session Number"
-  physical_name: "examination_session_number"
+  physical_name: "examination_session_nbr"
   description: "Kỳ thi trong năm (1, 2…)"
   data_domain: "Small Counter"
   nullable: true
@@ -244,7 +244,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Bank Account Number"
-  physical_name: "bank_account_number"
+  physical_name: "bank_account_nbr"
   description: "Số tài khoản ngân hàng thu phí"
   data_domain: "Text"
   nullable: true
@@ -267,19 +267,6 @@ attributes:
   - "NHNCK.EXAM_SESSIONS.BANK_ACCOUNT_NAME"
   comment: null
   classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái đợt thi (1=Hoạt động)"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.EXAM_SESSIONS.RECORD_STATUS"
-  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source System Code"
@@ -326,11 +313,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.CREATED_BY"
-  comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority\
-    \ Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -340,11 +326,10 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.CREATED_BY"
-  comment: "Pending. Lookup pair: Regulatory Authority Officer.Regulatory Authority\
-    \ Officer Code. Pair with Created By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pending — xem ghi chú ở Created By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -354,11 +339,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.UPDATED_BY"
-  comment: "Pending. FK target: Regulatory Authority Officer.Regulatory Authority\
-    \ Officer Id. Hash: hash_id('NHNCK.USERS', UPDATED_BY)."
+  comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -368,11 +352,10 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "draft"
+  status: "pending"
   source_columns:
   - "NHNCK.EXAM_SESSIONS.UPDATED_BY"
-  comment: "Pending. Lookup pair: Regulatory Authority Officer.Regulatory Authority\
-    \ Officer Code. Pair with Updated By Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

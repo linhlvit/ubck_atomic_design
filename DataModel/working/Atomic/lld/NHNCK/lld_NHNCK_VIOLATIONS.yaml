@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "NHNCK.VIOLATIONS"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến người hành nghề chứng khoán bị vi phạm."
   data_domain: "Surrogate Key"
   nullable: false
@@ -72,7 +72,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã người hành nghề chứng khoán bị vi phạm."
   data_domain: "Text"
   nullable: false
@@ -142,7 +142,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Practitioner Identity Number At Violation"
-  physical_name: "practitioner_identity_number_at_violation"
+  physical_name: "practitioner_identity_nbr_at_violation"
   description: "Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -179,32 +179,5 @@ attributes:
   - "NHNCK.VIOLATIONS.NOTE"
   comment: null
   classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Type Code"
-  physical_name: "record_type_code"
-  description: "Phân loại bản ghi."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.VIOLATIONS.RECORD_TYPE"
-  comment: "Scheme: RECORD_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang\
-    \ string."
-  classification_context: "RECORD_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi vi phạm (1=Hoạt động)."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.VIOLATIONS.RECORD_STATUS"
-  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
-  classification_context: "RECORD_STATUS"
   etl_derived_value: null
   data_type: "string"

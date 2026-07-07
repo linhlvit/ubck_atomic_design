@@ -63,7 +63,7 @@ attributes:
   etl_derived_value: "SCMS.SC_FIRM_TRANSACTION_OFFICE"
   data_type: "string"
 - attribute_name: "Organization Unit Type Code"
-  physical_name: "organization_unit_type_code"
+  physical_name: "ou_tp_code"
   description: "Loại đơn vị tổ chức trực thuộc CTCK."
   data_domain: "Classification Value"
   nullable: false
@@ -76,7 +76,7 @@ attributes:
   etl_derived_value: "TRANSACTION_OFFICE"
   data_type: "string"
 - attribute_name: "Securities Company Id"
-  physical_name: "securities_company_id"
+  physical_name: "sc_id"
   description: "FK đến Công ty chứng khoán."
   data_domain: "Surrogate Key"
   nullable: false
@@ -90,7 +90,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Code"
-  physical_name: "securities_company_code"
+  physical_name: "sc_code"
   description: "Mã Công ty chứng khoán."
   data_domain: "Text"
   nullable: false
@@ -104,7 +104,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Organization Unit Id"
-  physical_name: "parent_organization_unit_id"
+  physical_name: "parent_ou_id"
   description: "FK đến chi nhánh cha (phòng giao dịch trực thuộc chi nhánh)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -118,7 +118,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Organization Unit Code"
-  physical_name: "parent_organization_unit_code"
+  physical_name: "parent_ou_code"
   description: "Mã đơn vị tổ chức cha."
   data_domain: "Text"
   nullable: true
@@ -132,7 +132,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Unit Name"
-  physical_name: "organization_unit_nm"
+  physical_name: "ou_nm"
   description: "Tên phòng giao dịch."
   data_domain: "Text"
   nullable: true
@@ -146,7 +146,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Organization Unit Legacy Name"
-  physical_name: "organization_unit_legacy_nm"
+  physical_name: "ou_legacy_nm"
   description: "Tên phòng giao dịch (trường TRANSACTION_OFFICE_NAME — có thể trùng\
     \ FULL_NAME)."
   data_domain: "Text"
@@ -199,7 +199,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Event Type Code"
-  physical_name: "event_type_code"
+  physical_name: "event_tp_code"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Classification Value"
   nullable: true
@@ -212,7 +212,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Number"
-  physical_name: "decision_number"
+  physical_name: "decision_nbr"
   description: "Số quyết định cấp phép/chấp thuận phòng giao dịch."
   data_domain: "Text"
   nullable: true
@@ -226,7 +226,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Number Secondary"
-  physical_name: "decision_number_secondary"
+  physical_name: "decision_nbr_secondary"
   description: "Số quyết định (trường mới DECISION_NUMBER — có thể trùng SO_QUYET_DINH)."
   data_domain: "Text"
   nullable: true
@@ -266,7 +266,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Document Number"
-  physical_name: "document_number"
+  physical_name: "document_nbr"
   description: "Số văn bản pháp lý (QĐ/GP/CV/Thông tư)."
   data_domain: "Text"
   nullable: true

@@ -14,13 +14,16 @@ Thuật toán (xem `.claude/skills/atomic-lld-design/SKILL.md` mục
     Domain Prefix + entity_physical_name đã chuẩn hóa lấy từ
     DataModel/working/Atomic/hld/atomic_entities.yaml (nguồn chuẩn duy nhất — script
     KHÔNG tự transform lại tên entity, chỉ lookup).
-  - COLUMN (attribute): attribute logical name luôn bắt đầu bằng đúng tên đầy đủ 1 atomic_entity
-    đã đăng ký (pattern "[Entity] Id"/"[Entity] Code"/"[Entity] Name"...). Nếu khớp, thay prefix đó
-    bằng entity_physical_name của entity đó (đúng giá trị dùng cho table — tái sử dụng rule A thay
-    vì spelled-out lại), rồi mới nối phần từ còn lại bằng "_", viết thường, trừ từ có trong
-    system/rules/rule_physical_name_exceptions.csv (longest-match-first). Chỉ entity nào thực sự bị
-    viết tắt (entity_physical_name khác full_words(atomic_entity)) mới được đưa vào dictionary này —
-    entity "root" (VD "Securities Practitioner") vẫn giữ full word như cũ.
+  - COLUMN (attribute): logical_name được tokenize bằng 1 dictionary hợp nhất (longest-match-first)
+    gồm 3 nguồn: (1) system/rules/rule_physical_name_exceptions.csv — từ đơn lẻ dùng chung (Id, Name,
+    Date, Address, Type...); (2) system/rules/rule_domain_prefix_abbreviations.csv — cụm domain-prefix
+    (VD "Securities Company", "Organization Unit") áp dụng trực tiếp bất kỳ vị trí nào trong attribute
+    name, không chỉ khi đứng đầu; (3) entity-prefix dict tự build {atomic_entity (đã viết tắt) ->
+    entity_physical_name} từ atomic_entities.yaml, dùng khi attribute name bắt đầu bằng đúng tên đầy
+    đủ 1 atomic_entity đã đăng ký (pattern "[Entity] Id"/"[Entity] Code"/"[Entity] Name"...) — tái sử
+    dụng rule A thay vì spelled-out lại. Chỉ entity nào thực sự bị viết tắt (entity_physical_name khác
+    full_words(atomic_entity)) mới được đưa vào dictionary này — entity "root" (VD "Securities
+    Practitioner") vẫn giữ full word như cũ.
 
 Idempotent: luôn recompute (không còn "chỉ điền khi trống").
 
@@ -262,10 +265,16 @@ def build_entity_prefix_dict(registry: dict[str, dict]) -> list[tuple[str, str]]
 
 
 def merge_column_dict(
-    exceptions: list[tuple[str, str]], registry: dict[str, dict]
+    exceptions: list[tuple[str, str]],
+    domain_prefix: list[tuple[str, str]],
+    registry: dict[str, dict],
 ) -> list[tuple[str, str]]:
-    """Hop nhat exceptions (rule B) + entity-prefix dict, sap xep longest-match-first."""
-    merged = exceptions + build_entity_prefix_dict(registry)
+    """
+    Hop nhat exceptions (rule B) + domain-prefix abbreviations (rule_domain_prefix_abbreviations.csv,
+    ap dung truc tiep cho cum tu xuat hien bat ky vi tri nao trong attribute name, khong chi khi
+    khop dung toan bo ten 1 atomic_entity da dang ky) + entity-prefix dict, sap xep longest-match-first.
+    """
+    merged = exceptions + domain_prefix + build_entity_prefix_dict(registry)
     merged.sort(key=lambda x: (-len(x[0]), x[0]))
     return merged
 
@@ -469,7 +478,7 @@ def main() -> None:
     registry = load_entity_registry(ATOMIC_ENTITIES)
     print(f"  {len(registry)} entities dang ky", file=sys.stderr)
 
-    exceptions = merge_column_dict(exceptions, registry)
+    exceptions = merge_column_dict(exceptions, _domain_prefix_dict(), registry)
     print(f"  {len(exceptions)} entries sau khi merge entity-prefix dictionary", file=sys.stderr)
 
     # --- Che do tra 1 ten column ---

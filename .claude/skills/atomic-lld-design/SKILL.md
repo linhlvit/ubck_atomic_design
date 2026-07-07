@@ -694,25 +694,36 @@ lại y nguyên, KHÔNG tự tính lại ở LLD nếu entity đã có sẵn tro
 
 ### B. Physical name của ATTRIBUTE (column)
 
-Attribute logical name luôn bắt đầu bằng đúng tên đầy đủ 1 Atomic Entity đã đăng ký (pattern
-`[Entity] Id` + `[Entity] Code` bắt buộc ở Bước 3c, cũng như `[Entity] Name` và mọi attribute khác
-mang prefix entity). Vì vậy thuật toán B gồm 2 bước:
+Toàn bộ logical name được tokenize bằng **1 dictionary hợp nhất duy nhất** (longest-match-first,
+cùng thuật toán `apply_dictionary()` dùng cho Rule A), gộp từ 3 nguồn:
 
-1. **Thay prefix entity (nếu có):** Nếu logical name khớp (longest-match-first) với đúng tên đầy đủ
-   1 `atomic_entity` đã đăng ký trong `atomic_entities.yaml`, thay phần prefix đó bằng
-   `entity_physical_name` của entity đó — **đúng giá trị đã dùng cho table (rule A)**, không tính
-   lại. Chỉ áp dụng cho entity thực sự bị viết tắt (`entity_physical_name` khác full-word) — entity
-   "root" (nơi `atomic_entity == domain_prefix`, VD "Securities Practitioner") vẫn giữ full word,
-   không có gì để thay.
-2. **Nối phần từ còn lại** bằng `_`, viết thường, **giữ nguyên đầy đủ từ** — TRỪ từ có trong file
-   ngoại lệ
-   [`system/rules/rule_physical_name_exceptions.csv`](../../../system/rules/rule_physical_name_exceptions.csv),
-   áp dụng theo thuật toán longest-match-first (duyệt trái sang phải, mỗi vị trí thử match cụm dài
-   nhất có trong CSV tại word boundary; match → thay bằng `Abbreviation`; không match → giữ nguyên
-   word, viết thường).
+1. **Entity-prefix dict** (tự build từ `atomic_entities.yaml`): `{atomic_entity đã đăng ký (lower)
+   → entity_physical_name}` — **đúng giá trị đã dùng cho table (rule A)**, không tính lại. Chỉ
+   entity nào thực sự bị viết tắt (`entity_physical_name` khác full-word) mới được đưa vào — entity
+   "root" (nơi `atomic_entity == domain_prefix`, VD "Securities Practitioner") không có gì để thay.
+   Xử lý pattern `[Entity] Id` / `[Entity] Code` / `[Entity] Name` khi logical name **bắt đầu bằng
+   đúng tên đầy đủ** 1 Atomic Entity đã đăng ký.
+2. **Domain-prefix abbreviations**
+   [`system/rules/rule_domain_prefix_abbreviations.csv`](../../../system/rules/rule_domain_prefix_abbreviations.csv)
+   — áp dụng **trực tiếp**, cụm từ (VD `Involved Party`, `Organization Unit`, `Securities Company`)
+   được viết tắt ở **bất kỳ vị trí nào** trong logical name, không chỉ khi đứng ở đầu và không chỉ
+   khi trùng khớp đúng 1 `atomic_entity` đã đăng ký. Đây là điểm khác biệt với (1): (1) chỉ khớp
+   toàn bộ tên entity (có thể nhiều từ hơn Domain Prefix, VD "Securities Practitioner Related
+   Party"), còn (2) khớp thẳng cụm Domain Prefix dù nó chỉ là 1 phần của attribute name (VD
+   "Organization Unit Type Code" không phải tên 1 entity nào nhưng vẫn chứa cụm "Organization
+   Unit").
+3. **Exceptions**
+   [`system/rules/rule_physical_name_exceptions.csv`](../../../system/rules/rule_physical_name_exceptions.csv)
+   — từ đơn lẻ dùng chung, áp dụng cho phần còn lại sau khi (1)/(2) đã khớp (VD `Id`, `Name`,
+   `Date`, `Address`→`adr`, `Type`→`tp`).
 
-- File ngoại lệ là danh sách **mở, bổ sung dần** — phát sinh viết tắt chuẩn mới cần áp dụng toàn
-  dự án thì thêm 1 dòng vào CSV đó, **không** viết thêm bảng abbreviation trong SKILL.md này.
+Cả 3 nguồn được gộp thành 1 list `(phrase, abbreviation)` rồi sort lại longest-match-first trước
+khi tokenize — nhờ vậy 1 lượt quét duy nhất xử lý được cả prefix entity, cụm domain-prefix giữa
+chừng, và từ đơn lẻ, không cần logic đặc biệt riêng cho từng loại. Phần không khớp bất kỳ dictionary
+nào thì giữ nguyên full word (viết thường).
+
+- Cả 2 file CSV là danh sách **mở, bổ sung dần** — phát sinh viết tắt chuẩn mới cần áp dụng toàn
+  dự án thì thêm 1 dòng vào CSV tương ứng, **không** viết thêm bảng abbreviation trong SKILL.md này.
 - **Không phải "không bao giờ viết tắt như table":** phiên bản trước của tài liệu này ghi sai rằng
   physical column name luôn giữ đầy đủ từ của entity kể cả khi entity đó bị viết tắt ở rule A
   (VD từng ghi `Securities Company Alert Financial Indicator Id → securities_company_alert_financial_indicator_id`).
@@ -721,16 +732,19 @@ mang prefix entity). Vì vậy thuật toán B gồm 2 bước:
 
 **Ví dụ (xem CSV để có danh sách ngoại lệ mới nhất):**
 
-| Logical name | Entity có bị viết tắt? | physical_name |
+| Logical name | Khớp qua nguồn nào | physical_name |
 |---|---|---|
-| Securities Company Alert Financial Indicator Id | Có (`sc_alert_financial_indicator`) | `sc_alert_financial_indicator_id` |
-| Securities Company Alert Financial Indicator Name | Có (`sc_alert_financial_indicator`) | `sc_alert_financial_indicator_nm` |
-| Securities Practitioner Related Party Id (FK) | Có (`sp_related_party`) | `sp_related_party_id` |
-| Securities Practitioner Full Name | Không — root entity | `securities_practitioner_full_nm` |
-| Source System Code | — (không phải entity prefix) | `src_stm_code` |
-| Created Timestamp | — | `created_tms` |
-| Full Name | — | `full_nm` |
-| Issue Date | — | `issue_dt` |
+| Securities Company Alert Financial Indicator Id | (1) Entity-prefix (`sc_alert_financial_indicator`) | `sc_alert_financial_indicator_id` |
+| Securities Company Alert Financial Indicator Name | (1) Entity-prefix (`sc_alert_financial_indicator`) | `sc_alert_financial_indicator_nm` |
+| Securities Practitioner Related Party Id (FK) | (1) Entity-prefix (`sp_related_party`) | `sp_related_party_id` |
+| Involved Party Id (FK, dùng trong shared entity) | (2) Domain-prefix trực tiếp (`Involved Party`→`ip`) — "Involved Party" không phải tên riêng 1 entity đã đăng ký nên không qua (1) | `ip_id` |
+| Organization Unit Type Code | (2) Domain-prefix trực tiếp (`Organization Unit`→`ou`) + (3) exceptions (`Type`→`tp`) | `ou_tp_code` |
+| Address Type Code | (3) Exceptions (`Address`→`adr`, `Type`→`tp`) | `adr_tp_code` |
+| Securities Practitioner Full Name | Không khớp gì — root entity, giữ full word | `securities_practitioner_full_nm` |
+| Source System Code | (3) Exceptions | `src_stm_code` |
+| Created Timestamp | (3) Exceptions | `created_tms` |
+| Full Name | (3) Exceptions | `full_nm` |
+| Issue Date | (3) Exceptions | `issue_dt` |
 
 ### C. `transform_physical_names.py`
 
@@ -738,9 +752,10 @@ Script tự động recompute (B) cho mọi attribute trong mọi `lld_*.yaml` (
 điền khi trống), và điền (A) bằng cách tra `entity_physical_name` từ `atomic_entities.yaml`
 (không tự transform lại tên entity). Chạy sau mỗi lần sửa LLD.
 
-Với (B), script tự build 1 dictionary bổ sung `{atomic_entity (đã viết tắt) → entity_physical_name}`
-từ `atomic_entities.yaml` (chỉ entity nào thực sự bị viết tắt ở rule A), gộp với
-`rule_physical_name_exceptions.csv` thành 1 dictionary duy nhất trước khi chạy longest-match-first
-— nhờ vậy bước 1 (thay prefix entity) và bước 2 (áp exceptions cho phần còn lại) chạy trong cùng 1
-lượt tokenize, không cần logic đặc biệt riêng cho Id/Code.
+Với (B), `merge_column_dict()` gộp 3 nguồn theo đúng thứ tự mô tả ở trên: `exceptions` (từ
+`rule_physical_name_exceptions.csv`) + `domain_prefix` (từ `rule_domain_prefix_abbreviations.csv`,
+load qua `_domain_prefix_dict()` — dùng chung với Rule A) + entity-prefix dict tự build từ
+`atomic_entities.yaml` (`build_entity_prefix_dict()`), rồi sort lại thành 1 dictionary duy nhất
+trước khi chạy longest-match-first — nhờ vậy cả 3 loại match (prefix entity, cụm domain-prefix
+giữa chừng, từ đơn lẻ) chạy trong cùng 1 lượt tokenize, không cần logic đặc biệt riêng cho Id/Code.
 

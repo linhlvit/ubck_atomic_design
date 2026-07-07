@@ -65,7 +65,7 @@ attributes:
     etl_derived_value: NHNCK.VIOLATIONS
 
   - name: Securities Practitioner Id
-    physical_name: securities_practitioner_id
+    physical_name: sp_id
     business_meaning: FK đến người hành nghề chứng khoán bị vi phạm.
     data_domain: Surrogate Key
     data_type: string
@@ -79,7 +79,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Code
-    physical_name: securities_practitioner_code
+    physical_name: sp_code
     business_meaning: Mã người hành nghề chứng khoán bị vi phạm.
     data_domain: Text
     data_type: string
@@ -149,7 +149,7 @@ attributes:
     etl_derived_value: null
 
   - name: Practitioner Identity Number At Violation
-    physical_name: practitioner_identity_number_at_violation
+    physical_name: practitioner_identity_nbr_at_violation
     business_meaning: Số CMND/CCCD người hành nghề tại thời điểm vi phạm (snapshot).
     data_domain: Text
     data_type: string
@@ -187,33 +187,5 @@ attributes:
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
-    etl_derived_value: null
-
-  - name: Record Type Code
-    physical_name: record_type_code
-    business_meaning: Phân loại bản ghi.
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: VIOLATIONS
-    source_column: NHNCK.VIOLATIONS.RECORD_TYPE
-    comment: "Scheme: RECORD_TYPE. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
-    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
-    etl_derived_value: null
-
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning: "Trạng thái bản ghi vi phạm (1=Hoạt động)."
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: VIOLATIONS
-    source_column: NHNCK.VIOLATIONS.RECORD_STATUS
-    comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null

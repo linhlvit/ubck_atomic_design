@@ -86,7 +86,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến người hành nghề"
   data_domain: "Surrogate Key"
   nullable: false
@@ -100,7 +100,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã người hành nghề (denormalized)"
   data_domain: "Text"
   nullable: false
@@ -248,7 +248,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Practitioner Registration Type Code"
-  physical_name: "snpst_practitioner_registration_type_code"
+  physical_name: "snpst_practitioner_registration_tp_code"
   description: "Hình thức đăng ký tại thời điểm nộp hồ sơ"
   data_domain: "Classification Value"
   nullable: true
@@ -261,7 +261,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Identity Type Code"
-  physical_name: "snpst_identity_type_code"
+  physical_name: "snpst_identity_tp_code"
   description: "Loại giấy tờ định danh tại thời điểm nộp hồ sơ"
   data_domain: "Classification Value"
   nullable: true
@@ -275,7 +275,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Identity Number"
-  physical_name: "snpst_identity_number"
+  physical_name: "snpst_identity_nbr"
   description: "Số giấy tờ định danh tại thời điểm nộp hồ sơ"
   data_domain: "Text"
   nullable: true
@@ -314,7 +314,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Previous Identity Number"
-  physical_name: "snpst_previous_identity_number"
+  physical_name: "snpst_previous_identity_nbr"
   description: "Số CMND cũ tại thời điểm nộp hồ sơ"
   data_domain: "Text"
   nullable: true
@@ -327,7 +327,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Phone Number"
-  physical_name: "snpst_phone_number"
+  physical_name: "snpst_phone_nbr"
   description: "Số điện thoại cố định tại thời điểm nộp hồ sơ"
   data_domain: "Text"
   nullable: true
@@ -340,7 +340,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Mobile Number"
-  physical_name: "snpst_mobile_number"
+  physical_name: "snpst_mobile_nbr"
   description: "Số điện thoại di động tại thời điểm nộp hồ sơ"
   data_domain: "Text"
   nullable: true
@@ -418,7 +418,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Address"
-  physical_name: "snpst_address"
+  physical_name: "snpst_adr"
   description: "Địa chỉ chung (legacy) tại thời điểm nộp hồ sơ"
   data_domain: "Text"
   nullable: true
@@ -431,7 +431,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Snapshot Permanent Address"
-  physical_name: "snpst_permanent_address"
+  physical_name: "snpst_permanent_adr"
   description: "Địa chỉ thường trú chi tiết tại thời điểm nộp hồ sơ"
   data_domain: "Text"
   nullable: true
@@ -609,18 +609,5 @@ attributes:
   comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Snapshot\
     \ Current District Id."
   classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi snapshot"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.APPLICATION_PROFESSIONALS.RECORD_STATUS"
-  comment: "Scheme: APPLICATION_STATUS. Reuse."
-  classification_context: "APPLICATION_STATUS"
   etl_derived_value: null
   data_type: "string"

@@ -5,8 +5,8 @@
 > **Phạm vi:** Đăng ký, cấp/thu hồi chứng chỉ hành nghề, đào tạo, thi sát hạch, vi phạm, đào tạo sau CCHN.
 >
 > **File chi tiết theo tầng:**
-> - [NHNCK_HLD_Tier1.md](NHNCK_HLD_Tier1.md) — Reference Data: Geographic Area (Country/Province/District), Regulatory Authority Organization Unit, Securities Organization Reference, License Decision Document, Regulatory Authority Officer
-> - [NHNCK_HLD_Tier2.md](NHNCK_HLD_Tier2.md) — Securities Practitioner, Professional Training Class, Qualification Examination Assessment
+> - [NHNCK_HLD_Tier1.md](NHNCK_HLD_Tier1.md) — Reference Data: Geographic Area (Country/Province/District), Regulatory Authority Organization Unit, Securities Organization Reference, License Decision Document, Securities Practitioner License Certificate Type
+> - [NHNCK_HLD_Tier2.md](NHNCK_HLD_Tier2.md) — Securities Practitioner, Securities Practitioner Reason Change History, Professional Training Class, Qualification Examination Assessment
 > - [NHNCK_HLD_Tier3.md](NHNCK_HLD_Tier3.md) — License Certificate Document, License Application, Employment Status, Related Party, Conduct Violation, Organization Employment Report, Training Class Enrollment, Examination Assessment Result, Examination Assessment Fee
 > - [NHNCK_HLD_Tier4.md](NHNCK_HLD_Tier4.md) — License Application sub-entities (×5), Professional Training History
 
@@ -23,8 +23,9 @@
 | 1 | Involved Party | [Involved Party] Organization | Organization | DEPARTMENTS | Update | Danh mục phòng ban thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cùng Atomic entity với UNITS. Organization Unit Type Code = DEPARTMENT, Source System Code = NHNCK.DEPARTMENTS. Tách attr file theo nguồn. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | ORGANIZATIONS | Update | Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) | Securities Organization Reference | Fundamental | Organization — entity nghiệp vụ phong phú, FK từ nhiều bảng. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISIONS | Update | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Fundamental | Government Registration Document — được FK từ Certificate Document (×3), Certificate Group Document, Conduct Violation, Examination Assessment. |
-| 1 | Involved Party | [Involved Party] Individual | Individual | USERS | Update | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Regulatory Authority Officer | Fundamental | Individual — FK từ nhiều bảng (ASSIGNEE_ID, CREATED_BY, UPDATED_BY, VERIFY_BY). |
-| 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS, PROFESSIONAL_HISTORIES | Update | Thông tin người hành nghề chứng khoán | Securities Practitioner | Fundamental | Individual — master entity người hành nghề. Attribute cá nhân chi tiết lấy từ bản mới nhất PROFESSIONAL_HISTORIES. |
+| 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATES | Update | Danh mục các loại chứng chỉ hành nghề chứng khoán | Securities Practitioner License Certificate Type | Fundamental | Government Registration Document — danh mục loại CCHN, có processing_days/sort_order/description nên là entity thật (không phải Classification Value). FK target cho Certificate Type Id ở License Application/Certificate Document/Organization Employment Report/Examination Assessment Result/Fee, và cross-source từ IAM User. |
+| 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS | Update | Thông tin người hành nghề chứng khoán | Securities Practitioner | Fundamental | Individual — master entity người hành nghề. |
+| 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONAL_HISTORIES | Update | Lịch sử thay đổi thông tin cá nhân của người hành nghề | Securities Practitioner Reason Change History | Fundamental | Individual — ghi nhận 1 lần thay đổi thông tin (ai/khi nào/lý do). Thiết kế lại 2026-07-07 — bản cũ map nhầm sang PROFESSIONALS. FK đến Securities Practitioner qua PROFESSIONAL_ID. |
 | 2 | Event | [Event] Training Course | Training Course | SPECIALIZATION_COURSES | Update | Danh mục khóa học chuyên môn bổ sung kiến thức | Securities Practitioner Professional Training Class | Fundamental | Training Course — master entity khóa học, không gắn với người cụ thể. |
 | 2 | Communication | [Communication] Assessment | Assessment | EXAM_SESSIONS | Update | Danh mục các đợt thi sát hạch cấp CCHN | Securities Practitioner Qualification Examination Assessment | Fundamental | Assessment — FK đến Decision + Officer (Tier 1). |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATE_RECORDS | Update | Chứng chỉ hành nghề được cấp cho người hành nghề | Securities Practitioner License Certificate Document | Fundamental | Government Registration Document — FK đến Practitioner (Tier 2), Decision ×3 (Tier 1), Officer (Tier 1). |
@@ -58,7 +59,7 @@ graph TD
     ORGUNIT["**Regulatory Authority Organization Unit**"]:::atomic
     SECORG["**Securities Organization Reference**"]:::atomic
     DECISION["**Securities Practitioner License Decision Document**"]:::atomic
-    OFFICER["**Regulatory Authority Officer**"]:::atomic
+    OFFICER["**Identity and Access Management User**\n(pending — xem IAM, thay Regulatory\nAuthority Officer đã loại khỏi scope)"]:::atomic
     %% Shared
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
@@ -181,6 +182,9 @@ graph TD
 | 3 | 4 | `APPLICATION_RE_EXAMS.RE_APPLICATION_ID` nullable — dòng với RE_APPLICATION_ID = null có hợp lệ không? | **Xác nhận: hợp lệ.** RE_APPLICATION_ID được fill sau khi hồ sơ thi lại được tạo — ETL load incremental theo trạng thái fill. |
 | 4 | 4 | `APPLICATION_FEES` — trường hợp nào phí bị cập nhật (cancel, refund)? | **Xác nhận: có khả năng cập nhật phí.** Table Type Fundamental là đúng — SCD4A xử lý lifecycle thanh toán qua cột STATUS + audit. |
 | 5 | 1 | `ORGANIZATIONS.ORGANIZATION_TYPE_ID` tự tham chiếu — là loại hình tổ chức (Classification Value) hay FK entity khác? | **Xác nhận: Classification Value.** Xử lý thành ORGANIZATION_TYPE_CODE trên Atomic, không tạo FK entity riêng. |
+| 6 | 1 | `USERS` — Data Modeler quyết định (2026-07-07) không thiết kế Atomic entity riêng cho bảng này. | **Loại khỏi scope** (xem 7f). Entity `Regulatory Authority Officer` bị xóa. Định hướng: mọi FK "officer/user" audit trong NHNCK dùng chung entity `Identity and Access Management User` (nguồn IAM.USERS) — tạm `status: pending` trên 12 file phụ thuộc + `lld_NHNCK_CERTIFICATES.yaml` cho đến khi (a) xác nhận join key NHNCK.USERS.ID ↔ IAM.USERS, (b) `lld_IAM_USERS.yaml` lên `approved`. |
+| 7 | 2 | `PROFESSIONAL_HISTORIES` — thiết kế cũ map nhầm toàn bộ `source_columns` sang `NHNCK.PROFESSIONALS` thay vì chính bảng `PROFESSIONAL_HISTORIES`. | **Đã thiết kế lại (2026-07-07).** Grain thực tế: 1 dòng = 1 lần ghi nhận thay đổi thông tin cá nhân. Entity mới `Securities Practitioner Reason Change History`, chỉ lưu `ID/PROFESSIONAL_ID/CHANGE_DATE/REASON_UPDATE`; ~43 cột snapshot còn lại loại khỏi thiết kế (xem `pending_design.yaml`). |
+| 8 | 1 | `CERTIFICATES` — trước đây chỉ tồn tại dưới dạng Classification Value scheme rỗng, chưa có Atomic entity. | **Đã thiết kế mới (2026-07-07).** Entity `Securities Practitioner License Certificate Type` — là FK target thật cho `Certificate Type Id` (License Application ×2, Certificate Document, Examination Assessment Result, Examination Assessment Fee, Organization Employment Report) và cross-source cho `IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID` (`Practice Certificate Type Id`, tạm pending — chưa xác nhận join key IAM↔NHNCK). |
 
 ---
 
@@ -188,6 +192,7 @@ graph TD
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
+| Involved Party | USERS | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Quyết định Data Modeler (2026-07-07) — không thiết kế Atomic entity riêng. Định hướng dùng chung entity Identity and Access Management User (nguồn IAM.USERS) cho mọi FK "officer/user" trong hệ thống. |
 | System / Auth | USER_ROLES | Phân quyền người dùng theo vai trò | Operational/system data — không có giá trị nghiệp vụ. |
 | System / Auth | ROLES | Danh mục vai trò trong hệ thống | Operational/system data. |
 | System / Auth | PERMISSIONS | Danh mục quyền hạn trong hệ thống | Operational/system data. |
@@ -265,14 +270,22 @@ graph TD
 **Description:** Quyết định hành chính do UBCKNN ban hành liên quan đến CCHN — cấp, thu hồi, hủy CCHN hoặc công nhận kết quả thi. Ghi nhận số quyết định, loại, ngày ký và người ký.
 
 
-### 5. Regulatory Authority Officer
-**Tier:** 1 | **Source:** `USERS` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Cán bộ, chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK. Ghi nhận thông tin nhân sự, đơn vị/phòng ban phụ trách và trạng thái tài khoản. Không lưu thông tin xác thực (PASSWORD).
+### 5. Regulatory Authority Officer — ĐÃ LOẠI KHỎI SCOPE (2026-07-07)
+**Tier:** 1 | **Source:** `USERS` (out of scope) | **Thay thế:** `Identity and Access Management User` (nguồn IAM.USERS, `status: pending`)
+**Ghi chú:** Data Modeler quyết định không thiết kế Atomic entity riêng cho NHNCK.USERS. Xem 7e #6 và 7f.
+
+### 5b. Securities Practitioner License Certificate Type — MỚI (2026-07-07)
+**Tier:** 1 | **Source:** `CERTIFICATES` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fundamental
+**Description:** Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số ngày xử lý, thứ tự hiển thị. FK target cho `Certificate Type Id` (License Application ×2, Certificate Document, Examination Assessment Result, Examination Assessment Fee, Organization Employment Report) và cross-source cho IAM User (`Practice Certificate Type Id`, pending). Xem 7e #8.
 
 
 ### 6. Securities Practitioner
-**Tier:** 2 | **Source:** `PROFESSIONALS, PROFESSIONAL_HISTORIES` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
+**Tier:** 2 | **Source:** `PROFESSIONALS` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin nhân thân và trạng thái hành nghề.
+
+### 6b. Securities Practitioner Reason Change History — THIẾT KẾ LẠI (2026-07-07)
+**Tier:** 2 | **Source:** `PROFESSIONAL_HISTORIES` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
+**Description:** Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề — ai bị thay đổi, khi nào, lý do gì. Chỉ lưu `ID/PROFESSIONAL_ID/CHANGE_DATE/REASON_UPDATE`. Xem 7e #7.
 
 
 ### 7. Securities Practitioner Professional Training Class

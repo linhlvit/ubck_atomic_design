@@ -3,13 +3,13 @@ schema_version: "2.0"
 metadata:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_HISTORIES"
-  atomic_entity: "Securities Practitioner"
-  entity_physical_name: "securities_practitioner"
+  atomic_entity: "Securities Practitioner Reason Change History"
+  entity_physical_name: "sp_reason_change_history"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,29 +17,35 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Thiết kế lại (2026-07-07): bản thiết kế trước map nhầm toàn bộ source_columns\
+    \ sang NHNCK.PROFESSIONALS thay vì NHNCK.PROFESSIONAL_HISTORIES. Grain thực tế:\
+    \ 1 dòng = 1 lần ghi nhận thay đổi thông tin cá nhân của người hành nghề. Chỉ\
+    \ lưu ID/PROFESSIONAL_ID/CHANGE_DATE/REASON_UPDATE — ~43 cột snapshot còn lại\
+    \ (trùng PROFESSIONALS) loại khỏi thiết kế, xem pending_design.yaml. Giữ concept\
+    \ Involved Party (không dùng Business Activity/Maintenance Entry) theo quyết\
+    \ định Data Modeler."
 attributes:
-- attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+- attribute_name: "Securities Practitioner Reason Change History Id"
+  physical_name: "sp_reason_change_history_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Individual\" (Involved Party)."
+  comment: "PK surrogate. BCV: [Involved Party] Individual."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
-  description: "Mã người hành nghề. BK từ PK nguồn"
+- attribute_name: "Securities Practitioner Reason Change History Code"
+  physical_name: "sp_reason_change_history_code"
+  description: "Mã bản ghi thay đổi. BK từ PK nguồn"
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONALS.ID"
+  - "NHNCK.PROFESSIONAL_HISTORIES.ID"
   comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
   classification_context: null
   etl_derived_value: null
@@ -53,287 +59,62 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONALS"
-  etl_derived_value: "NHNCK.PROFESSIONALS"
+  classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONAL_HISTORIES"
+  etl_derived_value: "NHNCK.PROFESSIONAL_HISTORIES"
   data_type: "string"
-- attribute_name: "Full Name"
-  physical_name: "full_nm"
-  description: "Họ và tên đầy đủ của người hành nghề"
-  data_domain: "Text"
-  nullable: true
+- attribute_name: "Securities Practitioner Id"
+  physical_name: "securities_practitioner_id"
+  description: "FK đến người hành nghề bị thay đổi thông tin"
+  data_domain: "Surrogate Key"
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONALS.FULL_NAME"
-  comment: null
+  - "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash:\
+    \ hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Given Name"
-  physical_name: "given_nm"
-  description: "Tên đệm và tên riêng"
+- attribute_name: "Securities Practitioner Code"
+  physical_name: "securities_practitioner_code"
+  description: "Mã người hành nghề (denormalized lookup)"
   data_domain: "Text"
-  nullable: true
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONALS.FIRST_NAME"
-  comment: null
+  - "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Birth Date"
-  physical_name: "birth_dt"
-  description: "Ngày sinh"
+- attribute_name: "Change Date"
+  physical_name: "change_dt"
+  description: "Ngày ghi nhận thay đổi thông tin"
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONALS.BIRTH_DATE"
-  comment: null
+  - "NHNCK.PROFESSIONAL_HISTORIES.CHANGE_DATE"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ (ngày phát sinh\
+    \ sự kiện thay đổi)."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Birth Year"
-  physical_name: "birth_year"
-  description: "Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ)"
+- attribute_name: "Change Reason"
+  physical_name: "change_reason"
+  description: "Lý do cập nhật thông tin người hành nghề"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.PROFESSIONALS.BIRTH_YEAR"
-  comment: "Nguồn lưu NVARCHAR2(4) — giữ dạng text."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Gender Code"
-  physical_name: "gender_code"
-  description: "Giới tính: 0=Nam / 1=Nữ"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.GENDER"
-  comment: "Scheme: INDIVIDUAL_GENDER. Nguồn lưu NUMBER — ETL convert sang code."
-  classification_context: "INDIVIDUAL_GENDER"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Education Level Code"
-  physical_name: "education_level_code"
-  description: "Trình độ học vấn"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.EDUCATION_LEVEL_ID"
-  comment: "Scheme: EDUCATION_LEVEL. Nguồn lưu FK số — ETL lookup convert sang code."
-  classification_context: "EDUCATION_LEVEL"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Practitioner Registration Type Code"
-  physical_name: "practitioner_registration_type_code"
-  description: "Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.REGISTRATION_TYPE"
-  comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE. Nguồn lưu NUMBER — ETL convert\
-    \ sang code."
-  classification_context: "PRACTITIONER_REGISTRATION_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Practice Status Code"
-  physical_name: "practice_status_code"
-  description: "Trạng thái hành nghề chứng khoán"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.STATUS_WORK"
-  comment: "Scheme: PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi có cấp\
-    \ lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
-  classification_context: "PRACTICE_STATUS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Account Status Code"
-  physical_name: "account_status_code"
-  description: "Trạng thái tài khoản người dùng trên cổng NHNCK"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
-  comment: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động / 2=Khóa."
-  classification_context: "OFFICER_STATUS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Organization Id"
-  physical_name: "organization_id"
-  description: "FK đến tổ chức chứng khoán hiện tại (nullable)"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-    \ ORGANIZATION_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Organization Code"
-  physical_name: "organization_code"
-  description: "Mã tổ chức (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Organization Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Nationality Id"
-  physical_name: "nationality_id"
-  description: "FK đến Geographic Area (quốc tịch)"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Nationality Code"
-  physical_name: "nationality_code"
-  description: "Mã quốc gia/quốc tịch (denormalized)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Workplace Name"
-  physical_name: "workplace_nm"
-  description: "Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.WORKPLACE"
-  comment: "Denormalized text. Có thể khác Organization Name khi người hành nghề làm\
-    \ ở chi nhánh."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Position Name"
-  physical_name: "position_nm"
-  description: "Chức vụ hiện tại (denormalized text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.POSITION"
-  comment: "Denormalized text — không FK vì không có bảng Position chuẩn dùng chung."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Department Name"
-  physical_name: "department_nm"
-  description: "Phòng ban hiện tại (denormalized text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.DEPARTMENT"
-  comment: "Denormalized text."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Previous Identity Number"
-  physical_name: "previous_identity_number"
-  description: "Số CMND cũ trước khi chuyển sang CCCD"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.PREVIOUS_IDENTITY_NUMBER"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Hometown"
-  physical_name: "hometown"
-  description: "Quê quán (dữ liệu tích hợp C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.HOMETOWN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Ethnicity Name"
-  physical_name: "ethnicity_nm"
-  description: "Dân tộc (dữ liệu tích hợp C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.NATIONAL"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Religion Name"
-  physical_name: "religion_nm"
-  description: "Tôn giáo (dữ liệu tích hợp C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.RELIGION"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Place of Birth Description"
-  physical_name: "place_of_birth_description"
-  description: "Nơi sinh (text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH"
-  comment: null
+  - "NHNCK.PROFESSIONAL_HISTORIES.REASON_UPDATE"
+  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Xác nhận với\
+    \ người thiết kế: nguồn là REASON_UPDATE (không có cột REASON_DATE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -24,7 +24,7 @@ metadata:
     \ FILE_DATA, DELETED, DATA_MIGRATION, ID_DB_OLD document trong pending_design.yaml."
 attributes:
 - attribute_name: "Foreign Fund Management Organization Unit Id"
-  physical_name: "foreign_fund_management_organization_unit_id"
+  physical_name: "foreign_fund_management_ou_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -37,7 +37,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Code"
-  physical_name: "foreign_fund_management_organization_unit_code"
+  physical_name: "foreign_fund_management_ou_code"
   description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
   data_domain: "Text"
   nullable: false
@@ -104,7 +104,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Branch Type Flag"
-  physical_name: "branch_type_flag"
+  physical_name: "branch_tp_flag"
   description: "Cờ là chi nhánh: 1=Chi nhánh, 0=Văn phòng đại diện."
   data_domain: "Boolean"
   nullable: true
@@ -117,7 +117,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Foreign Fund Management Organization Unit Full Name"
-  physical_name: "foreign_fund_management_organization_unit_full_nm"
+  physical_name: "foreign_fund_management_ou_full_nm"
   description: "Tên hiển thị chính."
   data_domain: "Text"
   nullable: true
@@ -130,7 +130,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit English Name"
-  physical_name: "foreign_fund_management_organization_unit_english_nm"
+  physical_name: "foreign_fund_management_ou_english_nm"
   description: "Tên tiếng Anh."
   data_domain: "Text"
   nullable: true
@@ -143,7 +143,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Short Name"
-  physical_name: "foreign_fund_management_organization_unit_short_nm"
+  physical_name: "foreign_fund_management_ou_short_nm"
   description: "Tên viết tắt."
   data_domain: "Text"
   nullable: true
@@ -209,7 +209,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Amendment License Number"
-  physical_name: "amendment_license_number"
+  physical_name: "amendment_license_nbr"
   description: "Số giấy phép điều chỉnh tại lần thay đổi."
   data_domain: "Text"
   nullable: true
@@ -261,7 +261,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Business Registration Number"
-  physical_name: "business_registration_number"
+  physical_name: "business_registration_nbr"
   description: "Số đăng ký kinh doanh của chi nhánh/VPĐD."
   data_domain: "Text"
   nullable: true
@@ -275,7 +275,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Charter Capital Amount"
-  physical_name: "charter_capital_amount"
+  physical_name: "charter_capital_amt"
   description: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
   data_domain: "Currency Amount"
   nullable: true
@@ -288,7 +288,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
 - attribute_name: "Event Type Code"
-  physical_name: "event_type_code"
+  physical_name: "event_tp_code"
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
   data_domain: "Classification Value"
   nullable: true

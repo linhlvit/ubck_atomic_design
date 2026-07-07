@@ -35,14 +35,6 @@ schemes:
       - "Identity and Access Management User"
     values: []
 
-  - scheme_code: "IAM_PRACTICE_CERT_TYPE"
-    name: "Loại chứng chỉ hành nghề — cần xác nhận bảng tham chiếu"
-    source_type: "modeler_defined"
-    source_table: "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
-    used_in_entities:
-      - "Identity and Access Management User"
-    values: []
-
   - scheme_code: "APPLICATION_STATUS"
     name: "Trạng thái hồ sơ — values from ApplicationStatuses"
     source_type: "source_table"
@@ -76,16 +68,6 @@ schemes:
     used_in_entities:
       - "License Certificate Document"
       - "Certificate Document Status History (From/To)"
-    values: []
-
-  - scheme_code: "CERTIFICATE_TYPE"
-    name: "Loại chứng chỉ hành nghề — values from Certificates"
-    source_type: "source_table"
-    source_table: "NHNCK.Certificates"
-    used_in_entities:
-      - "License Application"
-      - "License Certificate Document"
-      - "Organization Employment Report"
     values: []
 
   - scheme_code: "CONVERSION_STATUS"
@@ -346,14 +328,6 @@ schemes:
       - "Securities Practitioner License Application"
     values: []
 
-  - scheme_code: "NHNCK_CERTIFICATE_TYPE"
-    name: null
-    source_type: "source_table"
-    source_table: "NHNCK.CERTIFICATES"
-    used_in_entities:
-      - "Securities Practitioner License Application"
-    values: []
-
   - scheme_code: "NHNCK_CERT_RECEIPT_METHOD"
     name: null
     source_type: "etl_derived"
@@ -400,11 +374,13 @@ schemes:
         source_table: null
 
   - scheme_code: "OFFICER_STATUS"
-    name: "Trạng thái người dùng"
+    name: "Trạng thái người dùng — nguồn gốc NHNCK.Users.Status, Regulatory Authority\
+      \ Officer đã loại khỏi scope (theo quyết định Data Modeler), reuse tại Securities\
+      \ Practitioner.Account Status Code"
     source_type: "modeler_defined"
     source_table: "NHNCK.Users.Status"
     used_in_entities:
-      - "Regulatory Authority Officer"
+      - "Securities Practitioner"
     values: []
 
   - scheme_code: "ORGANIZATION_LEVEL"
@@ -491,13 +467,6 @@ schemes:
     source_table: null
     used_in_entities:
       - "Securities Practitioner License Certificate"
-    values: []
-
-  - scheme_code: "RECORD_TYPE"
-    name: null
-    source_type: "etl_derived"
-    source_table: null
-    used_in_entities: []
     values: []
 
   # ─── FMS schemes ─────────────────────────────────────────────────────────────
@@ -1144,13 +1113,6 @@ schemes:
       - "Related Party"
     values: []
 
-  - scheme_code: "REPORT_TYPE"
-    name: "Loại báo cáo — cần xác nhận từ data"
-    source_type: "modeler_defined"
-    source_table: "NHNCK.OrganizationReports.Type"
-    used_in_entities:
-      - "Organization Employment Report"
-    values: []
 
   - scheme_code: "SOURCE_SYSTEM"
     name: null
@@ -3744,20 +3706,6 @@ schemes:
       - code: "WARD_OLD"
         name: "Phường/Xã/Thị trấn (cũ — pre-2025) — từ ECAT_06_WardOld"
         source_table: "ECAT.ECAT_06_WardOld"
-
-  - scheme_code: "RECORD_STATUS"
-    name: "Trạng thái bản ghi chung (active/inactive) — dùng cho cột RECORD_STATUS dạng cờ 1/0 xuất hiện lặp lại ở nhiều bảng danh mục nguồn (đã tham chiếu ở lld_NHNCK_COUNTRIES.yaml/lld_NHNCK_PROVINCES.yaml nhưng chưa đăng ký scheme — bổ sung khi thiết kế FMS)"
-    source_type: "etl_derived"
-    source_table: null
-    used_in_entities:
-      - "Geographic Area"
-    values:
-      - code: "ACTIVE"
-        name: "Đang hoạt động/Hiệu lực"
-        source_table: null
-      - code: "INACTIVE"
-        name: "Ngừng hoạt động/Hết hiệu lực"
-        source_table: null
 
   - scheme_code: "GSGD_APPROVAL_STATUS"
     name: "Trạng thái phê duyệt (tài khoản/sự kiện/nhóm) — GSGD"

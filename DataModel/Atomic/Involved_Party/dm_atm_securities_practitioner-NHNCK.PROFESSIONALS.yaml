@@ -23,7 +23,7 @@ ldm:
 
 attributes:
   - name: Securities Practitioner Id
-    physical_name: securities_practitioner_id
+    physical_name: sp_id
     business_meaning: Id tự sinh (surrogate key)
     data_domain: Surrogate Key
     data_type: string
@@ -37,7 +37,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Practitioner Code
-    physical_name: securities_practitioner_code
+    physical_name: sp_code
     business_meaning: Mã người hành nghề. BK từ PK nguồn
     data_domain: Text
     data_type: string
@@ -149,7 +149,7 @@ attributes:
     etl_derived_value: null
 
   - name: Practitioner Registration Type Code
-    physical_name: practitioner_registration_type_code
+    physical_name: practitioner_registration_tp_code
     business_meaning: "Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay"
     data_domain: Classification Value
     data_type: string
@@ -289,7 +289,7 @@ attributes:
     etl_derived_value: null
 
   - name: Previous Identity Number
-    physical_name: previous_identity_number
+    physical_name: previous_identity_nbr
     business_meaning: Số CMND cũ trước khi chuyển sang CCCD
     data_domain: Text
     data_type: string
@@ -373,7 +373,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Company Id
-    physical_name: securities_company_id
+    physical_name: sc_id
     business_meaning: FK đến Công ty chứng khoán nơi người hành nghề công tác.
     data_domain: Surrogate Key
     data_type: string
@@ -387,7 +387,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Company Code
-    physical_name: securities_company_code
+    physical_name: sc_code
     business_meaning: Mã Công ty chứng khoán.
     data_domain: Text
     data_type: string
@@ -401,7 +401,7 @@ attributes:
     etl_derived_value: null
 
   - name: Branch Organization Unit Id
-    physical_name: branch_organization_unit_id
+    physical_name: branch_ou_id
     business_meaning: FK đến chi nhánh CTCK nơi người hành nghề công tác (nullable).
     data_domain: Surrogate Key
     data_type: string
@@ -415,7 +415,7 @@ attributes:
     etl_derived_value: null
 
   - name: Branch Organization Unit Code
-    physical_name: branch_organization_unit_code
+    physical_name: branch_ou_code
     business_meaning: Mã chi nhánh.
     data_domain: Text
     data_type: string
@@ -429,7 +429,7 @@ attributes:
     etl_derived_value: null
 
   - name: Transaction Office Organization Unit Id
-    physical_name: transaction_office_organization_unit_id
+    physical_name: transaction_office_ou_id
     business_meaning: FK đến phòng giao dịch CTCK nơi người hành nghề công tác (nullable).
     data_domain: Surrogate Key
     data_type: string
@@ -443,7 +443,7 @@ attributes:
     etl_derived_value: null
 
   - name: Transaction Office Organization Unit Code
-    physical_name: transaction_office_organization_unit_code
+    physical_name: transaction_office_ou_code
     business_meaning: Mã phòng giao dịch.
     data_domain: Text
     data_type: string
@@ -457,7 +457,7 @@ attributes:
     etl_derived_value: null
 
   - name: Representative Office Organization Unit Id
-    physical_name: representative_office_organization_unit_id
+    physical_name: representative_office_ou_id
     business_meaning: FK đến VPDD CTCK nơi người hành nghề công tác (nullable).
     data_domain: Surrogate Key
     data_type: string
@@ -471,7 +471,7 @@ attributes:
     etl_derived_value: null
 
   - name: Representative Office Organization Unit Code
-    physical_name: representative_office_organization_unit_code
+    physical_name: representative_office_ou_code
     business_meaning: Mã VPDD.
     data_domain: Text
     data_type: string
@@ -485,7 +485,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities License Number
-    physical_name: securities_license_number
+    physical_name: securities_license_nbr
     business_meaning: Số chứng chỉ hành nghề chứng khoán theo SCMS.
     data_domain: Text
     data_type: string
@@ -513,7 +513,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities License Number (Secondary)
-    physical_name: securities_license_number_secondary
+    physical_name: securities_license_nbr_secondary
     business_meaning: Số chứng chỉ hành nghề chứng khoán (cột thứ 2 — cần xác nhận khác SO_CHUNG_CHI_HNCK).
     data_domain: Text
     data_type: string
@@ -933,7 +933,7 @@ attributes:
     etl_derived_value: null
 
   - name: Legacy National Id Number
-    physical_name: legacy_national_id_number
+    physical_name: legacy_national_id_nbr
     business_meaning: Số CMND từ hệ thống cũ (SOCMT).
     data_domain: Text
     data_type: string
@@ -1003,7 +1003,7 @@ attributes:
     etl_derived_value: null
 
   - name: Legacy License Number
-    physical_name: legacy_license_number
+    physical_name: legacy_license_nbr
     business_meaning: Số giấy phép từ hệ thống cũ (SOGIAYPHEP).
     data_domain: Text
     data_type: string
