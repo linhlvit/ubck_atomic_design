@@ -28,32 +28,6 @@ entries:
   attribute_count: 34
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSE_DETAILS
 - subfolder: Communication
-  file_name: dm_atm_securities_order-ORDERTRADE.ORDER_BOOK_HNX.yaml
-  id: ATM-securities_order-ORDERTRADE.ORDER_BOOK_HNX
-  physical_name: securities_order
-  logical_name: Securities Order
-  bcv_core_object: Communication
-  bcv_concept: "[Communication] Financial Market Order"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: ORDERTRADE
-  status: approved
-  attribute_count: 57
-  brd_ref: BRD-SRC-ORDERTRADE-ORDER_BOOK_HNX
-- subfolder: Communication
-  file_name: dm_atm_securities_order-ORDERTRADE.ORDER_BOOK_HOSE.yaml
-  id: ATM-securities_order-ORDERTRADE.ORDER_BOOK_HOSE
-  physical_name: securities_order
-  logical_name: Securities Order
-  bcv_core_object: Communication
-  bcv_concept: "[Communication] Financial Market Order"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: ORDERTRADE
-  status: approved
-  attribute_count: 57
-  brd_ref: BRD-SRC-ORDERTRADE-ORDER_BOOK_HOSE
-- subfolder: Communication
   file_name: dm_atm_securities_practitioner_qualification_examination_assessment-NHNCK.EXAM_SESSIONS.yaml
   id: ATM-securities_practitioner_qualification_examination_assessment-NHNCK.EXAM_SESSIONS
   physical_name: securities_practitioner_qualification_examination_assessment
@@ -78,19 +52,6 @@ entries:
   source: NHNCK
   status: approved
   attribute_count: 25
-  brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
-- subfolder: Communication
-  file_name: dm_atm_spqea_result-NHNCK.EXAM_DETAILS.yaml
-  id: ATM-spqea_result-NHNCK.EXAM_DETAILS
-  physical_name: spqea_result
-  logical_name: Securities Practitioner Qualification Examination Assessment Result
-  bcv_core_object: Communication
-  bcv_concept: "[Communication] Assessment"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 24
   brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
 - subfolder: Condition
   file_name: dm_atm_sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES.yaml
@@ -210,32 +171,6 @@ entries:
   status: approved
   attribute_count: 17
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
-- subfolder: Group
-  file_name: dm_atm_index_constituent_snapshot-MDDS.JAD_CSIDXINFOR.yaml
-  id: ATM-index_constituent_snapshot-MDDS.JAD_CSIDXINFOR
-  physical_name: index_constituent_snapshot
-  logical_name: Index Constituent Snapshot
-  bcv_core_object: Group
-  bcv_concept: "[Group] Share Index"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-MDDS-JAD_CSIDXINFOR
-- subfolder: Group
-  file_name: dm_atm_market_index_snapshot-MDDS.JAD_MARKETINFOR.yaml
-  id: ATM-market_index_snapshot-MDDS.JAD_MARKETINFOR
-  physical_name: market_index_snapshot
-  logical_name: Market Index Snapshot
-  bcv_core_object: Group
-  bcv_concept: "[Group] Share Index"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 35
-  brd_ref: BRD-SRC-MDDS-JAD_MARKETINFOR
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-NHNCK.PROFESSIONALS.yaml
   id: ATM-ip_alternative_identification-NHNCK.PROFESSIONALS
@@ -457,32 +392,6 @@ entries:
   status: approved
   attribute_count: 21
   brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_RELATIONSHIPS
-- subfolder: Involved_Party
-  file_name: dm_atm_spla_employment_experience-NHNCK.APPLICATION_EXPERIENCES.yaml
-  id: ATM-spla_employment_experience-NHNCK.APPLICATION_EXPERIENCES
-  physical_name: spla_employment_experience
-  logical_name: Securities Practitioner License Application Employment Experience
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 19
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
-- subfolder: Involved_Party
-  file_name: dm_atm_sppt_history-NHNCK.PROFESSIONAL_TRAININGS.yaml
-  id: ATM-sppt_history-NHNCK.PROFESSIONAL_TRAININGS
-  physical_name: sppt_history
-  logical_name: Securities Practitioner Professional Training History
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: NHNCK
-  status: approved
-  attribute_count: 11
-  brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_TRAININGS
 - subfolder: Location
   file_name: dm_atm_geographic_area-NHNCK.COUNTRIES.yaml
   id: ATM-geographic_area-NHNCK.COUNTRIES
@@ -522,71 +431,6 @@ entries:
   status: approved
   attribute_count: 10
   brd_ref: BRD-SRC-NHNCK-PROVINCES
-- subfolder: Product
-  file_name: dm_atm_corporate_bond_trading_snapshot-MDDS.JAD_CORPBONDINFOR.yaml
-  id: ATM-corporate_bond_trading_snapshot-MDDS.JAD_CORPBONDINFOR
-  physical_name: corporate_bond_trading_snapshot
-  logical_name: Corporate Bond Trading Snapshot
-  bcv_core_object: Product
-  bcv_concept: "[Product] Financial Market Instrument"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 55
-  brd_ref: BRD-SRC-MDDS-JAD_CORPBONDINFOR
-- subfolder: Product
-  file_name: dm_atm_security_trading_snapshot-MDDS.JAD_STOCKINFOR.yaml
-  id: ATM-security_trading_snapshot-MDDS.JAD_STOCKINFOR
-  physical_name: security_trading_snapshot
-  logical_name: Security Trading Snapshot
-  bcv_core_object: Product
-  bcv_concept: "[Product] Financial Market Instrument"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 75
-  brd_ref: BRD-SRC-MDDS-JAD_STOCKINFOR
-- subfolder: Transaction
-  file_name: dm_atm_securities_trade-ORDERTRADE.TRADE_BOOK_HNX.yaml
-  id: ATM-securities_trade-ORDERTRADE.TRADE_BOOK_HNX
-  physical_name: securities_trade
-  logical_name: Securities Trade
-  bcv_core_object: Transaction
-  bcv_concept: "[Transaction] Financial Market Transaction"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: ORDERTRADE
-  status: approved
-  attribute_count: 61
-  brd_ref: BRD-SRC-ORDERTRADE-TRADE_BOOK_HNX
-- subfolder: Transaction
-  file_name: dm_atm_securities_trade-ORDERTRADE.TRADE_BOOK_HOSE.yaml
-  id: ATM-securities_trade-ORDERTRADE.TRADE_BOOK_HOSE
-  physical_name: securities_trade
-  logical_name: Securities Trade
-  bcv_core_object: Transaction
-  bcv_concept: "[Transaction] Financial Market Transaction"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: ORDERTRADE
-  status: approved
-  attribute_count: 61
-  brd_ref: BRD-SRC-ORDERTRADE-TRADE_BOOK_HOSE
-- subfolder: Transaction
-  file_name: dm_atm_security_match_log-MDDS.JAD_TRANSLOG.yaml
-  id: ATM-security_match_log-MDDS.JAD_TRANSLOG
-  physical_name: security_match_log
-  logical_name: Security Match Log
-  bcv_core_object: Transaction
-  bcv_concept: "[Transaction] Financial Market Transaction"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: MDDS
-  status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-MDDS-JAD_TRANSLOG
 - subfolder: Transaction
   file_name: dm_atm_sp_license_application_fee-NHNCK.APPLICATION_FEES.yaml
   id: ATM-sp_license_application_fee-NHNCK.APPLICATION_FEES

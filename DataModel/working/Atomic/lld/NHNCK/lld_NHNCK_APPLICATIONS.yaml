@@ -97,8 +97,8 @@ attributes:
   classification_context: "NHNCK_REGISTRATION_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Id"
-  physical_name: "certificate_tp_id"
+- attribute_name: "Securities Practitioner License Certificate Type Id"
+  physical_name: "sp_license_certificate_type_id"
   description: "FK đến loại chứng chỉ hành nghề đăng ký."
   data_domain: "Surrogate Key"
   nullable: false
@@ -112,8 +112,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Code"
-  physical_name: "certificate_tp_code"
+- attribute_name: "Securities Practitioner License Certificate Type Code"
+  physical_name: "sp_license_certificate_type_code"
   description: "Mã loại chứng chỉ hành nghề đăng ký (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -122,7 +122,8 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATIONS.CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -230,8 +231,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Previous Certificate Type Id"
-  physical_name: "previous_certificate_tp_id"
+- attribute_name: "Previous Securities Practitioner License Certificate Type Id"
+  physical_name: "previous_sp_license_certificate_type_id"
   description: "FK đến loại CCHN cũ khi cấp lại."
   data_domain: "Surrogate Key"
   nullable: true
@@ -245,8 +246,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Previous Certificate Type Code"
-  physical_name: "previous_certificate_tp_code"
+- attribute_name: "Previous Securities Practitioner License Certificate Type Code"
+  physical_name: "previous_sp_license_certificate_type_code"
   description: "Mã loại CCHN cũ khi cấp lại (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -255,8 +256,8 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Previous Certificate\
-    \ Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Previous Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -419,8 +420,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "License Certificate Document Id"
-  physical_name: "license_certificate_document_id"
+- attribute_name: "Securities Practitioner License Certificate Document Id"
+  physical_name: "sp_license_certificate_document_id"
   description: "FK đến License Certificate Document (CCHN trong sổ đăng bộ)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -434,8 +435,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "License Certificate Document Code"
-  physical_name: "license_certificate_document_code"
+- attribute_name: "Securities Practitioner License Certificate Document Code"
+  physical_name: "sp_license_certificate_document_code"
   description: "Mã CCHN trong sổ đăng bộ."
   data_domain: "Text"
   nullable: true
@@ -444,13 +445,13 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Code. Pair with License Certificate\
-    \ Document Id."
+    \ Practitioner License Certificate Document Code. Pair with Securities Practitioner\
+    \ License Certificate Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Previous License Certificate Document Id"
-  physical_name: "previous_license_certificate_document_id"
+- attribute_name: "Previous Securities Practitioner License Certificate Document Id"
+  physical_name: "previous_sp_license_certificate_document_id"
   description: "FK đến CCHN cũ (khi cấp lại)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -464,8 +465,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Previous License Certificate Document Code"
-  physical_name: "previous_license_certificate_document_code"
+- attribute_name: "Previous Securities Practitioner License Certificate Document Code"
+  physical_name: "previous_sp_license_certificate_document_code"
   description: "Mã CCHN cũ."
   data_domain: "Text"
   nullable: true
@@ -474,13 +475,13 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Code. Pair with Previous License Certificate\
-    \ Document Id."
+    \ Practitioner License Certificate Document Code. Pair with Previous Securities\
+    \ Practitioner License Certificate Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Examination Assessment Id"
-  physical_name: "examination_assessment_id"
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Id"
+  physical_name: "sp_qualification_examination_assessment_id"
   description: "FK đến Exam Session (đợt thi sát hạch liên quan — nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -494,8 +495,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Examination Assessment Code"
-  physical_name: "examination_assessment_code"
+- attribute_name: "Securities Practitioner Qualification Examination Assessment Code"
+  physical_name: "sp_qualification_examination_assessment_code"
   description: "Mã đợt thi sát hạch."
   data_domain: "Text"
   nullable: true
@@ -504,8 +505,8 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
   comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Examination\
-    \ Assessment Id."
+    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
+    \ Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -535,8 +536,8 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.APPLICATIONS.ASSIGNEE_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Assignee Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pending — xem ghi chú ở Assignee Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -565,8 +566,8 @@ attributes:
   status: "pending"
   source_columns:
   - "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Info Verify Officer Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pending — xem ghi chú ở Info Verify Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

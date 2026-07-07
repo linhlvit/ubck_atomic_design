@@ -22,8 +22,8 @@ metadata:
     \ 1 dòng = 1 lần ghi nhận thay đổi thông tin cá nhân của người hành nghề. Chỉ\
     \ lưu ID/PROFESSIONAL_ID/CHANGE_DATE/REASON_UPDATE — ~43 cột snapshot còn lại\
     \ (trùng PROFESSIONALS) loại khỏi thiết kế, xem pending_design.yaml. Giữ concept\
-    \ Involved Party (không dùng Business Activity/Maintenance Entry) theo quyết\
-    \ định Data Modeler."
+    \ Involved Party (không dùng Business Activity/Maintenance Entry) theo quyết định\
+    \ Data Modeler."
 attributes:
 - attribute_name: "Securities Practitioner Reason Change History Id"
   physical_name: "sp_reason_change_history_id"
@@ -63,7 +63,7 @@ attributes:
   etl_derived_value: "NHNCK.PROFESSIONAL_HISTORIES"
   data_type: "string"
 - attribute_name: "Securities Practitioner Id"
-  physical_name: "securities_practitioner_id"
+  physical_name: "sp_id"
   description: "FK đến người hành nghề bị thay đổi thông tin"
   data_domain: "Surrogate Key"
   nullable: false
@@ -71,13 +71,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash:\
-    \ hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+    \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner Code"
-  physical_name: "securities_practitioner_code"
+  physical_name: "sp_code"
   description: "Mã người hành nghề (denormalized lookup)"
   data_domain: "Text"
   nullable: false

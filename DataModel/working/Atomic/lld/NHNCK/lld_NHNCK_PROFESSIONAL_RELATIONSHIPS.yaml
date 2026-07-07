@@ -65,7 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: null
   etl_derived_value: null
@@ -79,8 +79,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with Securities\
-    \ Practitioner Id."
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -212,92 +212,6 @@ attributes:
   source_columns:
   - "NHNCK.PROFESSIONAL_RELATIONSHIPS.NOTE"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By Officer Id"
-  physical_name: "created_by_officer_id"
-  description: "FK đến Regulatory Authority Officer — người tạo"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By Officer Code"
-  physical_name: "created_by_officer_code"
-  description: "Mã người tạo"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Id"
-  physical_name: "updated_by_officer_id"
-  description: "FK đến Regulatory Authority Officer — người cập nhật"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Code"
-  physical_name: "updated_by_officer_code"
-  description: "Mã người cập nhật"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -79,8 +79,8 @@ attributes:
   data_type: "string"
 - attribute_name: "Certificate Name"
   physical_name: "certificate_nm"
-  description: "Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư,\
-    \ Môi giới CK)"
+  description: "Tên loại chứng chỉ hành nghề (VD: Quản lý quỹ, Phân tích đầu tư, Môi\
+    \ giới CK)"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -139,8 +139,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATES.DISPLAYED"
-  comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn\
-    \ NUMBER(1)."
+  comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn NUMBER(1)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -155,92 +154,6 @@ attributes:
   source_columns:
   - "NHNCK.CERTIFICATES.ORIGINAL_DATA"
   comment: "BCV: không có term riêng. Nguồn NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.CERTIFICATES.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.CERTIFICATES.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By Officer Id"
-  physical_name: "created_by_officer_id"
-  description: "ID tài khoản người tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.CERTIFICATES.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By Officer Code"
-  physical_name: "created_by_officer_code"
-  description: "Mã tài khoản người tạo bản ghi (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.CERTIFICATES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Id"
-  physical_name: "updated_by_officer_id"
-  description: "ID tài khoản người cập nhật bản ghi lần cuối"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.CERTIFICATES.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Code"
-  physical_name: "updated_by_officer_code"
-  description: "Mã tài khoản người cập nhật bản ghi lần cuối (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.CERTIFICATES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

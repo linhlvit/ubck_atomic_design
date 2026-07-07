@@ -44,6 +44,18 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn ETL-derived"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_RECORDS"
+  etl_derived_value: "NHNCK.CERTIFICATE_RECORDS"
+  data_type: "string"
 - attribute_name: "Certificate Number"
   physical_name: "certificate_nbr"
   description: "Số chứng chỉ hành nghề"
@@ -57,8 +69,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Id"
-  physical_name: "certificate_tp_id"
+- attribute_name: "Securities Practitioner License Certificate Type Id"
+  physical_name: "sp_license_certificate_type_id"
   description: "FK đến loại chứng chỉ hành nghề (CCHN)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -72,8 +84,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Certificate Type Code"
-  physical_name: "certificate_tp_code"
+- attribute_name: "Securities Practitioner License Certificate Type Code"
+  physical_name: "sp_license_certificate_type_code"
   description: "Mã loại chứng chỉ (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -82,7 +94,8 @@ attributes:
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -114,8 +127,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Issue License Decision Id"
-  physical_name: "issue_license_decision_id"
+- attribute_name: "Issue Securities Practitioner License Decision Document Id"
+  physical_name: "issue_sp_license_decision_document_id"
   description: "FK đến quyết định cấp chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: false
@@ -123,13 +136,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
-    \ hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ ISSUE_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Issue License Decision Code"
-  physical_name: "issue_license_decision_code"
+- attribute_name: "Issue Securities Practitioner License Decision Document Code"
+  physical_name: "issue_sp_license_decision_document_code"
   description: "Mã nghiệp vụ của quyết định cấp"
   data_domain: "Text"
   nullable: false
@@ -137,13 +151,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
-    \ Pair with Issue License Decision Id."
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Issue Securities Practitioner\
+    \ License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Revocation License Decision Id"
-  physical_name: "revocation_license_decision_id"
+- attribute_name: "Revocation Securities Practitioner License Decision Document Id"
+  physical_name: "revocation_sp_license_decision_document_id"
   description: "FK đến quyết định thu hồi chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -151,13 +166,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
-    \ hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ REVOCATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Revocation License Decision Code"
-  physical_name: "revocation_license_decision_code"
+- attribute_name: "Revocation Securities Practitioner License Decision Document Code"
+  physical_name: "revocation_sp_license_decision_document_code"
   description: "Mã nghiệp vụ của quyết định thu hồi"
   data_domain: "Text"
   nullable: true
@@ -165,13 +181,15 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
-    \ Pair with Revocation License Decision Id."
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Revocation Securities\
+    \ Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Cancellation License Decision Id"
-  physical_name: "cancellation_license_decision_id"
+- attribute_name: "Cancellation Securities Practitioner License Decision Document\
+    \ Id"
+  physical_name: "cancellation_sp_license_decision_document_id"
   description: "FK đến quyết định hủy chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -179,13 +197,15 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
-    \ hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ CANCELLATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Cancellation License Decision Code"
-  physical_name: "cancellation_license_decision_code"
+- attribute_name: "Cancellation Securities Practitioner License Decision Document\
+    \ Code"
+  physical_name: "cancellation_sp_license_decision_document_code"
   description: "Mã nghiệp vụ của quyết định hủy"
   data_domain: "Text"
   nullable: true
@@ -193,8 +213,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
-    \ Pair with Cancellation License Decision Id."
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Cancellation Securities\
+    \ Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -316,16 +337,4 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn ETL-derived"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: null
-  classification_context: "SOURCE_SYSTEM=NHNCK.CERTIFICATE_RECORDS"
-  etl_derived_value: "NHNCK.CERTIFICATE_RECORDS"
   data_type: "string"

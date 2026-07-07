@@ -57,8 +57,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_PROFESSIONALS"
   etl_derived_value: "NHNCK.APPLICATION_PROFESSIONALS"
   data_type: "string"
-- attribute_name: "License Application Id"
-  physical_name: "license_application_id"
+- attribute_name: "Securities Practitioner License Application Id"
+  physical_name: "sp_license_application_id"
   description: "FK đến hồ sơ đăng ký"
   data_domain: "Surrogate Key"
   nullable: false
@@ -71,8 +71,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "License Application Code"
-  physical_name: "license_application_code"
+- attribute_name: "Securities Practitioner License Application Code"
+  physical_name: "sp_license_application_code"
   description: "Mã hồ sơ đăng ký (denormalized)"
   data_domain: "Text"
   nullable: false
@@ -81,7 +81,8 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID"
   comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with License Application Id."
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -113,8 +114,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Organization Id"
-  physical_name: "organization_id"
+- attribute_name: "Securities Organization Reference Id"
+  physical_name: "securities_organization_reference_id"
   description: "FK đến tổ chức chứng khoán (nullable)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -127,8 +128,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Organization Code"
-  physical_name: "organization_code"
+- attribute_name: "Securities Organization Reference Code"
+  physical_name: "securities_organization_reference_code"
   description: "Mã tổ chức (denormalized)"
   data_domain: "Text"
   nullable: true
@@ -137,7 +138,7 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID"
   comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Organization Id."
+    \ Reference Code. Pair with Securities Organization Reference Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

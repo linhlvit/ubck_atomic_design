@@ -44,8 +44,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "License Application Id"
-  physical_name: "license_application_id"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_FEES"
+  etl_derived_value: "NHNCK.APPLICATION_FEES"
+  data_type: "string"
+- attribute_name: "Securities Practitioner License Application Id"
+  physical_name: "sp_license_application_id"
   description: "FK đến License Application"
   data_domain: "Surrogate Key"
   nullable: false
@@ -53,13 +65,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
-    \ APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "License Application Code"
-  physical_name: "license_application_code"
+- attribute_name: "Securities Practitioner License Application Code"
+  physical_name: "sp_license_application_code"
   description: "Mã hồ sơ đăng ký (lookup pair)"
   data_domain: "Text"
   nullable: false
@@ -67,8 +79,9 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "Lookup pair: License Application.License Application Code. Pair with License\
-    \ Application Id."
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -201,104 +214,6 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_FEES.NOTE"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: null
-  classification_context: "SOURCE_SYSTEM=NHNCK.APPLICATION_FEES"
-  etl_derived_value: "NHNCK.APPLICATION_FEES"
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.APPLICATION_FEES.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.APPLICATION_FEES.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By Officer Id"
-  physical_name: "created_by_officer_id"
-  description: "FK đến cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.APPLICATION_FEES.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By Officer Code"
-  physical_name: "created_by_officer_code"
-  description: "Mã cán bộ tạo bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.APPLICATION_FEES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Id"
-  physical_name: "updated_by_officer_id"
-  description: "FK đến cán bộ cập nhật bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.APPLICATION_FEES.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Code"
-  physical_name: "updated_by_officer_code"
-  description: "Mã cán bộ cập nhật bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.APPLICATION_FEES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access\
-    \ Management User Code. Pending — xem ghi chú ở Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
