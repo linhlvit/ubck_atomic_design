@@ -1,0 +1,331 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-violation_behavior-ThanhTra.VIOLATION_BEHAVIOR
+  logical_name: Violation Behavior
+  physical_name: violation_behavior
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Danh mục hành vi vi phạm hành chính được pháp luật quy định: loại hành vi, hình thức xử phạt chính, khung tiền phạt min/max, biện pháp khắc phục.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-VIOLATION_BEHAVIOR
+
+attributes:
+  - name: Violation Behavior Id
+    physical_name: violation_behavior_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR', ID). BCV: [Business Activity] Conduct Violation."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Violation Behavior Unique Key
+    physical_name: violation_behavior_unique_key
+    business_meaning: Unique Key nghiệp vụ. Mã hành vi vi phạm tự sinh UNIQUE.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.CODE
+    comment: UK nghiệp vụ. Mã tự sinh UNIQUE.
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Violation Behavior Code
+    physical_name: violation_behavior_code
+    business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: ThanhTra.VIOLATION_BEHAVIOR
+
+  - name: Violation Behavior Name
+    physical_name: violation_behavior_nm
+    business_meaning: Tên hành vi vi phạm hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết hành vi vi phạm hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.DESCRIPTION
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Primary Penalty Type Id
+    physical_name: primary_penalty_tp_id
+    business_meaning: FK đến Penalty Type (hình thức xử phạt chính áp dụng cho hành vi vi phạm này).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID
+    comment: "FK target: Penalty Type.Penalty Type Id. Hash: hash_id('ThanhTra.PENALTY_TYPE', PRIMARY_PENALTY_TYPE_ID). Capture từ junction PENALTY_TYPE_VIOLATION_BEHAVIOR (out_of_scope) qua trường trực tiếp."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Primary Penalty Type Code
+    physical_name: primary_penalty_tp_code
+    business_meaning: Mã Penalty Type chính (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID
+    comment: "Lookup pair: Penalty Type.Penalty Type Code. Pair with Primary Penalty Type Id."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Min Fine Amount
+    physical_name: min_fine_amt
+    business_meaning: Mức phạt tiền tối thiểu (VNĐ) theo quy định pháp luật.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.MIN_FINE_AMOUNT
+    comment: "Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Max Fine Amount
+    physical_name: max_fine_amt
+    business_meaning: Mức phạt tiền tối đa (VNĐ) theo quy định pháp luật.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.MAX_FINE_AMOUNT
+    comment: "Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Remedial Measure
+    physical_name: remedial_measure
+    business_meaning: Biện pháp khắc phục hậu quả bắt buộc thực hiện sau khi bị xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.REMEDIAL_MEASURE
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning: Trạng thái hiệu lực của danh mục hành vi vi phạm (ACTIVE/INACTIVE).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.STATUS
+    comment: "Scheme: ENTITY_STATUS."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung về hành vi vi phạm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.NOTE
+    comment: Nguồn VARCHAR2(2000).
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Legal Document
+    physical_name: legal_document
+    business_meaning: Văn bản pháp luật tham chiếu (text tự do).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.LEGAL_DOCUMENT
+    comment: "Nguồn VARCHAR2(2000). Denormalized free-text — không có FK formal đến LEGAL_DOCUMENT entity."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Violation Clause
+    physical_name: violation_clause
+    business_meaning: Điều khoản pháp lý vi phạm tương ứng với hành vi này.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.VIOLATION_CLAUSE
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Legal Document Codes
+    physical_name: legal_document_codes
+    business_meaning: Danh sách mã văn bản pháp luật liên kết với hành vi vi phạm (denormalize từ junction).
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR_LEGAL_DOCUMENT.LEGAL_DOCUMENT_ID
+    comment: "Pure junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT → denormalize thành ARRAY. Struct: legal_document_code: Text. HLD decision: ThanhTra_HLD_Overview.md section 7d."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật gần nhất.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.LAST_MODIFIED_AT
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: created_by_officer_id
+    business_meaning: ID người dùng tạo bản ghi.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.CREATED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: created_by_officer_code
+    business_meaning: Mã người dùng tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.CREATED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: updated_by_officer_id
+    business_meaning: ID người dùng cập nhật gần nhất.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.LAST_MODIFIED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: updated_by_officer_code
+    business_meaning: Mã người dùng cập nhật gần nhất.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: VIOLATION_BEHAVIOR
+    source_column: ThanhTra.VIOLATION_BEHAVIOR.LAST_MODIFIED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
+    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
+    etl_derived_value: null

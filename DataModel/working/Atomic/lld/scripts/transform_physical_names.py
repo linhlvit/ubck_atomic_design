@@ -213,6 +213,25 @@ def transform_table_name(domain_prefix: str, atomic_entity: str) -> str:
     return f"{abbreviate_domain_prefix(dp)}_{full_words(bcv_term)}"
 
 
+def _field_level_entity_abbrev(domain_prefix: str, atomic_entity: str) -> str:
+    """
+    Nhu transform_table_name(), nhung abbreviate ca phan bcv_term qua domain-prefix
+    dictionary (apply_dictionary) thay vi full_words() tran. CHI dung de build
+    entity-prefix dict cho ATTRIBUTE (rule B, build_entity_prefix_dict) — KHONG dung
+    de tinh entity_physical_name (rule A van goi transform_table_name() nhu cu,
+    khong doi ten bang). Root entity (bcv_term rong) van tra ve full_words(dp), giong
+    transform_table_name(), nen khong anh huong toi cac entity root.
+    """
+    dp = (domain_prefix or "").strip()
+    entity = atomic_entity.strip()
+    if not dp:
+        return full_words(entity)
+    bcv_term = entity[len(dp):].strip()
+    if not bcv_term:
+        return full_words(dp)
+    return f"{abbreviate_domain_prefix(dp)}_{apply_dictionary(bcv_term, _domain_prefix_dict())}"
+
+
 # ---------------------------------------------------------------------------
 # atomic_entities.yaml — nguồn chuẩn domain_prefix / entity_physical_name
 # ---------------------------------------------------------------------------
@@ -248,19 +267,31 @@ def resolve_table_name(atomic_entity: str, registry: dict[str, dict]) -> tuple[s
 
 def build_entity_prefix_dict(registry: dict[str, dict]) -> list[tuple[str, str]]:
     """
-    Dictionary bo sung cho rule B (COLUMN name): {atomic_entity (lower) -> entity_physical_name},
-    chi cho entity thuc su bi viet tat (entity_physical_name != full_words(atomic_entity)).
+    Dictionary bo sung cho rule B (COLUMN name): {atomic_entity (lower) -> field-level
+    abbreviation}, chi cho entity thuc su bi viet tat (field-level abbrev !=
+    full_words(atomic_entity)).
     Attribute logical name luon bat dau bang day du ten mot Atomic Entity da dang ky (pattern
     "[Entity] Id" + "[Entity] Code" bat buoc o Buoc 3c) — khi khop, apply_dictionary() se thay
-    prefix do bang entity_physical_name (tai su dung rule A) truoc khi ap exceptions cho phan
-    con lai. Entity "root" (entity_physical_name da la full word) khong dua vao day de tranh
-    no-op/nhieu.
+    prefix do bang gia tri nay truoc khi ap exceptions cho phan con lai.
+
+    Dung _field_level_entity_abbrev() (khong dung truc tiep entity_physical_name da luu trong
+    registry) — vi entity_physical_name (rule A) chi abbreviate domain_prefix, khong abbreviate
+    bcv_term (VD "Regulatory Authority Organization Unit" -> "ra_organization_unit", khong phai
+    "ra_ou"). O muc ATTRIBUTE, Data Modeler muon bcv_term cung duoc abbreviate ("ra_ou") de dung
+    nhat quan trong physical_name cua attribute, nhung KHONG doi entity_physical_name (ten bang)
+    — nen tinh rieng 1 gia tri field-level, khong ghi nguoc lai atomic_entities.yaml.
+
+    Entity "root" (bcv_term rong, field-level abbrev = full_words(domain_prefix) = full_words(ten
+    entity)) khong dua vao day de tranh no-op/nhieu — giu nguyen hanh vi cu, khong lam thay doi
+    truong hop entity root bi domain-prefix dict (rule B, nguon 2) de len (VD "Securities
+    Practitioner"/"Fund Management Company" — ngoai pham vi sua lan nay).
     """
     entries: list[tuple[str, str]] = []
     for name, info in registry.items():
-        phys = info.get("entity_physical_name", "")
-        if phys and phys != full_words(name):
-            entries.append((name.lower(), phys))
+        dp = info.get("domain_prefix", "")
+        field_abbrev = _field_level_entity_abbrev(dp, name)
+        if field_abbrev and field_abbrev != full_words(name):
+            entries.append((name.lower(), field_abbrev))
     return entries
 
 

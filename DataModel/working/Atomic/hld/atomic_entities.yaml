@@ -26,7 +26,7 @@ entities:
   atomic_entity: "Fund Management Company Insider Shareholding Change Log"
   table_type: "Fact Append"
   domain_prefix: "Fund Management Company Insider"
-  entity_physical_name: "fund_management_company_insider_shareholding_change_log"
+  entity_physical_name: "fmc_insider_shareholding_change_log"
   description: "Giao dịch chuyển nhượng cổ phần/CCQ của Fund Management Company Insider\
     \ (mua/bán/đăng ký). Domain prefix dùng chung với Fund Management Company Insider\
     \ (Tier 5)."
@@ -37,7 +37,7 @@ entities:
   atomic_entity: "Fund Management Company Securities Offering"
   table_type: "Fundamental"
   domain_prefix: "Fund Management Company"
-  entity_physical_name: "fund_management_company_securities_offering"
+  entity_physical_name: "fmc_securities_offering"
   description: "Đợt chào bán cổ phần/trái phiếu của Fund Management Company. Domain\
     \ prefix dùng chung với Fund Management Company (Tier 1)."
   source_table: "FMS.OFFERING"
@@ -47,7 +47,7 @@ entities:
   atomic_entity: "Fund Management Company Securities Offering Plan"
   table_type: "Fundamental"
   domain_prefix: "Fund Management Company Securities Offering"
-  entity_physical_name: "fund_management_company_securities_offering_plan"
+  entity_physical_name: "fmc_securities_offering_plan"
   description: "Kế hoạch phân bổ chào bán theo từng nhóm đối tượng/phương thức của\
     \ Fund Management Company Securities Offering. Domain prefix dùng chung với Fund\
     \ Management Company Securities Offering (Tier 5)."
@@ -413,7 +413,7 @@ entities:
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
   table_type: "Fundamental"
   domain_prefix: "Foreign Fund Management Organization Unit"
-  entity_physical_name: "foreign_fund_management_organization_unit_staff"
+  entity_physical_name: "foreign_fm_ou_staff"
   description: "Cá nhân giữ vị trí trong VPĐD/CN QLQ nước ngoài. Domain prefix dùng\
     \ chung với Foreign Fund Management Organization Unit (Tier 2)."
   source_table: "FMS.STF_FG_BRCH"
@@ -452,7 +452,7 @@ entities:
   atomic_entity: "Fund Management Company Insider"
   table_type: "Fundamental"
   domain_prefix: "Fund Management Company"
-  entity_physical_name: "fund_management_company_insider"
+  entity_physical_name: "fmc_insider"
   description: "Cổ đông nội bộ/người có liên quan của Fund Management Company. Domain\
     \ prefix dùng chung với Fund Management Company (Tier 1)."
   source_table: "FMS.INSIDER"
@@ -462,7 +462,7 @@ entities:
   atomic_entity: "Fund Management Company Insider Related Person"
   table_type: "Fundamental"
   domain_prefix: "Fund Management Company Insider"
-  entity_physical_name: "fund_management_company_insider_related_person"
+  entity_physical_name: "fmc_insider_related_person"
   description: "Người có quan hệ gia đình/liên quan với Fund Management Company Insider.\
     \ Domain prefix dùng chung với Fund Management Company Insider (Tier 5)."
   source_table: "FMS.INSDER_RELA"
@@ -472,7 +472,7 @@ entities:
   atomic_entity: "Fund Management Company Insider Representative"
   table_type: "Fundamental"
   domain_prefix: "Fund Management Company Insider"
-  entity_physical_name: "fund_management_company_insider_representative"
+  entity_physical_name: "fmc_insider_representative"
   description: "Người đại diện theo ủy quyền của Fund Management Company Insider.\
     \ Domain prefix dùng chung với Fund Management Company Insider (Tier 5)."
   source_table: "FMS.INSDER_RPRST"
@@ -493,7 +493,7 @@ entities:
   atomic_entity: "Fund Management Company Key Person Related Person"
   table_type: "Fundamental"
   domain_prefix: "Fund Management Company Key Person"
-  entity_physical_name: "fund_management_company_key_person_related_person"
+  entity_physical_name: "fmc_key_person_related_person"
   description: "Người có quan hệ gia đình/liên quan với Fund Management Company Key\
     \ Person. Domain prefix dùng chung với Fund Management Company Key Person (Tier\
     \ 2)."
@@ -504,7 +504,7 @@ entities:
   atomic_entity: "Fund Management Company Organization Unit"
   table_type: "Fundamental"
   domain_prefix: "Fund Management Company"
-  entity_physical_name: "fund_management_company_organization_unit"
+  entity_physical_name: "fmc_organization_unit"
   description: "Chi nhánh/VPĐD trực thuộc Fund Management Company trong nước."
   source_table: "FMS.BRANCHS"
   status: "draft"
@@ -626,9 +626,9 @@ entities:
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner"
   entity_physical_name: "sp_reason_change_history"
-  description: "Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề —\
-    \ ai bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với\
-    \ Securities Practitioner) theo quyết định Data Modeler."
+  description: "Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề — ai\
+    \ bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với Securities\
+    \ Practitioner) theo quyết định Data Modeler."
   source_table: "NHNCK.PROFESSIONAL_HISTORIES"
   status: "draft"
 - bcv_core_object: "Documentation"
@@ -637,10 +637,10 @@ entities:
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner License"
   entity_physical_name: "sp_license_certificate_type"
-  description: "Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả,\
-    \ số ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity\
-    \ License Application/Certificate Document/Organization Employment Report và\
-    \ cross-source từ IAM User (Practice Certificate Type Id)."
+  description: "Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số\
+    \ ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity\
+    \ License Application/Certificate Document/Organization Employment Report và cross-source\
+    \ từ IAM User (Practice Certificate Type Id)."
   source_table: "NHNCK.CERTIFICATES"
   status: "draft"
 - bcv_core_object: "Involved Party"
@@ -777,7 +777,7 @@ entities:
   atomic_entity: "Fund Management Company Share Transfer"
   table_type: "Fact Append"
   domain_prefix: "Fund Management Company"
-  entity_physical_name: "fund_management_company_share_transfer"
+  entity_physical_name: "fmc_share_transfer"
   description: "Giao dịch chuyển nhượng cổ phần nội bộ Fund Management Company. Domain\
     \ prefix dùng chung với Fund Management Company (Tier 1)."
   source_table: "FMS.TRS_FER_INDER"

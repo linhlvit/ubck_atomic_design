@@ -1,0 +1,247 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-custodian_bank-FMS.BANK_MONI
+  logical_name: Custodian Bank
+  physical_name: custodian_bank
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Ngân hàng lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty quản lý quỹ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-BANK_MONI
+
+attributes:
+  - name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng lưu ký, giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ."
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: FMS.BANK_MONI
+
+  - name: Operation Status Code
+    physical_name: operation_status_code
+    business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.STATUS_ID
+    comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK đến bảng danh mục STATUS — ETL resolve sang mã STATUS.CODE tương ứng."
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Full Name
+    physical_name: custodian_bank_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank English Name
+    physical_name: custodian_bank_english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.EN_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Short Name
+    physical_name: custodian_bank_short_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.SHORT_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Bank Swift Code
+    physical_name: bank_swift_code
+    business_meaning: Mã ngân hàng lưu ký (SWIFT code hoặc mã BIC).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.BANK_CODE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Custodian Certificate Number
+    physical_name: custodian_certificate_nbr
+    business_meaning: "Số chứng nhận/giấy phép đủ điều kiện hoạt động lưu ký, giám sát của ngân hàng."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.CERT_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.NOTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Record Classification Text
+    physical_name: record_classification_text
+    business_meaning: Loại/phân loại của bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.RECORD_TYPE
+    comment: "Mô tả nguồn chung chung — giữ dạng Text denormalized, cần xác nhận nghiệp vụ nếu có domain giá trị cố định."
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Amendment Document Number
+    physical_name: amendment_document_nbr
+    business_meaning: Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.VOUCHER_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Decision Issue Date
+    physical_name: decision_issue_dt
+    business_meaning: Ngày ban hành quyết định/nghị quyết.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.DEC_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Change Description
+    physical_name: change_description
+    business_meaning: Mô tả nội dung thay đổi khi cập nhật hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.DES_CHANGE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI'"
+    etl_derived_value: null

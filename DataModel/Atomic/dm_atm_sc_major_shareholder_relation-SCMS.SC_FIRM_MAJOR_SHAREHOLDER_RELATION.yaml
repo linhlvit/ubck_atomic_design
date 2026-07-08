@@ -1,0 +1,303 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_major_shareholder_relation-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+  logical_name: Securities Company Major Shareholder Relation
+  physical_name: sc_major_shareholder_relation
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Quan hệ cổ đông lớn (sở hữu từ 5% trở lên) của CTCK. Ghi nhận tên cổ đông lớn, tỷ lệ sở hữu và ngày đạt ngưỡng cổ đông lớn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+
+attributes:
+  - name: Securities Company Major Shareholder Relation Id
+    physical_name: sc_major_shareholder_relation_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Major Shareholder Relation Code
+    physical_name: sc_major_shareholder_relation_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán có cổ đông lớn.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Shareholder Reference Id
+    physical_name: shareholder_reference_id
+    business_meaning: Tham chiếu đến SC_FIRM_SHAREHOLDER.ID (không phải FK constraint).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SHAREHOLDER_ID
+    comment: "NUMBER(10) — lưu dạng Text. Không phải FK constraint (key: null trong BRD). Tham chiếu mềm đến SC_FIRM_SHAREHOLDER để tra cứu."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Individual Indicator
+    physical_name: individual_indicator
+    business_meaning: "Cờ là cá nhân: 1=Cá nhân; 0=Tổ chức."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.INDIVIDUAL
+    comment: "NUMBER(1). ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.FULL_NAME
+    comment: VARCHAR2(500).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issue_dt
+    business_meaning: Ngày cấp giấy tờ/chứng chỉ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ISSUE_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Issue Place
+    physical_name: issue_place
+    business_meaning: Nơi cấp giấy tờ/chứng chỉ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.ISSUE_PLACE
+    comment: VARCHAR2(500).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: FK đến quốc tịch của cổ đông lớn.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NATIONALITY_ID
+    comment: Pending — FK target CAT_NATIONALITY nằm ngoài scope. NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc tịch của cổ đông lớn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NATIONALITY_ID
+    comment: Pending — Pair with Nationality Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Relationship
+    physical_name: rltnp
+    business_meaning: Mối quan hệ của cổ đông lớn với CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.RELATIONSHIP
+    comment: VARCHAR2(200).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Relation Start Date
+    physical_name: relation_start_dt
+    business_meaning: Ngày bắt đầu quan hệ cổ đông lớn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.RELATION_START_DATE
+    comment: DATE. Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Relation End Date
+    physical_name: relation_end_dt
+    business_meaning: Ngày kết thúc quan hệ cổ đông lớn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.RELATION_END_DATE
+    comment: DATE. Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Large Shareholder Date
+    physical_name: large_shareholder_dt
+    business_meaning: "Ngày đạt tỷ lệ sở hữu cổ đông lớn (từ 5% trở lên)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.LARGE_SHAREHOLDER_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Ownership Ratio
+    physical_name: ownership_ratio
+    business_meaning: "Tỷ lệ sở hữu vốn (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.OWNERSHIP_RATIO
+    comment: "NUMBER(12,4). Lưu dạng thập phân (VD: 10.5 = 10.5%)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Shares Count
+    physical_name: shares_count
+    business_meaning: Số lượng cổ phần nắm giữ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.SHARES_COUNT
+    comment: NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Contributed Capital
+    physical_name: contributed_capital
+    business_meaning: "Vốn góp (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.CONTRIBUTED_CAPITAL
+    comment: "NUMBER(22,4). Đơn vị VND."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung về cổ đông lớn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_MAJOR_SHAREHOLDER_RELATION
+    source_column: SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NOTE
+    comment: NCLOB.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
+    etl_derived_value: null

@@ -1,0 +1,303 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_electronic_address-FMS.SECURITIES
+  logical_name: Involved Party Electronic Address
+  physical_name: ip_electronic_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-SECURITIES
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Fund Management Company.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: FMS.SECURITIES
+
+  - name: Electronic Address Type Code
+    physical_name: electronic_adr_tp_code
+    business_meaning: Loại kênh liên lạc — email.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: EMAIL
+
+  - name: Electronic Address Value
+    physical_name: electronic_adr_val
+    business_meaning: Địa chỉ email.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.EMAIL
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Fund Management Company.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'FAX'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'FAX'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'FAX'"
+    etl_derived_value: FMS.SECURITIES
+
+  - name: Electronic Address Type Code
+    physical_name: electronic_adr_tp_code
+    business_meaning: Loại kênh liên lạc — fax.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'FAX'"
+    etl_derived_value: FAX
+
+  - name: Electronic Address Value
+    physical_name: electronic_adr_val
+    business_meaning: Số fax.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.FAX
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'FAX'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Fund Management Company.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: FMS.SECURITIES
+
+  - name: Electronic Address Type Code
+    physical_name: electronic_adr_tp_code
+    business_meaning: Loại kênh liên lạc — điện thoại.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: PHONE
+
+  - name: Electronic Address Value
+    physical_name: electronic_adr_val
+    business_meaning: Số điện thoại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.TELEPHONE
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Fund Management Company.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.SECURITIES', ID)."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'WEBSITE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'WEBSITE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'WEBSITE'"
+    etl_derived_value: FMS.SECURITIES
+
+  - name: Electronic Address Type Code
+    physical_name: electronic_adr_tp_code
+    business_meaning: Loại kênh liên lạc — website.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'WEBSITE'"
+    etl_derived_value: WEBSITE
+
+  - name: Electronic Address Value
+    physical_name: electronic_adr_val
+    business_meaning: Địa chỉ website.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: SECURITIES
+    source_column: FMS.SECURITIES.WEBSITE
+    comment: null
+    classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address Type Code = 'WEBSITE'"
+    etl_derived_value: null

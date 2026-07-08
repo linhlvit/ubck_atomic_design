@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-FMS.BANK_MONI
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-BANK_MONI
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Custodian Bank.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ID
+    comment: "FK target: custodian_bank.custodian_bank_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.BANK_MONI', ID)."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã ngân hàng lưu ký giám sát.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ID
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: FMS.BANK_MONI
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — trụ sở chính.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: HEAD_OFFICE
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ trụ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: FMS.BANK_MONI.ADDRESS
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: province_id
+    business_meaning: FK đến Geographic Area cấp tỉnh/thành phố.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_PROVINCE', PROVINCE_ID)."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã tỉnh/thành phố.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: District Id
+    physical_name: district_id
+    business_meaning: FK đến Geographic Area cấp quận/huyện.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_DISTRICT', DISTRICT_ID)."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: District Code
+    physical_name: district_code
+    business_meaning: Mã quận/huyện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with District Id."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: District Name
+    physical_name: district_nm
+    business_meaning: Tên quận/huyện (denormalized để tiện query mà không cần join CAT_DISTRICT).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: Denormalized từ CAT_DISTRICT.DISTRICT_NAME — ETL lookup theo DISTRICT_ID. Lưu dự phòng để tránh join nhiều tầng.
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Id
+    physical_name: ward_id
+    business_meaning: FK đến Geographic Area cấp phường/xã.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_WARD', WARD_ID)."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Code
+    physical_name: ward_code
+    business_meaning: Mã phường/xã.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward Id."
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Name
+    physical_name: ward_nm
+    business_meaning: Tên phường/xã (denormalized để tiện query mà không cần join CAT_WARD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_MONI
+    source_column: null
+    comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng để tránh join nhiều tầng.
+    classification_context: "Source System Code = 'FMS_BANK_MONI' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null

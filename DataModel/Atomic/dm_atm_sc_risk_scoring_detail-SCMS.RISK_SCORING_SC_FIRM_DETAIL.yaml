@@ -1,0 +1,345 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_risk_scoring_detail-SCMS.RISK_SCORING_SC_FIRM_DETAIL
+  logical_name: Securities Company Risk Scoring Detail
+  physical_name: sc_risk_scoring_detail
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Chi tiết điểm rủi ro từng chỉ tiêu cho từng CTCK theo từng kỳ đánh giá. Grain: 1 chỉ tiêu × 1 CTCK × 1 kỳ. Ghi nhận điểm, giá trị thực tế và thang điểm áp dụng.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-RISK_SCORING_SC_FIRM_DETAIL
+
+attributes:
+  - name: Securities Company Risk Scoring Detail Id
+    physical_name: sc_risk_scoring_detail_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Risk Scoring Detail Code
+    physical_name: sc_risk_scoring_detail_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: SCMS.RISK_SCORING_SC_FIRM_DETAIL
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán được chấm điểm.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Risk Indicator Id
+    physical_name: sc_risk_indicator_id
+    business_meaning: FK đến Chỉ tiêu rủi ro đang được chấm điểm.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_INDICATOR_ID
+    comment: "FK target: securities_company_risk_indicator.securities_company_risk_indicator_id. Hash: hash_id('SCMS.RISK_INDICATOR', RISK_INDICATOR_ID). Status: draft."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Risk Indicator Code
+    physical_name: sc_risk_indicator_code
+    business_meaning: Mã Chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_INDICATOR_ID
+    comment: "Lookup pair: securities_company_risk_indicator.securities_company_risk_indicator_code. Pair with securities_company_risk_indicator_id."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Risk Indicator Scoring Scale Id
+    physical_name: sc_risk_indicator_scoring_scale_id
+    business_meaning: FK đến Thang điểm chỉ tiêu rủi ro được áp dụng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_SCORING_SCALE_ID
+    comment: "FK target: sc_risk_indicator_scoring_scale.sc_risk_indicator_scoring_scale_id. Hash: hash_id('SCMS.RISK_SCORING_SCALE', RISK_SCORING_SCALE_ID). Status: draft."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Risk Indicator Scoring Scale Code
+    physical_name: sc_risk_indicator_scoring_scale_code
+    business_meaning: Mã Thang điểm chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_SCORING_SCALE_ID
+    comment: "Lookup pair: sc_risk_indicator_scoring_scale.sc_risk_indicator_scoring_scale_code. Pair with sc_risk_indicator_scoring_scale_id."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Risk Reporting Period Id
+    physical_name: sc_risk_reporting_period_id
+    business_meaning: FK đến Kỳ báo cáo rủi ro.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_REPORTING_PERIOD_ID
+    comment: "FK target: sc_risk_reporting_period.sc_risk_reporting_period_id. Hash: hash_id('SCMS.RISK_REPORTING_PERIOD', RISK_REPORTING_PERIOD_ID). Status: draft."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Securities Company Risk Reporting Period Code
+    physical_name: sc_risk_reporting_period_code
+    business_meaning: Mã Kỳ báo cáo rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_REPORTING_PERIOD_ID
+    comment: "Lookup pair: sc_risk_reporting_period.sc_risk_reporting_period_code. Pair with sc_risk_reporting_period_id."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Group Id
+    physical_name: risk_indicator_group_id
+    business_meaning: FK đến Nhóm chỉ tiêu rủi ro (C/A/M/E/L group entity).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_INDICATOR_GROUP_ID
+    comment: "Pending — FK target RISK_INDICATOR_GROUP nằm ngoài scope. Hash: hash_id('SCMS.RISK_INDICATOR_GROUP', RISK_INDICATOR_GROUP_ID). NUMBER(10)."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Risk Indicator Group Code
+    physical_name: risk_indicator_group_code
+    business_meaning: Mã Nhóm chỉ tiêu rủi ro.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_INDICATOR_GROUP_ID
+    comment: Pending — Pair with Risk Indicator Group Id.
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Risk Scoring Sc Firm Reference Id
+    physical_name: risk_scoring_sc_firm_reference_id
+    business_meaning: Tham chiếu đến bản ghi tổng hợp điểm rủi ro CTCK tương ứng (không phải FK constraint).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RISK_SCORING_SC_FIRM_ID
+    comment: "NUMBER(10) — lưu dạng Text. BRD key:null, desc:null — không có FK constraint. Tham chiếu mềm đến entity RISK_SCORING_SC_FIRM (nếu được thiết kế trong tương lai)."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: CAMEL Group Type Code
+    physical_name: camel_group_tp_code
+    business_meaning: "Nhóm chỉ tiêu CAMEL: C=Capital (Vốn); A=Asset (Tài sản); M=Management (Quản trị); E=Earnings (Lợi nhuận); L=Liquidity (Thanh khoản)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RECORD_TYPE
+    comment: "Scheme: SCMS_CAMEL_GROUP_TYPE. NVARCHAR2(20)."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: Trạng thái bản ghi chi tiết chấm điểm.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.RECORD_STATUS
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Weight
+    physical_name: weight
+    business_meaning: "Trọng số của chỉ tiêu trong tổng điểm CAMEL (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.WEIGHT
+    comment: "NUMBER(6,2). Lưu dạng thập phân (VD: 20.00 = 20%)."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Item Value
+    physical_name: item_val
+    business_meaning: Giá trị thực tế của chỉ tiêu (dạng text — có thể số hoặc chuỗi tùy chỉ tiêu).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.ITEM_VALUE
+    comment: NVARCHAR2(2000). Mô tả gốc BRD null. Giá trị chỉ tiêu ở dạng text để xử lý mọi loại chỉ tiêu.
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Indicator Score
+    physical_name: indicator_score
+    business_meaning: Điểm trong thang điểm đã được chọn cho chỉ tiêu rủi ro.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.INDICATOR_SCORE
+    comment: "NUMBER(18,2). Điểm theo thang điểm (0–100)."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Score
+    physical_name: score
+    business_meaning: Điểm cuối cùng sau khi áp dụng trọng số cho chỉ tiêu rủi ro.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.SCORE
+    comment: "NUMBER(18,2). SCORE = INDICATOR_SCORE × WEIGHT/100."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Automatic Scoring Indicator
+    physical_name: automatic_scoring_indicator
+    business_meaning: "Cờ xác định nguồn điểm: 1=Lấy tự động từ hệ thống QLRR chỉ tiêu; 0=Nhập tay."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.IMPLEMENTATION_METHOD
+    comment: "NUMBER(1). 1=Tự động; 0=Thủ công."
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Formula Description
+    physical_name: formula_description
+    business_meaning: Mô tả công thức dạng văn bản để hiển thị cho người dùng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.FORMULA_TEXT
+    comment: CLOB. Lưu văn bản mô tả công thức. Cần kiểm tra kích thước trước ETL.
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: RISK_SCORING_SC_FIRM_DETAIL
+    source_column: SCMS.RISK_SCORING_SC_FIRM_DETAIL.NOTE
+    comment: NVARCHAR2(2000). Mô tả gốc BRD null.
+    classification_context: "Source System Code = 'SCMS_RISK_SCORING_SC_FIRM_DETAIL'"
+    etl_derived_value: null

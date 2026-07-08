@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fmc_key_person_related_person-FMS.TL_PRO_RELA
+  logical_name: Fund Management Company Key Person Related Person
+  physical_name: fmc_key_person_related_person
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Related Family Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Người có quan hệ gia đình/liên quan với Fund Management Company Key Person. Domain prefix dùng chung với Fund Management Company Key Person (Tier 2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-TL_PRO_RELA
+
+attributes:
+  - name: Fund Management Company Key Person Related Person Id
+    physical_name: fmc_key_person_related_person_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Related Family Individual\" (id 11308). Người có quan hệ gia đình/liên quan với Fund Management Company Key Person."
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Related Person Code
+    physical_name: fmc_key_person_related_person_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: FMS.TL_PRO_RELA
+
+  - name: Fund Management Company Key Person Id
+    physical_name: fmc_key_person_id
+    business_meaning: "FK -> TL_PROFILES: Người hành nghề liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.TLPRO_ID
+    comment: "FK target: fund_management_company_key_person.fund_management_company_key_person_id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Code
+    physical_name: fmc_key_person_code
+    business_meaning: Mã người hành nghề liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.TLPRO_ID
+    comment: "Lookup pair: fund_management_company_key_person.fund_management_company_key_person_code. Pair with fund_management_company_key_person_id."
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Relationship Type Code
+    physical_name: rltnp_tp_code
+    business_meaning: "FK -> RELATION: Loại quan hệ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.RELA_ID
+    comment: "Scheme: FMS_RELATION_TYPE (tái sử dụng — đã đăng ký Tier 1, nguồn FMS.RELATION). Nguồn RELA_ID là UUID FK — ETL resolve sang mã tương ứng."
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Related Person Full Name
+    physical_name: related_person_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TL_PRO_RELA
+    source_column: FMS.TL_PRO_RELA.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
+    etl_derived_value: null

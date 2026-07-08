@@ -1,0 +1,303 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-investment_fund_representative_board_member-FMS.REPRESENT
+  logical_name: Investment Fund Representative Board Member
+  physical_name: investment_fund_representative_board_member
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Thành viên ban đại diện/HĐQT của Investment Fund. Domain prefix dùng chung với Investment Fund (Tier 2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-REPRESENT
+
+attributes:
+  - name: Investment Fund Representative Board Member Id
+    physical_name: investment_fund_representative_board_member_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\". Thành viên ban đại diện/HĐQT của Investment Fund."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Investment Fund Representative Board Member Code
+    physical_name: investment_fund_representative_board_member_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: FMS.REPRESENT
+
+  - name: Investment Fund Id
+    physical_name: investment_fund_id
+    business_meaning: "FK -> FUNDS: Quỹ đầu tư liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.FUND_ID
+    comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID)."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: investment_fund_code
+    business_meaning: Mã quỹ đầu tư liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.FUND_ID
+    comment: "Lookup pair: investment_fund.investment_fund_code. Pair with investment_fund_id."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Job Title Code
+    physical_name: job_title_code
+    business_meaning: "FK -> JOBS: Chức danh/vị trí công việc."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.JOB_ID
+    comment: "Scheme: FMS_JOB_TITLE (tái sử dụng — đã đăng ký cùng Tier từ STF_FG_BRCH.JOBS_ID, cùng nguồn FMS.JOBS). Nguồn JOB_ID là UUID FK — ETL resolve sang mã tương ứng."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: "FK -> NATIONAL: Quốc gia/quốc tịch."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.NAT_ID
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('FMS.NATIONAL', NAT_ID)."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.NAT_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Board Member Full Name
+    physical_name: board_member_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Province Name
+    physical_name: province_nm
+    business_meaning: Tỉnh/thành phố của thành viên quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.PROVINCE
+    comment: "Denormalized text — không có FK rõ ràng đến Geographic Area (không phải UUID, chỉ text tự do)."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Current Position Title
+    physical_name: current_position_title
+    business_meaning: Chức vụ/vị trí công tác hiện tại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.POSITION
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Education Level Description
+    physical_name: education_level_description
+    business_meaning: "Trình độ học vấn (cử nhân, thạc sĩ, tiến sĩ...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.EDUCATION
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Professional Qualification Description
+    physical_name: professional_qualification_description
+    business_meaning: Trình độ chuyên môn/bằng cấp của người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.PROF_QUALIFI
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Other Experience Description
+    physical_name: other_experience_description
+    business_meaning: Kinh nghiệm khác của người đại diện ngoài chuyên ngành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.OTHER_EXP
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Other Concurrent Position Description
+    physical_name: other_concurrent_position_description
+    business_meaning: Chức vụ/vị trí kiêm nhiệm khác của người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.OTHER_POSITION
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Board Member Type Code
+    physical_name: board_member_tp_code
+    business_meaning: "Loại thành viên: 1=Người đại diện cá nhân, 2=Người đại diện tổ chức."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.MEMBER_TYPE
+    comment: "Scheme: FMS_BOARD_MEMBER_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml. ETL map: 1=INDIVIDUAL_REPRESENTATIVE;2=ORGANIZATION_REPRESENTATIVE."
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: "1=INDIVIDUAL_REPRESENTATIVE;2=ORGANIZATION_REPRESENTATIVE"
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPRESENT
+    source_column: FMS.REPRESENT.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_REPRESENT'"
+    etl_derived_value: null

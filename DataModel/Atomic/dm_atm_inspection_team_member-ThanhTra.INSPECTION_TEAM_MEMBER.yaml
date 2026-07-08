@@ -1,0 +1,247 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-inspection_team_member-ThanhTra.INSPECTION_TEAM_MEMBER
+  logical_name: Inspection Team Member
+  physical_name: inspection_team_member
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Danh sách thành viên đoàn thanh tra: ID người dùng, tên và vai trò trong đoàn (trưởng đoàn, thanh tra viên, thư ký...).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-INSPECTION_TEAM_MEMBER
+
+attributes:
+  - name: Inspection Team Member Id
+    physical_name: inspection_team_member_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: null
+    comment: "PK surrogate. BCV: [Business Activity] Business Review."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Inspection Team Member Code
+    physical_name: inspection_team_member_code
+    business_meaning: PK nguồn (VARCHAR2 UUID). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: ThanhTra.INSPECTION_TEAM_MEMBER
+
+  - name: Inspection Team Id
+    physical_name: inspection_team_id
+    business_meaning: FK đến đoàn thanh tra chứa thành viên này.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.INSPECTION_TEAM_ID
+    comment: "FK target: Inspection Team.Inspection Team Id. Hash: hash_id('ThanhTra.INSPECTION_TEAM', INSPECTION_TEAM_ID)."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Inspection Team Code
+    physical_name: inspection_team_code
+    business_meaning: Mã đoàn thanh tra liên kết (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.INSPECTION_TEAM_ID
+    comment: "Lookup pair: Inspection Team.Inspection Team Code. Pair with Inspection Team Id."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Member Officer Id
+    physical_name: member_officer_id
+    business_meaning: FK đến cán bộ là thành viên đoàn thanh tra.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.USER_ID
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', USER_ID). FK suy luận — cross-system."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Member Officer Code
+    physical_name: member_officer_code
+    business_meaning: Tài khoản đăng nhập của thành viên đoàn thanh tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.USER_ACCOUNT
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Member Officer Id. Nguồn USER_ACCOUNT (tài khoản đăng nhập)."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Member Full Name
+    physical_name: member_full_nm
+    business_meaning: Họ tên đầy đủ thành viên đoàn thanh tra (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.USER_FULL_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Member Department Name
+    physical_name: member_department_nm
+    business_meaning: Tên phòng ban/đơn vị của thành viên (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.DEPARTMENT_NAME
+    comment: Denormalized — DEPARTMENT_ID là FK suy luận → DEPARTMENTS.ID không formal.
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Role In Team Code
+    physical_name: role_in_team_code
+    business_meaning: "Vai trò: LEADER, SECRETARY, MEMBER."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.ROLE_IN_TEAM
+    comment: "Scheme: TEAM_MEMBER_ROLE_TYPE."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật gần nhất.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.LAST_MODIFIED_AT
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Created By Officer Id
+    physical_name: created_by_officer_id
+    business_meaning: ID người dùng tạo bản ghi.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.CREATED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', CREATED_BY)."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Created By Officer Code
+    physical_name: created_by_officer_code
+    business_meaning: Mã người dùng tạo bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.CREATED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Created By Officer Id."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Id
+    physical_name: updated_by_officer_id
+    business_meaning: ID người dùng cập nhật gần nhất.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.LAST_MODIFIED_BY
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null
+
+  - name: Updated By Officer Code
+    physical_name: updated_by_officer_code
+    business_meaning: Mã người dùng cập nhật gần nhất.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: INSPECTION_TEAM_MEMBER
+    source_column: ThanhTra.INSPECTION_TEAM_MEMBER.LAST_MODIFIED_BY
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Updated By Officer Id."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_MEMBER'"
+    etl_derived_value: null

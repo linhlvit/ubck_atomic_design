@@ -23,7 +23,7 @@ metadata:
     \ DELETED, CREATED_BY, MODIFY_BY document trong pending_design.yaml."
 attributes:
 - attribute_name: "Fund Management Company Id"
-  physical_name: "fund_management_company_id"
+  physical_name: "fmc_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -36,7 +36,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Code"
-  physical_name: "fund_management_company_code"
+  physical_name: "fmc_code"
   description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
   data_domain: "Text"
   nullable: false
@@ -75,7 +75,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Full Name"
-  physical_name: "fund_management_company_full_nm"
+  physical_name: "fmc_full_nm"
   description: "Tên hiển thị chính."
   data_domain: "Text"
   nullable: true
@@ -88,7 +88,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Trading Name"
-  physical_name: "fund_management_company_trading_nm"
+  physical_name: "fmc_trading_nm"
   description: "Tên giao dịch/tên thứ hai của công ty QLQ."
   data_domain: "Text"
   nullable: true
@@ -101,7 +101,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company English Name"
-  physical_name: "fund_management_company_english_nm"
+  physical_name: "fmc_english_nm"
   description: "Tên tiếng Anh đầy đủ."
   data_domain: "Text"
   nullable: true
@@ -114,7 +114,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Short Name"
-  physical_name: "fund_management_company_short_nm"
+  physical_name: "fmc_short_nm"
   description: "Tên viết tắt."
   data_domain: "Text"
   nullable: true
@@ -127,7 +127,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Short Code"
-  physical_name: "fund_management_company_short_code"
+  physical_name: "fmc_short_code"
   description: "Mã định danh ngắn gọn."
   data_domain: "Text"
   nullable: true
@@ -194,7 +194,7 @@ attributes:
   etl_derived_value: "1=DOMESTIC;0=FOREIGN"
   data_type: "string"
 - attribute_name: "Fund Management Company Insider Id"
-  physical_name: "fund_management_company_insider_id"
+  physical_name: "fmc_insider_id"
   description: "FK -> INSIDER: Cổ đông nội bộ sáng lập/kiểm soát công ty QLQ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -209,7 +209,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Insider Code"
-  physical_name: "fund_management_company_insider_code"
+  physical_name: "fmc_insider_code"
   description: "Mã cổ đông nội bộ sáng lập/kiểm soát công ty QLQ."
   data_domain: "Text"
   nullable: true
@@ -597,7 +597,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Fund Management Company Id"
-  physical_name: "parent_fund_management_company_id"
+  physical_name: "parent_fmc_id"
   description: "FK -> SECURITIES: Công ty QLQ cha trực tiếp (nếu có quan hệ sở hữu)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -611,7 +611,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Fund Management Company Code"
-  physical_name: "parent_fund_management_company_code"
+  physical_name: "parent_fmc_code"
   description: "Mã công ty QLQ cha trực tiếp."
   data_domain: "Text"
   nullable: true

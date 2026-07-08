@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-custodian_bank_employee-FMS.BANK_EMPLOY
+  logical_name: Custodian Bank Employee
+  physical_name: custodian_bank_employee
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Nhân sự giữ vị trí tại Custodian Bank. Domain prefix dùng chung với Custodian Bank (Tier 1).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-BANK_EMPLOY
+
+attributes:
+  - name: Custodian Bank Employee Id
+    physical_name: custodian_bank_employee_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\". Nhân sự giữ vị trí tại Custodian Bank."
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Employee Code
+    physical_name: custodian_bank_employee_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: FMS.BANK_EMPLOY
+
+  - name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    business_meaning: "FK -> BANK_MONI: Ngân hàng lưu ký/giám sát liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.BANK_ID
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', BANK_ID)."
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning: Mã ngân hàng lưu ký/giám sát liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.BANK_ID
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with custodian_bank_id."
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Employee Full Name
+    physical_name: custodian_bank_employee_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Practice Certificate Number
+    physical_name: practice_certificate_nbr
+    business_meaning: Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.CERT_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Legal Certificate Number
+    physical_name: legal_certificate_nbr
+    business_meaning: Số chứng chỉ pháp lý/luật của nhân sự ngân hàng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.CERT_LAW
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Audit Certificate Number
+    physical_name: audit_certificate_nbr
+    business_meaning: Số chứng chỉ kiểm toán nội bộ của nhân sự ngân hàng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.CERT_AUDIT
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Practice Certificate Date
+    physical_name: practice_certificate_dt
+    business_meaning: Ngày cấp chứng chỉ hành nghề.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.CERT_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Current Position Title
+    physical_name: current_position_title
+    business_meaning: Chức vụ/vị trí công tác hiện tại.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.POSITION
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BANK_EMPLOY
+    source_column: FMS.BANK_EMPLOY.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_BANK_EMPLOY'"
+    etl_derived_value: null

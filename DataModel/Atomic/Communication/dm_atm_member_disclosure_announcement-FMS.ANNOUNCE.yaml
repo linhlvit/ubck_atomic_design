@@ -1,0 +1,471 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-member_disclosure_announcement-FMS.ANNOUNCE
+  logical_name: Member Disclosure Announcement
+  physical_name: member_disclosure_announcement
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Announcement"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Công bố thông tin (CBTT)/thông báo của thành viên thị trường — định kỳ, bất thường, theo yêu cầu (id 8801).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-ANNOUNCE
+
+attributes:
+  - name: Member Disclosure Announcement Id
+    physical_name: member_disclosure_announcement_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Communication] Announcement\" (id 8801). Công bố thông tin (CBTT)/thông báo của thành viên thị trường."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Member Disclosure Announcement Code
+    physical_name: member_disclosure_announcement_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: FMS.ANNOUNCE
+
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.SEC_ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Hash: hash_id('FMS.SECURITIES', SEC_ID). Nullable — xem T6-05."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning: Mã công ty QLQ liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.SEC_ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with fund_management_company_id."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Investment Fund Id
+    physical_name: investment_fund_id
+    business_meaning: "FK -> FUNDS: Quỹ đầu tư liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.FUND_ID
+    comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID). Nullable — xem T6-05."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: investment_fund_code
+    business_meaning: Mã quỹ đầu tư liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.FUND_ID
+    comment: "Lookup pair: investment_fund.investment_fund_code. Pair with investment_fund_id."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Id
+    physical_name: fmc_key_person_id
+    business_meaning: "FK -> TL_PROFILES: Người hành nghề liên quan đến CBTT."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.TL_PRO_ID
+    comment: "FK target: fund_management_company_key_person.fund_management_company_key_person_id. Hash: hash_id('FMS.TL_PROFILES', TL_PRO_ID). Nullable — xem T6-05."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Code
+    physical_name: fmc_key_person_code
+    business_meaning: Mã người hành nghề liên quan đến CBTT.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.TL_PRO_ID
+    comment: "Lookup pair: fund_management_company_key_person.fund_management_company_key_person_code. Pair with fund_management_company_key_person_id."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: foreign_fm_ou_id
+    business_meaning: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.FR_BR_ID
+    comment: "FK target: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_id. Hash: hash_id('FMS.FOR_BRCH', FR_BR_ID). Nullable — xem T6-05."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: foreign_fm_ou_code
+    business_meaning: Mã chi nhánh/VPĐD nước ngoài liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.FR_BR_ID
+    comment: "Lookup pair: foreign_fund_management_organization_unit.foreign_fund_management_organization_unit_code. Pair with foreign_fund_management_organization_unit_id."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Staff Id
+    physical_name: foreign_fm_ou_staff_id
+    business_meaning: "FK -> STF_FG_BRCH: Nhân sự chi nhánh/VPĐD nước ngoài liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.STF_FB_ID
+    comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Hash: hash_id('FMS.STF_FG_BRCH', STF_FB_ID). Nullable — xem T6-05."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Staff Code
+    physical_name: foreign_fm_ou_staff_code
+    business_meaning: Mã nhân sự chi nhánh/VPĐD nước ngoài liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.STF_FB_ID
+    comment: "Lookup pair: foreign_fm_ou_staff.foreign_fm_ou_staff_code. Pair with foreign_fm_ou_staff_id."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Pension Fund Id
+    physical_name: pension_fund_id
+    business_meaning: "FK -> PENSION_FUND: Quỹ hưu trí liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.PENSION_FUND_ID
+    comment: "FK target: pension_fund.pension_fund_id. Hash: hash_id('FMS.PENSION_FUND', PENSION_FUND_ID). Nullable — xem T6-05."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Pension Fund Code
+    physical_name: pension_fund_code
+    business_meaning: Mã quỹ hưu trí liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.PENSION_FUND_ID
+    comment: "Lookup pair: pension_fund.pension_fund_code. Pair with pension_fund_id."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Event Type Code
+    physical_name: event_tp_code
+    business_meaning: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.EVENT_TYPE_ID
+    comment: "Scheme: FMS_EVENT_TYPE (tái sử dụng — đã đăng ký)."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Type Code
+    physical_name: announcement_tp_code
+    business_meaning: "Loại hình CBTT: 1=Công bố định kỳ, 2=Công bố bất thường, 3=Công bố theo yêu cầu, 4=Công bố khác."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.ANNOUNCE_TYPE
+    comment: "Scheme: FMS_ANNOUNCE_TYPE (đã đăng ký)."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Report Type Code
+    physical_name: rpt_tp_code
+    business_meaning: "Loại báo cáo: 1=Báo cáo định kỳ, 2=Báo cáo bất thường, 3=Báo cáo theo yêu cầu, 4=Báo cáo khác."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.REPORT_TYPE
+    comment: "Scheme: FMS_ANNOUNCE_REPORT_TYPE (đã đăng ký)."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo (YYYY) của CBTT định kỳ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.REPORT_YEAR
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: period_tp_code
+    business_meaning: "Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.PERIOD_TYPE
+    comment: "Scheme: FMS_PERIOD_TYPE (tái sử dụng — đã đăng ký Tier 1). ETL map: 1=DAY;2=WEEK;3=MONTH;4=QUARTER;5=SEMI_ANNUAL;6=YEAR;7=HALF_MONTH."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: "1=DAY;2=WEEK;3=MONTH;4=QUARTER;5=SEMI_ANNUAL;6=YEAR;7=HALF_MONTH"
+
+  - name: Period Value
+    physical_name: period_val
+    business_meaning: "Giá trị kỳ báo cáo dạng chuỗi (VD: 2024, Q1, T03...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.PERIOD_TYPE_VALUE
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Title
+    physical_name: title
+    business_meaning: Tiêu đề thông báo/CBTT (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.TITLE
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Body Text
+    physical_name: body_text
+    business_meaning: Nội dung đầy đủ của thông báo/CBTT (NCLOB HTML hoặc văn bản).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.BODY
+    comment: "Nguồn NCLOB — ETL lưu nguyên chuỗi text, không tách cấu trúc ở Atomic."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.NOTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Announcement Date
+    physical_name: announcement_dt
+    business_meaning: Ngày công bố thông tin.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.ANNOUNCE_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Send Date
+    physical_name: send_dt
+    business_meaning: Ngày thành viên gửi thông báo/email.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.SEND_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Deadline Send Date
+    physical_name: deadline_send_dt
+    business_meaning: "Hạn nộp báo cáo (UTC): job tính theo cuối ngày 23:59:00 UTC."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.DEADLINE_SEND
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: English Title
+    physical_name: english_title
+    business_meaning: Tiêu đề tiếng Anh của CBTT (bắt buộc với CBTT khác gửi quốc tế).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.TITLE_EN
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: English Body Text
+    physical_name: english_body_text
+    business_meaning: "Nội dung trích yếu tiếng Anh (bắt buộc với CBTT khác, CLOB)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.BODY_EN
+    comment: "Nguồn CLOB — ETL lưu nguyên chuỗi text, không tách cấu trúc ở Atomic."
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ANNOUNCE
+    source_column: FMS.ANNOUNCE.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_ANNOUNCE'"
+    etl_derived_value: null

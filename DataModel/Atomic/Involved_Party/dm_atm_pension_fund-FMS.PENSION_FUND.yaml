@@ -1,0 +1,260 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pension_fund-FMS.PENSION_FUND
+  logical_name: Pension Fund
+  physical_name: pension_fund
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Pension Fund"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: Quỹ hưu trí bổ sung tự nguyện do Fund Management Company quản lý (id 10492).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-PENSION_FUND
+
+attributes:
+  - name: Pension Fund Id
+    physical_name: pension_fund_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Pension Fund\" (id 10492). Quỹ hưu trí bổ sung tự nguyện do Fund Management Company quản lý — 1 pháp nhân độc lập."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Pension Fund Code
+    physical_name: pension_fund_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: FMS.PENSION_FUND
+
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.SEC_ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Hash: hash_id('FMS.SECURITIES', SEC_ID)."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning: Mã công ty QLQ liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.SEC_ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with fund_management_company_id."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Business Certificate Number
+    physical_name: business_certificate_nbr
+    business_meaning: Số GCN thành lập quỹ hưu trí.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.BUSINESS_CERT_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Pension Fund Full Name
+    physical_name: pension_fund_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Pension Fund English Name
+    physical_name: pension_fund_english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.NAME_EN
+    comment: null
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Pension Fund Short Name
+    physical_name: pension_fund_short_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.SHORT_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    business_meaning: "FK -> BANK_MONI: Ngân hàng lưu ký của quỹ hưu trí."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.CUSTODIAN_BANK_ID
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', CUSTODIAN_BANK_ID)."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning: Mã ngân hàng lưu ký của quỹ hưu trí.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.CUSTODIAN_BANK_ID
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with custodian_bank_id."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Supervisor Bank Id
+    physical_name: supervisor_bank_id
+    business_meaning: "FK -> BANK_MONI: Ngân hàng giám sát của quỹ hưu trí."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.SUPERVISOR_BANK_ID
+    comment: "FK target: custodian_bank.custodian_bank_id. Hash: hash_id('FMS.BANK_MONI', SUPERVISOR_BANK_ID)."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Supervisor Bank Code
+    physical_name: supervisor_bank_code
+    business_meaning: Mã ngân hàng giám sát của quỹ hưu trí.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.SUPERVISOR_BANK_ID
+    comment: "Lookup pair: custodian_bank.custodian_bank_code. Pair with Supervisor Bank Id."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Operation Status Code
+    physical_name: operation_status_code
+    business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.STATUS_ID
+    comment: "Scheme: FMS_OPERATION_STATUS (tái sử dụng). Nguồn STATUS_ID là UUID FK — ETL resolve sang mã STATUS.CODE tương ứng."
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.NOTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: PENSION_FUND
+    source_column: FMS.PENSION_FUND.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_PENSION_FUND'"
+    etl_derived_value: null

@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-investment_fund_investor_capital_change_log-FMS.MB_CHANGE
+  logical_name: Investment Fund Investor Capital Change Log
+  physical_name: investment_fund_investor_capital_change_log
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Sự kiện thay đổi vốn góp của Investment Fund Investor Membership. Domain prefix dùng chung với Investment Fund (Tier 2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-MB_CHANGE
+
+attributes:
+  - name: Investment Fund Investor Capital Change Log Id
+    physical_name: investment_fund_investor_capital_change_log_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\". Sự kiện thay đổi vốn góp của Investment Fund Investor Membership."
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Capital Change Log Code
+    physical_name: investment_fund_investor_capital_change_log_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: FMS.MB_CHANGE
+
+  - name: Investment Fund Investor Membership Id
+    physical_name: investment_fund_investor_membership_id
+    business_meaning: "FK -> MB_FUND: Thành viên quỹ liên quan đến biến động."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.MBF_ID
+    comment: "FK target: investment_fund_investor_membership.investment_fund_investor_membership_id. Hash: hash_id('FMS.MB_FUND', MBF_ID)."
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Membership Code
+    physical_name: investment_fund_investor_membership_code
+    business_meaning: Mã thành viên quỹ liên quan đến biến động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.MBF_ID
+    comment: "Lookup pair: investment_fund_investor_membership.investment_fund_investor_membership_code. Pair with investment_fund_investor_membership_id."
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Transaction Timestamp
+    physical_name: transaction_tms
+    business_meaning: Thời điểm giao dịch chuyển nhượng.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.TX_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Transaction Number
+    physical_name: transaction_nbr
+    business_meaning: Số hiệu giao dịch chuyển nhượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.TX_NUM
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Capital Change Type Code
+    physical_name: capital_change_tp_code
+    business_meaning: Mua vào (A) hoặc Bán ra (O) hoặc Đăng ký (R/P) trong giao dịch.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.AOORP
+    comment: "Scheme: FMS_CAPITAL_CHANGE_TYPE (tái sử dụng — đã đăng ký Tier 1 cho entity này nhưng ban đầu dự kiến nguồn là CHANGE_TYPE). Mapping tạm: A=SUBSCRIPTION;O=REDEMPTION — R/P chưa xác định rõ tương ứng TRANSFER_IN hay TRANSFER_OUT, cần Data Modeler xác nhận."
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Settlement Timestamp
+    physical_name: settlement_tms
+    business_meaning: Ngày thanh toán/giải quyết giao dịch (business date).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.BUS_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: "Pre-Transaction Ownership Percentage"
+    physical_name: pre_transaction_ownership_percentage
+    business_meaning: "Tỷ lệ sở hữu trước giao dịch (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.PREPERCENT
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: "Post-Transaction Ownership Percentage"
+    physical_name: post_transaction_ownership_percentage
+    business_meaning: "Tỷ lệ sở hữu sau giao dịch (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.AFT_PERCENT
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: "Pre-Transaction Unit Quantity"
+    physical_name: pre_transaction_unit_quantity
+    business_meaning: Số lượng CCQ/cổ phần trước giao dịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.PRE_QTTY
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: "Post-Transaction Unit Quantity"
+    physical_name: post_transaction_unit_quantity
+    business_meaning: Số lượng CCQ/cổ phần sau giao dịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.AFT_QTTY
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: "Pre-Transaction Capital Amount"
+    physical_name: pre_transaction_capital_amt
+    business_meaning: "Vốn góp trước giao dịch (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.PRECAPITAL
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: "Post-Transaction Capital Amount"
+    physical_name: post_transaction_capital_amt
+    business_meaning: "Vốn góp sau giao dịch (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.AFT_CAPITAL
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_CHANGE
+    source_column: FMS.MB_CHANGE.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_CHANGE'"
+    etl_derived_value: null

@@ -34,7 +34,7 @@ metadata:
     \ cấu trúc FK đã xác định, cần review lại khi chính thức xử lý Tier 6."
 attributes:
 - attribute_name: "Fund Management Conduct Violation Id"
-  physical_name: "fund_management_conduct_violation_id"
+  physical_name: "fm_conduct_violation_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -47,7 +47,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Conduct Violation Code"
-  physical_name: "fund_management_conduct_violation_code"
+  physical_name: "fm_conduct_violation_code"
   description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
   data_domain: "Text"
   nullable: false
@@ -88,7 +88,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Id"
-  physical_name: "fund_management_company_id"
+  physical_name: "fmc_id"
   description: "FK -> SECURITIES: Công ty QLQ liên quan."
   data_domain: "Surrogate Key"
   nullable: true
@@ -102,7 +102,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fund Management Company Code"
-  physical_name: "fund_management_company_code"
+  physical_name: "fmc_code"
   description: "Mã công ty QLQ liên quan."
   data_domain: "Text"
   nullable: true
@@ -229,7 +229,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Id"
-  physical_name: "foreign_fund_management_ou_id"
+  physical_name: "foreign_fm_ou_id"
   description: "FK -> FOR_BRCH: Chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
   data_domain: "Surrogate Key"
   nullable: true
@@ -245,7 +245,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Code"
-  physical_name: "foreign_fund_management_ou_code"
+  physical_name: "foreign_fm_ou_code"
   description: "Mã chi nhánh/VPĐD nước ngoài liên quan đến báo cáo."
   data_domain: "Text"
   nullable: true
@@ -439,7 +439,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Year"
-  physical_name: "report_year"
+  physical_name: "rpt_year"
   description: "Năm báo cáo (định dạng YYYY)."
   data_domain: "Small Counter"
   nullable: true

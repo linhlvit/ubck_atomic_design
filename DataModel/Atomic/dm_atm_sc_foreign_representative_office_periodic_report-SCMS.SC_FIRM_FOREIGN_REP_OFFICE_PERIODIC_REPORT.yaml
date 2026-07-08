@@ -1,0 +1,471 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_foreign_representative_office_periodic_report-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+  logical_name: Securities Company Foreign Representative Office Periodic Report
+  physical_name: sc_foreign_representative_office_periodic_report
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Báo cáo định kỳ do VPĐD CTCK nước ngoài nộp lên UBCKNN. Ghi nhận kỳ, năm, hạn nộp, ngày nộp thực tế và trạng thái xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+
+attributes:
+  - name: Securities Company Foreign Representative Office Periodic Report Id
+    physical_name: sc_foreign_representative_office_periodic_report_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Securities Company Foreign Representative Office Periodic Report Code
+    physical_name: sc_foreign_representative_office_periodic_report_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+
+  - name: Securities Company Foreign Representative Office Id
+    physical_name: sc_foreign_representative_office_id
+    business_meaning: FK đến Văn phòng đại diện nước ngoài CTCK nộp báo cáo này.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SC_FIRM_FOREIGN_REP_OFFICE_ID
+    comment: "FK target: Securities Company Foreign Representative Office.Securities Company Foreign Representative Office Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE', SC_FIRM_FOREIGN_REP_OFFICE_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Securities Company Foreign Representative Office Code
+    physical_name: sc_foreign_representative_office_code
+    business_meaning: Mã Văn phòng đại diện nước ngoài CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SC_FIRM_FOREIGN_REP_OFFICE_ID
+    comment: "Lookup pair: Securities Company Foreign Representative Office.Securities Company Foreign Representative Office Code. Pair with Securities Company Foreign Representative Office Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Event Type Id
+    physical_name: event_tp_id
+    business_meaning: FK đến loại sự kiện pháp lý tương ứng với báo cáo định kỳ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID
+    comment: "Pending — FK target CAT_EVENT_TYPE nằm ngoài scope. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Event Type Code
+    physical_name: event_tp_code
+    business_meaning: Mã loại sự kiện pháp lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID
+    comment: Pending — Pair with Event Type Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Submission Status Code
+    physical_name: rpt_submission_status_code
+    business_meaning: "Trạng thái nộp báo cáo: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt; -1=Từ chối; 3=Bị hủy."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.RECORD_STATUS
+    comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo định kỳ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_NAME
+    comment: VARCHAR2(500).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Category
+    physical_name: category
+    business_meaning: Danh mục/phân loại báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.CATEGORY
+    comment: VARCHAR2(50). Mô tả gốc BRD null. Cần profile để xem xét có nên chuẩn hóa Classification Value không.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning: Chu kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_PERIOD
+    comment: VARCHAR2(20). Cần profile để xem xét chuẩn hóa Classification Value.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm của kỳ báo cáo (4 chữ số).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_YEAR
+    comment: "NUMBER(10). Giá trị 4 chữ số (VD: 2024)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Period
+    physical_name: period
+    business_meaning: Số thứ tự kỳ báo cáo trong năm (tuần/tháng/quý tùy report_period).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.PERIOD
+    comment: NUMBER(10). Mô tả gốc BRD null. Giá trị tùy thuộc REPORT_PERIOD.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Quarter
+    physical_name: quarter
+    business_meaning: "Số thứ tự quý trong năm (1-4), áp dụng khi báo cáo theo quý."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.QUARTER
+    comment: NUMBER. Mô tả gốc BRD null.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: "Số thứ tự tháng trong năm (1-12), áp dụng khi báo cáo theo tháng."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_MONTH
+    comment: NUMBER. Mô tả gốc BRD null.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning: Ngày bắt đầu của kỳ báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.START_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày kết thúc của kỳ báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.END_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Summary
+    physical_name: summary
+    business_meaning: Tóm tắt nội dung báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SUMMARY
+    comment: VARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Eform Data
+    physical_name: eform_data
+    business_meaning: Dữ liệu eForm được điền cho loại báo cáo này.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.DU_LIEU_EFORM
+    comment: "VARCHAR2(4000). DU_LIEU_EFORM = Dữ liệu eForm — mô tả gốc BRD null."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.NOTE
+    comment: VARCHAR2(2000). Mô tả gốc BRD null.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số văn bản pháp lý của báo cáo (QĐ/GP/CV).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.DOCUMENT_NUMBER
+    comment: VARCHAR2(255).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Document Date
+    physical_name: document_dt
+    business_meaning: Ngày của văn bản pháp lý.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.DOCUMENT_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Event Date
+    physical_name: event_dt
+    business_meaning: Ngày diễn ra sự kiện pháp lý liên quan đến báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_DATE
+    comment: DATE. Mô tả gốc BRD null.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm báo cáo trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.ATTACHMENT_PATH
+    comment: VARCHAR2(2000). Reference path — không load binary vào Atomic.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Import File Path
+    physical_name: import_file_path
+    business_meaning: Đường dẫn file import dữ liệu báo cáo trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.IMPORT_FILE_PATH
+    comment: VARCHAR2(1000). Reference path — không load binary vào Atomic.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Submission Deadline Date
+    physical_name: submission_deadline_dt
+    business_meaning: Hạn nộp báo cáo (ngày).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SUBMISSION_DEADLINE
+    comment: DATE. Cùng ý nghĩa với SUBMISSION_DEADLINE_AT nhưng ở dạng Date (không có giờ).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Submission Deadline Timestamp
+    physical_name: submission_deadline_tms
+    business_meaning: Hạn nộp báo cáo (ngày giờ chính xác).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT
+    comment: "TIMESTAMP(0). Cùng ý nghĩa với SUBMISSION_DEADLINE nhưng lưu cả giờ:phút. Giữ cả hai để dùng tùy ngữ cảnh."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Sent Timestamp
+    physical_name: sent_tms
+    business_meaning: Thời điểm báo cáo được gửi đi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SENT_AT
+    comment: TIMESTAMP(6). NULL nếu chưa gửi.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancelled Timestamp
+    physical_name: cancelled_tms
+    business_meaning: Thời điểm báo cáo bị hủy.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.CANCELLED_AT
+    comment: TIMESTAMP(6). NULL nếu không bị hủy.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancellation Reason
+    physical_name: cancellation_reason
+    business_meaning: Lý do hủy báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.CANCELLATION_REASON
+    comment: VARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancelled By SCMS User Id
+    physical_name: cancelled_by_scms_user_id
+    business_meaning: FK đến người hủy báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.CANCELLED_BY
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', CANCELLED_BY). NUMBER(10)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancelled By SCMS User Code
+    physical_name: cancelled_by_scms_user_code
+    business_meaning: Mã người hủy báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.CANCELLED_BY
+    comment: Pending — Pair with Cancelled By SCMS User Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
+    etl_derived_value: null

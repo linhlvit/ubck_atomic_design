@@ -1,0 +1,345 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-member_warning_condition-FMS.CDT_WARN
+  logical_name: Member Warning Condition
+  physical_name: member_warning_condition
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Scoring Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Điều kiện cụ thể hóa 1-2 Member Warning Parameter thành ngưỡng cảnh báo giám sát (ngưỡng min/max, so sánh kép). Domain prefix dùng chung với Member Warning Parameter (Tier 1).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-CDT_WARN
+
+attributes:
+  - name: Member Warning Condition Id
+    physical_name: member_warning_condition_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Condition] Scoring Criterion\". Điều kiện cụ thể hóa 1-2 Member Warning Parameter thành ngưỡng cảnh báo."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Member Warning Condition Code
+    physical_name: member_warning_condition_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: FMS.CDT_WARN
+
+  - name: Primary Member Warning Parameter Id
+    physical_name: primary_member_warning_parameter_id
+    business_meaning: "FK -> PARA_WARN: Tham số cảnh báo chính."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.PR_WID
+    comment: "FK target: member_warning_parameter.member_warning_parameter_id. Hash: hash_id('FMS.PARA_WARN', PR_WID)."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Primary Member Warning Parameter Code
+    physical_name: primary_member_warning_parameter_code
+    business_meaning: Mã tham số cảnh báo chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.PR_WID
+    comment: "Lookup pair: member_warning_parameter.member_warning_parameter_code. Pair with Primary Member Warning Parameter Id."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Comparison Member Warning Parameter Id
+    physical_name: comparison_member_warning_parameter_id
+    business_meaning: "FK -> PARA_WARN: Tham số cảnh báo so sánh thứ hai (tùy chọn)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.OTHER_WID
+    comment: "FK target: member_warning_parameter.member_warning_parameter_id. Hash: hash_id('FMS.PARA_WARN', OTHER_WID). Nullable — chỉ có khi điều kiện so sánh kép."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Comparison Member Warning Parameter Code
+    physical_name: comparison_member_warning_parameter_code
+    business_meaning: Mã tham số cảnh báo so sánh thứ hai.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.OTHER_WID
+    comment: "Lookup pair: member_warning_parameter.member_warning_parameter_code. Pair with Comparison Member Warning Parameter Id."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Comparison Type Code
+    physical_name: comparison_tp_code
+    business_meaning: "Kiểu so sánh điều kiện cảnh báo: 1=Lớn hơn, 2=Nhỏ hơn, 3=Bằng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.COMPARE_TYPE
+    comment: "Scheme: FMS_WARNING_COMPARE_TYPE (đã đăng ký). ETL map: 1=GREATER_THAN;2=LESS_THAN;3=EQUAL."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: "1=GREATER_THAN;2=LESS_THAN;3=EQUAL"
+
+  - name: Comparison Combination Type Code
+    physical_name: comparison_combination_tp_code
+    business_meaning: Điều kiện kết hợp với tham số cảnh báo thứ hai.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.OTHER_WID_CONDITION
+    comment: "Scheme: FMS_WARNING_COMBINATION_TYPE (đã đăng ký, values rỗng — nghi ngờ AND/OR, cùng pattern FIMS.CDTWARN.OtherWIdCondition). Xem HLD Tier2 6f T2-07 — cần xác nhận giá trị cụ thể."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: From Threshold Value Amount
+    physical_name: from_threshold_val_amt
+    business_meaning: Giá trị ngưỡng dưới của điều kiện cảnh báo.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.FROM_VALUE
+    comment: "[PROPOSE NEW DOMAIN] Giá trị ngưỡng có thể là tiền, tỷ lệ hay điểm số tùy Member Warning Parameter áp dụng — tạm chọn Currency Amount, cần reviewer xác nhận (cùng ambiguity với VIOLT.ITEM_VALUE)."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: From Value Operator Code
+    physical_name: from_val_operator_code
+    business_meaning: "Toán tử so sánh ngưỡng dưới: 1=>=, 2=>."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.FROM_VALUE_CONDITION
+    comment: "Scheme: FMS_WARNING_FROM_VALUE_OPERATOR (đã đăng ký). ETL map: 1=GTE;2=GT."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: "1=GTE;2=GT"
+
+  - name: To Threshold Value Amount
+    physical_name: to_threshold_val_amt
+    business_meaning: Giá trị ngưỡng trên của điều kiện cảnh báo.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.TO_VALUE
+    comment: "[PROPOSE NEW DOMAIN] Cùng ambiguity với From Threshold Value Amount — tạm chọn Currency Amount, cần reviewer xác nhận."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: To Value Operator Code
+    physical_name: to_val_operator_code
+    business_meaning: "Toán tử so sánh ngưỡng trên: 1=<=, 2=<."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.TO_VALUE_CONDITION
+    comment: "Scheme: FMS_WARNING_TO_VALUE_OPERATOR (đã đăng ký). ETL map: 1=LTE;2=LT."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: "1=LTE;2=LT"
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.RECORD_STATUS
+    comment: "Scheme: FMS_WARNING_RECORD_STATUS (tái sử dụng — đã đăng ký, dùng chung với Member Warning Parameter). ETL map: 1=ACTIVE;0=INACTIVE."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: "1=ACTIVE;0=INACTIVE"
+
+  - name: Member Warning Condition Full Name
+    physical_name: member_warning_condition_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Comparison Period Type Code
+    physical_name: comparison_period_tp_code
+    business_meaning: Loại kỳ tương đối của tham số cảnh báo so sánh.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.OTHER_WPERIOD_TYPE
+    comment: "Scheme: FMS_WARNING_PERIOD_TYPE (đã đăng ký). ETL map: 1=CURRENT_PERIOD;2=PREVIOUS_PERIOD."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: "1=CURRENT_PERIOD;2=PREVIOUS_PERIOD"
+
+  - name: Comparison Period Value
+    physical_name: comparison_period_val
+    business_meaning: Giá trị kỳ của tham số so sánh thứ hai.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.OTHER_WPERIOD_VALUE
+    comment: null
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Primary Period Type Code
+    physical_name: primary_period_tp_code
+    business_meaning: "Loại kỳ của tham số chính: 1=Kỳ hiện tại, 2=Kỳ liền trước."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.PR_WPERIOD_TYPE
+    comment: "Scheme: FMS_WARNING_PERIOD_TYPE (tái sử dụng — cùng scheme với Comparison Period Type Code). ETL map: 1=CURRENT_PERIOD;2=PREVIOUS_PERIOD."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: "1=CURRENT_PERIOD;2=PREVIOUS_PERIOD"
+
+  - name: Primary Period Value
+    physical_name: primary_period_val
+    business_meaning: "Giá trị kỳ của tham số chính (VD: '1' = 1 kỳ trước)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.PR_WPERIOD_VALUE
+    comment: null
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Batch Run Day Count
+    physical_name: batch_run_day_count
+    business_meaning: Số ngày batch chạy kiểm tra cảnh báo (tính từ đầu kỳ).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.NUMBER_DAY_RUN
+    comment: null
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Warning Type Code
+    physical_name: warning_tp_code
+    business_meaning: "Loại cảnh báo: 0=Cảnh báo so sánh số liệu, 1=Cảnh báo nội dung bất thường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.WARNING_TYPE
+    comment: "Scheme: FMS_WARNING_TYPE (đã đăng ký). ETL map: 0=DATA_COMPARISON;1=ANOMALOUS_CONTENT."
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: "0=DATA_COMPARISON;1=ANOMALOUS_CONTENT"
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: CDT_WARN
+    source_column: FMS.CDT_WARN.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_CDT_WARN'"
+    etl_derived_value: null

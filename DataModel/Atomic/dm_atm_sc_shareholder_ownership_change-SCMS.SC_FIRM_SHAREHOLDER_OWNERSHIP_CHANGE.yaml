@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_shareholder_ownership_change-SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+  logical_name: Securities Company Shareholder Ownership Change
+  physical_name: sc_shareholder_ownership_change
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Giao dịch thay đổi sở hữu cổ đông CTCK. Mỗi dòng = 1 lần thay đổi insert-only. Ghi nhận số cổ phần và tỷ lệ sở hữu trước/sau thay đổi.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+
+attributes:
+  - name: Securities Company Shareholder Ownership Change Id
+    physical_name: sc_shareholder_ownership_change_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Ownership Change Code
+    physical_name: sc_shareholder_ownership_change_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.ID
+    comment: BK. NUMBER(19) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán liên quan đến giao dịch thay đổi sở hữu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID). NUMBER(19)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Id
+    physical_name: sc_shareholder_id
+    business_meaning: FK đến Cổ đông CTCK có thay đổi sở hữu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SHAREHOLDER_ID
+    comment: "FK target: securities_company_shareholder.securities_company_shareholder_id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', SHAREHOLDER_ID). NUMBER(19) — BRD key:null nhưng HLD diagram xác nhận là FK."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Code
+    physical_name: sc_shareholder_code
+    business_meaning: Mã Cổ đông CTCK có thay đổi sở hữu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SHAREHOLDER_ID
+    comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code. Pair with securities_company_shareholder_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Shareholder Transaction Type Code
+    physical_name: shareholder_transaction_tp_code
+    business_meaning: "Loại giao dịch thay đổi sở hữu: TANG_VON=Tăng vốn góp; GIAM_VON=Giảm vốn góp; CHUYEN_NHUONG=Chuyển nhượng cổ phần; TANG_VON_DIEU_LE=Tăng vốn điều lệ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.TRANSACTION_TYPE
+    comment: "Scheme: SCMS_SHAREHOLDER_TXN_TYPE. NVARCHAR2(100)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning: "Nguồn gốc dữ liệu: Đồng bộ tự động, Nhập tay, Cổng báo cáo."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.DATA_SOURCE
+    comment: "Scheme: SCMS_DATA_SOURCE. NVARCHAR2(50)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Capital Before
+    physical_name: capital_before
+    business_meaning: "Vốn góp trước khi giao dịch (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.CAPITAL_BEFORE
+    comment: "NUMBER(22,4). Đơn vị VND."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Ratio Before
+    physical_name: ratio_before
+    business_meaning: "Tỷ lệ sở hữu trước khi giao dịch (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.RATIO_BEFORE
+    comment: "NUMBER(12,4). Lưu dạng thập phân (VD: 10.50 = 10.50%)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Capital After
+    physical_name: capital_after
+    business_meaning: "Vốn góp sau khi giao dịch (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.CAPITAL_AFTER
+    comment: "NUMBER(22,4). Đơn vị VND."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Ratio After
+    physical_name: ratio_after
+    business_meaning: "Tỷ lệ sở hữu sau khi giao dịch (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.RATIO_AFTER
+    comment: "NUMBER(12,4). Lưu dạng thập phân."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Effective Date
+    physical_name: effective_dt
+    business_meaning: Ngày hiệu lực của thay đổi sở hữu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.NGAY_HIEU_LUC
+    comment: "DATE. NGAY_HIEU_LUC = Ngày Hiệu Lực — mô tả gốc BRD null."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số văn bản pháp lý (QĐ/GP/CV/Thông tư) của giao dịch thay đổi sở hữu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.DOCUMENT_NUMBER
+    comment: NVARCHAR2(200).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.ATTACHMENT_PATH
+    comment: NVARCHAR2(500). Reference path — không load binary vào Atomic.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.NOTE
+    comment: NVARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE'"
+    etl_derived_value: null

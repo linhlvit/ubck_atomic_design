@@ -1,0 +1,93 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-SCMS.SC_FIRM_OWNERSHIP_RELATION
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_OWNERSHIP_RELATION
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Company Ownership Relation.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.ID
+    comment: "FK target: sc_ownership_relation.sc_ownership_relation_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_OWNERSHIP_RELATION', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION' | Address Type Code = 'REGISTERED'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Securities Company Ownership Relation.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.ID
+    comment: "Lookup pair: sc_ownership_relation.sc_ownership_relation_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION' | Address Type Code = 'REGISTERED'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION' | Address Type Code = 'REGISTERED'"
+    etl_derived_value: SCMS.SC_FIRM_OWNERSHIP_RELATION
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: "Loại địa chỉ: REGISTERED=Địa chỉ đăng ký kinh doanh của tổ chức có quan hệ sở hữu."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: null
+    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode REGISTERED — chỉ có 1 cột REGISTERED_ADDRESS."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION' | Address Type Code = 'REGISTERED'"
+    etl_derived_value: REGISTERED
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ đăng ký kinh doanh của tổ chức có quan hệ sở hữu với CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.REGISTERED_ADDRESS
+    comment: VARCHAR2(500). Không có Province/District/Ward FK trong nguồn.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION' | Address Type Code = 'REGISTERED'"
+    etl_derived_value: null

@@ -1,0 +1,275 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-member_inspection_penalty_decision-FMS.INSPECTION_PENALTY_DECISION
+  logical_name: Member Inspection Penalty Decision
+  physical_name: member_inspection_penalty_decision
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Quyết định xử phạt vi phạm hành chính phát sinh từ đợt thanh tra. Domain prefix dùng chung với Member Inspection Round (Tier 5)/Member Inspection Target (Tier 6). [T7-01 — chờ xác nhận] cần đối chiếu với Fund Management Conduct Violation (VIOLT, Tier 1).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-INSPECTION_PENALTY_DECISION
+
+attributes:
+  - name: Member Inspection Penalty Decision Id
+    physical_name: member_inspection_pd_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Conduct Violation\". Quyết định xử phạt vi phạm hành chính phát sinh từ đợt thanh tra."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Member Inspection Penalty Decision Code
+    physical_name: member_inspection_pd_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: FMS.INSPECTION_PENALTY_DECISION
+
+  - name: Member Inspection Round Id
+    physical_name: member_inspection_round_id
+    business_meaning: "FK -> INSPECTION_ROUND: Đợt thanh tra phát sinh quyết định xử phạt."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.INSPECTION_ROUND_ID
+    comment: "FK target: member_inspection_round.member_inspection_round_id. Hash: hash_id('FMS.INSPECTION_ROUND', INSPECTION_ROUND_ID)."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Member Inspection Round Code
+    physical_name: member_inspection_round_code
+    business_meaning: Mã đợt thanh tra phát sinh quyết định xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.INSPECTION_ROUND_ID
+    comment: "Lookup pair: member_inspection_round.member_inspection_round_code. Pair with member_inspection_round_id."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Member Inspection Target Id
+    physical_name: member_inspection_target_id
+    business_meaning: "FK -> INSPECTION_TARGET: Đối tượng thanh tra chịu quyết định xử phạt."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.TARGET_ID
+    comment: "FK target: member_inspection_target.member_inspection_target_id. Hash: hash_id('FMS.INSPECTION_TARGET', TARGET_ID)."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Member Inspection Target Code
+    physical_name: member_inspection_target_code
+    business_meaning: Mã đối tượng thanh tra chịu quyết định xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.TARGET_ID
+    comment: "Lookup pair: member_inspection_target.member_inspection_target_code. Pair with member_inspection_target_id."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Penalty Decision Number
+    physical_name: pd_nbr
+    business_meaning: Số quyết định xử phạt vi phạm hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.PENALTY_DECISION_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Penalty Decision Date
+    physical_name: pd_dt
+    business_meaning: Ngày ban hành quyết định xử phạt.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.PENALTY_DECISION_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Violation Behavior Description
+    physical_name: violation_behavior_description
+    business_meaning: Hành vi vi phạm bị xử phạt (mô tả chi tiết).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.VIOLATION_BEHAVIOR
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Penalty Form Description
+    physical_name: penalty_form_description
+    business_meaning: "Hình thức phạt chính: cảnh cáo, phạt tiền, đình chỉ..."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.PENALTY_FORM
+    comment: "Nguồn dạng mô tả tự do, không kèm danh mục cố định trong HLD 6d — giữ Text, không tạo Classification Value."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Penalty Amount
+    physical_name: penalty_amt
+    business_meaning: "Số tiền phạt vi phạm hành chính (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.PENALTY_AMOUNT
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Additional Penalty Form Description
+    physical_name: additional_penalty_form_description
+    business_meaning: "Hình thức phạt bổ sung: đình chỉ hoạt động, tước giấy phép..."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.ADDITIONAL_PENALTY_FORM
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Remedy Measure Description
+    physical_name: remedy_measure_description
+    business_meaning: Biện pháp khắc phục hậu quả bắt buộc thực hiện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.REMEDY_MEASURE
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Execution Status Code
+    physical_name: execution_status_code
+    business_meaning: "Trạng thái thi hành quyết định xử phạt: PENDING, EXECUTING, DONE."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.EXECUTION_STATUS
+    comment: "Scheme: FMS_INSPECTION_EXECUTION_STATUS (đã đăng ký)."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Remedy Status Code
+    physical_name: remedy_status_code
+    business_meaning: "Trạng thái thực hiện biện pháp khắc phục: PENDING, DONE, OVERDUE."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.REMEDY_STATUS
+    comment: "Scheme: FMS_INSPECTION_REMEDY_STATUS (đã đăng ký)."
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSPECTION_PENALTY_DECISION
+    source_column: FMS.INSPECTION_PENALTY_DECISION.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSPECTION_PENALTY_DECISION'"
+    etl_derived_value: null

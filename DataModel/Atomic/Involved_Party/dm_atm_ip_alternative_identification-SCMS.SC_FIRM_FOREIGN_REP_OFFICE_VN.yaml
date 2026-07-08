@@ -1,0 +1,135 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN
+  logical_name: Involved Party Alternative Identification
+  physical_name: ip_alternative_identification
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_VN
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Company Foreign Representative Office in VN.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID
+    comment: "FK target: Securities Company Foreign Rep Office VN.Securities Company Org Unit Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Securities Company Organization Unit.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.ID
+    comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: "Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép thành lập và hoạt động (UBCKNN cấp); ESTABLISHMENT_LICENSE=Giấy phép hoạt động văn phòng tại VN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot: BUSINESS_LICENSE_NUMBER→OPERATION_LICENSE; OFFICE_BUSINESS_LICENSE→ESTABLISHMENT_LICENSE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: "Số giấy tờ định danh của VPDD-VN theo từng loại."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_NUMBER, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_BUSINESS_LICENSE"
+    comment: "ETL pivot: BUSINESS_LICENSE_NUMBER→row OPERATION_LICENSE; OFFICE_BUSINESS_LICENSE→row ESTABLISHMENT_LICENSE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp giấy tờ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_DATE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_DATE"
+    comment: "ETL pivot: BUSINESS_LICENSE_DATE→row OPERATION_LICENSE; OFFICE_LICENSE_DATE→row ESTABLISHMENT_LICENSE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Cơ quan/nơi cấp giấy tờ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_FOREIGN_REP_OFFICE_VN
+    source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_ISSUER, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_ISSUER"
+    comment: "ETL pivot: BUSINESS_LICENSE_ISSUER→row OPERATION_LICENSE; OFFICE_LICENSE_ISSUER→row ESTABLISHMENT_LICENSE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN' | Identification Type Code = '(SOURCE)'"
+    etl_derived_value: null

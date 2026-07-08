@@ -1,0 +1,358 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fmc_organization_unit-FMS.BRANCHS
+  logical_name: Fund Management Company Organization Unit
+  physical_name: fmc_organization_unit
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: Chi nhánh/VPĐD trực thuộc Fund Management Company trong nước.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-BRANCHS
+
+attributes:
+  - name: Fund Management Company Organization Unit Id
+    physical_name: fmc_ou_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Chi nhánh/VPĐD trực thuộc Fund Management Company trong nước."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Organization Unit Code
+    physical_name: fmc_ou_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: FMS.BRANCHS
+
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.SEC_ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Hash: hash_id('FMS.SECURITIES', SEC_ID)."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning: Mã công ty QLQ liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.SEC_ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with fund_management_company_id."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Organization Unit Full Name
+    physical_name: fmc_ou_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Organization Unit Type Code
+    physical_name: ou_tp_code
+    business_meaning: "Loại chi nhánh: 1=Chi nhánh, 2=VPĐD."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.BR_TYPE
+    comment: "Scheme: FMS_ORG_UNIT_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml. ETL map: 1=BRANCH;2=REPRESENTATIVE_OFFICE."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: "1=BRANCH;2=REPRESENTATIVE_OFFICE"
+
+  - name: Head Office Flag
+    physical_name: head_office_flag
+    business_meaning: "Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.HOST_OFFICE
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Id
+    physical_name: fmc_key_person_id
+    business_meaning: "FK -> TL_PROFILES: Người phụ trách/giám đốc chi nhánh."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.TL_ID
+    comment: "FK target: fund_management_company_key_person.fund_management_company_key_person_id. Hash: hash_id('FMS.TL_PROFILES', TL_ID)."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Code
+    physical_name: fmc_key_person_code
+    business_meaning: Mã người phụ trách/giám đốc chi nhánh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.TL_ID
+    comment: "Lookup pair: fund_management_company_key_person.fund_management_company_key_person_code. Pair with fund_management_company_key_person_id."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Head Person Full Name
+    physical_name: head_person_full_nm
+    business_meaning: Tên người phụ trách chi nhánh (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.TL_NAME
+    comment: "Denormalized snapshot — khác với FK Fund Management Company Key Person Id (giữ giá trị tại thời điểm ghi nhận, không tự cập nhật theo entity)."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Content Note
+    physical_name: content_note
+    business_meaning: Nội dung/ghi chú bổ sung về chi nhánh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.CONTENT
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Organization Territory Type Code
+    physical_name: organization_territory_tp_code
+    business_meaning: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.DORF
+    comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng từ SECURITIES.BORF_FLAG, Tier 1). ETL derived: 1=DOMESTIC;2=FOREIGN — LƯU Ý encoding khác BORF_FLAG (1=DOMESTIC;0=FOREIGN)."
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: "1=DOMESTIC;2=FOREIGN"
+
+  - name: Suspension Date
+    physical_name: suspension_dt
+    business_meaning: Ngày ngừng/đình chỉ hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.STOP_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Operation Commencement Date
+    physical_name: operation_commencement_dt
+    business_meaning: Ngày bắt đầu hoạt động chính thức.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.ACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: License Decision Number
+    physical_name: license_decision_nbr
+    business_meaning: Số quyết định/giấy phép thành lập hoặc chấp thuận hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.DECISION
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: License Decision Date
+    physical_name: license_decision_dt
+    business_meaning: Ngày ban hành quyết định/giấy phép thành lập hoặc chấp thuận hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.DECISION_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Amendment Document Number
+    physical_name: amendment_document_nbr
+    business_meaning: Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.VOUCHER_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Amendment Document Date
+    physical_name: amendment_document_dt
+    business_meaning: Ngày ban hành văn bản điều chỉnh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.VOUCHER_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Change Description
+    physical_name: change_description
+    business_meaning: Mô tả nội dung thay đổi khi cập nhật hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.DES_CHANGE
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: BRANCHS
+    source_column: FMS.BRANCHS.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_BRANCHS'"
+    etl_derived_value: null

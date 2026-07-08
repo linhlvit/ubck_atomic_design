@@ -1,0 +1,471 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_alert_violation-SCMS.SC_FIRM_ALERT_VIOLATION
+  logical_name: Securities Company Alert Violation
+  physical_name: sc_alert_violation
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Vi phạm ngưỡng được hệ thống cảnh báo tự động phát hiện cho CTCK. Mỗi dòng = 1 vi phạm insert-only với chỉ tiêu, giá trị thực tế, giá trị ngưỡng và mức độ vi phạm.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_ALERT_VIOLATION
+
+attributes:
+  - name: Securities Company Alert Violation Id
+    physical_name: sc_alert_violation_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Alert Violation Code
+    physical_name: sc_alert_violation_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: SCMS.SC_FIRM_ALERT_VIOLATION
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán có vi phạm cảnh báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Alert Indicator Id
+    physical_name: sc_alert_indicator_id
+    business_meaning: FK đến chỉ tiêu cảnh báo kích hoạt vi phạm.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
+    comment: "FK target: securities_company_alert_indicator.securities_company_alert_indicator_id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Alert Indicator Code
+    physical_name: sc_alert_indicator_code
+    business_meaning: Mã chỉ tiêu cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
+    comment: "Lookup pair: securities_company_alert_indicator.securities_company_alert_indicator_code. Pair with securities_company_alert_indicator_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Condition Id
+    physical_name: alert_condition_id
+    business_meaning: FK đến điều kiện cảnh báo (Alert Condition) liên quan.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
+    comment: Pending — ALERT_CONDITION nằm ngoài scope HLD hiện tại. NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Condition Code
+    physical_name: alert_condition_code
+    business_meaning: Mã điều kiện cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
+    comment: Pending — Pair with Alert Condition Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Run Id
+    physical_name: alert_run_id
+    business_meaning: FK đến lần chạy alert tạo ra vi phạm này.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID
+    comment: Pending — ALERT_RUN nằm ngoài scope HLD hiện tại. NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Run Code
+    physical_name: alert_run_code
+    business_meaning: Mã lần chạy alert.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID
+    comment: Pending — Pair with Alert Run Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Violation Severity Code
+    physical_name: violation_severity_code
+    business_meaning: "Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm trọng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_SEVERITY
+    comment: "Scheme: SCMS_VIOLATION_SEVERITY. NUMBER(1) — ETL convert sang string."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Severity Level
+    physical_name: severity_level
+    business_meaning: Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY nhưng dạng text).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL
+    comment: NVARCHAR2(50). Có thể trùng ý nghĩa với VIOLATION_SEVERITY — cần xác nhận có thể bỏ sau khi profile dữ liệu.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Entity Type Code
+    physical_name: alert_entity_tp_code
+    business_meaning: "Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi nhánh nước ngoài; VPDD_NUOC_NGOAI=Văn phòng đại diện nước ngoài."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE
+    comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(50). Xác định ENTITY_ID trỏ về entity nào (polymorphic)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Entity Code
+    physical_name: alert_entity_code
+    business_meaning: Mã nghiệp vụ của đối tượng cảnh báo (tùy loại ENTITY_TYPE).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_ID
+    comment: "Pending — polymorphic FK: khi ENTITY_TYPE=CTCK trỏ Securities Company; khi =CN_NUOC_NGOAI trỏ Securities Company Foreign Branch; khi =VPDD_NUOC_NGOAI trỏ Securities Company Foreign Rep Office. ETL cần resolve theo ENTITY_TYPE. NUMBER(10) — convert sang string."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Condition Expression
+    physical_name: condition_expression
+    business_meaning: Biểu thức điều kiện logic đã kích hoạt cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.CONDITION
+    comment: NVARCHAR2(2000). Chuỗi logic expression dạng text từ hệ thống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Comparison Value
+    physical_name: comparison_val
+    business_meaning: Giá trị so sánh dùng trong điều kiện cảnh báo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_SO_SANH
+    comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn là integer. Tên nguồn tiếng Việt: Giá trị so sánh."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Actual Value
+    physical_name: actual_val
+    business_meaning: Giá trị thực tế của chỉ số tại thời điểm cảnh báo.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.GIA_TRI_THUC_TE
+    comment: "NUMBER(38,2). Tên nguồn tiếng Việt: Giá trị thực tế. Có thể là số tài chính hoặc tỉ lệ — dùng Currency Amount vì có decimal scale."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Threshold Value
+    physical_name: threshold_val
+    business_meaning: Ngưỡng cảnh báo được cấu hình.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.THRESHOLD
+    comment: "NUMBER(38,2)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Deducted Score
+    physical_name: deducted_score
+    business_meaning: Điểm trừ do vi phạm cảnh báo.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.DEDUCTED_SCORE
+    comment: "NUMBER(38,2). Điểm rủi ro bị trừ — dùng Currency Amount vì có decimal scale."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Alert Year
+    physical_name: alert_year
+    business_meaning: Năm của cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_YEAR
+    comment: VARCHAR2(4). Lưu dạng Text để bảo toàn format 4 ký tự.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo liên quan đến cảnh báo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_YEAR
+    comment: "NUMBER (integer). Dùng số nguyên, khác ALERT_YEAR (text 4 char)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Report Period Code
+    physical_name: rpt_period_code
+    business_meaning: Kỳ báo cáo của cảnh báo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD
+    comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(50)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Report Period Value
+    physical_name: rpt_period_val
+    business_meaning: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD_VALUE
+    comment: NUMBER (integer). Số thứ tự kỳ trong năm.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Period
+    physical_name: period
+    business_meaning: Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD
+    comment: "VARCHAR2(20). Mô tả gốc BRD trống — cần xác nhận format (VD: '2024Q1', '202401')."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Resolved Indicator
+    physical_name: resolved_indicator
+    business_meaning: "Cờ đánh dấu vi phạm đã được xử lý: 1=Đã xử lý; 0=Chưa xử lý."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.RESOLVED
+    comment: "NUMBER(1). ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Resolution Note
+    physical_name: resolution_note
+    business_meaning: Ghi chú về cách xử lý vi phạm cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.RESOLUTION_NOTE
+    comment: NVARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Violation Description
+    physical_name: violation_description
+    business_meaning: Mô tả chi tiết về vi phạm cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_DESCRIPTION
+    comment: NVARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung về vi phạm cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.NOTE
+    comment: NVARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Processing Date
+    physical_name: processing_dt
+    business_meaning: Thời điểm xử lý vi phạm cảnh báo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSING_DATE
+    comment: TIMESTAMP. Tên cột PROCESSING_DATE nhưng data type là TIMESTAMP.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Processor SCMS User Id
+    physical_name: processor_scms_user_id
+    business_meaning: FK đến người xử lý vi phạm cảnh báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID
+    comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER', PROCESSOR_ID). Khác Created By — là người xử lý sau khi alert phát sinh."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null
+
+  - name: Processor SCMS User Code
+    physical_name: processor_scms_user_code
+    business_meaning: Mã người xử lý vi phạm cảnh báo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_ALERT_VIOLATION
+    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID
+    comment: Pending — Pair with Processor SCMS User Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+    etl_derived_value: null

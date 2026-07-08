@@ -163,7 +163,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_INVES_ACC'"
   etl_derived_value: null
   atomic_table: "discretionary_investment_account"
-  atomic_column: "report_dt"
+  atomic_column: "rpt_dt"
   data_type: "date"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Discretionary Investment Account"
@@ -702,8 +702,8 @@ attributes:
     \ chuyển nhượng cổ phần/CCQ của Fund Management Company Insider."
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
-  atomic_column: "fund_management_company_insider_shareholding_change_log_id"
+  atomic_table: "fmc_insider_shareholding_change_log"
+  atomic_column: "fmc_insider_shareholding_change_log_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Insider Shareholding Change Log"
@@ -718,8 +718,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
-  atomic_column: "fund_management_company_insider_shareholding_change_log_code"
+  atomic_table: "fmc_insider_shareholding_change_log"
+  atomic_column: "fmc_insider_shareholding_change_log_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Insider Shareholding Change Log"
@@ -734,7 +734,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: "FMS.INSID_CHANGE"
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -751,8 +751,8 @@ attributes:
     \ Id. Hash: hash_id('FMS.INSIDER', INSDR_ID)."
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
-  atomic_column: "fund_management_company_insider_id"
+  atomic_table: "fmc_insider_shareholding_change_log"
+  atomic_column: "fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Insider Shareholding Change Log"
@@ -768,8 +768,8 @@ attributes:
     \ Code. Pair with Fund Management Company Insider Id."
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
-  atomic_column: "fund_management_company_insider_code"
+  atomic_table: "fmc_insider_shareholding_change_log"
+  atomic_column: "fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Insider Shareholding Change Log"
@@ -784,7 +784,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "transaction_tms"
   data_type: "timestamp"
 - bcv_core_object: "Business Activity"
@@ -800,7 +800,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "transaction_nbr"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -816,7 +816,7 @@ attributes:
   comment: "Scheme: FMS_INSIDER_TX_TYPE (đã đăng ký). ETL map: A=BUY;O=SELL;R=REGISTER;P=REGISTER."
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: "A=BUY;O=SELL;R=REGISTER;P=REGISTER"
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "insider_transaction_tp_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -832,7 +832,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "settlement_tms"
   data_type: "timestamp"
 - bcv_core_object: "Business Activity"
@@ -848,7 +848,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "pre_transaction_ownership_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Business Activity"
@@ -864,7 +864,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "post_transaction_ownership_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Business Activity"
@@ -880,7 +880,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "pre_transaction_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -896,7 +896,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "post_transaction_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -912,7 +912,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "pre_transaction_capital_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -928,7 +928,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "post_transaction_capital_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -944,7 +944,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "transfer_from_insider_flag"
   data_type: "boolean"
 - bcv_core_object: "Business Activity"
@@ -960,7 +960,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Business Activity"
@@ -976,7 +976,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSID_CHANGE'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_shareholding_change_log"
+  atomic_table: "fmc_insider_shareholding_change_log"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Business Activity"
@@ -993,8 +993,8 @@ attributes:
     \ bán cổ phần/trái phiếu của Fund Management Company."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
-  atomic_column: "fund_management_company_securities_offering_id"
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_securities_offering_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering"
@@ -1009,8 +1009,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
-  atomic_column: "fund_management_company_securities_offering_code"
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_securities_offering_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering"
@@ -1025,7 +1025,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: "FMS.OFFERING"
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1042,8 +1042,8 @@ attributes:
     \ SEC_ID)."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
-  atomic_column: "fund_management_company_id"
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering"
@@ -1059,8 +1059,8 @@ attributes:
     \ with Fund Management Company Id."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
-  atomic_column: "fund_management_company_code"
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering"
@@ -1075,7 +1075,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "tthc_application_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1093,7 +1093,7 @@ attributes:
     \ — passthrough."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "offering_tp_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1110,7 +1110,7 @@ attributes:
     \ — passthrough."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "securities_tp_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1126,7 +1126,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "securities_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1142,7 +1142,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "unit_par_val_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1158,7 +1158,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "offered_quantity"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1174,7 +1174,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "offering_price_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1190,7 +1190,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "total_registered_val_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1206,7 +1206,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "purpose_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1222,7 +1222,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "capital_usage_plan_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1238,7 +1238,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "expected_start_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
@@ -1254,7 +1254,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "expected_end_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
@@ -1270,7 +1270,7 @@ attributes:
   comment: "Denormalized — không có FK cấu trúc đến entity tổ chức bảo lãnh."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "guarantor_organization_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1286,7 +1286,7 @@ attributes:
   comment: "Denormalized — không có FK cấu trúc đến entity tổ chức tư vấn."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "advisory_organization_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1302,7 +1302,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "offering_method_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1318,7 +1318,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "target_audience_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1335,7 +1335,7 @@ attributes:
     \ — giữ Text, cần xác nhận trước khi tách Classification Value."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "capital_purpose_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1351,7 +1351,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "offering_start_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
@@ -1367,7 +1367,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "offering_end_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
@@ -1383,7 +1383,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "extended_flag"
   data_type: "boolean"
 - bcv_core_object: "Business Activity"
@@ -1399,7 +1399,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "actual_target_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1415,7 +1415,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "sold_quantity"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1431,7 +1431,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "actual_price_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1447,7 +1447,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "actual_total_val_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1463,7 +1463,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "employee_participant_count"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1479,7 +1479,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "foreign_investor_participant_count"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1495,7 +1495,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "issuance_val_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1511,7 +1511,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "approval_document_nbr"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1527,7 +1527,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "approval_document_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
@@ -1544,7 +1544,7 @@ attributes:
     \ — passthrough."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "data_src_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1561,7 +1561,7 @@ attributes:
     \ Text."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "affair_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1578,7 +1578,7 @@ attributes:
     \ sung classification_schemes.yaml. ETL map: 01=COMMON;02=PREFERRED."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: "01=COMMON;02=PREFERRED"
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "stock_class_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1594,7 +1594,7 @@ attributes:
   comment: "Denormalized — TTHC ngoài phạm vi thiết kế FMS."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "tthc_external_reference_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1610,8 +1610,8 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
-  atomic_column: "report_result_dt"
+  atomic_table: "fmc_securities_offering"
+  atomic_column: "rpt_result_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering"
@@ -1626,7 +1626,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "extended_to_dt"
   data_type: "date"
 - bcv_core_object: "Business Activity"
@@ -1642,7 +1642,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "assessment_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1658,7 +1658,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "note_text"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1677,7 +1677,7 @@ attributes:
     \ '...' nên có thể chưa đầy đủ."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "bond_tp_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1693,7 +1693,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "bond_term_years"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1709,7 +1709,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "interest_payment_period_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1725,7 +1725,7 @@ attributes:
   comment: "Denormalized — không có FK cấu trúc đến entity đại diện."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "bondholder_representative_nm"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1741,7 +1741,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "collateral_secured_flag"
   data_type: "boolean"
 - bcv_core_object: "Business Activity"
@@ -1757,7 +1757,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Business Activity"
@@ -1773,7 +1773,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering"
+  atomic_table: "fmc_securities_offering"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Business Activity"
@@ -1791,8 +1791,8 @@ attributes:
     \ nhóm đối tượng/phương thức."
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
-  atomic_column: "fund_management_company_securities_offering_plan_id"
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_plan_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering Plan"
@@ -1807,8 +1807,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
-  atomic_column: "fund_management_company_securities_offering_plan_code"
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_plan_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering Plan"
@@ -1823,7 +1823,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: "FMS.OFFERING_PLAN"
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1840,8 +1840,8 @@ attributes:
     \ Company Securities Offering Id. Hash: hash_id('FMS.OFFERING', OFFERING_ID)."
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
-  atomic_column: "fund_management_company_securities_offering_id"
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering Plan"
@@ -1858,8 +1858,8 @@ attributes:
     \ Offering Id."
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
-  atomic_column: "fund_management_company_securities_offering_code"
+  atomic_table: "fmc_securities_offering_plan"
+  atomic_column: "fmc_securities_offering_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Securities Offering Plan"
@@ -1875,7 +1875,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "sort_order"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1891,7 +1891,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "target_audience_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1908,7 +1908,7 @@ attributes:
     \ enum)."
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "offering_method_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -1924,7 +1924,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "planned_quantity"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1940,7 +1940,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "planned_price_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1956,7 +1956,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "planned_val_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -1972,7 +1972,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "planned_participant_count"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -1988,7 +1988,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "audience_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -2004,7 +2004,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "swap_purpose_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -2020,7 +2020,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "actual_quantity"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -2036,7 +2036,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "actual_price_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -2052,7 +2052,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "actual_val_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -2068,7 +2068,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "actual_participant_count"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -2084,7 +2084,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "actual_audience_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -2100,7 +2100,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "actual_swap_purpose_description"
   data_type: "string"
 - bcv_core_object: "Business Activity"
@@ -2116,7 +2116,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "foreign_investor_participant_count"
   data_type: "int"
 - bcv_core_object: "Business Activity"
@@ -2132,7 +2132,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_OFFERING_PLAN'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_securities_offering_plan"
+  atomic_table: "fmc_securities_offering_plan"
   atomic_column: "foreign_issuance_val_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Business Activity"
@@ -2150,7 +2150,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_VIOLT'"
   etl_derived_value: null
   atomic_table: "fund_management_conduct_violation"
-  atomic_column: "fund_management_conduct_violation_id"
+  atomic_column: "fm_conduct_violation_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Conduct Violation"
@@ -2166,7 +2166,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_VIOLT'"
   etl_derived_value: null
   atomic_table: "fund_management_conduct_violation"
-  atomic_column: "fund_management_conduct_violation_code"
+  atomic_column: "fm_conduct_violation_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Conduct Violation"
@@ -2218,7 +2218,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_VIOLT'"
   etl_derived_value: null
   atomic_table: "fund_management_conduct_violation"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Conduct Violation"
@@ -2235,7 +2235,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_VIOLT'"
   etl_derived_value: null
   atomic_table: "fund_management_conduct_violation"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Conduct Violation"
@@ -2391,7 +2391,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_VIOLT'"
   etl_derived_value: null
   atomic_table: "fund_management_conduct_violation"
-  atomic_column: "foreign_fund_management_ou_id"
+  atomic_column: "foreign_fm_ou_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Conduct Violation"
@@ -2409,7 +2409,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_VIOLT'"
   etl_derived_value: null
   atomic_table: "fund_management_conduct_violation"
-  atomic_column: "foreign_fund_management_ou_code"
+  atomic_column: "foreign_fm_ou_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Conduct Violation"
@@ -2640,7 +2640,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_VIOLT'"
   etl_derived_value: null
   atomic_table: "fund_management_conduct_violation"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Conduct Violation"
@@ -3840,7 +3840,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_RANK'"
   etl_derived_value: null
   atomic_table: "member_rating"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating"
@@ -3857,7 +3857,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_RANK'"
   etl_derived_value: null
   atomic_table: "member_rating"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating"
@@ -4039,7 +4039,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_RATING_PD'"
   etl_derived_value: null
   atomic_table: "member_rating_period"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating Period"
@@ -5494,7 +5494,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5511,7 +5511,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5562,7 +5562,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "fund_management_company_key_person_id"
+  atomic_column: "fmc_key_person_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5579,7 +5579,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "fund_management_company_key_person_code"
+  atomic_column: "fmc_key_person_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5597,7 +5597,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "foreign_fund_management_ou_id"
+  atomic_column: "foreign_fm_ou_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5615,7 +5615,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "foreign_fund_management_ou_code"
+  atomic_column: "foreign_fm_ou_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5633,7 +5633,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "foreign_fund_management_ou_staff_id"
+  atomic_column: "foreign_fm_ou_staff_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5651,7 +5651,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "foreign_fund_management_ou_staff_code"
+  atomic_column: "foreign_fm_ou_staff_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5734,7 +5734,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "report_tp_code"
+  atomic_column: "rpt_tp_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -5750,7 +5750,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_ANNOUNCE'"
   etl_derived_value: null
   atomic_table: "member_disclosure_announcement"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -7900,7 +7900,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment"
@@ -12551,7 +12551,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "parent_report_id"
+  atomic_column: "parent_rpt_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12568,7 +12568,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "parent_report_code"
+  atomic_column: "parent_rpt_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12584,7 +12584,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "practitioner_nm_at_report"
+  atomic_column: "practitioner_nm_at_rpt"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12600,7 +12600,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "practitioner_birth_dt_at_report"
+  atomic_column: "practitioner_birth_dt_at_rpt"
   data_type: "date"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12616,7 +12616,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "practitioner_identity_nbr_at_report"
+  atomic_column: "practitioner_identity_nbr_at_rpt"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12632,7 +12632,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "practitioner_position_at_report"
+  atomic_column: "practitioner_position_at_rpt"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12648,7 +12648,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "practitioner_department_at_report"
+  atomic_column: "practitioner_department_at_rpt"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12664,7 +12664,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "practitioner_workplace_at_report"
+  atomic_column: "practitioner_workplace_at_rpt"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12680,7 +12680,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "certificate_nbr_at_report"
+  atomic_column: "certificate_nbr_at_rpt"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12696,7 +12696,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "certificate_issue_dt_at_report"
+  atomic_column: "certificate_issue_dt_at_rpt"
   data_type: "date"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12744,7 +12744,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "report_dt"
+  atomic_column: "rpt_dt"
   data_type: "date"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12825,7 +12825,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "report_file_path"
+  atomic_column: "rpt_file_path"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12873,7 +12873,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "organization_status_code_at_report"
+  atomic_column: "organization_status_code_at_rpt"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -14123,7 +14123,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_INVES'"
   etl_derived_value: null
   atomic_table: "discretionary_investment_investor"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Discretionary Investment Investor"
@@ -14140,7 +14140,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_INVES'"
   etl_derived_value: null
   atomic_table: "discretionary_investment_investor"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Discretionary Investment Investor"
@@ -14239,7 +14239,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_INVES'"
   etl_derived_value: null
   atomic_table: "discretionary_investment_investor"
-  atomic_column: "relationship_description"
+  atomic_column: "rltnp_description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Discretionary Investment Investor"
@@ -14336,7 +14336,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_FOR_BRCH'"
   etl_derived_value: null
   atomic_table: "foreign_fund_management_organization_unit"
-  atomic_column: "foreign_fund_management_ou_id"
+  atomic_column: "foreign_fm_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit"
@@ -14352,7 +14352,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_FOR_BRCH'"
   etl_derived_value: null
   atomic_table: "foreign_fund_management_organization_unit"
-  atomic_column: "foreign_fund_management_ou_code"
+  atomic_column: "foreign_fm_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit"
@@ -14451,7 +14451,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_FOR_BRCH'"
   etl_derived_value: null
   atomic_table: "foreign_fund_management_organization_unit"
-  atomic_column: "foreign_fund_management_ou_full_nm"
+  atomic_column: "foreign_fm_ou_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit"
@@ -14467,7 +14467,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_FOR_BRCH'"
   etl_derived_value: null
   atomic_table: "foreign_fund_management_organization_unit"
-  atomic_column: "foreign_fund_management_ou_english_nm"
+  atomic_column: "foreign_fm_ou_english_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit"
@@ -14483,7 +14483,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_FOR_BRCH'"
   etl_derived_value: null
   atomic_table: "foreign_fund_management_organization_unit"
-  atomic_column: "foreign_fund_management_ou_short_nm"
+  atomic_column: "foreign_fm_ou_short_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit"
@@ -14710,8 +14710,8 @@ attributes:
     \ Cá nhân giữ vị trí trong VPĐD/CN QLQ nước ngoài."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
-  atomic_column: "foreign_fund_management_ou_staff_id"
+  atomic_table: "foreign_fm_ou_staff"
+  atomic_column: "foreign_fm_ou_staff_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
@@ -14726,8 +14726,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
-  atomic_column: "foreign_fund_management_ou_staff_code"
+  atomic_table: "foreign_fm_ou_staff"
+  atomic_column: "foreign_fm_ou_staff_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
@@ -14742,7 +14742,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: "FMS.STF_FG_BRCH"
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -14759,8 +14759,8 @@ attributes:
     \ Organization Unit Id. Hash: hash_id('FMS.FOR_BRCH', FOR_BRCH_ID)."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
-  atomic_column: "foreign_fund_management_ou_id"
+  atomic_table: "foreign_fm_ou_staff"
+  atomic_column: "foreign_fm_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
@@ -14777,8 +14777,8 @@ attributes:
     \ Id."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
-  atomic_column: "foreign_fund_management_ou_code"
+  atomic_table: "foreign_fm_ou_staff"
+  atomic_column: "foreign_fm_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
@@ -14795,7 +14795,7 @@ attributes:
     \ mã JOBS tương ứng."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "job_title_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -14812,7 +14812,7 @@ attributes:
     \ NAT_ID)."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "nationality_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -14829,7 +14829,7 @@ attributes:
     \ Id."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "nationality_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -14845,7 +14845,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "staff_branch_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -14861,8 +14861,8 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
-  atomic_column: "foreign_fund_management_ou_staff_full_nm"
+  atomic_table: "foreign_fm_ou_staff"
+  atomic_column: "foreign_fm_ou_staff_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
@@ -14877,7 +14877,7 @@ attributes:
   comment: "Scheme: FMS_GENDER (tái sử dụng — đã đăng ký Tier 2)."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "gender_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -14894,7 +14894,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "active_status_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -14910,7 +14910,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "legal_representative_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -14926,7 +14926,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "operating_license_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -14942,7 +14942,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "operating_license_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -14958,7 +14958,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -14974,7 +14974,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "held_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Involved Party"
@@ -14990,7 +14990,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "practice_certificate_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -15006,7 +15006,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "practice_certificate_issue_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -15022,7 +15022,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "branch_director_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -15038,7 +15038,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "director_appointment_license_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -15054,7 +15054,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "director_appointment_approval_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -15070,7 +15070,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -15086,7 +15086,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_STF_FG_BRCH'"
   etl_derived_value: null
-  atomic_table: "foreign_fund_management_organization_unit_staff"
+  atomic_table: "foreign_fm_ou_staff"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -15529,7 +15529,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15545,7 +15545,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15594,7 +15594,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_full_nm"
+  atomic_column: "fmc_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15610,7 +15610,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_trading_nm"
+  atomic_column: "fmc_trading_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15626,7 +15626,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_english_nm"
+  atomic_column: "fmc_english_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15642,7 +15642,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_short_nm"
+  atomic_column: "fmc_short_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15659,7 +15659,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_short_code"
+  atomic_column: "fmc_short_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15742,7 +15742,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_insider_id"
+  atomic_column: "fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -15760,7 +15760,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "fund_management_company_insider_code"
+  atomic_column: "fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -16234,7 +16234,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "parent_fund_management_company_id"
+  atomic_column: "parent_fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -16251,7 +16251,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_SECURITIES'"
   etl_derived_value: null
   atomic_table: "fund_management_company"
-  atomic_column: "parent_fund_management_company_code"
+  atomic_column: "parent_fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company"
@@ -16368,8 +16368,8 @@ attributes:
     \ có liên quan của Fund Management Company."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "fund_management_company_insider_id"
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16384,8 +16384,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "fund_management_company_insider_code"
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16400,7 +16400,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: "FMS.INSIDER"
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16417,8 +16417,8 @@ attributes:
     \ SC_ID)."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "fund_management_company_id"
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16434,8 +16434,8 @@ attributes:
     \ with Fund Management Company Id."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "fund_management_company_code"
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16451,8 +16451,8 @@ attributes:
     \ S_ID). Xem T5-04 — cần xác nhận quan hệ với Fund Management Company Id (SC_ID)."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "employer_fund_management_company_id"
+  atomic_table: "fmc_insider"
+  atomic_column: "employer_fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16468,8 +16468,8 @@ attributes:
     \ with Employer Fund Management Company Id."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "employer_fund_management_company_code"
+  atomic_table: "fmc_insider"
+  atomic_column: "employer_fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16485,7 +16485,7 @@ attributes:
     \ NAT_ID)."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "nationality_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16502,7 +16502,7 @@ attributes:
     \ Id."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "nationality_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16519,8 +16519,8 @@ attributes:
     \ Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "fund_management_company_key_person_id"
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_key_person_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16536,8 +16536,8 @@ attributes:
     \ Key Person Code. Pair with Fund Management Company Key Person Id."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "fund_management_company_key_person_code"
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_key_person_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16552,8 +16552,8 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
-  atomic_column: "fund_management_company_insider_full_nm"
+  atomic_table: "fmc_insider"
+  atomic_column: "fmc_insider_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider"
@@ -16568,7 +16568,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "insider_registration_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16585,7 +16585,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "key_person_linked_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -16601,7 +16601,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "key_person_in_company_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -16618,7 +16618,7 @@ attributes:
     \ ETL map: 1=MAJOR_SHAREHOLDER;2=EXECUTIVE;3=BOARD_MEMBER."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: "1=MAJOR_SHAREHOLDER;2=EXECUTIVE;3=BOARD_MEMBER"
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "insider_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16634,7 +16634,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "contributed_capital_amt"
   data_type: "decimal(23,2)"
 - bcv_core_object: "Involved Party"
@@ -16650,7 +16650,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "held_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Involved Party"
@@ -16666,7 +16666,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "representation_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Involved Party"
@@ -16682,7 +16682,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "percentage_determination_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -16699,7 +16699,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "active_status_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -16715,7 +16715,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16731,7 +16731,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "birth_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -16747,7 +16747,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "employment_start_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -16765,7 +16765,7 @@ attributes:
     \ 6d — bổ sung classification_schemes.yaml. ETL map: 1=ACTIVE;2=EXPIRED;3=INDEFINITE."
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: "1=ACTIVE;2=EXPIRED;3=INDEFINITE"
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "employment_status_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16781,7 +16781,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "decision_document_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16797,7 +16797,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "approval_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -16813,7 +16813,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -16829,7 +16829,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSIDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider"
+  atomic_table: "fmc_insider"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -16846,8 +16846,8 @@ attributes:
     \ 11308). Người có quan hệ gia đình/liên quan với Fund Management Company Insider."
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
-  atomic_column: "fund_management_company_insider_related_person_id"
+  atomic_table: "fmc_insider_related_person"
+  atomic_column: "fmc_insider_related_person_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Related Person"
@@ -16862,8 +16862,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
-  atomic_column: "fund_management_company_insider_related_person_code"
+  atomic_table: "fmc_insider_related_person"
+  atomic_column: "fmc_insider_related_person_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Related Person"
@@ -16878,7 +16878,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: "FMS.INSDER_RELA"
-  atomic_table: "fund_management_company_insider_related_person"
+  atomic_table: "fmc_insider_related_person"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16895,8 +16895,8 @@ attributes:
     \ Id. Hash: hash_id('FMS.INSIDER', INSDER_ID)."
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
-  atomic_column: "fund_management_company_insider_id"
+  atomic_table: "fmc_insider_related_person"
+  atomic_column: "fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Related Person"
@@ -16912,8 +16912,8 @@ attributes:
     \ Code. Pair with Fund Management Company Insider Id."
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
-  atomic_column: "fund_management_company_insider_code"
+  atomic_table: "fmc_insider_related_person"
+  atomic_column: "fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Related Person"
@@ -16928,8 +16928,8 @@ attributes:
   comment: "Scheme: FMS_RELATION_TYPE (tái sử dụng — đã đăng ký Tier 1)."
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
-  atomic_column: "relationship_tp_code"
+  atomic_table: "fmc_insider_related_person"
+  atomic_column: "rltnp_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Related Person"
@@ -16944,7 +16944,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
+  atomic_table: "fmc_insider_related_person"
   atomic_column: "related_person_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16960,7 +16960,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
+  atomic_table: "fmc_insider_related_person"
   atomic_column: "description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16976,7 +16976,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
+  atomic_table: "fmc_insider_related_person"
   atomic_column: "decision_document_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -16992,7 +16992,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
+  atomic_table: "fmc_insider_related_person"
   atomic_column: "approval_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -17008,7 +17008,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
+  atomic_table: "fmc_insider_related_person"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -17024,7 +17024,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_related_person"
+  atomic_table: "fmc_insider_related_person"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -17041,8 +17041,8 @@ attributes:
     \ 10842). Người đại diện theo ủy quyền của Fund Management Company Insider."
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
-  atomic_column: "fund_management_company_insider_representative_id"
+  atomic_table: "fmc_insider_representative"
+  atomic_column: "fmc_insider_representative_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Representative"
@@ -17057,8 +17057,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
-  atomic_column: "fund_management_company_insider_representative_code"
+  atomic_table: "fmc_insider_representative"
+  atomic_column: "fmc_insider_representative_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Representative"
@@ -17073,7 +17073,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: "FMS.INSDER_RPRST"
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -17090,8 +17090,8 @@ attributes:
     \ Id. Hash: hash_id('FMS.INSIDER', INSDR_ID)."
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
-  atomic_column: "fund_management_company_insider_id"
+  atomic_table: "fmc_insider_representative"
+  atomic_column: "fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Representative"
@@ -17107,8 +17107,8 @@ attributes:
     \ Code. Pair with Fund Management Company Insider Id."
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
-  atomic_column: "fund_management_company_insider_code"
+  atomic_table: "fmc_insider_representative"
+  atomic_column: "fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Insider Representative"
@@ -17123,7 +17123,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "representative_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -17139,7 +17139,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "job_title_description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -17156,7 +17156,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "active_status_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -17172,7 +17172,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "representation_start_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -17188,7 +17188,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "representation_end_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -17204,7 +17204,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "representation_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Involved Party"
@@ -17220,7 +17220,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -17236,7 +17236,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_INSDER_RPRST'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_insider_representative"
+  atomic_table: "fmc_insider_representative"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -17254,7 +17254,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_key_person_id"
+  atomic_column: "fmc_key_person_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17270,7 +17270,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_key_person_code"
+  atomic_column: "fmc_key_person_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17303,7 +17303,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17320,7 +17320,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17337,7 +17337,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_ou_id"
+  atomic_column: "fmc_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17355,7 +17355,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_ou_code"
+  atomic_column: "fmc_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17371,7 +17371,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_key_person_full_nm"
+  atomic_column: "fmc_key_person_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17387,7 +17387,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_key_person_short_nm"
+  atomic_column: "fmc_key_person_short_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17907,7 +17907,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_insider_id"
+  atomic_column: "fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -17925,7 +17925,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_TL_PROFILES'"
   etl_derived_value: null
   atomic_table: "fund_management_company_key_person"
-  atomic_column: "fund_management_company_insider_code"
+  atomic_column: "fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person"
@@ -18073,8 +18073,8 @@ attributes:
     \ Person."
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
-  atomic_column: "fund_management_company_key_person_related_person_id"
+  atomic_table: "fmc_key_person_related_person"
+  atomic_column: "fmc_key_person_related_person_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person Related Person"
@@ -18089,8 +18089,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
-  atomic_column: "fund_management_company_key_person_related_person_code"
+  atomic_table: "fmc_key_person_related_person"
+  atomic_column: "fmc_key_person_related_person_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person Related Person"
@@ -18105,7 +18105,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: "FMS.TL_PRO_RELA"
-  atomic_table: "fund_management_company_key_person_related_person"
+  atomic_table: "fmc_key_person_related_person"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18122,8 +18122,8 @@ attributes:
     \ Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
-  atomic_column: "fund_management_company_key_person_id"
+  atomic_table: "fmc_key_person_related_person"
+  atomic_column: "fmc_key_person_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person Related Person"
@@ -18139,8 +18139,8 @@ attributes:
     \ Key Person Code. Pair with Fund Management Company Key Person Id."
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
-  atomic_column: "fund_management_company_key_person_code"
+  atomic_table: "fmc_key_person_related_person"
+  atomic_column: "fmc_key_person_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person Related Person"
@@ -18156,8 +18156,8 @@ attributes:
     \ Nguồn RELA_ID là UUID FK — ETL resolve sang mã tương ứng."
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
-  atomic_column: "relationship_tp_code"
+  atomic_table: "fmc_key_person_related_person"
+  atomic_column: "rltnp_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Key Person Related Person"
@@ -18172,7 +18172,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
+  atomic_table: "fmc_key_person_related_person"
   atomic_column: "related_person_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18188,7 +18188,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
+  atomic_table: "fmc_key_person_related_person"
   atomic_column: "description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18204,7 +18204,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
+  atomic_table: "fmc_key_person_related_person"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -18220,7 +18220,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TL_PRO_RELA'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_key_person_related_person"
+  atomic_table: "fmc_key_person_related_person"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -18237,8 +18237,8 @@ attributes:
     \ thuộc Fund Management Company trong nước."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
-  atomic_column: "fund_management_company_ou_id"
+  atomic_table: "fmc_organization_unit"
+  atomic_column: "fmc_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
@@ -18253,8 +18253,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
-  atomic_column: "fund_management_company_ou_code"
+  atomic_table: "fmc_organization_unit"
+  atomic_column: "fmc_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
@@ -18269,7 +18269,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: "FMS.BRANCHS"
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18286,8 +18286,8 @@ attributes:
     \ SEC_ID)."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
-  atomic_column: "fund_management_company_id"
+  atomic_table: "fmc_organization_unit"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
@@ -18303,8 +18303,8 @@ attributes:
     \ with Fund Management Company Id."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
-  atomic_column: "fund_management_company_code"
+  atomic_table: "fmc_organization_unit"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
@@ -18319,8 +18319,8 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
-  atomic_column: "fund_management_company_ou_full_nm"
+  atomic_table: "fmc_organization_unit"
+  atomic_column: "fmc_ou_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
@@ -18336,7 +18336,7 @@ attributes:
     \ bổ sung classification_schemes.yaml. ETL map: 1=BRANCH;2=REPRESENTATIVE_OFFICE."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: "1=BRANCH;2=REPRESENTATIVE_OFFICE"
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "ou_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18352,7 +18352,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "head_office_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -18369,8 +18369,8 @@ attributes:
     \ Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TL_ID)."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
-  atomic_column: "fund_management_company_key_person_id"
+  atomic_table: "fmc_organization_unit"
+  atomic_column: "fmc_key_person_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
@@ -18386,8 +18386,8 @@ attributes:
     \ Key Person Code. Pair with Fund Management Company Key Person Id."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
-  atomic_column: "fund_management_company_key_person_code"
+  atomic_table: "fmc_organization_unit"
+  atomic_column: "fmc_key_person_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Fund Management Company Organization Unit"
@@ -18403,7 +18403,7 @@ attributes:
     \ Id (giữ giá trị tại thời điểm ghi nhận, không tự cập nhật theo entity)."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "head_person_full_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18419,7 +18419,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18435,7 +18435,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "content_note"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18452,7 +18452,7 @@ attributes:
     \ 1). ETL derived: 1=DOMESTIC;2=FOREIGN — LƯU Ý encoding khác BORF_FLAG (1=DOMESTIC;0=FOREIGN)."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: "1=DOMESTIC;2=FOREIGN"
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "organization_territory_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18468,7 +18468,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "suspension_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -18484,7 +18484,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "operation_commencement_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -18500,7 +18500,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "license_decision_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18517,7 +18517,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "license_decision_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -18533,7 +18533,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "amendment_document_nbr"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18549,7 +18549,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "amendment_document_dt"
   data_type: "date"
 - bcv_core_object: "Involved Party"
@@ -18565,7 +18565,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "change_description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
@@ -18582,7 +18582,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "active_status_flag"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
@@ -18598,7 +18598,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -18614,7 +18614,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_BRANCHS'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_organization_unit"
+  atomic_table: "fmc_organization_unit"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
@@ -18681,7 +18681,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_FUNDS'"
   etl_derived_value: null
   atomic_table: "investment_fund"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Investment Fund"
@@ -18698,7 +18698,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_FUNDS'"
   etl_derived_value: null
   atomic_table: "investment_fund"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Investment Fund"
@@ -19749,7 +19749,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_PENSION_FUND'"
   etl_derived_value: null
   atomic_table: "pension_fund"
-  atomic_column: "fund_management_company_id"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Pension Fund"
@@ -19766,7 +19766,7 @@ attributes:
   classification_context: "Source System Code = 'FMS_PENSION_FUND'"
   etl_derived_value: null
   atomic_table: "pension_fund"
-  atomic_column: "fund_management_company_code"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Pension Fund"
@@ -20373,7 +20373,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_UNITS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "ra_organization_unit_id"
+  atomic_column: "ra_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20389,7 +20389,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_UNITS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "ra_organization_unit_code"
+  atomic_column: "ra_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20437,7 +20437,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_UNITS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "ra_organization_unit_nm"
+  atomic_column: "ra_ou_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20470,7 +20470,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_UNITS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "parent_ra_organization_unit_id"
+  atomic_column: "parent_ra_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20488,7 +20488,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_UNITS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "parent_ra_organization_unit_code"
+  atomic_column: "parent_ra_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20537,7 +20537,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "ra_organization_unit_id"
+  atomic_column: "ra_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20553,7 +20553,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "ra_organization_unit_code"
+  atomic_column: "ra_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20601,7 +20601,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "ra_organization_unit_nm"
+  atomic_column: "ra_ou_nm"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20635,7 +20635,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "parent_ra_organization_unit_id"
+  atomic_column: "parent_ra_ou_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -20653,7 +20653,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_DEPARTMENTS'"
   etl_derived_value: null
   atomic_table: "ra_organization_unit"
-  atomic_column: "parent_ra_organization_unit_code"
+  atomic_column: "parent_ra_ou_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Regulatory Authority Organization Unit"
@@ -22384,7 +22384,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "labor_contract_termination_report_indicator"
+  atomic_column: "labor_contract_termination_rpt_indicator"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
@@ -22417,7 +22417,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "report_id"
+  atomic_column: "rpt_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
@@ -23649,7 +23649,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "labor_contract_termination_report_indicator"
+  atomic_column: "labor_contract_termination_rpt_indicator"
   data_type: "boolean"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
@@ -23682,7 +23682,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "report_id"
+  atomic_column: "rpt_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
@@ -25725,7 +25725,7 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
   etl_derived_value: null
   atomic_table: "sp_related_party"
-  atomic_column: "relationship_tp_code"
+  atomic_column: "rltnp_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner Related Party"
@@ -26841,8 +26841,8 @@ attributes:
     \ phần nội bộ Fund Management Company."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "fund_management_company_share_transfer_id"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "fmc_share_transfer_id"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26857,8 +26857,8 @@ attributes:
   comment: "BK chính. PK nguồn."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "fund_management_company_share_transfer_code"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "fmc_share_transfer_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26873,7 +26873,7 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: "FMS.TRS_FER_INDER"
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
@@ -26890,8 +26890,8 @@ attributes:
     \ SC_ID)."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "fund_management_company_id"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "fmc_id"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26907,8 +26907,8 @@ attributes:
     \ with Fund Management Company Id."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "fund_management_company_code"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "fmc_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26925,8 +26925,8 @@ attributes:
     \ 5. Giải quyết GAP T4-01 (BRD thực tế có cột này)."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "from_fund_management_company_insider_id"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "from_fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26943,8 +26943,8 @@ attributes:
     \ kế ở Tier 5."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "from_fund_management_company_insider_code"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "from_fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26961,8 +26961,8 @@ attributes:
     \ 5. Giải quyết GAP T4-01 (BRD thực tế có cột này)."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "to_fund_management_company_insider_id"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "to_fmc_insider_id"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26979,8 +26979,8 @@ attributes:
     \ kế ở Tier 5."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
-  atomic_column: "to_fund_management_company_insider_code"
+  atomic_table: "fmc_share_transfer"
+  atomic_column: "to_fmc_insider_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -26996,7 +26996,7 @@ attributes:
     \ Transaction, không phải Involved Party."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "related_party_identification_nbr"
   data_type: "string"
 - bcv_core_object: "Transaction"
@@ -27012,7 +27012,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "insider_flag"
   data_type: "boolean"
 - bcv_core_object: "Transaction"
@@ -27028,7 +27028,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "current_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Transaction"
@@ -27044,7 +27044,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "current_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Transaction"
@@ -27060,7 +27060,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "post_transfer_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Transaction"
@@ -27076,7 +27076,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "post_transfer_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Transaction"
@@ -27092,7 +27092,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "current_val_dt"
   data_type: "date"
 - bcv_core_object: "Transaction"
@@ -27108,7 +27108,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "committed_current_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Transaction"
@@ -27124,7 +27124,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "committed_current_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Transaction"
@@ -27140,7 +27140,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "committed_current_dt"
   data_type: "date"
 - bcv_core_object: "Transaction"
@@ -27156,7 +27156,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "committed_post_transfer_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Transaction"
@@ -27172,7 +27172,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "committed_post_transfer_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Transaction"
@@ -27188,7 +27188,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "transferred_unit_quantity"
   data_type: "int"
 - bcv_core_object: "Transaction"
@@ -27204,7 +27204,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "percentage_determination_dt"
   data_type: "date"
 - bcv_core_object: "Transaction"
@@ -27220,7 +27220,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "ownership_percentage"
   data_type: "decimal(5,2)"
 - bcv_core_object: "Transaction"
@@ -27236,7 +27236,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "decision_document_nbr"
   data_type: "string"
 - bcv_core_object: "Transaction"
@@ -27252,7 +27252,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "approval_dt"
   data_type: "date"
 - bcv_core_object: "Transaction"
@@ -27268,7 +27268,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "created_tms"
   data_type: "timestamp"
 - bcv_core_object: "Transaction"
@@ -27284,7 +27284,7 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'FMS_TRS_FER_INDER'"
   etl_derived_value: null
-  atomic_table: "fund_management_company_share_transfer"
+  atomic_table: "fmc_share_transfer"
   atomic_column: "updated_tms"
   data_type: "timestamp"
 - bcv_core_object: "Transaction"
@@ -39034,7 +39034,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
   etl_derived_value: null
   atomic_table: "securities_company"
-  atomic_column: "financial_report_tp_code"
+  atomic_column: "financial_rpt_tp_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company"
@@ -39859,7 +39859,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "form_report_id"
+  atomic_column: "form_rpt_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
@@ -39891,7 +39891,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "report_input_submission_id"
+  atomic_column: "rpt_input_submission_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
@@ -39907,7 +39907,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "report_nm"
+  atomic_column: "rpt_nm"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
@@ -39923,7 +39923,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
@@ -39972,7 +39972,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "adhoc_report_tp_code"
+  atomic_column: "adhoc_rpt_tp_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
@@ -40024,7 +40024,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "report_submission_status_code"
+  atomic_column: "rpt_submission_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
@@ -40330,7 +40330,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADMIN_PENALTY_DECISION'"
   etl_derived_value: null
   atomic_table: "sc_administrative_penalty_decision"
-  atomic_column: "sc_administrative_penalty_decision_id"
+  atomic_column: "sc_administrative_pd_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Administrative Penalty Decision"
@@ -40346,7 +40346,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADMIN_PENALTY_DECISION'"
   etl_derived_value: null
   atomic_table: "sc_administrative_penalty_decision"
-  atomic_column: "sc_administrative_penalty_decision_code"
+  atomic_column: "sc_administrative_pd_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Administrative Penalty Decision"
@@ -42319,7 +42319,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
   etl_derived_value: null
   atomic_table: "sc_alert_violation"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Alert Violation"
@@ -42335,7 +42335,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
   etl_derived_value: null
   atomic_table: "sc_alert_violation"
-  atomic_column: "report_period_code"
+  atomic_column: "rpt_period_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Alert Violation"
@@ -42351,7 +42351,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
   etl_derived_value: null
   atomic_table: "sc_alert_violation"
-  atomic_column: "report_period_val"
+  atomic_column: "rpt_period_val"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Alert Violation"
@@ -43568,7 +43568,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_BANK'"
   etl_derived_value: null
   atomic_table: "sc_depositary_bank"
-  atomic_column: "input_report_data_indicator"
+  atomic_column: "input_rpt_data_indicator"
   data_type: "boolean"
 - bcv_core_object: null
   atomic_entity: "Securities Company Depositary Bank"
@@ -43787,7 +43787,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "original_disclosure_report_id"
+  atomic_column: "original_disclosure_rpt_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -43804,7 +43804,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "original_disclosure_report_code"
+  atomic_column: "original_disclosure_rpt_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -43820,7 +43820,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "member_report_id"
+  atomic_column: "member_rpt_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -43868,7 +43868,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "report_period_code"
+  atomic_column: "rpt_period_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -43981,7 +43981,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -43997,7 +43997,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "report_period_val"
+  atomic_column: "rpt_period_val"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -44237,7 +44237,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "foreign_branch_report_id"
+  atomic_column: "foreign_branch_rpt_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -45017,7 +45017,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_securities_offering"
-  atomic_column: "result_report_dt"
+  atomic_column: "result_rpt_dt"
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Securities Offering"
@@ -46118,7 +46118,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH'"
   etl_derived_value: null
   atomic_table: "securities_company_foreign_branch"
-  atomic_column: "financial_report_tp_code"
+  atomic_column: "financial_rpt_tp_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch"
@@ -46589,7 +46589,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_branch_periodic_report"
-  atomic_column: "report_submission_status_code"
+  atomic_column: "rpt_submission_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
@@ -46605,7 +46605,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_branch_periodic_report"
-  atomic_column: "report_nm"
+  atomic_column: "rpt_nm"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
@@ -46639,7 +46639,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_branch_periodic_report"
-  atomic_column: "report_period"
+  atomic_column: "rpt_period"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
@@ -46655,7 +46655,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_branch_periodic_report"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
@@ -46703,7 +46703,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_branch_periodic_report"
-  atomic_column: "report_month"
+  atomic_column: "rpt_month"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
@@ -47544,7 +47544,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_representative_office_periodic_report"
-  atomic_column: "report_submission_status_code"
+  atomic_column: "rpt_submission_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
@@ -47560,7 +47560,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_representative_office_periodic_report"
-  atomic_column: "report_nm"
+  atomic_column: "rpt_nm"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
@@ -47593,7 +47593,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_representative_office_periodic_report"
-  atomic_column: "report_period"
+  atomic_column: "rpt_period"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
@@ -47609,7 +47609,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_representative_office_periodic_report"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
@@ -47657,7 +47657,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_representative_office_periodic_report"
-  atomic_column: "report_month"
+  atomic_column: "rpt_month"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
@@ -48474,7 +48474,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION'"
   etl_derived_value: null
   atomic_table: "sc_insider_related_person"
-  atomic_column: "relationship"
+  atomic_column: "rltnp"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Insider Related Person"
@@ -49303,7 +49303,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
   etl_derived_value: null
   atomic_table: "sc_major_shareholder_relation"
-  atomic_column: "relationship"
+  atomic_column: "rltnp"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Major Shareholder Relation"
@@ -49431,7 +49431,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_id"
+  atomic_column: "sc_ou_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -49447,7 +49447,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_code"
+  atomic_column: "sc_ou_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -50318,7 +50318,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_id"
+  atomic_column: "sc_ou_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -50334,7 +50334,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_code"
+  atomic_column: "sc_ou_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -51202,7 +51202,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_id"
+  atomic_column: "sc_ou_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -51218,7 +51218,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_code"
+  atomic_column: "sc_ou_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -52082,7 +52082,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_id"
+  atomic_column: "sc_ou_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -52098,7 +52098,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_code"
+  atomic_column: "sc_ou_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -52979,7 +52979,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_id"
+  atomic_column: "sc_ou_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -52995,7 +52995,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_code"
+  atomic_column: "sc_ou_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -53868,7 +53868,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_id"
+  atomic_column: "sc_ou_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -53884,7 +53884,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "sc_organization_unit_code"
+  atomic_column: "sc_ou_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -55084,7 +55084,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "form_report_id"
+  atomic_column: "form_rpt_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
@@ -55100,7 +55100,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "report_nm"
+  atomic_column: "rpt_nm"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
@@ -55116,7 +55116,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
@@ -55164,7 +55164,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "report_month"
+  atomic_column: "rpt_month"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
@@ -55180,7 +55180,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "report_period_code"
+  atomic_column: "rpt_period_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
@@ -55263,7 +55263,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "report_submission_status_code"
+  atomic_column: "rpt_submission_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
@@ -56293,7 +56293,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON'"
   etl_derived_value: null
   atomic_table: "sc_related_person"
-  atomic_column: "relationship"
+  atomic_column: "rltnp"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Related Person"
@@ -57213,7 +57213,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_RISK_REPORTING_PERIOD'"
   etl_derived_value: null
   atomic_table: "sc_risk_reporting_period"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Risk Reporting Period"
@@ -57853,7 +57853,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_RISK_SUMMARY'"
   etl_derived_value: null
   atomic_table: "sc_risk_summary"
-  atomic_column: "report_year"
+  atomic_column: "rpt_year"
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Risk Summary"
@@ -58730,7 +58730,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
   etl_derived_value: null
   atomic_table: "sc_senior_personnel"
-  atomic_column: "report_content"
+  atomic_column: "rpt_content"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Senior Personnel"
@@ -59923,7 +59923,7 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION'"
   etl_derived_value: null
   atomic_table: "sc_shareholder_relation"
-  atomic_column: "relationship"
+  atomic_column: "rltnp"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Shareholder Relation"
@@ -61370,7 +61370,7 @@ attributes:
   classification_context: "Source System Code = 'ThanhTra_SECURITY_MEASURE_EXECUTION'"
   etl_derived_value: null
   atomic_table: "sm_execution"
-  atomic_column: "report_dt"
+  atomic_column: "rpt_dt"
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Security Measure Execution"

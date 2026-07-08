@@ -1,0 +1,387 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-investment_fund_investor_membership-FMS.MB_FUND
+  logical_name: Investment Fund Investor Membership
+  physical_name: investment_fund_investor_membership
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Investment Fund"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Quan hệ nhà đầu tư nắm giữ chứng chỉ quỹ (1 NĐT per quỹ). Domain prefix dùng chung với Investment Fund (Tier 2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-MB_FUND
+
+attributes:
+  - name: Investment Fund Investor Membership Id
+    physical_name: investment_fund_investor_membership_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\". Quan hệ nhà đầu tư nắm giữ chứng chỉ quỹ (1 NĐT per quỹ)."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Membership Code
+    physical_name: investment_fund_investor_membership_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: FMS.MB_FUND
+
+  - name: Investment Fund Id
+    physical_name: investment_fund_id
+    business_meaning: "FK -> FUNDS: Quỹ đầu tư liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.FUND_ID
+    comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID)."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: investment_fund_code
+    business_meaning: Mã quỹ đầu tư liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.FUND_ID
+    comment: "Lookup pair: investment_fund.investment_fund_code. Pair with investment_fund_id."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: "FK -> NATIONAL: Quốc gia/quốc tịch."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.NAT_ID
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('FMS.NATIONAL', NAT_ID)."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.NAT_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Stockholder Type Code
+    physical_name: stockholder_tp_code
+    business_meaning: "FK -> STOCKHOLDER_TYPE: Loại cổ đông thành viên."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.ST_ID
+    comment: "Scheme: FMS_STOCKHOLDER_TYPE (tái sử dụng — đã đăng ký). Nguồn ST_ID là UUID FK — ETL resolve sang mã tương ứng."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Investment Fund Investor Membership Full Name
+    physical_name: investment_fund_investor_membership_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Organization Territory Type Code
+    physical_name: organization_territory_tp_code
+    business_meaning: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.DORF
+    comment: "Scheme: FMS_ORG_TERRITORY_TYPE (tái sử dụng). ETL derived: 1=DOMESTIC;2=FOREIGN."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: "1=DOMESTIC;2=FOREIGN"
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Member Code
+    physical_name: member_code
+    business_meaning: Mã số thành viên quỹ (member ID do hệ thống cấp).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.MB_ID
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Fund Membership Code
+    physical_name: fund_membership_code
+    business_meaning: Mã quỹ của thành viên.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.FN_CODE
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Province Name
+    physical_name: province_nm
+    business_meaning: Tỉnh/thành phố của thành viên quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.PROVINCE
+    comment: Denormalized text — không có FK rõ ràng đến Geographic Area.
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Country Name
+    physical_name: country_nm
+    business_meaning: Quốc gia của thành viên quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.COUNTRY
+    comment: "Denormalized text — cột riêng biệt với NAT_ID (UUID FK), giữ nguyên do khả năng khác giá trị (tên quốc gia tự do)."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Contributed Capital Amount
+    physical_name: contributed_capital_amt
+    business_meaning: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.CAPITAL
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Held Unit Quantity
+    physical_name: held_unit_quantity
+    business_meaning: Số lượng CCQ đang nắm giữ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.HOLD_QTTY
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Held Percentage
+    physical_name: held_percentage
+    business_meaning: "Tỷ lệ CCQ nắm giữ trên tổng lưu hành (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.HOLD_PERCENT
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Held Confirmation Date
+    physical_name: held_confirmation_dt
+    business_meaning: Ngày xác nhận số CCQ nắm giữ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.HOLD_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Representation Start Date
+    physical_name: representation_start_dt
+    business_meaning: Ngày bắt đầu đại diện của thành viên quỹ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.FREPRESENT_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Member Type Code
+    physical_name: member_tp_code
+    business_meaning: "Loại thành viên quỹ: 1=Cá nhân trong nước, 2=Tổ chức trong nước..."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.MB_TYPE
+    comment: "Scheme: FMS_FUND_MEMBER_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml. Mô tả nguồn dùng '...' — chỉ 2 giá trị đầu xác nhận, cần profile dữ liệu bổ sung."
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Representative Position Title
+    physical_name: representative_position_title
+    business_meaning: Chức vụ người đại diện của thành viên tổ chức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.REPRESENT_JOB
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Representative Full Name
+    physical_name: representative_full_nm
+    business_meaning: Tên người đại diện của thành viên tổ chức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.REPRESENT_NAME
+    comment: Denormalized — không có FK cấu trúc đến Fund Management Company Key Person hay entity cá nhân khác.
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Representation End Date
+    physical_name: representation_end_dt
+    business_meaning: Ngày kết thúc đại diện của thành viên quỹ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.SREPRESENT_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: MB_FUND
+    source_column: FMS.MB_FUND.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_MB_FUND'"
+    etl_derived_value: null

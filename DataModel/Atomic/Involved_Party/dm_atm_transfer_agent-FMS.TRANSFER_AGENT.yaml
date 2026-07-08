@@ -1,0 +1,191 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-transfer_agent-FMS.TRANSFER_AGENT
+  logical_name: Transfer Agent
+  physical_name: transfer_agent
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Transfer Agent"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Đại lý chuyển nhượng quyền sở hữu chứng chỉ quỹ (VSDC, NHTM hoặc tổ chức khác) (id 11347).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-TRANSFER_AGENT
+
+attributes:
+  - name: Transfer Agent Id
+    physical_name: transfer_agent_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Transfer Agent\" (id 11347). Đại lý chuyển nhượng quyền sở hữu chứng chỉ quỹ (VSDC, NHTM hoặc tổ chức khác)."
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Transfer Agent Code
+    physical_name: transfer_agent_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: FMS.TRANSFER_AGENT
+
+  - name: Agent Type Description
+    physical_name: agent_tp_description
+    business_meaning: "Loại đại lý — luôn là \"Đại lý chuyển nhượng\"."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.AGENT_TYPE
+    comment: "Giá trị cố định toàn bảng — giữ Text denormalized, không cần Classification Value vì không có biến thể."
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Transfer Agent Company Type Code
+    physical_name: transfer_agent_company_tp_code
+    business_meaning: "1=VSDC / 2=Ngân hàng thương mại / 3=Tổ chức khác."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.COMPANY_TYPE
+    comment: "Scheme: FMS_TRANSFER_AGENT_COMPANY_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml. Khác FMS_AGENT_COMPANY_TYPE (encoding riêng: 1=VSDC/2=NHTM/3=Khác). ETL map: 1=VSDC;2=COMMERCIAL_BANK;3=OTHER."
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: "1=VSDC;2=COMMERCIAL_BANK;3=OTHER"
+
+  - name: Transfer Agent Full Name
+    physical_name: transfer_agent_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Transfer Agent English Name
+    physical_name: transfer_agent_english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.NAME_EN
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Transfer Agent Short Name
+    physical_name: transfer_agent_short_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.SHORT_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Termination Date
+    physical_name: termination_dt
+    business_meaning: Ngày chấm dứt hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.TERMINATION_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: TRANSFER_AGENT
+    source_column: FMS.TRANSFER_AGENT.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_TRANSFER_AGENT'"
+    etl_derived_value: null

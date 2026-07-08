@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-member_rating_criterion_scale-FMS.FTOR_SCALE
+  logical_name: Member Rating Criterion Scale
+  physical_name: member_rating_criterion_scale
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Scoring Criterion"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Thang điểm/khoảng giá trị áp dụng cho 1 Member Rating Criterion. Domain prefix dùng chung với Member Rating (Tier 2)/Member Rating Criterion (Tier 6).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FTOR_SCALE
+
+attributes:
+  - name: Member Rating Criterion Scale Id
+    physical_name: member_rating_criterion_scale_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Condition] Scoring Criterion\". Thang điểm/khoảng giá trị áp dụng cho 1 Member Rating Criterion."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Member Rating Criterion Scale Code
+    physical_name: member_rating_criterion_scale_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: FMS.FTOR_SCALE
+
+  - name: Member Rating Criterion Id
+    physical_name: member_rating_criterion_id
+    business_meaning: "FK -> FACTOR: Tiêu chí đánh giá xếp loại áp dụng thang điểm này."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.FTOR_ID
+    comment: "FK target: member_rating_criterion.member_rating_criterion_id. Hash: hash_id('FMS.FACTOR', FTOR_ID)."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Member Rating Criterion Code
+    physical_name: member_rating_criterion_code
+    business_meaning: Mã tiêu chí đánh giá xếp loại áp dụng thang điểm này.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.FTOR_ID
+    comment: "Lookup pair: member_rating_criterion.member_rating_criterion_code. Pair with member_rating_criterion_id."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Grading Method Code
+    physical_name: grading_method_code
+    business_meaning: "Phương pháp chấm điểm: 1=Thang điểm, 2=Điểm cộng, 3=Điểm trừ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.GRADING_METHOD
+    comment: "Scheme: FMS_GRADING_METHOD (đã đăng ký, dùng chung với Member Rating Criterion)."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Based Grading Code
+    physical_name: based_grading_code
+    business_meaning: "Cơ sở chấm điểm: 1=Giá trị thực tế, 2=Xếp hạng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.BASED_GRADING
+    comment: "Scheme: FMS_BASED_GRADING (đã đăng ký, dùng chung với Member Rating Criterion)."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: From Value Amount
+    physical_name: from_val_amt
+    business_meaning: Giá trị ngưỡng dưới của điều kiện cảnh báo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.FROM_VALUE
+    comment: "[PROPOSE NEW DOMAIN] Bản chất là điểm/ngưỡng số (score), không phải currency hay counter — 12 domain chuẩn không có \"Numeric Score\" riêng, tạm dùng Small Counter (cùng data type int/decimal, nhất quán với RANK.TOTAL_SCORE), cần reviewer xác nhận."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: From Value Comparison Operator Code
+    physical_name: from_val_comparison_operator_code
+    business_meaning: "Toán tử so sánh ngưỡng dưới: 1=>=, 2=>."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.FROM_VALUE_CONDITION
+    comment: "Scheme: FMS_SCALE_COMPARISON_OPERATOR (đã đăng ký)."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: To Value Amount
+    physical_name: to_val_amt
+    business_meaning: Giá trị ngưỡng trên của điều kiện cảnh báo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.TO_VALUE
+    comment: "[PROPOSE NEW DOMAIN] Cùng ambiguity với From Value Amount — tạm dùng Small Counter, cần reviewer xác nhận."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: To Value Comparison Operator Code
+    physical_name: to_val_comparison_operator_code
+    business_meaning: "Toán tử so sánh ngưỡng trên: 1=<=, 2=<."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.TO_VALUE_CONDITION
+    comment: "Scheme: FMS_SCALE_COMPARISON_OPERATOR (đã đăng ký)."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Ranking Value Amount
+    physical_name: ranking_val_amt
+    business_meaning: Điểm xếp hạng của khoảng giá trị trong thang điểm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.RANKING_VALUE
+    comment: "[PROPOSE NEW DOMAIN] Bản chất là điểm số (score) — tạm dùng Small Counter, nhất quán với RANK.TOTAL_SCORE, cần reviewer xác nhận."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Max Minus Point Amount
+    physical_name: max_minus_point_amt
+    business_meaning: Điểm trừ tối đa có thể áp dụng cho tiêu chí.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.MAX_MINUS_POINT
+    comment: "[PROPOSE NEW DOMAIN] Bản chất là điểm số (score) — tạm dùng Small Counter, cần reviewer xác nhận."
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.NOTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FTOR_SCALE
+    source_column: FMS.FTOR_SCALE.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_FTOR_SCALE'"
+    etl_derived_value: null

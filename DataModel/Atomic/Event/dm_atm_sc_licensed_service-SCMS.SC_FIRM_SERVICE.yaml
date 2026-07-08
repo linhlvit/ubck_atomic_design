@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_licensed_service-SCMS.SC_FIRM_SERVICE
+  logical_name: Securities Company Licensed Service
+  physical_name: sc_licensed_service
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Event
+  bcv_concept: "[Event] Party Registration"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK — văn bản/ngày đăng ký, văn bản/ngày chấm dứt (nếu có), trạng thái hiệu lực. Khác dữ liệu với LNK_SC_FIRM_SERVICE (giấy phép hiện hành) — xem 7e-04.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_SERVICE
+
+attributes:
+  - name: Securities Company Licensed Service Id
+    physical_name: sc_licensed_service_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Event] Party Registration\". Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Securities Company Licensed Service Code
+    physical_name: sc_licensed_service_code
+    business_meaning: Khóa chính của bản ghi (ID tự tăng hoặc UUID). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.ID
+    comment: BK chính. PK nguồn (NUMBER(10) — ETL convert sang string).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: SCMS.SC_FIRM_SERVICE
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: "FK -> sc_firm_info: Công ty chứng khoán liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Service Code
+    physical_name: service_code
+    business_meaning: "Dịch vụ chứng khoán được cấp phép (FK -> cat_service)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.SERVICE_ID
+    comment: "FK target: Classification Value scheme SCMS_SERVICE_TYPE (nguồn SCMS.CAT_SERVICE, đã approved). Classification Value pattern — chỉ 1 trường Code, không có Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Registration Document Number
+    physical_name: registration_document_nbr
+    business_meaning: Số văn bản đăng ký dịch vụ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.REGISTRATION_DOC_NUMBER
+    comment: NVARCHAR2(30). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Registration Date
+    physical_name: registration_dt
+    business_meaning: Ngày đăng ký dịch vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.REGISTRATION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Termination Document Number
+    physical_name: termination_document_nbr
+    business_meaning: Số văn bản chấm dứt/thu hồi dịch vụ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.TERMINATION_DOC_NUMBER
+    comment: NVARCHAR2(30). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày kết thúc/hết hiệu lực dịch vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.END_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Valid Dossier Date
+    physical_name: valid_dossier_dt
+    business_meaning: Ngày hồ sơ có hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.VALID_DOSSIER_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Effective Date
+    physical_name: effective_dt
+    business_meaning: Ngày văn bản/thay đổi có hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.EFFECTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.DOCUMENT_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái dịch vụ được cấp phép: 1 = Đang hoạt động/còn hiệu lực; 0 = Ngừng hoạt động/hết hiệu lực."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.RECORD_STATUS
+    comment: "Scheme: SCMS_SERVICE_RECORD_STATUS."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Provisional Indicator
+    physical_name: provisional_indicator
+    business_meaning: "Cờ bản nháp: 1 = Bản nháp; 0 = Chính thức."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.PROVISIONAL
+    comment: NUMBER(1).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.ATTACHMENT_PATH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SERVICE
+    source_column: SCMS.SC_FIRM_SERVICE.NOTE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
+    etl_derived_value: null

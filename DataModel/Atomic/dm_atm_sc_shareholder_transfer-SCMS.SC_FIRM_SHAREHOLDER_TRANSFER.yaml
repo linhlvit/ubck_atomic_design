@@ -1,0 +1,289 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_shareholder_transfer-SCMS.SC_FIRM_SHAREHOLDER_TRANSFER
+  logical_name: Securities Company Shareholder Transfer
+  physical_name: sc_shareholder_transfer
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Giao dịch chuyển nhượng cổ phần giữa hai cổ đông CTCK. Mỗi dòng = 1 giao dịch insert-only. Ghi nhận bên chuyển nhượng, bên nhận, số cổ phần và ngày thực hiện.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_TRANSFER
+
+attributes:
+  - name: Securities Company Shareholder Transfer Id
+    physical_name: sc_shareholder_transfer_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Transfer Code
+    physical_name: sc_shareholder_transfer_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.ID
+    comment: BK. NUMBER(19) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán nơi diễn ra giao dịch chuyển nhượng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Transferor Securities Company Shareholder Id
+    physical_name: transferor_sc_shareholder_id
+    business_meaning: FK đến Cổ đông CTCK bên chuyển nhượng (bên bán).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID
+    comment: "FK target: securities_company_shareholder.securities_company_shareholder_id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEROR_SHAREHOLDER_ID). Prefix Transferor phân biệt với Transferee cùng target entity."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Transferor Securities Company Shareholder Code
+    physical_name: transferor_sc_shareholder_code
+    business_meaning: Mã Cổ đông CTCK bên chuyển nhượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEROR_SHAREHOLDER_ID
+    comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code. Pair with Transferor Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Transferee Securities Company Shareholder Id
+    physical_name: transferee_sc_shareholder_id
+    business_meaning: FK đến Cổ đông CTCK bên nhận chuyển nhượng (bên mua).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID
+    comment: "FK target: securities_company_shareholder.securities_company_shareholder_id. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', TRANSFEREE_SHAREHOLDER_ID). Prefix Transferee phân biệt với Transferor cùng target entity."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Transferee Securities Company Shareholder Code
+    physical_name: transferee_sc_shareholder_code
+    business_meaning: Mã Cổ đông CTCK bên nhận chuyển nhượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFEREE_SHAREHOLDER_ID
+    comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code. Pair with Transferee Securities Company Shareholder Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Event Type Id
+    physical_name: event_tp_id
+    business_meaning: FK đến loại sự kiện pháp lý tương ứng với giao dịch chuyển nhượng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID
+    comment: "Pending — FK target CAT_EVENT_TYPE nằm ngoài scope. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Event Type Code
+    physical_name: event_tp_code
+    business_meaning: Mã loại sự kiện pháp lý.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID
+    comment: Pending — Pair with Event Type Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: Trạng thái bản ghi chuyển nhượng cổ phần.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.RECORD_STATUS
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số văn bản pháp lý (QĐ/GP/Hợp đồng) của giao dịch chuyển nhượng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.DOCUMENT_NUMBER
+    comment: NVARCHAR2(30).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Document Date
+    physical_name: document_dt
+    business_meaning: Ngày của văn bản pháp lý giao dịch chuyển nhượng.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.DOCUMENT_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Transfer Timestamp
+    physical_name: transfer_tms
+    business_meaning: Thời điểm chính xác thực hiện giao dịch chuyển nhượng cổ phần.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFER_DATE
+    comment: TIMESTAMP(6). Nguồn tên là TRANSFER_DATE nhưng kiểu TIMESTAMP(6) — dùng domain Timestamp.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Transferred Shares
+    physical_name: transferred_shares
+    business_meaning: Số lượng cổ phần được chuyển nhượng trong giao dịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFERRED_SHARES
+    comment: NUMBER(38). Large integer.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Transfer Ratio
+    physical_name: transfer_ratio
+    business_meaning: "Tỷ lệ cổ phần được chuyển nhượng (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.TRANSFER_RATIO
+    comment: "NUMBER(10,4). Mô tả gốc BRD null. Lưu dạng thập phân."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.ATTACHMENT_PATH
+    comment: NVARCHAR2(1000). Reference path — không load binary vào Atomic.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER_TRANSFER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.NOTE
+    comment: NVARCHAR2(2000). Mô tả gốc BRD null.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
+    etl_derived_value: null

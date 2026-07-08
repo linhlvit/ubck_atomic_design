@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fund_distribution_agent_organization_unit-FMS.AGENCIES_BRA
+  logical_name: Fund Distribution Agent Organization Unit
+  physical_name: fund_distribution_agent_organization_unit
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: Chi nhánh/PGD trực thuộc Fund Distribution Agent.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-AGENCIES_BRA
+
+attributes:
+  - name: Fund Distribution Agent Organization Unit Id
+    physical_name: fund_distribution_agent_ou_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". CN/PGD trực thuộc Fund Distribution Agent."
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Organization Unit Code
+    physical_name: fund_distribution_agent_ou_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: FMS.AGENCIES_BRA.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: FMS.AGENCIES_BRA
+
+  - name: Fund Distribution Agent Id
+    physical_name: fund_distribution_agent_id
+    business_meaning: "FK -> AGENCIES: Đại lý phân phối liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: FMS.AGENCIES_BRA.AGEN_ID
+    comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES', AGEN_ID)."
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Code
+    physical_name: fund_distribution_agent_code
+    business_meaning: Mã đại lý phân phối liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: FMS.AGENCIES_BRA.AGEN_ID
+    comment: "Lookup pair: fund_distribution_agent.fund_distribution_agent_code. Pair with fund_distribution_agent_id."
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Organization Unit Full Name
+    physical_name: fund_distribution_agent_ou_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: FMS.AGENCIES_BRA.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: FMS.AGENCIES_BRA.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: FMS.AGENCIES_BRA.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGENCIES_BRA
+    source_column: FMS.AGENCIES_BRA.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_AGENCIES_BRA'"
+    etl_derived_value: null

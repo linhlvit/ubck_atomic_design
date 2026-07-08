@@ -1,0 +1,233 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_ownership_relation-SCMS.SC_FIRM_OWNERSHIP_RELATION
+  logical_name: Securities Company Ownership Relation
+  physical_name: sc_ownership_relation
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Quan hệ sở hữu của CTCK với các tổ chức khác (công ty mẹ, công ty con, liên kết). Ghi nhận loại quan hệ và tỷ lệ sở hữu theo từng mối liên kết.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_OWNERSHIP_RELATION
+
+attributes:
+  - name: Securities Company Ownership Relation Id
+    physical_name: sc_ownership_relation_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Ownership Relation Code
+    physical_name: sc_ownership_relation_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: SCMS.SC_FIRM_OWNERSHIP_RELATION
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán có quan hệ sở hữu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Ownership Relation Type Code
+    physical_name: ownership_relation_tp_code
+    business_meaning: "Loại quan hệ sở hữu: SO_HUU_TREN_5=Sở hữu trên 5%; CONG_TY_CON=Công ty con; CONG_TY_LIEN_KET=Công ty liên kết; CONG_TY_ME=Công ty mẹ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.RELATION_TYPE
+    comment: "Scheme: SCMS_OWNERSHIP_RELATION_TYPE. VARCHAR2(100)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Company Name
+    physical_name: company_nm
+    business_meaning: Tên tổ chức/công ty có quan hệ sở hữu với CTCK (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.COMPANY_NAME
+    comment: VARCHAR2(500). Snapshot denormalized — không có FK cứng đến tổ chức.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Enterprise Type Id
+    physical_name: enterprise_tp_id
+    business_meaning: FK đến loại hình doanh nghiệp của tổ chức có quan hệ sở hữu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID
+    comment: Pending — FK target ENTERPRISE_TYPE nằm ngoài scope. NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Enterprise Type Code
+    physical_name: enterprise_tp_code
+    business_meaning: Mã loại hình doanh nghiệp của tổ chức có quan hệ sở hữu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID
+    comment: Pending — Pair with Enterprise Type Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Country Id
+    physical_name: country_id
+    business_meaning: FK đến quốc gia đăng ký của tổ chức có quan hệ sở hữu.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.COUNTRY_ID
+    comment: Pending — FK target CAT_COUNTRY nằm ngoài scope. NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Country Code
+    physical_name: country_code
+    business_meaning: Mã quốc gia đăng ký của tổ chức có quan hệ sở hữu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.COUNTRY_ID
+    comment: Pending — Pair with Country Id.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Ownership Ratio
+    physical_name: ownership_ratio
+    business_meaning: "Tỷ lệ sở hữu vốn (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.OWNERSHIP_RATIO
+    comment: "NUMBER(10,2). Lưu dạng thập phân (VD: 25.50 = 25.50%)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Ownership Date
+    physical_name: ownership_dt
+    business_meaning: Ngày xác lập quan hệ sở hữu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.OWNERSHIP_DATE
+    comment: DATE. Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày kết thúc/hết hiệu lực của quan hệ sở hữu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.END_DATE
+    comment: "DATE. Null = còn hiệu lực."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung về quan hệ sở hữu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_OWNERSHIP_RELATION
+    source_column: SCMS.SC_FIRM_OWNERSHIP_RELATION.NOTE
+    comment: VARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_OWNERSHIP_RELATION'"
+    etl_derived_value: null

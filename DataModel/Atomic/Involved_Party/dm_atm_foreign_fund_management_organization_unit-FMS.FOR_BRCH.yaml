@@ -1,0 +1,345 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-foreign_fund_management_organization_unit-FMS.FOR_BRCH
+  logical_name: Foreign Fund Management Organization Unit
+  physical_name: foreign_fund_management_organization_unit
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Tổ chức quản lý quỹ nước ngoài có hiện diện (VPĐD/CN) tại Việt Nam, không FK đến Fund Management Company trong nước. Domain prefix dùng chung với Foreign Fund Management Organization Unit Staff (Tier 3).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FOR_BRCH
+
+attributes:
+  - name: Foreign Fund Management Organization Unit Id
+    physical_name: foreign_fm_ou_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Tổ chức quản lý quỹ nước ngoài có hiện diện (VPĐD/CN) tại Việt Nam."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Code
+    physical_name: foreign_fm_ou_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: FMS.FOR_BRCH
+
+  - name: Operation Status Code
+    physical_name: operation_status_code
+    business_meaning: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.STATUS_ID
+    comment: "Scheme: FMS_OPERATION_STATUS. Nguồn STATUS_ID là UUID FK — ETL resolve sang mã STATUS.CODE tương ứng."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Country of Registration Id
+    physical_name: country_of_registration_id
+    business_meaning: "FK -> NATIONAL: Quốc gia/quốc tịch."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.NAT_ID
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('FMS.NATIONAL', NAT_ID)."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Country of Registration Code
+    physical_name: country_of_registration_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.NAT_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country of Registration Id."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Branch Type Flag
+    physical_name: branch_tp_flag
+    business_meaning: "Cờ là chi nhánh: 1=Chi nhánh, 0=Văn phòng đại diện."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.BRANCH_FLAG
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Full Name
+    physical_name: foreign_fm_ou_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit English Name
+    physical_name: foreign_fm_ou_english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.EN_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Foreign Fund Management Organization Unit Short Name
+    physical_name: foreign_fm_ou_short_nm
+    business_meaning: Tên viết tắt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.SHORT_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Effective Start Date
+    physical_name: effective_start_dt
+    business_meaning: Ngày bắt đầu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.START_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Effective End Date
+    physical_name: effective_end_dt
+    business_meaning: Ngày kết thúc.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.END_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Parent Company Name
+    physical_name: parent_company_nm
+    business_meaning: Tên công ty mẹ (tổ chức nước ngoài sở hữu).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.PARENT_NAME
+    comment: Denormalized — công ty mẹ nước ngoài không có Atomic entity riêng trong scope FMS.
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Parent Company Code
+    physical_name: parent_company_code
+    business_meaning: Mã công ty mẹ trong hệ thống.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.PARENT_CODE
+    comment: "Denormalized — không phải FK constraint, chỉ mã tham chiếu tự do."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Amendment License Number
+    physical_name: amendment_license_nbr
+    business_meaning: Số giấy phép điều chỉnh tại lần thay đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.CHANGE_LICENSE
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Amendment License Date
+    physical_name: amendment_license_dt
+    business_meaning: Ngày ban hành giấy phép điều chỉnh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.CHANGE_LICENSE_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Amendment Note
+    physical_name: amendment_note
+    business_meaning: Ghi chú về nội dung điều chỉnh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.CHANGE_NOTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.NOTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Business Registration Number
+    physical_name: business_registration_nbr
+    business_meaning: Số đăng ký kinh doanh của chi nhánh/VPĐD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.REG_NO
+    comment: "Denormalized text — không gộp vào IP Alt Identification vì đã dùng OPERATING_LICENSE cho LICENSE/LICENSE_DATE, tránh trùng type."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_capital_amt
+    business_meaning: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.CAPITAL
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Event Type Code
+    physical_name: event_tp_code
+    business_meaning: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.EVENT_TYPE_ID
+    comment: "Scheme: FMS_EVENT_TYPE. Nguồn EVENT_TYPE_ID là UUID FK — ETL resolve sang mã EVENT_TYPE tương ứng."
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH'"
+    etl_derived_value: null

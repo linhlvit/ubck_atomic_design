@@ -1,0 +1,232 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_disclosure_shareholder-SCMS.DISCLOSURE_SHAREHOLDER
+  logical_name: Securities Company Disclosure Shareholder
+  physical_name: sc_disclosure_shareholder
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: SCMS
+  description: null
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-DISCLOSURE_SHAREHOLDER
+
+attributes:
+  - name: Securities Company Disclosure Shareholder Id
+    physical_name: sc_disclosure_shareholder_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Securities Company Disclosure Shareholder Code
+    physical_name: sc_disclosure_shareholder_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: SCMS.DISCLOSURE_SHAREHOLDER
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán công bố thông tin cổ đông.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Transaction Type Code
+    physical_name: transaction_tp_code
+    business_meaning: Loại giao dịch cổ đông công bố.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.TRANSACTION_TYPE_ID
+    comment: "Pending — NUMBER(10), mô tả gốc BRD trống. Cần xác nhận values để tạo scheme SCMS_SHAREHOLDER_TRANSACTION_TYPE."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Disclosure Status Code
+    physical_name: disclosure_status_code
+    business_meaning: "Trạng thái bản ghi công bố cổ đông: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.RECORD_STATUS
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1) với values 0/1."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Title
+    physical_name: title
+    business_meaning: Tiêu đề thông báo công bố cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.TITLE
+    comment: VARCHAR2(500).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Summary
+    physical_name: summary
+    business_meaning: Tóm tắt nội dung trích yếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.SUMMARY
+    comment: VARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Content
+    physical_name: content
+    business_meaning: Nội dung thông báo/tin nhắn/văn bản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.CONTENT
+    comment: NVARCHAR2(1000).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Disclosure Date
+    physical_name: disclosure_dt
+    business_meaning: Ngày công bố thông tin cổ đông.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.DISCLOSURE_DATE
+    comment: TIMESTAMP(6). Tên cột DISCLOSURE_DATE nhưng data type là TIMESTAMP.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Sent Timestamp
+    physical_name: sent_tms
+    business_meaning: Thời điểm gửi thông báo công bố cổ đông.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.SENT_AT
+    comment: TIMESTAMP(6).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.ATTACHMENT_PATH
+    comment: VARCHAR2(500).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Legacy Filename
+    physical_name: legacy_filename
+    business_meaning: Tên file đính kèm từ hệ thống cũ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.LEGACY_FILENAME
+    comment: "VARCHAR2(255). LEGACY_FILEDATA (BLOB) excluded. LEGACY_ROWTEXT (VARCHAR2 40) — chuỗi tham chiếu legacy, ít giá trị nghiệp vụ."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Legacy Row Text
+    physical_name: legacy_row_text
+    business_meaning: Chuỗi tham chiếu bản ghi từ hệ thống cũ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SHAREHOLDER
+    source_column: SCMS.DISCLOSURE_SHAREHOLDER.LEGACY_ROWTEXT
+    comment: VARCHAR2(40 BYTE). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SHAREHOLDER'"
+    etl_derived_value: null

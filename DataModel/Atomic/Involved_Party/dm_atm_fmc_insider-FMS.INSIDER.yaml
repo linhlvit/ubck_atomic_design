@@ -1,0 +1,429 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fmc_insider-FMS.INSIDER
+  logical_name: Fund Management Company Insider
+  physical_name: fmc_insider
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Cổ đông nội bộ/người có liên quan của Fund Management Company. Domain prefix dùng chung với Fund Management Company (Tier 1).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-INSIDER
+
+attributes:
+  - name: Fund Management Company Insider Id
+    physical_name: fmc_insider_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: INSIDER
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Cổ đông nội bộ/người có liên quan của Fund Management Company."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Insider Code
+    physical_name: fmc_insider_code
+    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: FMS.INSIDER
+
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan đến giao dịch nội bộ."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.SC_ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Hash: hash_id('FMS.SECURITIES', SC_ID)."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning: Mã công ty QLQ liên quan đến giao dịch nội bộ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.SC_ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with fund_management_company_id."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Employer Fund Management Company Id
+    physical_name: employer_fmc_id
+    business_meaning: "FK -> SECURITIES: Công ty QLQ mà người nội bộ thuộc về."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.S_ID
+    comment: "FK target: fund_management_company.fund_management_company_id. Hash: hash_id('FMS.SECURITIES', S_ID). Xem T5-04 — cần xác nhận quan hệ với Fund Management Company Id (SC_ID)."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Employer Fund Management Company Code
+    physical_name: employer_fmc_code
+    business_meaning: Mã công ty QLQ mà người nội bộ thuộc về.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.S_ID
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with Employer Fund Management Company Id."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: "FK -> NATIONAL: Quốc gia/quốc tịch."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.NAT_ID
+    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('FMS.NATIONAL', NAT_ID)."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.NAT_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Id
+    physical_name: fmc_key_person_id
+    business_meaning: "FK -> TL_PROFILES: Người hành nghề liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.TLPRO_ID
+    comment: "FK target: fund_management_company_key_person.fund_management_company_key_person_id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Key Person Code
+    physical_name: fmc_key_person_code
+    business_meaning: Mã người hành nghề liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.TLPRO_ID
+    comment: "Lookup pair: fund_management_company_key_person.fund_management_company_key_person_code. Pair with fund_management_company_key_person_id."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Insider Full Name
+    physical_name: fmc_insider_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Insider Registration Number
+    physical_name: insider_registration_nbr
+    business_meaning: Số định danh nội bộ của cổ đông nội bộ trong công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.INSIDER_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Key Person Linked Flag
+    physical_name: key_person_linked_flag
+    business_meaning: "Cờ cổ đông nội bộ là người hành nghề (TL_PROFILES): 1=Có liên kết, 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.TL_PROFILE_LINKED
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Key Person In Company Flag
+    physical_name: key_person_in_company_flag
+    business_meaning: "Cờ người hành nghề thuộc công ty QLQ này: 1=Thuộc, 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.TL_PROFILE_IN_SEC
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Insider Type Code
+    physical_name: insider_tp_code
+    business_meaning: "Loại cổ đông nội bộ: 1=Cổ đông lớn, 2=Ban điều hành, 3=HĐQT..."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.INSIDER_TYPE
+    comment: "Scheme: FMS_INSIDER_TYPE (đã đăng ký sẵn trong classification_schemes.yaml). ETL map: 1=MAJOR_SHAREHOLDER;2=EXECUTIVE;3=BOARD_MEMBER."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: "1=MAJOR_SHAREHOLDER;2=EXECUTIVE;3=BOARD_MEMBER"
+
+  - name: Contributed Capital Amount
+    physical_name: contributed_capital_amt
+    business_meaning: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.CAPITAL
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Held Unit Quantity
+    physical_name: held_unit_quantity
+    business_meaning: Số lượng CCQ/cổ phiếu nắm giữ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.QTTY
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Representation Percentage
+    physical_name: representation_percentage
+    business_meaning: "Tỷ lệ đại diện theo ủy quyền (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.REPRECENT
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Percentage Determination Date
+    physical_name: percentage_determination_dt
+    business_meaning: Ngày xác định tỷ lệ sở hữu/đại diện.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.PER_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Active Status Flag
+    physical_name: active_status_flag
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.RECORD_STATUS
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Birth Date
+    physical_name: birth_dt
+    business_meaning: Ngày sinh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.BIRTH
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Employment Start Date
+    physical_name: employment_start_dt
+    business_meaning: Ngày bắt đầu làm việc (khi insider là nhân sự công ty QLQ).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.S_WORK_DTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Employment Status Code
+    physical_name: employment_status_code
+    business_meaning: "Trạng thái hợp đồng lao động: 1=Còn hiệu lực, 2=Hết hiệu lực, 3=Vô thời hạn."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.EMPLOY_STATUS
+    comment: "Scheme: FMS_EMPLOYMENT_STATUS. [PROPOSE NEW SCHEME] chưa có trong HLD 6d — bổ sung classification_schemes.yaml. ETL map: 1=ACTIVE;2=EXPIRED;3=INDEFINITE."
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: "1=ACTIVE;2=EXPIRED;3=INDEFINITE"
+
+  - name: Decision Document Number
+    physical_name: decision_document_nbr
+    business_meaning: Số GP/QĐ liên quan đến giao dịch chuyển nhượng hoặc thay đổi hồ sơ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.GP_QD_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Approval Date
+    physical_name: approval_dt
+    business_meaning: Ngày chấp thuận/phê duyệt của UBCKNN.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.APPROVAL_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm tạo bản ghi.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.DATE_CREATED
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm cập nhật bản ghi lần cuối.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: INSIDER
+    source_column: FMS.INSIDER.DATE_MODIFIED
+    comment: null
+    classification_context: "Source System Code = 'FMS_INSIDER'"
+    etl_derived_value: null
