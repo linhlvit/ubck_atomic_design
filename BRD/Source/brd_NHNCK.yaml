@@ -1310,9 +1310,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
+      filter_note: Ngày báo cáo được ghi vào hệ thống (khác ngày nộp báo cáo) — append theo CREATED_AT
 - brd_id: BRD-SRC-NHNCK-PERMISSIONS
   brd_name: Design Atomic từ nguồn NHNCK bảng PERMISSIONS
   type: Theo Source
