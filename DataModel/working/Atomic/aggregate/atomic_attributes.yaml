@@ -4742,7 +4742,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Securities Practitioner Conduct Violation"
-  atomic_attribute: "License Decision Document Id"
+  atomic_attribute: "Securities Practitioner License Decision Document Id"
   description: "FK đến quyết định xử lý vi phạm."
   data_domain: "Surrogate Key"
   nullable: true
@@ -4750,16 +4750,17 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
-    \ hash_id('NHNCK.DECISIONS', DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
   etl_derived_value: null
   atomic_table: "sp_conduct_violation"
-  atomic_column: "license_decision_document_id"
+  atomic_column: "sp_license_decision_document_id"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Securities Practitioner Conduct Violation"
-  atomic_attribute: "License Decision Document Code"
+  atomic_attribute: "Securities Practitioner License Decision Document Code"
   description: "Mã quyết định xử lý vi phạm."
   data_domain: "Text"
   nullable: true
@@ -4767,12 +4768,13 @@ attributes:
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.DECISION_ID"
-  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
-    \ Pair with License Decision Document Id."
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Securities Practitioner\
+    \ License Decision Document Id."
   classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
   etl_derived_value: null
   atomic_table: "sp_conduct_violation"
-  atomic_column: "license_decision_document_code"
+  atomic_column: "sp_license_decision_document_code"
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Securities Practitioner Conduct Violation"
@@ -5325,110 +5327,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
   atomic_column: "assignee_officer_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSE_DETAILS"
-  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_professional_training_class_enrollment"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSE_DETAILS"
-  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_professional_training_class_enrollment"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSE_DETAILS"
-  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_professional_training_class_enrollment"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã cán bộ tạo bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSE_DETAILS"
-  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_professional_training_class_enrollment"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến cán bộ cập nhật bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSE_DETAILS"
-  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_professional_training_class_enrollment"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã cán bộ cập nhật bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSE_DETAILS"
-  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_professional_training_class_enrollment"
-  atomic_column: "updated_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
@@ -7872,6 +7770,22 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "EXAM_SESSIONS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
+  etl_derived_value: "NHNCK.EXAM_SESSIONS"
+  atomic_table: "securities_practitioner_qualification_examination_assessment"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Communication"
+  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
   atomic_attribute: "Assessment Name"
   description: "Tên hiển thị đợt thi"
   data_domain: "Text"
@@ -8064,7 +7978,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "License Decision Id"
+  atomic_attribute: "Securities Practitioner License Decision Document Id"
   description: "FK đến quyết định cấp chứng chỉ liên quan đợt thi"
   data_domain: "Surrogate Key"
   nullable: true
@@ -8078,11 +7992,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "license_decision_id"
+  atomic_column: "sp_license_decision_document_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "License Decision Code"
+  atomic_attribute: "Securities Practitioner License Decision Document Code"
   description: "Mã quyết định cấp chứng chỉ"
   data_domain: "Text"
   nullable: true
@@ -8091,11 +8005,12 @@ attributes:
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.DECISION_ID"
   comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
-    \ Practitioner License Decision Document Code. Pair with License Decision Id."
+    \ Practitioner License Decision Document Code. Pair with Securities Practitioner\
+    \ License Decision Document Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "license_decision_code"
+  atomic_column: "sp_license_decision_document_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment"
@@ -8144,126 +8059,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "securities_practitioner_qualification_examination_assessment"
   atomic_column: "bank_account_nm"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSIONS"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-  etl_derived_value: "NHNCK.EXAM_SESSIONS"
-  atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.EXAM_SESSIONS.CREATED_AT"
-  comment: "Pending — chờ xác nhận ETL pattern."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.EXAM_SESSIONS.UPDATED_AT"
-  comment: "Pending — chờ xác nhận ETL pattern."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến người tạo"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.EXAM_SESSIONS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã người tạo"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.EXAM_SESSIONS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến người cập nhật"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.EXAM_SESSIONS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã người cập nhật"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.EXAM_SESSIONS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_qualification_examination_assessment"
-  atomic_column: "updated_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
@@ -8390,7 +8185,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Certificate Type Id"
+  atomic_attribute: "Securities Practitioner License Certificate Type Id"
   description: "FK đến loại chứng chỉ dự thi"
   data_domain: "Surrogate Key"
   nullable: false
@@ -8404,11 +8199,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "certificate_tp_id"
+  atomic_column: "sp_license_certificate_type_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Certificate Type Code"
+  atomic_attribute: "Securities Practitioner License Certificate Type Code"
   description: "Mã loại chứng chỉ dự thi (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -8417,15 +8212,16 @@ attributes:
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "certificate_tp_code"
+  atomic_column: "sp_license_certificate_type_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "License Application Id"
+  atomic_attribute: "Securities Practitioner License Application Id"
   description: "FK đến hồ sơ đăng ký"
   data_domain: "Surrogate Key"
   nullable: true
@@ -8433,16 +8229,16 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.APPLICATION_ID"
-  comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "license_application_id"
+  atomic_column: "sp_license_application_id"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "License Application Code"
+  atomic_attribute: "Securities Practitioner License Application Code"
   description: "Mã hồ sơ đăng ký"
   data_domain: "Text"
   nullable: true
@@ -8450,12 +8246,13 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.APPLICATION_ID"
-  comment: "Lookup pair: Securities Practitioner License Application.License Application\
-    \ Code. Pair with License Application Id."
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "license_application_code"
+  atomic_column: "sp_license_application_code"
   data_type: "string"
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
@@ -8584,110 +8381,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
   atomic_column: "examination_note"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_DETAILS"
-  source_column: "NHNCK.EXAM_DETAILS.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_DETAILS"
-  source_column: "NHNCK.EXAM_DETAILS.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_DETAILS"
-  source_column: "NHNCK.EXAM_DETAILS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã cán bộ tạo bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_DETAILS"
-  source_column: "NHNCK.EXAM_DETAILS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến cán bộ cập nhật bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_DETAILS"
-  source_column: "NHNCK.EXAM_DETAILS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Communication"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Result"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã cán bộ cập nhật bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_DETAILS"
-  source_column: "NHNCK.EXAM_DETAILS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_result"
-  atomic_column: "updated_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Member Rating Criterion"
@@ -10081,7 +9774,8 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Examination Assessment Id"
+  atomic_attribute: "Securities Practitioner Qualification Examination Assessment\
+    \ Id"
   description: "FK đến đợt thi (Exam Assessment)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -10089,16 +9783,18 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
-    \ Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
+  comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
+    \ Practitioner Qualification Examination Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS',\
+    \ EXAM_SESSION_ID)."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "examination_assessment_id"
+  atomic_column: "sp_qualification_examination_assessment_id"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Examination Assessment Code"
+  atomic_attribute: "Securities Practitioner Qualification Examination Assessment\
+    \ Code"
   description: "Mã đợt thi"
   data_domain: "Text"
   nullable: false
@@ -10106,16 +9802,17 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
-  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination\
-    \ Assessment Code. Pair with Examination Assessment Id."
+  comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
+    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
+    \ Practitioner Qualification Examination Assessment Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "examination_assessment_code"
+  atomic_column: "sp_qualification_examination_assessment_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Certificate Type Id"
+  atomic_attribute: "Securities Practitioner License Certificate Type Id"
   description: "FK đến loại chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: false
@@ -10129,11 +9826,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "certificate_tp_id"
+  atomic_column: "sp_license_certificate_type_id"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Certificate Type Code"
+  atomic_attribute: "Securities Practitioner License Certificate Type Code"
   description: "Mã loại chứng chỉ (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -10142,11 +9839,12 @@ attributes:
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "certificate_tp_code"
+  atomic_column: "sp_license_certificate_type_code"
   data_type: "string"
 - bcv_core_object: "Condition"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
@@ -10180,110 +9878,6 @@ attributes:
   atomic_table: "sp_qualification_examination_assessment_fee"
   atomic_column: "appeal_fee_amt"
   data_type: "decimal(23,2)"
-- bcv_core_object: "Condition"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSION_FEES"
-  source_column: "NHNCK.EXAM_SESSION_FEES.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Condition"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSION_FEES"
-  source_column: "NHNCK.EXAM_SESSION_FEES.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Condition"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến Officer (người tạo)"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSION_FEES"
-  source_column: "NHNCK.EXAM_SESSION_FEES.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã người tạo"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSION_FEES"
-  source_column: "NHNCK.EXAM_SESSION_FEES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến Officer (người cập nhật)"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSION_FEES"
-  source_column: "NHNCK.EXAM_SESSION_FEES.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Condition"
-  atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã người cập nhật"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "EXAM_SESSION_FEES"
-  source_column: "NHNCK.EXAM_SESSION_FEES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_EXAM_SESSION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_qualification_examination_assessment_fee"
-  atomic_column: "updated_by_officer_code"
-  data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
   atomic_attribute: "Securities Practitioner License Application Id"
@@ -10384,7 +9978,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Certificate Type Id"
+  atomic_attribute: "Securities Practitioner License Certificate Type Id"
   description: "FK đến loại chứng chỉ hành nghề đăng ký."
   data_domain: "Surrogate Key"
   nullable: false
@@ -10398,11 +9992,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "certificate_tp_id"
+  atomic_column: "sp_license_certificate_type_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Certificate Type Code"
+  atomic_attribute: "Securities Practitioner License Certificate Type Code"
   description: "Mã loại chứng chỉ hành nghề đăng ký (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -10411,11 +10005,12 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "certificate_tp_code"
+  atomic_column: "sp_license_certificate_type_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
@@ -10547,7 +10142,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Previous Certificate Type Id"
+  atomic_attribute: "Previous Securities Practitioner License Certificate Type Id"
   description: "FK đến loại CCHN cũ khi cấp lại."
   data_domain: "Surrogate Key"
   nullable: true
@@ -10561,11 +10156,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "previous_certificate_tp_id"
+  atomic_column: "previous_sp_license_certificate_type_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Previous Certificate Type Code"
+  atomic_attribute: "Previous Securities Practitioner License Certificate Type Code"
   description: "Mã loại CCHN cũ khi cấp lại (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -10574,12 +10169,12 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Previous Certificate Type\
-    \ Id."
+    \ Practitioner License Certificate Type Code. Pair with Previous Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "previous_certificate_tp_code"
+  atomic_column: "previous_sp_license_certificate_type_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
@@ -10778,7 +10373,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "License Certificate Document Id"
+  atomic_attribute: "Securities Practitioner License Certificate Document Id"
   description: "FK đến License Certificate Document (CCHN trong sổ đăng bộ)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -10792,11 +10387,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "license_certificate_document_id"
+  atomic_column: "sp_license_certificate_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "License Certificate Document Code"
+  atomic_attribute: "Securities Practitioner License Certificate Document Code"
   description: "Mã CCHN trong sổ đăng bộ."
   data_domain: "Text"
   nullable: true
@@ -10805,16 +10400,17 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Code. Pair with License Certificate\
-    \ Document Id."
+    \ Practitioner License Certificate Document Code. Pair with Securities Practitioner\
+    \ License Certificate Document Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "license_certificate_document_code"
+  atomic_column: "sp_license_certificate_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Previous License Certificate Document Id"
+  atomic_attribute: "Previous Securities Practitioner License Certificate Document\
+    \ Id"
   description: "FK đến CCHN cũ (khi cấp lại)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -10828,11 +10424,12 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "previous_license_certificate_document_id"
+  atomic_column: "previous_sp_license_certificate_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Previous License Certificate Document Code"
+  atomic_attribute: "Previous Securities Practitioner License Certificate Document\
+    \ Code"
   description: "Mã CCHN cũ."
   data_domain: "Text"
   nullable: true
@@ -10841,16 +10438,17 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
-    \ Practitioner License Certificate Document Code. Pair with Previous License Certificate\
-    \ Document Id."
+    \ Practitioner License Certificate Document Code. Pair with Previous Securities\
+    \ Practitioner License Certificate Document Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "previous_license_certificate_document_code"
+  atomic_column: "previous_sp_license_certificate_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Examination Assessment Id"
+  atomic_attribute: "Securities Practitioner Qualification Examination Assessment\
+    \ Id"
   description: "FK đến Exam Session (đợt thi sát hạch liên quan — nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -10864,11 +10462,12 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "examination_assessment_id"
+  atomic_column: "sp_qualification_examination_assessment_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Examination Assessment Code"
+  atomic_attribute: "Securities Practitioner Qualification Examination Assessment\
+    \ Code"
   description: "Mã đợt thi sát hạch."
   data_domain: "Text"
   nullable: true
@@ -10877,12 +10476,12 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
   comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Code. Pair with Examination\
-    \ Assessment Id."
+    \ Practitioner Qualification Examination Assessment Code. Pair with Securities\
+    \ Practitioner Qualification Examination Assessment Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "examination_assessment_code"
+  atomic_column: "sp_qualification_examination_assessment_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
@@ -10997,7 +10596,24 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
     \ Document"
-  atomic_attribute: "License Application Id"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn (ETL-derived)"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_SPECIALIZATIONS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
+  etl_derived_value: "NHNCK.APPLICATION_SPECIALIZATIONS"
+  atomic_table: "sp_license_application_education_certificate_document"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Practitioner License Application Education Certificate\
+    \ Document"
+  atomic_attribute: "Securities Practitioner License Application Id"
   description: "FK đến License Application (hồ sơ đăng ký)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -11005,17 +10621,17 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
-    \ APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
-  atomic_column: "license_application_id"
+  atomic_column: "sp_license_application_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
     \ Document"
-  atomic_attribute: "License Application Code"
+  atomic_attribute: "Securities Practitioner License Application Code"
   description: "Mã hồ sơ đăng ký. Lookup pair"
   data_domain: "Text"
   nullable: false
@@ -11023,12 +10639,13 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
-  comment: "Lookup pair: License Application.License Application Code. Pair with License\
-    \ Application Id."
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
-  atomic_column: "license_application_code"
+  atomic_column: "sp_license_application_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
@@ -11171,23 +10788,6 @@ attributes:
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Application Education Certificate\
-    \ Document"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn (ETL-derived)"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_SPECIALIZATIONS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
-  etl_derived_value: "NHNCK.APPLICATION_SPECIALIZATIONS"
-  atomic_table: "sp_license_application_education_certificate_document"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
   atomic_attribute: "Securities Practitioner License Application Re-Exam Request Id"
   description: "Id tự sinh (surrogate key)"
@@ -11238,7 +10838,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "License Application Id"
+  atomic_attribute: "Securities Practitioner License Application Id"
   description: "FK đến hồ sơ gốc đã thi trượt"
   data_domain: "Surrogate Key"
   nullable: false
@@ -11246,16 +10846,16 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
-  comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "license_application_id"
+  atomic_column: "sp_license_application_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "License Application Code"
+  atomic_attribute: "Securities Practitioner License Application Code"
   description: "Mã hồ sơ gốc"
   data_domain: "Text"
   nullable: false
@@ -11263,16 +10863,18 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
-  comment: "Lookup pair: Securities Practitioner License Application.License Application\
-    \ Code. Pair with License Application Id."
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "license_application_code"
+  atomic_column: "sp_license_application_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Examination Assessment Result Id"
+  atomic_attribute: "Securities Practitioner Qualification Examination Assessment\
+    \ Result Id"
   description: "FK đến kết quả thi trượt"
   data_domain: "Surrogate Key"
   nullable: false
@@ -11281,16 +10883,17 @@ attributes:
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
   comment: "FK target: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS',\
-    \ EXAM_DETAIL_ID)."
+    \ Result.Securities Practitioner Qualification Examination Assessment Result Id.\
+    \ Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "examination_assessment_result_id"
+  atomic_column: "sp_qualification_examination_assessment_result_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Examination Assessment Result Code"
+  atomic_attribute: "Securities Practitioner Qualification Examination Assessment\
+    \ Result Code"
   description: "Mã kết quả thi trượt"
   data_domain: "Text"
   nullable: false
@@ -11299,16 +10902,17 @@ attributes:
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID"
   comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment\
-    \ Result.Examination Assessment Result Code. Pair with Examination Assessment\
-    \ Result Id."
+    \ Result.Securities Practitioner Qualification Examination Assessment Result Code.\
+    \ Pair with Securities Practitioner Qualification Examination Assessment Result\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "examination_assessment_result_code"
+  atomic_column: "sp_qualification_examination_assessment_result_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Re-Exam License Application Id"
+  atomic_attribute: "Re-Exam Securities Practitioner License Application Id"
   description: "FK đến hồ sơ thi lại mới (nullable — chưa nộp)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -11316,16 +10920,16 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
-  comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "re_exam_license_application_id"
+  atomic_column: "re_exam_sp_license_application_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Re-Exam License Application Code"
+  atomic_attribute: "Re-Exam Securities Practitioner License Application Code"
   description: "Mã hồ sơ thi lại mới"
   data_domain: "Text"
   nullable: true
@@ -11333,117 +10937,14 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
-  comment: "Lookup pair: Securities Practitioner License Application.License Application\
-    \ Code. Pair with Re-Exam License Application Id."
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with Re-Exam Securities Practitioner License\
+    \ Application Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "re_exam_license_application_code"
+  atomic_column: "re_exam_sp_license_application_code"
   data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến Officer tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATION_RE_EXAMS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã người tạo"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATION_RE_EXAMS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến Officer cập nhật bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã người cập nhật"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "updated_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATION_RE_EXAMS.CREATED_AT"
-  comment: "Pending — kiểu DATE nguồn map sang Timestamp Atomic."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Application Re-Exam Request"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATION_RE_EXAMS.UPDATED_AT"
-  comment: "Pending — kiểu DATE nguồn map sang Timestamp Atomic."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_RE_EXAMS'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_re_exam_request"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
   atomic_attribute: "Securities Practitioner License Certificate Document Id"
@@ -11478,6 +10979,22 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn ETL-derived"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "CERTIFICATE_RECORDS"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+  etl_derived_value: "NHNCK.CERTIFICATE_RECORDS"
+  atomic_table: "sp_license_certificate_document"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Practitioner License Certificate Document"
   atomic_attribute: "Certificate Number"
   description: "Số chứng chỉ hành nghề"
   data_domain: "Text"
@@ -11494,7 +11011,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Certificate Type Id"
+  atomic_attribute: "Securities Practitioner License Certificate Type Id"
   description: "FK đến loại chứng chỉ hành nghề (CCHN)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -11508,11 +11025,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "certificate_tp_id"
+  atomic_column: "sp_license_certificate_type_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Certificate Type Code"
+  atomic_attribute: "Securities Practitioner License Certificate Type Code"
   description: "Mã loại chứng chỉ (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -11521,11 +11038,12 @@ attributes:
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "certificate_tp_code"
+  atomic_column: "sp_license_certificate_type_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
@@ -11563,7 +11081,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Issue License Decision Id"
+  atomic_attribute: "Issue Securities Practitioner License Decision Document Id"
   description: "FK đến quyết định cấp chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: false
@@ -11571,16 +11089,17 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
-    \ hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ ISSUE_DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "issue_license_decision_id"
+  atomic_column: "issue_sp_license_decision_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Issue License Decision Code"
+  atomic_attribute: "Issue Securities Practitioner License Decision Document Code"
   description: "Mã nghiệp vụ của quyết định cấp"
   data_domain: "Text"
   nullable: false
@@ -11588,16 +11107,18 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
-    \ Pair with Issue License Decision Id."
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Issue Securities Practitioner\
+    \ License Decision Document Id."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "issue_license_decision_code"
+  atomic_column: "issue_sp_license_decision_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Revocation License Decision Id"
+  atomic_attribute: "Revocation Securities Practitioner License Decision Document\
+    \ Id"
   description: "FK đến quyết định thu hồi chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -11605,16 +11126,18 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
-    \ hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ REVOCATION_DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "revocation_license_decision_id"
+  atomic_column: "revocation_sp_license_decision_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Revocation License Decision Code"
+  atomic_attribute: "Revocation Securities Practitioner License Decision Document\
+    \ Code"
   description: "Mã nghiệp vụ của quyết định thu hồi"
   data_domain: "Text"
   nullable: true
@@ -11622,16 +11145,18 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
-    \ Pair with Revocation License Decision Id."
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Revocation Securities\
+    \ Practitioner License Decision Document Id."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "revocation_license_decision_code"
+  atomic_column: "revocation_sp_license_decision_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Cancellation License Decision Id"
+  atomic_attribute: "Cancellation Securities Practitioner License Decision Document\
+    \ Id"
   description: "FK đến quyết định hủy chứng chỉ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -11639,16 +11164,18 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "FK target: License Decision Document.License Decision Document Id. Hash:\
-    \ hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
+  comment: "FK target: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS',\
+    \ CANCELLATION_DECISION_ID)."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "cancellation_license_decision_id"
+  atomic_column: "cancellation_sp_license_decision_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Cancellation License Decision Code"
+  atomic_attribute: "Cancellation Securities Practitioner License Decision Document\
+    \ Code"
   description: "Mã nghiệp vụ của quyết định hủy"
   data_domain: "Text"
   nullable: true
@@ -11656,12 +11183,13 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "Lookup pair: License Decision Document.License Decision Document Code.\
-    \ Pair with Cancellation License Decision Id."
+  comment: "Lookup pair: Securities Practitioner License Decision Document.Securities\
+    \ Practitioner License Decision Document Code. Pair with Cancellation Securities\
+    \ Practitioner License Decision Document Id."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
-  atomic_column: "cancellation_license_decision_code"
+  atomic_column: "cancellation_sp_license_decision_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Document"
@@ -11808,22 +11336,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
   atomic_column: "description"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Document"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn ETL-derived"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATE_RECORDS"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
-  etl_derived_value: "NHNCK.CERTIFICATE_RECORDS"
-  atomic_table: "sp_license_certificate_document"
-  atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Certificate Type"
@@ -11990,110 +11502,6 @@ attributes:
   atomic_column: "original_data_indicator"
   data_type: "string"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Type"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATES"
-  source_column: "NHNCK.CERTIFICATES.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_type"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Type"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi lần cuối"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATES"
-  source_column: "NHNCK.CERTIFICATES.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_type"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Type"
-  atomic_attribute: "Created By Officer Id"
-  description: "ID tài khoản người tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATES"
-  source_column: "NHNCK.CERTIFICATES.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_type"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Type"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã tài khoản người tạo bản ghi (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATES"
-  source_column: "NHNCK.CERTIFICATES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_type"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Type"
-  atomic_attribute: "Updated By Officer Id"
-  description: "ID tài khoản người cập nhật bản ghi lần cuối"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATES"
-  source_column: "NHNCK.CERTIFICATES.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_type"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Certificate Type"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã tài khoản người cập nhật bản ghi lần cuối (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "CERTIFICATES"
-  source_column: "NHNCK.CERTIFICATES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_certificate_type"
-  atomic_column: "updated_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Decision Document"
   atomic_attribute: "Securities Practitioner License Decision Document Id"
   description: "Surrogate key cho quyết định hành chính"
@@ -12124,6 +11532,22 @@ attributes:
   etl_derived_value: null
   atomic_table: "sp_license_decision_document"
   atomic_column: "sp_license_decision_document_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Practitioner License Decision Document"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn của bản ghi"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DECISIONS"
+  source_column: null
+  comment: "ETL-derived: NHNCK.DECISIONS."
+  classification_context: "Source System Code = 'NHNCK_DECISIONS'"
+  etl_derived_value: "NHNCK.DECISIONS"
+  atomic_table: "sp_license_decision_document"
+  atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Decision Document"
@@ -12335,22 +11759,6 @@ attributes:
   atomic_column: "active_flag"
   data_type: "boolean"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Decision Document"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn của bản ghi"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "DECISIONS"
-  source_column: null
-  comment: "ETL-derived: NHNCK.DECISIONS."
-  classification_context: "Source System Code = 'NHNCK_DECISIONS'"
-  etl_derived_value: "NHNCK.DECISIONS"
-  atomic_table: "sp_license_decision_document"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
   atomic_attribute: "Securities Practitioner Organization Employment Report Id"
   description: "Khóa đại diện cho báo cáo danh sách NHNCK tại tổ chức (surrogate key)."
@@ -12468,7 +11876,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "License Certificate Document Id"
+  atomic_attribute: "Securities Practitioner License Certificate Document Id"
   description: "FK đến hồ sơ chứng chỉ hành nghề (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -12476,16 +11884,17 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
-  comment: "FK target: License Certificate Document.License Certificate Document Id.\
-    \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
+  comment: "FK target: Securities Practitioner License Certificate Document.Securities\
+    \ Practitioner License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS',\
+    \ CERTIFICATE_RECORD_ID)."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "license_certificate_document_id"
+  atomic_column: "sp_license_certificate_document_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "License Certificate Document Code"
+  atomic_attribute: "Securities Practitioner License Certificate Document Code"
   description: "Mã hồ sơ chứng chỉ hành nghề (denormalized)."
   data_domain: "Text"
   nullable: true
@@ -12493,16 +11902,17 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID"
-  comment: "Lookup pair: License Certificate Document.License Certificate Document\
-    \ Code. Pair with License Certificate Document Id."
+  comment: "Lookup pair: Securities Practitioner License Certificate Document.Securities\
+    \ Practitioner License Certificate Document Code. Pair with Securities Practitioner\
+    \ License Certificate Document Id."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "license_certificate_document_code"
+  atomic_column: "sp_license_certificate_document_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Certificate Type Id"
+  atomic_attribute: "Securities Practitioner License Certificate Type Id"
   description: "FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo."
   data_domain: "Surrogate Key"
   nullable: true
@@ -12516,11 +11926,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "certificate_tp_id"
+  atomic_column: "sp_license_certificate_type_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Certificate Type Code"
+  atomic_attribute: "Securities Practitioner License Certificate Type Code"
   description: "Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -12529,15 +11939,17 @@ attributes:
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Code. Pair with Certificate Type Id."
+    \ Practitioner License Certificate Type Code. Pair with Securities Practitioner\
+    \ License Certificate Type Id."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "certificate_tp_code"
+  atomic_column: "sp_license_certificate_type_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Parent Report Id"
+  atomic_attribute: "Parent Securities Practitioner Organization Employment Report\
+    \ Id"
   description: "FK self-ref — báo cáo gốc được điều chỉnh (nullable)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -12551,11 +11963,12 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "parent_rpt_id"
+  atomic_column: "parent_sp_organization_employment_report_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Parent Report Code"
+  atomic_attribute: "Parent Securities Practitioner Organization Employment Report\
+    \ Code"
   description: "Mã báo cáo gốc (denormalized)."
   data_domain: "Text"
   nullable: true
@@ -12564,11 +11977,12 @@ attributes:
   source_table: "ORGANIZATION_REPORTS"
   source_column: "NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID"
   comment: "Lookup pair: Securities Practitioner Organization Employment Report.Securities\
-    \ Practitioner Organization Employment Report Code. Pair with Parent Report Id."
+    \ Practitioner Organization Employment Report Code. Pair with Parent Securities\
+    \ Practitioner Organization Employment Report Id."
   classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
   etl_derived_value: null
   atomic_table: "sp_organization_employment_report"
-  atomic_column: "parent_rpt_code"
+  atomic_column: "parent_sp_organization_employment_report_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
@@ -12907,110 +12321,6 @@ attributes:
   atomic_table: "sp_organization_employment_report"
   atomic_column: "sync_updated_tms"
   data_type: "timestamp"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi trong NHNCK."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-  etl_derived_value: null
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến nhân viên UBCKNN tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-  etl_derived_value: null
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã nhân viên tạo bản ghi (denormalized)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-  etl_derived_value: null
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-  etl_derived_value: null
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến nhân viên UBCKNN cập nhật bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-  etl_derived_value: null
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã nhân viên cập nhật bản ghi (denormalized)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-  etl_derived_value: null
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "updated_by_officer_code"
-  data_type: "string"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Licensed Service"
   atomic_attribute: "Securities Company Licensed Service Id"
@@ -13322,6 +12632,22 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Practitioner Professional Training Class"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATION_COURSES"
+  source_column: null
+  comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+  etl_derived_value: "NHNCK.SPECIALIZATION_COURSES"
+  atomic_table: "securities_practitioner_professional_training_class"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Practitioner Professional Training Class"
   atomic_attribute: "Training Class Name"
   description: "Tên khóa học"
   data_domain: "Text"
@@ -13450,126 +12776,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "securities_practitioner_professional_training_class"
   atomic_column: "province_code"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSES"
-  source_column: null
-  comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-  etl_derived_value: "NHNCK.SPECIALIZATION_COURSES"
-  atomic_table: "securities_practitioner_professional_training_class"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSES"
-  source_column: "NHNCK.SPECIALIZATION_COURSES.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_professional_training_class"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSES"
-  source_column: "NHNCK.SPECIALIZATION_COURSES.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_professional_training_class"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSES"
-  source_column: "NHNCK.SPECIALIZATION_COURSES.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_professional_training_class"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã cán bộ tạo bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSES"
-  source_column: "NHNCK.SPECIALIZATION_COURSES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_professional_training_class"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến cán bộ cập nhật bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSES"
-  source_column: "NHNCK.SPECIALIZATION_COURSES.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_professional_training_class"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã cán bộ cập nhật bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATION_COURSES"
-  source_column: "NHNCK.SPECIALIZATION_COURSES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner_professional_training_class"
-  atomic_column: "updated_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Custodian Bank"
@@ -21409,110 +20615,6 @@ attributes:
   atomic_column: "sync_status_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Organization Reference"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_organization_reference"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Organization Reference"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_organization_reference"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Organization Reference"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến cán bộ tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_organization_reference"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Organization Reference"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã cán bộ tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_organization_reference"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Organization Reference"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến cán bộ cập nhật bản ghi gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_organization_reference"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Organization Reference"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã cán bộ cập nhật bản ghi gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATIONS"
-  source_column: "NHNCK.ORGANIZATIONS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "securities_organization_reference"
-  atomic_column: "updated_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
   atomic_attribute: "Securities Practitioner Id"
   description: "Id tự sinh (surrogate key)"
@@ -21708,7 +20810,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Organization Id"
+  atomic_attribute: "Securities Organization Reference Id"
   description: "FK đến tổ chức chứng khoán hiện tại (nullable)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -21722,11 +20824,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "organization_id"
+  atomic_column: "securities_organization_reference_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Organization Code"
+  atomic_attribute: "Securities Organization Reference Code"
   description: "Mã tổ chức (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -21735,11 +20837,11 @@ attributes:
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.ORGANIZATION_ID"
   comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Organization Id."
+    \ Reference Code. Pair with Securities Organization Reference Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "organization_code"
+  atomic_column: "securities_organization_reference_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
@@ -22973,7 +22075,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Organization Id"
+  atomic_attribute: "Securities Organization Reference Id"
   description: "FK đến tổ chức chứng khoán hiện tại (nullable)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -22987,11 +22089,11 @@ attributes:
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "organization_id"
+  atomic_column: "securities_organization_reference_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Organization Code"
+  atomic_attribute: "Securities Organization Reference Code"
   description: "Mã tổ chức (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -23000,11 +22102,11 @@ attributes:
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: null
   comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Organization Id."
+    \ Reference Code. Pair with Securities Organization Reference Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
-  atomic_column: "organization_code"
+  atomic_column: "securities_organization_reference_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner"
@@ -24342,7 +23444,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
-  atomic_attribute: "License Application Id"
+  atomic_attribute: "Securities Practitioner License Application Id"
   description: "FK đến hồ sơ đăng ký CCHN"
   data_domain: "Surrogate Key"
   nullable: false
@@ -24350,16 +23452,16 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.APPLICATION_ID"
-  comment: "FK target: Securities Practitioner License Application.License Application\
-    \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
   etl_derived_value: null
   atomic_table: "sp_license_application_employment_experience"
-  atomic_column: "license_application_id"
+  atomic_column: "sp_license_application_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
-  atomic_attribute: "License Application Code"
+  atomic_attribute: "Securities Practitioner License Application Code"
   description: "Mã hồ sơ đăng ký CCHN"
   data_domain: "Text"
   nullable: false
@@ -24367,12 +23469,13 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.APPLICATION_ID"
-  comment: "Lookup pair: Securities Practitioner License Application.License Application\
-    \ Code. Pair with License Application Id."
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
   etl_derived_value: null
   atomic_table: "sp_license_application_employment_experience"
-  atomic_column: "license_application_code"
+  atomic_column: "sp_license_application_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
@@ -24655,7 +23758,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Snapshot"
-  atomic_attribute: "License Application Id"
+  atomic_attribute: "Securities Practitioner License Application Id"
   description: "FK đến hồ sơ đăng ký"
   data_domain: "Surrogate Key"
   nullable: false
@@ -24668,11 +23771,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_snapshot"
-  atomic_column: "license_application_id"
+  atomic_column: "sp_license_application_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Snapshot"
-  atomic_attribute: "License Application Code"
+  atomic_attribute: "Securities Practitioner License Application Code"
   description: "Mã hồ sơ đăng ký (denormalized)"
   data_domain: "Text"
   nullable: false
@@ -24681,11 +23784,12 @@ attributes:
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID"
   comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
-    \ License Application Code. Pair with License Application Id."
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_snapshot"
-  atomic_column: "license_application_code"
+  atomic_column: "sp_license_application_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Snapshot"
@@ -24723,7 +23827,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Snapshot"
-  atomic_attribute: "Organization Id"
+  atomic_attribute: "Securities Organization Reference Id"
   description: "FK đến tổ chức chứng khoán (nullable)"
   data_domain: "Surrogate Key"
   nullable: true
@@ -24736,11 +23840,11 @@ attributes:
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_snapshot"
-  atomic_column: "organization_id"
+  atomic_column: "securities_organization_reference_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Snapshot"
-  atomic_attribute: "Organization Code"
+  atomic_attribute: "Securities Organization Reference Code"
   description: "Mã tổ chức (denormalized)"
   data_domain: "Text"
   nullable: true
@@ -24749,11 +23853,11 @@ attributes:
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID"
   comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Organization Id."
+    \ Reference Code. Pair with Securities Organization Reference Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_snapshot"
-  atomic_column: "organization_code"
+  atomic_column: "securities_organization_reference_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Snapshot"
@@ -25687,7 +24791,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
     \ PROFESSIONAL_ID)."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
   etl_derived_value: null
@@ -25704,8 +24808,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONAL_RELATIONSHIPS"
   source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with Securities\
-    \ Practitioner Id."
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
   etl_derived_value: null
   atomic_table: "sp_related_party"
@@ -25871,110 +24975,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "sp_related_party"
   atomic_column: "note"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner Related Party"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONAL_RELATIONSHIPS"
-  source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-  etl_derived_value: null
-  atomic_table: "sp_related_party"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner Related Party"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONAL_RELATIONSHIPS"
-  source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-  etl_derived_value: null
-  atomic_table: "sp_related_party"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner Related Party"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến Regulatory Authority Officer — người tạo"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONAL_RELATIONSHIPS"
-  source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-  etl_derived_value: null
-  atomic_table: "sp_related_party"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner Related Party"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã người tạo"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONAL_RELATIONSHIPS"
-  source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-  etl_derived_value: null
-  atomic_table: "sp_related_party"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner Related Party"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến Regulatory Authority Officer — người cập nhật"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONAL_RELATIONSHIPS"
-  source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-  etl_derived_value: null
-  atomic_table: "sp_related_party"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner Related Party"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã người cập nhật"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONAL_RELATIONSHIPS"
-  source_column: "NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-  etl_derived_value: null
-  atomic_table: "sp_related_party"
-  atomic_column: "updated_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Transfer Agent"
@@ -26233,7 +25233,7 @@ attributes:
   source_column: null
   comment: null
   classification_context: "Source System Code = 'NHNCK_COUNTRIES'"
-  etl_derived_value: null
+  etl_derived_value: "COUNTRY"
   atomic_table: "geographic_area"
   atomic_column: "geographic_area_tp_code"
   data_type: "string"
@@ -26396,7 +25396,7 @@ attributes:
   source_column: null
   comment: null
   classification_context: "Source System Code = 'NHNCK_PROVINCES'"
-  etl_derived_value: null
+  etl_derived_value: "PROVINCE"
   atomic_table: "geographic_area"
   atomic_column: "geographic_area_tp_code"
   data_type: "string"
@@ -26559,7 +25559,7 @@ attributes:
   source_column: null
   comment: null
   classification_context: "Source System Code = 'NHNCK_DISTRICTS'"
-  etl_derived_value: null
+  etl_derived_value: "DISTRICT"
   atomic_table: "geographic_area"
   atomic_column: "geographic_area_tp_code"
   data_type: "string"
@@ -27745,7 +26745,23 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "License Application Id"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_FEES"
+  source_column: null
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
+  etl_derived_value: "NHNCK.APPLICATION_FEES"
+  atomic_table: "sp_license_application_fee"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Securities Practitioner License Application Fee"
+  atomic_attribute: "Securities Practitioner License Application Id"
   description: "FK đến License Application"
   data_domain: "Surrogate Key"
   nullable: false
@@ -27753,16 +26769,16 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
-    \ APPLICATION_ID)."
+  comment: "FK target: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
-  atomic_column: "license_application_id"
+  atomic_column: "sp_license_application_id"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "License Application Code"
+  atomic_attribute: "Securities Practitioner License Application Code"
   description: "Mã hồ sơ đăng ký (lookup pair)"
   data_domain: "Text"
   nullable: false
@@ -27770,12 +26786,13 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "Lookup pair: License Application.License Application Code. Pair with License\
-    \ Application Id."
+  comment: "Lookup pair: Securities Practitioner License Application.Securities Practitioner\
+    \ License Application Code. Pair with Securities Practitioner License Application\
+    \ Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
-  atomic_column: "license_application_code"
+  atomic_column: "sp_license_application_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
@@ -27938,126 +26955,6 @@ attributes:
   etl_derived_value: null
   atomic_table: "sp_license_application_fee"
   atomic_column: "note"
-  data_type: "string"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_FEES"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-  etl_derived_value: "NHNCK.APPLICATION_FEES"
-  atomic_table: "sp_license_application_fee"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm tạo bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_FEES"
-  source_column: "NHNCK.APPLICATION_FEES.CREATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_fee"
-  atomic_column: "created_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_FEES"
-  source_column: "NHNCK.APPLICATION_FEES.UPDATED_AT"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_fee"
-  atomic_column: "updated_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Created By Officer Id"
-  description: "FK đến cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_FEES"
-  source_column: "NHNCK.APPLICATION_FEES.CREATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_fee"
-  atomic_column: "created_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Created By Officer Code"
-  description: "Mã cán bộ tạo bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_FEES"
-  source_column: "NHNCK.APPLICATION_FEES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Created By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_fee"
-  atomic_column: "created_by_officer_code"
-  data_type: "string"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Updated By Officer Id"
-  description: "FK đến cán bộ cập nhật bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_FEES"
-  source_column: "NHNCK.APPLICATION_FEES.UPDATED_BY"
-  comment: "Pending — FK target đổi sang Identity and Access Management User (định\
-    \ hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join\
-    \ key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và\
-    \ lld_IAM_USERS.yaml lên approved."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_fee"
-  atomic_column: "updated_by_officer_id"
-  data_type: "string"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Practitioner License Application Fee"
-  atomic_attribute: "Updated By Officer Code"
-  description: "Mã cán bộ cập nhật bản ghi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_FEES"
-  source_column: "NHNCK.APPLICATION_FEES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pending — xem ghi chú ở Updated By Officer Id."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_FEES'"
-  etl_derived_value: null
-  atomic_table: "sp_license_application_fee"
-  atomic_column: "updated_by_officer_code"
   data_type: "string"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Trade"

@@ -92,8 +92,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
 
-  - name: License Decision Document Id
-    physical_name: license_decision_document_id
+  - name: Securities Practitioner License Decision Document Id
+    physical_name: sp_license_decision_document_id
     business_meaning: FK đến quyết định xử lý vi phạm.
     data_domain: Surrogate Key
     data_type: string
@@ -102,12 +102,12 @@ attributes:
     source_system: NHNCK
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.DECISION_ID
-    comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
 
-  - name: License Decision Document Code
-    physical_name: license_decision_document_code
+  - name: Securities Practitioner License Decision Document Code
+    physical_name: sp_license_decision_document_code
     business_meaning: Mã quyết định xử lý vi phạm.
     data_domain: Text
     data_type: string
@@ -116,7 +116,7 @@ attributes:
     source_system: NHNCK
     source_table: VIOLATIONS
     source_column: NHNCK.VIOLATIONS.DECISION_ID
-    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with License Decision Document Id."
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with sp_license_decision_document_id."
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
 

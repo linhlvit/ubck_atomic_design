@@ -50,6 +50,20 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: SPECIALIZATION_COURSES
+    source_column: null
+    comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
+    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
+    etl_derived_value: NHNCK.SPECIALIZATION_COURSES
+
   - name: Training Class Name
     physical_name: training_class_nm
     business_meaning: Tên khóa học
@@ -159,103 +173,5 @@ attributes:
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
     comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: null
-    comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: NHNCK.SPECIALIZATION_COURSES
-
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning: Thời điểm tạo bản ghi
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning: Thời điểm cập nhật bản ghi
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning: FK đến cán bộ tạo bản ghi
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning: Mã cán bộ tạo bản ghi
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning: FK đến cán bộ cập nhật bản ghi
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning: Mã cán bộ cập nhật bản ghi
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: SPECIALIZATION_COURSES
-    source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null

@@ -50,8 +50,22 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
 
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: "Mã hệ thống nguồn (ETL-derived)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_SPECIALIZATIONS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
+    etl_derived_value: NHNCK.APPLICATION_SPECIALIZATIONS
+
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning: FK đến License Application (hồ sơ đăng ký)
     data_domain: Surrogate Key
     data_type: string
@@ -60,12 +74,12 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
-    comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+    comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
 
-  - name: License Application Code
-    physical_name: license_application_code
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning: Mã hồ sơ đăng ký. Lookup pair
     data_domain: Text
     data_type: string
@@ -74,7 +88,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
-    comment: "Lookup pair: License Application.License Application Code. Pair with License Application Id."
+    comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code. Pair with securities_practitioner_license_application_id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
 
@@ -189,17 +203,3 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: "Mã hệ thống nguồn (ETL-derived)"
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: APPLICATION_SPECIALIZATIONS
-    source_column: null
-    comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
-    classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
-    etl_derived_value: NHNCK.APPLICATION_SPECIALIZATIONS

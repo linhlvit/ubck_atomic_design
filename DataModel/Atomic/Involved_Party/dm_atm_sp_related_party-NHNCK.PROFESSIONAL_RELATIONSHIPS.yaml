@@ -74,7 +74,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID
-    comment: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+    comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID
-    comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with securities_practitioner_id."
+    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with securities_practitioner_id."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
     etl_derived_value: null
 
@@ -229,89 +229,5 @@ attributes:
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-    etl_derived_value: null
-
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning: Thời điểm tạo bản ghi
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONAL_RELATIONSHIPS
-    source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-    etl_derived_value: null
-
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning: Thời điểm cập nhật bản ghi
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONAL_RELATIONSHIPS
-    source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-    etl_derived_value: null
-
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning: FK đến Regulatory Authority Officer — người tạo
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONAL_RELATIONSHIPS
-    source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-    etl_derived_value: null
-
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning: Mã người tạo
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONAL_RELATIONSHIPS
-    source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning: FK đến Regulatory Authority Officer — người cập nhật
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONAL_RELATIONSHIPS
-    source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning: Mã người cập nhật
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: PROFESSIONAL_RELATIONSHIPS
-    source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
     etl_derived_value: null

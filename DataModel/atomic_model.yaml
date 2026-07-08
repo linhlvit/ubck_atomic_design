@@ -5577,10 +5577,10 @@ entities:
         business_meaning: Mã người hành nghề chứng khoán bị vi phạm.
         comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
           \ Pair with securities_practitioner_id."
-  - name: License Decision Document Id
-    physical_name: license_decision_document_id
+  - name: Securities Practitioner License Decision Document Id
+    physical_name: sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định xử lý vi phạm.
-    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+    comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
       \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -5594,13 +5594,13 @@ entities:
       - source_table: VIOLATIONS
         source_column: NHNCK.VIOLATIONS.DECISION_ID
         business_meaning: FK đến quyết định xử lý vi phạm.
-        comment: "FK target: License Decision Document.License Decision Document Id.\
+        comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
           \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
-  - name: License Decision Document Code
-    physical_name: license_decision_document_code
+  - name: Securities Practitioner License Decision Document Code
+    physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định xử lý vi phạm.
-    comment_1st: "Lookup pair: License Decision Document.License Decision Document\
-      \ Code. Pair with License Decision Document Id."
+    comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+      \ Pair with sp_license_decision_document_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -5613,8 +5613,8 @@ entities:
       - source_table: VIOLATIONS
         source_column: NHNCK.VIOLATIONS.DECISION_ID
         business_meaning: Mã quyết định xử lý vi phạm.
-        comment: "Lookup pair: License Decision Document.License Decision Document\
-          \ Code. Pair with License Decision Document Id."
+        comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+          \ Pair with sp_license_decision_document_id."
   - name: Practitioner Name At Violation
     physical_name: practitioner_nm_at_violation
     business_meaning_1st: Họ tên người hành nghề tại thời điểm vi phạm (snapshot).
@@ -6240,124 +6240,6 @@ entities:
         business_meaning: Mã cán bộ phụ trách
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
           \ Pending — xem ghi chú ở Assignee Officer Id."
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSE_DETAILS
-        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSE_DETAILS
-        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSE_DETAILS
-        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
-        business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã cán bộ tạo bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSE_DETAILS
-        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.CREATED_BY
-        business_meaning: Mã cán bộ tạo bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSE_DETAILS
-        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
-        business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã cán bộ cập nhật bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSE_DETAILS
-        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.UPDATED_BY
-        business_meaning: Mã cán bộ cập nhật bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-member_disclosure_announcement
     logical_name_1st: Member Disclosure Announcement
@@ -8341,6 +8223,23 @@ entities:
         source_column: NHNCK.EXAM_SESSIONS.CODE
         business_meaning: Mã định danh nghiệp vụ đợt thi. BK
         comment: BK chính. Mã đợt thi.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn
+    comment_1st: null
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: NHNCK.EXAM_SESSIONS
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: EXAM_SESSIONS
+        source_column: null
+        business_meaning: Mã hệ thống nguồn
+        comment: null
   - name: Assessment Name
     physical_name: assessment_nm
     business_meaning_1st: Tên hiển thị đợt thi
@@ -8545,8 +8444,8 @@ entities:
         source_column: NHNCK.EXAM_SESSIONS.FILE_PATH
         business_meaning: Đường dẫn file thông báo kết quả
         comment: null
-  - name: License Decision Id
-    physical_name: license_decision_id
+  - name: Securities Practitioner License Decision Document Id
+    physical_name: sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định cấp chứng chỉ liên quan đợt thi
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
       \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
@@ -8564,11 +8463,11 @@ entities:
         business_meaning: FK đến quyết định cấp chứng chỉ liên quan đợt thi
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
           \ Hash: hash_id('NHNCK.DECISIONS', DECISION_ID)."
-  - name: License Decision Code
-    physical_name: license_decision_code
+  - name: Securities Practitioner License Decision Document Code
+    physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định cấp chứng chỉ
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with License Decision Id."
+      \ Pair with sp_license_decision_document_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -8582,7 +8481,7 @@ entities:
         source_column: NHNCK.EXAM_SESSIONS.DECISION_ID
         business_meaning: Mã quyết định cấp chứng chỉ
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with License Decision Id."
+          \ Pair with sp_license_decision_document_id."
   - name: Bank Code
     physical_name: bank_code
     business_meaning_1st: Mã ngân hàng thu phí
@@ -8634,141 +8533,6 @@ entities:
         source_column: NHNCK.EXAM_SESSIONS.BANK_ACCOUNT_NAME
         business_meaning: Tên chủ tài khoản ngân hàng thu phí
         comment: null
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn
-    comment_1st: null
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: NHNCK.EXAM_SESSIONS
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSIONS
-        source_column: null
-        business_meaning: Mã hệ thống nguồn
-        comment: null
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: Pending — chờ xác nhận ETL pattern.
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi
-        comment: Pending — chờ xác nhận ETL pattern.
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi
-    comment_1st: Pending — chờ xác nhận ETL pattern.
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi
-        comment: Pending — chờ xác nhận ETL pattern.
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến người tạo
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.CREATED_BY
-        business_meaning: FK đến người tạo
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã người tạo
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.CREATED_BY
-        business_meaning: Mã người tạo
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến người cập nhật
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.UPDATED_BY
-        business_meaning: FK đến người cập nhật
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã người cập nhật
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.UPDATED_BY
-        business_meaning: Mã người cập nhật
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-sp_qualification_examination_assessment_result
     logical_name_1st: Securities Practitioner Qualification Examination Assessment
@@ -8923,8 +8687,8 @@ entities:
         business_meaning: Mã người hành nghề
         comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
           \ Pair with securities_practitioner_id."
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning_1st: FK đến loại chứng chỉ dự thi
     comment_1st: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
       \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
@@ -8942,11 +8706,11 @@ entities:
         business_meaning: FK đến loại chứng chỉ dự thi
         comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning_1st: Mã loại chứng chỉ dự thi (denormalized lookup)
     comment_1st: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-      \ Pair with Certificate Type Id."
+      \ Pair with sp_license_certificate_type_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -8960,12 +8724,12 @@ entities:
         source_column: NHNCK.EXAM_DETAILS.CERTIFICATE_ID
         business_meaning: Mã loại chứng chỉ dự thi (denormalized lookup)
         comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-          \ Pair with Certificate Type Id."
-  - name: License Application Id
-    physical_name: license_application_id
+          \ Pair with sp_license_certificate_type_id."
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning_1st: FK đến hồ sơ đăng ký
-    comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+    comment_1st: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+      \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -8978,13 +8742,13 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
         business_meaning: FK đến hồ sơ đăng ký
-        comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
-  - name: License Application Code
-    physical_name: license_application_code
+        comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+          \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký
-    comment_1st: "Lookup pair: Securities Practitioner License Application.License\
-      \ Application Code. Pair with License Application Id."
+    comment_1st: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+      \ Pair with securities_practitioner_license_application_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -8997,8 +8761,8 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký
-        comment: "Lookup pair: Securities Practitioner License Application.License\
-          \ Application Code. Pair with License Application Id."
+        comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+          \ Pair with securities_practitioner_license_application_id."
   - name: Sequence Number
     physical_name: sequence_nbr
     business_meaning_1st: Số thứ tự dự thi trong đợt thi
@@ -9139,124 +8903,6 @@ entities:
         source_column: NHNCK.EXAM_DETAILS.NOTE
         business_meaning: Ghi chú
         comment: null
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_DETAILS
-        source_column: NHNCK.EXAM_DETAILS.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_DETAILS
-        source_column: NHNCK.EXAM_DETAILS.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_DETAILS
-        source_column: NHNCK.EXAM_DETAILS.CREATED_BY
-        business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã cán bộ tạo bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_DETAILS
-        source_column: NHNCK.EXAM_DETAILS.CREATED_BY
-        business_meaning: Mã cán bộ tạo bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_DETAILS
-        source_column: NHNCK.EXAM_DETAILS.UPDATED_BY
-        business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã cán bộ cập nhật bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_DETAILS
-        source_column: NHNCK.EXAM_DETAILS.UPDATED_BY
-        business_meaning: Mã cán bộ cập nhật bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-member_rating_criterion
     logical_name_1st: Member Rating Criterion
@@ -10936,11 +10582,11 @@ entities:
         source_column: null
         business_meaning: Mã nguồn dữ liệu
         comment: "Scheme: SOURCE_SYSTEM. ETL-derived."
-  - name: Examination Assessment Id
-    physical_name: examination_assessment_id
+  - name: Securities Practitioner Qualification Examination Assessment Id
+    physical_name: sp_qualification_examination_assessment_id
     business_meaning_1st: FK đến đợt thi (Exam Assessment)
-    comment_1st: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
-      \ Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
+    comment_1st: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+      \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -10953,13 +10599,13 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID
         business_meaning: FK đến đợt thi (Exam Assessment)
-        comment: "FK target: Securities Practitioner Qualification Examination Assessment.Examination\
-          \ Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
-  - name: Examination Assessment Code
-    physical_name: examination_assessment_code
+        comment: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+          \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
+  - name: Securities Practitioner Qualification Examination Assessment Code
+    physical_name: sp_qualification_examination_assessment_code
     business_meaning_1st: Mã đợt thi
-    comment_1st: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination\
-      \ Assessment Code. Pair with Examination Assessment Id."
+    comment_1st: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
+      \ Pair with securities_practitioner_qualification_examination_assessment_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -10972,10 +10618,10 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID
         business_meaning: Mã đợt thi
-        comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment.Examination\
-          \ Assessment Code. Pair with Examination Assessment Id."
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+        comment: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
+          \ Pair with securities_practitioner_qualification_examination_assessment_id."
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning_1st: FK đến loại chứng chỉ
     comment_1st: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
       \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
@@ -10993,11 +10639,11 @@ entities:
         business_meaning: FK đến loại chứng chỉ
         comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning_1st: Mã loại chứng chỉ (denormalized lookup)
     comment_1st: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-      \ Pair with Certificate Type Id."
+      \ Pair with sp_license_certificate_type_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -11011,7 +10657,7 @@ entities:
         source_column: NHNCK.EXAM_SESSION_FEES.CERTIFICATE_ID
         business_meaning: Mã loại chứng chỉ (denormalized lookup)
         comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-          \ Pair with Certificate Type Id."
+          \ Pair with sp_license_certificate_type_id."
   - name: Examination Fee Amount
     physical_name: examination_fee_amt
     business_meaning_1st: Mức phí dự thi (VNĐ)
@@ -11046,124 +10692,6 @@ entities:
         source_column: NHNCK.EXAM_SESSION_FEES.FEE_APPEAL
         business_meaning: Mức phí phúc khảo (VNĐ)
         comment: null
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSION_FEES
-        source_column: NHNCK.EXAM_SESSION_FEES.CREATED_AT
-        business_meaning: Thời điểm tạo
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSION_FEES
-        source_column: NHNCK.EXAM_SESSION_FEES.UPDATED_AT
-        business_meaning: Thời điểm cập nhật
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến Officer (người tạo)
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSION_FEES
-        source_column: NHNCK.EXAM_SESSION_FEES.CREATED_BY
-        business_meaning: FK đến Officer (người tạo)
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã người tạo
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSION_FEES
-        source_column: NHNCK.EXAM_SESSION_FEES.CREATED_BY
-        business_meaning: Mã người tạo
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến Officer (người cập nhật)
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSION_FEES
-        source_column: NHNCK.EXAM_SESSION_FEES.UPDATED_BY
-        business_meaning: FK đến Officer (người cập nhật)
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã người cập nhật
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: EXAM_SESSION_FEES
-        source_column: NHNCK.EXAM_SESSION_FEES.UPDATED_BY
-        business_meaning: Mã người cập nhật
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-securities_practitioner_license_application
     logical_name_1st: Securities Practitioner License Application
@@ -11294,8 +10822,8 @@ entities:
         business_meaning: Nguồn tiếp nhận hồ sơ.
         comment: "Scheme: NHNCK_REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC,\
           \ 1=Nhập tay."
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning_1st: FK đến loại chứng chỉ hành nghề đăng ký.
     comment_1st: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
       \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
@@ -11313,11 +10841,11 @@ entities:
         business_meaning: FK đến loại chứng chỉ hành nghề đăng ký.
         comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning_1st: Mã loại chứng chỉ hành nghề đăng ký (denormalized lookup)
     comment_1st: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-      \ Pair with Certificate Type Id."
+      \ Pair with sp_license_certificate_type_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -11331,7 +10859,7 @@ entities:
         source_column: NHNCK.APPLICATIONS.CERTIFICATE_ID
         business_meaning: Mã loại chứng chỉ hành nghề đăng ký (denormalized lookup)
         comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-          \ Pair with Certificate Type Id."
+          \ Pair with sp_license_certificate_type_id."
   - name: Title
     physical_name: title
     business_meaning_1st: Tiêu đề hoặc tên nhóm hồ sơ.
@@ -11468,8 +10996,8 @@ entities:
         source_column: NHNCK.APPLICATIONS.PREVIOUS_ISSUE_DATE
         business_meaning: Ngày cấp CCHN cũ.
         comment: null
-  - name: Previous Certificate Type Id
-    physical_name: previous_certificate_tp_id
+  - name: Previous Securities Practitioner License Certificate Type Id
+    physical_name: previous_sp_license_certificate_type_id
     business_meaning_1st: FK đến loại CCHN cũ khi cấp lại.
     comment_1st: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
       \ Hash: hash_id('NHNCK.CERTIFICATES', PREVIOUS_CERTIFICATE_ID)."
@@ -11487,11 +11015,11 @@ entities:
         business_meaning: FK đến loại CCHN cũ khi cấp lại.
         comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATES', PREVIOUS_CERTIFICATE_ID)."
-  - name: Previous Certificate Type Code
-    physical_name: previous_certificate_tp_code
+  - name: Previous Securities Practitioner License Certificate Type Code
+    physical_name: previous_sp_license_certificate_type_code
     business_meaning_1st: Mã loại CCHN cũ khi cấp lại (denormalized lookup)
     comment_1st: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-      \ Pair with Previous Certificate Type Id."
+      \ Pair with Previous Securities Practitioner License Certificate Type Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -11505,7 +11033,7 @@ entities:
         source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID
         business_meaning: Mã loại CCHN cũ khi cấp lại (denormalized lookup)
         comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-          \ Pair with Previous Certificate Type Id."
+          \ Pair with Previous Securities Practitioner License Certificate Type Id."
   - name: Reissue Reason
     physical_name: reissue_reason
     business_meaning_1st: Lý do xin cấp lại CCHN.
@@ -11716,8 +11244,8 @@ entities:
         business_meaning: Mã người hành nghề.
         comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
           \ Pair with securities_practitioner_id."
-  - name: License Certificate Document Id
-    physical_name: license_certificate_document_id
+  - name: Securities Practitioner License Certificate Document Id
+    physical_name: sp_license_certificate_document_id
     business_meaning_1st: FK đến License Certificate Document (CCHN trong sổ đăng
       bộ).
     comment_1st: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
@@ -11737,11 +11265,11 @@ entities:
           bộ).
         comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
-  - name: License Certificate Document Code
-    physical_name: license_certificate_document_code
+  - name: Securities Practitioner License Certificate Document Code
+    physical_name: sp_license_certificate_document_code
     business_meaning_1st: Mã CCHN trong sổ đăng bộ.
     comment_1st: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
-      \ Pair with License Certificate Document Id."
+      \ Pair with sp_license_certificate_document_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -11755,9 +11283,9 @@ entities:
         source_column: NHNCK.APPLICATIONS.CERTIFICATE_RECORD_ID
         business_meaning: Mã CCHN trong sổ đăng bộ.
         comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
-          \ Pair with License Certificate Document Id."
-  - name: Previous License Certificate Document Id
-    physical_name: previous_license_certificate_document_id
+          \ Pair with sp_license_certificate_document_id."
+  - name: Previous Securities Practitioner License Certificate Document Id
+    physical_name: previous_sp_license_certificate_document_id
     business_meaning_1st: FK đến CCHN cũ (khi cấp lại).
     comment_1st: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
       \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', PREVIOUS_CERTIFICATE_RECORD_ID)."
@@ -11775,11 +11303,11 @@ entities:
         business_meaning: FK đến CCHN cũ (khi cấp lại).
         comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', PREVIOUS_CERTIFICATE_RECORD_ID)."
-  - name: Previous License Certificate Document Code
-    physical_name: previous_license_certificate_document_code
+  - name: Previous Securities Practitioner License Certificate Document Code
+    physical_name: previous_sp_license_certificate_document_code
     business_meaning_1st: Mã CCHN cũ.
     comment_1st: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
-      \ Pair with Previous License Certificate Document Id."
+      \ Pair with Previous Securities Practitioner License Certificate Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -11793,9 +11321,10 @@ entities:
         source_column: NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_RECORD_ID
         business_meaning: Mã CCHN cũ.
         comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
-          \ Pair with Previous License Certificate Document Id."
-  - name: Examination Assessment Id
-    physical_name: examination_assessment_id
+          \ Pair with Previous Securities Practitioner License Certificate Document\
+          \ Id."
+  - name: Securities Practitioner Qualification Examination Assessment Id
+    physical_name: sp_qualification_examination_assessment_id
     business_meaning_1st: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
     comment_1st: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
       \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
@@ -11813,11 +11342,11 @@ entities:
         business_meaning: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
         comment: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
           \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
-  - name: Examination Assessment Code
-    physical_name: examination_assessment_code
+  - name: Securities Practitioner Qualification Examination Assessment Code
+    physical_name: sp_qualification_examination_assessment_code
     business_meaning_1st: Mã đợt thi sát hạch.
     comment_1st: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-      \ Pair with Examination Assessment Id."
+      \ Pair with securities_practitioner_qualification_examination_assessment_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -11831,7 +11360,7 @@ entities:
         source_column: NHNCK.APPLICATIONS.EXAM_SESSION_ID
         business_meaning: Mã đợt thi sát hạch.
         comment: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-          \ Pair with Examination Assessment Id."
+          \ Pair with securities_practitioner_qualification_examination_assessment_id."
   - name: Assignee Officer Id
     physical_name: assignee_officer_id
     business_meaning_1st: FK đến Regulatory Authority Officer — cán bộ được phân công
@@ -11983,11 +11512,28 @@ entities:
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.ID
         business_meaning: Mã định danh bản ghi chuyên môn. BK
         comment: BK từ APPLICATION_SPECIALIZATIONS.ID.
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn (ETL-derived)
+    comment_1st: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: NHNCK.APPLICATION_SPECIALIZATIONS
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: APPLICATION_SPECIALIZATIONS
+        source_column: null
+        business_meaning: Mã hệ thống nguồn (ETL-derived)
+        comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning_1st: FK đến License Application (hồ sơ đăng ký)
-    comment_1st: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
-      \ APPLICATION_ID)."
+    comment_1st: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+      \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -12000,13 +11546,13 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
         business_meaning: FK đến License Application (hồ sơ đăng ký)
-        comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
-          \ APPLICATION_ID)."
-  - name: License Application Code
-    physical_name: license_application_code
+        comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+          \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký. Lookup pair
-    comment_1st: "Lookup pair: License Application.License Application Code. Pair\
-      \ with License Application Id."
+    comment_1st: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+      \ Pair with securities_practitioner_license_application_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -12019,8 +11565,8 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký. Lookup pair
-        comment: "Lookup pair: License Application.License Application Code. Pair\
-          \ with License Application Id."
+        comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+          \ Pair with securities_practitioner_license_application_id."
   - name: Specialization Type Code
     physical_name: specialization_tp_code
     business_meaning_1st: Mã loại chuyên môn (Classification Value)
@@ -12165,23 +11711,6 @@ entities:
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.NOTE
         business_meaning: Ghi chú bổ sung
         comment: null
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn (ETL-derived)
-    comment_1st: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: NHNCK.APPLICATION_SPECIALIZATIONS
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_SPECIALIZATIONS
-        source_column: null
-        business_meaning: Mã hệ thống nguồn (ETL-derived)
-        comment: "Scheme: SOURCE_SYSTEM. ETL-derived = NHNCK.APPLICATION_SPECIALIZATIONS."
 - ldm:
     id: ATM-sp_license_application_re_exam_request
     logical_name_1st: Securities Practitioner License Application Re-Exam Request
@@ -12259,11 +11788,11 @@ entities:
         source_column: null
         business_meaning: Mã nguồn dữ liệu
         comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning_1st: FK đến hồ sơ gốc đã thi trượt
-    comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+    comment_1st: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+      \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -12276,13 +11805,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID
         business_meaning: FK đến hồ sơ gốc đã thi trượt
-        comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
-  - name: License Application Code
-    physical_name: license_application_code
+        comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+          \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ gốc
-    comment_1st: "Lookup pair: Securities Practitioner License Application.License\
-      \ Application Code. Pair with License Application Id."
+    comment_1st: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+      \ Pair with securities_practitioner_license_application_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -12295,14 +11824,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID
         business_meaning: Mã hồ sơ gốc
-        comment: "Lookup pair: Securities Practitioner License Application.License\
-          \ Application Code. Pair with License Application Id."
-  - name: Examination Assessment Result Id
-    physical_name: examination_assessment_result_id
+        comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+          \ Pair with securities_practitioner_license_application_id."
+  - name: Securities Practitioner Qualification Examination Assessment Result Id
+    physical_name: sp_qualification_examination_assessment_result_id
     business_meaning_1st: FK đến kết quả thi trượt
-    comment_1st: "FK target: Securities Practitioner Qualification Examination Assessment\
-      \ Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS',\
-      \ EXAM_DETAIL_ID)."
+    comment_1st: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id.\
+      \ Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -12315,15 +11843,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID
         business_meaning: FK đến kết quả thi trượt
-        comment: "FK target: Securities Practitioner Qualification Examination Assessment\
-          \ Result.Examination Assessment Result Id. Hash: hash_id('NHNCK.EXAM_DETAILS',\
-          \ EXAM_DETAIL_ID)."
-  - name: Examination Assessment Result Code
-    physical_name: examination_assessment_result_code
+        comment: "FK target: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_id.\
+          \ Hash: hash_id('NHNCK.EXAM_DETAILS', EXAM_DETAIL_ID)."
+  - name: Securities Practitioner Qualification Examination Assessment Result Code
+    physical_name: sp_qualification_examination_assessment_result_code
     business_meaning_1st: Mã kết quả thi trượt
-    comment_1st: "Lookup pair: Securities Practitioner Qualification Examination Assessment\
-      \ Result.Examination Assessment Result Code. Pair with Examination Assessment\
-      \ Result Id."
+    comment_1st: "Lookup pair: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_code.\
+      \ Pair with sp_qualification_examination_assessment_result_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -12336,14 +11862,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.EXAM_DETAIL_ID
         business_meaning: Mã kết quả thi trượt
-        comment: "Lookup pair: Securities Practitioner Qualification Examination Assessment\
-          \ Result.Examination Assessment Result Code. Pair with Examination Assessment\
-          \ Result Id."
-  - name: Re-Exam License Application Id
-    physical_name: re_exam_license_application_id
+        comment: "Lookup pair: sp_qualification_examination_assessment_result.sp_qualification_examination_assessment_result_code.\
+          \ Pair with sp_qualification_examination_assessment_result_id."
+  - name: Re-Exam Securities Practitioner License Application Id
+    physical_name: re_exam_sp_license_application_id
     business_meaning_1st: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
-    comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
+    comment_1st: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+      \ Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -12356,13 +11881,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
         business_meaning: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
-        comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
-  - name: Re-Exam License Application Code
-    physical_name: re_exam_license_application_code
+        comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+          \ Hash: hash_id('NHNCK.APPLICATIONS', RE_APPLICATION_ID)."
+  - name: Re-Exam Securities Practitioner License Application Code
+    physical_name: re_exam_sp_license_application_code
     business_meaning_1st: Mã hồ sơ thi lại mới
-    comment_1st: "Lookup pair: Securities Practitioner License Application.License\
-      \ Application Code. Pair with Re-Exam License Application Id."
+    comment_1st: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+      \ Pair with Re-Exam Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -12375,126 +11900,8 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
         business_meaning: Mã hồ sơ thi lại mới
-        comment: "Lookup pair: Securities Practitioner License Application.License\
-          \ Application Code. Pair with Re-Exam License Application Id."
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến Officer tạo bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATION_RE_EXAMS.CREATED_BY
-        business_meaning: FK đến Officer tạo bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã người tạo
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATION_RE_EXAMS.CREATED_BY
-        business_meaning: Mã người tạo
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến Officer cập nhật bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY
-        business_meaning: FK đến Officer cập nhật bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã người cập nhật
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATION_RE_EXAMS.UPDATED_BY
-        business_meaning: Mã người cập nhật
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo
-    comment_1st: Pending — kiểu DATE nguồn map sang Timestamp Atomic.
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATION_RE_EXAMS.CREATED_AT
-        business_meaning: Thời điểm tạo
-        comment: Pending — kiểu DATE nguồn map sang Timestamp Atomic.
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật
-    comment_1st: Pending — kiểu DATE nguồn map sang Timestamp Atomic.
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATION_RE_EXAMS.UPDATED_AT
-        business_meaning: Thời điểm cập nhật
-        comment: Pending — kiểu DATE nguồn map sang Timestamp Atomic.
+        comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+          \ Pair with Re-Exam Securities Practitioner License Application Id."
 - ldm:
     id: ATM-sp_license_certificate_document
     logical_name_1st: Securities Practitioner License Certificate Document
@@ -12553,6 +11960,23 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.ID
         business_meaning: Business key từ CERTIFICATE_RECORDS.ID
         comment: null
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn ETL-derived
+    comment_1st: null
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: NHNCK.CERTIFICATE_RECORDS
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: CERTIFICATE_RECORDS
+        source_column: null
+        business_meaning: Mã hệ thống nguồn ETL-derived
+        comment: null
   - name: Certificate Number
     physical_name: certificate_nbr
     business_meaning_1st: Số chứng chỉ hành nghề
@@ -12570,8 +11994,8 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
         business_meaning: Số chứng chỉ hành nghề
         comment: null
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning_1st: FK đến loại chứng chỉ hành nghề (CCHN)
     comment_1st: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
       \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
@@ -12589,11 +12013,11 @@ entities:
         business_meaning: FK đến loại chứng chỉ hành nghề (CCHN)
         comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning_1st: Mã loại chứng chỉ (denormalized lookup)
     comment_1st: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-      \ Pair with Certificate Type Id."
+      \ Pair with sp_license_certificate_type_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -12607,7 +12031,7 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID
         business_meaning: Mã loại chứng chỉ (denormalized lookup)
         comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-          \ Pair with Certificate Type Id."
+          \ Pair with sp_license_certificate_type_id."
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến Securities Practitioner
@@ -12646,10 +12070,10 @@ entities:
         business_meaning: Mã nghiệp vụ của người hành nghề
         comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
           \ Pair with securities_practitioner_id."
-  - name: Issue License Decision Id
-    physical_name: issue_license_decision_id
+  - name: Issue Securities Practitioner License Decision Document Id
+    physical_name: issue_sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định cấp chứng chỉ
-    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+    comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
       \ Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -12663,13 +12087,13 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
         business_meaning: FK đến quyết định cấp chứng chỉ
-        comment: "FK target: License Decision Document.License Decision Document Id.\
+        comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
           \ Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
-  - name: Issue License Decision Code
-    physical_name: issue_license_decision_code
+  - name: Issue Securities Practitioner License Decision Document Code
+    physical_name: issue_sp_license_decision_document_code
     business_meaning_1st: Mã nghiệp vụ của quyết định cấp
-    comment_1st: "Lookup pair: License Decision Document.License Decision Document\
-      \ Code. Pair with Issue License Decision Id."
+    comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+      \ Pair with Issue Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -12682,12 +12106,12 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
         business_meaning: Mã nghiệp vụ của quyết định cấp
-        comment: "Lookup pair: License Decision Document.License Decision Document\
-          \ Code. Pair with Issue License Decision Id."
-  - name: Revocation License Decision Id
-    physical_name: revocation_license_decision_id
+        comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+          \ Pair with Issue Securities Practitioner License Decision Document Id."
+  - name: Revocation Securities Practitioner License Decision Document Id
+    physical_name: revocation_sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định thu hồi chứng chỉ
-    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+    comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
       \ Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -12701,13 +12125,13 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
         business_meaning: FK đến quyết định thu hồi chứng chỉ
-        comment: "FK target: License Decision Document.License Decision Document Id.\
+        comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
           \ Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
-  - name: Revocation License Decision Code
-    physical_name: revocation_license_decision_code
+  - name: Revocation Securities Practitioner License Decision Document Code
+    physical_name: revocation_sp_license_decision_document_code
     business_meaning_1st: Mã nghiệp vụ của quyết định thu hồi
-    comment_1st: "Lookup pair: License Decision Document.License Decision Document\
-      \ Code. Pair with Revocation License Decision Id."
+    comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+      \ Pair with Revocation Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -12720,12 +12144,13 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
         business_meaning: Mã nghiệp vụ của quyết định thu hồi
-        comment: "Lookup pair: License Decision Document.License Decision Document\
-          \ Code. Pair with Revocation License Decision Id."
-  - name: Cancellation License Decision Id
-    physical_name: cancellation_license_decision_id
+        comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+          \ Pair with Revocation Securities Practitioner License Decision Document\
+          \ Id."
+  - name: Cancellation Securities Practitioner License Decision Document Id
+    physical_name: cancellation_sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định hủy chứng chỉ
-    comment_1st: "FK target: License Decision Document.License Decision Document Id.\
+    comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
       \ Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -12739,13 +12164,13 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
         business_meaning: FK đến quyết định hủy chứng chỉ
-        comment: "FK target: License Decision Document.License Decision Document Id.\
+        comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
           \ Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
-  - name: Cancellation License Decision Code
-    physical_name: cancellation_license_decision_code
+  - name: Cancellation Securities Practitioner License Decision Document Code
+    physical_name: cancellation_sp_license_decision_document_code
     business_meaning_1st: Mã nghiệp vụ của quyết định hủy
-    comment_1st: "Lookup pair: License Decision Document.License Decision Document\
-      \ Code. Pair with Cancellation License Decision Id."
+    comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+      \ Pair with Cancellation Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -12758,8 +12183,9 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
         business_meaning: Mã nghiệp vụ của quyết định hủy
-        comment: "Lookup pair: License Decision Document.License Decision Document\
-          \ Code. Pair with Cancellation License Decision Id."
+        comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
+          \ Pair with Cancellation Securities Practitioner License Decision Document\
+          \ Id."
   - name: Issue Date
     physical_name: issue_dt
     business_meaning_1st: Ngày cấp chứng chỉ hành nghề
@@ -12918,23 +12344,6 @@ entities:
       - source_table: CERTIFICATE_RECORDS
         source_column: NHNCK.CERTIFICATE_RECORDS.DESCRIPTION
         business_meaning: Mô tả bổ sung cho chứng chỉ hành nghề
-        comment: null
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn ETL-derived
-    comment_1st: null
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: NHNCK.CERTIFICATE_RECORDS
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATE_RECORDS
-        source_column: null
-        business_meaning: Mã hệ thống nguồn ETL-derived
         comment: null
 - ldm:
     id: ATM-sp_license_certificate_type
@@ -13141,126 +12550,6 @@ entities:
         business_meaning: "Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu\
           \ gốc, 0=Người dùng tạo"
         comment: "BCV: không có term riêng. Nguồn NUMBER(1)."
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi lần cuối
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi lần cuối
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: ID tài khoản người tạo bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.CREATED_BY
-        business_meaning: ID tài khoản người tạo bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã tài khoản người tạo bản ghi (denormalized lookup)
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.CREATED_BY
-        business_meaning: Mã tài khoản người tạo bản ghi (denormalized lookup)
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: ID tài khoản người cập nhật bản ghi lần cuối
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.UPDATED_BY
-        business_meaning: ID tài khoản người cập nhật bản ghi lần cuối
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã tài khoản người cập nhật bản ghi lần cuối (denormalized
-      lookup)
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.UPDATED_BY
-        business_meaning: Mã tài khoản người cập nhật bản ghi lần cuối (denormalized
-          lookup)
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-sp_license_decision_document
     logical_name_1st: Securities Practitioner License Decision Document
@@ -13319,6 +12608,23 @@ entities:
         source_column: NHNCK.DECISIONS.ID
         business_meaning: Business key từ PK nguồn DECISIONS.ID
         comment: null
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn của bản ghi
+    comment_1st: "ETL-derived: NHNCK.DECISIONS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: NHNCK.DECISIONS
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: DECISIONS
+        source_column: null
+        business_meaning: Mã hệ thống nguồn của bản ghi
+        comment: "ETL-derived: NHNCK.DECISIONS."
   - name: Decision Number
     physical_name: decision_nbr
     business_meaning_1st: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
@@ -13548,23 +12854,6 @@ entities:
         business_meaning: Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô
           hiệu)
         comment: null
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn của bản ghi
-    comment_1st: "ETL-derived: NHNCK.DECISIONS."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: NHNCK.DECISIONS
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: DECISIONS
-        source_column: null
-        business_meaning: Mã hệ thống nguồn của bản ghi
-        comment: "ETL-derived: NHNCK.DECISIONS."
 - ldm:
     id: ATM-sp_organization_employment_report
     logical_name_1st: Securities Practitioner Organization Employment Report
@@ -13718,11 +13007,11 @@ entities:
         business_meaning: Mã người hành nghề (denormalized).
         comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
           \ Pair with securities_practitioner_id."
-  - name: License Certificate Document Id
-    physical_name: license_certificate_document_id
+  - name: Securities Practitioner License Certificate Document Id
+    physical_name: sp_license_certificate_document_id
     business_meaning_1st: FK đến hồ sơ chứng chỉ hành nghề (nullable).
-    comment_1st: "FK target: License Certificate Document.License Certificate Document\
-      \ Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
+    comment_1st: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
+      \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -13735,13 +13024,13 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID
         business_meaning: FK đến hồ sơ chứng chỉ hành nghề (nullable).
-        comment: "FK target: License Certificate Document.License Certificate Document\
-          \ Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
-  - name: License Certificate Document Code
-    physical_name: license_certificate_document_code
+        comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id.\
+          \ Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
+  - name: Securities Practitioner License Certificate Document Code
+    physical_name: sp_license_certificate_document_code
     business_meaning_1st: Mã hồ sơ chứng chỉ hành nghề (denormalized).
-    comment_1st: "Lookup pair: License Certificate Document.License Certificate Document\
-      \ Code. Pair with License Certificate Document Id."
+    comment_1st: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
+      \ Pair with sp_license_certificate_document_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -13754,10 +13043,10 @@ entities:
       - source_table: ORGANIZATION_REPORTS
         source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID
         business_meaning: Mã hồ sơ chứng chỉ hành nghề (denormalized).
-        comment: "Lookup pair: License Certificate Document.License Certificate Document\
-          \ Code. Pair with License Certificate Document Id."
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+        comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code.\
+          \ Pair with sp_license_certificate_document_id."
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning_1st: FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo.
     comment_1st: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
       \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
@@ -13775,12 +13064,12 @@ entities:
         business_meaning: FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo.
         comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
           \ Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_ID)."
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning_1st: Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized
       lookup)
     comment_1st: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-      \ Pair with Certificate Type Id."
+      \ Pair with sp_license_certificate_type_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -13795,9 +13084,9 @@ entities:
         business_meaning: Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized
           lookup)
         comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code.\
-          \ Pair with Certificate Type Id."
-  - name: Parent Report Id
-    physical_name: parent_rpt_id
+          \ Pair with sp_license_certificate_type_id."
+  - name: Parent Securities Practitioner Organization Employment Report Id
+    physical_name: parent_sp_organization_employment_report_id
     business_meaning_1st: FK self-ref — báo cáo gốc được điều chỉnh (nullable).
     comment_1st: "FK target: sp_organization_employment_report.sp_organization_employment_report_id.\
       \ Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
@@ -13815,11 +13104,11 @@ entities:
         business_meaning: FK self-ref — báo cáo gốc được điều chỉnh (nullable).
         comment: "FK target: sp_organization_employment_report.sp_organization_employment_report_id.\
           \ Self-referencing. Hash: hash_id('NHNCK.ORGANIZATION_REPORTS', PARENT_REPORT_ID)."
-  - name: Parent Report Code
-    physical_name: parent_rpt_code
+  - name: Parent Securities Practitioner Organization Employment Report Code
+    physical_name: parent_sp_organization_employment_report_code
     business_meaning_1st: Mã báo cáo gốc (denormalized).
     comment_1st: "Lookup pair: sp_organization_employment_report.sp_organization_employment_report_code.\
-      \ Pair with Parent Report Id."
+      \ Pair with Parent Securities Practitioner Organization Employment Report Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -13833,7 +13122,8 @@ entities:
         source_column: NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID
         business_meaning: Mã báo cáo gốc (denormalized).
         comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_report_code.\
-          \ Pair with Parent Report Id."
+          \ Pair with Parent Securities Practitioner Organization Employment Report\
+          \ Id."
   - name: Practitioner Name At Report
     physical_name: practitioner_nm_at_rpt
     business_meaning_1st: Họ và tên người hành nghề tại thời điểm lập báo cáo (snapshot).
@@ -14195,124 +13485,6 @@ entities:
         source_column: NHNCK.ORGANIZATION_REPORTS.SYNC_UPDATED_AT
         business_meaning: Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn.
         comment: null
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi trong NHNCK.
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATION_REPORTS
-        source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi trong NHNCK.
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến nhân viên UBCKNN tạo bản ghi.
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATION_REPORTS
-        source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_BY
-        business_meaning: FK đến nhân viên UBCKNN tạo bản ghi.
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã nhân viên tạo bản ghi (denormalized).
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATION_REPORTS
-        source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_BY
-        business_meaning: Mã nhân viên tạo bản ghi (denormalized).
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi gần nhất.
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATION_REPORTS
-        source_column: NHNCK.ORGANIZATION_REPORTS.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi gần nhất.
-        comment: null
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến nhân viên UBCKNN cập nhật bản ghi.
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATION_REPORTS
-        source_column: NHNCK.ORGANIZATION_REPORTS.UPDATED_BY
-        business_meaning: FK đến nhân viên UBCKNN cập nhật bản ghi.
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã nhân viên cập nhật bản ghi (denormalized).
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATION_REPORTS
-        source_column: NHNCK.ORGANIZATION_REPORTS.UPDATED_BY
-        business_meaning: Mã nhân viên cập nhật bản ghi (denormalized).
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-sc_licensed_service
     logical_name_1st: Securities Company Licensed Service
@@ -14696,6 +13868,23 @@ entities:
         source_column: NHNCK.SPECIALIZATION_COURSES.COURSE_CODE
         business_meaning: Mã khóa học (business key)
         comment: null
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn
+    comment_1st: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: NHNCK.SPECIALIZATION_COURSES
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: SPECIALIZATION_COURSES
+        source_column: null
+        business_meaning: Mã hệ thống nguồn
+        comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
   - name: Training Class Name
     physical_name: training_class_nm
     business_meaning_1st: Tên khóa học
@@ -14838,141 +14027,6 @@ entities:
         business_meaning: Mã tỉnh/thành nơi tổ chức thi (lookup pair)
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
           \ Id."
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn
-    comment_1st: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: NHNCK.SPECIALIZATION_COURSES
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: null
-        business_meaning: Mã hệ thống nguồn
-        comment: "ETL-derived: luôn = 'NHNCK.SPECIALIZATION_COURSES'"
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_BY
-        business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã cán bộ tạo bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: NHNCK.SPECIALIZATION_COURSES.CREATED_BY
-        business_meaning: Mã cán bộ tạo bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_BY
-        business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã cán bộ cập nhật bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: SPECIALIZATION_COURSES
-        source_column: NHNCK.SPECIALIZATION_COURSES.UPDATED_BY
-        business_meaning: Mã cán bộ cập nhật bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-index_constituent_snapshot
     logical_name_1st: Index Constituent Snapshot
@@ -30424,124 +29478,6 @@ entities:
         business_meaning: "Trạng thái đồng bộ: 0=Chưa đồng bộ, 1=Đã đồng bộ, 2=Lỗi."
         comment: "Scheme: SYNC_STATUS. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
           \ sang string."
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi.
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi.
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi gần nhất.
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi gần nhất.
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến cán bộ tạo bản ghi.
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.CREATED_BY
-        business_meaning: FK đến cán bộ tạo bản ghi.
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã cán bộ tạo bản ghi.
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.CREATED_BY
-        business_meaning: Mã cán bộ tạo bản ghi.
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến cán bộ cập nhật bản ghi gần nhất.
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.UPDATED_BY
-        business_meaning: FK đến cán bộ cập nhật bản ghi gần nhất.
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã cán bộ cập nhật bản ghi gần nhất.
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.UPDATED_BY
-        business_meaning: Mã cán bộ cập nhật bản ghi gần nhất.
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-securities_practitioner
     logical_name_1st: Securities Practitioner
@@ -30861,8 +29797,8 @@ entities:
         business_meaning: Trạng thái tài khoản người dùng trên cổng NHNCK
         comment: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động /\
           \ 2=Khóa."
-  - name: Organization Id
-    physical_name: organization_id
+  - name: Securities Organization Reference Id
+    physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức chứng khoán hiện tại (nullable)
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
       \ Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
@@ -30882,19 +29818,11 @@ entities:
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
           \ Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
           \ ORGANIZATION_ID)."
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_LICENSED_PRACTITIONER
-        source_column: null
-        business_meaning: FK đến tổ chức chứng khoán hiện tại (nullable)
-        comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-          \ ORGANIZATION_ID)."
-  - name: Organization Code
-    physical_name: organization_code
+  - name: Securities Organization Reference Code
+    physical_name: securities_organization_reference_code
     business_meaning_1st: Mã tổ chức (denormalized lookup)
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Organization Id."
+      \ Pair with securities_organization_reference_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -30908,14 +29836,7 @@ entities:
         source_column: NHNCK.PROFESSIONALS.ORGANIZATION_ID
         business_meaning: Mã tổ chức (denormalized lookup)
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Organization Id."
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_LICENSED_PRACTITIONER
-        source_column: null
-        business_meaning: Mã tổ chức (denormalized lookup)
-        comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Organization Id."
+          \ Pair with securities_organization_reference_id."
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch)
@@ -32455,6 +31376,46 @@ entities:
         source_column: SCMS.SC_FIRM_LICENSED_PRACTITIONER.MODIFYBY
         business_meaning: Người cập nhật từ hệ thống cũ (MODIFYBY).
         comment: Legacy audit. VARCHAR2(200).
+  - name: Organization Id
+    physical_name: organization_id
+    business_meaning_1st: FK đến tổ chức chứng khoán hiện tại (nullable)
+    comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
+      \ Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+      \ ORGANIZATION_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_LICENSED_PRACTITIONER
+        source_column: null
+        business_meaning: FK đến tổ chức chứng khoán hiện tại (nullable)
+        comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+          \ Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+          \ ORGANIZATION_ID)."
+  - name: Organization Code
+    physical_name: organization_code
+    business_meaning_1st: Mã tổ chức (denormalized lookup)
+    comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+      \ Pair with Organization Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_LICENSED_PRACTITIONER
+        source_column: null
+        business_meaning: Mã tổ chức (denormalized lookup)
+        comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+          \ Pair with Organization Id."
 - ldm:
     id: ATM-sp_employment_status
     logical_name_1st: Securities Practitioner Employment Status
@@ -32835,11 +31796,11 @@ entities:
         source_column: null
         business_meaning: Mã nguồn dữ liệu
         comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning_1st: FK đến hồ sơ đăng ký CCHN
-    comment_1st: "FK target: Securities Practitioner License Application.License Application\
-      \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+    comment_1st: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+      \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -32852,13 +31813,13 @@ entities:
       - source_table: APPLICATION_EXPERIENCES
         source_column: NHNCK.APPLICATION_EXPERIENCES.APPLICATION_ID
         business_meaning: FK đến hồ sơ đăng ký CCHN
-        comment: "FK target: Securities Practitioner License Application.License Application\
-          \ Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
-  - name: License Application Code
-    physical_name: license_application_code
+        comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+          \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký CCHN
-    comment_1st: "Lookup pair: Securities Practitioner License Application.License\
-      \ Application Code. Pair with License Application Id."
+    comment_1st: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+      \ Pair with securities_practitioner_license_application_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -32871,8 +31832,8 @@ entities:
       - source_table: APPLICATION_EXPERIENCES
         source_column: NHNCK.APPLICATION_EXPERIENCES.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký CCHN
-        comment: "Lookup pair: Securities Practitioner License Application.License\
-          \ Application Code. Pair with License Application Id."
+        comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+          \ Pair with securities_practitioner_license_application_id."
   - name: Document Type Code
     physical_name: document_tp_code
     business_meaning_1st: Mã loại tài liệu yêu cầu (Classification Value từ Documents)
@@ -33200,8 +32161,8 @@ entities:
         source_column: null
         business_meaning: Mã nguồn dữ liệu
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning_1st: FK đến hồ sơ đăng ký
     comment_1st: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
       \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
@@ -33219,11 +32180,11 @@ entities:
         business_meaning: FK đến hồ sơ đăng ký
         comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
           \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
-  - name: License Application Code
-    physical_name: license_application_code
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký (denormalized)
     comment_1st: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
-      \ Pair with License Application Id."
+      \ Pair with securities_practitioner_license_application_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -33237,7 +32198,7 @@ entities:
         source_column: NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký (denormalized)
         comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
-          \ Pair with License Application Id."
+          \ Pair with securities_practitioner_license_application_id."
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến người hành nghề
@@ -33276,8 +32237,8 @@ entities:
         business_meaning: Mã người hành nghề (denormalized)
         comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
           \ Pair with securities_practitioner_id."
-  - name: Organization Id
-    physical_name: organization_id
+  - name: Securities Organization Reference Id
+    physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức chứng khoán (nullable)
     comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
       \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
@@ -33295,11 +32256,11 @@ entities:
         business_meaning: FK đến tổ chức chứng khoán (nullable)
         comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
           \ Hash: hash_id('NHNCK.ORGANIZATIONS', ORGANIZATION_ID)."
-  - name: Organization Code
-    physical_name: organization_code
+  - name: Securities Organization Reference Code
+    physical_name: securities_organization_reference_code
     business_meaning_1st: Mã tổ chức (denormalized)
     comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Organization Id."
+      \ Pair with securities_organization_reference_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -33313,7 +32274,7 @@ entities:
         source_column: NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID
         business_meaning: Mã tổ chức (denormalized)
         comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Organization Id."
+          \ Pair with securities_organization_reference_id."
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch snapshot)
@@ -34393,8 +33354,8 @@ entities:
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến Securities Practitioner
-    comment_1st: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-      \ PROFESSIONAL_ID)."
+    comment_1st: "FK target: securities_practitioner.securities_practitioner_id. Hash:\
+      \ hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -34407,13 +33368,13 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID
         business_meaning: FK đến Securities Practitioner
-        comment: "FK target: Securities Practitioner.Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-          \ PROFESSIONAL_ID)."
+        comment: "FK target: securities_practitioner.securities_practitioner_id. Hash:\
+          \ hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
   - name: Securities Practitioner Code
     physical_name: sp_code
     business_meaning_1st: Mã người hành nghề chứng khoán
-    comment_1st: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with\
-      \ securities_practitioner_id."
+    comment_1st: "Lookup pair: securities_practitioner.securities_practitioner_code.\
+      \ Pair with securities_practitioner_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -34426,8 +33387,8 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.PROFESSIONAL_ID
         business_meaning: Mã người hành nghề chứng khoán
-        comment: "Lookup pair: Securities Practitioner.Practitioner Code. Pair with\
-          \ securities_practitioner_id."
+        comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
+          \ Pair with securities_practitioner_id."
   - name: Relationship Type Code
     physical_name: rltnp_tp_code
     business_meaning_1st: "Loại quan hệ (1: Vợ/Chồng, 2: Con, 3: Bố, 4: Mẹ, 5: Ông,\
@@ -34604,124 +33565,6 @@ entities:
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.NOTE
         business_meaning: Ghi chú
         comment: null
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONAL_RELATIONSHIPS
-        source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONAL_RELATIONSHIPS
-        source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến Regulatory Authority Officer — người tạo
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONAL_RELATIONSHIPS
-        source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY
-        business_meaning: FK đến Regulatory Authority Officer — người tạo
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã người tạo
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONAL_RELATIONSHIPS
-        source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.CREATED_BY
-        business_meaning: Mã người tạo
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến Regulatory Authority Officer — người cập nhật
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONAL_RELATIONSHIPS
-        source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY
-        business_meaning: FK đến Regulatory Authority Officer — người cập nhật
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã người cập nhật
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONAL_RELATIONSHIPS
-        source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.UPDATED_BY
-        business_meaning: Mã người cập nhật
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."
 - ldm:
     id: ATM-transfer_agent
     logical_name_1st: Transfer Agent
@@ -35095,7 +33938,10 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: COUNTRY
+    etl_derived_value:
+    - COUNTRY
+    - DISTRICT
+    - PROVINCE
     conflict_review: null
     source_mappings:
     - source_system: FMS
@@ -40435,11 +39281,28 @@ entities:
         source_column: NHNCK.APPLICATION_FEES.ID
         business_meaning: Business key từ APPLICATION_FEES.ID
         comment: null
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: NHNCK.APPLICATION_FEES
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: APPLICATION_FEES
+        source_column: null
+        business_meaning: Mã hệ thống nguồn
+        comment: null
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning_1st: FK đến License Application
-    comment_1st: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
-      \ APPLICATION_ID)."
+    comment_1st: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+      \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -40452,13 +39315,13 @@ entities:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.APPLICATION_FEES.APPLICATION_ID
         business_meaning: FK đến License Application
-        comment: "FK target: License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS',\
-          \ APPLICATION_ID)."
-  - name: License Application Code
-    physical_name: license_application_code
+        comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id.\
+          \ Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký (lookup pair)
-    comment_1st: "Lookup pair: License Application.License Application Code. Pair\
-      \ with License Application Id."
+    comment_1st: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+      \ Pair with securities_practitioner_license_application_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -40471,8 +39334,8 @@ entities:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.APPLICATION_FEES.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký (lookup pair)
-        comment: "Lookup pair: License Application.License Application Code. Pair\
-          \ with License Application Id."
+        comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
+          \ Pair with securities_practitioner_license_application_id."
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến Securities Practitioner (redundant — derive được
@@ -40649,138 +39512,3 @@ entities:
         source_column: NHNCK.APPLICATION_FEES.NOTE
         business_meaning: Ghi chú
         comment: null
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: NHNCK.APPLICATION_FEES
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: null
-        business_meaning: Mã hệ thống nguồn
-        comment: null
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm tạo bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.APPLICATION_FEES.CREATED_AT
-        business_meaning: Thời điểm tạo bản ghi
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm cập nhật bản ghi
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.APPLICATION_FEES.UPDATED_AT
-        business_meaning: Thời điểm cập nhật bản ghi
-        comment: null
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning_1st: FK đến cán bộ tạo bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.APPLICATION_FEES.CREATED_BY
-        business_meaning: FK đến cán bộ tạo bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning_1st: Mã cán bộ tạo bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Created By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.APPLICATION_FEES.CREATED_BY
-        business_meaning: Mã cán bộ tạo bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Created By Officer Id."
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning_1st: FK đến cán bộ cập nhật bản ghi
-    comment_1st: "Pending — FK target đổi sang Identity and Access Management User\
-      \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận\
-      \ join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS,\
-      \ và lld_IAM_USERS.yaml lên approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.APPLICATION_FEES.UPDATED_BY
-        business_meaning: FK đến cán bộ cập nhật bản ghi
-        comment: "Pending — FK target đổi sang Identity and Access Management User\
-          \ (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác\
-          \ nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và\
-          \ IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning_1st: Mã cán bộ cập nhật bản ghi
-    comment_1st: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-      \ Pending — xem ghi chú ở Updated By Officer Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_FEES
-        source_column: NHNCK.APPLICATION_FEES.UPDATED_BY
-        business_meaning: Mã cán bộ cập nhật bản ghi
-        comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-          \ Pending — xem ghi chú ở Updated By Officer Id."

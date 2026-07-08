@@ -50,6 +50,20 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_DECISIONS'"
     etl_derived_value: null
 
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn của bản ghi
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: DECISIONS
+    source_column: null
+    comment: "ETL-derived: NHNCK.DECISIONS."
+    classification_context: "Source System Code = 'NHNCK_DECISIONS'"
+    etl_derived_value: NHNCK.DECISIONS
+
   - name: Decision Number
     physical_name: decision_nbr
     business_meaning: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
@@ -231,17 +245,3 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'NHNCK_DECISIONS'"
     etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: Mã hệ thống nguồn của bản ghi
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: DECISIONS
-    source_column: null
-    comment: "ETL-derived: NHNCK.DECISIONS."
-    classification_context: "Source System Code = 'NHNCK_DECISIONS'"
-    etl_derived_value: NHNCK.DECISIONS

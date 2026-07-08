@@ -50,6 +50,20 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: "Mã hệ thống nguồn ETL-derived"
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
+    etl_derived_value: NHNCK.CERTIFICATE_RECORDS
+
   - name: Certificate Number
     physical_name: certificate_nbr
     business_meaning: Số chứng chỉ hành nghề
@@ -64,8 +78,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning: FK đến loại chứng chỉ hành nghề (CCHN)
     data_domain: Surrogate Key
     data_type: string
@@ -78,8 +92,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning: Mã loại chứng chỉ (denormalized lookup)
     data_domain: Text
     data_type: string
@@ -88,7 +102,7 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID
-    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with Certificate Type Id."
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with sp_license_certificate_type_id."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
@@ -120,8 +134,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Issue License Decision Id
-    physical_name: issue_license_decision_id
+  - name: Issue Securities Practitioner License Decision Document Id
+    physical_name: issue_sp_license_decision_document_id
     business_meaning: FK đến quyết định cấp chứng chỉ
     data_domain: Surrogate Key
     data_type: string
@@ -130,12 +144,12 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
-    comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', ISSUE_DECISION_ID)."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Issue License Decision Code
-    physical_name: issue_license_decision_code
+  - name: Issue Securities Practitioner License Decision Document Code
+    physical_name: issue_sp_license_decision_document_code
     business_meaning: Mã nghiệp vụ của quyết định cấp
     data_domain: Text
     data_type: string
@@ -144,12 +158,12 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
-    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with Issue License Decision Id."
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Issue Securities Practitioner License Decision Document Id."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Revocation License Decision Id
-    physical_name: revocation_license_decision_id
+  - name: Revocation Securities Practitioner License Decision Document Id
+    physical_name: revocation_sp_license_decision_document_id
     business_meaning: FK đến quyết định thu hồi chứng chỉ
     data_domain: Surrogate Key
     data_type: string
@@ -158,12 +172,12 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
-    comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', REVOCATION_DECISION_ID)."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Revocation License Decision Code
-    physical_name: revocation_license_decision_code
+  - name: Revocation Securities Practitioner License Decision Document Code
+    physical_name: revocation_sp_license_decision_document_code
     business_meaning: Mã nghiệp vụ của quyết định thu hồi
     data_domain: Text
     data_type: string
@@ -172,12 +186,12 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
-    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with Revocation License Decision Id."
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Revocation Securities Practitioner License Decision Document Id."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Cancellation License Decision Id
-    physical_name: cancellation_license_decision_id
+  - name: Cancellation Securities Practitioner License Decision Document Id
+    physical_name: cancellation_sp_license_decision_document_id
     business_meaning: FK đến quyết định hủy chứng chỉ
     data_domain: Surrogate Key
     data_type: string
@@ -186,12 +200,12 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
-    comment: "FK target: License Decision Document.License Decision Document Id. Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
+    comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK.DECISIONS', CANCELLATION_DECISION_ID)."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
-  - name: Cancellation License Decision Code
-    physical_name: cancellation_license_decision_code
+  - name: Cancellation Securities Practitioner License Decision Document Code
+    physical_name: cancellation_sp_license_decision_document_code
     business_meaning: Mã nghiệp vụ của quyết định hủy
     data_domain: Text
     data_type: string
@@ -200,7 +214,7 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
-    comment: "Lookup pair: License Decision Document.License Decision Document Code. Pair with Cancellation License Decision Id."
+    comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Cancellation Securities Practitioner License Decision Document Id."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
 
@@ -329,17 +343,3 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: null
-
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning: "Mã hệ thống nguồn ETL-derived"
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: CERTIFICATE_RECORDS
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
-    etl_derived_value: NHNCK.CERTIFICATE_RECORDS

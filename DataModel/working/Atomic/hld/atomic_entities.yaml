@@ -325,6 +325,18 @@ entities:
   status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Certificate Type"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner License"
+  entity_physical_name: "sp_license_certificate_type"
+  description: "Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số\
+    \ ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity\
+    \ License Application/Certificate Document/Organization Employment Report và cross-source\
+    \ từ IAM User (Practice Certificate Type Id)."
+  source_table: "NHNCK.CERTIFICATES"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
   atomic_entity: "Securities Practitioner License Decision Document"
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner License"
@@ -559,10 +571,10 @@ entities:
   entity_physical_name: "ip_electronic_address"
   description: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email).\
     \ Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."
-  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.USERS, NHNCK.PROFESSIONALS,\
-    \ IAM.USERS, SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH,\
-    \ SCMS.SC_FIRM_REP_OFFICE, SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE,\
-    \ SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
+  source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS, IAM.USERS,\
+    \ SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE,\
+    \ SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_BRANCH,\
+    \ SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
     \ SCMS.CUSTODIAN_BANK, SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER,\
     \ SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_RELATED_PERSON,\
     \ SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES,\
@@ -621,29 +633,6 @@ entities:
   source_table: "FMS.PENSION_AGENT, FMS.PENSION_PROVIDER"
   status: "draft"
 - bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual"
-  atomic_entity: "Securities Practitioner Reason Change History"
-  table_type: "Fundamental"
-  domain_prefix: "Securities Practitioner"
-  entity_physical_name: "sp_reason_change_history"
-  description: "Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề — ai\
-    \ bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với Securities\
-    \ Practitioner) theo quyết định Data Modeler."
-  source_table: "NHNCK.PROFESSIONAL_HISTORIES"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  atomic_entity: "Securities Practitioner License Certificate Type"
-  table_type: "Fundamental"
-  domain_prefix: "Securities Practitioner License"
-  entity_physical_name: "sp_license_certificate_type"
-  description: "Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số\
-    \ ngày xử lý, thứ tự hiển thị. FK target cho Certificate Type Id ở các entity\
-    \ License Application/Certificate Document/Organization Employment Report và cross-source\
-    \ từ IAM User (Practice Certificate Type Id)."
-  source_table: "NHNCK.CERTIFICATES"
-  status: "draft"
-- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
   atomic_entity: "Regulatory Authority Organization Unit"
   table_type: "Fundamental"
@@ -693,7 +682,7 @@ entities:
   entity_physical_name: "securities_practitioner"
   description: "Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin\
     \ nhân thân và trạng thái hành nghề."
-  source_table: "NHNCK.PROFESSIONALS, NHNCK.PROFESSIONAL_HISTORIES, SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+  source_table: "NHNCK.PROFESSIONALS, SCMS.SC_FIRM_LICENSED_PRACTITIONER"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
@@ -739,6 +728,17 @@ entities:
     \ Practitioner."
   source_table: "NHNCK.PROFESSIONAL_TRAININGS"
   status: "approved"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Securities Practitioner Reason Change History"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_reason_change_history"
+  description: "Ghi nhận 1 lần thay đổi thông tin cá nhân của người hành nghề — ai\
+    \ bị thay đổi, khi nào, lý do gì. Giữ concept Involved Party (cùng nhóm với Securities\
+    \ Practitioner) theo quyết định Data Modeler."
+  source_table: "NHNCK.PROFESSIONAL_HISTORIES"
+  status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Involved Party Relationship"
   atomic_entity: "Securities Practitioner Related Party"

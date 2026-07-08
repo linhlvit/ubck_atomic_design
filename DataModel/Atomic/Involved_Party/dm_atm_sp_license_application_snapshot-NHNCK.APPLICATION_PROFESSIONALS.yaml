@@ -64,8 +64,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: NHNCK.APPLICATION_PROFESSIONALS
 
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning: FK đến hồ sơ đăng ký
     data_domain: Surrogate Key
     data_type: string
@@ -78,8 +78,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
-  - name: License Application Code
-    physical_name: license_application_code
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning: Mã hồ sơ đăng ký (denormalized)
     data_domain: Text
     data_type: string
@@ -88,7 +88,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID
-    comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code. Pair with License Application Id."
+    comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code. Pair with securities_practitioner_license_application_id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -120,8 +120,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
-  - name: Organization Id
-    physical_name: organization_id
+  - name: Securities Organization Reference Id
+    physical_name: securities_organization_reference_id
     business_meaning: FK đến tổ chức chứng khoán (nullable)
     data_domain: Surrogate Key
     data_type: string
@@ -134,8 +134,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
-  - name: Organization Code
-    physical_name: organization_code
+  - name: Securities Organization Reference Code
+    physical_name: securities_organization_reference_code
     business_meaning: Mã tổ chức (denormalized)
     data_domain: Text
     data_type: string
@@ -144,7 +144,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.ORGANIZATION_ID
-    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Organization Id."
+    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with securities_organization_reference_id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 

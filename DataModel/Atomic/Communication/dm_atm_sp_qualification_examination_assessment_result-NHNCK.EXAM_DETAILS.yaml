@@ -120,8 +120,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning: FK đến loại chứng chỉ dự thi
     data_domain: Surrogate Key
     data_type: string
@@ -134,8 +134,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning: Mã loại chứng chỉ dự thi (denormalized lookup)
     data_domain: Text
     data_type: string
@@ -144,12 +144,12 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.CERTIFICATE_ID
-    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with Certificate Type Id."
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with sp_license_certificate_type_id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: License Application Id
-    physical_name: license_application_id
+  - name: Securities Practitioner License Application Id
+    physical_name: sp_license_application_id
     business_meaning: FK đến hồ sơ đăng ký
     data_domain: Surrogate Key
     data_type: string
@@ -158,12 +158,12 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
-    comment: "FK target: Securities Practitioner License Application.License Application Id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+    comment: "FK target: securities_practitioner_license_application.securities_practitioner_license_application_id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
-  - name: License Application Code
-    physical_name: license_application_code
+  - name: Securities Practitioner License Application Code
+    physical_name: sp_license_application_code
     business_meaning: Mã hồ sơ đăng ký
     data_domain: Text
     data_type: string
@@ -172,7 +172,7 @@ attributes:
     source_system: NHNCK
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
-    comment: "Lookup pair: Securities Practitioner License Application.License Application Code. Pair with License Application Id."
+    comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code. Pair with securities_practitioner_license_application_id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null
 
@@ -285,89 +285,5 @@ attributes:
     source_table: EXAM_DETAILS
     source_column: NHNCK.EXAM_DETAILS.NOTE
     comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning: Thời điểm tạo bản ghi
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: NHNCK.EXAM_DETAILS.CREATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning: Thời điểm cập nhật bản ghi
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: NHNCK.EXAM_DETAILS.UPDATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning: FK đến cán bộ tạo bản ghi
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: NHNCK.EXAM_DETAILS.CREATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning: Mã cán bộ tạo bản ghi
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: NHNCK.EXAM_DETAILS.CREATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning: FK đến cán bộ cập nhật bản ghi
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: NHNCK.EXAM_DETAILS.UPDATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning: Mã cán bộ cập nhật bản ghi
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: EXAM_DETAILS
-    source_column: NHNCK.EXAM_DETAILS.UPDATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
     etl_derived_value: null

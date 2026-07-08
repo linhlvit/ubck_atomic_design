@@ -190,8 +190,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
-  - name: Organization Id
-    physical_name: organization_id
+  - name: Securities Organization Reference Id
+    physical_name: securities_organization_reference_id
     business_meaning: FK đến tổ chức chứng khoán hiện tại (nullable)
     data_domain: Surrogate Key
     data_type: string
@@ -204,8 +204,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
-  - name: Organization Code
-    physical_name: organization_code
+  - name: Securities Organization Reference Code
+    physical_name: securities_organization_reference_code
     business_meaning: Mã tổ chức (denormalized lookup)
     data_domain: Text
     data_type: string
@@ -214,7 +214,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.ORGANIZATION_ID
-    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Organization Id."
+    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with securities_organization_reference_id."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 

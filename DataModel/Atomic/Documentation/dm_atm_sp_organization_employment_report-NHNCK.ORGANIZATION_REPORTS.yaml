@@ -120,8 +120,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
-  - name: License Certificate Document Id
-    physical_name: license_certificate_document_id
+  - name: Securities Practitioner License Certificate Document Id
+    physical_name: sp_license_certificate_document_id
     business_meaning: FK đến hồ sơ chứng chỉ hành nghề (nullable).
     data_domain: Surrogate Key
     data_type: string
@@ -130,12 +130,12 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID
-    comment: "FK target: License Certificate Document.License Certificate Document Id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
+    comment: "FK target: sp_license_certificate_document.sp_license_certificate_document_id. Hash: hash_id('NHNCK.CERTIFICATE_RECORDS', CERTIFICATE_RECORD_ID)."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
-  - name: License Certificate Document Code
-    physical_name: license_certificate_document_code
+  - name: Securities Practitioner License Certificate Document Code
+    physical_name: sp_license_certificate_document_code
     business_meaning: Mã hồ sơ chứng chỉ hành nghề (denormalized).
     data_domain: Text
     data_type: string
@@ -144,12 +144,12 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_RECORD_ID
-    comment: "Lookup pair: License Certificate Document.License Certificate Document Code. Pair with License Certificate Document Id."
+    comment: "Lookup pair: sp_license_certificate_document.sp_license_certificate_document_code. Pair with sp_license_certificate_document_id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
-  - name: Certificate Type Id
-    physical_name: certificate_tp_id
+  - name: Securities Practitioner License Certificate Type Id
+    physical_name: sp_license_certificate_type_id
     business_meaning: FK đến loại chứng chỉ hành nghề tại thời điểm báo cáo.
     data_domain: Surrogate Key
     data_type: string
@@ -162,8 +162,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
-  - name: Certificate Type Code
-    physical_name: certificate_tp_code
+  - name: Securities Practitioner License Certificate Type Code
+    physical_name: sp_license_certificate_type_code
     business_meaning: Mã loại chứng chỉ hành nghề tại thời điểm báo cáo (denormalized lookup)
     data_domain: Text
     data_type: string
@@ -172,12 +172,12 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.CERTIFICATE_ID
-    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with Certificate Type Id."
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with sp_license_certificate_type_id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
-  - name: Parent Report Id
-    physical_name: parent_rpt_id
+  - name: Parent Securities Practitioner Organization Employment Report Id
+    physical_name: parent_sp_organization_employment_report_id
     business_meaning: "FK self-ref — báo cáo gốc được điều chỉnh (nullable)."
     data_domain: Surrogate Key
     data_type: string
@@ -190,8 +190,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
-  - name: Parent Report Code
-    physical_name: parent_rpt_code
+  - name: Parent Securities Practitioner Organization Employment Report Code
+    physical_name: parent_sp_organization_employment_report_code
     business_meaning: Mã báo cáo gốc (denormalized).
     data_domain: Text
     data_type: string
@@ -200,7 +200,7 @@ attributes:
     source_system: NHNCK
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.PARENT_REPORT_ID
-    comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_report_code. Pair with Parent Report Id."
+    comment: "Lookup pair: sp_organization_employment_report.sp_organization_employment_report_code. Pair with Parent Securities Practitioner Organization Employment Report Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
 
@@ -495,89 +495,5 @@ attributes:
     source_table: ORGANIZATION_REPORTS
     source_column: NHNCK.ORGANIZATION_REPORTS.SYNC_UPDATED_AT
     comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-    etl_derived_value: null
-
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning: Thời điểm tạo bản ghi trong NHNCK.
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATION_REPORTS
-    source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-    etl_derived_value: null
-
-  - name: Created By Officer Id
-    physical_name: created_by_officer_id
-    business_meaning: FK đến nhân viên UBCKNN tạo bản ghi.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATION_REPORTS
-    source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột CREATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-    etl_derived_value: null
-
-  - name: Created By Officer Code
-    physical_name: created_by_officer_code
-    business_meaning: Mã nhân viên tạo bản ghi (denormalized).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATION_REPORTS
-    source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Created By Officer Id."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-    etl_derived_value: null
-
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning: Thời điểm cập nhật bản ghi gần nhất.
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATION_REPORTS
-    source_column: NHNCK.ORGANIZATION_REPORTS.UPDATED_AT
-    comment: null
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Id
-    physical_name: updated_by_officer_id
-    business_meaning: FK đến nhân viên UBCKNN cập nhật bản ghi.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATION_REPORTS
-    source_column: NHNCK.ORGANIZATION_REPORTS.UPDATED_BY
-    comment: "Pending — FK target đổi sang Identity and Access Management User (định hướng dùng chung IAM.USERS cho mọi bảng USER). Chưa hash: chờ xác nhận join key giữa NHNCK.USERS.ID (giá trị nguồn của cột UPDATED_BY) và IAM.USERS, và lld_IAM_USERS.yaml lên approved."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
-    etl_derived_value: null
-
-  - name: Updated By Officer Code
-    physical_name: updated_by_officer_code
-    business_meaning: Mã nhân viên cập nhật bản ghi (denormalized).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATION_REPORTS
-    source_column: NHNCK.ORGANIZATION_REPORTS.UPDATED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Updated By Officer Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATION_REPORTS'"
     etl_derived_value: null
