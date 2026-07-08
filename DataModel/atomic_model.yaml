@@ -5786,7 +5786,7 @@ entities:
   - name: Securities Practitioner Professional Training Class Id
     physical_name: sp_professional_training_class_id
     business_meaning_1st: FK đến lớp đào tạo nghiệp vụ chứng khoán
-    comment_1st: "FK target: securities_practitioner_professional_training_class.securities_practitioner_professional_training_class_id.\
+    comment_1st: "FK target: sp_professional_training_class.sp_professional_training_class_id.\
       \ Hash: hash_id('NHNCK.SPECIALIZATION_COURSES', SPECIALIZATION_COURSE_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -5800,13 +5800,13 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
         business_meaning: FK đến lớp đào tạo nghiệp vụ chứng khoán
-        comment: "FK target: securities_practitioner_professional_training_class.securities_practitioner_professional_training_class_id.\
+        comment: "FK target: sp_professional_training_class.sp_professional_training_class_id.\
           \ Hash: hash_id('NHNCK.SPECIALIZATION_COURSES', SPECIALIZATION_COURSE_ID)."
   - name: Securities Practitioner Professional Training Class Code
     physical_name: sp_professional_training_class_code
     business_meaning_1st: Mã lớp đào tạo
-    comment_1st: "Lookup pair: securities_practitioner_professional_training_class.securities_practitioner_professional_training_class_code.\
-      \ Pair with securities_practitioner_professional_training_class_id."
+    comment_1st: "Lookup pair: sp_professional_training_class.sp_professional_training_class_code.\
+      \ Pair with sp_professional_training_class_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -5819,8 +5819,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
         business_meaning: Mã lớp đào tạo
-        comment: "Lookup pair: securities_practitioner_professional_training_class.securities_practitioner_professional_training_class_code.\
-          \ Pair with securities_practitioner_professional_training_class_id."
+        comment: "Lookup pair: sp_professional_training_class.sp_professional_training_class_code.\
+          \ Pair with sp_professional_training_class_id."
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến người hành nghề chứng khoán
@@ -8164,9 +8164,9 @@ entities:
         comment: "Scheme: ORDERTRADE_AUTO_CANCEL_REASON. HNX-only — NULL với lệnh\
           \ không bị auto-cancel."
 - ldm:
-    id: ATM-securities_practitioner_qualification_examination_assessment
+    id: ATM-sp_qualification_examination_assessment
     logical_name_1st: Securities Practitioner Qualification Examination Assessment
-    physical_name_1st: securities_practitioner_qualification_examination_assessment
+    physical_name_1st: sp_qualification_examination_assessment
     layer_1st: Atomic
     version_1st: "1.0"
     status_1st: approved
@@ -8614,7 +8614,7 @@ entities:
   - name: Securities Practitioner Qualification Examination Assessment Id
     physical_name: sp_qualification_examination_assessment_id
     business_meaning_1st: FK đến đợt thi sát hạch
-    comment_1st: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+    comment_1st: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
       \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -8628,13 +8628,13 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.EXAM_SESSION_ID
         business_meaning: FK đến đợt thi sát hạch
-        comment: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+        comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
           \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   - name: Securities Practitioner Qualification Examination Assessment Code
     physical_name: sp_qualification_examination_assessment_code
     business_meaning_1st: Mã đợt thi sát hạch
-    comment_1st: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-      \ Pair with securities_practitioner_qualification_examination_assessment_id."
+    comment_1st: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+      \ Pair with sp_qualification_examination_assessment_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -8647,8 +8647,8 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.EXAM_SESSION_ID
         business_meaning: Mã đợt thi sát hạch
-        comment: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-          \ Pair with securities_practitioner_qualification_examination_assessment_id."
+        comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+          \ Pair with sp_qualification_examination_assessment_id."
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến người hành nghề
@@ -10585,7 +10585,7 @@ entities:
   - name: Securities Practitioner Qualification Examination Assessment Id
     physical_name: sp_qualification_examination_assessment_id
     business_meaning_1st: FK đến đợt thi (Exam Assessment)
-    comment_1st: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+    comment_1st: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
       \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -10599,13 +10599,13 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID
         business_meaning: FK đến đợt thi (Exam Assessment)
-        comment: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+        comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
           \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   - name: Securities Practitioner Qualification Examination Assessment Code
     physical_name: sp_qualification_examination_assessment_code
     business_meaning_1st: Mã đợt thi
-    comment_1st: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-      \ Pair with securities_practitioner_qualification_examination_assessment_id."
+    comment_1st: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+      \ Pair with sp_qualification_examination_assessment_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -10618,8 +10618,8 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID
         business_meaning: Mã đợt thi
-        comment: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-          \ Pair with securities_practitioner_qualification_examination_assessment_id."
+        comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+          \ Pair with sp_qualification_examination_assessment_id."
   - name: Securities Practitioner License Certificate Type Id
     physical_name: sp_license_certificate_type_id
     business_meaning_1st: FK đến loại chứng chỉ
@@ -11326,7 +11326,7 @@ entities:
   - name: Securities Practitioner Qualification Examination Assessment Id
     physical_name: sp_qualification_examination_assessment_id
     business_meaning_1st: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
-    comment_1st: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+    comment_1st: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
       \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -11340,13 +11340,13 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.EXAM_SESSION_ID
         business_meaning: FK đến Exam Session (đợt thi sát hạch liên quan — nullable).
-        comment: "FK target: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_id.\
+        comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
           \ Hash: hash_id('NHNCK.EXAM_SESSIONS', EXAM_SESSION_ID)."
   - name: Securities Practitioner Qualification Examination Assessment Code
     physical_name: sp_qualification_examination_assessment_code
     business_meaning_1st: Mã đợt thi sát hạch.
-    comment_1st: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-      \ Pair with securities_practitioner_qualification_examination_assessment_id."
+    comment_1st: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+      \ Pair with sp_qualification_examination_assessment_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -11359,8 +11359,8 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.EXAM_SESSION_ID
         business_meaning: Mã đợt thi sát hạch.
-        comment: "Lookup pair: securities_practitioner_qualification_examination_assessment.securities_practitioner_qualification_examination_assessment_code.\
-          \ Pair with securities_practitioner_qualification_examination_assessment_id."
+        comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
+          \ Pair with sp_qualification_examination_assessment_id."
   - name: Assignee Officer Id
     physical_name: assignee_officer_id
     business_meaning_1st: FK đến Regulatory Authority Officer — cán bộ được phân công
@@ -13811,9 +13811,9 @@ entities:
         business_meaning: Ghi chú bổ sung, không bắt buộc.
         comment: null
 - ldm:
-    id: ATM-securities_practitioner_professional_training_class
+    id: ATM-sp_professional_training_class
     logical_name_1st: Securities Practitioner Professional Training Class
-    physical_name_1st: securities_practitioner_professional_training_class
+    physical_name_1st: sp_professional_training_class
     layer_1st: Atomic
     version_1st: "1.0"
     status_1st: approved
