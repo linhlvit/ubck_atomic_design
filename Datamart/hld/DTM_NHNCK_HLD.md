@@ -941,7 +941,7 @@ flowchart LR
 | K_NHNCK_33 | Họ tên NHN | Text | Base | `Securities Practitioner`.Full Name |
 | K_NHNCK_34 | Ngày sinh | Date | Base | `Securities Practitioner`.Birth Date — dùng `brth_dt`; nếu null thì fallback `Birth Year` (`brth_yr`) |
 | K_NHNCK_35 | Tuổi | Int | Derived | ETL-derived: `COALESCE(YEAR(brth_dt), CAST(brth_yr AS INT))` → tính `YEAR(CURRENT_DATE) − giá_trị_đó` khi populate bảng |
-| K_NHNCK_36 | Quốc tịch | Text | Base | `Securities Practitioner`.Nationality Code — ETL denormalize Nationality Name từ Classification (scheme: NATIONALITY) khi populate bảng |
+| K_NHNCK_36 | Quốc tịch | Text | Base | `Securities Practitioner`.Nationality Code — ETL denormalize Nationality Name từ `Geographic Area` khi populate bảng |
 | K_NHNCK_37 | Số định danh / Hộ chiếu | Text | Base | `Involved Party Alternative Identification`.Identification Number — join qua `ip_id = scr_prac_id`, lấy bản ghi `Identification Type Code` = CCCD hoặc PASSPORT |
 | K_NHNCK_38 | Nơi công tác hiện tại | Text | Base | `Securities Practitioner`.Workplace — text tự do từ `Professionals.WORKPLACE` |
 | K_NHNCK_39 | Loại CCHN hiện tại | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Type Code + Name — CCHN trạng thái ACTIVE |
@@ -1269,7 +1269,7 @@ flowchart LR
 | K_NHNCK_46 | Ngày thu hồi | Date | Base | `Securities Practitioner License Certificate Document`.Revocation Date — NULL nếu chưa thu hồi | Khai sinh tại Nhóm 9 |
 | K_NHNCK_47 | Số quyết định cấp | Text | Base | `Securities Practitioner License Certificate Document`.Issue License Decision Code — ETL join `Securities Practitioner License Decision Document`.Decision Number theo `issu_license_dcsn_code` khi populate bảng | Khai sinh tại Nhóm 9 |
 | K_NHNCK_92 | Số quyết định thu hồi | Text | Base | `Securities Practitioner License Certificate Document`.Revocation License Decision Code — ETL join `Securities Practitioner License Decision Document`.Decision Number theo `revocation_license_dcsn_code` khi populate bảng; NULL nếu chưa thu hồi | Khai sinh tại Nhóm 9 |
-| K_NHNCK_48 | Trạng thái CCHN | Text | Base | `Securities Practitioner License Certificate Document`.Process Status Code — ETL denormalize Process Status Name (scheme: CERTIFICATE_PROCESS_STATUS) khi populate bảng | Khai sinh tại Nhóm 9 |
+| K_NHNCK_48 | Trạng thái CCHN | Text | Base | `Securities Practitioner License Certificate Document`.Process Status Code — ETL denormalize Process Status Name (scheme: LICENSE_CERTIFICATE_PROCESS_STATUS) khi populate bảng | Khai sinh tại Nhóm 9 |
 
 **Schema bảng tác nghiệp:**
 
@@ -1435,7 +1435,7 @@ flowchart LR
 | K_NHNCK_97 | Ngày bắt đầu thi | Date | Base | `Securities Practitioner Professional Training Class`.Exam Start Date — ETL join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code` | Khai sinh tại Nhóm 11 |
 | K_NHNCK_98 | Ngày kết thúc thi | Text | Base | `Securities Practitioner Professional Training Class`.Exam End Date — ETL join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code`; kiểu Text do nguồn VARCHAR (conversion risk) | Khai sinh tại Nhóm 11 |
 | K_NHNCK_99 | Điểm thi | Percentage | Base | `Securities Practitioner Professional Training Class Enrollment`.Exam Score — kiểu decimal(5,2); nullable | Khai sinh tại Nhóm 11 |
-| K_NHNCK_66 | Kết quả thi | Text | Base | `Securities Practitioner Professional Training Class Enrollment`.Training Result Code (`trn_rslt_code`) — ETL denormalize Training Result Name (scheme: TRAINING_RESULT: -1=Không thi, 0=Không đạt, 1=Đạt) khi populate bảng ← Specialization_Course_Details.Result | Khai sinh tại Nhóm 11 |
+| K_NHNCK_66 | Kết quả thi | Text | Base | `Securities Practitioner Professional Training Class Enrollment`.Training Result Code (`trn_rslt_code`) — ETL denormalize Training Result Name (scheme: EXAM_RESULT: -1=Không thi, 0=Không đạt, 1=Đạt) khi populate bảng ← Specialization_Course_Details.Result | Khai sinh tại Nhóm 11 |
 | K_NHNCK_101 | Kết quả kiểm tra, phân loại | Text | Base | **PENDING** — `POST_CERT_TRAINING_COURSES.RECORD_STATUS` là trường kỹ thuật xác định trạng thái bản ghi, không phải thông tin nghiệp vụ. Chờ BA xác nhận trường nghiệp vụ thay thế. | |
 | K_NHNCK_67 | Trạng thái đủ 8h | Text | Phái sinh | **PENDING** — nguồn `POST_CERT_TRAINING_COURSES` chưa có Atomic entity. Logic dự kiến: SUM(Training_Hours per Academic_Year) ≥ 8h → "Đã đủ 8h". Xem O_NHNCK_9 | |
 
@@ -1458,7 +1458,7 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema Nhóm 11:** `Training_Class_Name` ETL-derived — join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code`. `Training_Result_Name` ETL-derived — denormalize từ Classification (scheme: TRAINING_RESULT) tại thời điểm populate. `Exam_End_Date` kiểu varchar (giữ nguyên như Atomic — nguồn EXAM_DATE_TO kiểu VARCHAR2(200), conversion risk). `Exam_Score` nullable — có thể null nếu chưa thi. Trường `Training_Hours` và `Is_Hours_Sufficient` chưa đưa vào schema — chờ O_NHNCK_9 giải quyết.
+> **Ghi chú schema Nhóm 11:** `Training_Class_Name` ETL-derived — join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code`. `Training_Result_Name` ETL-derived — denormalize từ Classification (scheme: EXAM_RESULT) tại thời điểm populate. `Exam_End_Date` kiểu varchar (giữ nguyên như Atomic — nguồn EXAM_DATE_TO kiểu VARCHAR2(200), conversion risk). `Exam_Score` nullable — có thể null nếu chưa thi. Trường `Training_Hours` và `Is_Hours_Sufficient` chưa đưa vào schema — chờ O_NHNCK_9 giải quyết.
 
 **Lineage Mart → Báo cáo — Nhóm 11:**
 

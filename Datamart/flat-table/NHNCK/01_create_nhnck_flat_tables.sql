@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     is_reissue_indicator            String              COMMENT 'Là CCHN cấp lại (Y/N)',
     certificate_issue_dt            Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt                   Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
-    decision_tp_code                Nullable(String)    COMMENT 'Loại quyết định — scheme: DECISION_TYPE',
+    decision_tp_code                Nullable(String)    COMMENT 'Loại quyết định — scheme: LICENSE_CERTIFICATE_DECISION_TYPE',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt                    Nullable(Date)      COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON C
     nationality_nm              Nullable(String)    COMMENT 'Tên quốc tịch',
     identification_nbr          Nullable(String)    COMMENT 'Số CCCD/Hộ chiếu',
     workplace_nm        Nullable(String)    COMMENT 'Nơi công tác hiện tại',
-    practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTICE_STATUS',
+    practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTITIONER_PRACTICE_STATUS',
     practice_status_nm      Nullable(String)    COMMENT 'Tên trạng thái hành nghề',
     active_certificate_tp_code    Nullable(String)    COMMENT 'Loại CCHN hiện tại — scheme: CERTIFICATE_TYPE',
     active_certificate_tp_nm      Nullable(String)    COMMENT 'Tên loại CCHN hiện tại',
@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_training_hist_flat ON
     exam_start_dt           Nullable(Date)          COMMENT 'Ngày bắt đầu thi',
     exam_end_dt             Nullable(String)        COMMENT 'Ngày kết thúc thi (Text — nguồn VARCHAR2(200))',
     exam_score              Nullable(Decimal(5,2))  COMMENT 'Điểm thi — nullable nếu chưa thi',
-    training_result_code    Nullable(String)        COMMENT 'Kết quả thi — scheme: TRAINING_RESULT',
+    training_result_code    Nullable(String)        COMMENT 'Kết quả thi — scheme: EXAM_RESULT',
     training_result_nm      Nullable(String)        COMMENT 'Tên kết quả thi',
     src_stm_code            String                  COMMENT 'Mã hệ thống nguồn'
 )
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON
     certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
     certificate_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — scheme: CERTIFICATE_TYPE',
     certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại hình hành nghề',
-    practice_status_code        Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTICE_STATUS',
+    practice_status_code        Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTITIONER_PRACTICE_STATUS',
     issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     current_organization_nm          Nullable(String)    COMMENT 'Tên tổ chức công tác hiện tại',
     identification_tp_code          Nullable(String)    COMMENT 'Loại giấy tờ định danh — scheme: IP_ALT_ID_TYPE',
