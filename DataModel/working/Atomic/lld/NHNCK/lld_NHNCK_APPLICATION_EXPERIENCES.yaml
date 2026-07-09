@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
   group: "T4"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,8 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "design_status quay lại draft (2026-07-09) — đổi Document Type Code thành\
+    \ Document Code + thêm FK Document Id. Cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Application Employment Experience\
     \ Id"
@@ -88,18 +89,33 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Document Type Code"
-  physical_name: "document_tp_code"
-  description: "Mã loại tài liệu yêu cầu (Classification Value từ Documents)"
-  data_domain: "Classification Value"
+- attribute_name: "Document Id"
+  physical_name: "document_id"
+  description: "FK đến tài liệu yêu cầu kèm hồ sơ"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
-  comment: "Scheme: DOCUMENT_TYPE. FK đến bảng Documents — chỉ mang Code vì là reference\
-    \ data set."
-  classification_context: "DOCUMENT_TYPE"
+  comment: "FK target: Classification Document.Classification Document Id. Hash:\
+    \ hash_id('NHNCK.DOCUMENTS', DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type\
+    \ Code khi DOCUMENTS lên entity thật (scheme DOCUMENT_TYPE đã deprecate)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Code"
+  physical_name: "document_code"
+  description: "Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
+  comment: "Lookup pair: Classification Document.Classification Document Code. Pair\
+    \ with Document Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Organization Reference Id"

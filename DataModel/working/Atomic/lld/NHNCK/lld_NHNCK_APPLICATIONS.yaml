@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,8 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "design_status quay lại draft (2026-07-09) để thêm FK Application Status\
+    \ Id — xem lý do ở attribute Application Status Id/Code. Cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Application Id"
   physical_name: "sp_license_application_id"
@@ -70,17 +71,34 @@ attributes:
   classification_context: "NHNCK_APPLICATION_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Application Status Code"
-  physical_name: "application_status_code"
-  description: "Trạng thái hồ sơ hiện tại."
-  data_domain: "Classification Value"
+- attribute_name: "Application Status Id"
+  physical_name: "application_status_id"
+  description: "FK đến trạng thái hồ sơ hiện tại."
+  data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.STATUS_ID"
-  comment: "FK → APPLICATION_STATUSES (Classification Value). Scheme: NHNCK_APPLICATION_STATUS."
-  classification_context: "NHNCK_APPLICATION_STATUS"
+  comment: "FK target: Classification Application Status.Classification Application\
+    \ Status Id. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09\
+    \ khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS\
+    \ đã deprecate)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Application Status Code"
+  physical_name: "application_status_code"
+  description: "Mã trạng thái hồ sơ hiện tại (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.STATUS_ID"
+  comment: "Lookup pair: Classification Application Status.Classification Application\
+    \ Status Code. Pair with Application Status Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Registration Type Code"

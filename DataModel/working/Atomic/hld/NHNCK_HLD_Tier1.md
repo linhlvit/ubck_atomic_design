@@ -19,6 +19,9 @@
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISIONS | Update | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Fundamental | Government Registration Document — *"Identifies a Documentation Item that is issued by a principality or sovereignty."* Cấu trúc trường: số QĐ, tiêu đề, loại quyết định, ngày ký, người ký, trạng thái, file đính kèm. Được FK từ Certificate Document (×2), Certificate Group Document, Conduct Violation, Examination Assessment. |
 | ~~Involved Party~~ | ~~[Involved Party] Individual~~ | ~~Individual~~ | USERS | Update | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | **LOẠI KHỎI SCOPE (2026-07-07)** — Regulatory Authority Officer đã xóa | — | Quyết định Data Modeler: không thiết kế Atomic entity riêng. Định hướng dùng chung Identity and Access Management User (IAM.USERS) — xem NHNCK_HLD_Overview.md 7e #6. |
 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATES | Update | Danh mục các loại chứng chỉ hành nghề chứng khoán | Securities Practitioner License Certificate Type | Fundamental | Government Registration Document — danh mục CCHN với processing_days/sort_order/description (entity thật, không phải Classification Value). Mới thiết kế 2026-07-07 — xem NHNCK_HLD_Overview.md 7e #8. |
+| Common | [Common] Application Status | — | APPLICATION_STATUSES | Update | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification Application Status | Classification | BCV Core Object gán Common theo quy tắc mặc định (table_type Classification). Không có term Common chuyên biệt khớp "Application Status" trong knowledge/terms.csv — ghi nhận, xem 6f. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS) lên entity thật vì có đầy đủ audit fields + SORT_ORDER + LABEL, vượt cấu trúc Code+Name thuần. |
+| Common | [Common] Document | — | DOCUMENTS | Update | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification Document | Classification | BCV Core Object gán Common theo quy tắc mặc định. Đây là danh mục các tài liệu (catalog liệt kê từng loại hồ sơ/tài liệu cần nộp), không phải "loại tài liệu" phân loại — đặt tên Classification Document, không phải "...Document Type". Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật. |
+| Common | [Common] Specialization | — | SPECIALIZATIONS | Update | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification Specialization | Classification | BCV Core Object gán Common theo quy tắc mặc định. Term BCV gần nhất tìm được là [Involved Party] Employment Position Qualification nhưng khớp yếu (mô tả trình độ học vấn, không phải lĩnh vực hành nghề) — không dùng, giữ Common. Nâng cấp từ Classification Value (scheme SPECIALIZATION) lên entity thật. |
 
 ---
 
@@ -36,6 +39,9 @@ graph LR
     ORGANIZATIONS["**ORGANIZATIONS**\nTổ chức tham gia TTCK"]:::src
     DECISIONS["**DECISIONS**\nQuyết định hành chính"]:::src
     USERS["**USERS**\nCán bộ UBCKNN"]:::src
+    APPLICATION_STATUSES["**APPLICATION_STATUSES**\nDanh mục trạng thái hồ sơ"]:::src
+    DOCUMENTS["**DOCUMENTS**\nDanh mục tài liệu"]:::src
+    SPECIALIZATIONS["**SPECIALIZATIONS**\nDanh mục chuyên môn"]:::src
     PROVINCES -->|"COUNTRY_ID"| COUNTRIES
     DISTRICTS -->|"COUNTRY_ID"| COUNTRIES
     DISTRICTS -->|"PROVINCE_ID"| PROVINCES
@@ -63,6 +69,9 @@ graph TD
     DECISION["**Securities Practitioner License Decision Document**\n[Documentation] Gov. Registration Document\nDECISIONS"]:::atomic
     OFFICER["**Identity and Access Management User** (pending)\nnguồn IAM.USERS — thay Regulatory\nAuthority Officer đã loại khỏi scope"]:::atomic
     CERTTYPE["**Securities Practitioner License Certificate Type**\n[Documentation] Gov. Registration Document\nCERTIFICATES"]:::atomic
+    APPSTATUS["**Classification Application Status**\n[Common] Application Status\nAPPLICATION_STATUSES"]:::atomic
+    CLSDOC["**Classification Document**\n[Common] Document\nDOCUMENTS"]:::atomic
+    CLSSPEC["**Classification Specialization**\n[Common] Specialization\nSPECIALIZATIONS"]:::atomic
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
     ALTID["IP Alt Identification"]:::shared
@@ -87,10 +96,7 @@ graph TD
 |---|---|---|---|
 | POSITIONS | Danh mục chức vụ | POSITION | Chỉ có Code + Name → Classification Value (Employment Position Type). Không tạo Atomic entity. |
 | EDUCATION_LEVELS | Danh mục trình độ học vấn | EDUCATION_LEVEL | Classification Value. |
-| APPLICATION_STATUSES | Định nghĩa trạng thái hồ sơ | APPLICATION_STATUS | Classification Value. |
 | CERTIFICATES | Danh mục loại chứng chỉ hành nghề | CERTIFICATE_TYPE | Classification Value — chỉ có CERTIFICATE_CODE + CERTIFICATE_NAME + metadata vận hành. |
-| SPECIALIZATIONS | Danh mục chuyên môn | SPECIALIZATION | Classification Value. |
-| DOCUMENTS | Danh mục loại tài liệu hồ sơ | DOCUMENT_TYPE | Classification Value. |
 | APPLICATION_SOURCES | Hình thức nộp hồ sơ | APPLICATION_SOURCE | Classification Value. |
 
 ---
@@ -108,3 +114,4 @@ Không có bảng nào trong Tier 1 chưa đủ thông tin cột.
 | 1 | `DECISIONS.CREATED_BY` là FK thực đến USERS. | **Xác nhận.** FK thực → thiết kế giữ Created By Officer FK trên entity License Decision Document. |
 | 2 | `ORGANIZATIONS` có bao gồm cả UBCKNN không? | **Xác nhận: không bao gồm.** ORGANIZATIONS chỉ chứa tổ chức tham gia TTCK bên ngoài → không có overlap với Regulatory Authority Organization Unit. |
 | 3 | `ORGANIZATIONS.ORGANIZATION_TYPE_ID` tự tham chiếu — là loại hình tổ chức (Classification Value) hay FK entity khác? | **Xác nhận: Classification Value.** Xử lý thành ORGANIZATION_TYPE_CODE trên Atomic, không tạo FK entity riêng. |
+| 4 | `APPLICATION_STATUSES`, `DOCUMENTS`, `SPECIALIZATIONS` — nâng cấp từ Classification Value (scheme) lên Atomic entity thật (`table_type: Classification`). BCV Concept gán `Common` theo quy tắc mặc định của skill, không map term cụ thể trong `knowledge/terms.csv`. | **Data Modeler review lại nếu tìm được term BCV chuyên biệt hơn.** Không chặn thiết kế — Common là fallback hợp lệ cho `table_type: Classification`. |

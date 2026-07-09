@@ -682,8 +682,19 @@ entities:
   entity_physical_name: "securities_practitioner"
   description: "Người hành nghề chứng khoán được UBCKNN quản lý. Ghi nhận thông tin\
     \ nhân thân và trạng thái hành nghề."
-  source_table: "NHNCK.PROFESSIONALS, SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+  source_table: "NHNCK.PROFESSIONALS"
   status: "approved"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Securities Company Practitioner"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_practitioner"
+  description: "Người hành nghề chứng khoán đang công tác tại 1 CTCK cụ thể theo dữ\
+    \ liệu SCMS — entity độc lập với Securities Practitioner (NHNCK), có bridge tham\
+    \ chiếu qua NHN_ID khi đối chiếu được."
+  source_table: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+  status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
   atomic_entity: "Securities Practitioner Employment Status"

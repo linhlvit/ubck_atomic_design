@@ -10,7 +10,7 @@ metadata:
   bcv_concept: "[Documentation] Education Certificate"
   table_type: "Fundamental"
   group: "T4"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -18,7 +18,8 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "design_status quay lại draft (2026-07-09) — đổi Specialization Type Code\
+    \ thành Specialization Code + thêm FK Specialization Id. Cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Application Education Certificate\
     \ Document Id"
@@ -89,17 +90,34 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Specialization Type Code"
-  physical_name: "specialization_tp_code"
-  description: "Mã loại chuyên môn (Classification Value)"
-  data_domain: "Classification Value"
+- attribute_name: "Specialization Id"
+  physical_name: "specialization_id"
+  description: "FK đến chuyên ngành CCHN đăng ký"
+  data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
-  comment: "Scheme: SPECIALIZATION. Phân loại chuyên ngành chứng chỉ."
-  classification_context: "SPECIALIZATION"
+  comment: "FK target: Classification Specialization.Classification Specialization\
+    \ Id. Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_ID). Đổi tên 2026-07-09\
+    \ từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION\
+    \ đã deprecate)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Specialization Code"
+  physical_name: "specialization_code"
+  description: "Mã chuyên ngành CCHN đăng ký (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
+  comment: "Lookup pair: Classification Specialization.Classification Specialization\
+    \ Code. Pair with Specialization Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Certificate Issue Date"

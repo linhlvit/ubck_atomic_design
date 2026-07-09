@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "IP Postal Address của Securities Practitioner (nguồn SCMS.SC_FIRM_LICENSED_PRACTITIONER).\
+  notes: "IP Postal Address của Securities Company Practitioner (nguồn SCMS.SC_FIRM_LICENSED_PRACTITIONER).\
     \ ETL tạo 2 rows per người hành nghề: Row 1 — DIACHITHUONGTRU → type PERMANENT\
     \ (địa chỉ thường trú; PERMANENT_ADDRESS là cột trùng lặp, xem pending_design.yaml);\
     \ Row 2 — HOKHAUTHUONGTRU → type HOUSEHOLD_REGISTRY (địa chỉ hộ khẩu). Không có\
@@ -26,30 +26,30 @@ metadata:
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
+  description: "FK đến Securities Company Practitioner (người hành nghề chứng khoán)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

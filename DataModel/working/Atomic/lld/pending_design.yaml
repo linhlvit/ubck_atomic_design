@@ -563,6 +563,13 @@ entries:
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By SCMS User Id/Code khoi lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml."
 
   - source_system: "SCMS"
+    source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+    source_column: "SOCMT"
+    description: "So CMND cu (he thong legacy)"
+    reason: "Da map dung cho trong shared entity lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER_IP_Alt_Identification.yaml (Identification Number, type LEGACY_CMND). Truoc do bi map trung o entity chinh voi ten 'Legacy National Id Number' — vi pham quy tac grain Involved Party (Buoc 4 skill atomic-lld-design): du lieu giay to dinh danh cua 1 Involved Party phai o shared entity, khong denormalize lai o entity chinh khi shared entity da co."
+    action: "Excluded — da xoa attribute 'Legacy National Id Number' khoi lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml (2026-07-09). Gia tri da duoc capture qua shared entity."
+
+  - source_system: "SCMS"
     source_table: "SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
     source_column: "CREATED_AT, LAST_MODIFIED_AT"
     description: "Audit block created/updated by-at"
