@@ -1,10 +1,10 @@
-datamart_entity,datamart_table,datamart_attribute,datamart_column,nullable,data_domain,data_type,key,description,etl_logic,etl_logic_type,source_entity,atomic_table,source_attribute,atomic_column
+﻿datamart_entity,datamart_table,datamart_attribute,datamart_column,nullable,data_domain,data_type,key,description,etl_logic,etl_logic_type,source_entity,atomic_table,source_attribute,atomic_column
 "Calendar Date Dimension","cdr_dt_dim","Calendar Date Dimension Id","cdr_dt_dim_id","false","Surrogate Key","string","PK","PK — Driving: cdr_dt","cdr_dt.cdr_dt_id","direct","Calendar Date","cdr_dt","Calendar Date Id","cdr_dt_id"
 "Calendar Date Dimension","cdr_dt_dim","Calendar Date","cdr_dt","false","Date","date","NK","NK — ngày lịch dùng để join từ Fact","cdr_dt.cdr_dt","direct","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
-"Calendar Date Dimension","cdr_dt_dim","Year","yr","false","Small Counter","int","","Năm (YYYY)","YEAR(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
-"Calendar Date Dimension","cdr_dt_dim","Quarter","qtr","false","Small Counter","int","","Quý (1–4)","QUARTER(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
-"Calendar Date Dimension","cdr_dt_dim","Month","mth","false","Small Counter","int","","Tháng (1–12)","MONTH(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
-"Calendar Date Dimension","cdr_dt_dim","Day Of Week","day_of_wk","false","Small Counter","int","","Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy)","DAYOFWEEK(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
+"Calendar Date Dimension","cdr_dt_dim","Year","year","false","Small Counter","int","","Năm (YYYY)","YEAR(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
+"Calendar Date Dimension","cdr_dt_dim","Quarter","quarter","false","Small Counter","int","","Quý (1–4)","QUARTER(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
+"Calendar Date Dimension","cdr_dt_dim","Month","month","false","Small Counter","int","","Tháng (1–12)","MONTH(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
+"Calendar Date Dimension","cdr_dt_dim","Day Of Week","day_of_week","false","Small Counter","int","","Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy)","DAYOFWEEK(cdr_dt.cdr_dt)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
 "Calendar Date Dimension","cdr_dt_dim","Is Weekend","is_weekend","false","Boolean","boolean","","TRUE nếu là ngày cuối tuần (thứ 7 hoặc CN)","DAYOFWEEK(cdr_dt.cdr_dt) IN (1,7)","computed","Calendar Date","cdr_dt","Calendar Date","cdr_dt"
-"Calendar Date Dimension","cdr_dt_dim","Holiday Flag","hol_f","true","Boolean","boolean","","Cờ ngày lễ — TRUE nếu là ngày nghỉ lễ","cdr_dt.hol_f","direct","Calendar Date","cdr_dt","Holiday Flag","hol_f"
-"Calendar Date Dimension","cdr_dt_dim","Holiday Name","hol_nm","true","Text","string","","Tên ngày lễ — NULL nếu không phải ngày lễ","cdr_dt.hol_nm","direct","Calendar Date","cdr_dt","Holiday Name","hol_nm"
+"Calendar Date Dimension","cdr_dt_dim","Holiday Flag","holiday_flag","true","Boolean","boolean","","Cờ ngày lễ — TRUE nếu là ngày nghỉ lễ","cdr_dt.holiday_flag","direct","Calendar Date","cdr_dt","Holiday Flag","holiday_flag"
+"Calendar Date Dimension","cdr_dt_dim","Holiday Name","holiday_nm","true","Text","string","","Tên ngày lễ — NULL nếu không phải ngày lễ","cdr_dt.holiday_nm","direct","Calendar Date","cdr_dt","Holiday Name","holiday_nm"

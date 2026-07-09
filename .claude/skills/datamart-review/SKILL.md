@@ -9,7 +9,9 @@ description: |
   Gọi tay: /datamart-review [MODULE] [nhóm N] (nhóm N tuỳ chọn — bỏ qua để review toàn module)
 
   Input bắt buộc: BA_analyst_{MODULE}.csv + DTM_{MODULE}_HLD.md +
-                  DTM_{MODULE}_Attributes.csv + DTM_{MODULE}_Detail_Mapping.csv
+                  Datamart/lld/datamart_attributes.csv (summary) hoặc Datamart/lld/{MODULE}/*.csv (detail) +
+                  DTM_{MODULE}_Detail_Mapping.csv +
+                  DataModel/Atomic/**/*.yaml (nguồn approved Atomic — tra cứu khi review Lớp 2)
 ---
 
 # Skill: Review Cross-check Datamart
@@ -94,7 +96,8 @@ Bước 2:  Tổng hợp cuối — sau khi review xong toàn scope
 2. Resolve đường dẫn file:
    - BA: `BRD/BA/BA_analyst_{MODULE}_part*.csv` (có thể nhiều part)
    - HLD: `Datamart/hld/DTM_{MODULE}_HLD.md`
-   - Attributes: `Datamart/lld/DTM_{MODULE}_Attributes.csv`
+   - Attributes (summary): `Datamart/lld/datamart_attributes.csv` — lọc theo `datamart_table` của module
+   - Attributes (detail): `Datamart/lld/{MODULE}/DTM_{MODULE}_{table}_{source}.csv` — 1 file per bảng mart
    - Detail Mapping: `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv`
 3. Kiểm tra file tồn tại — báo cáo file nào thiếu, không dừng nếu chỉ thiếu 1 lớp LLD
 4. Thông báo scope và danh sách file sẽ review
@@ -168,12 +171,14 @@ with open('BRD/BA/BA_analyst_{MODULE}_partN.csv', encoding='utf-8-sig') as f:
     for row in reader:
         rows.append(row)
 
-# Attributes và Detail Mapping — delimiter comma
+# Attributes (summary) — delimiter comma; lọc theo datamart_table cần review
 attr_rows = []
-with open('Datamart/lld/DTM_{MODULE}_Attributes.csv', encoding='utf-8-sig') as f:
+with open('Datamart/lld/datamart_attributes.csv', encoding='utf-8-sig') as f:
     reader = csv.reader(f, delimiter=',')
     for row in reader:
         attr_rows.append(row)
+# Hoặc đọc trực tiếp file detail per bảng:
+# Datamart/lld/{MODULE}/DTM_{MODULE}_{table}_{source}.csv
 ```
 
 Với mỗi part file, extract:
@@ -230,7 +235,7 @@ HLD | [OK / GAP] | Mô tả vấn đề nếu có
 |---|---|
 | **Mapping completeness** | Mọi KPI Done trong BA có cột tương ứng trong Attributes |
 | **Atomic source** | `source_entity` + `atomic_table` + `atomic_column` tồn tại, không để trống với `etl_logic_type ≠ pending` |
-| **ETL logic — trace từ BA** | Với mỗi KPI Done: lấy tên bảng/trường nguồn BA ghi → tra `atomic_attributes.csv` → xác nhận `atomic_table.atomic_column` trong Attributes có khớp không |
+| **ETL logic — trace từ BA** | Với mỗi KPI Done: lấy tên bảng nguồn BA ghi → tra approved YAML trong `DataModel/Atomic/` → xác nhận `atomic_table.atomic_column` trong Attributes có khớp không |
 | **ETL logic — nội dung đúng** | `etl_logic` đúng với logic BA: JOIN đúng bảng, filter condition đúng (VD: `row_code`, `entp_tp_code`), aggregation đúng phép tính |
 | **ETL logic — không tham chiếu cột mart** | `etl_logic` KHÔNG được tham chiếu cột mart khác (`fct_*.col`) dù cột đó đã tính sẵn trong cùng bảng fact — phải flatten hoàn toàn xuống Atomic. Cột CASE WHEN hay derived formula tính từ cột join_atomic → bản thân cũng phải là `join_atomic`, repeat lại JOIN clause và tính lại formula trực tiếp từ Atomic |
 | **join_atomic coverage** | Đếm số `atomic_table` distinct trong toàn bộ cột của bảng (bỏ qua driving table và `rsk_wgt_cfg`/lookup). Nếu có ≥2 atomic_table khác nhau mà **không có dòng nào** `etl_logic_type = join_atomic` → 🔴 Critical: các bảng phụ chưa được khai báo JOIN, Attributes đang sai. Gọi `datamart-lld-design` để sửa. |
@@ -241,12 +246,16 @@ HLD | [OK / GAP] | Mô tả vấn đề nếu có
 **Quy trình trace BA → Atomic → Datamart (bắt buộc với mọi KPI Done):**
 
 ```
-Bước A: Đọc BA — xác định tên bảng nguồn và tên trường (VD: IDS.data, cột row_value lọc theo row_code)
-Bước B: Tra atomic_attributes.csv — tìm source_table khớp với bảng nguồn BA
-         → Lấy atomic_table + atomic_column tương ứng
-         → Nếu không tìm thấy → Gap Atomic (ghi nhận, không phải lỗi LLD)
-Bước C: Kiểm tra Attributes — atomic_table + atomic_column trong Attributes có khớp kết quả Bước B?
-         → Không khớp → 🔴 Critical (map sai Atomic entity/column)
+Bước A: Đọc BA — xác định tên bảng nguồn và tên trường
+         VD: "NHNCK.CERTIFICATE_RECORDS, cột CERTIFICATE_NUMBER"
+Bước B: Tra approved YAML trong DataModel/Atomic/ — tìm YAML có source khớp bảng BA
+         Nguồn approved: DataModel/Atomic/**/*.yaml (toàn bộ thư mục, tất cả subdirectory)
+         Ngoại lệ: entity cv (Classification Value) — dùng trực tiếp, không cần YAML
+         Cách tìm: grep "NHNCK.CERTIFICATE_RECORDS" DataModel/Atomic/**/*.yaml
+         → Lấy physical_name (atomic_table) + tên cột (physical_name trong columns)
+         → Nếu không tìm thấy YAML nào → Gap Atomic (ghi nhận, không phải lỗi LLD)
+Bước C: Kiểm tra Attributes — atomic_table + atomic_column trong Attributes có khớp Bước B?
+         → Không khớp (tên bảng cũ, tên cột cũ) → 🔴 Critical (map sai Atomic entity/column)
 Bước D: Kiểm tra etl_logic — filter condition trong etl_logic có phản ánh đúng điều kiện lọc BA mô tả?
          → VD: BA ghi "lấy chỉ tiêu X theo row_code = 'ABC'" → etl_logic phải có WHERE row_code = 'ABC'
          → Thiếu hoặc sai → 🔴 Critical / 🟡 Warning tuỳ mức độ ảnh hưởng
@@ -443,9 +452,17 @@ Một nhóm BA có thể dùng nhiều Fact/Dim. Review Attributes phải bao ph
 
 ### Khi BA ghi nguồn trực tiếp (không qua Atomic)
 
-BA hay ghi công thức dạng `IDS.data.field` thay vì tên Atomic.
-Cần tìm Atomic entity/column tương ứng qua `atomic_attributes.csv`.
-Nếu không tìm thấy → ghi nhận là gap Atomic (cần bổ sung Atomic trước khi thiết kế Datamart).
+BA hay ghi công thức dạng `NHNCK.CERTIFICATE_RECORDS.FIELD` hoặc `IDS.data.field` thay vì tên Atomic.
+Cần tìm Atomic entity/column tương ứng bằng cách grep trong `DataModel/Atomic/`:
+
+```bash
+grep -rl "CERTIFICATE_RECORDS" DataModel/Atomic/
+# → tìm được YAML → đọc physical_name của entity và column tương ứng
+```
+
+Nguồn approved duy nhất: `DataModel/Atomic/` (toàn bộ thư mục, tất cả subdirectory).
+Entity `cv` (Classification Value) là ngoại lệ — dùng trực tiếp, không có YAML.
+Nếu không tìm thấy YAML nào → ghi nhận là gap Atomic (cần bổ sung Atomic trước khi thiết kế Datamart).
 
 ### Flatten hoàn toàn xuống Atomic — không tham chiếu cột mart trong etl_logic
 
@@ -456,7 +473,7 @@ Mọi `etl_logic` trong Attributes phải tham chiếu trực tiếp Atomic tabl
 **Dấu hiệu lỗi 2 — thiếu join_atomic:** Đếm số `atomic_table` distinct trong toàn bộ cột của 1 bảng mart (loại trừ driving table). Nếu có bảng Atomic phụ nào xuất hiện trong `atomic_table` mà **không có dòng nào** `etl_logic_type = join_atomic` tương ứng → các bảng phụ đó chưa được khai báo JOIN SQL đúng cách. Cách kiểm tra nhanh:
 ```python
 import csv
-with open('DTM_*_Attributes.csv') as f:
+with open('Datamart/lld/datamart_attributes.csv') as f:
     rows = list(csv.reader(f))
 tbl = 'fct_xxx'  # bảng cần kiểm tra
 driving = 'yyy'  # driving table
@@ -481,3 +498,55 @@ missing = atomic_tables - join_atomic_tables
 
 Nếu nhóm BA = Done nhưng Detail Mapping hoàn toàn trống → đây là Gap lớn (Critical).
 Cần thiết kế LLD từ đầu — gọi `datamart-lld-design`.
+
+---
+
+### Kiểm tra Physical Naming (Lớp 2 + Lớp 3)
+
+**Nguồn sự thật:** `system/rules/rule_physical_name_exceptions_datamart.csv`
+
+**Quy tắc:** Chỉ những từ trong file exceptions mới được viết tắt trong tên physical (`datamart_column`). Mọi từ khác phải dùng full word.
+
+Exceptions (cố định):
+
+| Full word | Abbreviation |
+|---|---|
+| address | adr |
+| amount | amt |
+| classification | cl |
+| date | dt |
+| dimension | dim |
+| fact | fct |
+| history | hist |
+| id | id |
+| name | nm |
+| number | nbr |
+| operational | opr |
+| relationship | rltnp |
+| report | rpt |
+| scheme | scm |
+| snapshot | snpst |
+| source | src |
+| system | stm |
+| timestamp | tms |
+| type | tp |
+| value | val |
+| volume | vol |
+
+**Nguyên tắc derive tên physical từ logical (bắt buộc kiểm tra):**
+- Physical name phải derive trực tiếp từ **tên logical** — KHÔNG được thay token bằng từ đồng nghĩa hay dạng mở rộng khác
+- Quy tắc chỉ cho phép **viết tắt** các từ trong exceptions, KHÔNG cho phép **mở rộng** hay **đổi từ**
+- Ví dụ vi phạm điển hình: logical "Exam Score" → `examination_score` ❌ (mở rộng "exam" → "examination") — đúng phải là `exam_score` ✅
+- Cách phát hiện: với mỗi `datamart_column`, trace ngược lên `datamart_attribute` (tên logical) → tokenize → kiểm tra từng token có khớp không
+
+**Khi review Lớp 2 (Attributes):** Kiểm tra `datamart_column` trong từng file Attributes detail — nếu có token viết tắt không thuộc exceptions, hoặc token bị đổi/mở rộng so với tên logical → 🔵 Info (naming inconsistency), phân loại **Kịch bản C**.
+
+**Khi review Lớp 3 (Detail Mapping):** Kiểm tra `mart_column` trong cột `logic` — phải khớp với `datamart_column` trong Attributes. Nếu Detail Mapping vẫn dùng tên cũ (viết tắt) trong khi Attributes đã đổi → 🔴 Critical (logic reference sai).
+
+**Cách phát hiện nhanh:**
+```bash
+# Tìm token viết tắt phổ biến không phải exception trong datamart_attributes.csv
+grep -E "\b(ctf|prac|trn|rcrd|org|nat|cty|dcsn|rslt|ases|issu|pcs|ovrl|scor|vln|actv|clss|dept|pos|emp|doc|ind)\b" Datamart/lld/datamart_attributes.csv
+```
+
+**Action khi phát hiện:** Sửa trực tiếp tất cả 4 file output theo quy trình field-rename-sync (grep toàn `Datamart/` → sửa → verify sạch).

@@ -293,7 +293,97 @@ datamart_entity,datamart_table,datamart_attribute,datamart_column,nullable,data_
 Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 Mọi giá trị trong `etl_logic` và `description` phải được bao double-quote.
 
-**Tên physical:** `datamart_table` và `datamart_column` kế thừa từ `atomic_table`/`atomic_column` hoặc đặt tay theo convention — không áp dụng greedy match algorithm.
+**Tên physical — quy tắc bắt buộc:** Xem mục **PHYSICAL NAMING RULE** bên dưới trước khi đặt tên bất kỳ `datamart_table` hay `datamart_column` nào.
+
+---
+
+## PHYSICAL NAMING RULE (BẮT BUỘC — đọc trước khi đặt tên cột/bảng)
+
+**Nguồn sự thật:** `system/rules/rule_physical_name_exceptions_datamart.csv` — danh sách duy nhất các từ được phép viết tắt.
+
+### Quy tắc cốt lõi
+
+> **Chỉ những từ có trong `rule_physical_name_exceptions_datamart.csv` mới được viết tắt. Mọi từ khác phải dùng full word.**
+
+Exceptions hiện tại (cố định, không được tự bổ sung):
+
+| Full word | Abbreviation |
+|---|---|
+| address | adr |
+| amount | amt |
+| classification | cl |
+| date | dt |
+| dimension | dim |
+| fact | fct |
+| history | hist |
+| id | id |
+| name | nm |
+| number | nbr |
+| operational | opr |
+| relationship | rltnp |
+| report | rpt |
+| scheme | scm |
+| snapshot | snpst |
+| source | src |
+| system | stm |
+| timestamp | tms |
+| type | tp |
+| value | val |
+| volume | vol |
+
+### Cách áp dụng
+
+1. **Tách tên logical thành từng token** theo dấu cách
+2. **Với mỗi token:**
+   - Nếu từ có trong bảng exceptions → dùng dạng viết tắt tương ứng
+   - Nếu không → dùng **đúng từ đó** dạng full word — **KHÔNG được thay bằng từ đồng nghĩa hay dạng mở rộng khác**
+3. **Nối lại** bằng dấu gạch dưới `_`
+
+> **Ràng buộc cốt lõi — bắt buộc:** Physical name phải derive trực tiếp từ **tên logical**, không được thay thế token bằng từ khác dù tương đồng về nghĩa. Quy tắc chỉ cho phép **viết tắt** các từ trong exceptions, không cho phép **mở rộng** hay **đổi từ**.
+>
+> Ví dụ vi phạm điển hình: logical "Exam Score" → physical `examination_score` ❌ — chữ "exam" bị mở rộng thành "examination" dù không được phép. Đúng phải là `exam_score` ✅.
+
+**Ví dụ đúng:**
+```
+Certificate Type Code          →  certificate_tp_code             (type → tp; certificate KHÔNG có trong exceptions → full)
+Practitioner Code              →  practitioner_code               (không có token nào trong exceptions)
+Issue Decision Number          →  issue_decision_nbr              (number → nbr; issue, decision → full)
+Organization Name              →  organization_nm                 (name → nm; organization → full)
+Source System Code             →  src_stm_code                    (source → src; system → stm; code → full)
+Snapshot Date                  →  snpst_dt                        (snapshot → snpst; date → dt)
+Calendar Date                  →  calendar_dt                     (date → dt; calendar → full)
+Practitioner Dimension ID      →  practitioner_dim_id             (dimension → dim; id → id; practitioner → full)
+Fact Practitioner Daily Snpst  →  fct_practitioner_dly_snpst      (fact → fct; snapshot → snpst; practitioner → full)
+Operational History            →  opr_hist                        (operational → opr; history → hist)
+Classification Code            →  cl_code                         (classification → cl; code → full)
+Scheme Code                    →  scm_code                        (scheme → scm; code → full)
+Exam Score                     →  exam_score                      (exam, score KHÔNG có trong exceptions → full; giữ nguyên "exam", KHÔNG đổi thành "examination")
+Exam Start Date                →  exam_start_dt                   (date → dt; exam, start → full)
+```
+
+**Ví dụ SAI (phổ biến trước đây):**
+```
+ctf_tp_code     ❌  (ctf không phải exception)          →   certificate_tp_code  ✅
+prac_code       ❌  (prac không phải exception)         →   practitioner_code    ✅
+trn_rslt_nm     ❌  (trn, rslt không phải exception)    →   training_result_nm   ✅
+org_tp_nm       ❌  (org không phải exception)          →   organization_tp_nm   ✅
+examination_score  ❌  (logical là "Exam Score" — "exam" bị mở rộng thành "examination")  →   exam_score  ✅
+```
+
+### Khi đặt tên `datamart_column`
+
+- Mọi cột trong Attributes CSV phải tuân thủ rule này
+- Khi kế thừa từ `atomic_column`: nếu Atomic column dùng tên chuẩn (ví dụ `sp_code`, `practitioner_position_at_rpt`) → giữ nguyên; chỉ đổi nếu Atomic column đang dùng sai convention
+- Khi đặt tên mới (ETL-derived, computed): áp dụng rule từ đầu
+
+### Khi review/detect lỗi
+
+Nếu phát hiện `datamart_column` dùng từ viết tắt không có trong exceptions:
+1. Tra `system/rules/rule_physical_name_exceptions_datamart.csv` xác nhận
+2. Đây là **Kịch bản C — Lỗi thiết kế** → sửa trực tiếp file Attributes detail + `datamart_attributes.csv` + `Detail_Mapping.csv` + `HLD.md`
+3. Dùng `grep -rn "tên_cũ" Datamart/` để tìm tất cả vị trí trước khi sửa
+
+---
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
