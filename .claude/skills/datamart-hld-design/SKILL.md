@@ -145,16 +145,19 @@ Một số Dimension được thiết kế dùng chung toàn hệ thống. **B�
 
 **Quy trình:**
 1. Xác định scheme CV cần dùng (VD: `IDS_INDUSTRY_CATEGORY`, `CERTIFICATE_TYPE`...)
-2. Kiểm tra `datamart_model.yaml` — nếu có entry `source_atomic: [cv]` với `table_type: dim` → **reuse `cls_dim`**, không tạo Dimension mới
-3. Trong thiết kế: ghi rõ FK tên `Classification Dimension Id` + ghi chú scheme trong cột Ghi chú / Bảng grain
+2. **Kiểm tra `ldm.physical_name` trong YAML Atomic entity nguồn:**
+   - `physical_name = cv` → dữ liệu phân loại lưu trong bảng CV → **reuse `cls_dim`**
+   - `physical_name ≠ cv` (entity riêng) → Atomic thiết kế entity này độc lập → **tạo Dimension riêng**, KHÔNG reuse `cls_dim`
+3. Trong thiết kế reuse `cls_dim`: ghi rõ FK tên `Classification Dimension Id` + ghi chú scheme trong cột Ghi chú / Bảng grain
 
-**Lý do quan trọng:** `cls_dim` là Conformed Dimension grain = 1 dòng / CV code / scheme — đã bao phủ toàn bộ danh mục CV. Tạo Dimension mới chỉ duplicate dữ liệu.
+**Lý do quan trọng:** `cls_dim` chỉ là projection của bảng `cv` Atomic. Nếu Atomic không lưu thông tin đó trong `cv` thì `cls_dim` không có dữ liệu đó — không thể reuse.
 
-> ❌ **KHÔNG tạo Dimension mới** (VD: `Industry Classification Dimension`, `Certificate Type Dimension`...) khi `cls_dim` đã tồn tại và CV scheme tương ứng có trong Atomic.
+> ❌ **KHÔNG tạo Dimension mới** khi `cls_dim` đã tồn tại và Atomic lưu dữ liệu trong `cv`.
+> ❌ **KHÔNG reuse `cls_dim`** khi Atomic lưu dữ liệu trong entity riêng (`physical_name ≠ cv`) — dù tên scheme nghe có vẻ là "phân loại".
 
 **Ví dụ đúng:**
-- BA cần chiều "Ngành nghề kinh tế cấp 1" từ `IDS.categories` → Atomic: `cv` (scheme `IDS_INDUSTRY_CATEGORY`) → reuse `cls_dim`, ghi chú `filter scheme = 'IDS_INDUSTRY_CATEGORY'`
-- BA cần chiều "Loại CCHN" từ danh mục → Atomic: `cv` (scheme `CERTIFICATE_TYPE`) → reuse `cls_dim`, ghi chú `filter scheme = 'CERTIFICATE_TYPE'`
+- BA cần chiều "Ngành nghề kinh tế cấp 1" từ `IDS.categories` → tra YAML → `physical_name = cv` (scheme `IDS_INDUSTRY_CATEGORY`) → reuse `cls_dim`
+- BA cần chiều "Loại CCHN" từ `NHNCK.CERTIFICATES` → tra YAML → `physical_name = sp_license_certificate_type` → tạo `sp_license_ctf_tp_dim` mới, KHÔNG reuse `cls_dim`
 
 ---
 
@@ -400,6 +403,8 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Không thiết kế `Effective Date` / `Expiry Date` / `Population Date` / `Snapshot Date`
 - [ ] **Scan toàn bộ erDiagram đã viết trong file trước khi xuất:** không có trường `Population_Date` / `Effective_Date` / `Expiry_Date` / `Snapshot_Date` trong bất kỳ entity block nào
 - [ ] Toàn file HLD: mỗi bảng có số trường và tên trường giống hệt nhau ở mọi erDiagram
+- [ ] **Tên trường trong erDiagram entity block phải khớp với `attribute.name` trong YAML Atomic entity tương ứng** — đọc YAML trước khi viết. Ví dụ sai: `Date_Of_Birth` khi YAML ghi `Birth_Date`; `Certificate_Type_Code` khi entity thực ra là FK surrogate + unique_key pair
+- [ ] **Fact entity block trong erDiagram không chứa trường nào phản ánh trạng thái kỹ thuật nguồn** (VD: `Record_Status`, `Certificate_Status_Code` từ `record_status`) nếu staging đã lọc bản ghi hiệu lực — các trường này không có giá trị phân tích ở Datamart layer
 
 ### Quy ước chung
 - [ ] Chỉ dùng tên logical — không có physical name (snake_case) ở bất kỳ vị trí nào

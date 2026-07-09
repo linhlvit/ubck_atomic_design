@@ -293,7 +293,97 @@ datamart_entity,datamart_table,datamart_attribute,datamart_column,nullable,data_
 Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 Mọi giá trị trong `etl_logic` và `description` phải được bao double-quote.
 
-**Tên physical:** `datamart_table` và `datamart_column` kế thừa từ `atomic_table`/`atomic_column` hoặc đặt tay theo convention — không áp dụng greedy match algorithm.
+**Tên physical — quy tắc bắt buộc:** Xem mục **PHYSICAL NAMING RULE** bên dưới trước khi đặt tên bất kỳ `datamart_table` hay `datamart_column` nào.
+
+---
+
+## PHYSICAL NAMING RULE (BẮT BUỘC — đọc trước khi đặt tên cột/bảng)
+
+**Nguồn sự thật:** `system/rules/rule_physical_name_exceptions_datamart.csv` — danh sách duy nhất các từ được phép viết tắt.
+
+### Quy tắc cốt lõi
+
+> **Chỉ những từ có trong `rule_physical_name_exceptions_datamart.csv` mới được viết tắt. Mọi từ khác phải dùng full word.**
+
+Exceptions hiện tại (cố định, không được tự bổ sung):
+
+| Full word | Abbreviation |
+|---|---|
+| address | adr |
+| amount | amt |
+| classification | cl |
+| date | dt |
+| dimension | dim |
+| fact | fct |
+| history | hist |
+| id | id |
+| name | nm |
+| number | nbr |
+| operational | opr |
+| relationship | rltnp |
+| report | rpt |
+| scheme | scm |
+| snapshot | snpst |
+| source | src |
+| system | stm |
+| timestamp | tms |
+| type | tp |
+| value | val |
+| volume | vol |
+
+### Cách áp dụng
+
+1. **Tách tên logical thành từng token** theo dấu cách
+2. **Với mỗi token:**
+   - Nếu từ có trong bảng exceptions → dùng dạng viết tắt tương ứng
+   - Nếu không → dùng **đúng từ đó** dạng full word — **KHÔNG được thay bằng từ đồng nghĩa hay dạng mở rộng khác**
+3. **Nối lại** bằng dấu gạch dưới `_`
+
+> **Ràng buộc cốt lõi — bắt buộc:** Physical name phải derive trực tiếp từ **tên logical**, không được thay thế token bằng từ khác dù tương đồng về nghĩa. Quy tắc chỉ cho phép **viết tắt** các từ trong exceptions, không cho phép **mở rộng** hay **đổi từ**.
+>
+> Ví dụ vi phạm điển hình: logical "Exam Score" → physical `examination_score` ❌ — chữ "exam" bị mở rộng thành "examination" dù không được phép. Đúng phải là `exam_score` ✅.
+
+**Ví dụ đúng:**
+```
+Certificate Type Code          →  certificate_tp_code             (type → tp; certificate KHÔNG có trong exceptions → full)
+Practitioner Code              →  practitioner_code               (không có token nào trong exceptions)
+Issue Decision Number          →  issue_decision_nbr              (number → nbr; issue, decision → full)
+Organization Name              →  organization_nm                 (name → nm; organization → full)
+Source System Code             →  src_stm_code                    (source → src; system → stm; code → full)
+Snapshot Date                  →  snpst_dt                        (snapshot → snpst; date → dt)
+Calendar Date                  →  calendar_dt                     (date → dt; calendar → full)
+Practitioner Dimension ID      →  practitioner_dim_id             (dimension → dim; id → id; practitioner → full)
+Fact Practitioner Daily Snpst  →  fct_practitioner_dly_snpst      (fact → fct; snapshot → snpst; practitioner → full)
+Operational History            →  opr_hist                        (operational → opr; history → hist)
+Classification Code            →  cl_code                         (classification → cl; code → full)
+Scheme Code                    →  scm_code                        (scheme → scm; code → full)
+Exam Score                     →  exam_score                      (exam, score KHÔNG có trong exceptions → full; giữ nguyên "exam", KHÔNG đổi thành "examination")
+Exam Start Date                →  exam_start_dt                   (date → dt; exam, start → full)
+```
+
+**Ví dụ SAI (phổ biến trước đây):**
+```
+ctf_tp_code     ❌  (ctf không phải exception)          →   certificate_tp_code  ✅
+prac_code       ❌  (prac không phải exception)         →   practitioner_code    ✅
+trn_rslt_nm     ❌  (trn, rslt không phải exception)    →   training_result_nm   ✅
+org_tp_nm       ❌  (org không phải exception)          →   organization_tp_nm   ✅
+examination_score  ❌  (logical là "Exam Score" — "exam" bị mở rộng thành "examination")  →   exam_score  ✅
+```
+
+### Khi đặt tên `datamart_column`
+
+- Mọi cột trong Attributes CSV phải tuân thủ rule này
+- Khi kế thừa từ `atomic_column`: nếu Atomic column dùng tên chuẩn (ví dụ `sp_code`, `practitioner_position_at_rpt`) → giữ nguyên; chỉ đổi nếu Atomic column đang dùng sai convention
+- Khi đặt tên mới (ETL-derived, computed): áp dụng rule từ đầu
+
+### Khi review/detect lỗi
+
+Nếu phát hiện `datamart_column` dùng từ viết tắt không có trong exceptions:
+1. Tra `system/rules/rule_physical_name_exceptions_datamart.csv` xác nhận
+2. Đây là **Kịch bản C — Lỗi thiết kế** → sửa trực tiếp file Attributes detail + `datamart_attributes.csv` + `Detail_Mapping.csv` + `HLD.md`
+3. Dùng `grep -rn "tên_cũ" Datamart/` để tìm tất cả vị trí trước khi sửa
+
+---
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
@@ -517,11 +607,13 @@ PRE-CHECK (trước khi sinh):
 FILE 01 (CREATE):
 □ Số bảng CREATE = số fact + số operational
 □ Naming fact flat: datamart.{module}_{datamart_table}_flat
-□ Naming operational flat: datamart.{datamart_table}_flat (không có module prefix)
+□ Naming operational flat: datamart.{module}_{datamart_table}_flat (có module prefix — giống fact)
 □ Thứ tự cột: fact columns → Calendar Date columns → dim columns → technical metadata
 □ Operational: chỉ operational columns → technical metadata (không có Calendar Date, không có dim)
 □ Data type dùng ClickHouse types (Nullable wrapper theo nullable=true/false trong Attributes)
-□ Calendar Date 9 cột cố định — không thêm không bớt
+□ Calendar Date: chỉ lấy cột cdr_dt (có thể alias theo vai trò: snpst_cdr_dt, issue_cdr_dt, event_cdr_dt)
+□ Cột fact/operational: lấy ĐÚNG các cột có trong Attributes.csv — không thêm, không bớt
+□ Cột từ dim JOIN: chỉ JOIN dim có FK tương ứng trong Attributes.csv của bảng fact — không JOIN dim không có FK
 □ Cột từ dim: bỏ PK surrogate và src_stm_code, giữ các cột giá trị nghiệp vụ còn lại
 □ Cột từ dim: COMMENT ghi rõ "— từ {Dim Entity Name}"
 □ ENGINE = ReplicatedReplacingMergeTree()
@@ -541,6 +633,8 @@ FILE 02 (POPULATE):
 
 POST-CHECK (sau khi sinh):
 □ Cross-check: mỗi cột trong CREATE có đúng 1 entry tương ứng trong SELECT của INSERT
-□ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE
+□ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE (fact/operational columns)
+□ Không có cột nào trong CREATE TABLE (fact/operational section) mà KHÔNG có trong Attributes.csv — cột thừa phải xóa
+□ Dim JOIN: mọi dim được JOIN phải có FK tương ứng trong Attributes.csv — dim không có FK thì không JOIN, không lấy cột
 □ Sau khi xuất 2 file: DỪNG chờ human duyệt → ❌ KHÔNG tự kết thúc skill khi chưa có xác nhận
 ```
