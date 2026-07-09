@@ -9945,15 +9945,35 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Application Status Code"
-  description: "Trạng thái hồ sơ hiện tại."
-  data_domain: "Classification Value"
+  atomic_attribute: "Application Status Id"
+  description: "FK đến trạng thái hồ sơ hiện tại."
+  data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.STATUS_ID"
-  comment: "FK → APPLICATION_STATUSES (Classification Value). Scheme: NHNCK_APPLICATION_STATUS."
+  comment: "FK target: Classification Application Status.Classification Application\
+    \ Status Id. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09\
+    \ khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS\
+    \ đã deprecate)."
+  classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
+  etl_derived_value: null
+  atomic_table: "securities_practitioner_license_application"
+  atomic_column: "application_status_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Practitioner License Application"
+  atomic_attribute: "Application Status Code"
+  description: "Mã trạng thái hồ sơ hiện tại (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATIONS"
+  source_column: "NHNCK.APPLICATIONS.STATUS_ID"
+  comment: "Lookup pair: Classification Application Status.Classification Application\
+    \ Status Code. Pair with Application Status Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
@@ -10650,19 +10670,40 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
     \ Document"
-  atomic_attribute: "Specialization Type Code"
-  description: "Mã loại chuyên môn (Classification Value)"
-  data_domain: "Classification Value"
+  atomic_attribute: "Specialization Id"
+  description: "FK đến chuyên ngành CCHN đăng ký"
+  data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
-  comment: "Scheme: SPECIALIZATION. Phân loại chuyên ngành chứng chỉ."
+  comment: "FK target: Classification Specialization.Classification Specialization\
+    \ Id. Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_ID). Đổi tên 2026-07-09\
+    \ từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION\
+    \ đã deprecate)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
-  atomic_column: "specialization_tp_code"
+  atomic_column: "specialization_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Practitioner License Application Education Certificate\
+    \ Document"
+  atomic_attribute: "Specialization Code"
+  description: "Mã chuyên ngành CCHN đăng ký (denormalized lookup)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_SPECIALIZATIONS"
+  source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
+  comment: "Lookup pair: Classification Specialization.Classification Specialization\
+    \ Code. Pair with Specialization Id."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "sp_license_application_education_certificate_document"
+  atomic_column: "specialization_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
@@ -19894,6 +19935,936 @@ attributes:
   atomic_column: "sort_order"
   data_type: "int"
 - bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities Company Practitioner Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: null
+  comment: "PK surrogate. Entity độc lập với Securities Practitioner (NHNCK.PROFESSIONALS)\
+    \ — xem attribute Securities Practitioner Id/Code phía dưới cho bridge tham chiếu\
+    \ chéo hệ thống qua NHN_ID."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "sc_practitioner_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities Company Practitioner Code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity từ nguồn SCMS."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
+  comment: "BK chính, độc lập với Securities Practitioner Code (NHNCK). NUMBER(10)\
+    \ — ETL convert sang string."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "sc_practitioner_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+  atomic_table: "sc_practitioner"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities Practitioner Id"
+  description: "FK đến Securities Practitioner (NHNCK) — bridge tham chiếu chéo hệ\
+    \ thống, nullable."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NHN_ID"
+  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Bridge\
+    \ chéo hệ thống — nullable vì không phải mọi practitioner SCMS đã đối chiếu với\
+    \ NHNCK. Hash: hash_id('NHNCK.PROFESSIONALS', NHN_ID)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "sp_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities Practitioner Code"
+  description: "Mã người hành nghề tại NHNCK (denormalized lookup, nullable)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NHN_ID"
+  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
+    \ with Securities Practitioner Id."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "sp_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities Company Id"
+  description: "FK đến Công ty chứng khoán nơi người hành nghề công tác."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
+  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
+    \ SC_FIRM_INFO_ID)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "sc_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities Company Code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "sc_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Branch Organization Unit Id"
+  description: "FK đến chi nhánh CTCK nơi người hành nghề công tác (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
+  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
+    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "branch_ou_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Branch Organization Unit Code"
+  description: "Mã chi nhánh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
+  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
+    \ Unit Code."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "branch_ou_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Transaction Office Organization Unit Id"
+  description: "FK đến phòng giao dịch CTCK nơi người hành nghề công tác (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
+  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
+    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "transaction_office_ou_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Transaction Office Organization Unit Code"
+  description: "Mã phòng giao dịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
+  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
+    \ Unit Code."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "transaction_office_ou_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Representative Office Organization Unit Id"
+  description: "FK đến VPDD CTCK nơi người hành nghề công tác (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
+  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
+    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE', SC_FIRM_REP_OFFICE_ID)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "representative_office_ou_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Representative Office Organization Unit Code"
+  description: "Mã VPDD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
+  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
+    \ Unit Code."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "representative_office_ou_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities License Number"
+  description: "Số chứng chỉ hành nghề chứng khoán theo SCMS."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SO_CHUNG_CHI_HNCK"
+  comment: "SO_CHUNG_CHI_HNCK — CCHN number canonical từ SCMS. SECURITIES_LICENSE_NUMBER\
+    \ là cột thứ 2 có thể trùng; cần xác nhận. NVARCHAR2(100)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "securities_license_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities License Date"
+  description: "Ngày cấp chứng chỉ hành nghề chứng khoán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SECURITIES_LICENSE_DATE"
+  comment: null
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "securities_license_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Securities License Number (Secondary)"
+  description: "Số chứng chỉ hành nghề chứng khoán (cột thứ 2 — cần xác nhận khác\
+    \ SO_CHUNG_CHI_HNCK)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SECURITIES_LICENSE_NUMBER"
+  comment: "Pending — cần xác nhận với team liệu SECURITIES_LICENSE_NUMBER và SO_CHUNG_CHI_HNCK\
+    \ có giá trị khác nhau không. Nếu giống nhau → gộp vào Securities License Number."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "securities_license_nbr_secondary"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Work Status Code"
+  description: "Trạng thái làm việc tại CTCK: DANG_LAM_VIEC=Đang làm việc; DA_NGHI_VIEC=Đã\
+    \ nghỉ việc."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_STATUS"
+  comment: "Scheme: SCMS_WORK_STATUS. VARCHAR2(20)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "work_status_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Record Status Code"
+  description: "Trạng thái bản ghi tại CTCK: 1=Đương nhiệm/Đang làm việc; 0=Đã nghỉ\
+    \ việc/Miễn nhiệm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.RECORD_STATUS"
+  comment: "Scheme: SCMS_USAGE_STATUS. VARCHAR2(1)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "record_status_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Licensee Status Code"
+  description: "Trạng thái người hành nghề tại CTCK."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TRANG_THAI"
+  comment: "Pending — TRANG_THAI NUMBER(1), mô tả gốc BRD trống. Cần xác nhận values\
+    \ và scheme phù hợp."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "licensee_status_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Verification Status Code"
+  description: "Trạng thái xác minh CCHN với hệ thống NHNCK: 0=Chờ xác minh; 1=Khớp;\
+    \ 2=Không khớp."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.VERIFICATION_STATUS"
+  comment: "Scheme: SCMS_VERIFICATION_STATUS. NUMBER(10) với giá trị 0/1/2."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "verification_status_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Work Start Date"
+  description: "Ngày bắt đầu làm việc tại CTCK."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_START_DATE"
+  comment: "START_DATE có thể trùng — ETL dùng WORK_START_DATE làm canonical."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "work_start_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Work End Date"
+  description: "Ngày kết thúc làm việc tại CTCK."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_END_DATE"
+  comment: "END_DATE có thể trùng — ETL dùng WORK_END_DATE làm canonical."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "work_end_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Appointment Date"
+  description: "Ngày bổ nhiệm vào vị trí."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.APPOINTMENT_DATE"
+  comment: null
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "appointment_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Dismissal Date"
+  description: "Ngày miễn nhiệm."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DISMISSAL_DATE"
+  comment: null
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "dismissal_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Certificate Issue Date"
+  description: "Ngày cấp giấy tờ/chứng chỉ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ISSUE_DATE"
+  comment: "Mô tả gốc BRD: Ngày cấp giấy tờ/chứng chỉ."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "certificate_issue_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Business Line Code"
+  description: "Nghiệp vụ kinh doanh người hành nghề phụ trách (FK → CAT_BUSINESS_LINE)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
+  comment: "Scheme: SCMS_BUSINESS_LINE. VARCHAR2(100) — có thể là code hoặc ID."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "business_line_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Business Division Id"
+  description: "ID phân khu kinh doanh (pending FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_DIVISION_ID"
+  comment: "Pending — FK target chưa xác định. NUMBER(10) — ETL convert sang string."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "business_division_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Responsible Service Id"
+  description: "ID dịch vụ phụ trách (pending FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.RESPONSIBLE_SERVICE_ID"
+  comment: "Pending — FK target chưa xác định. Mô tả gốc BRD trống."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "responsible_service_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Synced Indicator"
+  description: "Cờ đã đồng bộ với hệ thống NHNCK: 1=Đã sync; 0=Chưa sync."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SYNCED"
+  comment: "NUMBER(1). Mô tả gốc BRD trống."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "synced_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Sync Timestamp"
+  description: "Thời điểm đồng bộ với hệ thống NHNCK gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SYNC_AT"
+  comment: "TIMESTAMP(6). Mô tả gốc BRD trống."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "sync_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Latest Verification Timestamp"
+  description: "Thời điểm xác minh CCHN với NHNCK gần nhất."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LATEST_VERIFICATION_AT"
+  comment: "TIMESTAMP(6)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "latest_verification_tms"
+  data_type: "timestamp"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Insider Indicator"
+  description: "Là người nội bộ của CTCK theo quy định CBTT: 1=Người nội bộ; 0=Không\
+    \ phải."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.INSIDER"
+  comment: "NUMBER(10) với giá trị 0/1."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "insider_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Labor Contract Termination Report Indicator"
+  description: "Đã nộp báo cáo chấm dứt hợp đồng lao động: 1=Đã nộp; 0=Chưa nộp."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LABOR_CONTRACT_TERMINATION_REPORT"
+  comment: "NUMBER(1)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "labor_contract_termination_rpt_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Deleted Indicator"
+  description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DELETED"
+  comment: "NUMBER(1). Soft delete — ETL filter trước khi load Atomic."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "deleted_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Report Id"
+  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.REPORT_ID"
+  comment: "Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER — ETL convert\
+    \ sang string."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "rpt_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Batch Id"
+  description: "ID batch xử lý đồng bộ dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BATCHID"
+  comment: "VARCHAR2(30) — ID batch từ old system."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "batch_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Error Text"
+  description: "Nội dung lỗi đồng bộ dữ liệu (nếu có)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ERRTEXT"
+  comment: "VARCHAR2(1000). Lỗi từ quá trình sync với NHNCK."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "error_text"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Content"
+  description: "Nội dung thông báo/tin nhắn liên quan đến người hành nghề."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CONTENT"
+  comment: "VARCHAR2(1000). Mô tả gốc: Nội dung thông báo/tin nhắn/văn bản."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "content"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Attachment Path"
+  description: "Đường dẫn file đính kèm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ATTACHMENT_PATH"
+  comment: "Nguồn CLOB."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "attachment_path"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOTE"
+  comment: null
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "note"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Full Name"
+  description: "Họ và tên đầy đủ (từ hệ thống cũ — HOTEN)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.HOTEN"
+  comment: "Legacy duplicate của SCMS.SC_FIRM_LICENSED_PRACTITIONER.FULL_NAME (cột\
+    \ tiếng Anh mới hơn, cùng bảng — hiện chưa map trong Atomic, xem post_check_source_coverage)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_full_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Gender Code"
+  description: "Giới tính từ hệ thống cũ (GIOITINH — text)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.GIOITINH"
+  comment: "Legacy. VARCHAR2(500) — có thể là '1'/'2' hoặc text. GENDER (NUMBER(10))\
+    \ là canonical hơn. Từ old system."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_gender_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Date Of Birth"
+  description: "Ngày sinh từ hệ thống cũ (NGAY_SINH)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NGAY_SINH"
+  comment: "Legacy duplicate của SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATE_OF_BIRTH\
+    \ (cột tiếng Anh mới hơn, cùng bảng — hiện chưa map trong Atomic, xem post_check_source_coverage)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_dt_of_birth"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Nationality"
+  description: "Quốc tịch (text) từ hệ thống cũ (QUOCTICH)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.QUOCTICH"
+  comment: "Legacy. NATIONALITY_ID (FK canonical → SCMS_NATIONALITY) là cột chuẩn\
+    \ hơn. VARCHAR2(500)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_nationality"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Place Of Birth"
+  description: "Nơi sinh từ hệ thống cũ (NOISINH)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOISINH"
+  comment: "Legacy. VARCHAR2(500)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_place_of_birth"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Id Issue Place"
+  description: "Nơi cấp CMND từ hệ thống cũ (NOICAPCMT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOICAPCMT"
+  comment: "Legacy. ISSUE_PLACE là canonical. VARCHAR2(500)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_id_issue_place"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Company Name"
+  description: "Tên công ty từ hệ thống cũ (TENCONGTY)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENCONGTY"
+  comment: "Legacy. Trùng với Securities Company Name — không dùng để join. VARCHAR2(500)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_company_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Company English Name"
+  description: "Tên công ty tiếng Anh từ hệ thống cũ (TENTIENGANH)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENTIENGANH"
+  comment: "Legacy. VARCHAR2(500)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_company_english_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Company Short Name"
+  description: "Tên viết tắt công ty từ hệ thống cũ (TENVIETTAT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENVIETTAT"
+  comment: "Legacy. VARCHAR2(500)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_company_short_nm"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy License Number"
+  description: "Số giấy phép từ hệ thống cũ (SOGIAYPHEP)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SOGIAYPHEP"
+  comment: "Legacy — trùng SO_CHUNG_CHI_HNCK. VARCHAR2(500)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_license_nbr"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Department"
+  description: "Phòng/Ban từ hệ thống cũ (PHONGBAN)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONGBAN"
+  comment: "Legacy. DEPARTMENT (VARCHAR2(255)) là canonical. VARCHAR2(200)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_department"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Position"
+  description: "Chức vụ từ hệ thống cũ (CHUCVU)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CHUCVU"
+  comment: "Legacy. VARCHAR2(200)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_position"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Created Date"
+  description: "Ngày tạo từ hệ thống cũ (DATECREATED)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATECREATED"
+  comment: "Legacy audit. Cột canonical CREATED_AT bị loại khỏi Atomic entity theo\
+    \ quyết định audit block (xem pending_design.yaml) — Legacy Created Date giữ lại\
+    \ vì là cột duy nhất còn map. DATE."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_created_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Created By"
+  description: "Người tạo từ hệ thống cũ (CREATEDBY)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CREATEDBY"
+  comment: "Legacy audit. Cột canonical CREATED_BY bị loại khỏi Atomic entity theo\
+    \ quyết định audit block (xem pending_design.yaml). VARCHAR2(200) lưu tên/username\
+    \ dạng text."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_created_by"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Updated Date"
+  description: "Ngày cập nhật từ hệ thống cũ (DATEMODIFY)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATEMODIFY"
+  comment: "Legacy audit. Cột canonical LAST_MODIFIED_AT bị loại khỏi Atomic entity\
+    \ theo quyết định audit block (xem pending_design.yaml)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_updated_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Legacy Updated By"
+  description: "Người cập nhật từ hệ thống cũ (MODIFYBY)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.MODIFYBY"
+  comment: "Legacy audit. Cột canonical LAST_MODIFIED_BY bị loại khỏi Atomic entity\
+    \ theo quyết định audit block (xem pending_design.yaml). VARCHAR2(200)."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "legacy_updated_by"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
   atomic_entity: "Securities Distribution Agent"
   atomic_attribute: "Securities Distribution Agent Id"
   description: "Khóa đại diện (surrogate key)."
@@ -21007,2141 +21978,6 @@ attributes:
   atomic_column: "place_of_birth_description"
   data_type: "string"
 - bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "NHNCK Personnel Id"
-  description: "ID người hành nghề trong hệ thống NHNCK (link đến canonical source)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Link đến NHNCK.PROFESSIONALS.PROFESSIONAL_ID. Dùng để reconcile giữa SCMS\
-    \ và NHNCK — nếu NHN_ID có giá trị, ETL ưu tiên canonical từ NHNCK. Lưu dạng Text\
-    \ vì schema NHNCK dùng NVARCHAR key."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "nhnck_personnel_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Company Id"
-  description: "FK đến Công ty chứng khoán nơi người hành nghề công tác."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
-    \ SC_FIRM_INFO_ID)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sc_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Company Code"
-  description: "Mã Công ty chứng khoán."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sc_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Branch Organization Unit Id"
-  description: "FK đến chi nhánh CTCK nơi người hành nghề công tác (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "branch_ou_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Branch Organization Unit Code"
-  description: "Mã chi nhánh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "branch_ou_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Transaction Office Organization Unit Id"
-  description: "FK đến phòng giao dịch CTCK nơi người hành nghề công tác (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "transaction_office_ou_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Transaction Office Organization Unit Code"
-  description: "Mã phòng giao dịch."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "transaction_office_ou_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Representative Office Organization Unit Id"
-  description: "FK đến VPDD CTCK nơi người hành nghề công tác (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE', SC_FIRM_REP_OFFICE_ID)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "representative_office_ou_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Representative Office Organization Unit Code"
-  description: "Mã VPDD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "representative_office_ou_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities License Number"
-  description: "Số chứng chỉ hành nghề chứng khoán theo SCMS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "SO_CHUNG_CHI_HNCK — CCHN number canonical từ SCMS. SECURITIES_LICENSE_NUMBER\
-    \ là cột thứ 2 có thể trùng; cần xác nhận. NVARCHAR2(100)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_license_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities License Date"
-  description: "Ngày cấp chứng chỉ hành nghề chứng khoán."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_license_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities License Number (Secondary)"
-  description: "Số chứng chỉ hành nghề chứng khoán (cột thứ 2 — cần xác nhận khác\
-    \ SO_CHUNG_CHI_HNCK)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Pending — cần xác nhận với team liệu SECURITIES_LICENSE_NUMBER và SO_CHUNG_CHI_HNCK\
-    \ có giá trị khác nhau không. Nếu giống nhau → gộp vào Securities License Number."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_license_nbr_secondary"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Work Status Code"
-  description: "Trạng thái làm việc tại CTCK: DANG_LAM_VIEC=Đang làm việc; DA_NGHI_VIEC=Đã\
-    \ nghỉ việc."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Scheme: SCMS_WORK_STATUS. VARCHAR2(20)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "work_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Record Status Code"
-  description: "Trạng thái bản ghi tại CTCK: 1=Đương nhiệm/Đang làm việc; 0=Đã nghỉ\
-    \ việc/Miễn nhiệm."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Scheme: SCMS_USAGE_STATUS. VARCHAR2(1)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "record_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Licensee Status Code"
-  description: "Trạng thái người hành nghề tại CTCK."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Pending — TRANG_THAI NUMBER(1), mô tả gốc BRD trống. Cần xác nhận values\
-    \ và scheme phù hợp."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "licensee_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Verification Status Code"
-  description: "Trạng thái xác minh CCHN với hệ thống NHNCK: 0=Chờ xác minh; 1=Khớp;\
-    \ 2=Không khớp."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Scheme: SCMS_VERIFICATION_STATUS. NUMBER(10) với giá trị 0/1/2."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "verification_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Work Start Date"
-  description: "Ngày bắt đầu làm việc tại CTCK."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "START_DATE có thể trùng — ETL dùng WORK_START_DATE làm canonical."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "work_start_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Work End Date"
-  description: "Ngày kết thúc làm việc tại CTCK."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "END_DATE có thể trùng — ETL dùng WORK_END_DATE làm canonical."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "work_end_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Appointment Date"
-  description: "Ngày bổ nhiệm vào vị trí."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "appointment_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Dismissal Date"
-  description: "Ngày miễn nhiệm."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "dismissal_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Certificate Issue Date"
-  description: "Ngày cấp giấy tờ/chứng chỉ."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Mô tả gốc BRD: Ngày cấp giấy tờ/chứng chỉ."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "certificate_issue_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Business Line Code"
-  description: "Nghiệp vụ kinh doanh người hành nghề phụ trách (FK → CAT_BUSINESS_LINE)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Scheme: SCMS_BUSINESS_LINE. VARCHAR2(100) — có thể là code hoặc ID."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "business_line_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Business Division Id"
-  description: "ID phân khu kinh doanh (pending FK target)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Pending — FK target chưa xác định. NUMBER(10) — ETL convert sang string."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "business_division_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Responsible Service Id"
-  description: "ID dịch vụ phụ trách (pending FK target)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Pending — FK target chưa xác định. Mô tả gốc BRD trống."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "responsible_service_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Synced Indicator"
-  description: "Cờ đã đồng bộ với hệ thống NHNCK: 1=Đã sync; 0=Chưa sync."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "NUMBER(1). Mô tả gốc BRD trống."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "synced_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Sync Timestamp"
-  description: "Thời điểm đồng bộ với hệ thống NHNCK gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "TIMESTAMP(6). Mô tả gốc BRD trống."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sync_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Latest Verification Timestamp"
-  description: "Thời điểm xác minh CCHN với NHNCK gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "TIMESTAMP(6)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "latest_verification_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Insider Indicator"
-  description: "Là người nội bộ của CTCK theo quy định CBTT: 1=Người nội bộ; 0=Không\
-    \ phải."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "NUMBER(10) với giá trị 0/1."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "insider_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Labor Contract Termination Report Indicator"
-  description: "Đã nộp báo cáo chấm dứt hợp đồng lao động: 1=Đã nộp; 0=Chưa nộp."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "NUMBER(1)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "labor_contract_termination_rpt_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "NUMBER(1). Soft delete — ETL filter trước khi load Atomic."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "deleted_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Report Id"
-  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER — ETL convert\
-    \ sang string."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "rpt_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Batch Id"
-  description: "ID batch xử lý đồng bộ dữ liệu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "VARCHAR2(30) — ID batch từ old system."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "batch_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Error Text"
-  description: "Nội dung lỗi đồng bộ dữ liệu (nếu có)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "VARCHAR2(1000). Lỗi từ quá trình sync với NHNCK."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "error_text"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Content"
-  description: "Nội dung thông báo/tin nhắn liên quan đến người hành nghề."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "VARCHAR2(1000). Mô tả gốc: Nội dung thông báo/tin nhắn/văn bản."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "content"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Attachment Path"
-  description: "Đường dẫn file đính kèm."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Nguồn CLOB."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "attachment_path"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Note"
-  description: "Ghi chú bổ sung, không bắt buộc."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "note"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Full Name"
-  description: "Họ và tên đầy đủ (từ hệ thống cũ — HOTEN)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy duplicate của NHNCK.PROFESSIONALS.FULL_NAME. FULL_NAME (VARCHAR2\
-    \ 500) là canonical nếu có, dùng khi NHN_ID NULL."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Gender Code"
-  description: "Giới tính từ hệ thống cũ (GIOITINH — text)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. VARCHAR2(500) — có thể là '1'/'2' hoặc text. GENDER (NUMBER(10))\
-    \ là canonical hơn. Từ old system."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_gender_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Date Of Birth"
-  description: "Ngày sinh từ hệ thống cũ (NGAY_SINH)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy duplicate của DATE_OF_BIRTH và NHNCK.PROFESSIONALS.DATE_OF_BIRTH."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_dt_of_birth"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Nationality"
-  description: "Quốc tịch (text) từ hệ thống cũ (QUOCTICH)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. NATIONALITY_ID (FK canonical → SCMS_NATIONALITY) là cột chuẩn\
-    \ hơn. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_nationality"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Place Of Birth"
-  description: "Nơi sinh từ hệ thống cũ (NOISINH)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_place_of_birth"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy National Id Number"
-  description: "Số CMND từ hệ thống cũ (SOCMT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy duplicate. NATIONAL_ID (VARCHAR2(50)) là canonical. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_national_id_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Id Issue Place"
-  description: "Nơi cấp CMND từ hệ thống cũ (NOICAPCMT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. ISSUE_PLACE là canonical. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_id_issue_place"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Company Name"
-  description: "Tên công ty từ hệ thống cũ (TENCONGTY)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. Trùng với Securities Company Name — không dùng để join. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_company_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Company English Name"
-  description: "Tên công ty tiếng Anh từ hệ thống cũ (TENTIENGANH)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_company_english_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Company Short Name"
-  description: "Tên viết tắt công ty từ hệ thống cũ (TENVIETTAT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_company_short_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy License Number"
-  description: "Số giấy phép từ hệ thống cũ (SOGIAYPHEP)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy — trùng SO_CHUNG_CHI_HNCK. VARCHAR2(500)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_license_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Department"
-  description: "Phòng/Ban từ hệ thống cũ (PHONGBAN)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. DEPARTMENT (VARCHAR2(255)) là canonical. VARCHAR2(200)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_department"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Position"
-  description: "Chức vụ từ hệ thống cũ (CHUCVU)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy. VARCHAR2(200)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_position"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Created Date"
-  description: "Ngày tạo từ hệ thống cũ (DATECREATED)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy audit. CREATED_AT (TIMESTAMP) là canonical. DATE."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_created_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Created By"
-  description: "Người tạo từ hệ thống cũ (CREATEDBY)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy audit. VARCHAR2(200) lưu tên/username dạng text."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_created_by"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Updated Date"
-  description: "Ngày cập nhật từ hệ thống cũ (DATEMODIFY)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy audit. LAST_MODIFIED_AT (TIMESTAMP) là canonical."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_updated_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Updated By"
-  description: "Người cập nhật từ hệ thống cũ (MODIFYBY)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "PROFESSIONALS"
-  source_column: null
-  comment: "Legacy audit. VARCHAR2(200)."
-  classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_updated_by"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Practitioner Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "PK surrogate. Entity Securities Practitioner đã có từ NHNCK.PROFESSIONALS\
-    \ (approved). SCMS extend thêm source_table này — NHN_ID là bridge đến NHNCK canonical\
-    \ source."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sp_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Practitioner Code"
-  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity từ nguồn SCMS."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "BK SCMS. NUMBER(10) — ETL convert sang string. Khác với NHNCK.PROFESSIONALS.PROFESSIONAL_ID\
-    \ (BK canonical)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
-  atomic_table: "securities_practitioner"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Full Name"
-  description: "Họ và tên đầy đủ của người hành nghề"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Given Name"
-  description: "Tên đệm và tên riêng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "given_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Birth Date"
-  description: "Ngày sinh"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "birth_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Birth Year"
-  description: "Năm sinh (lưu dạng chuỗi khi không có ngày tháng đủ)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Nguồn lưu NVARCHAR2(4) — giữ dạng text."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "birth_year"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Gender Code"
-  description: "Giới tính: 0=Nam / 1=Nữ"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Scheme: INDIVIDUAL_GENDER. Nguồn lưu NUMBER — ETL convert sang code."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "gender_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Education Level Code"
-  description: "Trình độ học vấn"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Scheme: EDUCATION_LEVEL. Nguồn lưu FK số — ETL lookup convert sang code."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "education_level_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Practitioner Registration Type Code"
-  description: "Hình thức đăng ký hồ sơ: 0=MCĐT/cổng DVC / 1=Nhập tay"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Scheme: PRACTITIONER_REGISTRATION_TYPE. Nguồn lưu NUMBER — ETL convert\
-    \ sang code."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "practitioner_registration_tp_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Practice Status Code"
-  description: "Trạng thái hành nghề chứng khoán"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Scheme: PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi có cấp\
-    \ lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "practice_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Account Status Code"
-  description: "Trạng thái tài khoản người dùng trên cổng NHNCK"
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động / 2=Khóa."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "account_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Organization Reference Id"
-  description: "FK đến tổ chức chứng khoán hiện tại (nullable)"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "FK target: Securities Organization Reference.Securities Organization Reference\
-    \ Id. Nullable — người hành nghề có thể chưa công tác. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-    \ ORGANIZATION_ID)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_organization_reference_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Organization Reference Code"
-  description: "Mã tổ chức (denormalized lookup)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Lookup pair: Securities Organization Reference.Securities Organization\
-    \ Reference Code. Pair with Securities Organization Reference Id."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_organization_reference_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Nationality Id"
-  description: "FK đến Geographic Area (quốc tịch)"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "nationality_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Nationality Code"
-  description: "Mã quốc gia/quốc tịch (denormalized)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
-    \ Id."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "nationality_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Workplace Name"
-  description: "Nơi làm việc hiện tại (tên tổ chức — denormalized text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Denormalized text. Có thể khác Organization Name khi người hành nghề làm\
-    \ ở chi nhánh."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "workplace_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Position Name"
-  description: "Chức vụ hiện tại (denormalized text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Denormalized text — không FK vì không có bảng Position chuẩn dùng chung."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "position_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Department Name"
-  description: "Phòng ban hiện tại (denormalized text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: "Denormalized text."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "department_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Previous Identity Number"
-  description: "Số CMND cũ trước khi chuyển sang CCCD"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "previous_identity_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Hometown"
-  description: "Quê quán (dữ liệu tích hợp C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "hometown"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Ethnicity Name"
-  description: "Dân tộc (dữ liệu tích hợp C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "ethnicity_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Religion Name"
-  description: "Tôn giáo (dữ liệu tích hợp C06)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "religion_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Place of Birth Description"
-  description: "Nơi sinh (text tự do)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: null
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "place_of_birth_description"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "NHNCK Personnel Id"
-  description: "ID người hành nghề trong hệ thống NHNCK (link đến canonical source)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NHN_ID"
-  comment: "Link đến NHNCK.PROFESSIONALS.PROFESSIONAL_ID. Dùng để reconcile giữa SCMS\
-    \ và NHNCK — nếu NHN_ID có giá trị, ETL ưu tiên canonical từ NHNCK. Lưu dạng Text\
-    \ vì schema NHNCK dùng NVARCHAR key."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "nhnck_personnel_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Company Id"
-  description: "FK đến Công ty chứng khoán nơi người hành nghề công tác."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
-  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
-    \ SC_FIRM_INFO_ID)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sc_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities Company Code"
-  description: "Mã Công ty chứng khoán."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_INFO_ID"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sc_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Branch Organization Unit Id"
-  description: "FK đến chi nhánh CTCK nơi người hành nghề công tác (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "branch_ou_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Branch Organization Unit Code"
-  description: "Mã chi nhánh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_BRANCH_ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "branch_ou_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Transaction Office Organization Unit Id"
-  description: "FK đến phòng giao dịch CTCK nơi người hành nghề công tác (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "transaction_office_ou_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Transaction Office Organization Unit Code"
-  description: "Mã phòng giao dịch."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_TRANSACTION_OFFICE_ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "transaction_office_ou_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Representative Office Organization Unit Id"
-  description: "FK đến VPDD CTCK nơi người hành nghề công tác (nullable)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
-  comment: "FK target: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Id. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE', SC_FIRM_REP_OFFICE_ID)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "representative_office_ou_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Representative Office Organization Unit Code"
-  description: "Mã VPDD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SC_FIRM_REP_OFFICE_ID"
-  comment: "Lookup pair: Securities Company Organization Unit.Securities Company Organization\
-    \ Unit Code."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "representative_office_ou_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities License Number"
-  description: "Số chứng chỉ hành nghề chứng khoán theo SCMS."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SO_CHUNG_CHI_HNCK"
-  comment: "SO_CHUNG_CHI_HNCK — CCHN number canonical từ SCMS. SECURITIES_LICENSE_NUMBER\
-    \ là cột thứ 2 có thể trùng; cần xác nhận. NVARCHAR2(100)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_license_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities License Date"
-  description: "Ngày cấp chứng chỉ hành nghề chứng khoán."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SECURITIES_LICENSE_DATE"
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_license_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Securities License Number (Secondary)"
-  description: "Số chứng chỉ hành nghề chứng khoán (cột thứ 2 — cần xác nhận khác\
-    \ SO_CHUNG_CHI_HNCK)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SECURITIES_LICENSE_NUMBER"
-  comment: "Pending — cần xác nhận với team liệu SECURITIES_LICENSE_NUMBER và SO_CHUNG_CHI_HNCK\
-    \ có giá trị khác nhau không. Nếu giống nhau → gộp vào Securities License Number."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "securities_license_nbr_secondary"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Work Status Code"
-  description: "Trạng thái làm việc tại CTCK: DANG_LAM_VIEC=Đang làm việc; DA_NGHI_VIEC=Đã\
-    \ nghỉ việc."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_STATUS"
-  comment: "Scheme: SCMS_WORK_STATUS. VARCHAR2(20)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "work_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Record Status Code"
-  description: "Trạng thái bản ghi tại CTCK: 1=Đương nhiệm/Đang làm việc; 0=Đã nghỉ\
-    \ việc/Miễn nhiệm."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS. VARCHAR2(1)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "record_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Licensee Status Code"
-  description: "Trạng thái người hành nghề tại CTCK."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TRANG_THAI"
-  comment: "Pending — TRANG_THAI NUMBER(1), mô tả gốc BRD trống. Cần xác nhận values\
-    \ và scheme phù hợp."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "licensee_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Verification Status Code"
-  description: "Trạng thái xác minh CCHN với hệ thống NHNCK: 0=Chờ xác minh; 1=Khớp;\
-    \ 2=Không khớp."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.VERIFICATION_STATUS"
-  comment: "Scheme: SCMS_VERIFICATION_STATUS. NUMBER(10) với giá trị 0/1/2."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "verification_status_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Work Start Date"
-  description: "Ngày bắt đầu làm việc tại CTCK."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_START_DATE"
-  comment: "START_DATE có thể trùng — ETL dùng WORK_START_DATE làm canonical."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "work_start_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Work End Date"
-  description: "Ngày kết thúc làm việc tại CTCK."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.WORK_END_DATE"
-  comment: "END_DATE có thể trùng — ETL dùng WORK_END_DATE làm canonical."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "work_end_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Appointment Date"
-  description: "Ngày bổ nhiệm vào vị trí."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.APPOINTMENT_DATE"
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "appointment_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Dismissal Date"
-  description: "Ngày miễn nhiệm."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DISMISSAL_DATE"
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "dismissal_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Certificate Issue Date"
-  description: "Ngày cấp giấy tờ/chứng chỉ."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ISSUE_DATE"
-  comment: "Mô tả gốc BRD: Ngày cấp giấy tờ/chứng chỉ."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "certificate_issue_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Business Line Code"
-  description: "Nghiệp vụ kinh doanh người hành nghề phụ trách (FK → CAT_BUSINESS_LINE)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
-  comment: "Scheme: SCMS_BUSINESS_LINE. VARCHAR2(100) — có thể là code hoặc ID."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "business_line_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Business Division Id"
-  description: "ID phân khu kinh doanh (pending FK target)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_DIVISION_ID"
-  comment: "Pending — FK target chưa xác định. NUMBER(10) — ETL convert sang string."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "business_division_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Responsible Service Id"
-  description: "ID dịch vụ phụ trách (pending FK target)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.RESPONSIBLE_SERVICE_ID"
-  comment: "Pending — FK target chưa xác định. Mô tả gốc BRD trống."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "responsible_service_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Synced Indicator"
-  description: "Cờ đã đồng bộ với hệ thống NHNCK: 1=Đã sync; 0=Chưa sync."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SYNCED"
-  comment: "NUMBER(1). Mô tả gốc BRD trống."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "synced_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Sync Timestamp"
-  description: "Thời điểm đồng bộ với hệ thống NHNCK gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SYNC_AT"
-  comment: "TIMESTAMP(6). Mô tả gốc BRD trống."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "sync_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Latest Verification Timestamp"
-  description: "Thời điểm xác minh CCHN với NHNCK gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LATEST_VERIFICATION_AT"
-  comment: "TIMESTAMP(6)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "latest_verification_tms"
-  data_type: "timestamp"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Insider Indicator"
-  description: "Là người nội bộ của CTCK theo quy định CBTT: 1=Người nội bộ; 0=Không\
-    \ phải."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.INSIDER"
-  comment: "NUMBER(10) với giá trị 0/1."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "insider_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Labor Contract Termination Report Indicator"
-  description: "Đã nộp báo cáo chấm dứt hợp đồng lao động: 1=Đã nộp; 0=Chưa nộp."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.LABOR_CONTRACT_TERMINATION_REPORT"
-  comment: "NUMBER(1)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "labor_contract_termination_rpt_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
-  data_domain: "Boolean"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DELETED"
-  comment: "NUMBER(1). Soft delete — ETL filter trước khi load Atomic."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "deleted_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Report Id"
-  description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.REPORT_ID"
-  comment: "Pending — FK target FORM_REPORT nằm ngoài scope. NUMBER — ETL convert\
-    \ sang string."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "rpt_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Batch Id"
-  description: "ID batch xử lý đồng bộ dữ liệu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BATCHID"
-  comment: "VARCHAR2(30) — ID batch từ old system."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "batch_id"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Error Text"
-  description: "Nội dung lỗi đồng bộ dữ liệu (nếu có)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ERRTEXT"
-  comment: "VARCHAR2(1000). Lỗi từ quá trình sync với NHNCK."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "error_text"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Content"
-  description: "Nội dung thông báo/tin nhắn liên quan đến người hành nghề."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CONTENT"
-  comment: "VARCHAR2(1000). Mô tả gốc: Nội dung thông báo/tin nhắn/văn bản."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "content"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Attachment Path"
-  description: "Đường dẫn file đính kèm."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ATTACHMENT_PATH"
-  comment: "Nguồn CLOB."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "attachment_path"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Note"
-  description: "Ghi chú bổ sung, không bắt buộc."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOTE"
-  comment: null
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "note"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Full Name"
-  description: "Họ và tên đầy đủ (từ hệ thống cũ — HOTEN)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.HOTEN"
-  comment: "Legacy duplicate của NHNCK.PROFESSIONALS.FULL_NAME. FULL_NAME (VARCHAR2\
-    \ 500) là canonical nếu có, dùng khi NHN_ID NULL."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_full_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Gender Code"
-  description: "Giới tính từ hệ thống cũ (GIOITINH — text)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.GIOITINH"
-  comment: "Legacy. VARCHAR2(500) — có thể là '1'/'2' hoặc text. GENDER (NUMBER(10))\
-    \ là canonical hơn. Từ old system."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_gender_code"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Date Of Birth"
-  description: "Ngày sinh từ hệ thống cũ (NGAY_SINH)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NGAY_SINH"
-  comment: "Legacy duplicate của DATE_OF_BIRTH và NHNCK.PROFESSIONALS.DATE_OF_BIRTH."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_dt_of_birth"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Nationality"
-  description: "Quốc tịch (text) từ hệ thống cũ (QUOCTICH)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.QUOCTICH"
-  comment: "Legacy. NATIONALITY_ID (FK canonical → SCMS_NATIONALITY) là cột chuẩn\
-    \ hơn. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_nationality"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Place Of Birth"
-  description: "Nơi sinh từ hệ thống cũ (NOISINH)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOISINH"
-  comment: "Legacy. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_place_of_birth"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy National Id Number"
-  description: "Số CMND từ hệ thống cũ (SOCMT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SOCMT"
-  comment: "Legacy duplicate. NATIONAL_ID (VARCHAR2(50)) là canonical. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_national_id_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Id Issue Place"
-  description: "Nơi cấp CMND từ hệ thống cũ (NOICAPCMT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NOICAPCMT"
-  comment: "Legacy. ISSUE_PLACE là canonical. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_id_issue_place"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Company Name"
-  description: "Tên công ty từ hệ thống cũ (TENCONGTY)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENCONGTY"
-  comment: "Legacy. Trùng với Securities Company Name — không dùng để join. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_company_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Company English Name"
-  description: "Tên công ty tiếng Anh từ hệ thống cũ (TENTIENGANH)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENTIENGANH"
-  comment: "Legacy. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_company_english_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Company Short Name"
-  description: "Tên viết tắt công ty từ hệ thống cũ (TENVIETTAT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.TENVIETTAT"
-  comment: "Legacy. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_company_short_nm"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy License Number"
-  description: "Số giấy phép từ hệ thống cũ (SOGIAYPHEP)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SOGIAYPHEP"
-  comment: "Legacy — trùng SO_CHUNG_CHI_HNCK. VARCHAR2(500)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_license_nbr"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Department"
-  description: "Phòng/Ban từ hệ thống cũ (PHONGBAN)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONGBAN"
-  comment: "Legacy. DEPARTMENT (VARCHAR2(255)) là canonical. VARCHAR2(200)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_department"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Position"
-  description: "Chức vụ từ hệ thống cũ (CHUCVU)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CHUCVU"
-  comment: "Legacy. VARCHAR2(200)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_position"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Created Date"
-  description: "Ngày tạo từ hệ thống cũ (DATECREATED)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATECREATED"
-  comment: "Legacy audit. CREATED_AT (TIMESTAMP) là canonical. DATE."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_created_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Created By"
-  description: "Người tạo từ hệ thống cũ (CREATEDBY)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.CREATEDBY"
-  comment: "Legacy audit. VARCHAR2(200) lưu tên/username dạng text."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_created_by"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Updated Date"
-  description: "Ngày cập nhật từ hệ thống cũ (DATEMODIFY)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATEMODIFY"
-  comment: "Legacy audit. LAST_MODIFIED_AT (TIMESTAMP) là canonical."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_updated_dt"
-  data_type: "date"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Practitioner"
-  atomic_attribute: "Legacy Updated By"
-  description: "Người cập nhật từ hệ thống cũ (MODIFYBY)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
-  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.MODIFYBY"
-  comment: "Legacy audit. VARCHAR2(200)."
-  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
-  etl_derived_value: null
-  atomic_table: "securities_practitioner"
-  atomic_column: "legacy_updated_by"
-  data_type: "string"
-- bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner Employment Status"
   atomic_attribute: "Securities Practitioner Employment Status Id"
   description: "Khóa đại diện cho bản ghi lịch sử công tác / trạng thái việc làm của\
@@ -23479,20 +22315,38 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
-  atomic_attribute: "Document Type Code"
-  description: "Mã loại tài liệu yêu cầu (Classification Value từ Documents)"
-  data_domain: "Classification Value"
+  atomic_attribute: "Document Id"
+  description: "FK đến tài liệu yêu cầu kèm hồ sơ"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
-  comment: "Scheme: DOCUMENT_TYPE. FK đến bảng Documents — chỉ mang Code vì là reference\
-    \ data set."
+  comment: "FK target: Classification Document.Classification Document Id. Hash: hash_id('NHNCK.DOCUMENTS',\
+    \ DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type Code khi DOCUMENTS lên entity\
+    \ thật (scheme DOCUMENT_TYPE đã deprecate)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
   etl_derived_value: null
   atomic_table: "sp_license_application_employment_experience"
-  atomic_column: "document_tp_code"
+  atomic_column: "document_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Practitioner License Application Employment Experience"
+  atomic_attribute: "Document Code"
+  description: "Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_EXPERIENCES"
+  source_column: "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
+  comment: "Lookup pair: Classification Document.Classification Document Code. Pair\
+    \ with Document Id."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
+  etl_derived_value: null
+  atomic_table: "sp_license_application_employment_experience"
+  atomic_column: "document_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
@@ -30006,6 +28860,429 @@ attributes:
   etl_derived_value: null
   atomic_table: "citizen_reception"
   atomic_column: "updated_by_officer_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Classification Application Status Id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: null
+  comment: "PK surrogate. BCV: [Common] Application Status."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "classification_application_status_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Classification Application Status Code"
+  description: "Mã trạng thái hồ sơ — BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
+  comment: "BK chính. Mô tả nguồn ghi \"Mã trạng thái HTTP phản hồi (200, 201, 400...)\"\
+    \ — có vẻ là mô tả copy-paste chưa đúng ngữ cảnh; xử lý STATUS_CODE là mã trạng\
+    \ thái hồ sơ nghiệp vụ theo đúng mục đích bảng. Cần Data Modeler xác nhận lại\
+    \ với BRD."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "classification_application_status_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: "NHNCK.APPLICATION_STATUSES"
+  atomic_table: "classification_application_status"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Classification Application Status Name"
+  description: "Tên trạng thái hồ sơ hiển thị trên giao diện."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: "NHNCK.APPLICATION_STATUSES.STATUS_NAME"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "classification_application_status_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Label"
+  description: "Nhãn hiển thị ngắn gọn trên badge/tag."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: "NHNCK.APPLICATION_STATUSES.LABEL"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "label"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết trạng thái."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: "NHNCK.APPLICATION_STATUSES.DESCRIPTION"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Sort Order"
+  description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: "NHNCK.APPLICATION_STATUSES.SORT_ORDER"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "sort_order"
+  data_type: "int"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Active Indicator"
+  description: "Cờ đang kích hoạt/hiệu lực."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: "NHNCK.APPLICATION_STATUSES.ACTIVE"
+  comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "active_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Original Data Indicator"
+  description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  source_column: "NHNCK.APPLICATION_STATUSES.ORIGINAL_DATA"
+  comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
+  classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+  etl_derived_value: null
+  atomic_table: "classification_application_status"
+  atomic_column: "original_data_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Classification Document Id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: null
+  comment: "PK surrogate. BCV: [Common] Document."
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "classification_document_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Classification Document Code"
+  description: "Mã tài liệu — BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: "NHNCK.DOCUMENTS.DOCUMENT_CODE"
+  comment: "BK chính. Mã định danh duy nhất trong danh mục tài liệu."
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "classification_document_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: "NHNCK.DOCUMENTS"
+  atomic_table: "classification_document"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Classification Document Name"
+  description: "Tên tài liệu."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: "NHNCK.DOCUMENTS.DOCUMENT_NAME"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "classification_document_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Legal Reference"
+  description: "Trích dẫn căn cứ pháp lý liên quan đến tài liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: "NHNCK.DOCUMENTS.REFERENCE"
+  comment: "Nguồn lưu NCLOB — ETL convert sang string. Mô tả BRD ghi \"của quyết định\"\
+    \ — có thể là mô tả mẫu dùng chung, không riêng cho DOCUMENTS; cần Data Modeler\
+    \ xác nhận ý nghĩa thực tế."
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "legal_reference"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Sort Order"
+  description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: "NHNCK.DOCUMENTS.SORT_ORDER"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "sort_order"
+  data_type: "int"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Active Indicator"
+  description: "Cờ đang kích hoạt/hiệu lực."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: "NHNCK.DOCUMENTS.ACTIVE"
+  comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "active_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Original Data Indicator"
+  description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: "NHNCK.DOCUMENTS.ORIGINAL_DATA"
+  comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "original_data_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Public Service Portal Code"
+  description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  source_column: "NHNCK.DOCUMENTS.MCDT_CODE"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
+  etl_derived_value: null
+  atomic_table: "classification_document"
+  atomic_column: "public_service_portal_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Classification Specialization Id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: null
+  comment: "PK surrogate. BCV: [Common] Specialization."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "classification_specialization"
+  atomic_column: "classification_specialization_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Classification Specialization Code"
+  description: "Mã chuyên ngành CCHN — BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
+  comment: "BK chính. Mã định danh duy nhất trong danh mục chuyên môn."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "classification_specialization"
+  atomic_column: "classification_specialization_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: "NHNCK.SPECIALIZATIONS"
+  atomic_table: "classification_specialization"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Classification Specialization Name"
+  description: "Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "classification_specialization"
+  atomic_column: "classification_specialization_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Legal Reference"
+  description: "Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.REFERENCE"
+  comment: "Nguồn lưu NCLOB — ETL convert sang string. Mô tả BRD ghi \"của quyết định\"\
+    \ — có thể là mô tả mẫu dùng chung, không riêng cho SPECIALIZATIONS; cần Data\
+    \ Modeler xác nhận ý nghĩa thực tế."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "classification_specialization"
+  atomic_column: "legal_reference"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Active Indicator"
+  description: "Cờ đang kích hoạt/hiệu lực."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.ACTIVE"
+  comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "classification_specialization"
+  atomic_column: "active_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Original Data Indicator"
+  description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.ORIGINAL_DATA"
+  comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "classification_specialization"
+  atomic_column: "original_data_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Public Service Portal Code"
+  description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.MCDT_CODE"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "classification_specialization"
+  atomic_column: "public_service_portal_code"
   data_type: "string"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
@@ -66512,15 +65789,16 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
+  description: "FK đến Securities Company Practitioner (người hành nghề chứng khoán\
+    \ tại CTCK)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Identification Type Code = 'LEGACY_CMND'"
@@ -66531,15 +65809,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Identification Type Code = 'LEGACY_CMND'"
   etl_derived_value: null
@@ -66653,15 +65931,16 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
+  description: "FK đến Securities Company Practitioner (người hành nghề chứng khoán\
+    \ tại CTCK)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Identification Type Code = 'NATIONAL_ID'"
@@ -66672,15 +65951,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Alternative Identification"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Identification Type Code = 'NATIONAL_ID'"
   etl_derived_value: null
@@ -75710,15 +74989,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Practitioner (Involved Party)."
+  description: "FK đến Securities Company Practitioner (Involved Party)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Electronic Address Type Code = 'EMAIL'"
@@ -75729,15 +75008,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Electronic Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -75798,15 +75077,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Practitioner (Involved Party)."
+  description: "FK đến Securities Company Practitioner (Involved Party)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Electronic Address Type Code = 'MOBILE'"
@@ -75817,15 +75096,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Electronic Address Type Code = 'MOBILE'"
   etl_derived_value: null
@@ -75886,15 +75165,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Practitioner (Involved Party)."
+  description: "FK đến Securities Company Practitioner (Involved Party)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Electronic Address Type Code = 'PHONE'"
@@ -75905,15 +75184,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Electronic Address"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Electronic Address Type Code = 'PHONE'"
   etl_derived_value: null
@@ -83986,15 +83265,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Postal Address"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
+  description: "FK đến Securities Company Practitioner (người hành nghề chứng khoán)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Address Type Code = 'HOUSEHOLD_REGISTRY'"
@@ -84005,15 +83284,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Postal Address"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Address Type Code = 'HOUSEHOLD_REGISTRY'"
   etl_derived_value: null
@@ -84074,15 +83353,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Postal Address"
   atomic_attribute: "Involved Party Id"
-  description: "FK đến Securities Practitioner (người hành nghề chứng khoán)."
+  description: "FK đến Securities Company Practitioner (người hành nghề chứng khoán)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
+  comment: "FK target: Securities Company Practitioner.Securities Company Practitioner\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_LICENSED_PRACTITIONER',\
     \ ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Address Type Code = 'PERMANENT'"
@@ -84093,15 +83372,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Involved Party Postal Address"
   atomic_attribute: "Involved Party Code"
-  description: "Mã Securities Practitioner."
+  description: "Mã Securities Company Practitioner."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Involved Party Id."
+  comment: "Lookup pair: Securities Company Practitioner.Securities Company Practitioner\
+    \ Code. Pair with Involved Party Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'\
     \ | Address Type Code = 'PERMANENT'"
   etl_derived_value: null

@@ -92,17 +92,31 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
 
-  - name: Specialization Type Code
-    physical_name: specialization_tp_code
-    business_meaning: Mã loại chuyên môn (Classification Value)
-    data_domain: Classification Value
+  - name: Specialization Id
+    physical_name: specialization_id
+    business_meaning: FK đến chuyên ngành CCHN đăng ký
+    data_domain: Surrogate Key
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATION_SPECIALIZATIONS
     source_column: NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID
-    comment: "Scheme: SPECIALIZATION. Phân loại chuyên ngành chứng chỉ."
+    comment: "FK target: classification_specialization.classification_specialization_id. Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_ID). Đổi tên 2026-07-09 từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION đã deprecate)."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
+    etl_derived_value: null
+
+  - name: Specialization Code
+    physical_name: specialization_code
+    business_meaning: Mã chuyên ngành CCHN đăng ký (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_SPECIALIZATIONS
+    source_column: NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID
+    comment: "Lookup pair: classification_specialization.classification_specialization_code. Pair with Specialization Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
     etl_derived_value: null
 

@@ -78,17 +78,31 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
     etl_derived_value: null
 
-  - name: Application Status Code
-    physical_name: application_status_code
-    business_meaning: Trạng thái hồ sơ hiện tại.
-    data_domain: Classification Value
+  - name: Application Status Id
+    physical_name: application_status_id
+    business_meaning: FK đến trạng thái hồ sơ hiện tại.
+    data_domain: Surrogate Key
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.STATUS_ID
-    comment: "FK → APPLICATION_STATUSES (Classification Value). Scheme: NHNCK_APPLICATION_STATUS."
+    comment: "FK target: classification_application_status.classification_application_status_id. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09 khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS đã deprecate)."
+    classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
+    etl_derived_value: null
+
+  - name: Application Status Code
+    physical_name: application_status_code
+    business_meaning: Mã trạng thái hồ sơ hiện tại (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATIONS
+    source_column: NHNCK.APPLICATIONS.STATUS_ID
+    comment: "Lookup pair: classification_application_status.classification_application_status_code. Pair with Application Status Id."
     classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
     etl_derived_value: null
 
