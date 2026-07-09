@@ -7,322 +7,313 @@
 
 
 -- ============================================================
--- 1. FACT: nhnck_fct_prac_license_ctf_snpst_flat
+-- 1. FACT: nhnck_fct_practitioner_license_certificate_snpst_flat
 --    Periodic Snapshot CCHN × tháng
---    Joins: Calendar Date (snpst_dt JOIN + issu_dt LEFT JOIN) × scr_prac_dim × cls_dim ×2
+--    Joins: Calendar Date (snpst_dt JOIN + issue_dt LEFT JOIN) × securities_practitioner_dim × classification_dim ×2
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Practitioner License Certificate Snapshot
-    prac_dim_id             String              COMMENT 'FK → Securities Practitioner Dimension',
-    issu_dt_dim_id          String              COMMENT 'FK → Calendar Date Dimension (ngày cấp)',
-    snpst_dt_dim_id         String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
-    ctf_tp_cl_dim_id        String              COMMENT 'FK → Classification Dimension (loại CCHN)',
-    ctf_st_cl_dim_id        String              COMMENT 'FK → Classification Dimension (trạng thái CCHN)',
-    license_ctf_doc_code    String              COMMENT 'DD — BK CCHN',
-    ctf_tp_code             String              COMMENT 'Loại CCHN — scheme: CERTIFICATE_TYPE',
-    ctf_st_code             String              COMMENT 'Trạng thái CCHN — scheme: CERTIFICATE_STATUS',
-    alw_reissue_ind         String              COMMENT 'Cho phép cấp lại (Y/N)',
-    is_reissue_ind          String              COMMENT 'Là CCHN cấp lại (Y/N)',
-    ctf_issu_dt             Nullable(Date)      COMMENT 'Ngày cấp CCHN',
-    revocation_dt           Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
-    dcsn_tp_code            Nullable(String)    COMMENT 'Loại quyết định — scheme: DECISION_TYPE (2=Thu hồi, 6=Hủy); NULL nếu chưa có quyết định',
+    practitioner_dim_id             String              COMMENT 'FK → Securities Practitioner Dimension',
+    issue_dt_dim_id                 String              COMMENT 'FK → Calendar Date Dimension (ngày cấp)',
+    snpst_dt_dim_id                 String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
+    certificate_tp_dim_id           String              COMMENT 'FK → SP License Certificate Type Dimension',
+    license_certificate_document_code    String              COMMENT 'DD — BK CCHN',
+    certificate_tp_unique_key       String              COMMENT 'Mã loại CCHN — dư thừa để filter/display nhanh',
+    allow_reissue_indicator         String              COMMENT 'Cho phép cấp lại (Y/N)',
+    is_reissue_indicator            String              COMMENT 'Là CCHN cấp lại (Y/N)',
+    certificate_issue_dt            Nullable(Date)      COMMENT 'Ngày cấp CCHN',
+    revocation_dt                   Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
+    decision_tp_code                Nullable(String)    COMMENT 'Loại quyết định — scheme: DECISION_TYPE',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
-    snpst_cdr_dt            Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension (snapshot)',
+    snpst_cdr_dt                    Nullable(Date)      COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
 
     -- From: CALENDAR DATE DIMENSION (Issue Date)
-    issu_cdr_dt             Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension (cấp)',
+    issue_cdr_dt                    Nullable(Date)      COMMENT 'Ngày cấp — từ Calendar Date Dimension',
 
     -- From: SECURITIES PRACTITIONER DIMENSION
-    prac_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
-    prac_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
-    prac_ed_lvl_code        Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
-    prac_nat_code           Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
-    prac_brth_dt            Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
-    prac_practice_st_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
+    practitioner_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
+    practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
+    practitioner_education_level_code    Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
+    practitioner_nationality_code   Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
+    practitioner_birth_dt           Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
+    practitioner_practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
 
     -- From: CLASSIFICATION DIMENSION (Certificate Type)
-    ctf_tp_scm_code         Nullable(String)    COMMENT 'Mã scheme loại CCHN — từ Classification Dimension',
-    ctf_tp_scm_nm           Nullable(String)    COMMENT 'Tên scheme loại CCHN — từ Classification Dimension',
-    ctf_tp_cl_code          Nullable(String)    COMMENT 'Mã loại CCHN — từ Classification Dimension',
-    ctf_tp_cl_nm            Nullable(String)    COMMENT 'Tên loại CCHN — từ Classification Dimension',
-
-    -- From: CLASSIFICATION DIMENSION (Certificate Status)
-    ctf_st_scm_code         Nullable(String)    COMMENT 'Mã scheme trạng thái CCHN — từ Classification Dimension',
-    ctf_st_scm_nm           Nullable(String)    COMMENT 'Tên scheme trạng thái CCHN — từ Classification Dimension',
-    ctf_st_cl_code          Nullable(String)    COMMENT 'Mã trạng thái CCHN — từ Classification Dimension',
-    ctf_st_cl_nm            Nullable(String)    COMMENT 'Tên trạng thái CCHN — từ Classification Dimension'
+    certificate_tp_scm_code         Nullable(String)    COMMENT 'Mã scheme loại CCHN — từ Classification Dimension',
+    certificate_tp_scm_nm           Nullable(String)    COMMENT 'Tên scheme loại CCHN — từ Classification Dimension',
+    certificate_tp_cl_code          Nullable(String)    COMMENT 'Mã loại CCHN — từ Classification Dimension',
+    certificate_tp_cl_nm            Nullable(String)    COMMENT 'Tên loại CCHN — từ Classification Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), license_ctf_doc_code)
+ORDER BY (assumeNotNull(snpst_cdr_dt), license_certificate_document_code)
 COMMENT 'Flat table — Fact Practitioner License Certificate Snapshot × Calendar Date × Securities Practitioner Dimension × Classification Dimension'
 ;
 
 
 -- ============================================================
--- 2. FACT: nhnck_fct_prac_dly_snpst_flat
+-- 2. FACT: nhnck_fct_practitioner_daily_snpst_flat
 --    Periodic Snapshot NHN × ngày
---    Joins: Calendar Date (snpst_dt JOIN) × scr_prac_dim
+--    Joins: Calendar Date (snpst_dt JOIN) × securities_practitioner_dim
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Practitioner Daily Snapshot
-    prac_dim_id             String              COMMENT 'FK → Securities Practitioner Dimension',
+    practitioner_dim_id             String              COMMENT 'FK → Securities Practitioner Dimension',
     snpst_dt_dim_id         String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     age                     Nullable(Int64)     COMMENT 'Tuổi NHN tại ngày snapshot',
-    has_actv_ctf            String              COMMENT 'TRUE nếu có CCHN đang hoạt động',
-    has_actv_vln            String              COMMENT 'TRUE nếu có vi phạm đang hoạt động',
+    has_active_violation            String              COMMENT 'TRUE nếu có vi phạm đang hoạt động',
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cdr_dt            Nullable(Date)      COMMENT 'Ngày — từ Calendar Date Dimension',
 
     -- From: SECURITIES PRACTITIONER DIMENSION
-    prac_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
-    prac_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
-    prac_ed_lvl_code        Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
-    prac_nat_code           Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
-    prac_brth_dt            Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
-    prac_practice_st_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension'
+    practitioner_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
+    practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
+    practitioner_education_level_code        Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
+    practitioner_nationality_code           Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
+    practitioner_birth_dt            Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
+    practitioner_practice_status_code   Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), prac_dim_id)
+ORDER BY (assumeNotNull(snpst_cdr_dt), practitioner_dim_id)
 COMMENT 'Flat table — Fact Practitioner Daily Snapshot × Calendar Date × Securities Practitioner Dimension'
 ;
 
 
 -- ============================================================
--- 3. OPERATIONAL: opr_prac_360_profile_flat
+-- 3. OPERATIONAL: opr_practitioner_360_profile_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_360_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner 360 Profile
-    prac_code           String              COMMENT 'PK — Mã NHN',
+    practitioner_code           String              COMMENT 'PK — Mã NHN',
     full_nm             Nullable(String)    COMMENT 'Họ tên đầy đủ NHN',
-    brth_dt             Nullable(Date)      COMMENT 'Ngày sinh NHN',
+    birth_dt             Nullable(Date)      COMMENT 'Ngày sinh NHN',
     age                 Nullable(Int64)     COMMENT 'Tuổi NHN tại thời điểm populate',
-    nat_code            Nullable(String)    COMMENT 'Mã quốc tịch',
-    nat_nm              Nullable(String)    COMMENT 'Tên quốc tịch',
-    identn_nbr          Nullable(String)    COMMENT 'Số CCCD/Hộ chiếu',
+    nationality_code            Nullable(String)    COMMENT 'Mã quốc tịch',
+    nationality_nm              Nullable(String)    COMMENT 'Tên quốc tịch',
+    identification_nbr          Nullable(String)    COMMENT 'Số CCCD/Hộ chiếu',
     workplace_nm        Nullable(String)    COMMENT 'Nơi công tác hiện tại',
-    practice_st_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTICE_STATUS',
-    practice_st_nm      Nullable(String)    COMMENT 'Tên trạng thái hành nghề',
-    actv_ctf_tp_code    Nullable(String)    COMMENT 'Loại CCHN hiện tại — scheme: CERTIFICATE_TYPE',
-    actv_ctf_tp_nm      Nullable(String)    COMMENT 'Tên loại CCHN hiện tại',
-    actv_ctf_nbr        Nullable(String)    COMMENT 'Số CCHN hiện tại',
+    practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTICE_STATUS',
+    practice_status_nm      Nullable(String)    COMMENT 'Tên trạng thái hành nghề',
+    active_certificate_tp_code    Nullable(String)    COMMENT 'Loại CCHN hiện tại — scheme: CERTIFICATE_TYPE',
+    active_certificate_tp_nm      Nullable(String)    COMMENT 'Tên loại CCHN hiện tại',
+    active_certificate_nbr        Nullable(String)    COMMENT 'Số CCHN hiện tại',
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(brth_dt))
-ORDER BY (prac_code)
+PARTITION BY toYYYYMM(assumeNotNull(birth_dt))
+ORDER BY (practitioner_code)
 COMMENT 'Flat table — Practitioner 360 Profile (latest state per NHN)'
 ;
 
 
 -- ============================================================
--- 4. OPERATIONAL: opr_prac_rel_p_profile_flat
+-- 4. OPERATIONAL: opr_practitioner_related_party_profile_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_rel_p_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_related_party_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Related Party Profile
-    prac_code           String              COMMENT 'PK (1/2) — Mã NHN',
-    rel_p_code          String              COMMENT 'PK (2/2) — Mã người liên quan',
-    rel_idv_full_nm     Nullable(String)    COMMENT 'Họ tên người liên quan',
+    practitioner_code           String              COMMENT 'PK (1/2) — Mã NHN',
+    related_party_code          String              COMMENT 'PK (2/2) — Mã người liên quan',
+    related_individual_full_nm     Nullable(String)    COMMENT 'Họ tên người liên quan',
     rltnp_tp_code       String              COMMENT 'Mã loại quan hệ — scheme: RELATIONSHIP_TYPE',
     rltnp_tp_nm         Nullable(String)    COMMENT 'Tên loại quan hệ',
-    rel_idv_ocp         Nullable(String)    COMMENT 'Nghề nghiệp người liên quan',
-    rel_idv_workplace   Nullable(String)    COMMENT 'Nơi làm việc người liên quan',
-    rel_idv_id_nbr      Nullable(String)    COMMENT 'Số CMND/CCCD người liên quan',
-    cty_code            Nullable(String)    COMMENT 'Mã quốc gia người liên quan',
-    cty_nm              Nullable(String)    COMMENT 'Tên quốc gia',
-    rel_idv_adr         Nullable(String)    COMMENT 'Địa chỉ người liên quan',
+    related_individual_occupation         Nullable(String)    COMMENT 'Nghề nghiệp người liên quan',
+    related_individual_workplace   Nullable(String)    COMMENT 'Nơi làm việc người liên quan',
+    related_individual_identity_nbr      Nullable(String)    COMMENT 'Số CMND/CCCD người liên quan',
+    country_code            Nullable(String)    COMMENT 'Mã quốc gia người liên quan',
+    country_nm              Nullable(String)    COMMENT 'Tên quốc gia',
+    related_individual_adr         Nullable(String)    COMMENT 'Địa chỉ người liên quan',
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (prac_code, rel_p_code)
+ORDER BY (practitioner_code, related_party_code)
 COMMENT 'Flat table — Practitioner Related Party Profile (1 người liên quan per NHN)'
 ;
 
 
 -- ============================================================
--- 5. OPERATIONAL: opr_prac_lst_co_role_flat
+-- 5. OPERATIONAL: opr_practitioner_list_company_role_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_lst_co_role_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_list_company_role_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Listed Company Role
-    prac_code               String              COMMENT 'PK (1/2) — Mã NHN',
-    org_emp_rpt_code        String              COMMENT 'PK (2/2) — Mã báo cáo tổ chức',
-    prac_workplace_at_rpt   Nullable(String)    COMMENT 'Tên nơi công tác tại thời điểm báo cáo',
-    prac_pos_at_rpt         Nullable(String)    COMMENT 'Vị trí/chức vụ tại thời điểm báo cáo',
-    org_tp_code             Nullable(String)    COMMENT 'Loại tổ chức — scheme: ORG_TYPE',
-    scr_org_refr_code       Nullable(String)    COMMENT 'Mã tổ chức tham chiếu',
-    employment_st           Nullable(String)    COMMENT 'Trạng thái vai trò (Active/Inactive)',
+    practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
+    organization_employment_rpt_code        String              COMMENT 'PK (2/2) — Mã báo cáo tổ chức',
+    practitioner_workplace_at_rpt   Nullable(String)    COMMENT 'Tên nơi công tác tại thời điểm báo cáo',
+    practitioner_position_at_rpt         Nullable(String)    COMMENT 'Vị trí/chức vụ tại thời điểm báo cáo',
+    organization_tp_code             Nullable(String)    COMMENT 'Loại tổ chức — scheme: ORG_TYPE',
+    securities_organization_reference_code       Nullable(String)    COMMENT 'Mã tổ chức tham chiếu',
+    employment_status           Nullable(String)    COMMENT 'Trạng thái vai trò (Active/Inactive)',
     hire_dt                 Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
-    tmt_dt                  Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
+    termination_dt                  Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (prac_code, org_emp_rpt_code)
+ORDER BY (practitioner_code, organization_employment_rpt_code)
 COMMENT 'Flat table — Practitioner Listed Company Role (1 báo cáo tổ chức per NHN)'
 ;
 
 
 -- ============================================================
--- 6. OPERATIONAL: opr_prac_ctf_hist_flat
+-- 6. OPERATIONAL: opr_practitioner_certificate_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_ctf_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_certificate_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Certificate History
-    prac_code               String              COMMENT 'PK (1/2) — Mã NHN',
-    license_ctf_doc_code    String              COMMENT 'PK (2/2) — Mã CCHN',
-    ctf_nbr                 Nullable(String)    COMMENT 'Số CCHN',
-    ctf_tp_code             Nullable(String)    COMMENT 'Loại CCHN — scheme: CERTIFICATE_TYPE',
-    ctf_tp_nm               Nullable(String)    COMMENT 'Tên loại CCHN',
-    issu_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
+    practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
+    license_certificate_document_code    String              COMMENT 'PK (2/2) — Mã CCHN',
+    certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
+    certificate_tp_code             Nullable(String)    COMMENT 'Loại CCHN — scheme: CERTIFICATE_TYPE',
+    certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại CCHN',
+    issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt           Nullable(Date)      COMMENT 'Ngày thu hồi — NULL nếu chưa thu hồi',
-    issu_dcsn_nbr           Nullable(String)    COMMENT 'Số quyết định cấp',
-    revocation_dcsn_nbr     Nullable(String)    COMMENT 'Số quyết định thu hồi',
-    pcs_st_code             Nullable(String)    COMMENT 'Trạng thái xử lý hồ sơ — scheme: PROCESS_STATUS',
-    pcs_st_nm               Nullable(String)    COMMENT 'Tên trạng thái xử lý hồ sơ',
+    issue_decision_nbr           Nullable(String)    COMMENT 'Số quyết định cấp',
+    revocation_decision_nbr     Nullable(String)    COMMENT 'Số quyết định thu hồi',
+    process_status_code             Nullable(String)    COMMENT 'Trạng thái xử lý hồ sơ — scheme: PROCESS_STATUS',
+    process_status_nm               Nullable(String)    COMMENT 'Tên trạng thái xử lý hồ sơ',
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(issu_dt))
-ORDER BY (assumeNotNull(issu_dt), prac_code, license_ctf_doc_code)
+PARTITION BY toYYYYMM(assumeNotNull(issue_dt))
+ORDER BY (assumeNotNull(issue_dt), practitioner_code, license_certificate_document_code)
 COMMENT 'Flat table — Practitioner Certificate History (1 CCHN per NHN)'
 ;
 
 
 -- ============================================================
--- 7. OPERATIONAL: opr_prac_emp_hist_flat
+-- 7. OPERATIONAL: opr_practitioner_employment_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_emp_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_employment_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Employment History
-    prac_code           String              COMMENT 'PK (1/2) — Mã NHN',
-    org_emp_rpt_code    String              COMMENT 'PK (2/2) — Mã báo cáo tổ chức',
-    scr_org_refr_code   Nullable(String)    COMMENT 'Mã tổ chức tham chiếu',
-    scr_org_refr_nm     Nullable(String)    COMMENT 'Tên tổ chức',
-    org_tp_code         Nullable(String)    COMMENT 'Loại tổ chức — scheme: ORG_TYPE',
-    org_tp_nm           Nullable(String)    COMMENT 'Tên loại tổ chức',
-    prac_pos_at_rpt     Nullable(String)    COMMENT 'Vị trí/chức vụ tại thời điểm báo cáo',
-    prac_dept_at_rpt    Nullable(String)    COMMENT 'Phòng ban tại thời điểm báo cáo',
+    practitioner_code           String              COMMENT 'PK (1/2) — Mã NHN',
+    organization_employment_rpt_code    String              COMMENT 'PK (2/2) — Mã báo cáo tổ chức',
+    securities_organization_reference_code   Nullable(String)    COMMENT 'Mã tổ chức tham chiếu',
+    securities_organization_reference_nm     Nullable(String)    COMMENT 'Tên tổ chức',
+    organization_tp_code         Nullable(String)    COMMENT 'Loại tổ chức — scheme: ORG_TYPE',
+    organization_tp_nm           Nullable(String)    COMMENT 'Tên loại tổ chức',
+    practitioner_position_at_rpt     Nullable(String)    COMMENT 'Vị trí/chức vụ tại thời điểm báo cáo',
+    practitioner_department_at_rpt    Nullable(String)    COMMENT 'Phòng ban tại thời điểm báo cáo',
     hire_dt             Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
-    tmt_dt              Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
+    termination_dt              Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(hire_dt))
-ORDER BY (assumeNotNull(hire_dt), prac_code, org_emp_rpt_code)
+ORDER BY (assumeNotNull(hire_dt), practitioner_code, organization_employment_rpt_code)
 COMMENT 'Flat table — Practitioner Employment History (1 lần công tác per NHN)'
 ;
 
 
 -- ============================================================
--- 8. OPERATIONAL: opr_prac_vln_hist_flat
+-- 8. OPERATIONAL: opr_practitioner_violation_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_vln_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_violation_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Violation History
-    prac_code           String              COMMENT 'PK (1/2) — Mã NHN',
-    conduct_vln_code    String              COMMENT 'PK (2/2) — Mã vi phạm',
-    rcrd_tp_code        Nullable(String)    COMMENT 'Hình thức xử phạt — scheme: RECORD_TYPE',
-    rcrd_tp_nm          Nullable(String)    COMMENT 'Tên hình thức xử phạt',
+    practitioner_code           String              COMMENT 'PK (1/2) — Mã NHN',
+    conduct_violation_code    String              COMMENT 'PK (2/2) — Mã vi phạm',
+    record_tp_code        Nullable(String)    COMMENT 'Hình thức xử phạt — scheme: RECORD_TYPE',
+    record_tp_nm          Nullable(String)    COMMENT 'Tên hình thức xử phạt',
     note                Nullable(String)    COMMENT 'Nội dung vi phạm',
-    rcrd_st_code        String              COMMENT 'Trạng thái vi phạm — scheme: RECORD_STATUS',
-    rcrd_st_nm          Nullable(String)    COMMENT 'Tên trạng thái vi phạm',
-    dcsn_nbr            Nullable(String)    COMMENT 'Số quyết định xử phạt',
-    dcsn_signed_dt      Nullable(Date)      COMMENT 'Ngày quyết định xử phạt',
+    record_status_code        String              COMMENT 'Trạng thái vi phạm — scheme: RECORD_STATUS',
+    record_status_nm          Nullable(String)    COMMENT 'Tên trạng thái vi phạm',
+    decision_nbr            Nullable(String)    COMMENT 'Số quyết định xử phạt',
+    decision_signed_dt      Nullable(Date)      COMMENT 'Ngày quyết định xử phạt',
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(dcsn_signed_dt))
-ORDER BY (assumeNotNull(dcsn_signed_dt), prac_code, conduct_vln_code)
+PARTITION BY toYYYYMM(assumeNotNull(decision_signed_dt))
+ORDER BY (assumeNotNull(decision_signed_dt), practitioner_code, conduct_violation_code)
 COMMENT 'Flat table — Practitioner Violation History (1 vi phạm per NHN)'
 ;
 
 
 -- ============================================================
--- 9. OPERATIONAL: opr_prac_exam_hist_flat
+-- 9. OPERATIONAL: opr_practitioner_exam_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_exam_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_exam_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Exam History
-    prac_code                   String              COMMENT 'PK (1/2) — Mã NHN',
-    exam_ases_rslt_code         String              COMMENT 'PK (2/2) — Mã kết quả thi',
-    ases_nm                     Nullable(String)    COMMENT 'Tên đợt thi',
-    rpt_yr                      Nullable(Int64)     COMMENT 'Năm báo cáo đợt thi',
-    exam_ssn_nbr                Nullable(Int64)     COMMENT 'Kỳ thi trong năm',
-    exam_period                 Nullable(String)    COMMENT 'Kỳ thi dạng chuỗi (VD: 2025_1)',
-    exam_strt_dt                Nullable(Date)      COMMENT 'Ngày thi',
-    law_scor                    Nullable(String)    COMMENT 'Điểm thi pháp luật',
-    specialization_scor         Nullable(String)    COMMENT 'Điểm thi chuyên môn',
-    law_rslt_code               Nullable(String)    COMMENT 'Kết quả thi pháp luật — scheme: EXAM_RESULT',
-    law_rslt_nm                 Nullable(String)    COMMENT 'Tên kết quả thi pháp luật',
-    specialization_rslt_code    Nullable(String)    COMMENT 'Kết quả thi chuyên môn — scheme: EXAM_RESULT',
-    specialization_rslt_nm      Nullable(String)    COMMENT 'Tên kết quả thi chuyên môn',
-    ovrl_rslt_code              Nullable(String)    COMMENT 'Kết quả tổng hợp — scheme: EXAM_RESULT',
-    ovrl_rslt_nm                Nullable(String)    COMMENT 'Tên kết quả tổng hợp',
-    dcsn_nbr                    Nullable(String)    COMMENT 'Số quyết định công bố kết quả',
-    dcsn_signed_dt              Nullable(Date)      COMMENT 'Ngày ký quyết định công bố',
+    practitioner_code                   String              COMMENT 'PK (1/2) — Mã NHN',
+    examination_assessment_result_code         String              COMMENT 'PK (2/2) — Mã kết quả thi',
+    assessment_nm                     Nullable(String)    COMMENT 'Tên đợt thi',
+    rpt_year                      Nullable(Int64)     COMMENT 'Năm báo cáo đợt thi',
+    examination_session_nbr                Nullable(Int64)     COMMENT 'Kỳ thi trong năm',
+    examination_period                 Nullable(String)    COMMENT 'Kỳ thi dạng chuỗi (VD: 2025_1)',
+    examination_start_dt                Nullable(Date)      COMMENT 'Ngày thi',
+    law_score                    Nullable(String)    COMMENT 'Điểm thi pháp luật',
+    specialization_score         Nullable(String)    COMMENT 'Điểm thi chuyên môn',
+    law_result_code               Nullable(String)    COMMENT 'Kết quả thi pháp luật — scheme: EXAM_RESULT',
+    law_result_nm                 Nullable(String)    COMMENT 'Tên kết quả thi pháp luật',
+    specialization_result_code    Nullable(String)    COMMENT 'Kết quả thi chuyên môn — scheme: EXAM_RESULT',
+    specialization_result_nm      Nullable(String)    COMMENT 'Tên kết quả thi chuyên môn',
+    overall_result_code              Nullable(String)    COMMENT 'Kết quả tổng hợp — scheme: EXAM_RESULT',
+    overall_result_nm                Nullable(String)    COMMENT 'Tên kết quả tổng hợp',
+    decision_nbr                    Nullable(String)    COMMENT 'Số quyết định công bố kết quả',
+    decision_signed_dt              Nullable(Date)      COMMENT 'Ngày ký quyết định công bố',
     src_stm_code                String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(exam_strt_dt))
-ORDER BY (assumeNotNull(exam_strt_dt), prac_code, exam_ases_rslt_code)
+PARTITION BY toYYYYMM(assumeNotNull(examination_start_dt))
+ORDER BY (assumeNotNull(examination_start_dt), practitioner_code, examination_assessment_result_code)
 COMMENT 'Flat table — Practitioner Exam History (1 lần thi per NHN)'
 ;
 
 
 -- ============================================================
--- 10. OPERATIONAL: opr_prac_trn_hist_flat
+-- 10. OPERATIONAL: opr_practitioner_training_hist_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_trn_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_training_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Training History
-    prac_code       String                  COMMENT 'PK (1/2) — Mã NHN',
+    practitioner_code       String                  COMMENT 'PK (1/2) — Mã NHN',
     enrollment_code String                  COMMENT 'PK (2/2) — Mã đăng ký khóa học',
-    trn_clss_code   String                  COMMENT 'Mã khóa học',
-    trn_clss_nm     Nullable(String)        COMMENT 'Tên khóa học',
-    academic_yr     Nullable(Int64)         COMMENT 'Năm học',
-    exam_strt_dt    Nullable(Date)          COMMENT 'Ngày bắt đầu thi',
-    exam_end_dt     Nullable(String)        COMMENT 'Ngày kết thúc thi (Text — nguồn VARCHAR2(200))',
-    exam_scor       Nullable(Decimal(5,2))  COMMENT 'Điểm thi — nullable nếu chưa thi',
-    trn_rslt_code   Nullable(String)        COMMENT 'Kết quả thi — scheme: TRAINING_RESULT',
-    trn_rslt_nm     Nullable(String)        COMMENT 'Tên kết quả thi',
-    src_stm_code    String                  COMMENT 'Mã hệ thống nguồn'
+    training_class_code   String                  COMMENT 'Mã khóa học',
+    training_class_nm     Nullable(String)        COMMENT 'Tên khóa học',
+    academic_year     Nullable(Int64)         COMMENT 'Năm học',
+    exam_start_dt           Nullable(Date)          COMMENT 'Ngày bắt đầu thi',
+    exam_end_dt             Nullable(String)        COMMENT 'Ngày kết thúc thi (Text — nguồn VARCHAR2(200))',
+    exam_score              Nullable(Decimal(5,2))  COMMENT 'Điểm thi — nullable nếu chưa thi',
+    training_result_code    Nullable(String)        COMMENT 'Kết quả thi — scheme: TRAINING_RESULT',
+    training_result_nm      Nullable(String)        COMMENT 'Tên kết quả thi',
+    src_stm_code            String                  COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(exam_strt_dt))
-ORDER BY (assumeNotNull(exam_strt_dt), prac_code, enrollment_code)
+PARTITION BY toYYYYMM(assumeNotNull(exam_start_dt))
+ORDER BY (assumeNotNull(exam_start_dt), practitioner_code, enrollment_code)
 COMMENT 'Flat table — Practitioner Training History (1 enrollment per NHN)'
 ;
 
 
 -- ============================================================
--- 11. OPERATIONAL: opr_prac_data_explr_flat
+-- 11. OPERATIONAL: opr_practitioner_data_explorer_flat
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_prac_data_explr_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Data Explorer
-    prac_code               String              COMMENT 'PK (1/2) — Mã NHN',
-    license_ctf_doc_code    String              COMMENT 'PK (2/2) — Mã CCHN',
+    practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
+    license_certificate_document_code    String              COMMENT 'PK (2/2) — Mã CCHN',
     full_nm                 Nullable(String)    COMMENT 'Họ tên NHN',
-    ctf_nbr                 Nullable(String)    COMMENT 'Số CCHN',
-    ctf_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — scheme: CERTIFICATE_TYPE',
-    ctf_tp_nm               Nullable(String)    COMMENT 'Tên loại hình hành nghề',
-    practice_st_code        Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTICE_STATUS',
-    issu_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
-    current_org_nm          Nullable(String)    COMMENT 'Tên tổ chức công tác hiện tại',
-    identn_tp_code          Nullable(String)    COMMENT 'Loại giấy tờ định danh — scheme: IP_ALT_ID_TYPE',
+    certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
+    certificate_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — scheme: CERTIFICATE_TYPE',
+    certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại hình hành nghề',
+    practice_status_code        Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTICE_STATUS',
+    issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
+    current_organization_nm          Nullable(String)    COMMENT 'Tên tổ chức công tác hiện tại',
+    identification_tp_code          Nullable(String)    COMMENT 'Loại giấy tờ định danh — scheme: IP_ALT_ID_TYPE',
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(issu_dt))
-ORDER BY (assumeNotNull(issu_dt), prac_code, license_ctf_doc_code)
+PARTITION BY toYYYYMM(assumeNotNull(issue_dt))
+ORDER BY (assumeNotNull(issue_dt), practitioner_code, license_certificate_document_code)
 COMMENT 'Flat table — Practitioner Data Explorer (1 CCHN per NHN — toàn bộ trạng thái)'
 ;

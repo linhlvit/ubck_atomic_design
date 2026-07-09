@@ -607,11 +607,13 @@ PRE-CHECK (trước khi sinh):
 FILE 01 (CREATE):
 □ Số bảng CREATE = số fact + số operational
 □ Naming fact flat: datamart.{module}_{datamart_table}_flat
-□ Naming operational flat: datamart.{datamart_table}_flat (không có module prefix)
+□ Naming operational flat: datamart.{module}_{datamart_table}_flat (có module prefix — giống fact)
 □ Thứ tự cột: fact columns → Calendar Date columns → dim columns → technical metadata
 □ Operational: chỉ operational columns → technical metadata (không có Calendar Date, không có dim)
 □ Data type dùng ClickHouse types (Nullable wrapper theo nullable=true/false trong Attributes)
-□ Calendar Date 9 cột cố định — không thêm không bớt
+□ Calendar Date: chỉ lấy cột cdr_dt (có thể alias theo vai trò: snpst_cdr_dt, issue_cdr_dt, event_cdr_dt)
+□ Cột fact/operational: lấy ĐÚNG các cột có trong Attributes.csv — không thêm, không bớt
+□ Cột từ dim JOIN: chỉ JOIN dim có FK tương ứng trong Attributes.csv của bảng fact — không JOIN dim không có FK
 □ Cột từ dim: bỏ PK surrogate và src_stm_code, giữ các cột giá trị nghiệp vụ còn lại
 □ Cột từ dim: COMMENT ghi rõ "— từ {Dim Entity Name}"
 □ ENGINE = ReplicatedReplacingMergeTree()
@@ -631,6 +633,8 @@ FILE 02 (POPULATE):
 
 POST-CHECK (sau khi sinh):
 □ Cross-check: mỗi cột trong CREATE có đúng 1 entry tương ứng trong SELECT của INSERT
-□ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE
+□ Không có cột nào trong Attributes.csv bị bỏ sót trong CREATE TABLE (fact/operational columns)
+□ Không có cột nào trong CREATE TABLE (fact/operational section) mà KHÔNG có trong Attributes.csv — cột thừa phải xóa
+□ Dim JOIN: mọi dim được JOIN phải có FK tương ứng trong Attributes.csv — dim không có FK thì không JOIN, không lấy cột
 □ Sau khi xuất 2 file: DỪNG chờ human duyệt → ❌ KHÔNG tự kết thúc skill khi chưa có xác nhận
 ```

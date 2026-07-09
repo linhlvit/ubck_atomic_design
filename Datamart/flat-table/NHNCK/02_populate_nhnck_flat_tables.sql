@@ -8,297 +8,286 @@
 
 
 -- ============================================================
--- 1. FACT: nhnck_fct_prac_license_ctf_snpst_flat
+-- 1. FACT: nhnck_fct_practitioner_license_certificate_snpst_flat
 --    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
 --    issu_cal:  LEFT JOIN (lịch sử — không lọc ngày)
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_prac_license_ctf_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_fct_prac_license_ctf_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_practitioner_license_certificate_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_fct_practitioner_license_certificate_snpst_flat
 SELECT
     -- From: FACT Practitioner License Certificate Snapshot
-    f.prac_dim_id,
-    f.issu_dt_dim_id,
+    f.practitioner_dim_id,
+    f.issue_dt_dim_id,
     f.snpst_dt_dim_id,
-    f.ctf_tp_cl_dim_id,
-    f.ctf_st_cl_dim_id,
-    f.license_ctf_doc_code,
-    f.ctf_tp_code,
-    f.ctf_st_code,
-    f.alw_reissue_ind,
-    f.is_reissue_ind,
-    f.ctf_issu_dt,
+    f.certificate_tp_dim_id,
+    f.license_certificate_document_code,
+    f.certificate_tp_unique_key,
+    f.allow_reissue_indicator,
+    f.is_reissue_indicator,
+    f.certificate_issue_dt,
     f.revocation_dt,
-    f.dcsn_tp_code,
+    f.decision_tp_code,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
 
     -- From: CALENDAR DATE DIMENSION (Issue Date)
-    issu_cal.cdr_dt             AS issu_cdr_dt,
+    issu_cal.cdr_dt             AS issue_cdr_dt,
 
     -- From: SECURITIES PRACTITIONER DIMENSION
-    prac_dim.prac_code          AS prac_code,
-    prac_dim.full_nm            AS prac_full_nm,
-    prac_dim.ed_lvl_code        AS prac_ed_lvl_code,
-    prac_dim.nat_code           AS prac_nat_code,
-    prac_dim.brth_dt            AS prac_brth_dt,
-    prac_dim.practice_st_code   AS prac_practice_st_code,
+    prac_dim.practitioner_code          AS practitioner_code,
+    prac_dim.full_nm                    AS practitioner_full_nm,
+    prac_dim.education_level_code       AS practitioner_education_level_code,
+    prac_dim.nationality_code           AS practitioner_nationality_code,
+    prac_dim.birth_dt                   AS practitioner_birth_dt,
+    prac_dim.practice_status_code       AS practitioner_practice_status_code,
 
     -- From: CLASSIFICATION DIMENSION (Certificate Type)
-    ctf_tp_cls.scm_code         AS ctf_tp_scm_code,
-    ctf_tp_cls.scm_nm           AS ctf_tp_scm_nm,
-    ctf_tp_cls.cl_code          AS ctf_tp_cl_code,
-    ctf_tp_cls.cl_nm            AS ctf_tp_cl_nm,
+    certificate_tp_cls.scm_code         AS certificate_tp_scm_code,
+    certificate_tp_cls.scm_nm           AS certificate_tp_scm_nm,
+    certificate_tp_cls.cl_code          AS certificate_tp_cl_code,
+    certificate_tp_cls.cl_nm            AS certificate_tp_cl_nm
 
-    -- From: CLASSIFICATION DIMENSION (Certificate Status)
-    ctf_st_cls.scm_code         AS ctf_st_scm_code,
-    ctf_st_cls.scm_nm           AS ctf_st_scm_nm,
-    ctf_st_cls.cl_code          AS ctf_st_cl_code,
-    ctf_st_cls.cl_nm            AS ctf_st_cl_nm
-
-FROM datamart.fct_prac_license_ctf_snpst f
+FROM datamart.fct_practitioner_license_certificate_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.cdr_dt_dim issu_cal
-    ON issu_cal.cdr_dt_dim_id = f.issu_dt_dim_id
-LEFT JOIN datamart.scr_prac_dim prac_dim
-    ON prac_dim.scr_prac_dim_id = f.prac_dim_id
-LEFT JOIN datamart.cls_dim ctf_tp_cls
-    ON ctf_tp_cls.cl_dim_id = f.ctf_tp_cl_dim_id
-LEFT JOIN datamart.cls_dim ctf_st_cls
-    ON ctf_st_cls.cl_dim_id = f.ctf_st_cl_dim_id
+    ON issu_cal.cdr_dt_dim_id = f.issue_dt_dim_id
+LEFT JOIN datamart.securities_practitioner_dim prac_dim
+    ON prac_dim.securities_practitioner_dim_id = f.practitioner_dim_id
+LEFT JOIN datamart.classification_dim certificate_tp_cls
+    ON certificate_tp_cls.cl_dim_id = f.certificate_tp_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 
 -- ============================================================
--- 2. FACT: nhnck_fct_prac_dly_snpst_flat
+-- 2. FACT: nhnck_fct_practitioner_daily_snpst_flat
 --    snpst_cal: JOIN + WHERE cdr_dt = :etl_date
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_prac_dly_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_fct_prac_dly_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_fct_practitioner_daily_snpst_flat
 SELECT
     -- From: FACT Practitioner Daily Snapshot
-    f.prac_dim_id,
+    f.practitioner_dim_id,
     f.snpst_dt_dim_id,
     f.age,
-    f.has_actv_ctf,
-    f.has_actv_vln,
+    f.has_active_violation,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
 
     -- From: SECURITIES PRACTITIONER DIMENSION
-    prac_dim.prac_code          AS prac_code,
-    prac_dim.full_nm            AS prac_full_nm,
-    prac_dim.ed_lvl_code        AS prac_ed_lvl_code,
-    prac_dim.nat_code           AS prac_nat_code,
-    prac_dim.brth_dt            AS prac_brth_dt,
-    prac_dim.practice_st_code   AS prac_practice_st_code
+    prac_dim.practitioner_code          AS practitioner_code,
+    prac_dim.full_nm            AS practitioner_full_nm,
+    prac_dim.education_level_code        AS practitioner_education_level_code,
+    prac_dim.nationality_code           AS practitioner_nationality_code,
+    prac_dim.birth_dt            AS practitioner_birth_dt,
+    prac_dim.practice_status_code   AS practitioner_practice_status_code
 
-FROM datamart.fct_prac_dly_snpst f
+FROM datamart.fct_practitioner_daily_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.scr_prac_dim prac_dim
-    ON prac_dim.scr_prac_dim_id = f.prac_dim_id
+LEFT JOIN datamart.securities_practitioner_dim prac_dim
+    ON prac_dim.securities_practitioner_dim_id = f.practitioner_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 
 -- ============================================================
--- 3. OPERATIONAL: opr_prac_360_profile_flat
+-- 3. OPERATIONAL: opr_practitioner_360_profile_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_360_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_360_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_360_profile_flat
 SELECT
-    o.prac_code,
+    o.practitioner_code,
     o.full_nm,
-    o.brth_dt,
+    o.birth_dt,
     o.age,
-    o.nat_code,
-    o.nat_nm,
-    o.identn_nbr,
+    o.nationality_code,
+    o.nationality_nm,
+    o.identification_nbr,
     o.workplace_nm,
-    o.practice_st_code,
-    o.practice_st_nm,
-    o.actv_ctf_tp_code,
-    o.actv_ctf_tp_nm,
-    o.actv_ctf_nbr,
+    o.practice_status_code,
+    o.practice_status_nm,
+    o.active_certificate_tp_code,
+    o.active_certificate_tp_nm,
+    o.active_certificate_nbr,
     o.src_stm_code
-FROM datamart.opr_prac_360_profile o
+FROM datamart.opr_practitioner_360_profile o
 ;
 
 
 -- ============================================================
--- 4. OPERATIONAL: opr_prac_rel_p_profile_flat
+-- 4. OPERATIONAL: opr_practitioner_related_party_profile_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_rel_p_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_rel_p_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_related_party_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_related_party_profile_flat
 SELECT
-    o.prac_code,
-    o.rel_p_code,
-    o.rel_idv_full_nm,
+    o.practitioner_code,
+    o.related_party_code,
+    o.related_individual_full_nm,
     o.rltnp_tp_code,
     o.rltnp_tp_nm,
-    o.rel_idv_ocp,
-    o.rel_idv_workplace,
-    o.rel_idv_id_nbr,
-    o.cty_code,
-    o.cty_nm,
-    o.rel_idv_adr,
+    o.related_individual_occupation,
+    o.related_individual_workplace,
+    o.related_individual_identity_nbr,
+    o.country_code,
+    o.country_nm,
+    o.related_individual_adr,
     o.src_stm_code
-FROM datamart.opr_prac_rel_p_profile o
+FROM datamart.opr_practitioner_related_party_profile o
 ;
 
 
 -- ============================================================
--- 5. OPERATIONAL: opr_prac_lst_co_role_flat
+-- 5. OPERATIONAL: opr_practitioner_list_company_role_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_lst_co_role_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_lst_co_role_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_list_company_role_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_list_company_role_flat
 SELECT
-    o.prac_code,
-    o.org_emp_rpt_code,
-    o.prac_workplace_at_rpt,
-    o.prac_pos_at_rpt,
-    o.org_tp_code,
-    o.scr_org_refr_code,
-    o.employment_st,
+    o.practitioner_code,
+    o.organization_employment_rpt_code,
+    o.practitioner_workplace_at_rpt,
+    o.practitioner_position_at_rpt,
+    o.organization_tp_code,
+    o.securities_organization_reference_code,
+    o.employment_status,
     o.hire_dt,
-    o.tmt_dt,
+    o.termination_dt,
     o.src_stm_code
-FROM datamart.opr_prac_lst_co_role o
+FROM datamart.opr_practitioner_list_company_role o
 ;
 
 
 -- ============================================================
--- 6. OPERATIONAL: opr_prac_ctf_hist_flat
+-- 6. OPERATIONAL: opr_practitioner_certificate_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_ctf_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_ctf_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_certificate_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_certificate_hist_flat
 SELECT
-    o.prac_code,
-    o.license_ctf_doc_code,
-    o.ctf_nbr,
-    o.ctf_tp_code,
-    o.ctf_tp_nm,
-    o.issu_dt,
+    o.practitioner_code,
+    o.license_certificate_document_code,
+    o.certificate_nbr,
+    o.certificate_tp_code,
+    o.certificate_tp_nm,
+    o.issue_dt,
     o.revocation_dt,
-    o.issu_dcsn_nbr,
-    o.revocation_dcsn_nbr,
-    o.pcs_st_code,
-    o.pcs_st_nm,
+    o.issue_decision_nbr,
+    o.revocation_decision_nbr,
+    o.process_status_code,
+    o.process_status_nm,
     o.src_stm_code
-FROM datamart.opr_prac_ctf_hist o
+FROM datamart.opr_practitioner_certificate_hist o
 ;
 
 
 -- ============================================================
--- 7. OPERATIONAL: opr_prac_emp_hist_flat
+-- 7. OPERATIONAL: opr_practitioner_employment_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_emp_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_emp_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_employment_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_employment_hist_flat
 SELECT
-    o.prac_code,
-    o.org_emp_rpt_code,
-    o.scr_org_refr_code,
-    o.scr_org_refr_nm,
-    o.org_tp_code,
-    o.org_tp_nm,
-    o.prac_pos_at_rpt,
-    o.prac_dept_at_rpt,
+    o.practitioner_code,
+    o.organization_employment_rpt_code,
+    o.securities_organization_reference_code,
+    o.securities_organization_reference_nm,
+    o.organization_tp_code,
+    o.organization_tp_nm,
+    o.practitioner_position_at_rpt,
+    o.practitioner_department_at_rpt,
     o.hire_dt,
-    o.tmt_dt,
+    o.termination_dt,
     o.src_stm_code
-FROM datamart.opr_prac_emp_hist o
+FROM datamart.opr_practitioner_employment_hist o
 ;
 
 
 -- ============================================================
--- 8. OPERATIONAL: opr_prac_vln_hist_flat
+-- 8. OPERATIONAL: opr_practitioner_violation_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_vln_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_vln_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_violation_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_violation_hist_flat
 SELECT
-    o.prac_code,
-    o.conduct_vln_code,
-    o.rcrd_tp_code,
-    o.rcrd_tp_nm,
+    o.practitioner_code,
+    o.conduct_violation_code,
+    o.record_tp_code,
+    o.record_tp_nm,
     o.note,
-    o.rcrd_st_code,
-    o.rcrd_st_nm,
-    o.dcsn_nbr,
-    o.dcsn_signed_dt,
+    o.record_status_code,
+    o.record_status_nm,
+    o.decision_nbr,
+    o.decision_signed_dt,
     o.src_stm_code
-FROM datamart.opr_prac_vln_hist o
+FROM datamart.opr_practitioner_violation_hist o
 ;
 
 
 -- ============================================================
--- 9. OPERATIONAL: opr_prac_exam_hist_flat
+-- 9. OPERATIONAL: opr_practitioner_exam_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_exam_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_exam_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_exam_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_exam_hist_flat
 SELECT
-    o.prac_code,
-    o.exam_ases_rslt_code,
-    o.ases_nm,
-    o.rpt_yr,
-    o.exam_ssn_nbr,
-    o.exam_period,
-    o.exam_strt_dt,
-    o.law_scor,
-    o.specialization_scor,
-    o.law_rslt_code,
-    o.law_rslt_nm,
-    o.specialization_rslt_code,
-    o.specialization_rslt_nm,
-    o.ovrl_rslt_code,
-    o.ovrl_rslt_nm,
-    o.dcsn_nbr,
-    o.dcsn_signed_dt,
+    o.practitioner_code,
+    o.examination_assessment_result_code,
+    o.assessment_nm,
+    o.rpt_year,
+    o.examination_session_nbr,
+    o.examination_period,
+    o.examination_start_dt,
+    o.law_score,
+    o.specialization_score,
+    o.law_result_code,
+    o.law_result_nm,
+    o.specialization_result_code,
+    o.specialization_result_nm,
+    o.overall_result_code,
+    o.overall_result_nm,
+    o.decision_nbr,
+    o.decision_signed_dt,
     o.src_stm_code
-FROM datamart.opr_prac_exam_hist o
+FROM datamart.opr_practitioner_exam_hist o
 ;
 
 
 -- ============================================================
--- 10. OPERATIONAL: opr_prac_trn_hist_flat
+-- 10. OPERATIONAL: opr_practitioner_training_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_trn_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_trn_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_training_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_training_hist_flat
 SELECT
-    o.prac_code,
+    o.practitioner_code,
     o.enrollment_code,
-    o.trn_clss_code,
-    o.trn_clss_nm,
-    o.academic_yr,
-    o.exam_strt_dt,
+    o.training_class_code,
+    o.training_class_nm,
+    o.academic_year,
+    o.exam_start_dt,
     o.exam_end_dt,
-    o.exam_scor,
-    o.trn_rslt_code,
-    o.trn_rslt_nm,
+    o.exam_score,
+    o.training_result_code,
+    o.training_result_nm,
     o.src_stm_code
-FROM datamart.opr_prac_trn_hist o
+FROM datamart.opr_practitioner_training_hist o
 ;
 
 
 -- ============================================================
--- 11. OPERATIONAL: opr_prac_data_explr_flat
+-- 11. OPERATIONAL: opr_practitioner_data_explorer_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_prac_data_explr_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_prac_data_explr_flat
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_data_explorer_flat
 SELECT
-    o.prac_code,
-    o.license_ctf_doc_code,
+    o.practitioner_code,
+    o.license_certificate_document_code,
     o.full_nm,
-    o.ctf_nbr,
-    o.ctf_tp_code,
-    o.ctf_tp_nm,
-    o.practice_st_code,
-    o.issu_dt,
-    o.current_org_nm,
-    o.identn_tp_code,
+    o.certificate_nbr,
+    o.certificate_tp_code,
+    o.certificate_tp_nm,
+    o.practice_status_code,
+    o.issue_dt,
+    o.current_organization_nm,
+    o.identification_tp_code,
     o.src_stm_code
-FROM datamart.opr_prac_data_explr o
+FROM datamart.opr_practitioner_data_explorer o
 ;

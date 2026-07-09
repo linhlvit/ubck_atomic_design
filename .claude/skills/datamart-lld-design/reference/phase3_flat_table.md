@@ -87,9 +87,13 @@ Tên bảng Calendar Date (physical): `datamart.cdr_dt_dim`, join key `cdr_dt_di
 
 ## Cột lấy từ dim (ngoài Calendar Date)
 
+**Điều kiện tiên quyết:** Chỉ JOIN dim nào có FK tương ứng trong Attributes.csv của bảng fact (cột `data_domain = Surrogate Dimension Key`). Nếu FK không còn trong Attributes → không JOIN dim đó, không lấy cột từ dim đó.
+
 Đọc Attributes.csv của bảng dim tương ứng, lấy **toàn bộ cột trừ**:
 - Cột PK surrogate (`data_domain = Surrogate Key`)
 - Cột `src_stm_code` (`data_domain = Classification Value`, `datamart_column = src_stm_code`)
+
+**Bắt buộc cross-check sau khi sinh:** Mọi cột trong section `-- From: FACT/OPERATIONAL` của CREATE phải có trong Attributes.csv — không được có cột thừa. Tương tự mọi dim được JOIN phải có FK trong Attributes.csv.
 
 ---
 
@@ -115,10 +119,10 @@ Calendar Date — chỉ lấy cột `cdr_dt`:
 -- 1 FK date:
 cdr_dt              Nullable(Date)  COMMENT 'Ngày — từ Calendar Date Dimension',
 
--- Nhiều FK date (dùng alias theo vai trò):
+-- Nhiều FK date (dùng alias theo vai trò — phải tuân thủ physical naming rule):
 snpst_cdr_dt        Nullable(Date)  COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
-issu_cdr_dt         Nullable(Date)  COMMENT 'Ngày cấp — từ Calendar Date Dimension',
-evnt_cdr_dt         Nullable(Date)  COMMENT 'Ngày sự kiện — từ Calendar Date Dimension',
+issue_cdr_dt        Nullable(Date)  COMMENT 'Ngày cấp — từ Calendar Date Dimension',
+event_cdr_dt        Nullable(Date)  COMMENT 'Ngày sự kiện — từ Calendar Date Dimension',
 ```
 
 ---
