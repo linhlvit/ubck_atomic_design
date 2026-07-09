@@ -70,13 +70,22 @@ schemes:
       - "Certificate Document Status History (From/To)"
     values: []
 
-  - scheme_code: "CONVERSION_STATUS"
-    name: null
-    source_type: "etl_derived"
-    source_table: null
+  - scheme_code: "LICENSE_CERTIFICATE_CONVERSION_STATUS"
+    name: "Trạng thái chuyển đổi chứng chỉ (Giấy/Điện tử)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
     used_in_entities:
       - "Securities Practitioner License Certificate"
-    values: []
+    values:
+      - code: "1"
+        name: "Chứng chỉ giấy"
+        source_table: null
+      - code: "2"
+        name: "Chờ chuyển đổi điện tử"
+        source_table: null
+      - code: "3"
+        name: "Chứng chỉ số"
+        source_table: null
 
   - scheme_code: "COURSE_STATUS"
     name: "Trạng thái khóa học (1:HĐ, 0:Không HĐ, -1:Đã xóa)"
@@ -94,13 +103,34 @@ schemes:
       - "License Decision Document"
     values: []
 
-  - scheme_code: "DECISION_TYPE"
+  - scheme_code: "LICENSE_CERTIFICATE_DECISION_TYPE"
     name: "Loại quyết định"
     source_type: "modeler_defined"
     source_table: "NHNCK.Decisions.TypeId"
     used_in_entities:
       - "License Decision Document"
-    values: []
+    values:
+      - code: "1"
+        name: "Cấp mới chứng chỉ"
+        source_table: null
+      - code: "2"
+        name: "Thu hồi chứng chỉ"
+        source_table: null
+      - code: "3"
+        name: "Cấp lại chứng chỉ"
+        source_table: null
+      - code: "4"
+        name: "Công nhận KQ thi sát hạch"
+        source_table: null
+      - code: "5"
+        name: "Xử lý vi phạm NHNCK"
+        source_table: null
+      - code: "6"
+        name: "Hủy chứng chỉ hành nghề"
+        source_table: null
+      - code: "7"
+        name: "Khác"
+        source_table: null
 
   - scheme_code: "DOCUMENT_TYPE"
     name: "Loại tài liệu — values from Documents"
@@ -120,13 +150,24 @@ schemes:
       - "Securities Practitioner"
     values: []
 
-  - scheme_code: "EXAMINATION_RESULT"
-    name: "Kết quả thi (Đạt/Không đạt/Chưa thi)"
+  - scheme_code: "EXAM_RESULT"
+    name: "Kết quả thi/đào tạo (Đạt/Không đạt/Không thi)"
     source_type: "modeler_defined"
     source_table: "NHNCK.ExamDetails.Result"
     used_in_entities:
       - "Qualification Examination Assessment Result"
-    values: []
+      - "Securities Practitioner Qualification Exam Result"
+      - "Professional Training Class Enrollment"
+    values:
+      - code: "-1"
+        name: "Không thi"
+        source_table: null
+      - code: "0"
+        name: "Không đạt"
+        source_table: null
+      - code: "1"
+        name: "Đạt"
+        source_table: null
 
   - scheme_code: "EXAMINATION_STATUS"
     name: "Trạng thái đợt thi (Khởi tạo/Đang thực hiện/Hoàn thành)"
@@ -143,6 +184,8 @@ schemes:
     used_in_entities:
       - "Securities Practitioner Qualification Exam Result"
     values: []
+    deprecated: true
+    deprecated_reason: "Gộp vào scheme 'EXAM_RESULT' (2026-07-09) — cùng domain giá trị (-1 Không thi/0 Không đạt/1 Đạt) với TRAINING_RESULT và EXAMINATION_RESULT. Entity tiêu thụ đổi classification_context sang EXAM_RESULT."
 
   - scheme_code: "FEE_TYPE"
     name: "Loại phí — cần xác nhận từ data"
@@ -160,13 +203,23 @@ schemes:
       - "Geographic Area"
     values: []
 
-  - scheme_code: "IDENTITY_DOCUMENT_TYPE"
-    name: null
-    source_type: "source_table"
+  - scheme_code: "IDENTIFICATION_DOCUMENT_TYPE"
+    name: "Loại giấy tờ định danh (CMND/CCCD/Hộ chiếu)"
+    source_type: "modeler_defined"
     source_table: "NHNCK.SPECIALIZATION_COURSE_DETAILS"
     used_in_entities:
       - "Securities Practitioner Training Course Enrollment"
-    values: []
+      - "Securities Practitioner License Application Snapshot"
+    values:
+      - code: "1"
+        name: "Chứng minh nhân dân"
+        source_table: null
+      - code: "2"
+        name: "Căn cước công dân"
+        source_table: null
+      - code: "3"
+        name: "Hộ chiếu"
+        source_table: null
 
   - scheme_code: "INDIVIDUAL_GENDER"
     name: "Giới tính — cần xác nhận từ data"
@@ -314,6 +367,19 @@ schemes:
         name: "Điện thoại cơ quan / văn phòng"
         source_table: null
 
+  - scheme_code: "IS_ORIGINAL_DATA"
+    name: "Cờ phân biệt dữ liệu gốc/dữ liệu người dùng tạo thêm"
+    source_type: "modeler_defined"
+    source_table: null
+    used_in_entities: []
+    values:
+      - code: "1"
+        name: "Dữ liệu gốc"
+        source_table: null
+      - code: "2"
+        name: "Người dùng tạo"
+        source_table: null
+
   - scheme_code: "NHNCK_APPLICATION_STATUS"
     name: null
     source_type: "source_table"
@@ -324,68 +390,89 @@ schemes:
     deprecated: true
     deprecated_reason: "NHNCK.APPLICATION_STATUSES đã nâng cấp thành Atomic entity thật 'Classification Application Status' (table_type Classification, 2026-07-09) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application) đã đổi sang cặp FK Application Status Id + Application Status Code."
 
-  - scheme_code: "NHNCK_APPLICATION_TYPE"
-    name: null
-    source_type: "source_table"
-    source_table: "NHNCK.APPLICATION_STATUSES"
+  - scheme_code: "APPLICATION_TYPE"
+    name: "Loại hồ sơ (Cấp mới/Cấp lại)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
     used_in_entities:
       - "Securities Practitioner License Application"
-    values: []
+    values:
+      - code: "0"
+        name: "Cấp mới"
+        source_table: null
+      - code: "1"
+        name: "Cấp lại do thu hồi"
+        source_table: null
+      - code: "2"
+        name: "Cấp lại thay đổi thông tin"
+        source_table: null
+      - code: "3"
+        name: "Cấp lại mất CCHN"
+        source_table: null
 
-  - scheme_code: "NHNCK_CERT_RECEIPT_METHOD"
-    name: null
-    source_type: "etl_derived"
+  - scheme_code: "CERT_RECEIPT_METHOD"
+    name: "Hình thức nhận chứng chỉ"
+    source_type: "modeler_defined"
     source_table: null
     used_in_entities:
       - "Securities Practitioner License Application"
     values:
-      - code: "ELECTRONIC"
-        name: "Điện tử"
-        source_table: null
-      - code: "IN_PERSON"
+      - code: "1"
         name: "Nhận tại UBCKNN"
         source_table: null
-      - code: "POSTAL"
+      - code: "2"
         name: "Gửi bưu điện"
         source_table: null
+      - code: "3"
+        name: "Điện tử"
+        source_table: null
 
-  - scheme_code: "NHNCK_RECEIPT_STATUS"
-    name: null
-    source_type: "etl_derived"
+  - scheme_code: "RECEIPT_STATUS"
+    name: "Trạng thái nhận chứng chỉ"
+    source_type: "modeler_defined"
     source_table: null
     used_in_entities:
       - "Securities Practitioner License Application"
     values:
-      - code: "PENDING"
+      - code: "0"
         name: "Chưa nhận"
         source_table: null
-      - code: "RECEIVED"
+      - code: "1"
         name: "Đã nhận"
         source_table: null
 
-  - scheme_code: "NHNCK_REGISTRATION_TYPE"
-    name: null
-    source_type: "etl_derived"
+  - scheme_code: "REGISTRATION_TYPE"
+    name: "Nguồn tiếp nhận hồ sơ"
+    source_type: "modeler_defined"
     source_table: null
     used_in_entities:
       - "Securities Practitioner License Application"
     values:
-      - code: "MANUAL"
+      - code: "0"
+        name: "MCĐT/cổng DVC"
+        source_table: null
+      - code: "1"
         name: "Nhập tay"
         source_table: null
-      - code: "MCDT"
-        name: "MCĐT/Cổng DVC"
-        source_table: null
 
-  - scheme_code: "OFFICER_STATUS"
-    name: "Trạng thái người dùng — nguồn gốc NHNCK.Users.Status, Regulatory Authority\
-      \ Officer đã loại khỏi scope (theo quyết định Data Modeler), reuse tại Securities\
-      \ Practitioner.Account Status Code"
+  - scheme_code: "PRACTITIONER_ACCOUNT_STATUS"
+    name: "Trạng thái tài khoản người dùng trên cổng NHNCK — nguồn gốc NHNCK.Users.Status,\
+      \ Regulatory Authority Officer đã loại khỏi scope (theo quyết định Data Modeler),\
+      \ reuse tại Securities Practitioner.Account Status Code"
     source_type: "modeler_defined"
     source_table: "NHNCK.Users.Status"
     used_in_entities:
       - "Securities Practitioner"
-    values: []
+    values:
+      - code: "0"
+        name: "Chưa kích hoạt"
+        source_table: null
+      - code: "1"
+        name: "Đang hoạt động"
+        source_table: null
+      - code: "2"
+        name: "Khóa"
+        source_table: null
 
   - scheme_code: "ORGANIZATION_LEVEL"
     name: "Cấp độ tổ chức"
@@ -449,29 +536,62 @@ schemes:
       - "(reserved — WorkHistories dùng text tự do)"
     values: []
 
-  - scheme_code: "PRACTICE_STATUS"
-    name: "Trạng thái hành nghề — cần xác nhận từ data"
+  - scheme_code: "PRACTITIONER_PRACTICE_STATUS"
+    name: "Trạng thái hành nghề chứng khoán"
     source_type: "modeler_defined"
-    source_table: "NHNCK.ProfessionalHistories.StatusWork"
+    source_table: "NHNCK.PROFESSIONALS.STATUS_WORK"
     used_in_entities:
       - "Securities Practitioner"
-    values: []
+    values:
+      - code: "0"
+        name: "Chưa hành nghề"
+        source_table: null
+      - code: "1"
+        name: "Đang hành nghề"
+        source_table: null
+      - code: "2"
+        name: "Thu hồi có cấp lại"
+        source_table: null
+      - code: "3"
+        name: "Thu hồi không cấp lại"
+        source_table: null
+      - code: "4"
+        name: "Cấp hành nghề có thời hạn"
+        source_table: null
 
   - scheme_code: "PRACTITIONER_REGISTRATION_TYPE"
-    name: "Hình thức đăng ký người hành nghề vào hệ thống — cần xác nhận từ data"
+    name: "Hình thức đăng ký người hành nghề vào hệ thống"
     source_type: "modeler_defined"
-    source_table: "NHNCK.ProfessionalHistories.RegistrationType"
+    source_table: "NHNCK.PROFESSIONALS.REGISTRATION_TYPE"
     used_in_entities:
       - "Securities Practitioner"
-    values: []
+    values:
+      - code: "0"
+        name: "MCĐT/cổng DVC"
+        source_table: null
+      - code: "1"
+        name: "Nhập tay"
+        source_table: null
 
-  - scheme_code: "PROCESS_STATUS"
-    name: null
-    source_type: "etl_derived"
-    source_table: null
+  - scheme_code: "LICENSE_CERTIFICATE_PROCESS_STATUS"
+    name: "Trạng thái xử lý chứng chỉ"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS"
     used_in_entities:
       - "Securities Practitioner License Certificate"
-    values: []
+    values:
+      - code: "1"
+        name: "Đã cấp"
+        source_table: null
+      - code: "2"
+        name: "Đã ký nháy"
+        source_table: null
+      - code: "3"
+        name: "Đã ký"
+        source_table: null
+      - code: "4"
+        name: "Đã trả"
+        source_table: null
 
   # ─── FMS schemes ─────────────────────────────────────────────────────────────
 
@@ -1110,12 +1230,30 @@ schemes:
         source_value: "2"
 
   - scheme_code: "RELATIONSHIP_TYPE"
-    name: "Quan hệ (1:Vợ/Chồng, 2:Con, 3:Bố, 4:Mẹ, 5:Ông, 6:Bà) — cần xác nhận từ data"
+    name: "Quan hệ nhân thân"
     source_type: "modeler_defined"
     source_table: "NHNCK.ProfessionalRelationships.RelationshipType"
     used_in_entities:
       - "Related Party"
-    values: []
+    values:
+      - code: "1"
+        name: "Vợ/Chồng"
+        source_table: null
+      - code: "2"
+        name: "Con"
+        source_table: null
+      - code: "3"
+        name: "Bố"
+        source_table: null
+      - code: "4"
+        name: "Mẹ"
+        source_table: null
+      - code: "5"
+        name: "Ông"
+        source_table: null
+      - code: "6"
+        name: "Bà"
+        source_table: null
 
 
   - scheme_code: "SOURCE_SYSTEM"
@@ -1141,7 +1279,16 @@ schemes:
     source_table: "NHNCK.Organizations.SyncStatus"
     used_in_entities:
       - "Securities Organization Reference"
-    values: []
+    values:
+      - code: "0"
+        name: "Chưa đồng bộ"
+        source_table: null
+      - code: "1"
+        name: "Đã đồng bộ"
+        source_table: null
+      - code: "2"
+        name: "Lỗi"
+        source_table: null
 
   - scheme_code: "TRAINING_RESULT"
     name: "Kết quả đào tạo — cần xác nhận từ data"
@@ -1150,6 +1297,8 @@ schemes:
     used_in_entities:
       - "Professional Training Class Enrollment"
     values: []
+    deprecated: true
+    deprecated_reason: "Gộp vào scheme 'EXAM_RESULT' (2026-07-09) — cùng domain giá trị (-1 Không thi/0 Không đạt/1 Đạt) với EXAM_SCORE_RESULT và EXAMINATION_RESULT. Entity tiêu thụ đổi classification_context sang EXAM_RESULT."
 
   - scheme_code: "VIOLATION_STATUS"
     name: "Trạng thái vi phạm (Hiệu lực/Không hiệu lực) — cần xác nhận từ data"

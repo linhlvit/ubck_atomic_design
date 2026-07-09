@@ -5172,8 +5172,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE"
-  comment: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu. Snapshot\
-    \ — entity grain là enrollment, không phải Involved Party."
+  comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu.\
+    \ Snapshot — entity grain là enrollment, không phải Involved Party."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -5254,7 +5254,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.RESULT"
-  comment: "Scheme: TRAINING_RESULT."
+  comment: "Scheme: EXAM_RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
   classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -8312,7 +8312,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.LAW_RESULT"
-  comment: "Scheme: EXAM_SCORE_RESULT."
+  comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -8344,7 +8344,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.SPECIALIZATION_RESULT"
-  comment: "Scheme: EXAM_SCORE_RESULT."
+  comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -8360,7 +8360,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.RESULT"
-  comment: "Scheme: EXAMINATION_RESULT."
+  comment: "Scheme: EXAM_RESULT (gộp từ EXAMINATION_RESULT, 2026-07-09)."
   classification_context: "Source System Code = 'NHNCK_EXAM_DETAILS'"
   etl_derived_value: null
   atomic_table: "sp_qualification_examination_assessment_result"
@@ -9936,8 +9936,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_TYPE"
-  comment: "Scheme: NHNCK_APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do\
-    \ thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
+  comment: "Scheme: APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do thu hồi,\
+    \ 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
@@ -9989,8 +9989,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.REGISTRATION_TYPE"
-  comment: "Scheme: NHNCK_REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập\
-    \ tay."
+  comment: "Scheme: REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập tay."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
@@ -10238,8 +10237,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD"
-  comment: "Scheme: NHNCK_CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi\
-    \ bưu điện, 3=Điện tử."
+  comment: "Scheme: CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi bưu\
+    \ điện, 3=Điện tử."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
@@ -10287,7 +10286,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.RECEIPT_STATUS"
-  comment: "Scheme: NHNCK_RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
+  comment: "Scheme: RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
@@ -11323,7 +11322,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS"
-  comment: null
+  comment: "Scheme: LICENSE_CERTIFICATE_PROCESS_STATUS."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
@@ -11356,7 +11355,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS"
-  comment: null
+  comment: "Scheme: LICENSE_CERTIFICATE_CONVERSION_STATUS."
   classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
   etl_derived_value: null
   atomic_table: "sp_license_certificate_document"
@@ -11760,8 +11759,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "DECISIONS"
   source_column: "NHNCK.DECISIONS.DECISION_TYPE_ID"
-  comment: "Scheme: DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi; 3=Cấp lại; 4=Công\
-    \ nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
+  comment: "Scheme: LICENSE_CERTIFICATE_DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi;\
+    \ 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
   classification_context: "Source System Code = 'NHNCK_DECISIONS'"
   etl_derived_value: null
   atomic_table: "sp_license_decision_document"
@@ -21756,8 +21755,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.STATUS_WORK"
-  comment: "Scheme: PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi có cấp\
-    \ lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
+  comment: "Scheme: PRACTITIONER_PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu\
+    \ hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
@@ -21773,7 +21772,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
-  comment: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động / 2=Khóa."
+  comment: "Scheme: PRACTITIONER_ACCOUNT_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt\
+    \ động / 2=Khóa."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner"
@@ -22869,8 +22869,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_PROFESSIONALS"
   source_column: "NHNCK.APPLICATION_PROFESSIONALS.IDENTITY_TYPE"
-  comment: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ chiếu. Grain\
-    \ ≠ Involved Party → không tách IP Alt ID."
+  comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ chiếu.\
+    \ Grain ≠ Involved Party → không tách IP Alt ID."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_snapshot"
@@ -63733,10 +63733,11 @@ attributes:
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
   source_column: "NHNCK.PROFESSIONALS.IDENTITY_TYPE"
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=CMND, 2=CCCD, 3=PASSPORT."
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=NATIONAL_ID, 2=CITIZEN_ID,\
+    \ 3=PASSPORT."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
     \ Type Code = '(source)'"
-  etl_derived_value: "1=CMND;2=CCCD;3=PASSPORT"
+  etl_derived_value: "1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT"
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_tp_code"
   data_type: "string"
