@@ -1,120 +1,126 @@
-schema_type: "lld_source_table"
-schema_version: "2.0"
+schema_type: lld_source_table
+schema_version: '2.0'
 metadata:
-  source_system: "NHNCK"
-  source_table: "PROFESSIONAL_HISTORIES"
-  atomic_entity: "Securities Practitioner Reason Change History"
-  entity_physical_name: "sp_reason_change_history"
-  bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual"
-  table_type: "Fundamental"
-  group: "T2"
-  design_status: "approved"
-  version: "1.0"
+  source_system: NHNCK
+  source_table: PROFESSIONAL_HISTORIES
+  atomic_entity: Securities Practitioner Reason Change History
+  entity_physical_name: sp_reason_change_history
+  bcv_core_object: Involved Party
+  bcv_concept: '[Involved Party] Individual'
+  table_type: Fundamental
+  group: T2
+  design_status: approved
+  version: '1.0'
   designed_by: null
   designed_at: null
   reviewed_by: null
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế lại (2026-07-07): bản thiết kế trước map nhầm toàn bộ source_columns\
-    \ sang NHNCK.PROFESSIONALS thay vì NHNCK.PROFESSIONAL_HISTORIES. Grain thực tế:\
-    \ 1 dòng = 1 lần ghi nhận thay đổi thông tin cá nhân của người hành nghề. Chỉ\
-    \ lưu ID/PROFESSIONAL_ID/CHANGE_DATE/REASON_UPDATE — ~43 cột snapshot còn lại\
-    \ (trùng PROFESSIONALS) loại khỏi thiết kế, xem pending_design.yaml. Giữ concept\
-    \ Involved Party (không dùng Business Activity/Maintenance Entry) theo quyết định\
-    \ Data Modeler."
+  notes: >-
+    Thiết kế lại (2026-07-07): bản thiết kế trước map nhầm toàn bộ
+    source_columns sang NHNCK.PROFESSIONALS thay vì
+    NHNCK.PROFESSIONAL_HISTORIES. Grain thực tế: 1 dòng = 1 lần ghi nhận thay
+    đổi thông tin cá nhân của người hành nghề. Chỉ lưu
+    ID/PROFESSIONAL_ID/CHANGE_DATE/REASON_UPDATE — ~43 cột snapshot còn lại
+    (trùng PROFESSIONALS) loại khỏi thiết kế, xem pending_design.yaml. Giữ
+    concept Involved Party (không dùng Business Activity/Maintenance Entry) theo
+    quyết định Data Modeler.
 attributes:
-- attribute_name: "Securities Practitioner Reason Change History Id"
-  physical_name: "sp_reason_change_history_id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns: []
-  comment: "PK surrogate. BCV: [Involved Party] Individual."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Securities Practitioner Reason Change History Code"
-  physical_name: "sp_reason_change_history_code"
-  description: "Mã bản ghi thay đổi. BK từ PK nguồn"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_HISTORIES.ID"
-  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã nguồn dữ liệu"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=NHNCK.PROFESSIONAL_HISTORIES"
-  etl_derived_value: "NHNCK.PROFESSIONAL_HISTORIES"
-  data_type: "string"
-- attribute_name: "Securities Practitioner Id"
-  physical_name: "sp_id"
-  description: "FK đến người hành nghề bị thay đổi thông tin"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
-  comment: "FK target: Securities Practitioner.Securities Practitioner Id. Hash: hash_id('NHNCK.PROFESSIONALS',\
-    \ PROFESSIONAL_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Securities Practitioner Code"
-  physical_name: "sp_code"
-  description: "Mã người hành nghề (denormalized lookup)"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID"
-  comment: "Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair\
-    \ with Securities Practitioner Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Change Date"
-  physical_name: "change_dt"
-  description: "Ngày ghi nhận thay đổi thông tin"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_HISTORIES.CHANGE_DATE"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ (ngày phát sinh\
-    \ sự kiện thay đổi)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "Change Reason"
-  physical_name: "change_reason"
-  description: "Lý do cập nhật thông tin người hành nghề"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "NHNCK.PROFESSIONAL_HISTORIES.REASON_UPDATE"
-  comment: "BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Xác nhận với\
-    \ người thiết kế: nguồn là REASON_UPDATE (không có cột REASON_DATE)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
+  - attribute_name: Securities Practitioner Reason Change History Id
+    physical_name: sp_reason_change_history_id
+    description: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: 'PK surrogate. BCV: [Involved Party] Individual.'
+    classification_context: null
+    etl_derived_value: null
+    data_type: string
+  - attribute_name: Securities Practitioner Reason Change History Code
+    physical_name: sp_reason_change_history_code
+    description: Mã bản ghi thay đổi. BK từ PK nguồn
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.PROFESSIONAL_HISTORIES.ID
+    comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
+    classification_context: null
+    etl_derived_value: null
+    data_type: string
+  - attribute_name: Source System Code
+    physical_name: src_stm_code
+    description: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns: []
+    comment: 'Scheme: SOURCE_SYSTEM. Hardcode.'
+    classification_context: SOURCE_SYSTEM=NHNCK.PROFESSIONAL_HISTORIES
+    etl_derived_value: NHNCK.PROFESSIONAL_HISTORIES
+    data_type: string
+  - attribute_name: Securities Practitioner Id
+    physical_name: sp_id
+    description: FK đến người hành nghề bị thay đổi thông tin
+    data_domain: Surrogate Key
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID
+    comment: >-
+      FK target: Securities Practitioner.Securities Practitioner Id. Hash:
+      hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID).
+    classification_context: null
+    etl_derived_value: null
+    data_type: string
+  - attribute_name: Securities Practitioner Code
+    physical_name: sp_code
+    description: Mã người hành nghề (denormalized lookup)
+    data_domain: Text
+    nullable: false
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.PROFESSIONAL_HISTORIES.PROFESSIONAL_ID
+    comment: >-
+      Lookup pair: Securities Practitioner.Securities Practitioner Code. Pair
+      with Securities Practitioner Id.
+    classification_context: null
+    etl_derived_value: null
+    data_type: string
+  - attribute_name: Change Date
+    physical_name: change_dt
+    description: Ngày ghi nhận thay đổi thông tin
+    data_domain: Date
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.PROFESSIONAL_HISTORIES.CHANGE_DATE
+    comment: >-
+      BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ (ngày phát sinh sự
+      kiện thay đổi).
+    classification_context: null
+    etl_derived_value: null
+    data_type: date
+  - attribute_name: Change Reason
+    physical_name: change_reason
+    description: Lý do cập nhật thông tin người hành nghề
+    data_domain: Text
+    nullable: true
+    is_primary_key: false
+    status: draft
+    source_columns:
+      - NHNCK.PROFESSIONAL_HISTORIES.REASON_UPDATE
+    comment: >-
+      BCV: không có term riêng — đặt tên theo nghĩa nghiệp vụ. Xác nhận với
+      người thiết kế: nguồn là REASON_UPDATE (không có cột REASON_DATE).
+    classification_context: null
+    etl_derived_value: null
+    data_type: string
