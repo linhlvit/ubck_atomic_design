@@ -186,18 +186,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Life Cycle Status Code"
-  physical_name: "life_cycle_status_code"
-  description: "Trạng thái pháp lý chi nhánh — FK tới CAT_SC_FIRM_STATUS (Đang hoạt\
-    \ động, Tạm ngừng, Đình chỉ, Đóng cửa)."
-  data_domain: "Classification Value"
+- attribute_name: "Classification Firm Status Id"
+  physical_name: "cl_firm_status_id"
+  description: "FK đến trạng thái pháp lý chi nhánh."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_BRANCH.BRANCH_STATUS"
-  comment: "Scheme: SCMS_SC_FIRM_STATUS. Nguồn lưu NUMBER(2) — ETL map ID → code từ\
-    \ CAT_SC_FIRM_STATUS."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', BRANCH_STATUS)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Firm Status Code"
+  physical_name: "cl_firm_status_code"
+  description: "Mã trạng thái pháp lý chi nhánh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_BRANCH.BRANCH_STATUS"
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -360,19 +373,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Business Line Codes"
-  physical_name: "business_line_codes"
+- attribute_name: "Business Lines"
+  physical_name: "business_lines"
   description: "Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép cho chi nhánh."
-  data_domain: "Array<Text>"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_BRANCH.BUSINESS_LINES"
-  comment: "ETL parse thành ARRAY<String>. Scheme: SCMS_BUSINESS_LINE."
+  comment: "Map 1:1 từ nguồn — giữ nguyên dạng string thô (không parse ARRAY). Sau\
+    \ này đánh giá có FK sang bảng danh mục nghiệp vụ hay không."
   classification_context: null
   etl_derived_value: null
-  data_type: "array<string>"
+  data_type: "string"
 - attribute_name: "Attachment Path"
   physical_name: "attachment_path"
   description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."

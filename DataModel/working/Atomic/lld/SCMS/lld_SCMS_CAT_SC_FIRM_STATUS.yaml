@@ -1,0 +1,206 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "CAT_SC_FIRM_STATUS"
+  atomic_entity: "Classification Firm Status"
+  entity_physical_name: "cl_firm_status"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Firm Status"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS, nay deprecated)\
+    \ lên entity thật — xem SCMS_HLD_Tier1.md 6f T1-05. BCV Core Object gán Common\
+    \ theo chỉ đạo Data Modeler (không dùng Organization Life Cycle Status/Involved\
+    \ Party dù match khá tốt) để nhất quán pattern NHNCK (Classification Application\
+    \ Status/Document/Specialization). BK dùng SC_FIRM_STATUS_CODE (mã nghiệp vụ chuyên\
+    \ biệt); surrogate Id hash từ ID kỹ thuật (nhất quán với entity tiêu thụ FK qua\
+    \ giá trị ID). Theo chỉ đạo Data Modeler (2026-07-10): map 1:1 toàn bộ cột nghiệp\
+    \ vụ, không tự loại trừ vì nghi trùng lặp — CODE/ITEM_NAME/ACTIVE map thành attribute\
+    \ riêng (Item Code/Item Name/Active Indicator), không coi là trùng SC_FIRM_STATUS_CODE/SC_FIRM_STATUS_NAME/RECORD_STATUS.\
+    \ Audit fields (CREATED_BY/CREATED_AT) loại bỏ theo convention SCMS (không FK\
+    \ target hợp lệ, SYS_USER ngoài phạm vi Atomic)."
+attributes:
+- attribute_name: "Classification Firm Status Id"
+  physical_name: "cl_firm_status_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.ID"
+  comment: "PK surrogate. BCV: \"[Common] Firm Status\". Danh mục trạng thái pháp\
+    \ lý CTCK/Chi nhánh/VPĐD/PGD/Ngân hàng. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Firm Status Code"
+  physical_name: "cl_firm_status_code"
+  description: "Mã trạng thái hoạt động CTCK. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE"
+  comment: "BK chính. Dùng SC_FIRM_STATUS_CODE (mã nghiệp vụ chuyên biệt) thay vì\
+    \ ID kỹ thuật (NUMBER tự tăng) — xem pending_design.yaml."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.CAT_SC_FIRM_STATUS"
+  etl_derived_value: "SCMS.CAT_SC_FIRM_STATUS"
+  data_type: "string"
+- attribute_name: "Classification Firm Status Name"
+  physical_name: "cl_firm_status_nm"
+  description: "Tên trạng thái hoạt động CTCK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Applicable Entity Code"
+  physical_name: "applicable_entity_code"
+  description: "Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY"
+  comment: "Scheme: SCMS_FIRM_STATUS_APPLICABLE_ENTITY. Values chưa profile — candidate:\
+    \ CTCK/CN/VPDD/NH/Cả hai theo mô tả nguồn."
+  classification_context: "SCMS_FIRM_STATUS_APPLICABLE_ENTITY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Submission Required Indicator"
+  physical_name: "rpt_submission_required_indicator"
+  description: "Cờ CTCK ở trạng thái này phải nộp báo cáo: 1=Phải nộp, 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.REPORT_SUBMISSION_ENABLED"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Disclosure Required Indicator"
+  physical_name: "disclosure_required_indicator"
+  description: "Cờ CTCK ở trạng thái này phải CBTT: 1=Phải CBTT, 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.DISCLOSURE_ENABLED"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái bản ghi danh mục: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.RECORD_STATUS"
+  comment: "Scheme: SCMS_FIRM_STATUS_RECORD_STATUS."
+  classification_context: "SCMS_FIRM_STATUS_RECORD_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Item Code"
+  physical_name: "item_code"
+  description: "Mã định danh (mã viết tắt, mã nghiệp vụ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.CODE"
+  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
+    \ với Classification Firm Status Code (SC_FIRM_STATUS_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Item Name"
+  physical_name: "item_nm"
+  description: "Cột item_name (mô tả gốc BRD trống)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.ITEM_NAME"
+  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
+    \ với Classification Firm Status Name (SC_FIRM_STATUS_NAME)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Cột active (mô tả gốc BRD trống)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SC_FIRM_STATUS.ACTIVE"
+  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
+    \ với Record Status Code (RECORD_STATUS)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"

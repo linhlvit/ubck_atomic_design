@@ -158,17 +158,33 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Life Cycle Status Code"
-  physical_name: "life_cycle_status_code"
+- attribute_name: "Classification Firm Status Id"
+  physical_name: "cl_firm_status_id"
   description: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm\
     \ ngừng; 4=Đình chỉ."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.REP_OFFICE_STATUS"
-  comment: "Scheme: SCMS_SC_FIRM_STATUS. Nguồn lưu NUMBER(2)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Firm Status Code"
+  physical_name: "cl_firm_status_code"
+  description: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm\
+    \ ngừng; 4=Đình chỉ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_REP_OFFICE.REP_OFFICE_STATUS"
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -198,75 +214,59 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID"
-  comment: "Scheme: SCMS_EVENT_TYPE. Nguồn lưu NUMBER — ETL map ID → code từ CAT_EVENT_TYPE."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Decision Number"
-  physical_name: "decision_nbr"
-  description: "Số quyết định cấp phép/chấp thuận văn phòng."
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
+  description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_REP_OFFICE.SO_QUYET_DINH"
-  comment: "SO_QUYET_DINH là tên cột cũ (Vietnamese). DECISION_NUMBER là tên mới.\
-    \ Cần xác nhận có cùng nội dung không. Dùng SO_QUYET_DINH làm canonical; DECISION_NUMBER\
-    \ ghi vào attribute Decision Number Secondary."
+  - "SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID"
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Decision Number Secondary"
-  physical_name: "decision_nbr_secondary"
-  description: "Số quyết định (trường mới DECISION_NUMBER — cần xác nhận trùng với\
-    \ SO_QUYET_DINH không)."
+- attribute_name: "Decision Number"
+  physical_name: "decision_nbr"
+  description: "Số quyết định (trường mới DECISION_NUMBER)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.DECISION_NUMBER"
-  comment: "Mô tả gốc BRD trống. Có thể là cùng nội dung SO_QUYET_DINH — cần xác nhận\
-    \ để merge."
+  comment: "DECISION_NUMBER là cột chuẩn (thay SO_QUYET_DINH — cột tiếng Việt cũ,\
+    \ đã loại bỏ do trùng ý nghĩa, xem pending_design.yaml)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Date"
   physical_name: "decision_dt"
-  description: "Ngày ban hành quyết định."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_REP_OFFICE.NGAY_QUYET_DINH"
-  comment: "NGAY_QUYET_DINH là tên cột cũ (Vietnamese). DECISION_DATE là tên mới —\
-    \ dùng NGAY_QUYET_DINH làm canonical."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-- attribute_name: "Decision Date Secondary"
-  physical_name: "decision_dt_secondary"
-  description: "Ngày quyết định (trường mới DECISION_DATE — cần xác nhận trùng với\
-    \ NGAY_QUYET_DINH không)."
+  description: "Ngày quyết định (trường mới DECISION_DATE)."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.DECISION_DATE"
-  comment: "Mô tả gốc BRD trống. Có thể là cùng nội dung NGAY_QUYET_DINH — cần xác\
-    \ nhận."
+  comment: "DECISION_DATE là cột chuẩn (thay NGAY_QUYET_DINH — cột tiếng Việt cũ,\
+    \ đã loại bỏ do trùng ý nghĩa, xem pending_design.yaml)."
   classification_context: null
   etl_derived_value: null
   data_type: "date"

@@ -1,0 +1,492 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "FORM_REPORT"
+  atomic_entity: "Securities Company Form Report"
+  entity_physical_name: "sc_form_report"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Regulatory Reporting Requirement"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Đảo ngược quyết định loại-scope trước đây (form metadata) — xem SCMS_HLD_Tier1.md\
+    \ 6f T1-06/T1-07. BCV Concept là term mới đề xuất (Regulatory Reporting Requirement,\
+    \ type_of Criterion), chưa tồn tại sẵn trong knowledge/terms.csv — gần nhất là\
+    \ Disclosure (Control Condition, id 9208), không dùng vì chỉ khớp phần CBTT. Table\
+    \ Type = Relative theo chỉ đạo tường minh — bảng chỉ tự tham chiếu qua PARENT_ID/FORM_REPORT_ID/NEXT_FORM_ID,\
+    \ không FK đến 1 Fundamental khác trong scope hiện tại. Theo chỉ đạo Data Modeler\
+    \ (2026-07-10): vì bảng có ID, BK (Code) dùng trực tiếp ID kỹ thuật thay vì REPORT_CODE\
+    \ — nhờ đó 3 cột tự tham chiếu (PARENT_ID/FORM_REPORT_ID/NEXT_FORM_ID, đều lưu\
+    \ ID kỹ thuật của bản ghi đích) hash trực tiếp nhất quán, không cần self-join\
+    \ resolve REPORT_CODE như bản thiết kế trước. REPORT_CODE nay map 1:1 thành attribute\
+    \ nghiệp vụ riêng \"Report Code\" (không còn là BK). ACTIVE/SUMMARY/INPUT_REPORT\
+    \ map 1:1 thành attribute riêng theo chỉ đạo — không loại trừ vì nghi trùng RECORD_STATUS/REPORT_STYLE.\
+    \ SYS_FUNCTION_ID vẫn giữ pending (FK đến SYS_FUNCTION — ngoài phạm vi Atomic,\
+    \ Operational/System; Data Modeler xác nhận giữ nguyên, sẽ xử lý khi phát triển\
+    \ SYS_FUNCTION). Audit block (CREATED_BY/CREATED_AT/LAST_MODIFIED_BY/LAST_MODIFIED_AT)\
+    \ loại bỏ theo convention SCMS (cùng quyết định đã áp dụng cho SC_FIRM_SERVICE)."
+attributes:
+- attribute_name: "Securities Company Form Report Id"
+  physical_name: "sc_form_report_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.ID"
+  comment: "PK surrogate. BCV: \"[Condition] Regulatory Reporting Requirement\". Biểu\
+    \ mẫu báo cáo CTCK/CN/VPĐD phải nộp UBCKNN. Hash: hash_id('SCMS.FORM_REPORT',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Form Report Code"
+  physical_name: "sc_form_report_code"
+  description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.ID"
+  comment: "BK chính. Dùng ID kỹ thuật trực tiếp (NUMBER(10) — ETL convert sang string)\
+    \ theo chỉ đạo Data Modeler (2026-07-10) — giúp hash 3 cột tự tham chiếu (PARENT_ID/FORM_REPORT_ID/NEXT_FORM_ID)\
+    \ nhất quán, không cần self-join."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Code"
+  physical_name: "rpt_code"
+  description: "Mã báo cáo/biểu mẫu (VD: BCTC-Q, ATCT-T)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.REPORT_CODE"
+  comment: "Trường nghiệp vụ, map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không\
+    \ còn là BK (BK nay dùng ID kỹ thuật, xem Securities Company Form Report Code)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.FORM_REPORT"
+  etl_derived_value: "SCMS.FORM_REPORT"
+  data_type: "string"
+- attribute_name: "Securities Company Form Report Name"
+  physical_name: "sc_form_report_nm"
+  description: "Tên báo cáo/biểu mẫu."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.REPORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Basis"
+  physical_name: "legal_basis"
+  description: "Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.LEGAL_BASIS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Group"
+  physical_name: "rpt_group"
+  description: "Nhóm báo cáo (phân nhóm theo chức năng/đối tượng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.REPORT_GROUP"
+  comment: "Giữ Text vì mô tả nguồn không liệt kê tập giá trị cố định — cần profile\
+    \ dữ liệu, có thể chuyển sang Classification Value nếu phát hiện tập giá trị hữu\
+    \ hạn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Required Indicator"
+  physical_name: "disclosure_required_indicator"
+  description: "Có phải công bố thông tin khi nộp báo cáo: 1 = Có; 0 = Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.REQUIRES_DISCLOSURE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Import Required Indicator"
+  physical_name: "import_required_indicator"
+  description: "Có yêu cầu nhập liệu qua file Excel: 1 = Có; 0 = Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.REQUIRES_IMPORT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Attachment Path"
+  physical_name: "attachment_path"
+  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.ATTACHMENT_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái biểu mẫu báo cáo: 0 = Không sử dụng; 1 = Đang sử dụng (hoạt\
+    \ động); 2 = Bản nháp."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.RECORD_STATUS"
+  comment: "Scheme: SCMS_FORM_REPORT_RECORD_STATUS."
+  classification_context: "SCMS_FORM_REPORT_RECORD_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Type Code"
+  physical_name: "rpt_tp_code"
+  description: "Loại báo cáo: ĐỊNH_KỲ = Báo cáo định kỳ; BẤT_THƯỜNG = Báo cáo bất\
+    \ thường; THEO_YÊU_CẦU = Báo cáo theo yêu cầu; CBTT = Công bố thông tin."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.REPORT_TYPE"
+  comment: "Scheme: SCMS_FORM_REPORT_TYPE."
+  classification_context: "SCMS_FORM_REPORT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Version Number"
+  physical_name: "version_nbr"
+  description: "Số phiên bản (biểu mẫu, bản ghi) dùng cho optimistic locking."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.VERSION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Version Date"
+  physical_name: "version_dt"
+  description: "Ngày của phiên bản khi đưa vào sử dụng."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.VERSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Sender Entity Code"
+  physical_name: "sender_entity_code"
+  description: "Loại đơn vị gửi báo cáo: CTCK = Công ty chứng khoán; VPDD = Văn phòng\
+    \ đại diện CTCK nước ngoài tại VN; CNCTCK = Chi nhánh CTCK nước ngoài tại VN."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.SENDER_ENTITY"
+  comment: "Scheme: SCMS_FORM_REPORT_SENDER_ENTITY."
+  classification_context: "SCMS_FORM_REPORT_SENDER_ENTITY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Securities Company Form Report Id"
+  physical_name: "related_sc_form_report_id"
+  description: "FK -> form_report: Biểu mẫu báo cáo liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.FORM_REPORT_ID"
+  comment: "FK target: Securities Company Form Report.Securities Company Form Report\
+    \ Id. Self-reference (biểu mẫu liên quan, khác PARENT_ID phân cấp). Hash: hash_id('SCMS.FORM_REPORT',\
+    \ FORM_REPORT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Securities Company Form Report Code"
+  physical_name: "related_sc_form_report_code"
+  description: "Mã biểu mẫu báo cáo liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.FORM_REPORT_ID"
+  comment: "Lookup pair: Securities Company Form Report.Securities Company Form Report\
+    \ Code. Pair with Related Securities Company Form Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Style Code"
+  physical_name: "rpt_style_code"
+  description: "Phong cách báo cáo: 0 = Báo cáo đầu vào (nhập liệu); 1 = Báo cáo đầu\
+    \ ra (xuất dữ liệu)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.REPORT_STYLE"
+  comment: "Scheme: SCMS_FORM_REPORT_STYLE."
+  classification_context: "SCMS_FORM_REPORT_STYLE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure News Type Code"
+  physical_name: "disclosure_news_tp_code"
+  description: "Loại tin CBTT tạo ra khi gửi báo cáo: 1 = Định kỳ; 2 = Bất thường;\
+    \ 3 = Theo yêu cầu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.DISCLOSURE_NEWS_TYPE"
+  comment: "Scheme: SCMS_DISCLOSURE_NEWS_TYPE."
+  classification_context: "SCMS_DISCLOSURE_NEWS_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Next Securities Company Form Report Id"
+  physical_name: "next_sc_form_report_id"
+  description: "BM ID báo cáo tiếp theo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.NEXT_FORM_ID"
+  comment: "FK target: Securities Company Form Report.Securities Company Form Report\
+    \ Id. Self-reference (biểu mẫu tiếp theo trong chuỗi). FK suy luận — không có\
+    \ key:FK khai báo trong BRD nhưng mô tả gốc xác nhận trỏ về FORM_REPORT. Hash:\
+    \ hash_id('SCMS.FORM_REPORT', NEXT_FORM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Next Securities Company Form Report Code"
+  physical_name: "next_sc_form_report_code"
+  description: "Mã biểu mẫu báo cáo tiếp theo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.NEXT_FORM_ID"
+  comment: "Lookup pair: Securities Company Form Report.Securities Company Form Report\
+    \ Code. Pair with Next Securities Company Form Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legacy Report Type Code"
+  physical_name: "legacy_rpt_tp_code"
+  description: "Mã loại báo cáo hệ thống cũ (để tìm kiếm theo liên thông với hệ thống\
+    \ 334)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.LEGACY_REPORT_TYPE"
+  comment: "Mã tham chiếu hệ thống cũ (334) — giữ dạng Text, không có Classification\
+    \ Value quản lý trên Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Excel Template Path"
+  physical_name: "excel_template_path"
+  description: "Đường dẫn file template Excel (mô tả gốc BRD trống)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.EXCEL_TEMPLATE_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Cờ đang sử dụng/hoạt động: 1=Đang dùng, 0=Không dùng."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.ACTIVE"
+  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
+    \ với Record Status Code (RECORD_STATUS)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Summary Indicator"
+  physical_name: "summary_indicator"
+  description: "Cột summary (mô tả gốc BRD trống)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.SUMMARY"
+  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10). Mô tả gốc BRD trống —\
+    \ cần xác nhận ý nghĩa nghiệp vụ với BA khi có điều kiện; tạm gán Boolean theo\
+    \ cấu trúc NUMBER(1) tương tự các cờ khác trong bảng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Input Report Indicator"
+  physical_name: "input_rpt_indicator"
+  description: "Cờ là báo cáo đầu vào do đơn vị nộp: 1=Đầu vào, 0=Đầu ra."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.INPUT_REPORT"
+  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
+    \ với Report Style Code (REPORT_STYLE, giá trị đảo ngược)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Securities Company Form Report Id"
+  physical_name: "parent_sc_form_report_id"
+  description: "FK -> cùng bảng: ID bản ghi cha trong cấu trúc phân cấp."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.PARENT_ID"
+  comment: "FK target: Securities Company Form Report.Securities Company Form Report\
+    \ Id. Self-reference (phân cấp cha-con). Hash: hash_id('SCMS.FORM_REPORT', PARENT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Securities Company Form Report Code"
+  physical_name: "parent_sc_form_report_code"
+  description: "Mã biểu mẫu báo cáo cha."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.PARENT_ID"
+  comment: "Lookup pair: Securities Company Form Report.Securities Company Form Report\
+    \ Code. Pair with Parent Securities Company Form Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signature Type Code"
+  physical_name: "signature_tp_code"
+  description: "Loại chữ ký yêu cầu: DIEN_TU = Chữ ký điện tử; SO_HOA = Số hóa/upload\
+    \ file ký; NONE = Không yêu cầu chữ ký."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.SIGNATURE_TYPE"
+  comment: "Scheme: SCMS_SIGNATURE_TYPE."
+  classification_context: "SCMS_SIGNATURE_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sort Order"
+  physical_name: "sort_order"
+  description: "Thứ tự sắp xếp hiển thị."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.SORT_ORDER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Eform Enabled Indicator"
+  physical_name: "eform_enabled_indicator"
+  description: "Cờ có eform (biểu mẫu điện tử tương tác): 1=Có, 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.FORM_REPORT.EFORM_ENABLED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"

@@ -201,6 +201,7 @@ schemes:
     source_table: null
     used_in_entities:
       - "Geographic Area"
+      - "Geographic Area Old"
     values: []
 
   - scheme_code: "IDENTIFICATION_DOCUMENT_TYPE"
@@ -1674,12 +1675,10 @@ schemes:
     source_table: "SCMS.CAT_SC_FIRM_STATUS"
     used_in_entities:
       - "Securities Company"
-      - "Securities Company Branch"
-      - "Securities Company Representative Office"
-      - "Securities Company Transaction Office"
-      - "Securities Company Foreign Branch"
-      - "Securities Company Foreign Representative Office"
+      - "Securities Company Organization Unit"
     values: []
+    deprecated: true
+    deprecated_reason: "SCMS.CAT_SC_FIRM_STATUS đã nâng cấp thành Atomic entity thật 'Classification Firm Status' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Firm Status Id + Code trong: lld_SCMS_SC_FIRM_INFO.yaml, lld_SCMS_SC_FIRM_BRANCH.yaml, lld_SCMS_SC_FIRM_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_TRANSACTION_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml (tất cả cùng consolidate về entity 'Securities Company Organization Unit'). 'Securities Company Foreign Branch' KHÔNG có cột status tương ứng trong BRD nguồn — đã loại khỏi danh sách consumer (không phải gap thiết kế)."
 
   - scheme_code: "SCMS_SERVICE_TYPE"
     name: "Loại dịch vụ chứng khoán"
@@ -1687,8 +1686,10 @@ schemes:
     source_table: "SCMS.CAT_SERVICE"
     used_in_entities:
       - "Securities Company Licensed Service"
-      - "Securities Company Custodian Bank"
+      - "Securities Company Foreign Branch"
     values: []
+    deprecated: true
+    deprecated_reason: "SCMS.CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification Service' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Entity tiêu thụ 'Securities Company Licensed Service' đã đổi sang cặp FK Classification Service Id + Classification Service Code (xem lld_SCMS_SC_FIRM_SERVICE.yaml). 'Securities Company Foreign Branch' (junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE, denormalized ARRAY) migrated 2026-07-10 sang Array<Struct> {classification_service_id; classification_service_code}. 'Securities Company Custodian Bank' đã được xác nhận KHÔNG có cột nguồn liên kết CAT_SERVICE — loại khỏi danh sách consumer (thông tin cũ/sai)."
 
   - scheme_code: "SCMS_SERVICE_RECORD_STATUS"
     name: "Trạng thái dịch vụ được cấp phép: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực"
@@ -1719,9 +1720,13 @@ schemes:
     used_in_entities:
       - "Securities Company Senior Personnel"
       - "Securities Company Shareholder"
-      - "Securities Company Foreign Branch Personnel"
-      - "Securities Company Foreign Representative Office Personnel"
+      - "Securities Company Major Shareholder Relation"
+      - "Securities Company Insider Related Person"
+      - "Securities Company Organization Unit"
+      - "Securities Company Practitioner"
     values: []
+    deprecated: true
+    deprecated_reason: "SCMS.CAT_NATIONALITY đã nâng cấp thành Atomic entity thật 'Classification Nationality' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Nationality Id + Code trong: lld_SCMS_SC_FIRM_SENIOR_PERSONNEL.yaml, lld_SCMS_SC_FIRM_SHAREHOLDER.yaml, lld_SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION.yaml, lld_SCMS_SC_FIRM_INSIDER_RELATION.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml, lld_SCMS_SC_FIRM_DOMESTIC_REP_OFFICE.yaml (2 file cuối consolidate về entity 'Securities Company Organization Unit'), và lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml (gap-fill — cột NATIONALITY_ID trước đó chưa map). 'Securities Company Foreign Branch Personnel' và 'Securities Company Foreign Representative Office Personnel' KHÔNG migrate — cột nguồn là NATIONALITY (text tự do), không phải NATIONALITY_ID, chưa đủ cơ sở tạo FK; cần xác nhận với BA."
 
   - scheme_code: "SCMS_ALERT_INDICATOR_TYPE"
     name: "Loại chỉ tiêu cảnh báo"
@@ -1738,6 +1743,243 @@ schemes:
     used_in_entities:
       - "Securities Company Risk Indicator Group"
     values: []
+
+  # --- Tier 1 schemes — Classification Firm Status / Service / Nationality / Event Type,
+  #     Securities Company Form Report (HLD bổ sung, xem SCMS_HLD_Tier1.md 6f T1-05/T1-06) ---
+
+  - scheme_code: "SCMS_FIRM_STATUS_APPLICABLE_ENTITY"
+    name: "Đối tượng áp dụng trạng thái pháp lý (CTCK/CN/VPDD/NH/Cả hai)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY"
+    used_in_entities:
+      - "Classification Firm Status"
+    values: []
+
+  - scheme_code: "SCMS_FIRM_STATUS_RECORD_STATUS"
+    name: "Trạng thái bản ghi danh mục Firm Status: 1=Đang sử dụng; 0=Ngừng sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SC_FIRM_STATUS.RECORD_STATUS"
+    used_in_entities:
+      - "Classification Firm Status"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Ngừng sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_CLASSIFICATION_SERVICE_RECORD_STATUS"
+    name: "Trạng thái bản ghi danh mục Service: 1=Đang sử dụng; 0=Ngừng sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_SERVICE.RECORD_STATUS"
+    used_in_entities:
+      - "Classification Service"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Ngừng sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_NATIONALITY_RECORD_STATUS"
+    name: "Trạng thái bản ghi danh mục Nationality: 1=Đang sử dụng; 0=Ngừng sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_NATIONALITY.RECORD_STATUS"
+    used_in_entities:
+      - "Classification Nationality"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Ngừng sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_EVENT_TYPE_RECORD_STATUS"
+    name: "Trạng thái danh mục sự vụ: 1=Đang sử dụng; 0=Ngừng sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.RECORD_STATUS"
+    used_in_entities:
+      - "Classification Event Type"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Ngừng sử dụng"
+        source_value: "0"
+
+  - scheme_code: "SCMS_EVENT_TYPE_OBLIGATION_TYPE"
+    name: "Loại nghĩa vụ áp dụng của sự vụ"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE"
+    used_in_entities:
+      - "Classification Event Type"
+    values:
+      - code: "REPORT_ONLY"
+        label: "Chỉ báo cáo (không CBTT)"
+        source_value: "1"
+      - code: "DISCLOSURE_ONLY"
+        label: "Chỉ CBTT (không báo cáo)"
+        source_value: "2"
+      - code: "REPORT_AND_DISCLOSURE"
+        label: "Vừa báo cáo vừa CBTT"
+        source_value: "3"
+      - code: "PROFILE_CHANGE"
+        label: "Thay đổi hồ sơ CTCK"
+        source_value: "4"
+
+  - scheme_code: "SCMS_EVENT_TYPE_TARGET_ENTITY"
+    name: "Đối tượng áp dụng của loại sự vụ (mô tả gốc BRD trống — cần profile)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.TARGET_ENTITY"
+    used_in_entities:
+      - "Classification Event Type"
+    values: []
+
+  - scheme_code: "SCMS_EVENT_TYPE_EVENT_CATEGORY"
+    name: "Phân loại sự vụ (loại thay đổi hồ sơ) — values chưa profile"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.EVENT_CATEGORY"
+    used_in_entities:
+      - "Classification Event Type"
+    values: []
+
+  - scheme_code: "SCMS_EVENT_TYPE_CYCLE"
+    name: "Chu kỳ áp dụng của sự vụ (mô tả gốc BRD trống — cần profile)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.CYCLE"
+    used_in_entities:
+      - "Classification Event Type"
+    values: []
+
+  - scheme_code: "SCMS_EVENT_TYPE_FREQUENCY"
+    name: "Tần suất áp dụng của sự vụ (mô tả gốc BRD trống — cần profile)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.FREQUENCY"
+    used_in_entities:
+      - "Classification Event Type"
+    values: []
+
+  - scheme_code: "SCMS_EVENT_TYPE_SUBMISSION_METHOD"
+    name: "Phương thức nộp/xử lý sự vụ (mô tả gốc BRD trống — cần profile)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.SUBMISSION_METHOD"
+    used_in_entities:
+      - "Classification Event Type"
+    values: []
+
+  - scheme_code: "SCMS_EVENT_TYPE_DEADLINE_CALC_METHOD"
+    name: "Phương pháp tính hạn xử lý (mô tả gốc BRD trống — cần profile)"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_EVENT_TYPE.DEADLINE_CALCULATION_METHOD"
+    used_in_entities:
+      - "Classification Event Type"
+    values: []
+
+  - scheme_code: "SCMS_FORM_REPORT_RECORD_STATUS"
+    name: "Trạng thái biểu mẫu báo cáo: 0=Không sử dụng; 1=Đang sử dụng (hoạt động); 2=Bản nháp"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_REPORT.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Form Report"
+    values:
+      - code: "INACTIVE"
+        label: "Không sử dụng"
+        source_value: "0"
+      - code: "ACTIVE"
+        label: "Đang sử dụng (hoạt động)"
+        source_value: "1"
+      - code: "DRAFT"
+        label: "Bản nháp"
+        source_value: "2"
+
+  - scheme_code: "SCMS_FORM_REPORT_TYPE"
+    name: "Loại báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT)"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_REPORT.REPORT_TYPE"
+    used_in_entities:
+      - "Securities Company Form Report"
+    values:
+      - code: "DINH_KY"
+        label: "Báo cáo định kỳ"
+        source_value: "DINH_KY"
+      - code: "BAT_THUONG"
+        label: "Báo cáo bất thường"
+        source_value: "BAT_THUONG"
+      - code: "THEO_YEU_CAU"
+        label: "Báo cáo theo yêu cầu"
+        source_value: "THEO_YEU_CAU"
+      - code: "CBTT"
+        label: "Công bố thông tin"
+        source_value: "CBTT"
+
+  - scheme_code: "SCMS_FORM_REPORT_SENDER_ENTITY"
+    name: "Loại đơn vị gửi báo cáo (CTCK/VPDD/CNCTCK)"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_REPORT.SENDER_ENTITY"
+    used_in_entities:
+      - "Securities Company Form Report"
+    values:
+      - code: "CTCK"
+        label: "Công ty chứng khoán"
+        source_value: "CTCK"
+      - code: "VPDD"
+        label: "Văn phòng đại diện CTCK nước ngoài tại VN"
+        source_value: "VPDD"
+      - code: "CNCTCK"
+        label: "Chi nhánh CTCK nước ngoài tại VN"
+        source_value: "CNCTCK"
+
+  - scheme_code: "SCMS_FORM_REPORT_STYLE"
+    name: "Phong cách báo cáo: 0=Báo cáo đầu vào; 1=Báo cáo đầu ra"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_REPORT.REPORT_STYLE"
+    used_in_entities:
+      - "Securities Company Form Report"
+    values:
+      - code: "INPUT"
+        label: "Báo cáo đầu vào (nhập liệu)"
+        source_value: "0"
+      - code: "OUTPUT"
+        label: "Báo cáo đầu ra (xuất dữ liệu)"
+        source_value: "1"
+
+  - scheme_code: "SCMS_DISCLOSURE_NEWS_TYPE"
+    name: "Loại tin CBTT tạo ra khi gửi báo cáo"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_REPORT.DISCLOSURE_NEWS_TYPE"
+    used_in_entities:
+      - "Securities Company Form Report"
+    values:
+      - code: "PERIODIC"
+        label: "Định kỳ"
+        source_value: "1"
+      - code: "AD_HOC"
+        label: "Bất thường"
+        source_value: "2"
+      - code: "ON_DEMAND"
+        label: "Theo yêu cầu"
+        source_value: "3"
+
+  - scheme_code: "SCMS_SIGNATURE_TYPE"
+    name: "Loại chữ ký yêu cầu (điện tử/số hóa/không yêu cầu)"
+    source_type: "source_table"
+    source_table: "SCMS.FORM_REPORT.SIGNATURE_TYPE"
+    used_in_entities:
+      - "Securities Company Form Report"
+    values:
+      - code: "DIEN_TU"
+        label: "Chữ ký điện tử"
+        source_value: "DIEN_TU"
+      - code: "SO_HOA"
+        label: "Số hóa/upload file ký"
+        source_value: "SO_HOA"
+      - code: "NONE"
+        label: "Không yêu cầu chữ ký"
+        source_value: "NONE"
 
   # --- Tier 2 schemes ---
 
@@ -1776,9 +2018,20 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE"
     used_in_entities:
+      - "Securities Company"
+      - "Securities Company Organization Unit"
+      - "Securities Company Foreign Branch"
       - "Securities Company Profile Change"
+      - "Securities Company Shareholder Transfer"
+      - "Securities Company Periodic Report"
+      - "Securities Company Adhoc Report"
       - "Securities Company Disclosure Report"
+      - "Securities Company Disclosure Securities Offering"
+      - "Securities Company Foreign Branch Periodic Report"
+      - "Securities Company Foreign Representative Office Periodic Report"
     values: []
+    deprecated: true
+    deprecated_reason: "SCMS.CAT_EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification Event Type' (table_type Relative, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Event Type Id + Code trong toàn bộ entity tiêu thụ liệt kê ở trên (danh sách trước đó chỉ ghi 2 entity, đã lỗi thời)."
 
   - scheme_code: "SCMS_PROFILE_STATUS"
     name: "Trạng thái hồ sơ phê duyệt"
@@ -3841,26 +4094,43 @@ schemes:
       - "Geographic Area"
     values:
       - code: "COUNTRY"
-        name: "Quốc gia / quốc tịch — từ FIMS.NATIONAL + FMS.NATIONAL + SCMS.DM_QUOC_TICH"
-        source_table: "FIMS.NATIONAL, FMS.NATIONAL, SCMS.DM_QUOC_TICH"
-      - code: "PROVINCE"
-        name: "Tỉnh / thành phố trong nước — từ FIMS.LOCATION + SCMS.DM_TINH_THANH"
-        source_table: "FIMS.LOCATION, SCMS.DM_TINH_THANH"
-      - code: "DISTRICT_OLD"
-        name: "Quận/Huyện (cũ — pre-2025) — từ ECAT_05_DistrictOld"
-        source_table: "ECAT.ECAT_05_DistrictOld"
-      - code: "PROVINCE_OLD"
-        name: "Tỉnh/Thành phố (cũ — pre-2025) — từ ECAT_03_ProvinceOld"
-        source_table: "ECAT.ECAT_03_ProvinceOld"
+        name: "Quốc gia / quốc tịch — từ ECAT.COUNTRY"
+        source_table: "ECAT.COUNTRY"
       - code: "REGION"
-        name: "Vùng/miền Việt Nam (từ ECAT_02_Region)"
-        source_table: "ECAT.ECAT_02_Region"
+        name: "Vùng/miền Việt Nam — từ ECAT.REGION"
+        source_table: "ECAT.REGION"
+      - code: "PROVINCE"
+        name: "Tỉnh/thành phố (hiện hành — post-sáp nhập 2025) — từ ECAT.PROVINCE_NEW"
+        source_table: "ECAT.PROVINCE_NEW"
       - code: "WARD"
-        name: "Phường/Xã/Thị trấn (chuẩn — post-sáp nhập 2025) — từ ECAT_07_Ward"
-        source_table: "ECAT.ECAT_07_Ward"
+        name: "Phường/Xã/Thị trấn (hiện hành — post-sáp nhập 2025) — từ ECAT.WARD_NEW"
+        source_table: "ECAT.WARD_NEW"
+
+  - scheme_code: "GEOGRAPHIC_AREA_OLD_TYPE"
+    name: null
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Geographic Area Old"
+    values:
+      - code: "PROVINCE_OLD"
+        name: "Tỉnh/thành phố (cũ — pre-2025) — từ ECAT.PROVINCE_OLD"
+        source_table: "ECAT.PROVINCE_OLD"
+      - code: "DISTRICT_OLD"
+        name: "Quận/huyện (cũ — pre-2025, cấp hành chính bị bỏ sau sáp nhập) — từ ECAT.DISTRICT_OLD"
+        source_table: "ECAT.DISTRICT_OLD"
       - code: "WARD_OLD"
-        name: "Phường/Xã/Thị trấn (cũ — pre-2025) — từ ECAT_06_WardOld"
-        source_table: "ECAT.ECAT_06_WardOld"
+        name: "Phường/xã/thị trấn (cũ — pre-2025) — từ ECAT.WARD_OLD"
+        source_table: "ECAT.WARD_OLD"
+
+  - scheme_code: "GEOGRAPHIC_AREA_WARD_CATEGORY"
+    name: "Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)"
+    source_type: "source_table"
+    source_table: "ECAT.WARD_NEW.CATEGORY, ECAT.WARD_OLD.CATEGORY"
+    used_in_entities:
+      - "Geographic Area"
+      - "Geographic Area Old"
+    values: []
 
   - scheme_code: "GSGD_APPROVAL_STATUS"
     name: "Trạng thái phê duyệt (tài khoản/sự kiện/nhóm) — GSGD"

@@ -5,7 +5,7 @@
 > **Phạm vi:** Thành viên thị trường QLQ (công ty QLQ trong nước + VPĐD NN), quỹ đầu tư, ngân hàng lưu ký giám sát, đại lý phân phối, nhà đầu tư, báo cáo định kỳ và xếp hạng thành viên.
 >
 > **File chi tiết theo tầng:**
-> - [FMS_HLD_Tier1.md](FMS_HLD_Tier1.md) — Independent Entities: Fund Management Company, Geographic Area (shared), Custodian Bank, Fund Distribution Agent, Member Rating Period, Member Warning Parameter
+> - [FMS_HLD_Tier1.md](FMS_HLD_Tier1.md) — Independent Entities: Fund Management Company, Custodian Bank, Fund Distribution Agent, Member Rating Period, Member Warning Parameter (Geographic Area đã chuyển sang nguồn ECAT — xem mục 7f)
 > - [FMS_HLD_Tier2.md](FMS_HLD_Tier2.md) — FK đến Tier 1: FMC Organization Unit, Foreign FM Org Unit, FMC Key Person, Investment Fund, Discretionary Investment Investor, FDA Organization Unit, Member Rating, Member Warning Condition
 > - [FMS_HLD_Tier3.md](FMS_HLD_Tier3.md) — FK đến Tier 2: Foreign FM Org Unit Staff, Investment Fund Representative Board Member, Investment Fund Investor Membership, Discretionary Investment Account
 > - [FMS_HLD_Tier4.md](FMS_HLD_Tier4.md) — FK đến Tier 3: Investment Fund Investor Capital Change Log, Investment Fund Certificate Transfer, Fund Management Company Share Transfer
@@ -30,7 +30,6 @@
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | Involved Party | [Involved Party] Portfolio Fund Management Company | Organization | SECURITIES | Update | Danh sách công ty quản lý quỹ trong nước và nước ngoài tại VN | Fund Management Company | Fundamental | Portfolio Fund Management Company — tổ chức được UBCK cấp phép quản lý quỹ đầu tư. Cấu trúc trường: tên VN/EN/viết tắt, mã, địa chỉ, phone, email, website, vốn điều lệ, mã số doanh nghiệp. Tách IP Postal Address + IP Electronic Address + IP Alt Identification. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | NATIONAL | Update | Danh sách quốc gia/quốc tịch | Geographic Area | Fundamental | Geographic Area — shared entity đã approved từ NHNCK. FMS.NATIONAL bổ sung source quốc gia (COUNTRY type). Không tạo entity mới — bổ sung source_table vào entry hiện có. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | BANK_MONI | Update | Danh sách ngân hàng lưu ký giám sát (LKGS) | Custodian Bank | Fundamental | Organization — ngân hàng giữ tài sản quỹ và giám sát CTQLQ. Cấu trúc trường: tên, địa chỉ, phone, email. Tách IP Postal Address + IP Electronic Address. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | AGENCIES | Update | Danh sách đại lý phân phối quỹ đầu tư | Fund Distribution Agent | Fundamental | Organization — tổ chức phân phối CCQ cho NĐT cá nhân. FK đến AGENCY_TYPE (Classification Value). Tách IP Postal Address. |
 | 1 | Business Activity | [Business Activity] Assessment Period | Period | RATING_PD | Update | Danh sách kỳ đánh giá xếp loại công ty QLQ | Member Rating Period | Fundamental | Assessment Period — kỳ thời gian định kỳ để đánh giá và xếp loại thành viên thị trường. Master entity được FK từ RANK. BCO điều chỉnh theo review (Event → Business Activity). |
@@ -91,7 +90,7 @@ graph TD
     FDA["**Fund Distribution Agent**\n(T1)"]:::atomic
     MRP["**Member Rating Period**\n(T1)"]:::atomic
     WP["**Member Warning Parameter**\n(T1)"]:::atomic
-    GEO["Geographic Area (shared T1)"]:::shared
+    GEO["Geographic Area (nguồn ECAT — không còn tự thiết kế tại FMS)"]:::shared
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
     ALTID["IP Alt Identification"]:::shared
@@ -312,6 +311,7 @@ graph TD
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
+| Isolated | NATIONAL | Danh sách quốc gia/quốc tịch | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | System / Auth | USERS | Quản lý người dùng hệ thống FMS | Operational/system data — không có giá trị nghiệp vụ. |
 | System / Auth | REFRESHTOKEN | Token đăng nhập phiên làm việc | Operational/system data — session token xác thực. |
 | System / Auth | USERSESSIONS | Quản lý tài khoản đang truy cập hệ thống | Operational/system data — session tracking. |
@@ -434,11 +434,6 @@ graph TD
 ### 1. Fund Management Company
 **Tier:** 1 | **Source:** `FMS.SECURITIES` | **BCV Concept:** [Involved Party] Portfolio Fund Management Company | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Công ty quản lý quỹ được UBCK cấp phép hoạt động tại Việt Nam. Ghi nhận tên, mã, vốn điều lệ, ngày đăng ký, trạng thái hoạt động và thông tin liên hệ. Là entity trung tâm của nguồn FMS, nhiều entity khác FK trực tiếp về đây.
-
-
-### 2. Geographic Area
-**Tier:** 1 | **Source:** `FMS.NATIONAL` | **BCV Concept:** [Location] Geographic Area | **BCO:** Location | **Table Type:** Fundamental
-**Description:** Đơn vị địa lý — quốc gia/quốc tịch. Shared entity đã approved từ NHNCK; FMS.NATIONAL bổ sung source quốc gia (geographic_area_type_code = COUNTRY). Không tạo entity mới.
 
 
 ### 3. Custodian Bank

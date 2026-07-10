@@ -211,6 +211,34 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Classification Nationality Id"
+  physical_name: "cl_nationality_id"
+  description: "FK đến quốc tịch của người hành nghề."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Nationality Code"
+  physical_name: "cl_nationality_code"
+  description: "Mã quốc tịch của người hành nghề."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Securities License Number"
   physical_name: "securities_license_nbr"
   description: "Số chứng chỉ hành nghề chứng khoán theo SCMS."
@@ -608,8 +636,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NGAY_SINH"
-  comment: "Legacy duplicate của SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATE_OF_BIRTH (cột\
-    \ tiếng Anh mới hơn, cùng bảng — hiện chưa map trong Atomic, xem post_check_source_coverage)."
+  comment: "Legacy duplicate của SCMS.SC_FIRM_LICENSED_PRACTITIONER.DATE_OF_BIRTH\
+    \ (cột tiếng Anh mới hơn, cùng bảng — hiện chưa map trong Atomic, xem post_check_source_coverage)."
   classification_context: null
   etl_derived_value: null
   data_type: "date"

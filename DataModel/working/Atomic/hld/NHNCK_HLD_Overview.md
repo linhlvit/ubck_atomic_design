@@ -5,7 +5,7 @@
 > **Phạm vi:** Đăng ký, cấp/thu hồi chứng chỉ hành nghề, đào tạo, thi sát hạch, vi phạm, đào tạo sau CCHN.
 >
 > **File chi tiết theo tầng:**
-> - [NHNCK_HLD_Tier1.md](NHNCK_HLD_Tier1.md) — Reference Data: Geographic Area (Country/Province/District), Regulatory Authority Organization Unit, Securities Organization Reference, License Decision Document, Securities Practitioner License Certificate Type
+> - [NHNCK_HLD_Tier1.md](NHNCK_HLD_Tier1.md) — Reference Data: Regulatory Authority Organization Unit, Securities Organization Reference, License Decision Document, Securities Practitioner License Certificate Type (Geographic Area đã chuyển sang nguồn ECAT — xem mục 7f)
 > - [NHNCK_HLD_Tier2.md](NHNCK_HLD_Tier2.md) — Securities Practitioner, Securities Practitioner Reason Change History, Professional Training Class, Qualification Examination Assessment
 > - [NHNCK_HLD_Tier3.md](NHNCK_HLD_Tier3.md) — License Certificate Document, License Application, Employment Status, Related Party, Conduct Violation, Organization Employment Report, Training Class Enrollment, Examination Assessment Result, Examination Assessment Fee
 > - [NHNCK_HLD_Tier4.md](NHNCK_HLD_Tier4.md) — License Application sub-entities (×5), Professional Training History
@@ -16,17 +16,14 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Location | [Location] Geographic Area | Geographic Area | COUNTRIES | Update | Danh mục quốc gia/vùng lãnh thổ theo ISO 3166 | Geographic Area | Fundamental | Geographic Area — BCV ngoại lệ: dù chỉ có Code+Name vẫn là Atomic entity. Cùng entity với PROVINCES + DISTRICTS; phân biệt bằng Geographic Area Type Code. Self-ref: DISTRICT → PROVINCE → COUNTRY. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | PROVINCES | Update | Danh mục tỉnh/thành phố trực thuộc trung ương | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với COUNTRIES + DISTRICTS. Geographic Area Type Code = PROVINCE. FK self-ref đến Geographic Area cha (COUNTRY). |
-| 1 | Location | [Location] Geographic Area | Geographic Area | DISTRICTS | Update | Danh mục quận/huyện/thị xã | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với COUNTRIES + PROVINCES. Geographic Area Type Code = DISTRICT. FK self-ref đến Geographic Area cha (PROVINCE). |
 | 1 | Involved Party | [Involved Party] Organization | Organization | UNITS | Update | Danh mục đơn vị thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cấu trúc cây self-referencing. Cùng Atomic entity với DEPARTMENTS. Phân biệt bằng Organization Unit Type Code và Source System Code. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | DEPARTMENTS | Update | Danh mục phòng ban thuộc UBCKNN | Regulatory Authority Organization Unit | Fundamental | Organization — cùng Atomic entity với UNITS. Organization Unit Type Code = DEPARTMENT, Source System Code = NHNCK.DEPARTMENTS. Tách attr file theo nguồn. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | ORGANIZATIONS | Update | Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) | Securities Organization Reference | Fundamental | Organization — entity nghiệp vụ phong phú, FK từ nhiều bảng. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISIONS | Update | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Fundamental | Government Registration Document — được FK từ Certificate Document (×3), Certificate Group Document, Conduct Violation, Examination Assessment. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATES | Update | Danh mục các loại chứng chỉ hành nghề chứng khoán | Securities Practitioner License Certificate Type | Fundamental | Government Registration Document — danh mục loại CCHN, có processing_days/sort_order/description nên là entity thật (không phải Classification Value). FK target cho Certificate Type Id ở License Application/Certificate Document/Organization Employment Report/Examination Assessment Result/Fee, và cross-source từ IAM User. |
-| 1 | Common | [Common] Application Status | — | APPLICATION_STATUSES | Update | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification Application Status | Classification | BCV Core Object gán Common theo quy tắc mặc định. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS, 2026-07-09) lên entity thật vì có đầy đủ audit fields + SORT_ORDER + LABEL. |
-| 1 | Common | [Common] Document | — | DOCUMENTS | Update | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification Document | Classification | BCV Core Object gán Common theo quy tắc mặc định. Danh mục các tài liệu (không phải "loại tài liệu"). Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE, 2026-07-09) lên entity thật. |
-| 1 | Common | [Common] Specialization | — | SPECIALIZATIONS | Update | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification Specialization | Classification | BCV Core Object gán Common theo quy tắc mặc định — term BCV gần nhất ([Involved Party] Employment Position Qualification) khớp yếu, không dùng. Nâng cấp từ Classification Value (scheme SPECIALIZATION, 2026-07-09) lên entity thật. |
+| 1 | Common | [Common] Application Status | — | APPLICATION_STATUSES | Update | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification Application Status | Relative | BCV Core Object gán Common theo quy tắc mặc định. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS, 2026-07-09) lên entity thật vì có đầy đủ audit fields + SORT_ORDER + LABEL. |
+| 1 | Common | [Common] Document | — | DOCUMENTS | Update | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification Document | Relative | BCV Core Object gán Common theo quy tắc mặc định. Danh mục các tài liệu (không phải "loại tài liệu"). Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE, 2026-07-09) lên entity thật. |
+| 1 | Common | [Common] Specialization | — | SPECIALIZATIONS | Update | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification Specialization | Relative | BCV Core Object gán Common theo quy tắc mặc định — term BCV gần nhất ([Involved Party] Employment Position Qualification) khớp yếu, không dùng. Nâng cấp từ Classification Value (scheme SPECIALIZATION, 2026-07-09) lên entity thật. |
 | 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS | Update | Thông tin người hành nghề chứng khoán | Securities Practitioner | Fundamental | Individual — master entity người hành nghề. |
 | 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONAL_HISTORIES | Update | Lịch sử thay đổi thông tin cá nhân của người hành nghề | Securities Practitioner Reason Change History | Fundamental | Individual — ghi nhận 1 lần thay đổi thông tin (ai/khi nào/lý do). Thiết kế lại 2026-07-07 — bản cũ map nhầm sang PROFESSIONALS. FK đến Securities Practitioner qua PROFESSIONAL_ID. |
 | 2 | Event | [Event] Training Course | Training Course | SPECIALIZATION_COURSES | Update | Danh mục khóa học chuyên môn bổ sung kiến thức | Securities Practitioner Professional Training Class | Fundamental | Training Course — master entity khóa học, không gắn với người cụ thể. |
@@ -58,7 +55,6 @@ graph TD
     classDef pattern fill:#e2e8f0,stroke:#64748b,color:#1e293b
 
     %% Tier 1
-    GEOAREA["**Geographic Area**\n(COUNTRY/PROVINCE/DISTRICT)"]:::atomic
     ORGUNIT["**Regulatory Authority Organization Unit**"]:::atomic
     SECORG["**Securities Organization Reference**"]:::atomic
     DECISION["**Securities Practitioner License Decision Document**"]:::atomic
@@ -96,7 +92,6 @@ graph TD
     PROFTRAIN["**Professional Training History**"]:::atomic
 
     %% Tier 1
-    GEOAREA -->|self-ref Parent Geographic Area| GEOAREA
     ORGUNIT -->|self-ref| ORGUNIT
     OFFICER -->|Organization Unit FK| ORGUNIT
     OFFICER -->|Department Organization Unit FK| ORGUNIT
@@ -196,6 +191,9 @@ graph TD
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
+| Isolated | COUNTRIES | Danh mục quốc gia/vùng lãnh thổ theo ISO 3166 | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
+| Isolated | PROVINCES | Danh mục tỉnh/thành phố trực thuộc trung ương | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
+| Isolated | DISTRICTS | Danh mục quận/huyện/thị xã | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | Involved Party | USERS | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Quyết định Data Modeler (2026-07-07) — không thiết kế Atomic entity riêng. Định hướng dùng chung entity Identity and Access Management User (nguồn IAM.USERS) cho mọi FK "officer/user" trong hệ thống. |
 | System / Auth | USER_ROLES | Phân quyền người dùng theo vai trò | Operational/system data — không có giá trị nghiệp vụ. |
 | System / Auth | ROLES | Danh mục vai trò trong hệ thống | Operational/system data. |
@@ -254,11 +252,6 @@ graph TD
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
 
-### 1. Geographic Area
-**Tier:** 1 | **Source:** `COUNTRIES, PROVINCES, DISTRICTS` | **BCV Concept:** [Location] Geographic Area | **BCO:** Location | **Table Type:** Fundamental
-**Description:** Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code. Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025.
-
-
 ### 2. Regulatory Authority Organization Unit
 **Tier:** 1 | **Source:** `UNITS, DEPARTMENTS` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Đơn vị và phòng ban thuộc UBCKNN — cấu trúc cây self-referencing DEPARTMENT → UNIT. Phân biệt bằng Organization Unit Type Code (ETL-derived). Dùng chung làm FK tổ chức nội bộ.
@@ -283,17 +276,17 @@ graph TD
 **Description:** Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số ngày xử lý, thứ tự hiển thị. FK target cho `Certificate Type Id` (License Application ×2, Certificate Document, Examination Assessment Result, Examination Assessment Fee, Organization Employment Report) và cross-source cho IAM User (`Practice Certificate Type Id`, pending). Xem 7e #8.
 
 ### 5c. Classification Application Status — MỚI (2026-07-09)
-**Tier:** 1 | **Source:** `APPLICATION_STATUSES` | **BCV Concept:** [Common] Application Status | **BCO:** Common | **Table Type:** Classification
+**Tier:** 1 | **Source:** `APPLICATION_STATUSES` | **BCV Concept:** [Common] Application Status | **BCO:** Common | **Table Type:** Relative
 **Domain Prefix:** Classification
 **Description:** Danh mục trạng thái hồ sơ đăng ký CCHN — mã, tên, nhãn hiển thị, mô tả, thứ tự sắp xếp. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS) lên entity thật. FK target cho Application Status Id (Securities Practitioner License Application). Xem 7e #9.
 
 ### 5d. Classification Document — MỚI (2026-07-09)
-**Tier:** 1 | **Source:** `DOCUMENTS` | **BCV Concept:** [Common] Document | **BCO:** Common | **Table Type:** Classification
+**Tier:** 1 | **Source:** `DOCUMENTS` | **BCV Concept:** [Common] Document | **BCO:** Common | **Table Type:** Relative
 **Domain Prefix:** Classification
 **Description:** Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục cấp CCHN — mã, tên, mô tả tham chiếu. Là danh mục các tài liệu, không phải phân loại "loại tài liệu". Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật. FK target cho Document Id (Securities Practitioner License Application Employment Experience). Xem 7e #9.
 
 ### 5e. Classification Specialization — MỚI (2026-07-09)
-**Tier:** 1 | **Source:** `SPECIALIZATIONS` | **BCV Concept:** [Common] Specialization | **BCO:** Common | **Table Type:** Classification
+**Tier:** 1 | **Source:** `SPECIALIZATIONS` | **BCV Concept:** [Common] Specialization | **BCO:** Common | **Table Type:** Relative
 **Domain Prefix:** Classification
 **Description:** Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán. Nâng cấp từ Classification Value (scheme SPECIALIZATION) lên entity thật. FK target cho Specialization Id (Securities Practitioner License Application Education Certificate Document). Xem 7e #9.
 

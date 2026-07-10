@@ -149,6 +149,18 @@ entries:
   group: Form Metadata
   reason: Form Metadata — version control biểu mẫu output.
 - source_system: FIMS
+  source_table: LOCATION
+  description: Danh sách tỉnh/thành phố Việt Nam
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
+- source_system: FIMS
+  source_table: NATIONAL
+  description: Danh sách quốc gia/quốc tịch
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
+- source_system: FIMS
   source_table: API_MAPPINGS
   description: Cấu hình ánh xạ API
   group: Operational / System
@@ -530,6 +542,12 @@ entries:
   description: Danh sách tỉnh/thành phố
   group: Isolated
   reason: Reference data địa giới thu thập từ ECAT — không collect tại FMS.
+- source_system: FMS
+  source_table: NATIONAL
+  description: Danh sách quốc gia/quốc tịch
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
 - source_system: FMS
   source_table: PARVALUE
   description: Danh sách mệnh giá cổ phần
@@ -1140,6 +1158,25 @@ entries:
   group: Digital Cert
   reason: Operational/PKI data.
 - source_system: NHNCK
+  source_table: USERS
+  description: Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK
+  group: Involved Party
+  reason: Quyết định Data Modeler (2026-07-07) — không thiết kế Atomic entity riêng.
+    Định hướng dùng chung entity Identity and Access Management User (nguồn IAM.USERS)
+    cho mọi FK "officer/user" trong hệ thống.
+- source_system: NHNCK
+  source_table: COUNTRIES
+  description: Danh mục quốc gia/vùng lãnh thổ theo ISO 3166
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
+- source_system: NHNCK
+  source_table: DISTRICTS
+  description: Danh mục quận/huyện/thị xã
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
+- source_system: NHNCK
   source_table: IDENTITY_INFO_C06S
   description: Lịch sử xác thực danh tính người hành nghề với hệ thống C06 (Bộ Công
     An)
@@ -1154,6 +1191,12 @@ entries:
   reason: Isolated entity — không có bảng đăng ký/enrollment liên quan trong scope;
     chỉ là danh mục tham chiếu không có giá trị phân tích độc lập tại thời điểm thiết
     kế.
+- source_system: NHNCK
+  source_table: PROVINCES
+  description: Danh mục tỉnh/thành phố trực thuộc trung ương
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
 - source_system: NHNCK
   source_table: CERTIFICATE_CONVERSION_REQUESTS
   description: Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử
@@ -1375,11 +1418,6 @@ entries:
   group: Form Metadata
   reason: Cascade từ FORM_REPORT đã loại.
 - source_system: SCMS
-  source_table: FORM_REPORT
-  description: Biểu mẫu báo cáo
-  group: Form Metadata
-  reason: Loại theo yêu cầu người thiết kế — form metadata không cần trên Atomic.
-- source_system: SCMS
   source_table: FORM_REPORT_DEEP_CONFIG
   description: Cấu hình chi tiết biểu mẫu
   group: Form Metadata
@@ -1393,7 +1431,8 @@ entries:
   source_table: FORM_REPORT_PERIODIC
   description: Cấu hình kỳ báo cáo của biểu mẫu
   group: Form Metadata
-  reason: Cascade từ FORM_REPORT đã loại theo yêu cầu người thiết kế.
+  reason: 'Cascade — cần review lý do loại-scope độc lập (FORM_REPORT không còn ngoài
+    scope, xem 7e #12).'
 - source_system: SCMS
   source_table: FORM_ROW_HEADER
   description: Tiêu đề hàng biểu mẫu
@@ -1434,6 +1473,24 @@ entries:
   description: Giá trị dữ liệu từng ô báo cáo
   group: Form Metadata
   reason: Loại theo yêu cầu người thiết kế.
+- source_system: SCMS
+  source_table: CAT_DISTRICT
+  description: Danh mục quận/huyện/thị xã
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
+- source_system: SCMS
+  source_table: CAT_PROVINCE
+  description: Danh mục tỉnh/thành phố trực thuộc trung ương
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
+- source_system: SCMS
+  source_table: CAT_WARD
+  description: Danh mục phường/xã/thị trấn
+  group: Isolated
+  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
+    tra cứu qua mã tham chiếu (2026-07-10).
 - source_system: SCMS
   source_table: DISCLOSURE_NEWS
   description: Tin tức công bố thông tin

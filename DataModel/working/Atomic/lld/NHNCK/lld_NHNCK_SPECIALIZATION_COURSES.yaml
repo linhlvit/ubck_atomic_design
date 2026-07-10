@@ -144,8 +144,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('NHNCK.PROVINCES',\
-    \ PROVINCE_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
+    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES ngừng\
+    \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID\
+    \ với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name, không\
+    \ còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không\
+    \ cùng chuẩn mã với ECAT."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -158,8 +162,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province\
-    \ Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Province Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

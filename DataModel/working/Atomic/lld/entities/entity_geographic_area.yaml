@@ -11,20 +11,24 @@ entity:
   consolidated_by: null
   consolidated_at: null
 sources:
-- source_system: "NHNCK"
-  source_table: "COUNTRIES"
-  lld_file: "NHNCK/lld_NHNCK_COUNTRIES.yaml"
-- source_system: "NHNCK"
-  source_table: "PROVINCES"
-  lld_file: "NHNCK/lld_NHNCK_PROVINCES.yaml"
-- source_system: "NHNCK"
-  source_table: "DISTRICTS"
-  lld_file: "NHNCK/lld_NHNCK_DISTRICTS.yaml"
-- source_system: "FMS"
-  source_table: "NATIONAL"
-  lld_file: "FMS/lld_FMS_NATIONAL.yaml"
+- source_system: "ECAT"
+  source_table: "COUNTRY"
+  lld_file: "ECAT/lld_ECAT_COUNTRY.yaml"
+- source_system: "ECAT"
+  source_table: "REGION"
+  lld_file: "ECAT/lld_ECAT_REGION.yaml"
+- source_system: "ECAT"
+  source_table: "PROVINCE_NEW"
+  lld_file: "ECAT/lld_ECAT_PROVINCE_NEW.yaml"
+- source_system: "ECAT"
+  source_table: "WARD_NEW"
+  lld_file: "ECAT/lld_ECAT_WARD_NEW.yaml"
 consolidation_notes:
-- "⚠️ FMS.NATIONAL: thiếu attribute 'Default Flag' — đặt nullable=true"
+- "Chuyển từ nguồn NHNCK.COUNTRIES/PROVINCES/DISTRICTS + FMS.NATIONAL sang ECAT (nguồn\
+  \ duy nhất) — quyết định của Data Modeler: dữ liệu địa giới hành chính chuẩn hóa\
+  \ tại ECAT, các phân hệ khác chỉ tham chiếu."
+- "REGION không có cột EFFECTIVE/DISPLAY_LABEL/DELETED_REASON/NAME_EN — source_mappings\
+  \ null cho các attribute tương ứng."
 attributes:
 - attribute_name: "Geographic Area Id"
   physical_name: "geographic_area_id"
@@ -36,24 +40,24 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: null
-    NHNCK.PROVINCES: null
-    NHNCK.DISTRICTS: null
-    FMS.NATIONAL: null
+    ECAT.COUNTRY: null
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: null
+    ECAT.WARD_NEW: null
 - attribute_name: "Geographic Area Code"
   physical_name: "geographic_area_code"
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  description: "Mã định danh bền vững của bản ghi qua các version. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  comment: "BK chính. Giá trị từ PK số tự tăng của bảng nguồn."
+  comment: "BK chính. Dùng STABLE_ID (không dùng ID) vì ID đổi theo từng version nguồn."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: "NHNCK.COUNTRIES.ID"
-    NHNCK.PROVINCES: "NHNCK.PROVINCES.ID"
-    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.ID"
-    FMS.NATIONAL: "FMS.NATIONAL.ID"
+    ECAT.COUNTRY: "ECAT.COUNTRY.STABLE_ID"
+    ECAT.REGION: "ECAT.REGION.STABLE_ID"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.STABLE_ID"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.STABLE_ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã nguồn dữ liệu."
@@ -62,29 +66,30 @@ attributes:
   is_primary_key: false
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
   classification_context: "SOURCE_SYSTEM=..."
-  etl_derived_value: "NHNCK.COUNTRIES"
+  etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: null
-    NHNCK.PROVINCES: null
-    NHNCK.DISTRICTS: null
-    FMS.NATIONAL: null
+    ECAT.COUNTRY: null
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: null
+    ECAT.WARD_NEW: null
 - attribute_name: "Geographic Area Type Code"
   physical_name: "geographic_area_tp_code"
-  description: "Phân loại vùng địa lý — Tỉnh/Thành phố"
+  description: "Phân loại vùng địa lý — Quốc gia/Vùng/miền/Tỉnh/Phường-xã hiện hành"
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   comment: null
-  classification_context: "GEOGRAPHIC_AREA_TYPE=COUNTRY"
+  classification_context: "GEOGRAPHIC_AREA_TYPE=..."
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: null
-    NHNCK.PROVINCES: null
-    NHNCK.DISTRICTS: null
-    FMS.NATIONAL: null
-- attribute_name: "Geographic Area Name"
-  physical_name: "geographic_area_nm"
-  description: "Tên quốc gia/vùng lãnh thổ"
+    ECAT.COUNTRY: null
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: null
+    ECAT.WARD_NEW: null
+- attribute_name: "Geographic Area Business Code"
+  physical_name: "geographic_area_bsn_code"
+  description: "Mã nghiệp vụ (do ECAT quản lý) — tách biệt với Geographic Area Code\
+    \ (BK kỹ thuật)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -92,39 +97,71 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: "NHNCK.COUNTRIES.COUNTRY_NAME"
-    NHNCK.PROVINCES: "NHNCK.PROVINCES.PROVINCE_NAME"
-    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.DISTRICT_NAME"
-    FMS.NATIONAL: "FMS.NATIONAL.ITEM_NAME"
-- attribute_name: "ISO Country Code"
-  physical_name: "iso_country_code"
-  description: "Mã quốc gia ISO 3166-1 alpha-2"
+    ECAT.COUNTRY: "ECAT.COUNTRY.CODE"
+    ECAT.REGION: "ECAT.REGION.CODE"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.CODE"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.CODE"
+- attribute_name: "Geographic Area Name"
+  physical_name: "geographic_area_nm"
+  description: "Tên khu vực địa lý (tiếng Việt, hoặc tên duy nhất nếu nguồn không\
+    \ phân biệt VN/EN)."
   data_domain: "Text"
-  nullable: true
+  nullable: false
   is_primary_key: false
   comment: null
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: "NHNCK.COUNTRIES.COUNTRY_CODE"
-    NHNCK.PROVINCES: "NHNCK.PROVINCES.PROVINCE_CODE"
-    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.DISTRICT_CODE"
-    FMS.NATIONAL: "FMS.NATIONAL.SNAME"
+    ECAT.COUNTRY: "ECAT.COUNTRY.NAME_VN"
+    ECAT.REGION: "ECAT.REGION.NAME"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.NAME_VN"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.NAME_VN"
+- attribute_name: "Geographic Area English Name"
+  physical_name: "geographic_area_eng_nm"
+  description: "Tên khu vực địa lý (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "REGION không có cột NAME_EN riêng (chỉ 1 cột NAME)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.NAME_EN"
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.NAME_EN"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.NAME_EN"
+- attribute_name: "Geographic Area Category Code"
+  physical_name: "geographic_area_ctg_code"
+  description: "Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn) — chỉ áp\
+    \ dụng cấp WARD."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY. NULL cho COUNTRY/REGION/PROVINCE."
+  classification_context: "GEOGRAPHIC_AREA_WARD_CATEGORY=(source)"
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: null
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: null
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.CATEGORY"
 - attribute_name: "Parent Geographic Area Id"
   physical_name: "parent_geographic_area_id"
   description: "FK đến vùng địa lý cha (self-ref). NULL cho quốc gia."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không\
-    \ có parent."
+  comment: "FK target: Geographic Area.Geographic Area Id. Chuỗi phân cấp: WARD_NEW\
+    \ → PROVINCE_NEW → REGION → COUNTRY (NULL). Resolve qua join FK.ID → bảng cha.ID\
+    \ để lấy STABLE_ID, rồi hash_id() theo STABLE_ID cha (không hash trực tiếp theo\
+    \ FK ID vì ID đổi theo version)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: null
-    NHNCK.PROVINCES: "NHNCK.PROVINCES.COUNTRY_ID"
-    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.PROVINCE_ID"
-    FMS.NATIONAL: null
+    ECAT.COUNTRY: null
+    ECAT.REGION: "ECAT.REGION.COUNTRY_ID"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.REGION_ID"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.PROVINCE_NEW_ID"
 - attribute_name: "Parent Geographic Area Code"
   physical_name: "parent_geographic_area_code"
   description: "Mã vùng địa lý cha."
@@ -136,36 +173,135 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: null
-    NHNCK.PROVINCES: "NHNCK.PROVINCES.COUNTRY_ID"
-    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.PROVINCE_ID"
-    FMS.NATIONAL: null
-- attribute_name: "Default Flag"
-  physical_name: "default_flag"
-  description: "Cờ mặc định: true=Mặc định; false=Không"
+    ECAT.COUNTRY: null
+    ECAT.REGION: "ECAT.REGION.COUNTRY_ID"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.REGION_ID"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.PROVINCE_NEW_ID"
+- attribute_name: "Effective Indicator"
+  physical_name: "effective_ind"
+  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực."
   data_domain: "Boolean"
-  nullable: true
+  nullable: false
   is_primary_key: false
-  comment: "Giá trị 1 → true; 0 → false."
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator.\
+    \ REGION không có cột EFFECTIVE."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: "NHNCK.COUNTRIES.DEFAULT_FLAG"
-    NHNCK.PROVINCES: "NHNCK.PROVINCES.DEFAULT_FLAG"
-    NHNCK.DISTRICTS: "NHNCK.DISTRICTS.DEFAULT_FLAG"
-    FMS.NATIONAL: null
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Classification Value"
-  nullable: true
+    ECAT.COUNTRY: "ECAT.COUNTRY.EFFECTIVE"
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.EFFECTIVE"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.EFFECTIVE"
+- attribute_name: "Active Indicator"
+  physical_name: "active_ind"
+  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng."
+  data_domain: "Boolean"
+  nullable: false
   is_primary_key: false
-  comment: "Scheme: RECORD_STATUS. 1=ACTIVE; 0=INACTIVE. Nhất quán với lld_NHNCK_COUNTRIES.yaml/lld_NHNCK_PROVINCES.yaml."
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.COUNTRIES: null
-    NHNCK.PROVINCES: null
-    NHNCK.DISTRICTS: null
-    FMS.NATIONAL: "FMS.NATIONAL.RECORD_STATUS"
+    ECAT.COUNTRY: "ECAT.COUNTRY.ACTIVE"
+    ECAT.REGION: "ECAT.REGION.ACTIVE"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.ACTIVE"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.ACTIVE"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_ind"
+  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa."
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.DELETED"
+    ECAT.REGION: "ECAT.REGION.DELETED"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.DELETED"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.DELETED"
+- attribute_name: "Effective Start Date"
+  physical_name: "effective_start_dt"
+  description: "Ngày bắt đầu hiệu lực."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.EFFECTIVE_START_DATE"
+    ECAT.REGION: "ECAT.REGION.EFFECTIVE_START_DATE"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.EFFECTIVE_START_DATE"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.EFFECTIVE_START_DATE"
+- attribute_name: "Effective End Date"
+  physical_name: "effective_end_dt"
+  description: "Ngày kết thúc hiệu lực."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.EFFECTIVE_END_DATE"
+    ECAT.REGION: "ECAT.REGION.EFFECTIVE_END_DATE"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.EFFECTIVE_END_DATE"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.EFFECTIVE_END_DATE"
+- attribute_name: "Version Number"
+  physical_name: "version_no"
+  description: "Số phiên bản bản ghi tại nguồn."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên field versioning kỹ thuật của nguồn."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.VERSION"
+    ECAT.REGION: "ECAT.REGION.VERSION"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.VERSION"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.VERSION"
+- attribute_name: "Display Label"
+  physical_name: "display_label"
+  description: "Nhãn hiển thị."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Đẩy 1:1 theo yêu cầu. REGION không có cột DISPLAY_LABEL."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.DISPLAY_LABEL"
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.DISPLAY_LABEL"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.DISPLAY_LABEL"
+- attribute_name: "Active Reason"
+  physical_name: "active_reason"
+  description: "Lý do thay đổi trạng thái sử dụng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.ACTIVE_REASON"
+    ECAT.REGION: "ECAT.REGION.ACTIVE_REASON"
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.ACTIVE_REASON"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.ACTIVE_REASON"
+- attribute_name: "Deleted Reason"
+  physical_name: "deleted_reason"
+  description: "Lý do xóa."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Đẩy 1:1 theo yêu cầu. REGION không có cột DELETED_REASON."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.COUNTRY: "ECAT.COUNTRY.DELETED_REASON"
+    ECAT.REGION: null
+    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.DELETED_REASON"
+    ECAT.WARD_NEW: "ECAT.WARD_NEW.DELETED_REASON"

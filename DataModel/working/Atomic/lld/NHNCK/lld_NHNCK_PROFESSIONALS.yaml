@@ -157,8 +157,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.STATUS_WORK"
-  comment: "Scheme: PRACTITIONER_PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi có cấp\
-    \ lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
+  comment: "Scheme: PRACTITIONER_PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu\
+    \ hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
   classification_context: "PRACTITIONER_PRACTICE_STATUS"
   etl_derived_value: null
   data_type: "string"
@@ -171,7 +171,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.STATUS_ACCOUNT"
-  comment: "Scheme: PRACTITIONER_ACCOUNT_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động / 2=Khóa."
+  comment: "Scheme: PRACTITIONER_ACCOUNT_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt\
+    \ động / 2=Khóa."
   classification_context: "PRACTITIONER_ACCOUNT_STATUS"
   etl_derived_value: null
   data_type: "string"
@@ -214,7 +215,11 @@ attributes:
   source_columns:
   - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
+    \ = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng\
+    \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.NATIONALITY_ID\
+    \ với Geographic Area Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+    \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
+    \ với ECAT."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -227,8 +232,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
-    \ Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

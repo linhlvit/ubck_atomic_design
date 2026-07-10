@@ -5,7 +5,7 @@
 > **Phạm vi:** Quản lý thông tin pháp lý, tổ chức, nhân sự, báo cáo, cổ đông, giám sát rủi ro (CAMEL) và cảnh báo tự động của các Công ty Chứng khoán (CTCK) thành viên do UBCKNN quản lý.
 >
 > **File chi tiết theo tầng:**
-> - [SCMS_HLD_Tier1.md](SCMS_HLD_Tier1.md) — Entity độc lập: Securities Company, Securities Company Audit Firm, Securities Company Settlement Bank, Risk/Alert Indicators & Period, Geographic Area (shared)
+> - [SCMS_HLD_Tier1.md](SCMS_HLD_Tier1.md) — Entity độc lập: Securities Company, Securities Company Audit Firm, Securities Company Settlement Bank, Risk/Alert Indicators & Period, Classification Firm Status/Service/Nationality/Event Type, Securities Company Form Report (Geographic Area đã chuyển sang nguồn ECAT — xem mục 7f)
 > - [SCMS_HLD_Tier2.md](SCMS_HLD_Tier2.md) — Phụ thuộc Tier 1: chi nhánh/VPĐD/PGD, nhân sự, kiểm toán viên, báo cáo, CBTT, vi phạm, chế tài, cổ đông, rủi ro/cảnh báo
 > - [SCMS_HLD_Tier3.md](SCMS_HLD_Tier3.md) — Phụ thuộc Tier 2: cổ đông đại diện/chuyển nhượng/quan hệ, điểm rủi ro chi tiết, báo cáo định kỳ CN/VPĐD nước ngoài
 
@@ -15,9 +15,6 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_PROVINCE | Append | Danh mục tỉnh/thành phố trực thuộc trung ương | Geographic Area | Fundamental | Geographic Area — BCV ngoại lệ: dù chỉ có Code+Name vẫn là Atomic entity. Cùng entity với CAT_DISTRICT, CAT_WARD; phân biệt bằng Geographic Area Type Code (PROVINCE/DISTRICT/WARD). Self-ref: WARD → DISTRICT → PROVINCE. Shared entity extend source_table từ NHNCK. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_DISTRICT | Append | Danh mục quận/huyện/thị xã | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với CAT_PROVINCE, CAT_WARD. Geographic Area Type Code = DISTRICT. Shared entity extend source_table từ NHNCK. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | CAT_WARD | Append | Danh mục phường/xã/thị trấn | Geographic Area | Fundamental | Geographic Area — cùng Atomic entity với CAT_PROVINCE, CAT_DISTRICT. Geographic Area Type Code = WARD. Shared entity extend source_table từ NHNCK. |
 | 1 | Involved Party | [Involved Party] Broker Dealer | Organization | SC_FIRM_INFO | Update | Thông tin pháp lý toàn diện công ty chứng khoán thành viên do UBCKNN quản lý | Securities Company | Fundamental | (1) Broker Dealer — BCV: "an Involved Party that engages in the business of buying and selling securities for its own account or on behalf of customers". (2) Bảng: SC_FIRM_CODE(UNIQUE), SC_FIRM_NAME_VI/EN, CHARTER_CAPITAL, BUSINESS_LICENSE_NUMBER, COMPANY_TYPE_ID, STATUS, FOUNDER_NAME, LISTED_DATE — thông tin pháp lý đầy đủ CTCK. (3) Broker Dealer khớp hoàn toàn — CTCK môi giới/tự doanh/quản lý danh mục/ngân hàng đầu tư. Entity trung tâm SCMS. |
 | 1 | Involved Party | [Involved Party] Audit Firm | Organization | AUDIT_FIRM | Update | Danh mục công ty kiểm toán được UBCKNN chấp thuận | Audit Firm | Fundamental | (1) Audit Firm — BCV: "an Involved Party that provides auditing services". (2) Bảng: AUDIT_FIRM_CODE(UNIQUE), AUDIT_FIRM_NAME, STATUS, BUSINESS_LICENSE_NUMBER — danh mục công ty kiểm toán chấp thuận. (3) Audit Firm khớp. Entity độc lập; không extend Securities Organization Reference NHNCK vì cấu trúc và phạm vi khác. |
 | 1 | Involved Party | [Involved Party] Depositary Bank | Organization | BANK | Update | Danh mục ngân hàng đối tác lưu ký/thanh toán cho CTCK | Securities Company Depositary Bank | Fundamental | (1) Depositary Bank — BCV: "an Involved Party that holds financial assets in custody on behalf of customers". (2) Bảng: BANK_CODE(UNIQUE), BANK_NAME, STATUS — danh mục ngân hàng đối tác. (3) Depositary Bank khớp. Danh mục ngân hàng trong SCMS độc lập với NHNCK.BANKS. |
@@ -26,6 +23,11 @@
 | 1 | Event | [Event] Alert Indicator | Regulatory Monitoring | ALERT_INDICATOR | Update | Danh mục chỉ tiêu cảnh báo giám sát CTCK | Securities Company Alert Indicator | Fundamental | (1) Alert Indicator — BCV: "an Event identifying a measurable factor used to trigger an alert". (2) Bảng: CODE(UNIQUE), NAME, INDICATOR_TYPE, THRESHOLD, CALCULATION_FORMULA — chỉ tiêu với ngưỡng và công thức. (3) Alert Indicator khớp. Master entity danh mục chỉ tiêu cảnh báo; FK từ ALERT_INDICATOR_CONDITION và ALERT_RUN. |
 | 1 | Event | [Event] Alert Financial Indicator | Regulatory Monitoring | ALERT_FINANCIAL_INDICATOR | Update | Danh mục chỉ tiêu tài chính dùng trong hệ thống cảnh báo | Securities Company Alert Financial Indicator | Fundamental | (1) Alert Financial Indicator — BCV: chỉ tiêu tài chính theo dõi ngưỡng cảnh báo. (2) Bảng: CODE(UNIQUE), NAME, FORMULA, PERIOD_TYPE — cấu trúc tương tự ALERT_INDICATOR nhưng tập trung vào chỉ tiêu tài chính. (3) Tạm giữ entity riêng; xem điểm xác nhận 7e-05 về quan hệ với ALERT_INDICATOR. |
 | 1 | Business Activity | [Business Activity] Assessment Period | Regulatory Monitoring | RISK_REPORTING_PERIOD | Update | Danh mục kỳ đánh giá rủi ro CTCK (quý/năm) | Securities Company Risk Reporting Period | Fundamental | (1) Assessment Period — BCV: "an Event defining a period for which an assessment is performed". (2) Bảng: CODE(UNIQUE), PERIOD_VALUE(VD: 2024-Q1), START_DATE, END_DATE, PERIOD_TYPE(QUARTER/YEAR) — kỳ đánh giá với thời gian rõ ràng. (3) Assessment Period khớp. Master entity kỳ; FK từ RISK_REPORTING_PERIOD_SC_FIRM, RISK_SCORING_SC_FIRM_DETAIL, RISK_SUMMARY. |
+| 1 | Common | [Common] Firm Status | — | CAT_SC_FIRM_STATUS | Append | Danh mục trạng thái pháp lý CTCK/Chi nhánh/VPĐD/PGD/Ngân hàng | Classification Firm Status | Classification | (1) Term gần nhất trong BCV: `Organization Life Cycle Status` (id 10930, Involved Party) / `Organization Registration Status` (id 11478) — mô tả vòng đời/đăng ký của 1 Organization. (2) Bảng: SC_FIRM_STATUS_CODE/NAME, REPORT_SUBMISSION_ENABLED, DISCLOSURE_ENABLED, APPLICABLE_ENTITY (CTCK/CN/VPĐD/NH/Cả hai) — danh mục dùng chung nhiều loại đối tượng. (3) Theo chỉ đạo Data Modeler: gán Common (không dùng Involved Party dù match khá tốt) để nhất quán pattern NHNCK (Classification Application Status/Document/Specialization). Table Type = Classification theo chỉ đạo. Xem 7e #11. |
+| 1 | Common | [Common] Service | — | CAT_SERVICE | Append | Danh mục dịch vụ chứng khoán được cấp phép | Classification Service | Classification | (1) Term BCV: `Service` (id 11846, Product) / `Service Type` (id 11852). (2) Bảng: SERVICE_CODE/NAME, NOTE, RECORD_STATUS — danh mục Code+Name+ghi chú. (3) Theo chỉ đạo Data Modeler: gán Common (không dùng Product dù match tốt). Table Type = Classification. Xem 7e #11. |
+| 1 | Common | [Common] Nationality | — | CAT_NATIONALITY | Append | Danh mục quốc tịch | Classification Nationality | Classification | (1) Không có term BCV chính xác "Nationality"; gần nhất `Citizenship` (Involved Party) / `Country` (Location). (2) Bảng: NATIONALITY_CODE/NAME, NOTE, RECORD_STATUS — Code+Name thuần. (3) Gán Common theo chỉ đạo — match tự nhiên hơn vì không có term khớp sẵn. Table Type = Classification. Xem 7e #11. |
+| 1 | Common | [Common] Event Type | — | CAT_EVENT_TYPE | Update | Danh mục loại sự kiện/sự vụ nghiệp vụ làm cơ sở xác định nghĩa vụ báo cáo/CBTT | Classification Event Type | Relative | (1) Term BCV khớp: `Event Type` (id 9924, Event). (2) Bảng: EVENT_TYPE_CODE/NAME, REQUIRES_LICENSE, REQUIRES_DISCLOSURE, OBLIGATION_TYPE, EVENT_CATEGORY, CYCLE, FREQUENCY. (3) Theo chỉ đạo Data Modeler: gán Common (không dùng Event dù match mạnh). Table Type = Relative (khác 3 bảng CAT_ trên) theo chỉ đạo — không FK rõ ràng đến Fundamental khác, xem 7e #11/#12. |
+| 1 | Condition | [Condition] Regulatory Reporting Requirement | Criterion | FORM_REPORT | Update | Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) CTCK/CN/VPĐD phải nộp UBCKNN, gồm căn cứ pháp lý, phiên bản, phân cấp cha-con | Securities Company Form Report | Relative | (1) Không có term Condition khớp hoàn toàn; gần nhất `Disclosure` (id 9208, Control Condition). (2) Bảng: REPORT_CODE/NAME, LEGAL_BASIS, REPORT_TYPE, REPORT_STYLE, VERSION/VERSION_DATE, PARENT_ID tự tham chiếu, RECORD_STATUS — quy định nghĩa vụ nộp báo cáo, không phải báo cáo đã nộp. (3) Theo chỉ đạo Data Modeler: gán Condition, đề xuất term mới `Regulatory Reporting Requirement` (type_of Criterion, theo pattern `X Requirement` sẵn có trong BCV) — term chưa tồn tại sẵn. Table Type = Relative theo chỉ đạo. Đảo ngược quyết định loại-scope trước đây — xem 7e #12/#13. |
 | 2 | Involved Party | [Involved Party] Branch | Organization | SC_FIRM_BRANCH | Update | Chi nhánh CTCK trong nước có địa chỉ pháp lý và giấy phép riêng | Securities Company Organization Unit | Fundamental | (1) Branch — BCV: "an Involved Party that is a division of a larger organization operating in a specific location". (2) Bảng: CODE, NAME, FK→SC_FIRM_INFO, FK→CAT_PROVINCE/DISTRICT/WARD, BUSINESS_LICENSE_NUMBER, STATUS, ESTABLISH_DATE, self-ref FK→parent branch. (3) Branch khớp. Phụ thuộc Securities Company (T1). |
 | 2 | Involved Party | [Involved Party] Branch | Organization | SC_FIRM_TRANSACTION_OFFICE | Update | Phòng giao dịch CTCK — đơn vị nhỏ nhất giao dịch trực tiếp với khách hàng | Securities Company Organization Unit | Fundamental | (1) Branch — BCV: cùng định nghĩa sub-unit theo địa điểm. (2) Bảng: CODE, NAME, FK→SC_FIRM_INFO, FK→SC_FIRM_BRANCH(nullable), FK→CAT_PROVINCE, STATUS, ESTABLISH_DATE — PGD có thể trực thuộc CN hoặc hội sở. (3) Branch phù hợp nhất cho PGD. |
 | 2 | Involved Party | [Involved Party] Representative Office | Organization | SC_FIRM_REP_OFFICE | Update | Văn phòng đại diện nội địa CTCK, có thể trực thuộc chi nhánh hoặc hội sở | Securities Company Organization Unit | Fundamental | (1) Representative Office — BCV: "an Involved Party that is an office of a larger organization that represents, but does not do business on behalf of, the organization". (2) Bảng: CODE, NAME, FK→SC_FIRM_INFO, FK→SC_FIRM_BRANCH(nullable), FK→CAT_PROVINCE, STATUS, ESTABLISH_DATE. (3) Representative Office khớp. |
@@ -66,8 +68,8 @@
 | 3 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT | Update | Báo cáo định kỳ do chi nhánh CTCK nước ngoài nộp lên UBCKNN | Securities Company Foreign Branch Periodic Report | Fundamental | (1) Transaction — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_FOREIGN_BRANCH(T2), FORM_REPORT_ID(Classification Value), PERIOD, YEAR, DEADLINE, SUBMISSION_DATE, STATUS. (3) Transaction phù hợp. Phụ thuộc Securities Company Foreign Branch (T2). |
 | 3 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT | Update | Báo cáo định kỳ do VPĐD CTCK nước ngoài nộp lên UBCKNN | Securities Company Foreign Representative Office Periodic Report | Fundamental | (1) Transaction — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_FOREIGN_REP_OFFICE(T2), FORM_REPORT_ID(Classification Value), PERIOD, YEAR, SUBMISSION_DATE, STATUS. (3) Transaction phù hợp. |
 
-**Tổng: 47 Atomic entities** (T1: 9 entities, T2: 33 entities, T3: 7 entities)
-*(Trong đó: 1 shared entity extend source_table — không tạo mới: `Geographic Area` extend SCMS.CAT_PROVINCE/CAT_DISTRICT/CAT_WARD. `Securities Company Practitioner` (SC_FIRM_LICENSED_PRACTITIONER) là entity Fundamental độc lập — xem quyết định sửa lại 2026-07-09 tại mục 6a dòng SC_FIRM_LICENSED_PRACTITIONER)*
+**Tổng: 52 Atomic entities** (T1: 14 entities, T2: 33 entities, T3: 7 entities — bao gồm 5 entity mới bổ sung: Classification Firm Status, Classification Service, Classification Nationality, Classification Event Type, Securities Company Form Report — tất cả Tier 1)
+*(`Securities Company Practitioner` (SC_FIRM_LICENSED_PRACTITIONER) là entity Fundamental độc lập — xem quyết định sửa lại 2026-07-09 tại mục 6a dòng SC_FIRM_LICENSED_PRACTITIONER. Geographic Area không còn extend từ SCMS — CAT_PROVINCE/CAT_DISTRICT/CAT_WARD loại khỏi scope (2026-07-10), xem mục 7f)*
 
 ---
 
@@ -87,7 +89,12 @@ graph TD
     ALERT_IND["**Securities Company Alert Indicator**\n(ALERT_INDICATOR)"]:::atomic
     RISK_PER["**Securities Company Risk Reporting Period**"]:::atomic
     ALERT_FIN_IND["**Securities Company Alert Financial Indicator**"]:::atomic
-    GEO["Geographic Area\n(shared — extend)"]:::shared
+    GEO["Geographic Area\n(nguồn ECAT — không còn extend tại SCMS)"]:::shared
+    CLS_STATUS["**Classification Firm Status**\n(CAT_SC_FIRM_STATUS)"]:::atomic
+    CLS_SERVICE["**Classification Service**\n(CAT_SERVICE)"]:::atomic
+    CLS_NAT["**Classification Nationality**\n(CAT_NATIONALITY)"]:::atomic
+    CLS_EVT["**Classification Event Type**\n(CAT_EVENT_TYPE)"]:::atomic
+    FORM_RPT["**Securities Company Form Report**\n(FORM_REPORT)"]:::atomic
 
     %% Tier 2
     ORG_UNIT["**Securities Company Organization Unit**\n(BRANCH / TXN_OFFICE / REP_OFFICE\n/ DOM_REP_OFFICE / FOR_REP_OFFICE / FOR_REP_OFFICE_VN)"]:::atomic
@@ -155,6 +162,7 @@ graph TD
     RISK_IND --> RISK_SCALE
     ALERT_IND --> ALERT_COND
     RISK_PER --> RISK_SUM
+    FORM_RPT --> FORM_RPT
 
     %% T2 → T3
     SHAREHOLDER --> SH_REP
@@ -175,15 +183,15 @@ graph TD
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
 | CAT_COMPANY_TYPE | Danh mục loại hình doanh nghiệp CTCK | Classification Value | Scheme: SCMS_COMPANY_TYPE. |
-| CAT_SC_FIRM_STATUS | Danh mục trạng thái pháp lý CTCK/CN/VPĐD/PGD | Classification Value | Scheme: SCMS_SC_FIRM_STATUS. |
-| CAT_SERVICE | Danh mục dịch vụ chứng khoán được cấp phép | Classification Value | Scheme: SCMS_SERVICE_TYPE. |
+| CAT_SC_FIRM_STATUS | Danh mục trạng thái pháp lý CTCK/CN/VPĐD/PGD | **Đã nâng cấp lên Atomic entity thật** | ~~Scheme: SCMS_SC_FIRM_STATUS (deprecated)~~ → entity `Classification Firm Status` (Tier 1, xem 7a + Entities). |
+| CAT_SERVICE | Danh mục dịch vụ chứng khoán được cấp phép | **Đã nâng cấp lên Atomic entity thật** | ~~Scheme: SCMS_SERVICE_TYPE (deprecated)~~ → entity `Classification Service` (Tier 1, xem 7a + Entities). |
 | CAT_BUSINESS_LINE | Danh mục nghiệp vụ kinh doanh chứng khoán | Classification Value | Scheme: SCMS_BUSINESS_LINE. |
-| CAT_NATIONALITY | Danh mục quốc tịch | Classification Value | Scheme: SCMS_NATIONALITY. |
+| CAT_NATIONALITY | Danh mục quốc tịch | **Đã nâng cấp lên Atomic entity thật** | ~~Scheme: SCMS_NATIONALITY (deprecated)~~ → entity `Classification Nationality` (Tier 1, xem 7a + Entities). |
 | CAT_POSITION | Danh mục chức vụ nhân sự | Classification Value | Scheme: SCMS_POSITION_TYPE. |
 | CAT_RELATIONSHIP | Danh mục mối quan hệ (gia đình/sở hữu/quản lý) | Classification Value | Scheme: SCMS_RELATIONSHIP_TYPE. |
 | CAT_SHAREHOLDER_TRANSACTION_TYPE | Danh mục loại giao dịch cổ đông | Classification Value | Scheme: SCMS_SHAREHOLDER_TXN_TYPE. |
 | CAT_VIOLATION_TYPE | Danh mục loại vi phạm | Classification Value | Scheme: SCMS_VIOLATION_TYPE. |
-| CAT_EVENT_TYPE | Danh mục loại sự kiện/loại văn bản | Classification Value | Scheme: SCMS_EVENT_TYPE. |
+| CAT_EVENT_TYPE | Danh mục loại sự kiện/loại văn bản | **Đã nâng cấp lên Atomic entity thật** | ~~Scheme: SCMS_EVENT_TYPE (deprecated)~~ → entity `Classification Event Type` (Tier 1, table_type Relative, xem 7a + Entities). |
 | CAT_PROFILE_STATUS | Danh mục trạng thái hồ sơ phê duyệt | Classification Value | Scheme: SCMS_PROFILE_STATUS. |
 | CAT_ALERT | Danh mục loại cảnh báo | Classification Value | Scheme: SCMS_ALERT_TYPE. |
 | CAT_INDICATOR | Danh mục chỉ tiêu báo cáo | Classification Value | Scheme: SCMS_INDICATOR_TYPE. |
@@ -211,7 +219,7 @@ graph TD
 
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
-| 1 | T1 | CAT_PROVINCE/DISTRICT/WARD — dữ liệu có trùng với NHNCK COUNTRIES/PROVINCES/DISTRICTS không? | Nếu trùng: ETL dedup khi load vào Geographic Area shared entity; nếu khác bộ: cần xử lý riêng trong ETL. |
+| 1 | T1 | CAT_PROVINCE/DISTRICT/WARD — dữ liệu có trùng với NHNCK COUNTRIES/PROVINCES/DISTRICTS không? | **Đã chốt (2026-07-10) — không còn liên quan.** Geographic Area chỉ còn 1 nguồn ECAT; CAT_PROVINCE/CAT_DISTRICT/CAT_WARD loại khỏi scope (xem 7f). |
 | 2 | T2 | SC_FIRM_DOMESTIC_REP_OFFICE và SC_FIRM_REP_OFFICE — là 2 loại VPĐD nghiệp vụ khác nhau hay dữ liệu di chuyển từ 2 thời kỳ schema? | Nếu trùng ý nghĩa: merge vào 1 entity `Securities Company Representative Office`; nếu khác: giữ 2 entity. |
 | 3 | T2 | SC_FIRM_FOREIGN_REP_OFFICE_VN — không tìm thấy FK→SC_FIRM_INFO_ID trong cột. Quan hệ với CTCK Việt Nam là gì? | Nếu không có business FK: hạ xuống T1; nếu có FK ẩn qua BUSINESS_LICENSE_NUMBER: giữ T2 và xác định join key. |
 | 4 | T2 | SC_FIRM_SERVICE và LNK_SC_FIRM_SERVICE — 2 bảng có phản ánh cùng dữ liệu không? | **Đã xác nhận lại:** 2 bảng phản ánh **2 dữ liệu nghiệp vụ khác nhau** (không trùng). `SC_FIRM_SERVICE` = hồ sơ đăng ký/thu hồi dịch vụ theo từng văn bản (REGISTRATION_DOC_NUMBER/DATE, TERMINATION_DOC_NUMBER, END_DATE) → thiết kế thành entity `Securities Company Licensed Service` (`[Event] Party Registration`, Fundamental) — xem Tier 2 mục 6a. `LNK_SC_FIRM_SERVICE` = danh mục số giấy phép hiện hành theo CTCK × dịch vụ (LICENSE_NUMBER, LICENSE_DATE) — **không loại bỏ**, giữ `scope_status: pending`, cần thiết kế thành entity riêng ở lượt sau (xem Tier 2 mục 6e). Thay thế kết luận trước đó (đã hiểu nhầm 2 bảng trùng dữ liệu). |
@@ -221,6 +229,10 @@ graph TD
 | 8 | T2 | REPORT_VIOLATION — nguồn Update (có LAST_MODIFIED_AT) nhưng Table Type = Fact Append. ETL xử lý correction thế nào? | Nếu correction chỉ sửa nội dung mô tả (không thêm occurrence): ETL upsert theo khóa tự nhiên (SC_FIRM_INFO_ID + VIOLATION_DATE + VIOLATION_TYPE_ID). Nếu correction tạo occurrence mới: giữ insert-only và xem xét đổi Table Type. |
 | 9 | T3 | SC_FIRM_SHAREHOLDER_TRANSFER — nguồn Update (có LAST_MODIFIED_AT + RECORD_STATUS) nhưng Table Type = Fact Append. ETL xử lý correction/huỷ chuyển nhượng thế nào? | Nếu huỷ chuyển nhượng tạo record mới với trạng thái CANCELLED: giữ Fact Append + filter RECORD_STATUS = active. Nếu cập nhật trực tiếp record gốc: ETL upsert theo transfer_id. |
 | 10 | T2 | SC_FIRM_FOREIGN_BRANCH_PERSONNEL — nguồn Append (chỉ có CREATED_AT, không có UPDATED_AT), đề xuất ban đầu Table Type = Relative (SCD4A) — mâu thuẫn với hành vi cập nhật. | **Đã resolve:** đổi `table_type` = `Fundamental` cho cả `SC_FIRM_FOREIGN_BRANCH_PERSONNEL` và `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL` — không cần track SCD4A qua UPDATED_AT. Đưa lại vào scope Tier 2 (nhóm B Personnel), BCV Core Object = Involved Party. Xem chi tiết SCMS_HLD_Tier2.md. |
+| 11 | T1 | `CAT_SC_FIRM_STATUS`, `CAT_SERVICE`, `CAT_NATIONALITY`, `CAT_EVENT_TYPE` — nâng cấp từ Classification Value lên Atomic entity thật `Classification [Term]` (theo pattern NHNCK). Tra BCV cho thấy term khớp mạnh hơn ở category khác (Organization Life Cycle Status/Involved Party; Service Type/Product; Event Type/Event) nhưng Data Modeler chỉ đạo giữ Common cho cả 4 để nhất quán naming convention. | **Quyết định Data Modeler (chốt).** BCV Core Object = Common cho cả 4 bảng. Table Type: Classification cho `CAT_SC_FIRM_STATUS`/`CAT_SERVICE`/`CAT_NATIONALITY`; Relative cho `CAT_EVENT_TYPE` (khác 3 bảng còn lại, theo chỉ đạo tường minh). Xem SCMS_HLD_Tier1.md 6f T1-05. |
+| 12 | T1 | `FORM_REPORT` — trước đây bị loại khỏi scope Atomic (đã xóa khỏi 7f/`atomic_out_of_scope.yaml` trong lượt này). Data Modeler yêu cầu đảo ngược, thiết kế thành entity `Securities Company Form Report`. Cả nhóm cascade (`FORM_SHEET*`, `FORM_REPORT_PERIODIC`, `FORM_REPORT_DEEP_CONFIG`, `FORM_REPORT_HISTORY`, `FORM_ROW_HEADER*`, `FORM_INDICATOR_*`, `LNK_EVENT_TYPE_FORM`) vẫn giữ ngoài scope trong 7f/`atomic_out_of_scope.yaml`, nhưng lý do cũ "Cascade từ FORM_REPORT đã loại" không còn đúng. | **Quyết định Data Modeler (chốt) — chỉ đảo ngược riêng FORM_REPORT.** Nhóm cascade cần đánh giá lại lý do loại-scope độc lập ở lượt thiết kế sau — CHƯA thực hiện trong task này. Không tự ý đưa nhóm cascade vào scope. |
+| 13 | T1 | `Table Type = Relative` cho `CAT_EVENT_TYPE` và `Securities Company Form Report` không khớp định nghĩa chuẩn trong skill ("phụ thuộc Fundamental qua FK") — cả 2 bảng không FK nghiệp vụ rõ ràng đến 1 Fundamental entity khác (FORM_REPORT chỉ tự tham chiếu PARENT_ID; CAT_EVENT_TYPE không FK đi đâu). | **Xác nhận từ Data Modeler: giữ nguyên Relative** — quyết định tường minh, ghi nhận ngoại lệ so với định nghĩa chuẩn. |
+| 14 | T2 | `SERVICE_ID` trên `Securities Company Licensed Service` (entity #48/SC_FIRM_SERVICE) dùng pattern Classification Value đơn (scheme `SCMS_SERVICE_TYPE`, nay deprecated) — cần đổi sang FK Id+Code khi `Classification Service` được thiết kế. | **Đã thực hiện trong lượt này** — `lld_SCMS_SC_FIRM_SERVICE.yaml` đã sửa: attribute `Service Code` → cặp `Classification Service Id` + `Classification Service Code`. Các entity tiêu thụ khác của 4 scheme deprecated (Securities Company, entity chi nhánh/VPĐD/PGD, Securities Company Custodian Bank, 7 bảng dùng Nationality, Securities Company Profile Change, Securities Company Disclosure Report) — CHƯA sửa, để LLD hóa sau (xem SCMS_HLD_Tier1.md 6f T1-08). |
 
 ---
 
@@ -228,8 +240,10 @@ graph TD
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| Form Metadata | FORM_REPORT | Biểu mẫu báo cáo | Loại theo yêu cầu người thiết kế — form metadata không cần trên Atomic. |
-| Form Metadata | FORM_REPORT_PERIODIC | Cấu hình kỳ báo cáo của biểu mẫu | Cascade từ FORM_REPORT đã loại theo yêu cầu người thiết kế. |
+| Isolated | CAT_PROVINCE | Danh mục tỉnh/thành phố trực thuộc trung ương | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
+| Isolated | CAT_DISTRICT | Danh mục quận/huyện/thị xã | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
+| Isolated | CAT_WARD | Danh mục phường/xã/thị trấn | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
+| Form Metadata | FORM_REPORT_PERIODIC | Cấu hình kỳ báo cáo của biểu mẫu | Cascade — cần review lý do loại-scope độc lập (FORM_REPORT không còn ngoài scope, xem 7e #12). |
 | Form Metadata | FORM_SHEET | Danh sách sheet trong biểu mẫu | Cascade từ FORM_REPORT đã loại. |
 | Form Metadata | FORM_SHEET_COLUMN | Định nghĩa cột trong sheet biểu mẫu | Cascade từ FORM_REPORT đã loại. |
 | Form Metadata | FORM_SHEET_ROW | Định nghĩa hàng trong sheet biểu mẫu | Cascade từ FORM_REPORT đã loại. |
@@ -324,11 +338,6 @@ graph TD
 > Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.yaml`.
 
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
-
-
-### 1. Geographic Area
-**Tier:** 1 | **Source:** `SCMS.CAT_PROVINCE, SCMS.CAT_DISTRICT, SCMS.CAT_WARD` | **BCV Concept:** [Location] Geographic Area | **BCO:** Location | **Table Type:** Fundamental
-**Description:** Đơn vị địa lý gồm tỉnh/thành phố (PROVINCE), quận/huyện (DISTRICT), phường/xã (WARD) từ hệ thống SCMS. Shared entity extend source_table từ NHNCK — phân biệt bằng geographic_area_type_code. Self-ref: WARD → DISTRICT → PROVINCE.
 
 
 ### 2. Securities Company
@@ -564,3 +573,33 @@ graph TD
 ### 48. Securities Company Licensed Service
 **Tier:** 2 | **Source:** `SCMS.SC_FIRM_SERVICE` | **BCV Concept:** [Event] Party Registration | **BCO:** Event | **Table Type:** Fundamental
 **Description:** Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK — văn bản/ngày đăng ký, văn bản/ngày chấm dứt (nếu có), trạng thái hiệu lực. Khác dữ liệu với LNK_SC_FIRM_SERVICE (giấy phép hiện hành) — xem 7e-04.
+
+
+### 49. Classification Firm Status
+**Tier:** 1 | **Source:** `SCMS.CAT_SC_FIRM_STATUS` | **BCV Concept:** [Common] Firm Status | **BCO:** Common | **Table Type:** Classification
+**Domain Prefix:** Classification
+**Description:** Danh mục trạng thái pháp lý áp dụng cho CTCK, Chi nhánh, VPĐD, PGD, Ngân hàng đối tác — mã, tên, cờ yêu cầu nộp báo cáo/CBTT theo từng trạng thái. Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS) lên entity thật. Xem 7e #11.
+
+
+### 50. Classification Service
+**Tier:** 1 | **Source:** `SCMS.CAT_SERVICE` | **BCV Concept:** [Common] Service | **BCO:** Common | **Table Type:** Classification
+**Domain Prefix:** Classification
+**Description:** Danh mục dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK. Nâng cấp từ Classification Value (scheme SCMS_SERVICE_TYPE) lên entity thật. FK target cho Classification Service Id trên Securities Company Licensed Service. Xem 7e #11/#14.
+
+
+### 51. Classification Nationality
+**Tier:** 1 | **Source:** `SCMS.CAT_NATIONALITY` | **BCV Concept:** [Common] Nationality | **BCO:** Common | **Table Type:** Classification
+**Domain Prefix:** Classification
+**Description:** Danh mục quốc tịch dùng cho nhân sự, cổ đông, người liên quan của CTCK. Nâng cấp từ Classification Value (scheme SCMS_NATIONALITY) lên entity thật. Xem 7e #11.
+
+
+### 52. Classification Event Type
+**Tier:** 1 | **Source:** `SCMS.CAT_EVENT_TYPE` | **BCV Concept:** [Common] Event Type | **BCO:** Common | **Table Type:** Relative
+**Domain Prefix:** Classification
+**Description:** Danh mục loại sự kiện/sự vụ nghiệp vụ (thành lập, điều chỉnh vốn, đổi tên...) làm cơ sở xác định nghĩa vụ báo cáo/CBTT của CTCK. Nâng cấp từ Classification Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác 3 entity Classification khác trong nhóm) theo chỉ đạo Data Modeler. Xem 7e #11/#13.
+
+
+### 53. Securities Company Form Report
+**Tier:** 1 | **Source:** `SCMS.FORM_REPORT` | **BCV Concept:** [Condition] Regulatory Reporting Requirement | **BCO:** Condition | **Table Type:** Relative
+**Domain Prefix:** Securities Company
+**Description:** Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/Chi nhánh/VPĐD phải nộp UBCKNN — căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con. Đảo ngược quyết định loại-scope trước đây (form metadata). BCV Concept là term mới đề xuất, chưa tồn tại sẵn trong knowledge base. Xem 7e #12/#13.

@@ -22,9 +22,14 @@ metadata:
     \ → lld_SCMS_SC_FIRM_INFO_IP_Postal_Address.yaml. Liên lạc → lld_SCMS_SC_FIRM_INFO_IP_Electronic_Address.yaml.\
     \ SC_FIRM_INFO_ID là self-FK (không phải PK). COMPANY_TYPE_ID → FK đến CAT_COMPANY_TYPE\
     \ (Classification Value). PROVINCE_ID/DISTRICT_ID/WARD_ID → FK đến Geographic\
-    \ Area (tách vào IP Postal Address). EVENT_TYPE_ID → FK đến CAT_EVENT_TYPE (Classification\
-    \ Value). BUSINESS_LINES là field đã denormalize từ LNK_SC_FIRM_BUSINESS_LINE\
-    \ (Array<Text>). FORM_DATA_JSON loại khỏi scope (raw form payload kỹ thuật)."
+    \ Area (tách vào IP Postal Address). RECORD_STATUS/EVENT_TYPE_ID → migrated 2026-07-10\
+    \ sang cặp FK Classification Firm Status Id/Code và Classification Event Type\
+    \ Id/Code (không còn Classification Value đơn). BUSINESS_LICENSE/DECISION_NUMBER/LICENSE_EXPIRY_DATE\
+    \ đã loại bỏ khỏi entity chính (đã capture qua IP Alt Identification, xem pending_design.yaml).\
+    \ BUSINESS_LINES/ADDITIONAL_BUSINESS_LINES map 1:1 dạng Text (không parse ARRAY,\
+    \ quyết định 2026-07-10 — trước đó denormalize từ LNK_SC_FIRM_BUSINESS_LINE dạng\
+    \ Array<Text>). TOTAL_SHARES dùng domain đề xuất mới 'Quantity' (chờ duyệt). FORM_DATA_JSON\
+    \ loại khỏi scope (raw form payload kỹ thuật)."
 attributes:
 - attribute_name: "Securities Company Id"
   physical_name: "sc_id"
@@ -159,31 +164,60 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Life Cycle Status Code"
-  physical_name: "life_cycle_status_code"
-  description: "Trạng thái pháp lý CTCK — FK tới CAT_SC_FIRM_STATUS (Đang hoạt động,\
-    \ Tạm ngừng, Đình chỉ, Đóng cửa)."
-  data_domain: "Classification Value"
+- attribute_name: "Classification Firm Status Id"
+  physical_name: "cl_firm_status_id"
+  description: "Trạng thái pháp lý CTCK — FK tới Classification Firm Status (Đang\
+    \ hoạt động, Tạm ngừng, Đình chỉ, Đóng cửa)."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.RECORD_STATUS"
-  comment: "Scheme: SCMS_SC_FIRM_STATUS. Nguồn lưu NUMBER(10) — ETL map ID → code\
-    \ từ CAT_SC_FIRM_STATUS."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
-  description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới CAT_EVENT_TYPE."
-  data_domain: "Classification Value"
+- attribute_name: "Classification Firm Status Code"
+  physical_name: "cl_firm_status_code"
+  description: "Mã trạng thái pháp lý CTCK."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_INFO.RECORD_STATUS"
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
+  description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Event Type."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "Scheme: SCMS_EVENT_TYPE. Nguồn lưu NUMBER(10) — ETL map ID → code từ CAT_EVENT_TYPE."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -202,19 +236,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Business License"
-  physical_name: "business_license"
-  description: "Giấy phép kinh doanh (số/tên file)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE"
-  comment: "Mô tả gốc BRD trống — có thể là path file hoặc số giấy phép bổ sung."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Foundation License File Path"
   physical_name: "foundation_license_file_path"
   description: "Đường dẫn file giấy phép thành lập trên hệ thống lưu trữ."
@@ -228,32 +249,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Decision Number"
-  physical_name: "decision_nbr"
-  description: "Số quyết định phê duyệt/cấp phép."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.DECISION_NUMBER"
-  comment: "Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "License Expiry Date"
-  physical_name: "license_expiry_dt"
-  description: "Ngày hết hạn giấy phép."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_INFO.LICENSE_EXPIRY_DATE"
-  comment: "Mô tả gốc BRD trống."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Termination Decision Number"
   physical_name: "termination_decision_nbr"
   description: "Số quyết định chấm dứt hoạt động."
@@ -283,46 +278,47 @@ attributes:
 - attribute_name: "Total Shares"
   physical_name: "total_shares"
   description: "Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá 10.000đ)."
-  data_domain: "Text"
+  data_domain: "Quantity"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.TOTAL_SHARES"
-  comment: "Nguồn lưu NUMBER(38) — ETL convert sang string. Lưu text để tránh overflow\
-    \ với số cổ phần lớn."
+  comment: "[PROPOSE NEW DOMAIN] Quantity (decimal(38,0)) — không domain nào trong\
+    \ 12 domain chuẩn phù hợp cho số lượng cổ phần lớn (NUMBER(38)); Small Counter\
+    \ (int) sẽ overflow. Cần reviewer duyệt bổ sung domain 'Quantity' vào reference/data_domains.md."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Business Line Codes"
-  physical_name: "business_line_codes"
+  data_type: null
+- attribute_name: "Business Lines"
+  physical_name: "business_lines"
   description: "Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép (denormalized\
     \ từ LNK_SC_FIRM_BUSINESS_LINE)."
-  data_domain: "Array<Text>"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.BUSINESS_LINES"
-  comment: "Pure junction LNK_SC_FIRM_BUSINESS_LINE → denormalize thành ARRAY. Nguồn\
-    \ SC_FIRM_INFO.BUSINESS_LINES đã có dạng text (có thể là danh sách phân cách).\
-    \ ETL parse → Array<Text>. HLD decision: SCMS_HLD_Tier1.md §7d."
+  comment: "Map 1:1 từ nguồn — giữ nguyên dạng string thô (không parse ARRAY). Sau\
+    \ này đánh giá có FK sang bảng danh mục nghiệp vụ hay không."
   classification_context: null
   etl_derived_value: null
-  data_type: "array<string>"
-- attribute_name: "Additional Business Line Codes"
-  physical_name: "additional_business_line_codes"
+  data_type: "string"
+- attribute_name: "Additional Business Lines"
+  physical_name: "additional_business_lines"
   description: "Danh sách nghiệp vụ kinh doanh bổ sung được cấp phép."
-  data_domain: "Array<Text>"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.ADDITIONAL_BUSINESS_LINES"
-  comment: "Tương tự Business Line Codes — nghiệp vụ bổ sung. Mô tả gốc BRD trống."
+  comment: "Map 1:1 từ nguồn — giữ nguyên dạng string thô (không parse ARRAY). Sau\
+    \ này đánh giá có FK sang bảng danh mục nghiệp vụ hay không."
   classification_context: null
   etl_derived_value: null
-  data_type: "array<string>"
+  data_type: "string"
 - attribute_name: "Listed Indicator"
   physical_name: "listed_indicator"
   description: "Cờ niêm yết: 1=Có niêm yết trên sàn; 0=Không niêm yết."

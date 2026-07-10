@@ -140,7 +140,9 @@ attributes:
   source_columns:
   - "SCMS.ALERT_INDICATOR.INDICATOR_TYPE_ID"
   comment: "FK target chưa xác định trong BRD — lưu dạng text denormalized. Nguồn\
-    \ lưu NUMBER(10) — ETL convert sang string."
+    \ lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên\
+    \ map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định\
+    \ target. Sẽ đánh giá lại khi có thêm tài liệu."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -167,7 +169,9 @@ attributes:
   source_columns:
   - "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE_ID"
   comment: "BRD ghi chú 'Chưa liên kết đến bảng khác' — lưu dạng text denormalized.\
-    \ Nguồn lưu NUMBER(10) — ETL convert sang string."
+    \ Nguồn lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên\
+    \ map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định\
+    \ target. Sẽ đánh giá lại khi có thêm tài liệu."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

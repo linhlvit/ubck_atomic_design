@@ -1,0 +1,106 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "CAT_NATIONALITY"
+  atomic_entity: "Classification Nationality"
+  entity_physical_name: "cl_nationality"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Nationality"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nâng cấp từ Classification Value (scheme SCMS_NATIONALITY, nay deprecated)\
+    \ lên entity thật — xem SCMS_HLD_Tier1.md 6f T1-05. BCV Core Object gán Common\
+    \ theo chỉ đạo Data Modeler — không có term BCV chính xác tên \"Nationality\"\
+    \ (gần nhất Citizenship/Involved Party hoặc Country/Location). BK dùng NATIONALITY_CODE;\
+    \ surrogate Id hash từ ID kỹ thuật. Entity tiêu thụ (7 bảng nhân sự/cổ đông, xem\
+    \ SCMS_HLD_Tier1.md 6f T1-08) cần đổi sang FK Id+Code khi thiết kế LLD của các\
+    \ bảng đó. Audit fields (CREATED_BY/CREATED_AT) loại bỏ theo convention SCMS."
+attributes:
+- attribute_name: "Classification Nationality Id"
+  physical_name: "cl_nationality_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_NATIONALITY.ID"
+  comment: "PK surrogate. BCV: \"[Common] Nationality\". Danh mục quốc tịch. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Nationality Code"
+  physical_name: "cl_nationality_code"
+  description: "Mã quốc tịch. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
+  comment: "BK chính. Dùng NATIONALITY_CODE (mã nghiệp vụ) thay vì ID kỹ thuật — xem\
+    \ pending_design.yaml."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.CAT_NATIONALITY"
+  etl_derived_value: "SCMS.CAT_NATIONALITY"
+  data_type: "string"
+- attribute_name: "Classification Nationality Name"
+  physical_name: "cl_nationality_nm"
+  description: "Tên quốc tịch."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_NATIONALITY.NATIONALITY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái bản ghi quốc tịch: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_NATIONALITY.RECORD_STATUS"
+  comment: "Scheme: SCMS_NATIONALITY_RECORD_STATUS."
+  classification_context: "SCMS_NATIONALITY_RECORD_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_NATIONALITY.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

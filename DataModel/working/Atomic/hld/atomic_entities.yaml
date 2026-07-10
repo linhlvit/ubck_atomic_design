@@ -268,6 +268,18 @@ entities:
   source_table: "FMS.PARA_WARN"
   status: "draft"
 - bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Regulatory Reporting Requirement"
+  atomic_entity: "Securities Company Form Report"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_form_report"
+  description: "Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/Chi\
+    \ nhánh/VPĐD phải nộp UBCKNN — căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con.\
+    \ Đảo ngược quyết định loại-scope trước đây (form metadata). BCV Concept là term\
+    \ mới đề xuất, chưa tồn tại sẵn trong knowledge base. Xem 7"
+  source_table: "SCMS.FORM_REPORT"
+  status: "draft"
+- bcv_core_object: "Condition"
   bcv_concept: "[Condition] Financial Charge"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
   table_type: "Fundamental"
@@ -781,8 +793,21 @@ entities:
     \ vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện\
     \ cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code.\
     \ Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025."
-  source_table: "NHNCK.COUNTRIES, NHNCK.PROVINCES, NHNCK.DISTRICTS, FMS.NATIONAL"
+  source_table: "ECAT.COUNTRY, ECAT.REGION, ECAT.PROVINCE_NEW, ECAT.WARD_NEW"
   status: "approved"
+- bcv_core_object: "Location"
+  bcv_concept: "[Location] Geographic Area"
+  atomic_entity: "Geographic Area Old"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "geographic_area_old"
+  description: "Đơn vị địa lý lịch sử (pre-2025) — tỉnh/thành phố cũ (PROVINCE_OLD),\
+    \ quận/huyện cũ (DISTRICT_OLD, cấp bị bỏ sau sáp nhập), phường/xã cũ (WARD_OLD).\
+    \ Tách riêng khỏi Geographic Area vì cấu trúc phân cấp 3 cấp khác với 2 cấp hiện\
+    \ hành. Chỉ phục vụ tra cứu lịch sử, có FK cross-entity sang Geographic Area (anchor\
+    \ Region + successor mapping sau sáp nhập)."
+  source_table: "ECAT.PROVINCE_OLD, ECAT.DISTRICT_OLD, ECAT.WARD_OLD"
+  status: "draft"
 - bcv_core_object: "Transaction"
   bcv_concept: "[Event] Transaction"
   atomic_entity: "Fund Management Company Share Transfer"
@@ -872,8 +897,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Classification Application Status"
   table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_application_status"
   description: ""
   source_table: "NHNCK.APPLICATION_STATUSES"
   status: "draft"
@@ -881,17 +906,64 @@ entities:
   bcv_concept: ""
   atomic_entity: "Classification Document"
   table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_document"
   description: ""
   source_table: "NHNCK.DOCUMENTS"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Event Type"
+  atomic_entity: "Classification Event Type"
+  table_type: "Relative"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_event_type"
+  description: "Danh mục loại sự kiện/sự vụ nghiệp vụ (thành lập, điều chỉnh vốn,\
+    \ đổi tên...) làm cơ sở xác định nghĩa vụ báo cáo/CBTT của CTCK. Nâng cấp từ Classification\
+    \ Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác\
+    \ 3 entity Classification khác trong nhóm) theo chỉ đạo Data Modeler. Xem 7e #11/#13."
+  source_table: "SCMS.CAT_EVENT_TYPE"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Firm Status"
+  atomic_entity: "Classification Firm Status"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_firm_status"
+  description: "Danh mục trạng thái pháp lý áp dụng cho CTCK, Chi nhánh, VPĐD, PGD,\
+    \ Ngân hàng đối tác — mã, tên, cờ yêu cầu nộp báo cáo/CBTT theo từng trạng thái.\
+    \ Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS) lên entity thật.\
+    \ Xem 7e #11."
+  source_table: "SCMS.CAT_SC_FIRM_STATUS"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Nationality"
+  atomic_entity: "Classification Nationality"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_nationality"
+  description: "Danh mục quốc tịch dùng cho nhân sự, cổ đông, người liên quan của\
+    \ CTCK. Nâng cấp từ Classification Value (scheme SCMS_NATIONALITY) lên entity\
+    \ thật. Xem 7e #11."
+  source_table: "SCMS.CAT_NATIONALITY"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Service"
+  atomic_entity: "Classification Service"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_service"
+  description: "Danh mục dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK. Nâng cấp\
+    \ từ Classification Value (scheme SCMS_SERVICE_TYPE) lên entity thật. FK target\
+    \ cho Classification Service Id trên Securities Company Licensed Service. Xem\
+    \ 7e #11/#14."
+  source_table: "SCMS.CAT_SERVICE"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
   atomic_entity: "Classification Specialization"
   table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_specialization"
   description: ""
   source_table: "NHNCK.SPECIALIZATIONS"
   status: "draft"

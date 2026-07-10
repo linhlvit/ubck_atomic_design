@@ -164,10 +164,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_RELATED_PERSON.COUNTRY_ID"
-  comment: "Pending — FK target CAT_COUNTRY nằm ngoài scope. NUMBER(10)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
+    \ = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_COUNTRY ngừng\
+    \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia COUNTRY_ID\
+    \ với Geographic Area Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+    \ theo SCMS.CAT_COUNTRY. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -177,10 +181,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_RELATED_PERSON.COUNTRY_ID"
-  comment: "Pending — Pair with Country Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Country Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

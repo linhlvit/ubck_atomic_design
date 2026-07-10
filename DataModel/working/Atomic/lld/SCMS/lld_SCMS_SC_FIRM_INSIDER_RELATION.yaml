@@ -237,29 +237,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Nationality Id"
-  physical_name: "nationality_id"
+- attribute_name: "Classification Nationality Id"
+  physical_name: "cl_nationality_id"
   description: "FK đến quốc tịch của người nội bộ."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INSIDER_RELATION.NATIONALITY_ID"
-  comment: "Pending — FK target CAT_NATIONALITY nằm ngoài scope. NUMBER(10)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Nationality Code"
-  physical_name: "nationality_code"
+- attribute_name: "Classification Nationality Code"
+  physical_name: "cl_nationality_code"
   description: "Mã quốc tịch của người nội bộ."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INSIDER_RELATION.NATIONALITY_ID"
-  comment: "Pending — Pair with Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

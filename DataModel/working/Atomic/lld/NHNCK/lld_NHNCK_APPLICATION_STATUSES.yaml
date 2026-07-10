@@ -4,10 +4,10 @@ metadata:
   source_system: "NHNCK"
   source_table: "APPLICATION_STATUSES"
   atomic_entity: "Classification Application Status"
-  entity_physical_name: "classification_application_status"
+  entity_physical_name: "cl_application_status"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Application Status"
-  table_type: "Classification"
+  table_type: "Relative"
   group: "T1"
   design_status: "draft"
   version: "1.0"
@@ -17,22 +17,29 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "BCV Core Object gán Common theo quy tắc mặc định (table_type Classification) — không có term Common chuyên biệt khớp trực tiếp trong knowledge/terms.csv. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS) lên entity thật — xem NHNCK_HLD_Overview.md 7e #9. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY loại khỏi thiết kế — theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml, lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending."
+  notes: "BCV Core Object gán Common theo quy tắc mặc định (table_type Classification)\
+    \ — không có term Common chuyên biệt khớp trực tiếp trong knowledge/terms.csv.\
+    \ Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS)\
+    \ lên entity thật — xem NHNCK_HLD_Overview.md 7e #9. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY\
+    \ loại khỏi thiết kế — theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml,\
+    \ lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending."
 attributes:
 - attribute_name: "Classification Application Status Id"
-  physical_name: "classification_application_status_id"
+  physical_name: "cl_application_status_id"
   description: "Id tự sinh (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
-  source_columns: []
-  comment: "PK surrogate. BCV: [Common] Application Status."
+  source_columns:
+  - "NHNCK.APPLICATION_STATUSES.ID"
+  comment: "PK surrogate. BCV: [Common] Application Status. Hash: hash_id('NHNCK.APPLICATION_STATUSES',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification Application Status Code"
-  physical_name: "classification_application_status_code"
+  physical_name: "cl_application_status_code"
   description: "Mã trạng thái hồ sơ — BK của entity."
   data_domain: "Text"
   nullable: false
@@ -60,7 +67,7 @@ attributes:
   etl_derived_value: "NHNCK.APPLICATION_STATUSES"
   data_type: "string"
 - attribute_name: "Classification Application Status Name"
-  physical_name: "classification_application_status_nm"
+  physical_name: "cl_application_status_nm"
   description: "Tên trạng thái hồ sơ hiển thị trên giao diện."
   data_domain: "Text"
   nullable: false

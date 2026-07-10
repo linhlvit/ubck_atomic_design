@@ -5,7 +5,7 @@
 > **Phạm vi:** Đăng ký và theo dõi thành viên thị trường chứng khoán (Công ty QLQ, Công ty CK, Ngân hàng lưu ký, VSDC, Sở GD, CN QLQ NN), nhà đầu tư nước ngoài, người hành nghề chứng khoán, báo cáo định kỳ và sự vụ CBTT, cảnh báo giám sát và vi phạm, ủy quyền CBTT/giao dịch.
 >
 > **File chi tiết theo tầng:**
-> - [FIMS_HLD_Tier1.md](FIMS_HLD_Tier1.md) — Independent Entities: Market Participant Organization, Geographic Area (shared), Foreign Investor, Reporting Template, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price
+> - [FIMS_HLD_Tier1.md](FIMS_HLD_Tier1.md) — Independent Entities: Market Participant Organization, Foreign Investor, Reporting Template, Reporting Period, Reporting Obligation Type, Warning Parameter, Trading Representative, Securities Closing Price (Geographic Area đã chuyển sang nguồn ECAT — xem mục 7f)
 > - [FIMS_HLD_Tier2.md](FIMS_HLD_Tier2.md) — FK đến Tier 1: Foreign FM Branch Organization, Info Disclosure Representative, Market Participant Key Person, Member Periodic Report, Warning Condition
 > - [FIMS_HLD_Tier3.md](FIMS_HLD_Tier3.md) — FK đến Tier 2: Foreign Investor Securities Account, Report Import Value, Report Processing Activity Log, Market Participant Conduct Violation, Info Disclosure Authorization, Trading Authorization, Info Disclosure Announcement
 
@@ -20,8 +20,6 @@
 | 1 | Involved Party | [Involved Party] Organization | Organization | BANKMONI | Update | Danh sách ngân hàng lưu ký giám sát | Market Participant Organization | Fundamental | Organization — cùng entity với FUNDCOMPANY. Organization Type Code = CUSTODIAN_BANK. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | DEPOSITORYCENTER | Update | Danh sách Trung tâm lưu ký chứng khoán (VSDC) | Market Participant Organization | Fundamental | Organization — cùng entity với FUNDCOMPANY. Organization Type Code = DEPOSITORY_CENTER. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | STOCKEXCHANGE | Update | Danh sách sở giao dịch chứng khoán | Market Participant Organization | Fundamental | Organization — cùng entity với FUNDCOMPANY. Organization Type Code = STOCK_EXCHANGE. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | NATIONAL | Update | Danh sách quốc gia/quốc tịch | Geographic Area | Fundamental | Geographic Area — shared entity đã approved từ NHNCK. FIMS.NATIONAL bổ sung source quốc gia (COUNTRY type). Không tạo entity mới — bổ sung source_table vào entry hiện có. |
-| 1 | Location | [Location] Geographic Area | Geographic Area | LOCATION | Update | Danh sách tỉnh/thành phố Việt Nam | Geographic Area | Fundamental | Geographic Area — shared entity. FIMS.LOCATION bổ sung source tỉnh/thành phố (PROVINCE type). Không tạo entity mới — bổ sung source_table. |
 | 1 | Involved Party | [Involved Party] Individual | Individual | INVESTOR | Update | Danh sách nhà đầu tư nước ngoài (cá nhân và tổ chức) tại Việt Nam | Foreign Investor | Fundamental | Individual — NĐT nước ngoài cá nhân (ObjectType=1) và tổ chức (ObjectType=2) đăng ký hoạt động tại VN theo quy định UBCKNN. Có trường nhận dạng (IdNo/IdDate/IdAdd), địa chỉ, liên lạc. Tách IP Alt Identification. FK đến NATIONAL, SECURITIESCOMPANY, BANKMONI (Classification Value). |
 | 1 | Business Activity | [Business Activity] Business Activity | Business Activity | RPTTEMP | Update | Danh sách biểu mẫu báo cáo đầu vào do UBCKNN ban hành | Reporting Template | Fundamental | Business Activity — template biểu mẫu báo cáo định kỳ mà UBCKNN yêu cầu thành viên nộp. Master entity được FK từ RPTMEMBER. Cấu trúc trường: mã biểu mẫu, tên, loại báo cáo, trạng thái, phiên bản. |
 | 1 | Business Activity | [Business Activity] Assessment Period | Period | RPTPERIOD | Update | Danh sách kỳ của báo cáo đầu vào (kỳ tháng/quý/năm) | Reporting Period | Fundamental | Assessment Period — kỳ báo cáo định kỳ của biểu mẫu. Mỗi kỳ có ngày bắt đầu, ngày kết thúc, hạn nộp. FK đến RPTTEMP. |
@@ -55,7 +53,7 @@ graph TD
 
     %% Tier 1
     MKT["**Market Participant Organization**\n(FUNDCOMPANY/SECURITIESCOMPANY/\nBANKMONI/DEPOSITORYCENTER/STOCKEXCHANGE)\n(T1)"]:::atomic
-    GEOAREA["**Geographic Area**\n(NATIONAL/LOCATION)\n(T1 — shared)"]:::shared
+    GEOAREA["**Geographic Area**\n(nguồn ECAT — không còn tự thiết kế tại FIMS)"]:::shared
     FINV["**Foreign Investor**\n(INVESTOR)\n(T1)"]:::atomic
     RTPL["**Reporting Template**\n(RPTTEMP)\n(T1)"]:::atomic
     RPRD["**Reporting Period**\n(RPTPERIOD)\n(T1)"]:::atomic
@@ -190,6 +188,8 @@ graph TD
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
+| Isolated | NATIONAL | Danh sách quốc gia/quốc tịch | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
+| Isolated | LOCATION | Danh sách tỉnh/thành phố Việt Nam | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | Operational / System | USERS | Tài khoản người dùng đăng nhập hệ thống FIMS | Operational/system data — không có giá trị nghiệp vụ. |
 | Operational / System | USERSMENUS | Phân quyền menu cho từng người dùng | Operational/system data — không có giá trị nghiệp vụ. |
 | Operational / System | USERSMENUS_CLONE | Bản sao phân quyền menu người dùng | Operational/system data — không có giá trị nghiệp vụ. |
@@ -272,11 +272,6 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 ### 1. Market Participant Organization
 **Tier:** 1 | **Source:** `FUNDCOMPANY, SECURITIESCOMPANY, BANKMONI, DEPOSITORYCENTER, STOCKEXCHANGE` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
 **Description:** Tổ chức thành viên thị trường chứng khoán được UBCKNN giám sát — công ty quản lý quỹ, công ty chứng khoán, ngân hàng lưu ký, Trung tâm lưu ký (VSDC) và sở giao dịch chứng khoán. Phân biệt bằng Organization Type Code (ETL-derived). Ghi nhận tên, địa chỉ, giấy phép hoạt động, vốn điều lệ và trạng thái.
-
-
-### 2. Geographic Area
-**Tier:** 1 | **Source:** `NATIONAL, LOCATION` | **BCV Concept:** [Location] Geographic Area | **BCO:** Location | **Table Type:** Fundamental
-**Description:** Đơn vị địa lý dùng làm FK tham chiếu — quốc gia/quốc tịch (NATIONAL) và tỉnh/thành phố Việt Nam (LOCATION). Shared entity từ NHNCK; FIMS bổ sung source_table vào entry hiện có, không tạo entity mới.
 
 
 ### 3. Foreign Investor

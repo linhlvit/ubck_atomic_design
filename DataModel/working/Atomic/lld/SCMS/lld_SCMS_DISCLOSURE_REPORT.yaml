@@ -255,16 +255,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_REPORT.EVENT_TYPE_ID"
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.EVENT_TYPE_ID"
-  comment: "Pending — FK target CAT_EVENT_TYPE; entity chưa thiết kế. NUMBER(10)."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -555,8 +570,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Approved By SCMS User Id"
-  physical_name: "approved_by_scms_user_id"
+- attribute_name: "Approved By IAM User Id"
+  physical_name: "approved_by_iam_user_id"
   description: "FK đến người phê duyệt CBTT."
   data_domain: "Surrogate Key"
   nullable: true
@@ -564,13 +579,15 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ APPROVED_BY)."
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
+    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
+    \ 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Approved By SCMS User Code"
-  physical_name: "approved_by_scms_user_code"
+- attribute_name: "Approved By IAM User Code"
+  physical_name: "approved_by_iam_user_code"
   description: "Mã người phê duyệt CBTT."
   data_domain: "Text"
   nullable: true
@@ -578,12 +595,14 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.APPROVED_BY"
-  comment: "Pending — Pair with Approved By SCMS User Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Approved By IAM User Id. Cross-source FK (SCMS → IAM),\
+    \ pending crosswalk (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sender SCMS User Id"
-  physical_name: "sender_scms_user_id"
+- attribute_name: "Sender IAM User Id"
+  physical_name: "sender_iam_user_id"
   description: "FK đến người gửi CBTT."
   data_domain: "Surrogate Key"
   nullable: true
@@ -591,13 +610,15 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ SENDER_ID)."
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
+    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
+    \ 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sender SCMS User Code"
-  physical_name: "sender_scms_user_code"
+- attribute_name: "Sender IAM User Code"
+  physical_name: "sender_iam_user_code"
   description: "Mã người gửi CBTT."
   data_domain: "Text"
   nullable: true
@@ -605,12 +626,14 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.SENDER_ID"
-  comment: "Pending — Pair with Sender SCMS User Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Sender IAM User Id. Cross-source FK (SCMS → IAM), pending\
+    \ crosswalk (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Cancelled By SCMS User Id"
-  physical_name: "cancelled_by_scms_user_id"
+- attribute_name: "Cancelled By IAM User Id"
+  physical_name: "cancelled_by_iam_user_id"
   description: "FK đến người hủy CBTT."
   data_domain: "Surrogate Key"
   nullable: true
@@ -618,13 +641,15 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ CANCELLED_BY)."
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
+    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
+    \ 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Cancelled By SCMS User Code"
-  physical_name: "cancelled_by_scms_user_code"
+- attribute_name: "Cancelled By IAM User Code"
+  physical_name: "cancelled_by_iam_user_code"
   description: "Mã người hủy CBTT."
   data_domain: "Text"
   nullable: true
@@ -632,7 +657,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.DISCLOSURE_REPORT.CANCELLED_BY"
-  comment: "Pending — Pair with Cancelled By SCMS User Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM),\
+    \ pending crosswalk (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

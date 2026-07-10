@@ -98,8 +98,12 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.PROVINCE_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('SCMS.CAT_PROVINCE',\
-    \ PROVINCE_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
+    \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng\
+    \ thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai)\
+    \ — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic\
+    \ Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() theo\
+    \ SCMS.CAT_PROVINCE. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -112,22 +116,26 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.PROVINCE_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Province\
-    \ Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Province Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "District Id"
   physical_name: "district_id"
-  description: "FK đến Geographic Area cấp quận/huyện."
+  description: "FK đến Geographic Area Old cấp quận/huyện (cũ)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.DISTRICT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('SCMS.CAT_DISTRICT',\
-    \ DISTRICT_ID)."
+  comment: "FK target: Geographic Area Old.Geographic Area Old Id (ĐỔI TARGET — không\
+    \ còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện\
+    \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
+    \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
+    \ quận/huyện DISTRICT_ID với Geographic Area Old Business Code (ECAT.DISTRICT_OLD.CODE)\
+    \ hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -140,8 +148,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.DISTRICT_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with District\
-    \ Id."
+  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
+    \ — ĐỔI TARGET, xem District Id). Pair with District Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -154,8 +162,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.DISTRICT_ID"
-  comment: "Denormalized từ CAT_DISTRICT.DISTRICT_NAME — ETL lookup theo DISTRICT_ID.\
-    \ Lưu dự phòng để tránh join nhiều tầng."
+  comment: "Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm),\
+    \ không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -168,8 +176,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.WARD_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('SCMS.CAT_WARD',\
-    \ WARD_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
+    \ = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết\
+    \ kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic\
+    \ Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name, không còn hash_id() theo\
+    \ SCMS.CAT_WARD. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
@@ -182,7 +193,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.WARD_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Ward Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Ward Id."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"

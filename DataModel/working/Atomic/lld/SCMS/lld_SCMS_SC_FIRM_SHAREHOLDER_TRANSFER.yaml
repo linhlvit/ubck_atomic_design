@@ -151,30 +151,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Id"
-  physical_name: "event_tp_id"
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
   description: "FK đến loại sự kiện pháp lý tương ứng với giao dịch chuyển nhượng."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-  comment: "Pending — FK target CAT_EVENT_TYPE nằm ngoài scope. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
   description: "Mã loại sự kiện pháp lý."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-  comment: "Pending — Pair with Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -4,10 +4,10 @@ metadata:
   source_system: "NHNCK"
   source_table: "SPECIALIZATIONS"
   atomic_entity: "Classification Specialization"
-  entity_physical_name: "classification_specialization"
+  entity_physical_name: "cl_specialization"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Specialization"
-  table_type: "Classification"
+  table_type: "Relative"
   group: "T1"
   design_status: "draft"
   version: "1.0"
@@ -20,27 +20,29 @@ metadata:
   notes: "BCV Core Object gán Common theo quy tắc mặc định. Term BCV gần nhất tìm\
     \ được là [Involved Party] Employment Position Qualification nhưng khớp yếu (mô\
     \ tả trình độ học vấn, không phải lĩnh vực hành nghề) — không dùng, giữ Common.\
-    \ Nâng cấp từ Classification Value (scheme SPECIALIZATION) lên entity thật —\
-    \ xem NHNCK_HLD_Overview.md 7e #9. RECORD_STATUS (nguồn) loại khỏi thiết kế —\
-    \ trùng ý nghĩa với ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ ACTIVE\
-    \ làm chuẩn. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY loại khỏi thiết kế —\
-    \ theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml, lld_NHNCK_PROFESSIONALS.yaml),\
+    \ Nâng cấp từ Classification Value (scheme SPECIALIZATION) lên entity thật — xem\
+    \ NHNCK_HLD_Overview.md 7e #9. RECORD_STATUS (nguồn) loại khỏi thiết kế — trùng\
+    \ ý nghĩa với ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ ACTIVE làm\
+    \ chuẩn. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY loại khỏi thiết kế — theo\
+    \ đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml, lld_NHNCK_PROFESSIONALS.yaml),\
     \ không giữ dạng pending."
 attributes:
 - attribute_name: "Classification Specialization Id"
-  physical_name: "classification_specialization_id"
+  physical_name: "cl_specialization_id"
   description: "Id tự sinh (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
-  source_columns: []
-  comment: "PK surrogate. BCV: [Common] Specialization."
+  source_columns:
+  - "NHNCK.SPECIALIZATIONS.ID"
+  comment: "PK surrogate. BCV: [Common] Specialization. Hash: hash_id('NHNCK.SPECIALIZATIONS',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification Specialization Code"
-  physical_name: "classification_specialization_code"
+  physical_name: "cl_specialization_code"
   description: "Mã chuyên ngành CCHN — BK của entity."
   data_domain: "Text"
   nullable: false
@@ -65,7 +67,7 @@ attributes:
   etl_derived_value: "NHNCK.SPECIALIZATIONS"
   data_type: "string"
 - attribute_name: "Classification Specialization Name"
-  physical_name: "classification_specialization_nm"
+  physical_name: "cl_specialization_nm"
   description: "Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)."
   data_domain: "Text"
   nullable: false

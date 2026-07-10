@@ -144,16 +144,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
-  comment: "Scheme: SCMS_EVENT_TYPE. Nguồn lưu NUMBER(10) — ETL map ID → code từ CAT_EVENT_TYPE."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -421,18 +436,19 @@ attributes:
   physical_name: "service_tp_codes"
   description: "Danh sách loại dịch vụ được cấp phép cho chi nhánh (denormalized từ\
     \ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE)."
-  data_domain: "Array<Text>"
+  data_domain: "Array<Struct>"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.CAT_SERVICE_ID"
   comment: "Pure junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE → denormalize thành ARRAY.\
-    \ ETL map CAT_SERVICE_ID → code từ CAT_SERVICE. Scheme: SCMS_SERVICE_TYPE. HLD\
-    \ decision: SCMS_HLD_Tier2.md §6d."
+    \ Struct: {classification_service_id: Surrogate Key; classification_service_code:\
+    \ Text}. Scheme nguồn: Classification Service (SCMS.CAT_SERVICE) — đã nâng cấp\
+    \ từ Classification Value đơn. HLD decision: SCMS_HLD_Tier2.md §6d."
   classification_context: null
   etl_derived_value: null
-  data_type: "array<string>"
+  data_type: "array<struct<...>>"
 - attribute_name: "Attachment Path"
   physical_name: "attachment_path"
   description: "Đường dẫn file đính kèm."

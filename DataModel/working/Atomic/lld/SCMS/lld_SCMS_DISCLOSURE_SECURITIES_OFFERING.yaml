@@ -90,16 +90,31 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
-  description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID"
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID"
-  comment: "Pending — FK target CAT_EVENT_TYPE; entity chưa thiết kế. NUMBER(10)."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

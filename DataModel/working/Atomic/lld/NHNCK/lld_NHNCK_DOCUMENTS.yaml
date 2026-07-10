@@ -4,10 +4,10 @@ metadata:
   source_system: "NHNCK"
   source_table: "DOCUMENTS"
   atomic_entity: "Classification Document"
-  entity_physical_name: "classification_document"
+  entity_physical_name: "cl_document"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Document"
-  table_type: "Classification"
+  table_type: "Relative"
   group: "T1"
   design_status: "draft"
   version: "1.0"
@@ -28,19 +28,21 @@ metadata:
     \ không giữ dạng pending."
 attributes:
 - attribute_name: "Classification Document Id"
-  physical_name: "classification_document_id"
+  physical_name: "cl_document_id"
   description: "Id tự sinh (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   status: "draft"
-  source_columns: []
-  comment: "PK surrogate. BCV: [Common] Document."
+  source_columns:
+  - "NHNCK.DOCUMENTS.ID"
+  comment: "PK surrogate. BCV: [Common] Document. Hash: hash_id('NHNCK.DOCUMENTS',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification Document Code"
-  physical_name: "classification_document_code"
+  physical_name: "cl_document_code"
   description: "Mã tài liệu — BK của entity."
   data_domain: "Text"
   nullable: false
@@ -65,7 +67,7 @@ attributes:
   etl_derived_value: "NHNCK.DOCUMENTS"
   data_type: "string"
 - attribute_name: "Classification Document Name"
-  physical_name: "classification_document_nm"
+  physical_name: "cl_document_nm"
   description: "Tên tài liệu."
   data_domain: "Text"
   nullable: false

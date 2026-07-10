@@ -1,0 +1,106 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "CAT_SERVICE"
+  atomic_entity: "Classification Service"
+  entity_physical_name: "cl_service"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Service"
+  table_type: "Classification"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nâng cấp từ Classification Value (scheme SCMS_SERVICE_TYPE, nay deprecated)\
+    \ lên entity thật — xem SCMS_HLD_Tier1.md 6f T1-05. BCV Core Object gán Common\
+    \ theo chỉ đạo Data Modeler (không dùng Service/Product dù match tốt) để nhất\
+    \ quán pattern NHNCK. BK dùng SERVICE_CODE (mã nghiệp vụ); surrogate Id hash từ\
+    \ ID kỹ thuật — nhất quán với entity tiêu thụ Securities Company Licensed Service\
+    \ (FK Id+Code hash qua giá trị ID, xem lld_SCMS_SC_FIRM_SERVICE.yaml). Audit fields\
+    \ (CREATED_BY/CREATED_AT) loại bỏ theo convention SCMS."
+attributes:
+- attribute_name: "Classification Service Id"
+  physical_name: "cl_service_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SERVICE.ID"
+  comment: "PK surrogate. BCV: \"[Common] Service\". Danh mục dịch vụ chứng khoán\
+    \ được cấp phép. Hash: hash_id('SCMS.CAT_SERVICE', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Service Code"
+  physical_name: "cl_service_code"
+  description: "Mã dịch vụ chứng khoán. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SERVICE.SERVICE_CODE"
+  comment: "BK chính. Dùng SERVICE_CODE (mã nghiệp vụ) thay vì ID kỹ thuật — xem pending_design.yaml."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.CAT_SERVICE"
+  etl_derived_value: "SCMS.CAT_SERVICE"
+  data_type: "string"
+- attribute_name: "Classification Service Name"
+  physical_name: "cl_service_nm"
+  description: "Tên dịch vụ chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SERVICE.SERVICE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái bản ghi dịch vụ chứng khoán: 1 = Đang sử dụng; 0 = Ngừng\
+    \ sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SERVICE.RECORD_STATUS"
+  comment: "Scheme: SCMS_CLASSIFICATION_SERVICE_RECORD_STATUS."
+  classification_context: "SCMS_CLASSIFICATION_SERVICE_RECORD_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_SERVICE.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

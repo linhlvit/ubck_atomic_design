@@ -118,29 +118,33 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Alert Condition Id"
-  physical_name: "alert_condition_id"
+- attribute_name: "Securities Company Alert Indicator Condition Id"
+  physical_name: "sc_alert_indicator_condition_id"
   description: "FK đến điều kiện cảnh báo (Alert Condition) liên quan."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
-  comment: "Pending — ALERT_CONDITION nằm ngoài scope HLD hiện tại. NUMBER(10)."
+  comment: "FK target: Securities Company Alert Indicator Condition.Securities Company\
+    \ Alert Indicator Condition Id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION',\
+    \ ALERT_CONDITION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Alert Condition Code"
-  physical_name: "alert_condition_code"
+- attribute_name: "Securities Company Alert Indicator Condition Code"
+  physical_name: "sc_alert_indicator_condition_code"
   description: "Mã điều kiện cảnh báo."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID"
-  comment: "Pending — Pair with Alert Condition Id."
+  comment: "Lookup pair: Securities Company Alert Indicator Condition.Securities Company\
+    \ Alert Indicator Condition Code. Pair with Securities Company Alert Indicator\
+    \ Condition Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -153,7 +157,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
-  comment: "Pending — ALERT_RUN nằm ngoài scope HLD hiện tại. NUMBER(10)."
+  comment: "Pending — ALERT_RUN là FK thật theo BRD (fk_note: FK → ALERT_RUN.ID) nhưng\
+    \ bảng ALERT_RUN chưa được đưa vào scope HLD/LLD SCMS. Cần bổ sung Tier thiết\
+    \ kế ALERT_RUN trước khi resolve FK này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -166,7 +172,7 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
-  comment: "Pending — Pair with Alert Run Id."
+  comment: "Pending — Pair with Alert Run Id. Xem comment Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -428,8 +434,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-- attribute_name: "Processor SCMS User Id"
-  physical_name: "processor_scms_user_id"
+- attribute_name: "Processor IAM User Id"
+  physical_name: "processor_iam_user_id"
   description: "FK đến người xử lý vi phạm cảnh báo."
   data_domain: "Surrogate Key"
   nullable: true
@@ -437,13 +443,15 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
-  comment: "Pending — FK target SYS_USER nằm ngoài scope. Hash: hash_id('SCMS.SYS_USER',\
-    \ PROCESSOR_ID). Khác Created By — là người xử lý sau khi alert phát sinh."
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi\
+    \ IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa\
+    \ 2 hệ thống."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Processor SCMS User Code"
-  physical_name: "processor_scms_user_code"
+- attribute_name: "Processor IAM User Code"
+  physical_name: "processor_iam_user_code"
   description: "Mã người xử lý vi phạm cảnh báo."
   data_domain: "Text"
   nullable: true
@@ -451,7 +459,9 @@ attributes:
   status: "pending"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
-  comment: "Pending — Pair with Processor SCMS User Id."
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Processor IAM User Id. Cross-source FK (SCMS → IAM), pending\
+    \ crosswalk (xem comment Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

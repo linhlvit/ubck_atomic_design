@@ -1,0 +1,261 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "ECAT"
+  source_table: "PROVINCE_NEW"
+  atomic_entity: "Geographic Area"
+  entity_physical_name: "geographic_area"
+  bcv_core_object: "Location"
+  bcv_concept: "[Location] Geographic Area"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Tỉnh/thành phố hiện hành (post-sáp nhập hành chính 2025). PROVINCE_NEW.COUNTRY_ID\
+    \ là denormalized (suy ra được qua REGION_ID → REGION.COUNTRY_ID) — không map\
+    \ riêng. Loại bỏ: ID, IDX_*, CREATED_AT/UPDATED_AT/CREATED_BY_*/UPDATED_BY_*,\
+    \ OLD_ID, REGION_VERSION_ID/COUNTRY_VERSION_ID (cache version kỹ thuật)."
+attributes:
+- attribute_name: "Geographic Area Id"
+  physical_name: "geographic_area_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Geographic Area Code"
+  physical_name: "geographic_area_code"
+  description: "Mã định danh bền vững của bản ghi qua các version. BK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.STABLE_ID"
+  comment: "BK chính. Dùng STABLE_ID (không dùng ID) vì ID đổi theo từng version nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "SOURCE_SYSTEM=ECAT.PROVINCE_NEW"
+  etl_derived_value: "ECAT.PROVINCE_NEW"
+  data_type: "string"
+- attribute_name: "Geographic Area Type Code"
+  physical_name: "geographic_area_tp_code"
+  description: "Phân loại vùng địa lý — Tỉnh/Thành phố hiện hành"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "GEOGRAPHIC_AREA_TYPE=PROVINCE"
+  etl_derived_value: "PROVINCE"
+  data_type: "string"
+- attribute_name: "Geographic Area Business Code"
+  physical_name: "geographic_area_business_code"
+  description: "Mã tỉnh/thành phố nghiệp vụ (do ECAT quản lý)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.CODE"
+  comment: "Mã nghiệp vụ hiển thị/tra cứu — tách biệt với Geographic Area Code (BK\
+    \ kỹ thuật)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Geographic Area Name"
+  physical_name: "geographic_area_nm"
+  description: "Tên tỉnh/thành phố (tiếng Việt)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.NAME_VN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Geographic Area English Name"
+  physical_name: "geographic_area_english_nm"
+  description: "Tên tỉnh/thành phố (tiếng Anh)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Geographic Area Id"
+  physical_name: "parent_geographic_area_id"
+  description: "FK đến vùng/miền cha"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.REGION_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id. Parent là REGION. Resolve:\
+    \ join REGION_ID → ECAT.REGION.ID để lấy STABLE_ID, rồi hash_id('ECAT.REGION',\
+    \ stable_id_cha). COUNTRY_ID trên bảng nguồn là denormalized, suy ra được qua\
+    \ REGION → COUNTRY nên không map riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Geographic Area Code"
+  physical_name: "parent_geographic_area_code"
+  description: "Mã vùng/miền cha"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.REGION_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Parent Geographic\
+    \ Area Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective Indicator"
+  physical_name: "effective_indicator"
+  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.EFFECTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.ACTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.DELETED"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Effective Start Date"
+  physical_name: "effective_start_dt"
+  description: "Ngày bắt đầu hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.EFFECTIVE_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Effective End Date"
+  physical_name: "effective_end_dt"
+  description: "Ngày kết thúc hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.EFFECTIVE_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Version Number"
+  physical_name: "version_nbr"
+  description: "Số phiên bản bản ghi tại nguồn"
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.VERSION"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Display Label"
+  physical_name: "display_label"
+  description: "Nhãn hiển thị"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.DISPLAY_LABEL"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Reason"
+  physical_name: "active_reason"
+  description: "Lý do thay đổi trạng thái sử dụng"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.ACTIVE_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Reason"
+  physical_name: "deleted_reason"
+  description: "Lý do xóa"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.PROVINCE_NEW.DELETED_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

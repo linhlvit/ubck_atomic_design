@@ -125,8 +125,11 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.NAT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Hash: hash_id('FMS.NATIONAL',\
-    \ NAT_ID)."
+  comment: "FK target: Geographic Area.Geographic Area Id. Nguồn Geographic Area đã\
+    \ chuyển sang ECAT (FMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị:\
+    \ đối chiếu mã/tên quốc gia NAT_ID với Geographic Area Business Code (ECAT.COUNTRY.CODE)\
+    \ hoặc Name, không còn hash_id() trực tiếp theo FMS.NATIONAL. Cần crosswalk nếu\
+    \ FMS không cùng chuẩn mã với ECAT."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -139,8 +142,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.NAT_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
-    \ Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

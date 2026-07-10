@@ -1,0 +1,309 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "CAT_EVENT_TYPE"
+  atomic_entity: "Classification Event Type"
+  entity_physical_name: "cl_event_type"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Event Type"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nâng cấp từ Classification Value (scheme SCMS_EVENT_TYPE, nay deprecated)\
+    \ lên entity thật — xem SCMS_HLD_Tier1.md 6f T1-05. BCV Core Object gán Common\
+    \ theo chỉ đạo Data Modeler (term BCV khớp mạnh `Event Type` id 9924, category\
+    \ Event — không dùng, giữ Common để nhất quán pattern Classification-naming).\
+    \ Table Type = Relative theo chỉ đạo tường minh (khác 3 entity Classification\
+    \ cùng nhóm) — bảng không FK nghiệp vụ rõ ràng đến 1 Fundamental entity khác trong\
+    \ scope hiện tại, xem 6f T1-07. BK dùng EVENT_TYPE_CODE; surrogate Id hash từ\
+    \ ID kỹ thuật. Nhiều cột không có mô tả gốc (TARGET_ENTITY, EVENT_GROUP_ID, CYCLE,\
+    \ FREQUENCY, SUBMISSION_METHOD, DEADLINE_CALCULATION_METHOD) — tạm gán Classification\
+    \ Value/Text theo cấu trúc cột, cần profile dữ liệu trước ETL. EVENT_GROUP_ID\
+    \ map 1:1 thành Event Group Code theo chỉ đạo Data Modeler (2026-07-10) — không\
+    \ tạo cặp FK Id+Code vì chưa xác nhận bảng đích. Audit block (CREATED_BY/CREATED_AT/UPDATED_BY/UPDATED_AT)\
+    \ loại bỏ theo convention SCMS."
+attributes:
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.ID"
+  comment: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự kiện/sự vụ\
+    \ nghiệp vụ làm cơ sở xác định nghĩa vụ báo cáo/CBTT. Hash: hash_id('SCMS.CAT_EVENT_TYPE',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
+  description: "Mã sự vụ (thành lập, điều chỉnh vốn, thay đổi tên). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
+  comment: "BK chính. Dùng EVENT_TYPE_CODE (mã nghiệp vụ) thay vì ID kỹ thuật — xem\
+    \ pending_design.yaml."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=SCMS.CAT_EVENT_TYPE"
+  etl_derived_value: "SCMS.CAT_EVENT_TYPE"
+  data_type: "string"
+- attribute_name: "Classification Event Type Name"
+  physical_name: "cl_event_type_nm"
+  description: "Tên sự vụ/sự kiện."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái danh mục sự vụ: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.RECORD_STATUS"
+  comment: "Scheme: SCMS_EVENT_TYPE_RECORD_STATUS."
+  classification_context: "SCMS_EVENT_TYPE_RECORD_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "License Required Indicator"
+  physical_name: "license_required_indicator"
+  description: "Cờ sự vụ này cần có giấy phép/văn bản chấp thuận: 1=Có, 0=Không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.REQUIRES_LICENSE"
+  comment: "NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Disclosure Required Indicator"
+  physical_name: "disclosure_required_indicator"
+  description: "Cờ sự vụ này yêu cầu công bố thông tin."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.REQUIRES_DISCLOSURE"
+  comment: "Data type nguồn NUMBER không khai báo precision — cần profile trước ETL.\
+    \ Mô tả gốc BRD trống, suy luận từ tên cột theo pattern REQUIRES_*."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Obligation Type Code"
+  physical_name: "obligation_tp_code"
+  description: "Loại nghĩa vụ áp dụng: 1 = Chỉ báo cáo (không CBTT); 2 = Chỉ CBTT\
+    \ (không báo cáo); 3 = Vừa báo cáo vừa CBTT; 4 = Thay đổi hồ sơ CTCK."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE"
+  comment: "Scheme: SCMS_EVENT_TYPE_OBLIGATION_TYPE. Nguồn lưu dạng số — ETL giữ nguyên\
+    \ mapping 1/2/3/4 theo mô tả nguồn."
+  classification_context: "SCMS_EVENT_TYPE_OBLIGATION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Entity Code"
+  physical_name: "target_entity_code"
+  description: "Đối tượng áp dụng của loại sự vụ (mô tả gốc BRD trống)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.TARGET_ENTITY"
+  comment: "Scheme: SCMS_EVENT_TYPE_TARGET_ENTITY. Mô tả gốc BRD trống — cần profile\
+    \ dữ liệu trước khi ETL, tạm gán Classification Value theo cấu trúc NVARCHAR2(20)\
+    \ tương tự APPLICABLE_ENTITY/SENDER_ENTITY ở các bảng CAT_ khác."
+  classification_context: "SCMS_EVENT_TYPE_TARGET_ENTITY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Event Category Code"
+  physical_name: "event_category_code"
+  description: "Phân loại sự vụ (loại thay đổi hồ sơ)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.EVENT_CATEGORY"
+  comment: "Scheme: SCMS_EVENT_TYPE_EVENT_CATEGORY. Values chưa profile."
+  classification_context: "SCMS_EVENT_TYPE_EVENT_CATEGORY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cycle Code"
+  physical_name: "cycle_code"
+  description: "Chu kỳ áp dụng của sự vụ (mô tả gốc BRD trống)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.CYCLE"
+  comment: "Scheme: SCMS_EVENT_TYPE_CYCLE. Mô tả gốc BRD trống — cần profile dữ liệu\
+    \ trước khi ETL."
+  classification_context: "SCMS_EVENT_TYPE_CYCLE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Frequency Code"
+  physical_name: "frequency_code"
+  description: "Tần suất áp dụng của sự vụ (mô tả gốc BRD trống)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.FREQUENCY"
+  comment: "Scheme: SCMS_EVENT_TYPE_FREQUENCY. Mô tả gốc BRD trống — cần profile dữ\
+    \ liệu trước khi ETL."
+  classification_context: "SCMS_EVENT_TYPE_FREQUENCY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cutoff Date"
+  physical_name: "cutoff_dt"
+  description: "Ngày chốt sổ/hạn xử lý liên quan sự vụ (mô tả gốc BRD trống)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.CUTOFF_DATE"
+  comment: "Nguồn lưu dạng NVARCHAR2(50) — ETL cần cast/parse sang date. Cần validate\
+    \ format và giá trị non-date trước khi ETL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Submission Method Code"
+  physical_name: "submission_method_code"
+  description: "Phương thức nộp/xử lý sự vụ (mô tả gốc BRD trống)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.SUBMISSION_METHOD"
+  comment: "Scheme: SCMS_EVENT_TYPE_SUBMISSION_METHOD. Mô tả gốc BRD trống — cần profile\
+    \ dữ liệu trước khi ETL."
+  classification_context: "SCMS_EVENT_TYPE_SUBMISSION_METHOD"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective Date"
+  physical_name: "effective_dt"
+  description: "Ngày văn bản/thay đổi có hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.EFFECTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Expiry Date"
+  physical_name: "expiry_dt"
+  description: "Ngày hết hiệu lực (mô tả gốc BRD trống)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.EXPIRY_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Deadline Calculation Method Code"
+  physical_name: "deadline_calculation_method_code"
+  description: "Phương pháp tính hạn xử lý (mô tả gốc BRD trống)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.DEADLINE_CALCULATION_METHOD"
+  comment: "Scheme: SCMS_EVENT_TYPE_DEADLINE_CALC_METHOD. Mô tả gốc BRD trống — cần\
+    \ profile dữ liệu trước khi ETL."
+  classification_context: "SCMS_EVENT_TYPE_DEADLINE_CALC_METHOD"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Extended Data"
+  physical_name: "extended_data"
+  description: "Dữ liệu mở rộng (du_lieu_mo_rong) — xem thêm tài liệu đặc tả SCMS."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.DU_LIEU_MO_RONG"
+  comment: "Nguồn NCLOB — blob text/JSON mở rộng, kích thước lớn. Cần profile nội\
+    \ dung trước ETL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Event Group Code"
+  physical_name: "event_group_code"
+  description: "Cột event_group_id (mô tả gốc BRD trống)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.EVENT_GROUP_ID"
+  comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10). Tên cột gợi ý FK đến 1\
+    \ bảng nhóm sự kiện, nhưng không có fk_note khai báo và không xác nhận được bảng\
+    \ đích trong scope hiện tại — giữ dạng Text đơn giản (không tạo cặp FK Id+Code).\
+    \ Nếu sau này xác định được bảng đích, cần đổi sang FK chuẩn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_EVENT_TYPE.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
