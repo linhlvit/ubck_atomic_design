@@ -1,0 +1,869 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "SECURITIES_OFFERING_PLAN"
+  atomic_entity: "Public Company Securities Offering Plan"
+  entity_physical_name: "public_company_securities_offering_plan"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Con của Public Company Securities Offering (T3) — 1-N. TOTAL_REGISTERED_QTY\
+    \ và TOTAL_EXPECTED_AM là denormalized snapshot lấy từ bảng cha SECURITIES_OFFERING\
+    \ theo BRD note."
+attributes:
+- attribute_name: "Public Company Securities Offering Plan Id"
+  physical_name: "public_company_securities_offering_plan_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Securities Offering Plan Code"
+  physical_name: "public_company_securities_offering_plan_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.SECURITIES_OFFERING_PLAN"
+  etl_derived_value: "IDS.SECURITIES_OFFERING_PLAN"
+  data_type: "string"
+- attribute_name: "Public Company Securities Offering Id"
+  physical_name: "public_company_securities_offering_id"
+  description: "Khóa link đến bảng SECURITIES_OFFERING — kế hoạch chào bán/phát hành\
+    \ thuộc đợt chào bán nào."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURITIES_OFFERING_ID"
+  comment: "FK target: Public Company Securities Offering.Public Company Securities\
+    \ Offering Id. Hash: hash_id('IDS.SECURITIES_OFFERING', SECURITIES_OFFERING_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Securities Offering Code"
+  physical_name: "public_company_securities_offering_code"
+  description: "Mã đợt chào bán/phát hành (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURITIES_OFFERING_ID"
+  comment: "Lookup pair: Public Company Securities Offering.Public Company Securities\
+    \ Offering Code. Pair with Public Company Securities Offering Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Offering Method Code"
+  physical_name: "offering_method_code"
+  description: "Hình thức chào bán phát hành (chào bán ra công chúng, chào bán riêng\
+    \ lẻ, hoán đổi, phát hành trả cổ tức...)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD"
+  comment: "Scheme: IDS_SO_OFFERING_METHOD (source_table, LOOKUP_GROUP = 'SO_OFFERING_METHOD')\
+    \ — chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_SO_OFFERING_METHOD"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Distribution Method Code"
+  physical_name: "distribution_method_code"
+  description: "Phương thức phân phối (tổ chức bảo lãnh phát hành, đại lý phát hành,\
+    \ đấu giá, khác) — có thể chọn nhiều."
+  data_domain: "Array<Text>"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.DISTRIBUTION_METHOD_CD"
+  comment: "Scheme: IDS_SO_DISTRIBUTION_METHOD (source_table, LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD').\
+    \ Nguồn lưu dạng chuỗi các mã cách nhau dấu phẩy — parse thành Array<Text> khi\
+    \ lên Atomic. Chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_SO_DISTRIBUTION_METHOD"
+  etl_derived_value: null
+  data_type: "array<string>"
+- attribute_name: "Security Type Code"
+  physical_name: "security_tp_code"
+  description: "Loại chứng khoán (cổ phiếu, cổ phiếu ưu đãi, trái phiếu, trái phiếu\
+    \ kèm chứng quyền, trái phiếu chuyển đổi)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURITY_TYPE_CD"
+  comment: "Scheme: IDS_SO_SECURITY_TYPE (source_table, LOOKUP_GROUP = 'SO_SECURITY_TYPE')\
+    \ — dùng chung với Public Company Securities Offering Result. Chưa có trong HLD\
+    \ 6d, bổ sung scheme mới."
+  classification_context: "IDS_SO_SECURITY_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Security Name"
+  physical_name: "security_nm"
+  description: "Tên chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURITY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Par Value"
+  physical_name: "par_val"
+  description: "Mệnh giá."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PAR_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Total Registered Quantity Snapshot"
+  physical_name: "total_registered_quantity_snpst"
+  description: "Tổng số chứng khoán chào bán/phát hành."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.TOTAL_REGISTERED_QTY"
+  comment: "Denormalized snapshot từ Public Company Securities Offering — xem BRD\
+    \ note."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Offering Price"
+  physical_name: "offering_price"
+  description: "Giá chào bán phát hành dự kiến."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OFFERING_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Total Expected Amount Snapshot"
+  physical_name: "total_expected_amt_snpst"
+  description: "Tổng số tiền dự kiến thu được, VNĐ."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.TOTAL_EXPECTED_AM"
+  comment: "Denormalized snapshot từ Public Company Securities Offering — xem BRD\
+    \ note."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Issuer Total Registered Quantity"
+  physical_name: "issuer_total_registered_quantity"
+  description: "Số lượng chứng khoán tổ chức phát hành đăng ký (hiển thị đối với một\
+    \ số thủ tục)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.ISSUER_TOTAL_REGISTERED_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Shareholder Registered Quantity"
+  physical_name: "shareholder_registered_quantity"
+  description: "Số lượng chứng khoán cổ đông/thành viên đăng ký (hiển thị đối với\
+    \ một số thủ tục)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SHAREHOLDER_REGISTERED_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Issuer Total Expected Amount"
+  physical_name: "issuer_total_expected_amt"
+  description: "Số tiền dự kiến thu được từ tổ chức phát hành, VND (hiển thị đối với\
+    \ một số thủ tục)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.ISSUER_TOTAL_EXPECTED_AM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Shareholder Expected Amount"
+  physical_name: "shareholder_expected_amt"
+  description: "Số tiền dự kiến thu được từ cổ đông/thành viên, VND (hiển thị đối\
+    \ với một số thủ tục)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SHAREHOLDER_EXPECTED_AM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Offering Start Date"
+  physical_name: "offering_start_dt"
+  description: "Thời gian chào bán — từ ngày."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OFFERING_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Offering End Date"
+  physical_name: "offering_end_dt"
+  description: "Thời gian chào bán — đến ngày."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OFFERING_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Owned Share Quantity"
+  physical_name: "owned_share_quantity"
+  description: "Số lượng cổ phiếu sở hữu (hiển thị đối với một số thủ tục)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OWNED_SHARE_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Unrestricted Share Quantity"
+  physical_name: "unrestricted_share_quantity"
+  description: "Số lượng cổ phiếu được phép chuyển nhượng (hiển thị đối với một số\
+    \ thủ tục)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.UNRESTRICTED_SHARE_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Offer To Owned Percentage"
+  physical_name: "offer_to_owned_percentage"
+  description: "Tỷ lệ cổ phiếu đăng ký chào bán trên tổng cổ phiếu sở hữu (hiển thị\
+    \ đối với một số thủ tục)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OFFER_TO_OWNED_PCT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Transfer Restrict Period"
+  physical_name: "transfer_restrict_period"
+  description: "Thời gian hạn chế chuyển nhượng (hiển thị ở một số thủ tục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.TRANSFER_RESTRICT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Offer Success Percentage"
+  physical_name: "offer_success_percentage"
+  description: "Tỷ lệ chào bán thành công (hiển thị ở một số thủ tục)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OFFER_SUCCESS_PCT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Offer To Outstanding Percentage"
+  physical_name: "offer_to_outstanding_percentage"
+  description: "Tỷ lệ phát hành (hiển thị ở một số thủ tục)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.OFFER_TO_OUTSTANDING_PCT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Employee Quantity"
+  physical_name: "employee_quantity"
+  description: "Số lượng người lao động (hiển thị đối với một số thủ tục)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.EMPLOYEE_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Capital Source"
+  physical_name: "capital_src"
+  description: "Nguồn vốn (hiển thị đối với một số thủ tục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.CAPITAL_SOURCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Exercise Period"
+  physical_name: "exercise_period"
+  description: "Thời hạn thực hiện quyền (hiển thị đối với một số thủ tục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.EXERCISE_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Rights Ratio"
+  physical_name: "rights_ratio"
+  description: "Tỷ lệ thực hiện quyền (hiển thị đối với một số thủ tục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.RIGHTS_RATIO"
+  comment: "Chuỗi tỷ lệ dạng tự do (VD: \"1:10\") — không phải trường số."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Swap Ratio"
+  physical_name: "swap_ratio"
+  description: "Tỷ lệ hoán đổi (hiển thị đối với một số thủ tục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SWAP_RATIO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Swap Target"
+  physical_name: "swap_target"
+  description: "Đối tượng phát hành để hoán đổi (hiển thị đối với một số thủ tục)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SWAP_TARGET"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issuance Market"
+  physical_name: "issuance_market"
+  description: "Thị trường phát hành (đối với chào bán tại nước ngoài)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.ISSUANCE_MARKET"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Interest Rate"
+  physical_name: "interest_rate"
+  description: "Lãi suất."
+  data_domain: "Interest Rate"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.INTEREST_RATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(8,5)"
+- attribute_name: "Bond Term Value"
+  physical_name: "bond_term_val"
+  description: "Kỳ hạn trái phiếu (tháng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.BOND_TERM_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Interest Payment Period"
+  physical_name: "interest_payment_period"
+  description: "Kỳ trả lãi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.INTEREST_PAYMENT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Conversion Period Value"
+  physical_name: "conversion_period_val"
+  description: "Thời hạn chuyển đổi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.CONVERSION_PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Conversion Ratio Percentage"
+  physical_name: "conversion_ratio_percentage"
+  description: "Tỷ lệ chuyển đổi."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.CONVERSION_RATIO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Conversion Guarantee Plan"
+  physical_name: "conversion_guarantee_plan"
+  description: "Phương án đảm bảo tỷ lệ sở hữu nước ngoài về chuyển đổi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.CONVERSION_GUARANTEE_PLAN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Exercise Period Value"
+  physical_name: "exercise_period_val"
+  description: "Thời hạn thực hiện quyền."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.EXERCISE_PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Exercise Ratio Percentage"
+  physical_name: "exercise_ratio_percentage"
+  description: "Tỷ lệ thực hiện quyền."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.EXERCISE_RATIO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Exercise Guarantee Plan"
+  physical_name: "exercise_guarantee_plan"
+  description: "Phương án đảm bảo tỷ lệ sở hữu nước ngoài về thực hiện quyền."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.EXERCISE_GUARANTEE_PLAN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Guarantee Type Code"
+  physical_name: "guarantee_tp_code"
+  description: "Hình thức bảo đảm (thanh toán bằng bảo lãnh; thanh toán bằng tài sản)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.GUARANTEE_TYPE_CD"
+  comment: "Scheme: IDS_SO_GUARANTEE_TYPE (source_table, LOOKUP_GROUP = 'GUARANTEE_TYPE')\
+    \ — chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_SO_GUARANTEE_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Guaranteed Bond Value"
+  physical_name: "guaranteed_bond_val"
+  description: "Giá trị trái phiếu được bảo đảm."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.GUARANTEED_BOND_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Payment Guarantor Organization Name"
+  physical_name: "payment_guarantor_organization_nm"
+  description: "Tên tổ chức bảo lãnh thanh toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PAYMENT_GUARANTOR_ORG"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Payment Guarantee Value"
+  physical_name: "payment_guarantee_val"
+  description: "Giá trị bảo lãnh."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PAYMENT_GUARANTEE_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Secured Asset"
+  physical_name: "secured_asset"
+  description: "Tài sản bảo đảm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Secured Asset Value"
+  physical_name: "secured_asset_val"
+  description: "Giá trị tài sản bảo đảm."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Secured Asset Owner"
+  physical_name: "secured_asset_owner"
+  description: "Chủ sở hữu tài sản bảo đảm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET_OWNER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Secured Asset Organization Name"
+  physical_name: "secured_asset_organization_nm"
+  description: "Tổ chức nhận tài sản bảo đảm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.SECURED_ASSET_ORG"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Offering Value"
+  physical_name: "public_offering_val"
+  description: "Tổng giá trị trái phiếu chào bán ra công chúng đang lưu hành."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PUBLIC_OFFERING_VAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Private Placement Value"
+  physical_name: "private_placement_val"
+  description: "Tổng giá trị trái phiếu chào bán riêng lẻ đang lưu hành."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PRIVATE_PLACEMENT_VAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Total Outstanding Value"
+  physical_name: "total_outstanding_val"
+  description: "Tổng giá trị trái phiếu đang lưu hành."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.TOTAL_OUTSTANDING_VAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Public Offering 12 Month Value"
+  physical_name: "public_offering_12_month_val"
+  description: "Tổng giá trị trái phiếu chào bán ra công chúng huy động trong 12 tháng\
+    \ gần nhất."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PUBLIC_OFFERING_12M_VAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Private Placement 12 Month Value"
+  physical_name: "private_placement_12_month_val"
+  description: "Tổng giá trị trái phiếu chào bán riêng lẻ huy động trong 12 tháng\
+    \ gần nhất."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.PRIVATE_PLACEMENT_12M_VAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Total 12 Month Value"
+  physical_name: "total_12_month_val"
+  description: "Tổng giá trị trái phiếu huy động trong 12 tháng gần nhất."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.TOTAL_12M_VAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Registered To Outstanding Percentage"
+  physical_name: "registered_to_outstanding_percentage"
+  description: "Tỷ lệ trái phiếu đăng ký chào bán trên tổng đang lưu hành."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.REG_TO_OUTSTANDING_PCT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING_PLAN.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

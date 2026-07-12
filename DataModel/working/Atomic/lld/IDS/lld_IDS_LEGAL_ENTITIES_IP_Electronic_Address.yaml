@@ -1,0 +1,136 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "LEGAL_ENTITIES"
+  atomic_entity: "Involved Party Electronic Address"
+  entity_physical_name: "ip_electronic_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "3 kênh: PHONE, FAX, WEBSITE."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Legal Entity (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ID"
+  comment: "FK target: Legal Entity.Legal Entity Id. Shared entity — không có PK surrogate\
+    \ riêng. Hash: hash_id('IDS.LEGAL_ENTITIES', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Legal Entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ID"
+  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Involved Party\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=IDS.LEGAL_ENTITIES"
+  etl_derived_value: "IDS.LEGAL_ENTITIES"
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_adr_tp_code"
+  description: "Loại kênh — điện thoại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode PHONE."
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: "PHONE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_adr_val"
+  description: "Điện thoại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.PHONE_NO"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_adr_tp_code"
+  description: "Loại kênh — fax."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode FAX."
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: "FAX"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_adr_val"
+  description: "Số Fax."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.FAX_NO"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Address Type Code"
+  physical_name: "electronic_adr_tp_code"
+  description: "Loại kênh — website."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ELEC_ADDR_TYPE. Hardcode WEBSITE."
+  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+  etl_derived_value: "WEBSITE"
+  data_type: "string"
+- attribute_name: "Electronic Address Value"
+  physical_name: "electronic_adr_val"
+  description: "Website."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.WEBSITE"
+  comment: null
+  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
+  etl_derived_value: null
+  data_type: "string"

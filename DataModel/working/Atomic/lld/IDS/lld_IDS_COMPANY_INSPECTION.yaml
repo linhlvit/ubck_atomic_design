@@ -1,0 +1,342 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_INSPECTION"
+  atomic_entity: "Public Company Inspection"
+  entity_physical_name: "public_company_inspection"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Inspection"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Public Company Inspection Id"
+  physical_name: "public_company_inspection_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Inspection\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Inspection Code"
+  physical_name: "public_company_inspection_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_INSPECTION"
+  etl_derived_value: "IDS.COMPANY_INSPECTION"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Khóa link đến bảng COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.COMPANY_PROFILE_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Type Code"
+  physical_name: "inspection_tp_code"
+  description: "Loại hình thanh tra/kiểm tra (Thanh tra/Kiểm tra)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.INSPECTION_TYPE_CD"
+  comment: "Scheme: IDS_INSPECTION_TYPE. Values load từ LOOKUP_VALUES (GROUP = INSPECTION_TYPE)."
+  classification_context: "IDS_INSPECTION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Number"
+  physical_name: "decision_nbr"
+  description: "Số quyết định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.DECISION_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Date"
+  physical_name: "decision_dt"
+  description: "Ngày quyết định."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.DECISION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Inspection Period Name"
+  physical_name: "inspection_period_nm"
+  description: "Thời kỳ thanh tra/kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.INSPECTION_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Date"
+  physical_name: "inspection_dt"
+  description: "Thời gian thanh tra/kiểm tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.INSPECTION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Inspection Mode Code"
+  physical_name: "inspection_mode_code"
+  description: "Hình thức thanh tra/kiểm tra."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.INSPECTION_MODE_CD"
+  comment: "Scheme: IDS_INSPECTION_MODE. Values load từ LOOKUP_VALUES (GROUP = INSPECTION_MODE)."
+  classification_context: "IDS_INSPECTION_MODE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Scope Description"
+  physical_name: "inspection_scope_description"
+  description: "Nội dung kiểm tra/thanh tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.INSPECTION_SCOPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Lead Inspection Unit Name"
+  physical_name: "lead_inspection_unit_nm"
+  description: "Đơn vị chủ trì (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.LEAD_INSPECTION_UNIT_VI"
+  comment: "Denormalized — không phải FK đến Regulatory Authority Organization Unit\
+    \ (chưa xác nhận cross-source)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Lead Inspection Unit English Name"
+  physical_name: "lead_inspection_unit_english_nm"
+  description: "Đơn vị chủ trì (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.LEAD_INSPECTION_UNIT_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Minutes Name"
+  physical_name: "inspection_minutes_nm"
+  description: "Tên biên bản."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.INSPECTION_MINUTES_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection File Url"
+  physical_name: "inspection_file_url"
+  description: "URL file biên bản."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.INSPECTION_FILE_URL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sanction Decision Number"
+  physical_name: "sanction_decision_nbr"
+  description: "Quyết định xử lý vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.SANCTION_DECISION_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(38) — dùng như flag\
+    \ mặc dù kiểu khai báo rộng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_INSPECTION.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -1,0 +1,369 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "AF_INSPECTION"
+  atomic_entity: "Audit Firm Inspection"
+  entity_physical_name: "audit_firm_inspection"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Inspection"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Audit Firm Inspection Id"
+  physical_name: "audit_firm_inspection_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Inspection\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Inspection Code"
+  physical_name: "audit_firm_inspection_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.AF_INSPECTION"
+  etl_derived_value: "IDS.AF_INSPECTION"
+  data_type: "string"
+- attribute_name: "Audit Firm Id"
+  physical_name: "audit_firm_id"
+  description: "Link đến bảng AF_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.AF_PROFILE_ID"
+  comment: "FK target: Audit Firm.Audit Firm Id. Hash: hash_id('IDS.AF_PROFILES',\
+    \ AF_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Code"
+  physical_name: "audit_firm_code"
+  description: "Mã công ty kiểm toán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.AF_PROFILE_ID"
+  comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Authority Code"
+  physical_name: "inspection_authority_code"
+  description: "Đơn vị kiểm tra (BTC hoặc UBCKNN)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.INSPECTION_AUTHORITY_CD"
+  comment: "Scheme: IDS_INSPECTION_AUTHORITY (no_lookup) — chưa liệt kê trong HLD\
+    \ Tier2 6d, bổ sung scheme mới."
+  classification_context: "IDS_INSPECTION_AUTHORITY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Team Member List"
+  physical_name: "inspection_team_member_list"
+  description: "Đoàn kiểm tra, nhiều người sẽ cách nhau dấu ';'."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.INSPECTION_TEAM"
+  comment: "Denormalized — danh sách tên cách nhau dấu ';', không tách thành entity\
+    \ riêng (không có FK đến người dùng cụ thể)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Decision Number"
+  physical_name: "inspection_decision_nbr"
+  description: "Số quyết định kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.INSPECTION_DECISION_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Start Date"
+  physical_name: "inspection_start_dt"
+  description: "Ngày bắt đầu kiểm tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.INSPECTION_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Inspection End Date"
+  physical_name: "inspection_end_dt"
+  description: "Ngày kết thúc kiểm tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.INSPECTION_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Audit System Result Code"
+  physical_name: "audit_stm_result_code"
+  description: "Kết quả kiểm tra hệ thống (Tốt; Đạt; Không đạt; Kém)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.AUDIT_SYSTEM_RESULT_CD"
+  comment: "Scheme: IDS_AUDIT_SYSTEM_RESULT (no_lookup) — chưa liệt kê trong HLD Tier2\
+    \ 6d, bổ sung scheme mới."
+  classification_context: "IDS_AUDIT_SYSTEM_RESULT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overall Result Code"
+  physical_name: "overall_result_code"
+  description: "Kết quả kiểm tra tổng thể (Tốt; Đạt; Không đạt; Kém)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_RESULT_CD"
+  comment: "Scheme: IDS_AF_INSPECTION_OVERALL_RESULT (no_lookup)."
+  classification_context: "IDS_AF_INSPECTION_OVERALL_RESULT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overall Action Code"
+  physical_name: "overall_action_code"
+  description: "Hình thức quyết định tổng thể (Quyết định đình chỉ; Công văn nhắc\
+    \ nhở)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_ACTION_CD"
+  comment: "Scheme: IDS_AF_INSPECTION_OVERALL_ACTION (no_lookup)."
+  classification_context: "IDS_AF_INSPECTION_OVERALL_ACTION"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overall Action Type Code"
+  physical_name: "overall_action_tp_code"
+  description: "Hình thức xử lý tổng thể (Sau kiểm tra, Qua công tác giám sát)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_ACTION_TYPE_CD"
+  comment: "Scheme: IDS_AF_INSPECTION_OVERALL_ACTION_TYPE (no_lookup)."
+  classification_context: "IDS_AF_INSPECTION_OVERALL_ACTION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overall Document Number"
+  physical_name: "overall_document_nbr"
+  description: "Số văn bản tổng thể."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_DOCUMENT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overall Document Date"
+  physical_name: "overall_document_dt"
+  description: "Ngày văn bản tổng thể."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_DOCUMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Overall Violation Content"
+  physical_name: "overall_violation_content"
+  description: "Nội dung vi phạm tổng thể."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_VIOLATION_CONTENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overall Effective From Date"
+  physical_name: "overall_effective_from_dt"
+  description: "Thời gian hiệu lực - Từ ngày tổng thể."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_EFFECTIVE_FROM_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Overall Effective To Date"
+  physical_name: "overall_effective_to_dt"
+  description: "Thời gian hiệu lực - Đến ngày tổng thể."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.OVERALL_EFFECTIVE_TO_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Soft delete - 0: Active, 1: Deleted."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_INSPECTION.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_INSPECTION.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_INSPECTION.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_INSPECTION.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_INSPECTION.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

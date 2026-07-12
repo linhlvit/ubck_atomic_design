@@ -1,0 +1,264 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "STATE_CAPITAL"
+  atomic_entity: "Public Company State Capital"
+  entity_physical_name: "public_company_state_capital"
+  bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Public Company State Capital Id"
+  physical_name: "public_company_state_capital_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company State Capital Code"
+  physical_name: "public_company_state_capital_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.ID"
+  comment: "BK chính. PK nguồn NUMBER(19) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.STATE_CAPITAL"
+  etl_derived_value: "IDS.STATE_CAPITAL"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Khóa link đến bảng COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.COMPANY_PROFILE_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "State Representative Name"
+  physical_name: "state_representative_nm"
+  description: "Tên đại diện nhà nước (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.STATE_REP_NAME_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "State Representative English Name"
+  physical_name: "state_representative_english_nm"
+  description: "Tên đại diện nhà nước (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.STATE_REP_NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "State Owner Organization Name"
+  physical_name: "state_owner_organization_nm"
+  description: "Tên cơ quan chủ sở hữu vốn nhà nước (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.STATE_OWNER_ORG_VI"
+  comment: "Denormalized — không phải FK đến Regulatory Authority Organization Unit\
+    \ (chưa xác nhận cross-source)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "State Owner Organization English Name"
+  physical_name: "state_owner_organization_english_nm"
+  description: "Tên cơ quan chủ sở hữu vốn nhà nước (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.STATE_OWNER_ORG_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Owned Share Quantity"
+  physical_name: "owned_share_quantity"
+  description: "Số cổ phiếu sở hữu."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.OWNED_SHARE_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Ownership Ratio Percentage"
+  physical_name: "ownership_ratio_percentage"
+  description: "Phần trăm sở hữu."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.OWNERSHIP_RATIO"
+  comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1\
+    \ hay 0-100)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.STATE_CAPITAL.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.STATE_CAPITAL.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.STATE_CAPITAL.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.STATE_CAPITAL.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.STATE_CAPITAL.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

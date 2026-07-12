@@ -1,0 +1,595 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_SHAREHOLDING"
+  atomic_entity: "Public Company Shareholding"
+  entity_physical_name: "public_company_shareholding"
+  bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "7 nhóm cờ/khoảng ngày lặp lại (FOUNDER/MAJOR/STRATEGIC/INSIDER/GOVERNMENT/RELATED/OTHER_HLD)\
+    \ giữ nguyên dạng phi chuẩn hóa (denormalized) trên Atomic — không tách bảng con\
+    \ vì mỗi nhóm không có thêm thuộc tính nào khác ngoài Active/Inactive Date."
+attributes:
+- attribute_name: "Public Company Shareholding Id"
+  physical_name: "public_company_shareholding_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Shareholding Code"
+  physical_name: "public_company_shareholding_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.ID"
+  comment: "BK chính. PK nguồn NUMBER(10,0) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_SHAREHOLDING"
+  etl_derived_value: "IDS.COMPANY_SHAREHOLDING"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Id công ty đại chúng."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.COMPANY_PROFILE_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Id"
+  physical_name: "legal_entity_id"
+  description: "Id cổ đông."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.LEGAL_ENTITY_ID"
+  comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+    \ LEGAL_ENTITY_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Code"
+  physical_name: "legal_entity_code"
+  description: "Mã thực thể pháp lý (cổ đông)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.LEGAL_ENTITY_ID"
+  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Founder Shareholder Indicator"
+  physical_name: "founder_shareholder_indicator"
+  description: "Là cổ đông sáng lập."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.FOUNDER_HLD_FLG"
+  comment: "Encoding nguồn: 1 = Có, 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Founder Shareholder Active Date"
+  physical_name: "founder_shareholder_active_dt"
+  description: "Ngày hoạt động của cổ đông sáng lập."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.FOUNDER_HLD_ACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Founder Shareholder Inactive Date"
+  physical_name: "founder_shareholder_inactive_dt"
+  description: "Ngày kết thúc hoạt động của cổ đông sáng lập."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.FOUNDER_HLD_INACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Major Shareholder Indicator"
+  physical_name: "major_shareholder_indicator"
+  description: "Là cổ đông lớn."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.MAJOR_HLD_FLG"
+  comment: "Encoding nguồn: 1 = Có, 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Major Shareholder Active Date"
+  physical_name: "major_shareholder_active_dt"
+  description: "Ngày hoạt động của cổ đông lớn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.MAJOR_HLD_ACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Major Shareholder Inactive Date"
+  physical_name: "major_shareholder_inactive_dt"
+  description: "Ngày kết thúc hoạt động của cổ đông lớn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.MAJOR_HLD_INACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Strategic Shareholder Indicator"
+  physical_name: "strategic_shareholder_indicator"
+  description: "Là cổ đông chiến lược."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.STRATEGIC_HLD_FLG"
+  comment: "Encoding nguồn: 1 = CDCL (cổ đông chiến lược), 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Strategic Shareholder Active Date"
+  physical_name: "strategic_shareholder_active_dt"
+  description: "Ngày bắt đầu là cổ đông chiến lược."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.STRATEGIC_HLD_ACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Strategic Shareholder Inactive Date"
+  physical_name: "strategic_shareholder_inactive_dt"
+  description: "Ngày kết thúc là cổ đông chiến lược."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.STRATEGIC_HLD_INACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Insider Shareholder Indicator"
+  physical_name: "insider_shareholder_indicator"
+  description: "Là cổ đông nội bộ."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.INSIDER_HLD_FLG"
+  comment: "Encoding nguồn: 1 = Có, 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Insider Shareholder Active Date"
+  physical_name: "insider_shareholder_active_dt"
+  description: "Ngày hoạt động của cổ đông nội bộ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.INSIDER_HLD_ACTIVE_DATE"
+  comment: "Mô tả nguồn ghi nhầm là \"cổ đông nước ngoài\" — theo tên cột INSIDER_HLD_ACTIVE_DATE\
+    \ và nhóm cột liên quan, đây là ngày hoạt động của cổ đông nội bộ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Insider Shareholder Inactive Date"
+  physical_name: "insider_shareholder_inactive_dt"
+  description: "Ngày kết thúc hoạt động của cổ đông nội bộ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.INSIDER_HLD_INACTIVE_DATE"
+  comment: "Mô tả nguồn ghi nhầm là \"cổ đông nước ngoài\" — xem ghi chú ở Insider\
+    \ Shareholder Active Date."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Government Shareholder Indicator"
+  physical_name: "government_shareholder_indicator"
+  description: "Là cổ đông nhà nước."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.GOVERNMENT_HLD_FLG"
+  comment: "Encoding nguồn: 1 = CDNN (cổ đông nhà nước), 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Government Shareholder Active Date"
+  physical_name: "government_shareholder_active_dt"
+  description: "Ngày hoạt động của cổ đông nhà nước."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.GOVERNMENT_HLD_ACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Government Shareholder Inactive Date"
+  physical_name: "government_shareholder_inactive_dt"
+  description: "Ngày kết thúc hoạt động của cổ đông nhà nước."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.GOVERNMENT_HLD_INACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Related Shareholder Indicator"
+  physical_name: "related_shareholder_indicator"
+  description: "Là cổ đông liên quan."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.RELATED_HLD_FLG"
+  comment: "Encoding nguồn: 1 = Có, 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Related Shareholder Active Date"
+  physical_name: "related_shareholder_active_dt"
+  description: "Ngày hoạt động của cổ đông liên quan."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.RELATED_HLD_ACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Related Shareholder Inactive Date"
+  physical_name: "related_shareholder_inactive_dt"
+  description: "Ngày kết thúc hoạt động của cổ đông liên quan."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.RELATED_HLD_INACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Other Shareholder Indicator"
+  physical_name: "other_shareholder_indicator"
+  description: "Cổ đông khác (không thuộc các nhóm phân loại chuẩn)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.OTHER_HLD_FLG"
+  comment: "Encoding nguồn: 1 = Có, 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Other Shareholder Active Date"
+  physical_name: "other_shareholder_active_dt"
+  description: "Ngày bắt đầu là cổ đông khác."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.OTHER_HLD_ACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Other Shareholder Inactive Date"
+  physical_name: "other_shareholder_inactive_dt"
+  description: "Ngày kết thúc là cổ đông khác."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.OTHER_HLD_INACTIVE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Shareholder Type Code"
+  physical_name: "shareholder_tp_code"
+  description: "Loại cổ đông (có thể thuộc nhiều loại cùng lúc)."
+  data_domain: "Array<Text>"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.SHAREHOLDER_TYPE"
+  comment: "Scheme: IDS_SHAREHOLDER_TYPE (source_table, LOOKUP_GROUP = 'SHAREHOLDER_TYPE').\
+    \ Nguồn lưu dạng chuỗi các mã cách nhau dấu phẩy — parse thành Array<Text> khi\
+    \ lên Atomic. Chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_SHAREHOLDER_TYPE"
+  etl_derived_value: null
+  data_type: "array<string>"
+- attribute_name: "Ownership Quantity"
+  physical_name: "ownership_quantity"
+  description: "Số lượng cổ phiếu nắm giữ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.OWNERSHIP_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Ownership Ratio Percentage"
+  physical_name: "ownership_ratio_percentage"
+  description: "Phần trăm nắm giữ."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.OWNERSHIP_RATIO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Ownership Date"
+  physical_name: "ownership_dt"
+  description: "Ngày đạt tỷ lệ sở hữu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.OWNERSHIP_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Indicator"
+  physical_name: "approval_indicator"
+  description: "Trạng thái phê duyệt thông tin cổ đông."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.APPROVAL_FLG"
+  comment: "Encoding nguồn: 0 = Chưa duyệt, 1 = Đã duyệt."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Data Source Code"
+  physical_name: "data_src_code"
+  description: "Nguồn cập nhật dữ liệu cổ đông (trung tâm lưu ký hay thủ công)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.DATA_SOURCE_CD"
+  comment: "Scheme: IDS_LE_DATA_SOURCE (source_table, LOOKUP_GROUP = 'LE_DATA_SOURCE')\
+    \ — chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_LE_DATA_SOURCE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Updated Date"
+  physical_name: "data_updated_dt"
+  description: "Ngày cập nhật dữ liệu từ trung tâm lưu ký và các sổ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.DATA_UPDATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.DELETE_FLG"
+  comment: "Encoding nguồn: 1 = Xóa, 0 = Không xóa."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_SHAREHOLDING.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

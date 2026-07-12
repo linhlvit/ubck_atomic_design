@@ -1,0 +1,283 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "EVALUATION_CBONDS"
+  atomic_entity: "Public Company Bond Evaluation"
+  entity_physical_name: "public_company_bond_evaluation"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Evaluation"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Grain: 1 CTĐC × 1 kỳ (YEAR + MONTH). Không FK đến Public Company Evaluation/Evaluation\
+    \ Period — đây là chỉ số trái phiếu độc lập, không thuộc quy trình đánh giá xếp\
+    \ hạng CTĐC. BUSINESS_REG_NO/EQUITY_TICKER/NAME denormalized snapshot, không phải\
+    \ nguồn chính của Public Company (dùng COMPANY_ID để FK)."
+attributes:
+- attribute_name: "Public Company Bond Evaluation Id"
+  physical_name: "public_company_bond_evaluation_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Evaluation\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Bond Evaluation Code"
+  physical_name: "public_company_bond_evaluation_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.EVALUATION_CBONDS"
+  etl_derived_value: "IDS.EVALUATION_CBONDS"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Khóa link đến bảng COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.COMPANY_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_ID). Cột nguồn COMPANY_ID (khác tên chuẩn COMPANY_PROFILE_ID ở các bảng\
+    \ khác) — chưa có ràng buộc NOT NULL rõ ràng nên để nullable."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.COMPANY_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Registration Number Snapshot"
+  physical_name: "business_registration_nbr_snpst"
+  description: "Mã số doanh nghiệp (snapshot tại thời điểm đánh giá)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.BUSINESS_REG_NO"
+  comment: "Denormalized snapshot — trùng lặp với Public Company.Business Registration\
+    \ Number tại thời điểm ghi nhận, giữ lại để đối chiếu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Equity Ticker Symbol Snapshot"
+  physical_name: "equity_ticker_symbol_snpst"
+  description: "Mã cổ phiếu (mã chứng khoán, snapshot tại thời điểm đánh giá)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.EQUITY_TICKER"
+  comment: "Denormalized snapshot — trùng lặp với Public Company.Equity Ticker Symbol."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Name Snapshot"
+  physical_name: "public_company_nm_snpst"
+  description: "Tên công ty (snapshot tại thời điểm đánh giá)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.NAME"
+  comment: "Denormalized snapshot — trùng lặp với Public Company.Public Company Name."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ranking Code"
+  physical_name: "ranking_code"
+  description: "Xếp hạng doanh nghiệp (A, B, C, E)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.RANKING"
+  comment: "Scheme: IDS_BOND_EVALUATION_RANKING (no_lookup) — chưa liệt kê trong HLD\
+    \ Tier2 6d, bổ sung scheme mới."
+  classification_context: "IDS_BOND_EVALUATION_RANKING"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Evaluation Year"
+  physical_name: "evaluation_year"
+  description: "Năm đánh giá."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Evaluation Month"
+  physical_name: "evaluation_month"
+  description: "Tháng đánh giá."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Bond Collateral Ratio Percentage"
+  physical_name: "bond_collateral_ratio_percentage"
+  description: "Tỉ lệ trái phiếu đảm bảo/giá trị trái phiếu."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.PER_TP_DB"
+  comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1\
+    \ hay 0-100)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Bond Outstanding To Equity Ratio Percentage"
+  physical_name: "bond_outstanding_to_equity_ratio_percentage"
+  description: "Giá trị trái phiếu đang lưu hành/tổng vốn chủ sở hữu."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.PRICE_TP_LH"
+  comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1\
+    \ hay 0-100)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATION_CBONDS.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

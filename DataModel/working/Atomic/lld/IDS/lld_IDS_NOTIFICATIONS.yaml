@@ -1,0 +1,506 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "NOTIFICATIONS"
+  atomic_entity: "Disclosure Notification"
+  entity_physical_name: "disclosure_notification"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Notification"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "ID + NOTI_CD (Bước 3e): ID → Code (BK chính), NOTI_CD → Unique Key. LOGIN_ID/LOGIN_NAME\
+    \ = người quản lý thông báo — FK pending sang Identity and Access Management User\
+    \ (cùng pattern Created/Updated By User, khác cột nghiệp vụ)."
+attributes:
+- attribute_name: "Disclosure Notification Id"
+  physical_name: "disclosure_notification_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Communication] Notification\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Notification Code"
+  physical_name: "disclosure_notification_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Notification Unique Key"
+  physical_name: "disclosure_notification_unique_key"
+  description: "Mã thông báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NOTI_CD"
+  comment: "Unique Key nghiệp vụ, tách biệt với Disclosure Notification Code (BK kỹ\
+    \ thuật từ ID) theo Bước 3e."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.NOTIFICATIONS"
+  etl_derived_value: "IDS.NOTIFICATIONS"
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Id"
+  physical_name: "disclosure_form_definition_id"
+  description: "Link đến bảng FORMS."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.FORM_ID"
+  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Hash:\
+    \ hash_id('IDS.FORMS', FORM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Code"
+  physical_name: "disclosure_form_definition_code"
+  description: "Mã form CBTT."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.FORM_ID"
+  comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code.\
+    \ Pair with Disclosure Form Definition Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Code Snapshot"
+  physical_name: "disclosure_form_code_snpst"
+  description: "Mã form."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.FORM_CD"
+  comment: "Denormalized snapshot — trùng lặp với Disclosure Form Definition.Disclosure\
+    \ Form Definition Unique Key (FORM_CD), lưu dự phòng để tránh join."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Notification Title"
+  physical_name: "notification_title"
+  description: "Tiêu đề thông báo (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NOTI_TITLE_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Notification English Title"
+  physical_name: "notification_english_title"
+  description: "Tiêu đề thông báo (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NOTI_TITLE_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Notification Category Code"
+  physical_name: "notification_category_code"
+  description: "Phân loại: Nhắc lịch hay Thông báo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NOTI_CATEGORY_CD"
+  comment: "Scheme: IDS_NOTIFICATION_CATEGORY (no_lookup) — chưa liệt kê trong HLD\
+    \ Tier2 6d, bổ sung scheme mới."
+  classification_context: "IDS_NOTIFICATION_CATEGORY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Send Schedule Type Code"
+  physical_name: "send_schedule_tp_code"
+  description: "Lịch gửi tin định kỳ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.SEND_SCHEDULE_TYPE_CD"
+  comment: "Scheme: IDS_NOTIFICATION_SEND_SCHEDULE. Values load từ LOOKUP_VALUES —\
+    \ scheme đã đăng ký sẵn cho Disclosure Notification."
+  classification_context: "IDS_NOTIFICATION_SEND_SCHEDULE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "News Status Code"
+  physical_name: "news_status_code"
+  description: "Trạng thái tin."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NEWS_STATUS_CD"
+  comment: "Scheme: IDS_NEWS_STATUS (no_lookup) — chưa liệt kê trong HLD Tier2 6d,\
+    \ bổ sung scheme mới."
+  classification_context: "IDS_NEWS_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sent Date"
+  physical_name: "sent_dt"
+  description: "Ngày gửi tin."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.SENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Notification Content"
+  physical_name: "notification_content"
+  description: "Nội dung thông báo (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NOTI_CONTENT_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Notification English Content"
+  physical_name: "notification_english_content"
+  description: "Nội dung thông báo (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NOTI_CONTENT_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Monthly Send Day"
+  physical_name: "monthly_send_day"
+  description: "Ngày gửi thông báo định kỳ theo tháng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.MONTHLY_SEND_DAY"
+  comment: "Nguồn VARCHAR2(10) — giữ Text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Monthly Send Month"
+  physical_name: "monthly_send_month"
+  description: "Tháng định kỳ gửi thông báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.MONTHLY_SEND_MONTH"
+  comment: "Nguồn VARCHAR2(10) — giữ Text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "News Type Code"
+  physical_name: "news_tp_code"
+  description: "Loại tin gốc."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.NEWS_TYPE_CD"
+  comment: "Scheme: IDS_NEWS_TYPE. Dùng chung scheme với Disclosure Form Definition.News\
+    \ Type Code."
+  classification_context: "IDS_NEWS_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Send Channel Code"
+  physical_name: "send_channel_code"
+  description: "Hình thức gửi tin."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.SEND_CHANNEL_CD"
+  comment: "Scheme: IDS_NOTIFICATION_SEND_CHANNEL. Values load từ LOOKUP_VALUES —\
+    \ scheme đã đăng ký sẵn (dùng chung khái niệm với Disclosure Notification Config,\
+    \ hiện chưa thiết kế)."
+  classification_context: "IDS_NOTIFICATION_SEND_CHANNEL"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target System Code"
+  physical_name: "target_stm_code"
+  description: "Hệ thống IDS hoặc AUDIT."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.SYSTEM_CD"
+  comment: "Scheme: IDS_NOTIFICATION_TARGET_SYSTEM. Values load từ LOOKUP_VALUES —\
+    \ scheme đã đăng ký sẵn (hệ thống đích nhận thông báo), khác với IDS_SYSTEM_CD\
+    \ dùng ở Disclosure Form Definition/Financial Report Catalog (phân hệ con trong\
+    \ IDS)."
+  classification_context: "IDS_NOTIFICATION_TARGET_SYSTEM"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Manager User Id"
+  physical_name: "manager_user_id"
+  description: "Link đến bảng LOGINS — người quản lý thông báo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS.LOGIN_ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Manager User Code"
+  physical_name: "manager_user_code"
+  description: "Người quản lý (tên đăng nhập)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS.LOGIN_NAME"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Manager User Id. Nguồn LOGIN_NAME lưu trực tiếp (không\
+    \ phải derived) — có thể dùng làm crosswalk value nếu khớp IAM.USERS.USERNAME,\
+    \ cần Data Modeler xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Type Code"
+  physical_name: "object_tp_code"
+  description: "Loại đối tượng: 1- Nội bộ UBCK; 2- Tổ chức bên ngoài; 3- Cá nhân bên\
+    \ ngoài."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.OBJECT_TYPE"
+  comment: "Scheme: IDS_NOTIFICATION_OBJECT_TYPE (no_lookup) — bổ sung scheme mới.\
+    \ Nguồn lưu dạng số — ETL cần convert sang string code."
+  classification_context: "IDS_NOTIFICATION_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recipient Type Code"
+  physical_name: "recipient_tp_code"
+  description: "Đối tượng nhận tin."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.RECIPIENT_TYPE_CD"
+  comment: "Scheme: IDS_RECIPIENT_TYPE (no_lookup) — chưa liệt kê trong HLD Tier2\
+    \ 6d, bổ sung scheme mới."
+  classification_context: "IDS_RECIPIENT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Equity Listing Exchange Code"
+  physical_name: "equity_listing_exchange_code"
+  description: "Sàn niêm yết (ĐKGD cổ phiếu)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.EQUITY_LISTING_EXCH"
+  comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme với Public Company.Equity\
+    \ Listing Exchange Code."
+  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Trạng thái (0-không kích hoạt, 1-kích hoạt)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.ACTIVE_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Reminder Before Due Day Count"
+  physical_name: "reminder_before_due_day_count"
+  description: "Nhắc trước bao nhiêu ngày."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.REMINDER_BEFORE_DUE_DAYS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Send Hour"
+  physical_name: "send_hour"
+  description: "Giờ gửi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.SEND_HOUR"
+  comment: "Nguồn VARCHAR2(100) — kích thước lớn bất thường cho giá trị giờ, giữ Text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

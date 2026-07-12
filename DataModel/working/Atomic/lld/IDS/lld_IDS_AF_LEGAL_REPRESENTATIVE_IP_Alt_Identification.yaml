@@ -1,0 +1,90 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "AF_LEGAL_REPRESENTATIVE"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "IDENTITY_NO không có cột type/issue date/issue place — dùng default NATIONAL_ID\
+    \ theo quy tắc trường hợp đặc biệt (shared_entity_schemas.md)."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Audit Firm Legal Representative (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_LEGAL_REPRESENTATIVE.ID"
+  comment: "FK target: Audit Firm Legal Representative.Audit Firm Legal Representative\
+    \ Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IDS.AF_LEGAL_REPRESENTATIVE',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Audit Firm Legal Representative."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_LEGAL_REPRESENTATIVE.ID"
+  comment: "Lookup pair: Audit Firm Legal Representative.Audit Firm Legal Representative\
+    \ Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=IDS.AF_LEGAL_REPRESENTATIVE"
+  etl_derived_value: "IDS.AF_LEGAL_REPRESENTATIVE"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ — không có cột phân biệt tại nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "pending"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID theo mặc định trường hợp\
+    \ nguồn không phân biệt loại giấy tờ (xem shared_entity_schemas.md). Pending —\
+    \ cần Data Modeler xác nhận loại giấy tờ thực tế."
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: "NATIONAL_ID"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số CMND/hộ chiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: null
+  data_type: "string"

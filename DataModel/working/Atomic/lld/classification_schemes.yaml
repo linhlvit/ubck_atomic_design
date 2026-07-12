@@ -3059,6 +3059,7 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Public Company"
+      - "Disclosure Form Definition Notification Recipient"
     values: []
 
   - scheme_code: "IDS_SECURITIES_TYPE"
@@ -3126,6 +3127,7 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Disclosure Notification Config"
+      - "Disclosure Notification"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_TARGET_SYSTEM"
@@ -3134,6 +3136,7 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Disclosure Notification Config"
+      - "Disclosure Notification"
     values: []
 
   - scheme_code: "IDS_INDUSTRY_CATEGORY"
@@ -3160,6 +3163,7 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Financial Report Catalog"
+      - "Disclosure Form Definition Violation Template"
     values: []
 
   - scheme_code: "IDS_PERIODIC_REPORT_FREQUENCY"
@@ -3199,7 +3203,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Stock Holder"
+      - "Legal Entity"
     values: []
 
   - scheme_code: "IDS_GENDER"
@@ -3207,7 +3211,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Stock Holder"
+      - "Legal Entity"
     values: []
 
   - scheme_code: "IDS_EDUCATION_LEVEL"
@@ -3215,7 +3219,7 @@ schemes:
     source_type: "source_table"
     source_table: "IDS.lookup_values"
     used_in_entities:
-      - "Stock Holder"
+      - "Legal Entity"
     values: []
 
   - scheme_code: "IDS_IDENTITY_TYPE"
@@ -3232,7 +3236,7 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Audit Firm Legal Representative"
-      - "Auditor Approval"
+      - "Audit Firm Auditor"
     values: []
 
   - scheme_code: "IDS_NEWS_STATUS"
@@ -3241,6 +3245,7 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Disclosure Notification"
+      - "Public Company Report Submission"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_SEND_SCHEDULE"
@@ -4530,4 +4535,613 @@ schemes:
     source_table: "KNT.INVOICE_DETAIL.INVOICE_TYPE"
     used_in_entities:
       - "Tax Enforcement Invoice Decision Item"
+    values: []
+
+  - scheme_code: "IDS_OPERATING_STATUS"
+    name: "Trạng thái hoạt động — Public Company (chưa liệt kê trong HLD Tier1 6d)"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Public Company"
+    values: []
+
+  - scheme_code: "IDS_PUBLIC_COMPANY_TYPE"
+    name: "Loại công ty đại chúng — Public Company (chưa liệt kê trong HLD Tier1 6d)"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Public Company"
+    values: []
+
+  - scheme_code: "IDS_APPROVAL_STATUS"
+    name: "Trạng thái phê duyệt hồ sơ — dùng chung Public Company và Audit Firm (chưa liệt\
+      \ kê trong HLD Tier1 6d)"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Public Company"
+      - "Audit Firm"
+    values: []
+
+  - scheme_code: "IDS_AF_STATUS"
+    name: "Trạng thái công ty kiểm toán — IDS (LOOKUP_GROUP='AF_STATUS')"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Audit Firm"
+    values: []
+
+  - scheme_code: "IDS_GSO_BUSINESS_SECTOR"
+    name: "Mã ngành cấp 4 của Tổng cục Thống kê (no_lookup — external, ngoài scope IDS)"
+    source_type: "modeler_defined"
+    source_table: "IDS.LEGAL_ENTITIES.BUSINESS_SECTOR"
+    used_in_entities:
+      - "Legal Entity"
+    values: []
+
+  - scheme_code: "IDS_NEWS_TYPE_GROUP"
+    name: "Nhóm loại tin — IDS (chưa liệt kê trong HLD Tier1 6d)"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Disclosure Form Definition"
+    values: []
+
+  - scheme_code: "IDS_FORM_REPORT_TYPE"
+    name: "Loại báo cáo của form CBTT (FORMS.REPORT_TYPE) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.FORMS.REPORT_TYPE"
+    used_in_entities:
+      - "Disclosure Form Definition"
+    values: []
+
+  - scheme_code: "IDS_CONTROL_UNIT"
+    name: "Đơn vị kiểm soát form CBTT (no_lookup — chưa xác nhận cross-source FK) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.FORMS.CONTROL_UNIT_CD"
+    used_in_entities:
+      - "Disclosure Form Definition"
+    values: []
+
+  - scheme_code: "IDS_OPERATING_UNIT"
+    name: "Đơn vị sử dụng form CBTT (no_lookup — chưa xác nhận cross-source FK) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.FORMS.OPERATING_UNIT_CD"
+    used_in_entities:
+      - "Disclosure Form Definition"
+    values: []
+
+  - scheme_code: "IDS_SYSTEM_CD"
+    name: "Hệ thống con trong IDS (no_lookup) — dùng chung nhiều entity"
+    source_type: "modeler_defined"
+    source_table: "IDS.FORMS.SYSTEM_CD"
+    used_in_entities:
+      - "Disclosure Form Definition"
+      - "Financial Report Catalog"
+      - "Periodic Report Form"
+    values: []
+
+  - scheme_code: "IDS_EVAL_PERIOD_STATUS"
+    name: "Trạng thái kỳ đánh giá (approved/draft) — IDS"
+    source_type: "etl_derived"
+    source_table: "IDS.EVALUATION_PERIODS.STATUS"
+    used_in_entities:
+      - "Public Company Evaluation Period"
+    values: []
+
+  - scheme_code: "IDS_APPROVAL_TARGET_TYPE"
+    name: "Đối tượng chấp thuận công ty kiểm toán (công ty KT / kiểm toán viên) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Audit Firm Approval"
+    values: []
+
+  - scheme_code: "IDS_APPROVAL_SOURCE_TYPE"
+    name: "Cơ quan chấp thuận (BTC / UBCKNN) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Audit Firm Approval"
+    values: []
+
+  - scheme_code: "IDS_AUDITOR_STATUS"
+    name: "Trạng thái kiểm toán viên — IDS"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Audit Firm Auditor"
+    values: []
+
+  - scheme_code: "IDS_INSPECTION_AUTHORITY"
+    name: "Đơn vị kiểm tra công ty kiểm toán (BTC hoặc UBCKNN) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.AF_INSPECTION.INSPECTION_AUTHORITY_CD"
+    used_in_entities:
+      - "Audit Firm Inspection"
+    values: []
+
+  - scheme_code: "IDS_AUDIT_SYSTEM_RESULT"
+    name: "Kết quả kiểm tra hệ thống kiểm toán (Tốt/Đạt/Không đạt/Kém) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.AF_INSPECTION.AUDIT_SYSTEM_RESULT_CD"
+    used_in_entities:
+      - "Audit Firm Inspection"
+    values: []
+
+  - scheme_code: "IDS_AF_INSPECTION_OVERALL_RESULT"
+    name: "Kết quả kiểm tra tổng thể công ty kiểm toán (Tốt/Đạt/Không đạt/Kém) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.AF_INSPECTION.OVERALL_RESULT_CD"
+    used_in_entities:
+      - "Audit Firm Inspection"
+    values: []
+
+  - scheme_code: "IDS_AF_INSPECTION_OVERALL_ACTION"
+    name: "Hình thức quyết định tổng thể sau kiểm tra (Quyết định đình chỉ/Công văn nhắc\
+      \ nhở) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.AF_INSPECTION.OVERALL_ACTION_CD"
+    used_in_entities:
+      - "Audit Firm Inspection"
+    values: []
+
+  - scheme_code: "IDS_AF_INSPECTION_OVERALL_ACTION_TYPE"
+    name: "Hình thức xử lý tổng thể (Sau kiểm tra/Qua công tác giám sát) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.AF_INSPECTION.OVERALL_ACTION_TYPE_CD"
+    used_in_entities:
+      - "Audit Firm Inspection"
+    values: []
+
+  - scheme_code: "IDS_AF_STATUS_TYPE"
+    name: "Loại trạng thái công ty kiểm toán (Đình chỉ/Tạm ngừng/Chấm dứt/Thu hồi/Đang\
+      \ hoạt động) — IDS"
+    source_type: "etl_derived"
+    source_table: "IDS.AF_STATUS_HISTORY.STATUS_TYPE"
+    used_in_entities:
+      - "Audit Firm Status History"
+    values: []
+
+  - scheme_code: "IDS_AF_SUSPENSION_STATUS_TYPE"
+    name: "Trạng thái đình chỉ công ty kiểm toán (đang đình chỉ/đã kết thúc/chưa đến\
+      \ thời hạn) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.AF_STATUS_HISTORY.SUSPENSION_STATUS_TYPE"
+    used_in_entities:
+      - "Audit Firm Status History"
+    values: []
+
+  - scheme_code: "IDS_VIOLATION_TYPE"
+    name: "Loại vi phạm báo cáo CBTT — IDS"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Disclosure Form Definition Violation Template"
+    values: []
+
+  - scheme_code: "IDS_VIOLATION_SUBTYPE"
+    name: "Nhóm/loại vi phạm chi tiết — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.VIOLATION_TEMPLATES.VIOLATION_SUBTYPE_CD"
+    used_in_entities:
+      - "Disclosure Form Definition Violation Template"
+    values: []
+
+  - scheme_code: "IDS_VIOLATION_REPORT_TYPE"
+    name: "Loại báo cáo áp dụng mẫu vi phạm — IDS (khác IDS_REPORT_CATALOG_TYPE I/O)"
+    source_type: "modeler_defined"
+    source_table: "IDS.VIOLATION_TEMPLATES.REPORT_TYPE_CD"
+    used_in_entities:
+      - "Disclosure Form Definition Violation Template"
+    values: []
+
+  - scheme_code: "IDS_REPORT_PERIOD_TYPE"
+    name: "Loại kỳ báo cáo (Năm, Bán niên, Quý...) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.VIOLATION_TEMPLATES.PERIOD_TYPE_CD"
+    used_in_entities:
+      - "Disclosure Form Definition Violation Template"
+    values: []
+
+  - scheme_code: "IDS_VIOLATION_TRIGGER_POINT"
+    name: "Thời điểm/hành động kích hoạt vi phạm — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD"
+    used_in_entities:
+      - "Disclosure Form Definition Violation Template"
+    values: []
+
+  - scheme_code: "IDS_DAY_TYPE"
+    name: "Loại ngày tính hạn (Ngày làm việc, Ngày thường...) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.VIOLATION_TEMPLATES.DAY_TYPE_CD"
+    used_in_entities:
+      - "Disclosure Form Definition Violation Template"
+    values: []
+
+  - scheme_code: "IDS_NOTIFICATION_CATEGORY"
+    name: "Phân loại thông báo (Nhắc lịch hay Thông báo) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.NOTIFICATIONS.NOTI_CATEGORY_CD"
+    used_in_entities:
+      - "Disclosure Notification"
+    values: []
+
+  - scheme_code: "IDS_NOTIFICATION_OBJECT_TYPE"
+    name: "Loại đối tượng nhận thông báo (Nội bộ UBCK/Tổ chức bên ngoài/Cá nhân bên\
+      \ ngoài) — IDS"
+    source_type: "etl_derived"
+    source_table: "IDS.NOTIFICATIONS.OBJECT_TYPE"
+    used_in_entities:
+      - "Disclosure Notification"
+      - "Disclosure Form Definition Notification Recipient"
+    values:
+      - code: "1"
+        label: "Nội bộ UBCK"
+        source_value: "1"
+      - code: "2"
+        label: "Tổ chức bên ngoài"
+        source_value: "2"
+      - code: "3"
+        label: "Cá nhân bên ngoài"
+        source_value: "3"
+
+  - scheme_code: "IDS_RECIPIENT_TYPE"
+    name: "Đối tượng nhận tin thông báo CBTT — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.NOTIFICATIONS.RECIPIENT_TYPE_CD"
+    used_in_entities:
+      - "Disclosure Notification"
+    values: []
+
+  - scheme_code: "IDS_REPORT_COLUMN_TYPE"
+    name: "Kiểu giá trị của cột template báo cáo tài chính — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.RCOL.COL_TYPE_CD"
+    used_in_entities:
+      - "Financial Report Column Template"
+    values: []
+
+  - scheme_code: "IDS_POSITION"
+    name: "Chức vụ (LOOKUP_GROUP = POSITION) — IDS, dùng chung nhiều entity"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Public Company Penalty"
+      - "Public Company Legal Representative"
+      - "Legal Entity Position"
+    values: []
+
+  - scheme_code: "IDS_BOND_TYPE"
+    name: "Loại hình trái phiếu (LOOKUP_GROUP = BOND_TYPE) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Public Company Bond Listing History"
+    values: []
+
+  - scheme_code: "IDS_BOND_ISSUANCE_CATEGORY"
+    name: "Phân loại phát hành trái phiếu (LOOKUP_GROUP = BOND_ISSUANCE_CATEGORY)\
+      \ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Public Company Bond Listing History"
+    values: []
+
+  - scheme_code: "IDS_PUB_CO_CANCEL_TYPE"
+    name: "Loại hủy đăng ký công ty đại chúng — IDS"
+    source_type: "source_table"
+    source_table: "IDS.LOOKUP_VALUES"
+    used_in_entities:
+      - "Public Company Cancellation"
+    values: []
+
+  - scheme_code: "IDS_STOCK_LISTING_ACTION_TYPE"
+    name: "Loại action niêm yết cổ phiếu (LOOKUP_GROUP = STOCK_LISTING_ACTION_TYPE)\
+      \ — IDS"
+    source_type: "etl_derived"
+    source_table: "IDS.STOCK_LISTING_HISTORY.ACTION_TYPE_CD"
+    used_in_entities:
+      - "Public Company Stock Listing History"
+    values: []
+
+  - scheme_code: "IDS_BOND_EVALUATION_RANKING"
+    name: "Xếp hạng doanh nghiệp theo chỉ số trái phiếu (A/B/C/E) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.EVALUATION_CBONDS.RANKING"
+    used_in_entities:
+      - "Public Company Bond Evaluation"
+    values:
+      - code: "A"
+        label: "A"
+        source_value: "A"
+      - code: "B"
+        label: "B"
+        source_value: "B"
+      - code: "C"
+        label: "C"
+        source_value: "C"
+      - code: "E"
+        label: "E"
+        source_value: "E"
+
+  # ── IDS — Tier 3: bổ sung scheme phát sinh khi thiết kế LLD (chưa có trong scaffold pre-seed) ──
+  - scheme_code: "IDS_AUDITOR_STATUS_EVENT_TYPE"
+    name: "Loại sự kiện thay đổi trạng thái kiểm toán viên — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_AUDITOR_STATUS_HISTORY.EVENT_TYPE"
+    used_in_entities:
+      - "Audit Firm Auditor Status History"
+    values: []
+
+  - scheme_code: "IDS_STOCK_CONTROL_EXP_STATUS"
+    name: "Trạng thái diện kiểm soát/cảnh báo của cổ phiếu — IDS"
+    source_type: "source_table"
+    source_table: "IDS.STOCK_CONTROLS.EXP_STATUS_FLG"
+    used_in_entities:
+      - "Stock Control"
+    values: []
+
+  - scheme_code: "IDS_SECURITIES_COMPANY_CODE"
+    name: "Mã công ty chứng khoán quản lý tài khoản — IDS"
+    source_type: "source_table"
+    source_table: "IDS.ACCOUNT_NUMBERS.SEC_COMPANY_CD"
+    used_in_entities:
+      - "Stock Holder Trading Account"
+    values: []
+
+  - scheme_code: "IDS_VIOLATION_PENALTY_ACTION_TYPE"
+    name: "Loại hình thức xử phạt vi phạm CBTT — IDS"
+    source_type: "source_table"
+    source_table: "IDS.VIOLATION_PENALTY_CONFIG.ACTION_TYPE_CD"
+    used_in_entities:
+      - "Public Company Violation Penalty Config"
+    values: []
+
+  - scheme_code: "IDS_VIOLATION_PENALTY_PARAGRAPH"
+    name: "Điều khoản pháp lý áp dụng hình thức xử phạt — IDS"
+    source_type: "source_table"
+    source_table: "IDS.VIOLATION_PENALTY_CONFIG.PARA_CD"
+    used_in_entities:
+      - "Public Company Violation Penalty Config"
+    values: []
+
+  - scheme_code: "IDS_WARNING_TYPE"
+    name: "Loại văn bản cảnh báo/nhắc nhở đối với công ty/kiểm toán viên — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_WARNING.WARNING_TYPE_CD"
+    used_in_entities:
+      - "Audit Firm Warning"
+    values: []
+
+  - scheme_code: "IDS_SUSPENSION_SOURCE_TYPE"
+    name: "Nguồn phát sinh quyết định đình chỉ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_SUSPENSION.SOURCE_TYPE_CD"
+    used_in_entities:
+      - "Audit Firm Suspension"
+    values: []
+
+  - scheme_code: "IDS_SUSPENSION_TARGET_TYPE"
+    name: "Đối tượng bị đình chỉ (công ty kiểm toán/kiểm toán viên) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_SUSPENSION.TARGET_TYPE_CD"
+    used_in_entities:
+      - "Audit Firm Suspension"
+    values: []
+
+  - scheme_code: "IDS_SUSPENSION_TYPE"
+    name: "Loại hình thức đình chỉ — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_SUSPENSION.SUSPENSION_TYPE_CD"
+    used_in_entities:
+      - "Audit Firm Suspension"
+    values: []
+
+  - scheme_code: "IDS_AF_TECHNICAL_AUDIT_ACTION"
+    name: "Hành động xử lý sau kiểm tra hồ sơ kiểm toán — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_TECHNICAL_AUDIT.AUDIT_ACTION_CD"
+    used_in_entities:
+      - "Audit Firm Technical Audit"
+    values: []
+
+  - scheme_code: "IDS_AF_TECHNICAL_AUDIT_ACTION_TYPE"
+    name: "Loại hành động xử lý sau kiểm tra hồ sơ kiểm toán — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
+    used_in_entities:
+      - "Audit Firm Technical Audit"
+    values: []
+
+  - scheme_code: "IDS_AF_TECHNICAL_AUDIT_RESULT"
+    name: "Kết quả kiểm tra hồ sơ kiểm toán — IDS"
+    source_type: "source_table"
+    source_table: "IDS.AF_TECHNICAL_AUDIT.INSPECTION_RESULT_CD"
+    used_in_entities:
+      - "Audit Firm Technical Audit"
+    values: []
+
+  - scheme_code: "IDS_DEPARTMENT_CODE"
+    name: "Mã phòng ban người nhận thông báo CBTT — IDS"
+    source_type: "source_table"
+    source_table: "IDS.NOTIFICATIONS_DTL.DEPT_CD"
+    used_in_entities:
+      - "Disclosure Form Definition Notification Recipient"
+    values: []
+
+  - scheme_code: "IDS_LOGIN_TYPE"
+    name: "Loại tài khoản đăng nhập của người nhận thông báo — IDS"
+    source_type: "source_table"
+    source_table: "IDS.NOTIFICATIONS_DTL.LOGIN_TYPE"
+    used_in_entities:
+      - "Disclosure Form Definition Notification Recipient"
+    values: []
+
+  - scheme_code: "IDS_EVALUATION_TYPE"
+    name: "Xếp loại đánh giá CTĐC theo kỳ (A/B/C) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.EVALUATIONS.TYPE"
+    used_in_entities:
+      - "Public Company Evaluation"
+    values: []
+
+  - scheme_code: "IDS_PUBLIC_COMPANY_EVALUATION_STATUS"
+    name: "Trạng thái đánh giá CTĐC theo kỳ — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.EVALUATIONS.STATUS"
+    used_in_entities:
+      - "Public Company Evaluation"
+    values: []
+
+  - scheme_code: "IDS_LANGUAGE"
+    name: "Mã ngôn ngữ bản tin CBTT — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.COMPANY_DATA.LANGUAGE_CD"
+    used_in_entities:
+      - "Public Company Report Submission"
+    values:
+      - code: "VI"
+        label: "Tiếng Việt"
+        source_value: "VI"
+      - code: "EN"
+        label: "Tiếng Anh"
+        source_value: "EN"
+
+  - scheme_code: "IDS_SO_ADMINISTRATIVE_PROC"
+    name: "Thủ tục hành chính chào bán/phát hành chứng khoán — IDS"
+    source_type: "source_table"
+    source_table: "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD"
+    used_in_entities:
+      - "Public Company Securities Offering"
+    values: []
+
+  - scheme_code: "IDS_SO_ADMINISTRATIVE_STATUS"
+    name: "Trạng thái thủ tục hành chính chào bán/phát hành — IDS"
+    source_type: "source_table"
+    source_table: "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_STATUS_CD"
+    used_in_entities:
+      - "Public Company Securities Offering"
+    values: []
+
+  - scheme_code: "IDS_SO_APPROVAL_STATUS"
+    name: "Trạng thái phê duyệt phương án sử dụng vốn chào bán/phát hành — IDS"
+    source_type: "source_table"
+    source_table: "IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD"
+    used_in_entities:
+      - "Public Company Securities Offering"
+      - "Public Company Securities Offering Result"
+    values: []
+
+  - scheme_code: "IDS_LE_DATA_SOURCE"
+    name: "Nguồn cập nhật dữ liệu cổ đông (trung tâm lưu ký/thủ công) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_SHAREHOLDING.DATA_SOURCE_CD"
+    used_in_entities:
+      - "Public Company Shareholding"
+    values: []
+
+  - scheme_code: "IDS_SHAREHOLDER_TYPE"
+    name: "Loại cổ đông (multi-value, cách nhau dấu phẩy) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_SHAREHOLDING.SHAREHOLDER_TYPE"
+    used_in_entities:
+      - "Public Company Shareholding"
+    values: []
+
+  - scheme_code: "IDS_VIOLATION_REPORT_PERIOD_TYPE"
+    name: "Loại kỳ tính vi phạm nộp báo cáo CBTT (Quý 1-4/Năm/Bán niên), encode số\
+      \ — IDS (khác IDS_REPORT_PERIOD_TYPE là mã text từ VIOLATION_TEMPLATES)"
+    source_type: "modeler_defined"
+    source_table: "IDS.VIOLATION_REPORT.PERIOD_QUARTER"
+    used_in_entities:
+      - "Public Company Violation Report"
+    values:
+      - code: "1"
+        label: "Quý 1"
+        source_value: "1"
+      - code: "2"
+        label: "Quý 2"
+        source_value: "2"
+      - code: "3"
+        label: "Quý 3"
+        source_value: "3"
+      - code: "4"
+        label: "Quý 4"
+        source_value: "4"
+      - code: "5"
+        label: "Năm"
+        source_value: "5"
+      - code: "6"
+        label: "Bán niên"
+        source_value: "6"
+
+  - scheme_code: "IDS_VIOLATION_REPORT_STATUS"
+    name: "Trạng thái gửi báo cáo vi phạm CBTT — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.VIOLATION_REPORT.STATUS"
+    used_in_entities:
+      - "Public Company Violation Report"
+    values: []
+
+  - scheme_code: "IDS_ENTITY_ROLE_TYPE"
+    name: "Loại vai trò của thực thể pháp lý đối với CTĐC — IDS"
+    source_type: "source_table"
+    source_table: "IDS.COMPANY_ENTITY_ROLE.ROLE_TYPE_CD"
+    used_in_entities:
+      - "Public Company Entity Role"
+    values: []
+
+  # ── IDS — Tier 4 ─────────────────────────────────────────────────────────
+  - scheme_code: "IDS_PUBLIC_COMPANY_EVALUATION_DETAIL_LEVEL"
+    name: "Mức đánh giá chỉ tiêu (Bình thường/Cảnh báo/Rủi ro) — IDS"
+    source_type: "modeler_defined"
+    source_table: "IDS.EVALUATION_DETAILS.EVALUATE"
+    used_in_entities:
+      - "Public Company Evaluation Detail"
+    values:
+      - code: "1"
+        label: "Bình thường"
+        source_value: "1"
+      - code: "2"
+        label: "Cảnh báo"
+        source_value: "2"
+      - code: "3"
+        label: "Rủi ro"
+        source_value: "3"
+
+  - scheme_code: "IDS_SO_OFFERING_METHOD"
+    name: "Hình thức chào bán phát hành chứng khoán — IDS"
+    source_type: "source_table"
+    source_table: "IDS.SECURITIES_OFFERING_PLAN.OFFERING_METHOD_CD"
+    used_in_entities:
+      - "Public Company Securities Offering Plan"
+      - "Public Company Securities Offering Result"
+    values: []
+
+  - scheme_code: "IDS_SO_DISTRIBUTION_METHOD"
+    name: "Phương thức phân phối chứng khoán (multi-value, cách nhau dấu phẩy) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.SECURITIES_OFFERING_PLAN.DISTRIBUTION_METHOD_CD"
+    used_in_entities:
+      - "Public Company Securities Offering Plan"
+    values: []
+
+  - scheme_code: "IDS_SO_SECURITY_TYPE"
+    name: "Loại chứng khoán chào bán/phát hành — IDS"
+    source_type: "source_table"
+    source_table: "IDS.SECURITIES_OFFERING_PLAN.SECURITY_TYPE_CD"
+    used_in_entities:
+      - "Public Company Securities Offering Plan"
+      - "Public Company Securities Offering Result"
+    values: []
+
+  - scheme_code: "IDS_SO_GUARANTEE_TYPE"
+    name: "Hình thức bảo đảm trái phiếu (bảo lãnh/tài sản) — IDS"
+    source_type: "source_table"
+    source_table: "IDS.SECURITIES_OFFERING_PLAN.GUARANTEE_TYPE_CD"
+    used_in_entities:
+      - "Public Company Securities Offering Plan"
     values: []

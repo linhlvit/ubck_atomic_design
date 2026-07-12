@@ -1,0 +1,145 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_PROFILES"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Grain: 2 địa chỉ/công ty (HEAD_OFFICE, TRADING_OFFICE). PROVINCE_ID chỉ\
+    \ áp dụng cho địa chỉ HEAD_OFFICE (không có cột tỉnh riêng cho TRADING_OFFICE_ADDR)."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Public Company (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.ID"
+  comment: "FK target: Public Company.Public Company Id. Shared entity — không có\
+    \ PK surrogate riêng. Hash: hash_id('IDS.COMPANY_PROFILES', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Public Company."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Involved Party\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_PROFILES"
+  etl_derived_value: "IDS.COMPANY_PROFILES"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — trụ sở chính."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: "HEAD_OFFICE"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ trụ sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.HEAD_OFFICE_ADDR"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Id"
+  physical_name: "province_id"
+  description: "FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.PROVINCE_ID"
+  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
+    \ = PROVINCE. IDS.PROVINCES ngoài scope (xem HLD 7f) — resolve bằng lookup giá\
+    \ trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic Area Unique Key\
+    \ (ECAT.PROVINCE_NEW.CODE) hoặc Name, không hash_id() trực tiếp theo IDS.PROVINCES.\
+    \ Cần crosswalk nếu IDS không cùng chuẩn mã với ECAT. Nguồn PROVINCE_ID VARCHAR2(50)\
+    \ dù tên cột gợi ý ID — cần profile giá trị thực tế."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố (trụ sở chính)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.PROVINCE_ID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Province Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — địa chỉ giao dịch."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. Hardcode TRANSACTION_OFFICE (địa chỉ phòng giao\
+    \ dịch) — mã đã có sẵn trong registry, khớp với TRADING_OFFICE_ADDR."
+  classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
+  etl_derived_value: "TRANSACTION_OFFICE"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ giao dịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.TRADING_OFFICE_ADDR"
+  comment: "Không có cột tỉnh/thành riêng cho địa chỉ giao dịch — chỉ có Address Value."
+  classification_context: "IP_ADDR_TYPE=TRANSACTION_OFFICE"
+  etl_derived_value: null
+  data_type: "string"

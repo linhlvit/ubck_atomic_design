@@ -1,0 +1,88 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "LEGAL_ENTITIES"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Grain: 1 địa chỉ/legal entity (không phân loại type). Không có cột tỉnh/huyện/xã\
+    \ riêng — chỉ 1 trường ADDRESS text tự do."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Legal Entity (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ID"
+  comment: "FK target: Legal Entity.Legal Entity Id. Shared entity — không có PK surrogate\
+    \ riêng. Hash: hash_id('IDS.LEGAL_ENTITIES', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Legal Entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ID"
+  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Involved Party\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=IDS.LEGAL_ENTITIES"
+  etl_derived_value: "IDS.LEGAL_ENTITIES"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. Hardcode ADDRESS (địa chỉ chung, không phân biệt\
+    \ loại) — LEGAL_ENTITIES chỉ có 1 loại địa chỉ."
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: "ADDRESS"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ADDRESS"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: null
+  data_type: "string"

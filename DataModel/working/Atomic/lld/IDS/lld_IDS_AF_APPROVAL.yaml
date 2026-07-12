@@ -1,0 +1,305 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "AF_APPROVAL"
+  atomic_entity: "Audit Firm Approval"
+  entity_physical_name: "audit_firm_approval"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "1 bảng xử lý cả chấp thuận công ty KT và KTV, phân biệt qua TARGET_TYPE_CD.\
+    \ AF_AUDITOR_PROFILE_ID nullable — FK đến Audit Firm Auditor (T2, cùng batch thiết\
+    \ kế)."
+attributes:
+- attribute_name: "Audit Firm Approval Id"
+  physical_name: "audit_firm_approval_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Approval Code"
+  physical_name: "audit_firm_approval_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.AF_APPROVAL"
+  etl_derived_value: "IDS.AF_APPROVAL"
+  data_type: "string"
+- attribute_name: "Audit Firm Id"
+  physical_name: "audit_firm_id"
+  description: "Link đến bảng AF_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.AF_PROFILE_ID"
+  comment: "FK target: Audit Firm.Audit Firm Id. Hash: hash_id('IDS.AF_PROFILES',\
+    \ AF_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Code"
+  physical_name: "audit_firm_code"
+  description: "Mã công ty kiểm toán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.AF_PROFILE_ID"
+  comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Auditor Id"
+  physical_name: "audit_firm_auditor_id"
+  description: "Link đến bảng AF_AUDITOR_PROFILES — chỉ có giá trị khi TARGET_TYPE_CD\
+    \ = AUDITOR."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.AF_AUDITOR_PROFILE_ID"
+  comment: "FK target: Audit Firm Auditor.Audit Firm Auditor Id. Hash: hash_id('IDS.AF_AUDITOR_PROFILES',\
+    \ AF_AUDITOR_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Auditor Code"
+  physical_name: "audit_firm_auditor_code"
+  description: "Mã kiểm toán viên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.AF_AUDITOR_PROFILE_ID"
+  comment: "Lookup pair: Audit Firm Auditor.Audit Firm Auditor Code. Pair with Audit\
+    \ Firm Auditor Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Target Type Code"
+  physical_name: "approval_target_tp_code"
+  description: "Chấp thuận Công ty kiểm toán hay Kiểm toán viên."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.TARGET_TYPE_CD"
+  comment: "Scheme: IDS_APPROVAL_TARGET_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_APPROVAL_TARGET_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Source Type Code"
+  physical_name: "approval_src_tp_code"
+  description: "Chấp thuận từ BTC hay UBCKNN."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.SOURCE_TYPE_CD"
+  comment: "Scheme: IDS_APPROVAL_SOURCE_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_APPROVAL_SOURCE_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Document Number"
+  physical_name: "approval_document_nbr"
+  description: "Số văn bản quyết định chấp thuận của BTC."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.APPROVAL_DOC_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Issue Date"
+  physical_name: "approval_issue_dt"
+  description: "Ngày văn bản quyết định chấp thuận của BTC."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.APPROVAL_ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Approval Start Date"
+  physical_name: "approval_start_dt"
+  description: "Ngày bắt đầu quyết định chấp thuận của BTC."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.APPROVAL_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Approval End Date"
+  physical_name: "approval_end_dt"
+  description: "Ngày kết thúc quyết định chấp thuận của BTC."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.APPROVAL_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Approval Content"
+  physical_name: "approval_content"
+  description: "Nội dung quyết định chấp thuận của BTC."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.APPROVAL_CONTENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Trạng thái xóa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_APPROVAL.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_APPROVAL.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_APPROVAL.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_APPROVAL.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_APPROVAL.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -1,0 +1,429 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "FORMS"
+  atomic_entity: "Disclosure Form Definition"
+  entity_physical_name: "disclosure_form_definition"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Form Definition"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "PARENT_ID self-ref (cấu trúc form cha-con). ID + FORM_CD (Bước 3e): ID →\
+    \ Disclosure Form Definition Code (BK chính), FORM_CD → Disclosure Form Definition\
+    \ Unique Key."
+attributes:
+- attribute_name: "Disclosure Form Definition Id"
+  physical_name: "disclosure_form_definition_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Condition] Form Definition\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Code"
+  physical_name: "disclosure_form_definition_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Unique Key"
+  physical_name: "disclosure_form_definition_unique_key"
+  description: "Mã form."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.FORM_CD"
+  comment: "Unique Key nghiệp vụ, tách biệt với Disclosure Form Definition Code (BK\
+    \ kỹ thuật từ ID) theo Bước 3e."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.FORMS"
+  etl_derived_value: "IDS.FORMS"
+  data_type: "string"
+- attribute_name: "Parent Disclosure Form Definition Id"
+  physical_name: "parent_disclosure_form_definition_id"
+  description: "Khóa cha (tự tham chiếu)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.PARENT_ID"
+  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Self-reference.\
+    \ Hash: hash_id('IDS.FORMS', PARENT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Disclosure Form Definition Code"
+  physical_name: "parent_disclosure_form_definition_code"
+  description: "Mã form cha."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.PARENT_ID"
+  comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code.\
+    \ Pair with Parent Disclosure Form Definition Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Name"
+  physical_name: "disclosure_form_definition_nm"
+  description: "Tên form (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.FORM_NAME_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition English Name"
+  physical_name: "disclosure_form_definition_english_nm"
+  description: "Tên form (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.FORM_NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Type Code"
+  physical_name: "form_tp_code"
+  description: "Loại tin hay hồ sơ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.FORM_TYPE_CD"
+  comment: "Scheme: IDS_FORM_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_FORM_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "News Type Code"
+  physical_name: "news_tp_code"
+  description: "Loại tin gốc."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.NEWS_TYPE_CD"
+  comment: "Scheme: IDS_NEWS_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_NEWS_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sub News Type Code"
+  physical_name: "sub_news_tp_code"
+  description: "Loại tin con."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.SUB_NEWS_TYPE_CD"
+  comment: "Scheme: IDS_SUB_NEWS_TYPE. Values load từ LOOKUP_VALUES — chưa liệt kê\
+    \ trong HLD Tier1 6d, bổ sung scheme mới."
+  classification_context: "IDS_SUB_NEWS_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "News Type Group Code"
+  physical_name: "news_tp_group_code"
+  description: "Nhóm loại tin."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.NEWS_TYPE_GROUP_CD"
+  comment: "Scheme: IDS_NEWS_TYPE_GROUP. Values load từ LOOKUP_VALUES — chưa liệt\
+    \ kê trong HLD Tier1 6d, bổ sung scheme mới."
+  classification_context: "IDS_NEWS_TYPE_GROUP"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Officer Auto Approval Indicator"
+  physical_name: "officer_auto_approval_indicator"
+  description: "Chuyên viên tự động duyệt."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.OFFICER_APPROVAL_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Post Checked Indicator"
+  physical_name: "post_checked_indicator"
+  description: "Hậu kiểm tin."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.POST_CHECKED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Activated Indicator"
+  physical_name: "activated_indicator"
+  description: "Kích hoạt."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.ACTIVATED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Ca Signed Indicator"
+  physical_name: "ca_signed_indicator"
+  description: "Ký CA (chứng thư số)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.CA_SIGNED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Leader Auto Approval Indicator"
+  physical_name: "leader_auto_approval_indicator"
+  description: "Form tự động duyệt (Lãnh đạo)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.LEADER_APPROVAL_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Published Indicator"
+  physical_name: "published_indicator"
+  description: "Form được công bố."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.PUBLISHED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Title Formula"
+  physical_name: "title_formula"
+  description: "Công thức tiêu đề."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.TITLE_FORMULA"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Report Type Code"
+  physical_name: "form_rpt_tp_code"
+  description: "Loại báo cáo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.REPORT_TYPE"
+  comment: "Scheme: IDS_FORM_REPORT_TYPE. Nguồn NUMBER(1) — ETL convert sang string\
+    \ code. Nguồn lưu dạng số — ETL cần convert sang string."
+  classification_context: "IDS_FORM_REPORT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Control Unit Code"
+  physical_name: "control_unit_code"
+  description: "Đơn vị kiểm soát."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.CONTROL_UNIT_CD"
+  comment: "Scheme: IDS_CONTROL_UNIT (no_lookup) — chưa xác nhận cross-source FK đến\
+    \ Regulatory Authority Organization Unit; giữ Classification Value cho đến khi\
+    \ Data Modeler xác nhận."
+  classification_context: "IDS_CONTROL_UNIT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Operating Unit Code"
+  physical_name: "operating_unit_code"
+  description: "Đơn vị sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.OPERATING_UNIT_CD"
+  comment: "Scheme: IDS_OPERATING_UNIT (no_lookup) — chưa xác nhận cross-source FK\
+    \ đến Regulatory Authority Organization Unit; giữ Classification Value cho đến\
+    \ khi Data Modeler xác nhận."
+  classification_context: "IDS_OPERATING_UNIT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "System Code"
+  physical_name: "stm_code"
+  description: "Hệ thống con trong IDS."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.SYSTEM_CD"
+  comment: "Scheme: IDS_SYSTEM_CD (no_lookup) — chưa liệt kê trong HLD Tier1 6d, bổ\
+    \ sung scheme mới."
+  classification_context: "IDS_SYSTEM_CD"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Trạng thái xóa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.CREATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.UPDATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.FORMS.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.FORMS.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.FORMS.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.FORMS.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

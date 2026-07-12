@@ -97,7 +97,7 @@ attributes:
   comment: "FK target: Geographic Area.Geographic Area Id. Nguồn Geographic Area đã\
     \ chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá\
     \ trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID với\
-    \ Geographic Area Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+    \ Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
     \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
     \ với ECAT."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
@@ -129,9 +129,9 @@ attributes:
   comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
     \ = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES ngừng\
     \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID\
-    \ với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name, không\
-    \ còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không\
-    \ cùng chuẩn mã với ECAT."
+    \ với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn\
+    \ hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng\
+    \ chuẩn mã với ECAT."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
@@ -163,7 +163,7 @@ attributes:
     \ hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic\
     \ Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
     \ quận/huyện NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID với Geographic Area Old\
-    \ Business Code (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không\
+    \ Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không\
     \ cùng chuẩn mã với ECAT."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null

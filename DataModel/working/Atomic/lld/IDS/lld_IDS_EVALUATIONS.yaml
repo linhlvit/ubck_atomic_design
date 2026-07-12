@@ -1,0 +1,303 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "EVALUATIONS"
+  atomic_entity: "Public Company Evaluation"
+  entity_physical_name: "public_company_evaluation"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Evaluation"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "COMPANY_ID/PERIOD_ID không có fk_note tường minh trong BRD nhưng theo HLD\
+    \ Tier3 6b/6c rõ ràng là FK đến COMPANY_PROFILES/EVALUATION_PERIODS — giữ nullable:\
+    \ false. APPROVED_BY dùng cùng pattern FK pending sang Identity and Access Management\
+    \ User như Created/Updated By."
+attributes:
+- attribute_name: "Public Company Evaluation Id"
+  physical_name: "public_company_evaluation_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Evaluation\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Evaluation Code"
+  physical_name: "public_company_evaluation_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.EVALUATIONS"
+  etl_derived_value: "IDS.EVALUATIONS"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Id của công ty được đánh giá."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.COMPANY_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác\
+    \ nhận đây là FK đến COMPANY_PROFILES."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.COMPANY_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Evaluation Period Id"
+  physical_name: "public_company_evaluation_period_id"
+  description: "Id kỳ đánh giá."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.PERIOD_ID"
+  comment: "FK target: Public Company Evaluation Period.Public Company Evaluation\
+    \ Period Id. Hash: hash_id('IDS.EVALUATION_PERIODS', PERIOD_ID). Nguồn không có\
+    \ fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến EVALUATION_PERIODS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Evaluation Period Code"
+  physical_name: "public_company_evaluation_period_code"
+  description: "Mã kỳ đánh giá."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.PERIOD_ID"
+  comment: "Lookup pair: Public Company Evaluation Period.Public Company Evaluation\
+    \ Period Code. Pair with Public Company Evaluation Period Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Total Score Percentage"
+  physical_name: "total_score_percentage"
+  description: "Tổng điểm."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.TOTAL_SCORE"
+  comment: "Nguồn NUMBER(5,2) là tổng điểm đánh giá (không hẳn là tỷ lệ phần trăm)\
+    \ — dùng domain Percentage vì cùng hình dạng decimal(5,2), nhất quán với Public\
+    \ Company Evaluation Group.Weight Percentage. Giữ nguyên giá trị gốc."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Evaluation Date"
+  physical_name: "evaluation_dt"
+  description: "Ngày đánh giá (ngày chạy đánh giá trong kỳ)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.EVALUATION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Evaluation Type Code"
+  physical_name: "evaluation_tp_code"
+  description: "Xếp Loại (A,B,C - theo tổng điểm)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.TYPE"
+  comment: "Scheme: IDS_EVALUATION_TYPE. Values lấy trực tiếp từ cột nguồn — scheme\
+    \ đã đăng ký sẵn (xem HLD Tier3 6d)."
+  classification_context: "IDS_EVALUATION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Evaluation Status Code"
+  physical_name: "evaluation_status_code"
+  description: "Trạng thái đánh giá."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.STATUS"
+  comment: "Scheme: IDS_PUBLIC_COMPANY_EVALUATION_STATUS (no_lookup) — chưa liệt kê\
+    \ trong HLD Tier3 6d, bổ sung scheme mới."
+  classification_context: "IDS_PUBLIC_COMPANY_EVALUATION_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approved By User Id"
+  physical_name: "approved_by_user_id"
+  description: "Người duyệt."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATIONS.APPROVED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approved By User Code"
+  physical_name: "approved_by_user_code"
+  description: "Mã người duyệt (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATIONS.APPROVED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Approved By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approved Date"
+  physical_name: "approved_dt"
+  description: "Ngày duyệt."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.APPROVED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.EVALUATIONS.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATIONS.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATIONS.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATIONS.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.EVALUATIONS.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

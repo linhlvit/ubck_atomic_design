@@ -1,0 +1,632 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "SECURITIES_OFFERING"
+  atomic_entity: "Public Company Securities Offering"
+  entity_physical_name: "public_company_securities_offering"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ\
+    \ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định.\
+    \ Giữ cả 2 FK nullable trên Atomic entity."
+attributes:
+- attribute_name: "Public Company Securities Offering Id"
+  physical_name: "public_company_securities_offering_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Securities Offering Code"
+  physical_name: "public_company_securities_offering_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.ID"
+  comment: "BK chính. PK nguồn NUMBER(10,0) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.SECURITIES_OFFERING"
+  etl_derived_value: "IDS.SECURITIES_OFFERING"
+  data_type: "string"
+- attribute_name: "Applicant Type Indicator"
+  physical_name: "applicant_tp_indicator"
+  description: "Phân loại bên đăng ký chào bán: tổ chức hay cá nhân."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.APPLICANT_TYPE_FLG"
+  comment: "Encoding nguồn: 1 = Tổ chức (dùng Public Company Id), 0 = Cá nhân (dùng\
+    \ Legal Entity Id)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Id công ty đại chúng đăng ký chào bán (khi APPLICANT_TYPE_FLG = 1)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.COMPANY_PROFILE_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID). Loại trừ nhau với Legal Entity Id — xem metadata.notes."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Id"
+  physical_name: "legal_entity_id"
+  description: "Id cá nhân đăng ký chào bán (khi APPLICANT_TYPE_FLG = 0)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.LEGAL_ENTITY_ID"
+  comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+    \ LEGAL_ENTITY_ID). Loại trừ nhau với Public Company Id — xem metadata.notes."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Code"
+  physical_name: "legal_entity_code"
+  description: "Mã thực thể pháp lý."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.LEGAL_ENTITY_ID"
+  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Application Code"
+  physical_name: "application_code"
+  description: "Mã hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.APPLICATION_CD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Administrative Procedure Code"
+  physical_name: "administrative_procedure_code"
+  description: "Thủ tục hành chính áp dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD"
+  comment: "Scheme: IDS_SO_ADMINISTRATIVE_PROC (source_table, LOOKUP_VALUES LOOKUP_GROUP\
+    \ = 'SO_ADMINISTRATIVE_PROCEDURE') — chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_SO_ADMINISTRATIVE_PROC"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Administrative Status Code"
+  physical_name: "administrative_status_code"
+  description: "Trạng thái thủ tục hành chính (lấy từ thủ tục hành chính)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.ADMINISTRATIVE_STATUS_CD"
+  comment: "Scheme: IDS_SO_ADMINISTRATIVE_STATUS (source_table, LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS')\
+    \ — chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_SO_ADMINISTRATIVE_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Number"
+  physical_name: "certificate_nbr"
+  description: "Số giấy chứng nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CERTIFICATE_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Certificate Date"
+  physical_name: "certificate_dt"
+  description: "Ngày giấy chứng nhận."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CERTIFICATE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Official Letter Number"
+  physical_name: "official_letter_nbr"
+  description: "Số công văn của UBCKNN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.OFFICIAL_LETTER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Official Letter Date"
+  physical_name: "official_letter_dt"
+  description: "Ngày công văn."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.OFFICIAL_LETTER_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Offering Purpose"
+  physical_name: "offering_purpose"
+  description: "Mục đích sử dụng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.OFFERING_PURPOSE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Total Registered Quantity"
+  physical_name: "total_registered_quantity"
+  description: "Tổng số chứng khoán chào bán/phát hành."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.TOTAL_REGISTERED_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Total Expected Amount"
+  physical_name: "total_expected_amt"
+  description: "Tổng số tiền dự kiến thu được (VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.TOTAL_EXPECTED_AM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Capital Usage Plan"
+  physical_name: "capital_usage_plan"
+  description: "Phương án sử dụng vốn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CAPITAL_USAGE_PLAN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Expected Schedule"
+  physical_name: "expected_schedule"
+  description: "Tiến độ dự kiến (phương án sử dụng vốn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.EXPECTED_SCHEDULE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Matching Capital Source"
+  physical_name: "matching_capital_src"
+  description: "Nguồn vốn đối ứng (phương án sử dụng vốn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.MATCHING_CAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Consulting Organization Name"
+  physical_name: "consulting_organization_nm"
+  description: "Tổ chức tư vấn liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CONSULTING_ORG"
+  comment: "Tên tổ chức dạng text tự do, không có FK — nguồn không cung cấp bảng danh\
+    \ mục tổ chức tư vấn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Organization Name"
+  physical_name: "audit_organization_nm"
+  description: "Tổ chức kiểm toán liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.AUDIT_ORG"
+  comment: "Tên tổ chức dạng text tự do — không FK sang Audit Firm vì nguồn lưu tên\
+    \ tự do, không phải mã tham chiếu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Representative Organization Name"
+  physical_name: "bond_representative_organization_nm"
+  description: "Đại diện người sở hữu trái phiếu liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.BOND_REPRESENTATIVE_ORG"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Underwriting Organization Name"
+  physical_name: "underwriting_organization_nm"
+  description: "Tổ chức bảo lãnh phát hành liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.UNDERWWRITING_ORG"
+  comment: "Tên cột nguồn có lỗi chính tả (UNDERWWRITING_ORG) — giữ nguyên khi map\
+    \ source_columns."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Credit Rating Organization Name"
+  physical_name: "credit_rating_organization_nm"
+  description: "Tổ chức xếp hạng tín nhiệm liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CREDIT_RATING_ORG"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Other Related Organization Name"
+  physical_name: "other_related_organization_nm"
+  description: "Tổ chức liên quan khác."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.OTHER_ORG"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Status Code"
+  physical_name: "approval_status_code"
+  description: "Trạng thái phê duyệt phương án sử dụng vốn (Đang xử lý; Chờ duyệt;\
+    \ Đã duyệt; Từ chối)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD"
+  comment: "Scheme: IDS_SO_APPROVAL_STATUS (source_table, LOOKUP_GROUP = 'SO_APPROVAL_STATUS')\
+    \ — chưa có trong HLD 6d, bổ sung scheme mới."
+  classification_context: "IDS_SO_APPROVAL_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Id"
+  physical_name: "approver_user_id"
+  description: "Id Login của lãnh đạo phê duyệt phương án."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.APPROVER_USER_ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Code"
+  physical_name: "approver_user_code"
+  description: "Mã người phê duyệt (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.APPROVER_USER_ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Approver User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver User Name Snapshot"
+  physical_name: "approver_user_nm_snpst"
+  description: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập\
+    \ với Approver User Code)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.APPROVER_USER_NAME"
+  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
+    \ khác với pattern Code (lookup qua Id)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor User Id"
+  physical_name: "processor_user_id"
+  description: "Id Login của chuyên viên xử lý hồ sơ."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver\
+    \ User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor User Code"
+  physical_name: "processor_user_code"
+  description: "Mã chuyên viên xử lý (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Processor User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Processor User Name Snapshot"
+  physical_name: "processor_user_nm_snpst"
+  description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME"
+  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Revision Reason"
+  physical_name: "revision_reason"
+  description: "Lý do chỉnh sửa."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.REVISION_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Multi Turn Indicator"
+  physical_name: "multi_turn_indicator"
+  description: "Hồ sơ đăng ký chào bán phát hành có nhiều đợt hay không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.MULTI_TURN_FLG"
+  comment: "Encoding nguồn: 1 = Có nhiều đợt, 0 = Không."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Synced From External System Indicator"
+  physical_name: "synced_from_external_stm_indicator"
+  description: "Đánh dấu hồ sơ được đồng bộ từ hệ thống TTHC hay tạo mới tại IDS."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.IS_SYNC"
+  comment: "Encoding nguồn: 1 = Đồng bộ từ TTHC, 0 = Tạo mới tại IDS."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu trạng thái xóa mềm."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.DELETE_FLG"
+  comment: "Encoding nguồn: 1 = Đã xóa, 0 = Chưa xóa."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Approver Comment"
+  physical_name: "approver_comment"
+  description: "Ghi chú của người phê duyệt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.APPROVER_COMMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver\
+    \ User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver\
+    \ User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.SECURITIES_OFFERING.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

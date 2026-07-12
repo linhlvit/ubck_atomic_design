@@ -1,0 +1,292 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "HOLDER_RELATIONSHIP"
+  atomic_entity: "Stock Holder Relationship"
+  entity_physical_name: "stock_holder_relationship"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Involved Party Relationship"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "2 FK tự tham chiếu đến Legal Entity (LEGAL_ENTITY_ID và RELATED_ENTITY_ID)."
+attributes:
+- attribute_name: "Stock Holder Relationship Id"
+  physical_name: "stock_holder_rltnp_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Involved Party Relationship\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Stock Holder Relationship Code"
+  physical_name: "stock_holder_rltnp_code"
+  description: "Id khóa chính tự sinh. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.HOLDER_RELATIONSHIP"
+  etl_derived_value: "IDS.HOLDER_RELATIONSHIP"
+  data_type: "string"
+- attribute_name: "Legal Entity Id"
+  physical_name: "legal_entity_id"
+  description: "ID cổ đông liên quan - ref LEGAL_ENTITIES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.LEGAL_ENTITY_ID"
+  comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES',\
+    \ LEGAL_ENTITY_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Code"
+  physical_name: "legal_entity_code"
+  description: "Mã cổ đông."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.LEGAL_ENTITY_ID"
+  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Legal Entity Id"
+  physical_name: "related_legal_entity_id"
+  description: "ID cổ đông liên quan (đối tượng quan hệ)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.RELATED_ENTITY_ID"
+  comment: "FK target: Legal Entity.Legal Entity Id. Self-reference (Legal Entity\
+    \ với chính nó qua 2 vai trò). Hash: hash_id('IDS.LEGAL_ENTITIES', RELATED_ENTITY_ID).\
+    \ Nguồn không có fk_note tường minh nhưng ngữ cảnh (\"ID cổ đông liên quan\")\
+    \ và HLD Tier3 xác nhận đây là FK tự tham chiếu đến LEGAL_ENTITIES."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Legal Entity Code"
+  physical_name: "related_legal_entity_code"
+  description: "Mã cổ đông liên quan (đối tượng quan hệ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.RELATED_ENTITY_ID"
+  comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Related Legal Entity\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Relationship Type Code"
+  physical_name: "rltnp_tp_code"
+  description: "Loại quan hệ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_TYPE_CD"
+  comment: "Scheme: IDS_HOLDER_RELATIONSHIP_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP\
+    \ = RELATIONSHIP_TYPE) — scheme đã đăng ký sẵn."
+  classification_context: "IDS_HOLDER_RELATIONSHIP_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective From Date"
+  physical_name: "effective_from_dt"
+  description: "Ngày bắt đầu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.EFFECTIVE_FROM_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Effective To Date"
+  physical_name: "effective_to_dt"
+  description: "Ngày kết thúc."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.EFFECTIVE_TO_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Trạng thái (0-Inactive, 1-Active)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.ACTIVE_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Relationship Reason"
+  physical_name: "rltnp_reason"
+  description: "Lý do."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.RELATIONSHIP_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Remarks"
+  physical_name: "remarks"
+  description: "Ghi chú."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.REMARKS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.HOLDER_RELATIONSHIP.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

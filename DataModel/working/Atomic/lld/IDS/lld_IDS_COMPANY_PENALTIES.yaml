@@ -1,0 +1,357 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_PENALTIES"
+  atomic_entity: "Public Company Penalty"
+  entity_physical_name: "public_company_penalty"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Enforcement Action"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "INVESTOR_* mô tả cá nhân/tổ chức bị xử phạt — giữ denormalized Text (không\
+    \ tách IP Alt Identification vì không có type-code scheme cho INVESTOR_ID_NO)."
+attributes:
+- attribute_name: "Public Company Penalty Id"
+  physical_name: "public_company_penalty_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Enforcement Action\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Penalty Code"
+  physical_name: "public_company_penalty_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.ID"
+  comment: "BK chính. PK nguồn NUMBER(19) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_PENALTIES"
+  etl_derived_value: "IDS.COMPANY_PENALTIES"
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "FK tới COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.COMPANY_PROFILE_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalized Subject Type Code"
+  physical_name: "penalized_subject_tp_code"
+  description: "Đối tượng xử phạt CTĐC."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.PENALIZED_SUBJECT_TYPE_CD"
+  comment: "Scheme: IDS_PENALIZED_SUBJECT_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_PENALIZED_SUBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Name"
+  physical_name: "investor_nm"
+  description: "Tên cá nhân/tổ chức bị xử phạt (nếu không phải chính CTĐC)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.INVESTOR_NAME"
+  comment: "Denormalized — tên cá nhân/tổ chức bị xử phạt."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Identification Number"
+  physical_name: "investor_identification_nbr"
+  description: "Số CMND/CCCD/hộ chiếu của đối tượng xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.INVESTOR_ID_NO"
+  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
+    \ scheme kèm theo)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Identification Issue Date"
+  physical_name: "investor_identification_issue_dt"
+  description: "Ngày cấp giấy tờ định danh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.INVESTOR_ID_ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Investor Address"
+  physical_name: "investor_adr"
+  description: "Địa chỉ đối tượng xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.INVESTOR_ADDRESS"
+  comment: "Denormalized — không tách IP Postal Address (không có grain Involved Party\
+    \ riêng biệt tại entity Fact Append này)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Position Code"
+  physical_name: "investor_position_code"
+  description: "Chức vụ của đối tượng xử phạt."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.POSITION_CD"
+  comment: "Scheme: IDS_POSITION. Values load từ LOOKUP_VALUES (GROUP = POSITION)."
+  classification_context: "IDS_POSITION"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Number"
+  physical_name: "pd_nbr"
+  description: "Số quyết định xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.PENALTY_DECISION_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Date"
+  physical_name: "pd_dt"
+  description: "Ngày quyết định xử phạt."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.PENALTY_DECISION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Violation Description"
+  physical_name: "violation_description"
+  description: "Mô tả hành vi vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.VIOLATION_DESC"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Form Description"
+  physical_name: "penalty_form_description"
+  description: "Hình thức xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.PENALTY_FORM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Amount"
+  physical_name: "penalty_amt"
+  description: "Số tiền phạt."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.PENALTY_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Additional Penalty Description"
+  physical_name: "additional_penalty_description"
+  description: "Hình thức xử phạt bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.ADDITIONAL_PENALTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Remedial Minutes Description"
+  physical_name: "remedial_minutes_description"
+  description: "Biên bản khắc phục."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.REMEDIAL_MINUTES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Trạng thái xóa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(38) — dùng như flag\
+    \ mặc dù kiểu khai báo rộng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PENALTIES.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

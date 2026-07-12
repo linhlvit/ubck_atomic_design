@@ -1,0 +1,313 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "LEGAL_ENTITIES"
+  atomic_entity: "Legal Entity"
+  entity_physical_name: "legal_entity"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "ADDRESS → Involved Party Postal Address (1 địa chỉ, type PRIMARY). PHONE_NO/FAX_NO/WEBSITE\
+    \ → Involved Party Electronic Address. IDENTITY_TYPE_CD là cột tổng hợp (comma-separated)\
+    \ — chi tiết giấy tờ từng cái thiết kế ở Tier 2 qua bảng IDENTITY (Involved Party\
+    \ Alternative Identification, xem HLD Overview mục 7a dòng 62). CREATED_BY/UPDATED_BY\
+    \ → cùng pattern User FK pending như Public Company."
+attributes:
+- attribute_name: "Legal Entity Id"
+  physical_name: "legal_entity_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Code"
+  physical_name: "legal_entity_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.LEGAL_ENTITIES"
+  etl_derived_value: "IDS.LEGAL_ENTITIES"
+  data_type: "string"
+- attribute_name: "Legal Entity Name"
+  physical_name: "legal_entity_nm"
+  description: "Tên cổ đông hoặc người nội bộ hoặc người liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ENTITY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Entity Type Code"
+  physical_name: "legal_entity_tp_code"
+  description: "Loại hình (Cá nhân, Tổ chức)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.ENTITY_TYPE_CD"
+  comment: "Scheme: IDS_ENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP =\
+    \ 'ENTITY_TYPE')."
+  classification_context: "IDS_ENTITY_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type List"
+  physical_name: "identification_tp_list"
+  description: "Loại giấy tờ (cách nhau dấu phẩy)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.IDENTITY_TYPE_CD"
+  comment: "Denormalized — cột tổng hợp nhiều loại giấy tờ (comma-separated), không\
+    \ phải Classification Value đơn. Chi tiết từng giấy tờ (số, ngày cấp, nơi cấp)\
+    \ thiết kế ở Tier 2 qua bảng IDENTITY → Involved Party Alternative Identification."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Registration Number"
+  physical_name: "business_registration_nbr"
+  description: "Mã doanh nghiệp (đối với cổ đông là tổ chức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.BUSINESS_REG_NO"
+  comment: "Denormalized text — chỉ có giá trị khi Legal Entity Type Code = tổ chức.\
+    \ Không gộp vào IP Alt Identification (không có type-code scheme kèm theo)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Individual Gender Code"
+  physical_name: "individual_gender_code"
+  description: "Giới tính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.GENDER_CD"
+  comment: "Scheme: IDS_GENDER. Values load từ LOOKUP_VALUES (LOOKUP_GROUP = 'GENDER').\
+    \ Chỉ áp dụng khi Legal Entity Type Code = cá nhân."
+  classification_context: "IDS_GENDER"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Individual Education Level Code"
+  physical_name: "individual_education_level_code"
+  description: "Trình độ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.EDUCATION_LEVEL_CD"
+  comment: "Scheme: IDS_EDUCATION_LEVEL. Values load từ LOOKUP_VALUES (LOOKUP_GROUP\
+    \ = 'EDUCATION_LEVEL')."
+  classification_context: "IDS_EDUCATION_LEVEL"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Name"
+  physical_name: "nationality_nm"
+  description: "Quốc gia."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.NATIONALITY"
+  comment: "Text denormalized — countries là reference data set chưa map vào shared\
+    \ Geographic Area trong scope IDS (xem reference/shared_entity_schemas.md, ví\
+    \ dụ IDS: nationality). Không có fk_note tại nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Individual Birth Date"
+  physical_name: "individual_birth_dt"
+  description: "Ngày sinh."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.BIRTH_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "First Registration Date"
+  physical_name: "first_registration_dt"
+  description: "Ngày đăng ký lần đầu (đối với cổ đông là tổ chức)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.FIRST_REG_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Charter Capital Amount"
+  physical_name: "charter_capital_amt"
+  description: "Vốn điều lệ thực góp."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.PAID_UP_CHARTER_CAPITAL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Business Sector Code"
+  physical_name: "business_sector_code"
+  description: "Ngành nghề kinh doanh chính (theo mã ngành cấp 4 của Tổng cục Thống\
+    \ kê)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.BUSINESS_SECTOR"
+  comment: "Scheme: IDS_GSO_BUSINESS_SECTOR (no_lookup) — mã ngành cấp 4 của Tổng\
+    \ cục Thống kê, external classification, không có lookup table trong scope IDS."
+  classification_context: "IDS_GSO_BUSINESS_SECTOR"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm - 1:Xóa, 0:Không xóa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.LEGAL_ENTITIES.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

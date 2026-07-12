@@ -1,0 +1,383 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "AF_AUDITOR_PROFILES"
+  atomic_entity: "Audit Firm Auditor"
+  entity_physical_name: "audit_firm_auditor"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Grain = Involved Party (Individual) — IDENTITY_NO không tách IP Alt Identification\
+    \ (không có type-code scheme), giữ Text denormalized theo Bước 3h."
+attributes:
+- attribute_name: "Audit Firm Auditor Id"
+  physical_name: "audit_firm_auditor_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Auditor Code"
+  physical_name: "audit_firm_auditor_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.AF_AUDITOR_PROFILES"
+  etl_derived_value: "IDS.AF_AUDITOR_PROFILES"
+  data_type: "string"
+- attribute_name: "Audit Firm Id"
+  physical_name: "audit_firm_id"
+  description: "Link đến bảng AF_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.AF_PROFILE_ID"
+  comment: "FK target: Audit Firm.Audit Firm Id. Hash: hash_id('IDS.AF_PROFILES',\
+    \ AF_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Code"
+  physical_name: "audit_firm_code"
+  description: "Mã công ty kiểm toán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.AF_PROFILE_ID"
+  comment: "Lookup pair: Audit Firm.Audit Firm Code. Pair with Audit Firm Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Auditor Name"
+  physical_name: "audit_firm_auditor_nm"
+  description: "Họ và tên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.FULL_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identity Number"
+  physical_name: "identity_nbr"
+  description: "Số CCCD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.IDENTITY_NO"
+  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
+    \ scheme kèm theo)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Position Title Code"
+  physical_name: "position_title_code"
+  description: "Chức vụ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.POSITION_TITLE_CD"
+  comment: "Scheme: IDS_AF_POSITION_TITLE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_AF_POSITION_TITLE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Practice Certificate Number"
+  physical_name: "practice_certificate_nbr"
+  description: "Số GCN đăng ký hành nghề kiểm toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Practice Certificate Issue Date"
+  physical_name: "practice_certificate_issue_dt"
+  description: "Ngày cấp GCN đăng ký hành nghề kiểm toán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_CERT_ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Practice Start Date"
+  physical_name: "practice_start_dt"
+  description: "Ngày bắt đầu hành nghề."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Practice End Date"
+  physical_name: "practice_end_dt"
+  description: "Ngày kết thúc hành nghề."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.PRACTICE_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Audit Certificate Number"
+  physical_name: "audit_certificate_nbr"
+  description: "Số chứng chỉ kiểm toán viên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Certificate Issue Date"
+  physical_name: "audit_certificate_issue_dt"
+  description: "Ngày cấp chứng chỉ kiểm toán viên."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.AUDIT_CERT_ISSUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Auditor Status Code"
+  physical_name: "auditor_status_code"
+  description: "Trạng thái kiểm toán viên."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.STATUS_CD"
+  comment: "Scheme: IDS_AUDITOR_STATUS. Values load từ LOOKUP_VALUES — chưa liệt kê\
+    \ trong HLD Tier2 6d, bổ sung scheme mới."
+  classification_context: "IDS_AUDITOR_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Affiliation End Date"
+  physical_name: "affiliation_end_dt"
+  description: "Ngày mà kiểm toán viên không còn thuộc công ty kiểm toán nữa."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.AFFILIATION_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Record Changed Indicator"
+  physical_name: "record_changed_indicator"
+  description: "Đánh dấu bản ghi có bị thay đổi hay không."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.REC_CHANGED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Email Sent Indicator"
+  physical_name: "email_sent_indicator"
+  description: "Đánh dấu bản ghi đã được gửi email hay chưa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.SEND_EMAIL"
+  comment: "Giá trị 1 → true (đã gửi); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "External Reference Code"
+  physical_name: "external_reference_code"
+  description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.EXTERNAL_ID"
+  comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
+    \ trong scope Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Status Code"
+  physical_name: "approval_status_code"
+  description: "Trạng thái duyệt hồ sơ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.APPROVAL_STATUS_CD"
+  comment: "Scheme: IDS_APPROVAL_STATUS. Dùng chung scheme với Public Company/Audit\
+    \ Firm.Approval Status Code."
+  classification_context: "IDS_APPROVAL_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Trạng thái xóa."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.AF_AUDITOR_PROFILES.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

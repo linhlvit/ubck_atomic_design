@@ -1,0 +1,304 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "VIOLATION_PENALTY_CONFIG"
+  atomic_entity: "Public Company Violation Penalty Config"
+  entity_physical_name: "public_company_violation_penalty_config"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Compliance Rule"
+  table_type: "Relative"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Relative (SCD4A) — quy định ngưỡng phạt có hiệu lực theo thời gian (EFFECTIVE_START/END_DATE)."
+attributes:
+- attribute_name: "Public Company Violation Penalty Config Id"
+  physical_name: "public_company_violation_penalty_config_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Condition] Compliance Rule\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Violation Penalty Config Code"
+  physical_name: "public_company_violation_penalty_config_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.ID"
+  comment: "BK chính. PK nguồn NUMBER(38) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.VIOLATION_PENALTY_CONFIG"
+  etl_derived_value: "IDS.VIOLATION_PENALTY_CONFIG"
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Violation Template Id"
+  physical_name: "disclosure_form_definition_violation_template_id"
+  description: "ID của mẫu vi phạm (FK liên kết với bảng VIOLATION_TEMPLATES)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID"
+  comment: "FK target: Disclosure Form Definition Violation Template.Disclosure Form\
+    \ Definition Violation Template Id. Hash: hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_TEMPLATE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Violation Template Code"
+  physical_name: "disclosure_form_definition_violation_template_code"
+  description: "Mã mẫu vi phạm (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.VIOLATION_TEMPLATE_ID"
+  comment: "Lookup pair: Disclosure Form Definition Violation Template.Disclosure\
+    \ Form Definition Violation Template Code. Pair with Disclosure Form Definition\
+    \ Violation Template Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Overdue Day Count"
+  physical_name: "overdue_day_count"
+  description: "Số ngày quá hạn cố định."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.OVERDUE_DAYS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Minimum Overdue Day Count"
+  physical_name: "minimum_overdue_day_count"
+  description: "Số ngày quá hạn tối thiểu."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.MIN_OVERDUE_DAYS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Maximum Overdue Day Count"
+  physical_name: "maximum_overdue_day_count"
+  description: "Số ngày quá hạn tối đa."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.MAX_OVERDUE_DAYS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Paragraph Code"
+  physical_name: "paragraph_code"
+  description: "Mã đoạn/khoản mục quy định phạt (Paragraph Code)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.PARA_CD"
+  comment: "Scheme: IDS_VIOLATION_PENALTY_PARAGRAPH (no_lookup) — mã đoạn/khoản quy\
+    \ định pháp luật, chưa liệt kê trong HLD Tier3 6d, bổ sung scheme mới."
+  classification_context: "IDS_VIOLATION_PENALTY_PARAGRAPH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Action Type Code"
+  physical_name: "penalty_action_tp_code"
+  description: "Mã loại hành động/hình thức xử phạt (Nhắc nhở, Cảnh cáo, Phạt tiền...)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.ACTION_TYPE_CD"
+  comment: "Scheme: IDS_VIOLATION_PENALTY_ACTION_TYPE (no_lookup) — chưa liệt kê trong\
+    \ HLD Tier3 6d, bổ sung scheme mới."
+  classification_context: "IDS_VIOLATION_PENALTY_ACTION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết mức phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective Start Date"
+  physical_name: "effective_start_dt"
+  description: "Ngày bắt đầu có hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.EFFECTIVE_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Effective End Date"
+  physical_name: "effective_end_dt"
+  description: "Ngày kết thúc hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.EFFECTIVE_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.ACTIVE_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời gian tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.CREATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời gian cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.UPDATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người cập nhật bản ghi lần cuối."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người cập nhật (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_PENALTY_CONFIG.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

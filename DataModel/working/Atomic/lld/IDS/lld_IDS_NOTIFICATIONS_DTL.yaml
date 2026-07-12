@@ -1,0 +1,344 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "NOTIFICATIONS_DTL"
+  atomic_entity: "Disclosure Form Definition Notification Recipient"
+  entity_physical_name: "disclosure_form_definition_notification_recipient"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Notification"
+  table_type: "Relative"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "LOGIN_ID = người nhận thông báo — FK pending sang Identity and Access Management\
+    \ User (cùng pattern Created/Updated By User, khác cột nghiệp vụ, tên attribute\
+    \ 'Recipient User Id/Code'). COMPANY_PROFILE_ID nullable (chỉ có khi người nhận\
+    \ là công ty đại chúng)."
+attributes:
+- attribute_name: "Disclosure Form Definition Notification Recipient Id"
+  physical_name: "disclosure_form_definition_notification_recipient_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Communication] Notification\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Notification Recipient Code"
+  physical_name: "disclosure_form_definition_notification_recipient_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.NOTIFICATIONS_DTL"
+  etl_derived_value: "IDS.NOTIFICATIONS_DTL"
+  data_type: "string"
+- attribute_name: "Disclosure Notification Id"
+  physical_name: "disclosure_notification_id"
+  description: "Khóa link đến bảng NOTIFICATIONS."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.NOTIFICATIONS_ID"
+  comment: "FK target: Disclosure Notification.Disclosure Notification Id. Hash: hash_id('IDS.NOTIFICATIONS',\
+    \ NOTIFICATIONS_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Notification Code"
+  physical_name: "disclosure_notification_code"
+  description: "Mã thông báo."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.NOTIFICATIONS_ID"
+  comment: "Lookup pair: Disclosure Notification.Disclosure Notification Code. Pair\
+    \ with Disclosure Notification Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Khóa link đến bảng COMPANY_PROFILES."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.COMPANY_PROFILE_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID). Nullable — người nhận có thể không phải công ty đại chúng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recipient User Id"
+  physical_name: "recipient_user_id"
+  description: "Link đến bảng LOGINS — người nhận thông báo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.LOGIN_ID"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recipient User Code"
+  physical_name: "recipient_user_code"
+  description: "Mã người nhận (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.LOGIN_ID"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Recipient User Id. Pending — xem ghi chú ở Recipient User\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recipient Name"
+  physical_name: "recipient_nm"
+  description: "Tên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.FULL_NAME"
+  comment: "Denormalized — tên người nhận, snapshot tại thời điểm gửi."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Type Code"
+  physical_name: "object_tp_code"
+  description: "Loại đối tượng: 1- Nội bộ UBCK; 2- Tổ chức bên ngoài; 3- Cá nhân bên\
+    \ ngoài."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.OBJECT_TYPE"
+  comment: "Scheme: IDS_NOTIFICATION_OBJECT_TYPE. Dùng chung scheme với Disclosure\
+    \ Notification.Object Type Code. Nguồn lưu dạng số — ETL cần convert sang string\
+    \ code."
+  classification_context: "IDS_NOTIFICATION_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Department Code"
+  physical_name: "department_code"
+  description: "Mã phòng ban."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.DEPT_CD"
+  comment: "Scheme: IDS_DEPARTMENT_CODE (no_lookup) — chưa xác nhận cross-source FK\
+    \ đến phòng ban cụ thể, giữ Classification Value cho đến khi Data Modeler xác\
+    \ nhận."
+  classification_context: "IDS_DEPARTMENT_CODE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Login Type Code"
+  physical_name: "login_tp_code"
+  description: "Loại user."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.LOGIN_TYPE"
+  comment: "Scheme: IDS_LOGIN_TYPE (no_lookup) — chưa liệt kê trong HLD Tier3 6d,\
+    \ bổ sung scheme mới. Nguồn lưu dạng số — ETL cần convert sang string code."
+  classification_context: "IDS_LOGIN_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Equity Listing Exchange Code"
+  physical_name: "equity_listing_exchange_code"
+  description: "Sàn niêm yết (ĐKGD cổ phiếu)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.EQUITY_LISTING_EXCH"
+  comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme với Public Company.Equity\
+    \ Listing Exchange Code."
+  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recipient Email"
+  physical_name: "recipient_email"
+  description: "Email người nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.EMAIL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Recipient Phone"
+  physical_name: "recipient_phone"
+  description: "Số điện thoại người nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.TEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Đánh dấu xóa mềm."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.NOTIFICATIONS_DTL.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

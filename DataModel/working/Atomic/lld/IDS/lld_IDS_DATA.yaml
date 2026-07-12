@@ -1,0 +1,297 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "DATA"
+  atomic_entity: "Public Company Financial Report Value"
+  entity_physical_name: "public_company_financial_report_value"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Financial Statement"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "ROW_CD/COL_CD là code join ngữ nghĩa với RROW/RCOL, KHÔNG có FK vật lý (theo\
+    \ HLD Tier2 6a dòng DATA) — giữ Text denormalized. Fact Snapshot theo kỳ REPORT_YEAR/REPORT_QUARTER."
+attributes:
+- attribute_name: "Public Company Financial Report Value Id"
+  physical_name: "public_company_financial_rpt_val_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Financial Statement\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Financial Report Value Code"
+  physical_name: "public_company_financial_rpt_val_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.ID"
+  comment: "BK chính. PK nguồn NUMBER(19) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.DATA"
+  etl_derived_value: "IDS.DATA"
+  data_type: "string"
+- attribute_name: "Financial Report Catalog Id"
+  physical_name: "financial_rpt_catalog_id"
+  description: "ID của báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_CATALOG_ID"
+  comment: "FK target: Financial Report Catalog.Financial Report Catalog Id. Hash:\
+    \ hash_id('IDS.REPORT_CATALOG', REPORT_CATALOG_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Catalog Code"
+  physical_name: "financial_rpt_catalog_code"
+  description: "Mã báo cáo."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_CATALOG_ID"
+  comment: "Lookup pair: Financial Report Catalog.Financial Report Catalog Code. Pair\
+    \ with Financial Report Catalog Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "ID Hồ sơ doanh nghiệp."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.COMPANY_PROFILE_ID"
+  comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES',\
+    \ COMPANY_PROFILE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Mã công ty đại chúng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.COMPANY_PROFILE_ID"
+  comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Code"
+  physical_name: "row_code"
+  description: "Mã hàng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.ROW_CD"
+  comment: "Denormalized — code join ngữ nghĩa với Financial Report Row Template.Financial\
+    \ Report Row Template Unique Key, KHÔNG có FK vật lý (theo HLD Tier2 6a)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Code"
+  physical_name: "column_code"
+  description: "Mã cột."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.COL_CD"
+  comment: "Denormalized — code join ngữ nghĩa với Financial Report Column Template.Financial\
+    \ Report Column Template Unique Key, KHÔNG có FK vật lý (theo HLD Tier2 6a)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cell Value Amount"
+  physical_name: "cell_val_amt"
+  description: "Lưu lại dữ liệu trong báo cáo."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.DATA_VALUE"
+  comment: "Nguồn FLOAT — có thể là giá trị tiền tệ hoặc tỷ lệ tùy hàng/cột, chọn\
+    \ Currency Amount làm domain mặc định phù hợp phần lớn chỉ tiêu BCTC. Cần Data\
+    \ Modeler xác nhận nếu có hàng/cột thực chất là Percentage."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo tài chính."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Quarter Number"
+  physical_name: "rpt_quarter_nbr"
+  description: "Quý báo cáo tài chính."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.REPORT_QUARTER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Cell Enabled Indicator"
+  physical_name: "cell_enabled_indicator"
+  description: "Trạng thái ô nhập liệu (0-disable, 1-enable). Phụ thuộc vào giá trị\
+    \ của trường APPROVAL_STATUS_CD trong bảng COMPANY_DATA, nếu là draft thì enable."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.CELL_ENABLED_FLG"
+  comment: "Giá trị 1 → true (enable); 0 → false (disable). Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Report Catalog Type Code Snapshot"
+  physical_name: "rpt_catalog_tp_code_snpst"
+  description: "Kiểu dữ liệu: I/O - Input/Output."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.RC_TYPE"
+  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Denormalized snapshot — trùng lặp với\
+    \ Financial Report Catalog.Report Catalog Type Code."
+  classification_context: "IDS_REPORT_CATALOG_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày sửa."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.DATA.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.DATA.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.DATA.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người sửa."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.DATA.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người sửa (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.DATA.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

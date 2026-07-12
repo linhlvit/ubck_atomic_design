@@ -1,0 +1,414 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "VIOLATION_TEMPLATES"
+  atomic_entity: "Disclosure Form Definition Violation Template"
+  entity_physical_name: "disclosure_form_definition_violation_template"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Compliance Rule"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "ID + VIOLATION_CD (Bước 3e): ID → Code (BK chính), VIOLATION_CD → Unique\
+    \ Key."
+attributes:
+- attribute_name: "Disclosure Form Definition Violation Template Id"
+  physical_name: "disclosure_form_definition_violation_template_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Condition] Compliance Rule\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Violation Template Code"
+  physical_name: "disclosure_form_definition_violation_template_code"
+  description: "Khóa chính - ID tự tăng. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.ID"
+  comment: "BK chính. PK nguồn NUMBER(38) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Violation Template Unique Key"
+  physical_name: "disclosure_form_definition_violation_template_unique_key"
+  description: "Mã vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_CD"
+  comment: "Unique Key nghiệp vụ, tách biệt với Disclosure Form Definition Violation\
+    \ Template Code (BK kỹ thuật từ ID) theo Bước 3e."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.VIOLATION_TEMPLATES"
+  etl_derived_value: "IDS.VIOLATION_TEMPLATES"
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Id"
+  physical_name: "disclosure_form_definition_id"
+  description: "FK đến bảng FORMS."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.FORM_ID"
+  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Hash:\
+    \ hash_id('IDS.FORMS', FORM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Disclosure Form Definition Code"
+  physical_name: "disclosure_form_definition_code"
+  description: "Mã form CBTT."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.FORM_ID"
+  comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code.\
+    \ Pair with Disclosure Form Definition Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Name"
+  physical_name: "violation_nm"
+  description: "Tên vi phạm (Tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_NAME_VI"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation English Name"
+  physical_name: "violation_english_nm"
+  description: "Tên vi phạm (Tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Type Code"
+  physical_name: "violation_tp_code"
+  description: "Mã loại vi phạm VIOLATION_TYPE."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_TYPE_CD"
+  comment: "Scheme: IDS_VIOLATION_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_VIOLATION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Subtype Code"
+  physical_name: "violation_subtype_code"
+  description: "Mã nhóm/loại vi phạm chi tiết VIOLATION_SUBTYPE."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_SUBTYPE_CD"
+  comment: "Scheme: IDS_VIOLATION_SUBTYPE (no_lookup) — chưa liệt kê trong HLD Tier2\
+    \ 6d, bổ sung scheme mới."
+  classification_context: "IDS_VIOLATION_SUBTYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Report Type Code"
+  physical_name: "violation_rpt_tp_code"
+  description: "Mã loại báo cáo REPORT_TYPE."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.REPORT_TYPE_CD"
+  comment: "Scheme: IDS_VIOLATION_REPORT_TYPE (no_lookup) — bổ sung scheme mới, khác\
+    \ với IDS_REPORT_CATALOG_TYPE (I/O)."
+  classification_context: "IDS_VIOLATION_REPORT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Scope Code"
+  physical_name: "rpt_scope_code"
+  description: "Mã phạm vi báo cáo REPORT_SCOPE."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.REPORT_SCOPE_CD"
+  comment: "Scheme: IDS_REPORT_SCOPE. Dùng chung scheme với Financial Report Catalog.Report\
+    \ Scope Code."
+  classification_context: "IDS_REPORT_SCOPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Type Code"
+  physical_name: "rpt_period_tp_code"
+  description: "Mã loại kỳ báo cáo (Năm, Bán niên, Quý...) REPORT_PERIOD_TYPE."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.PERIOD_TYPE_CD"
+  comment: "Scheme: IDS_REPORT_PERIOD_TYPE (no_lookup) — chưa liệt kê trong HLD Tier2\
+    \ 6d, bổ sung scheme mới."
+  classification_context: "IDS_REPORT_PERIOD_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Trigger Point Code"
+  physical_name: "violation_trigger_point_code"
+  description: "Mã thời điểm/hành động kích hoạt vi phạm VIOLATION_TRIGGER_POINT."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD"
+  comment: "Scheme: IDS_VIOLATION_TRIGGER_POINT (no_lookup) — chưa liệt kê trong HLD\
+    \ Tier2 6d, bổ sung scheme mới."
+  classification_context: "IDS_VIOLATION_TRIGGER_POINT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Offset Day Count"
+  physical_name: "offset_day_count"
+  description: "Số ngày bù/chênh lệch để tính hạn (Deadline)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.OFFSET_DAYS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Violation Trigger Point Extended Code"
+  physical_name: "violation_trigger_point_extended_code"
+  description: "Mốc chặn."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.VIOLATION_TRIGGER_POINT_CD_EX"
+  comment: "Scheme: IDS_VIOLATION_TRIGGER_POINT. Dùng chung scheme với Violation Trigger\
+    \ Point Code."
+  classification_context: "IDS_VIOLATION_TRIGGER_POINT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Offset Day Count Extended"
+  physical_name: "offset_day_count_extended"
+  description: "Thời hạn tối đa."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.OFFSET_DAYS_EX"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Day Type Code"
+  physical_name: "day_tp_code"
+  description: "Mã loại ngày (Ngày làm việc, Ngày thường...) DAY_TYPE."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.DAY_TYPE_CD"
+  comment: "Scheme: IDS_DAY_TYPE (no_lookup) — chưa liệt kê trong HLD Tier2 6d, bổ\
+    \ sung scheme mới."
+  classification_context: "IDS_DAY_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective Start Date"
+  physical_name: "effective_start_dt"
+  description: "Ngày bắt đầu có hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.EFFECTIVE_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Effective End Date"
+  physical_name: "effective_end_dt"
+  description: "Ngày kết thúc hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.EFFECTIVE_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Cờ trạng thái hoạt động (1: Hoạt động, 0: Vô hiệu)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.ACTIVE_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Offset Day Count Condition"
+  physical_name: "offset_day_count_condition"
+  description: "Số ngày cộng thêm khi có điều kiện."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.OFFSET_DAYS_CONDITION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Cờ xóa logic (1: Đã xóa, 0: Chưa xóa)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời gian tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.CREATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời gian cập nhật bản ghi lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.UPDATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo bản ghi."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
+    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
+    \ thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người cập nhật bản ghi lần cuối."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người cập nhật (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.VIOLATION_TEMPLATES.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

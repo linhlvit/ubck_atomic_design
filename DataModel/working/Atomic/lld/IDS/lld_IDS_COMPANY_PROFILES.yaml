@@ -1,0 +1,778 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "COMPANY_PROFILES"
+  atomic_entity: "Public Company"
+  entity_physical_name: "public_company"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "HEAD_OFFICE_ADDR/TRADING_OFFICE_ADDR + PROVINCE_ID → Involved Party Postal\
+    \ Address (2 địa chỉ: HEAD_OFFICE, TRADING_OFFICE). WEBSITE/PHONE_NO/FAX_NO →\
+    \ Involved Party Electronic Address. CREATED_BY/UPDATED_BY → FK LOGINS.ID (ngoài\
+    \ scope IDS) — map sang Identity and Access Management User (IAM.USERS), status\
+    \ pending do khác kiểu khóa (LOGINS.ID NUMBER tự tăng vs IAM.USERS.ID VARCHAR2(36)\
+    \ GUID)."
+attributes:
+- attribute_name: "Public Company Id"
+  physical_name: "public_company_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Code"
+  physical_name: "public_company_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.ID"
+  comment: "BK chính. PK nguồn NUMBER(19) tự tăng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.COMPANY_PROFILES"
+  etl_derived_value: "IDS.COMPANY_PROFILES"
+  data_type: "string"
+- attribute_name: "Public Company Name"
+  physical_name: "public_company_nm"
+  description: "Tên công ty (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.COMPANY_NAME_VN"
+  comment: "BCV: [Involved Party] Organization Name."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company English Name"
+  physical_name: "public_company_english_nm"
+  description: "Tên công ty (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.COMPANY_NAME_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Registration Number"
+  physical_name: "business_registration_nbr"
+  description: "Mã số thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.BUSINESS_REG_NO"
+  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
+    \ scheme kèm theo tại bảng này)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "First Registration Date"
+  physical_name: "first_registration_dt"
+  description: "Ngày đăng ký lần đầu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.FIRST_REG_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Latest Registration Date"
+  physical_name: "latest_registration_dt"
+  description: "Ngày đăng ký thay đổi gần nhất."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.LATEST_REG_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Latest Registration Province Name"
+  physical_name: "latest_registration_province_nm"
+  description: "Tỉnh/TP đăng ký thay đổi gần nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.LATEST_REG_PROV"
+  comment: "Text denormalized — provinces là reference data set chưa map vào shared\
+    \ Geographic Area trong scope IDS (khác PROVINCE_ID — xem Involved Party Postal\
+    \ Address). Không có fk_note tại nguồn, chỉ lưu tên/mã tỉnh dạng snapshot lịch\
+    \ sử."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Charter Capital Amount"
+  physical_name: "charter_capital_amt"
+  description: "Vốn điều lệ."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CAPITAL_PAID_REPORTED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Treasury Share Quantity"
+  physical_name: "treasury_share_quantity"
+  description: "Cổ phiếu quỹ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.TREASURY_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Industry Category Level 1 Code"
+  physical_name: "industry_category_level_1_code"
+  description: "Ngành cấp 1."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
+  comment: "Scheme: IDS_INDUSTRY_CATEGORY. Nguồn CATEGORY_L1_ID (NUMBER FK → CATEGORIES.ID)\
+    \ — ETL resolve qua join CATEGORIES.ID để lấy INDUSTRY_CD làm classification value.\
+    \ CATEGORIES ngoài scope Atomic (chỉ dùng làm Classification Value, xem HLD 7c)."
+  classification_context: "IDS_INDUSTRY_CATEGORY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Industry Category Level 2 Code"
+  physical_name: "industry_category_level_2_code"
+  description: "Ngành cấp 2."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
+  comment: "Scheme: IDS_INDUSTRY_CATEGORY. Nguồn CATEGORY_L2_ID (NUMBER FK → CATEGORIES.ID)\
+    \ — ETL resolve qua join CATEGORIES.ID để lấy INDUSTRY_CD làm classification value."
+  classification_context: "IDS_INDUSTRY_CATEGORY"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enterprise Type Code"
+  physical_name: "enterprise_tp_code"
+  description: "Loại hình doanh nghiệp."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.ENTERPRISE_TYPE_CD"
+  comment: "Scheme: IDS_ENTERPRISE_TYPE. Values load từ LOOKUP_VALUES (xem HLD Tier1\
+    \ 6d). Dùng chung với Financial Report Catalog."
+  classification_context: "IDS_ENTERPRISE_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Statement Type Code"
+  physical_name: "financial_statement_tp_code"
+  description: "Loại báo cáo tài chính."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.FINANCIAL_STMT_TYPE_CD"
+  comment: "Scheme: IDS_FINANCIAL_STMT_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_FINANCIAL_STMT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Type Code"
+  physical_name: "securities_tp_code"
+  description: "Loại chứng khoán."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.SECURITIES_TYPE_CD"
+  comment: "Scheme: IDS_SECURITIES_TYPE. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_SECURITIES_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Equity Listing Exchange Code"
+  physical_name: "equity_listing_exchange_code"
+  description: "Sàn niêm yết."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.EQUITY_LISTING_EXCH"
+  comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Equity Ticker Symbol"
+  physical_name: "equity_ticker_symbol"
+  description: "Mã cổ phiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.EQUITY_TICKER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Equity Security Indicator"
+  physical_name: "equity_security_indicator"
+  description: "Cờ chứng khoán cổ phiếu."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.EQUITY_SECURITY_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Equity Listed Quantity"
+  physical_name: "equity_listed_quantity"
+  description: "Số lượng cổ phiếu niêm yết."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.EQUITY_LISTED_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Bond Listing Exchange Code"
+  physical_name: "bond_listing_exchange_code"
+  description: "Sàn trái phiếu."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.BOND_LISTING_EXCH"
+  comment: "Scheme: IDS_EQUITY_LISTING_EXCH. Dùng chung scheme sàn niêm yết với Equity\
+    \ Listing Exchange Code — cùng bản chất mã sàn giao dịch (HNX/HOSE/UPCoM)."
+  classification_context: "IDS_EQUITY_LISTING_EXCH"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Ticker Symbol"
+  physical_name: "bond_ticker_symbol"
+  description: "Mã trái phiếu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.BOND_TICKER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Bond Security Indicator"
+  physical_name: "bond_security_indicator"
+  description: "Cờ chứng khoán trái phiếu."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.BOND_SECURITY_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Bond Listed Quantity"
+  physical_name: "bond_listed_quantity"
+  description: "Số lượng trái phiếu niêm yết."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.BOND_LISTED_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "International Exchange Name"
+  physical_name: "international_exchange_nm"
+  description: "Sàn quốc tế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.INTL_EXCH"
+  comment: "Denormalized text — không có LOOKUP_GROUP khai báo cho sàn quốc tế."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "International Ticker Symbol"
+  physical_name: "international_ticker_symbol"
+  description: "Mã quốc tế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.INTL_TICKER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Status Code"
+  physical_name: "public_company_status_code"
+  description: "Trạng thái."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.STATUS_IDS_CD"
+  comment: "Scheme: IDS_COMPANY_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP\
+    \ = 'IDS_COMPANY_STATUS')."
+  classification_context: "IDS_COMPANY_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Auto Approval Indicator"
+  physical_name: "auto_approval_indicator"
+  description: "Tự động phê duyệt."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.AUTO_APPROVAL_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Company Login Username"
+  physical_name: "company_login_username"
+  description: "Tài khoản đăng nhập."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.COMPANY_LOGIN"
+  comment: "Denormalized text — không có fk_note tại nguồn (khác CREATED_BY/UPDATED_BY).\
+    \ Giữ dạng username, không tạo FK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver Comment"
+  physical_name: "approver_comment"
+  description: "Ghi chú phê duyệt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.APPROVER_COMMENT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Specialist Note"
+  physical_name: "specialist_note"
+  description: "Ghi chú chuyên viên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.SPECIALIST_NOTES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ids Registration Indicator"
+  physical_name: "ids_registration_indicator"
+  description: "Trạng thái đăng ký IDS."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.IDS_REG_STATUS_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Ids Registration Date"
+  physical_name: "ids_registration_dt"
+  description: "Ngày đăng ký IDS."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.IDS_REG_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Operating Status Code"
+  physical_name: "operating_status_code"
+  description: "Trạng thái hoạt động."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.OPERATING_STATUS_CD"
+  comment: "Scheme: IDS_OPERATING_STATUS. Values load từ LOOKUP_VALUES — chưa liệt\
+    \ kê trong HLD Tier1 6d, bổ sung scheme mới."
+  classification_context: "IDS_OPERATING_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fiscal Year End Date"
+  physical_name: "fiscal_year_end_dt"
+  description: "Ngày kết thúc năm tài chính."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.FY_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Public Company Form Code"
+  physical_name: "public_company_form_code"
+  description: "Hình thức trở thành công ty đại chúng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.PUBLIC_COMPANY_FORM_CD"
+  comment: "Scheme: IDS_PUBLIC_COMPANY_FORM. Values load từ LOOKUP_VALUES."
+  classification_context: "IDS_PUBLIC_COMPANY_FORM"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Company Type Code"
+  physical_name: "public_company_tp_code"
+  description: "Loại công ty đại chúng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.PUBLIC_COM_TYPE_CD"
+  comment: "Scheme: IDS_PUBLIC_COMPANY_TYPE. Values load từ LOOKUP_VALUES — chưa liệt\
+    \ kê trong HLD Tier1 6d, bổ sung scheme mới."
+  classification_context: "IDS_PUBLIC_COMPANY_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Bond Issuer Indicator"
+  physical_name: "public_bond_issuer_indicator"
+  description: "Doanh nghiệp phát hành trái phiếu."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.PUBLIC_BOND_ISSUER_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Former State Owned Indicator"
+  physical_name: "former_state_owned_indicator"
+  description: "Doanh nghiệp nhà nước (trước đây)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.FORMER_STATE_OWNED_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Equitization License Date"
+  physical_name: "equitization_license_dt"
+  description: "Ngày cấp phép cổ phần hóa."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.EQUIT_LICENSE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Equitization Capital Amount"
+  physical_name: "equitization_capital_amt"
+  description: "Vốn điều lệ tại thời điểm cổ phần hóa."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CAPITAL_AT_EQUIT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Has State Ownership Indicator"
+  physical_name: "has_state_ownership_indicator"
+  description: "Có vốn nhà nước."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.HAS_STATE_OWN_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Foreign Direct Investment Indicator"
+  physical_name: "foreign_direct_investment_indicator"
+  description: "Doanh nghiệp FDI."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.FDI_COM_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Has Parent Company Indicator"
+  physical_name: "has_parent_company_indicator"
+  description: "Có công ty mẹ."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.HAS_PARENT_COM_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Has Subsidiary Indicator"
+  physical_name: "has_subsidiary_indicator"
+  description: "Có công ty con."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.HAS_SUBSIDIARIES_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Has Joint Venture Indicator"
+  physical_name: "has_joint_venture_indicator"
+  description: "Có liên doanh."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.HAS_JOINT_VENTURES_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Head Office Province Name"
+  physical_name: "head_office_province_nm"
+  description: "Tỉnh/TP trụ sở chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.HEAD_OFFICE_PROV"
+  comment: "Text denormalized — provinces là reference data set chưa map vào shared\
+    \ Geographic Area trong scope IDS (xem reference/shared_entity_schemas.md, ví\
+    \ dụ IDS: head_office_prov). Khác PROVINCE_ID (xem Involved Party Postal Address)\
+    \ — cột này không có fk_note tại nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ipo Company Indicator"
+  physical_name: "ipo_company_indicator"
+  description: "1-Công ty đang IPO, 0-Công ty đại chúng."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.IPO_COMPANY_FLG"
+  comment: "Giá trị 1 → true (đang IPO); 0 → false (đã là CTĐC). Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Approval Status Code"
+  physical_name: "approval_status_code"
+  description: "Trạng thái phê duyệt hồ sơ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.APPROVAL_STATUS_CD"
+  comment: "Scheme: IDS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES — chưa liệt\
+    \ kê trong HLD Tier1 6d, bổ sung scheme mới."
+  classification_context: "IDS_APPROVAL_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Trạng thái xoá."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.DELETE_FLG"
+  comment: "Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Ngày tạo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CREATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp, không\
+    \ cần ghi chú thêm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Ngày cập nhật."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.UPDATED_DATE"
+  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Id"
+  physical_name: "created_by_user_id"
+  description: "Người tạo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CREATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — LOGINS ngoài scope IDS (xem\
+    \ HLD 7f). Pending: LOGINS.ID là NUMBER(10) tự tăng, IAM.USERS.ID là VARCHAR2(36)\
+    \ GUID — chưa xác nhận crosswalk (VD: LOGINS.LOGIN_NAME ↔ IAM.USERS.USERNAME)\
+    \ nên chưa thêm Hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created By User Code"
+  physical_name: "created_by_user_code"
+  description: "Mã người tạo (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CREATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Id"
+  physical_name: "updated_by_user_id"
+  description: "Người cập nhật."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.UPDATED_BY"
+  comment: "FK target: Identity and Access Management User.Identity and Access Management\
+    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
+    \ By User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated By User Code"
+  physical_name: "updated_by_user_code"
+  description: "Mã người cập nhật (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.UPDATED_BY"
+  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
+    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
