@@ -181,16 +181,17 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Report Period Code"
-  physical_name: "rpt_period_code"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
   description: "Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD"
-  comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(20)."
+  comment: "VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value theo\
+    \ quyết định thiết kế."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

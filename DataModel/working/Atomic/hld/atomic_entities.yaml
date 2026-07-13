@@ -150,6 +150,18 @@ entities:
   source_table: "FMS.RNK_GR_FTOR"
   status: "draft"
 - bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Data Monitoring"
+  atomic_entity: "Securities Company Alert Run"
+  table_type: "Fact Append"
+  domain_prefix: "Securities Company Alert"
+  entity_physical_name: "sc_alert_run"
+  description: "Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho\
+    \ 1 chỉ tiêu cảnh báo. Mỗi dòng = 1 lần thực thi insert-only, ghi nhận chỉ tiêu\
+    \ được kiểm tra, phạm vi dữ liệu quét, thời gian bắt đầu/kết thúc, trạng thái\
+    \ và số lượng cảnh báo phát sinh."
+  source_table: "SCMS.ALERT_RUN"
+  status: "draft"
+- bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
   atomic_entity: "Securities Practitioner Conduct Violation"
   table_type: "Fundamental"
@@ -881,7 +893,7 @@ entities:
   atomic_entity: "Audit Firm Approval"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_approval"
+  entity_physical_name: "af_approval"
   description: "Quyết định chấp thuận hoặc đình chỉ của BTC/UBCKNN đối với công ty\
     \ kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng, SOURCE_TYPE_CD\
     \ phân biệt cơ quan ban hành)."
@@ -892,7 +904,7 @@ entities:
   atomic_entity: "Audit Firm Auditor"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_auditor"
+  entity_physical_name: "af_auditor"
   description: "Kiểm toán viên cá nhân trực thuộc công ty kiểm toán được giao thực\
     \ hiện kiểm toán CTCK. Ghi nhận mã kiểm toán viên, số chứng chỉ, ngày bổ nhiệm\
     \ và trạng thái."
@@ -903,7 +915,7 @@ entities:
   atomic_entity: "Audit Firm Auditor Status History"
   table_type: ""
   domain_prefix: "Audit Firm Auditor"
-  entity_physical_name: "audit_firm_auditor_status_history"
+  entity_physical_name: "af_auditor_status_history"
   description: "Lịch sử thay đổi trạng thái hành nghề của kiểm toán viên: loại sự\
     \ kiện (cấp/thu hồi/đình chỉ chứng chỉ), ngày hiệu lực, lý do."
   source_table: "IDS.AF_AUDITOR_STATUS_HISTORY"
@@ -913,7 +925,7 @@ entities:
   atomic_entity: "Audit Firm Inspection"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_inspection"
+  entity_physical_name: "af_inspection"
   description: "Đợt kiểm tra tổng thể công ty kiểm toán: số quyết định kiểm tra, thời\
     \ gian, kết quả kiểm tra hệ thống kiểm toán, kết quả tổng thể, hành động xử lý."
   source_table: "IDS.AF_INSPECTION"
@@ -923,7 +935,7 @@ entities:
   atomic_entity: "Audit Firm Legal Representative"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_legal_representative"
+  entity_physical_name: "af_legal_representative"
   description: "Người đại diện pháp luật của công ty kiểm toán được đăng ký với UBCKNN."
   source_table: "IDS.AF_LEGAL_REPRESENTATIVE"
   status: "draft"
@@ -932,7 +944,7 @@ entities:
   atomic_entity: "Audit Firm Sanction"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_sanction"
+  entity_physical_name: "af_sanction"
   description: "Quyết định xử phạt hành chính của UBCKNN đối với công ty kiểm toán:\
     \ số quyết định, ngày ban hành, nội dung xử phạt."
   source_table: "IDS.AF_SANCTIONS"
@@ -942,7 +954,7 @@ entities:
   atomic_entity: "Audit Firm Status History"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_status_history"
+  entity_physical_name: "af_status_history"
   description: "Lịch sử thay đổi trạng thái hoạt động của công ty kiểm toán: đình\
     \ chỉ, tạm ngừng, chấm dứt, thu hồi chứng nhận."
   source_table: "IDS.AF_STATUS_HISTORY"
@@ -952,7 +964,7 @@ entities:
   atomic_entity: "Audit Firm Suspension"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_suspension"
+  entity_physical_name: "af_suspension"
   description: "Quyết định đình chỉ hoạt động của UBCKNN đối với công ty kiểm toán\
     \ hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt đối tượng)."
   source_table: "IDS.AF_SUSPENSION"
@@ -962,7 +974,7 @@ entities:
   atomic_entity: "Audit Firm Technical Audit"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_technical_audit"
+  entity_physical_name: "af_technical_audit"
   description: "Kết quả kiểm tra hồ sơ kiểm toán cụ thể trong một đợt kiểm tra tổng\
     \ thể: hồ sơ được kiểm tra, kết quả, hành động xử lý, nội dung vi phạm."
   source_table: "IDS.AF_TECHNICAL_AUDIT"
@@ -972,7 +984,7 @@ entities:
   atomic_entity: "Audit Firm Warning"
   table_type: ""
   domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm_warning"
+  entity_physical_name: "af_warning"
   description: "Văn bản nhắc nhở của BTC/UBCKNN đối với công ty kiểm toán hoặc kiểm\
     \ toán viên (TARGET_TYPE_CD phân biệt đối tượng)."
   source_table: "IDS.AF_WARNING"
@@ -1176,20 +1188,20 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Financial Report Column Template"
+  atomic_entity: "Financial Report Form Column Template"
   table_type: ""
-  domain_prefix: "Financial Report"
-  entity_physical_name: "financial_report_column_template"
+  domain_prefix: "Financial Report Form"
+  entity_physical_name: "frf_column_template"
   description: "Định nghĩa từng cột trong template báo cáo tài chính: mã cột, tên,\
     \ kỳ tham chiếu (hiện tại/kỳ trước)."
   source_table: "IDS.RCOL"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Financial Report Row Template"
+  atomic_entity: "Financial Report Form Row Template"
   table_type: ""
-  domain_prefix: "Financial Report"
-  entity_physical_name: "financial_report_row_template"
+  domain_prefix: "Financial Report Form"
+  entity_physical_name: "frf_row_template"
   description: "Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên,\
     \ cấp phân cấp, công thức tổng hợp."
   source_table: "IDS.RROW"
@@ -1366,7 +1378,7 @@ entities:
   atomic_entity: "Periodic Report Form Column Template"
   table_type: ""
   domain_prefix: "Periodic Report Form"
-  entity_physical_name: "periodic_report_form_column_template"
+  entity_physical_name: "prf_column_template"
   description: "Định nghĩa từng cột trong template báo cáo định kỳ."
   source_table: "IDS.REP_COLUMN"
   status: "draft"
@@ -1375,7 +1387,7 @@ entities:
   atomic_entity: "Periodic Report Form Row Template"
   table_type: ""
   domain_prefix: "Periodic Report Form"
-  entity_physical_name: "periodic_report_form_row_template"
+  entity_physical_name: "prf_row_template"
   description: "Định nghĩa từng hàng trong template báo cáo định kỳ."
   source_table: "IDS.REP_ROW"
   status: "draft"
@@ -1415,7 +1427,7 @@ entities:
   atomic_entity: "Public Company Bond Evaluation"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_bond_evaluation"
+  entity_physical_name: "pc_bond_evaluation"
   description: "Chỉ số trái phiếu của công ty đại chúng theo kỳ (năm/tháng): xếp hạng,\
     \ tỷ lệ trái phiếu đảm bảo/giá trị trái phiếu, tỷ lệ trái phiếu lưu hành/vốn chủ\
     \ sở hữu. Không FK đến Public Company Evaluation — grain 1 CTĐC × 1 kỳ."
@@ -1426,7 +1438,7 @@ entities:
   atomic_entity: "Public Company Bond Listing History"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_bond_listing_history"
+  entity_physical_name: "pc_bond_listing_history"
   description: "Lịch sử phát hành và niêm yết trái phiếu doanh nghiệp của CTĐC."
   source_table: "IDS.BOND_LISTING_HISTORY"
   status: "draft"
@@ -1435,7 +1447,7 @@ entities:
   atomic_entity: "Public Company Cancellation"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_cancellation"
+  entity_physical_name: "pc_cancellation"
   description: "Hồ sơ và lịch sử hủy đăng ký tư cách công ty đại chúng với UBCKNN."
   source_table: "IDS.PUB_COMPANY_CANCELLATION"
   status: "draft"
@@ -1444,7 +1456,7 @@ entities:
   atomic_entity: "Public Company Capital Increase"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_capital_increase"
+  entity_physical_name: "pc_capital_increase"
   description: "Từng đợt tăng vốn điều lệ của CTĐC sau khi niêm yết: phương thức tăng\
     \ vốn, quyết định, giá trị vốn sau tăng."
   source_table: "IDS.COMPANY_ADD_CAPITAL"
@@ -1454,7 +1466,7 @@ entities:
   atomic_entity: "Public Company Capital Mobilization"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_capital_mobilization"
+  entity_physical_name: "pc_capital_mobilization"
   description: "Lịch sử huy động vốn trước khi trở thành CTĐC: số lần huy động, tổng\
     \ giá trị huy động theo năm."
   source_table: "IDS.CAPITAL_MOBILIZATION"
@@ -1464,7 +1476,7 @@ entities:
   atomic_entity: "Public Company Entity Role"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_entity_role"
+  entity_physical_name: "pc_entity_role"
   description: "Vai trò của người nội bộ/cổ đông tại CTĐC trong một khoảng thời gian:\
     \ loại vai trò, trạng thái hoạt động, thời gian hiệu lực."
   source_table: "IDS.COMPANY_ENTITY_ROLE"
@@ -1484,7 +1496,7 @@ entities:
   atomic_entity: "Public Company Evaluation Criterion"
   table_type: ""
   domain_prefix: "Public Company Evaluation"
-  entity_physical_name: "public_company_evaluation_criterion"
+  entity_physical_name: "pc_evaluation_criterion"
   description: "Chỉ tiêu đánh giá/xếp hạng công ty đại chúng thuộc một nhóm chỉ tiêu:\
     \ mã chỉ tiêu, tên, điểm tối đa, thứ tự."
   source_table: "IDS.EVALUATION_CRITERIA"
@@ -1494,7 +1506,7 @@ entities:
   atomic_entity: "Public Company Evaluation Detail"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_evaluation_detail"
+  entity_physical_name: "pc_evaluation_detail"
   description: "Chi tiết điểm từng chỉ tiêu trong kết quả đánh giá CTĐC: kết quả định\
     \ tính, điểm số, cờ đánh giá — grain 1 chỉ tiêu × 1 kỳ đánh giá × 1 công ty."
   source_table: "IDS.EVALUATION_DETAILS"
@@ -1504,7 +1516,7 @@ entities:
   atomic_entity: "Public Company Evaluation Group"
   table_type: ""
   domain_prefix: "Public Company Evaluation"
-  entity_physical_name: "public_company_evaluation_group"
+  entity_physical_name: "pc_evaluation_group"
   description: "Nhóm phân loại chỉ tiêu dùng trong hệ thống đánh giá/xếp hạng công\
     \ ty đại chúng: tên nhóm, thứ tự, tổng điểm tối đa. Table Type = Classification\
     \ theo xác nhận Tier1 6f (T1-03)."
@@ -1515,7 +1527,7 @@ entities:
   atomic_entity: "Public Company Evaluation Period"
   table_type: ""
   domain_prefix: "Public Company Evaluation"
-  entity_physical_name: "public_company_evaluation_period"
+  entity_physical_name: "pc_evaluation_period"
   description: "Kỳ đánh giá/xếp hạng công ty đại chúng: xác định năm, tháng và trạng\
     \ thái mở/đóng của từng kỳ đánh giá."
   source_table: "IDS.EVALUATION_PERIODS"
@@ -1525,7 +1537,7 @@ entities:
   atomic_entity: "Public Company Financial Report Value"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_financial_report_value"
+  entity_physical_name: "pc_financial_report_value"
   description: "Giá trị số liệu từng ô trong báo cáo tài chính của CTĐC theo kỳ (năm/quý):\
     \ giá trị, mã hàng, mã cột theo catalog BCTC."
   source_table: "IDS.DATA"
@@ -1535,7 +1547,7 @@ entities:
   atomic_entity: "Public Company Foreign Ownership Limit"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_foreign_ownership_limit"
+  entity_physical_name: "pc_foreign_ownership_limit"
   description: "Quyết định quy định tỷ lệ tối đa sở hữu nước ngoài tại CTĐC: số quyết\
     \ định, tỷ lệ giới hạn, thời gian hiệu lực."
   source_table: "IDS.FOREIGN_OWNER_LIMIT"
@@ -1545,7 +1557,7 @@ entities:
   atomic_entity: "Public Company Inspection"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_inspection"
+  entity_physical_name: "pc_inspection"
   description: "Đợt thanh tra/kiểm tra CTĐC do UBCKNN thực hiện: số quyết định, loại\
     \ thanh tra, phạm vi, đơn vị chủ trì, kết quả."
   source_table: "IDS.COMPANY_INSPECTION"
@@ -1555,7 +1567,7 @@ entities:
   atomic_entity: "Public Company Legal Representative"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_legal_representative"
+  entity_physical_name: "pc_legal_representative"
   description: "Người đại diện pháp luật và người phụ trách CBTT của CTĐC: chức danh,\
     \ thời gian đảm nhiệm."
   source_table: "IDS.LEGAL_REPRESENTATIVE"
@@ -1565,7 +1577,7 @@ entities:
   atomic_entity: "Public Company Penalty"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_penalty"
+  entity_physical_name: "pc_penalty"
   description: "Quyết định xử phạt hành chính đối với CTĐC hoặc cá nhân liên quan:\
     \ đối tượng bị xử phạt, số quyết định, hình thức, mức phạt."
   source_table: "IDS.COMPANY_PENALTIES"
@@ -1575,7 +1587,7 @@ entities:
   atomic_entity: "Public Company Registration"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_registration"
+  entity_physical_name: "pc_registration"
   description: "Hồ sơ và lịch sử đăng ký tư cách công ty đại chúng với UBCKNN."
   source_table: "IDS.PUB_COMPANY_REGISTRATION"
   status: "draft"
@@ -1584,7 +1596,7 @@ entities:
   atomic_entity: "Public Company Related Entity"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_related_entity"
+  entity_physical_name: "pc_related_entity"
   description: "Quan hệ sở hữu/liên kết giữa CTĐC và các pháp nhân liên quan: mối\
     \ quan hệ mẹ/con/liên doanh/liên kết."
   source_table: "IDS.COMPANY_RELATIONSHIP"
@@ -1594,7 +1606,7 @@ entities:
   atomic_entity: "Public Company Report Extension"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_report_extension"
+  entity_physical_name: "pc_report_extension"
   description: "Hồ sơ xin gia hạn nộp báo cáo định kỳ của CTĐC: lý do xin gia hạn,\
     \ thời gian gia hạn được chấp thuận."
   source_table: "IDS.REPORT_EXTENSIONS"
@@ -1604,7 +1616,7 @@ entities:
   atomic_entity: "Public Company Report Submission"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_report_submission"
+  entity_physical_name: "pc_report_submission"
   description: "Lần nộp báo cáo/tin CBTT chính thức của CTĐC đã được phê duyệt (filter\
     \ NEWS_STATUS_CD = APPROVED): liên kết CTĐC với form CBTT và ngày nộp."
   source_table: "IDS.COMPANY_DATA"
@@ -1614,7 +1626,7 @@ entities:
   atomic_entity: "Public Company Securities Offering"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_securities_offering"
+  entity_physical_name: "pc_securities_offering"
   description: "Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân:\
     \ số đăng ký, chứng nhận, tổng số lượng đăng ký. APPLICANT_TYPE_FLG phân biệt\
     \ tổ chức và cá nhân."
@@ -1625,7 +1637,7 @@ entities:
   atomic_entity: "Public Company Securities Offering Plan"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_securities_offering_plan"
+  entity_physical_name: "pc_securities_offering_plan"
   description: "Kế hoạch chi tiết chào bán chứng khoán: phương thức phân phối, loại\
     \ CK, số lượng, giá chào bán, thời gian chào bán, điều kiện đặc thù theo loại\
     \ CK."
@@ -1636,7 +1648,7 @@ entities:
   atomic_entity: "Public Company Securities Offering Result"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_securities_offering_result"
+  entity_physical_name: "pc_securities_offering_result"
   description: "Kết quả thực tế chào bán chứng khoán: số lượng thành công, giá thực\
     \ tế, tổng giá trị huy động, phân chia trong nước/nước ngoài, chi phí phát hành."
   source_table: "IDS.SECURITIES_OFFERING_RESULT"
@@ -1646,7 +1658,7 @@ entities:
   atomic_entity: "Public Company Share Statistics"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_share_statistics"
+  entity_physical_name: "pc_share_statistics"
   description: "Thống kê cấu trúc vốn/cổ phần của CTĐC tại từng thời điểm: tổng số\
     \ cổ phần, cổ phần lưu hành, cổ phần nước ngoài."
   source_table: "IDS.COMPANY_SHARE_STATISTICS"
@@ -1656,7 +1668,7 @@ entities:
   atomic_entity: "Public Company Shareholding"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_shareholding"
+  entity_physical_name: "pc_shareholding"
   description: "Cổ đông của CTĐC và thông tin sở hữu: số lượng cổ phần, tỷ lệ sở hữu,\
     \ phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan)."
   source_table: "IDS.COMPANY_SHAREHOLDING"
@@ -1666,7 +1678,7 @@ entities:
   atomic_entity: "Public Company State Capital"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_state_capital"
+  entity_physical_name: "pc_state_capital"
   description: "Tỷ lệ vốn nhà nước tại CTĐC và cơ quan đại diện phần vốn nhà nước:\
     \ tỷ lệ sở hữu, ngày hiệu lực."
   source_table: "IDS.STATE_CAPITAL"
@@ -1676,7 +1688,7 @@ entities:
   atomic_entity: "Public Company Stock Listing History"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_stock_listing_history"
+  entity_physical_name: "pc_stock_listing_history"
   description: "Lịch sử các sự kiện niêm yết và hủy niêm yết cổ phiếu của CTĐC trên\
     \ sàn giao dịch."
   source_table: "IDS.STOCK_LISTING_HISTORY"
@@ -1686,7 +1698,7 @@ entities:
   atomic_entity: "Public Company Tender Offer"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_tender_offer"
+  entity_physical_name: "pc_tender_offer"
   description: "Phương án chào mua công khai cổ phiếu của CTĐC: bên chào mua, mức\
     \ giá, số lượng, thời gian chào mua."
   source_table: "IDS.COMPANY_TENDER_OFFER"
@@ -1696,7 +1708,7 @@ entities:
   atomic_entity: "Public Company Treasury Stock Activity"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_treasury_stock_activity"
+  entity_physical_name: "pc_treasury_stock_activity"
   description: "Hoạt động mua/bán cổ phiếu quỹ của CTĐC theo năm: số lượng đăng ký\
     \ mua/bán, giá, thời gian."
   source_table: "IDS.COMPANY_TREASURY_STOCKS"
@@ -1706,7 +1718,7 @@ entities:
   atomic_entity: "Public Company Violation Penalty Config"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_violation_penalty_config"
+  entity_physical_name: "pc_violation_penalty_config"
   description: "Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm nộp báo cáo: số ngày\
     \ quá hạn (cố định/tối thiểu/tối đa), mã khoản quy định, hình thức xử phạt, thời\
     \ gian hiệu lực."
@@ -1717,7 +1729,7 @@ entities:
   atomic_entity: "Public Company Violation Report"
   table_type: ""
   domain_prefix: "Public Company"
-  entity_physical_name: "public_company_violation_report"
+  entity_physical_name: "pc_violation_report"
   description: "Theo dõi vi phạm nộp báo cáo CBTT định kỳ của CTĐC: hạn nộp, ngày\
     \ nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Bao gồm cả theo dõi vi phạm\
     \ nộp báo cáo qua module HTE (nguồn HTE_VIOLATION_REPORT)."

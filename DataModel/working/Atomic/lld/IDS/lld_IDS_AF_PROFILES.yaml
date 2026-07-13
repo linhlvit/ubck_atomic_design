@@ -23,7 +23,7 @@ metadata:
     \ SCMS.CT_KIEM_TOAN (chưa thiết kế, xem HLD T1-05)."
 attributes:
 - attribute_name: "Audit Firm Id"
-  physical_name: "audit_firm_id"
+  physical_name: "af_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,7 +35,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Code"
-  physical_name: "audit_firm_code"
+  physical_name: "af_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -48,7 +48,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Unique Key"
-  physical_name: "audit_firm_unique_key"
+  physical_name: "af_unique_key"
   description: "Mã công ty kiểm toán."
   data_domain: "Text"
   nullable: true
@@ -74,7 +74,7 @@ attributes:
   etl_derived_value: "IDS.AF_PROFILES"
   data_type: "string"
 - attribute_name: "Audit Firm Name"
-  physical_name: "audit_firm_nm"
+  physical_name: "af_nm"
   description: "Tên đầy đủ (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -87,7 +87,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm English Name"
-  physical_name: "audit_firm_english_nm"
+  physical_name: "af_english_nm"
   description: "Tên đầy đủ (tiếng Anh)."
   data_domain: "Text"
   nullable: true
@@ -100,7 +100,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Short Name"
-  physical_name: "audit_firm_short_nm"
+  physical_name: "af_short_nm"
   description: "Tên viết tắt."
   data_domain: "Text"
   nullable: true
@@ -167,7 +167,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Foreign Audit Firm Name"
-  physical_name: "foreign_audit_firm_nm"
+  physical_name: "foreign_af_nm"
   description: "Tên hãng kiểm toán nước ngoài (nếu là thành viên)."
   data_domain: "Text"
   nullable: true
@@ -206,7 +206,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Audit Firm Status Code"
-  physical_name: "audit_firm_status_code"
+  physical_name: "af_status_code"
   description: "Trạng thái công ty kiểm toán."
   data_domain: "Classification Value"
   nullable: true
@@ -256,91 +256,6 @@ attributes:
   source_columns:
   - "IDS.AF_PROFILES.APPROVER_COMMENT"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_PROFILES.CREATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày sửa."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_PROFILES.UPDATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Id"
-  physical_name: "created_by_user_id"
-  description: "Người tạo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_PROFILES.CREATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
-    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
-    \ thêm Hash."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By User Code"
-  physical_name: "created_by_user_code"
-  description: "Mã người tạo (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_PROFILES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Id"
-  physical_name: "updated_by_user_id"
-  description: "Người sửa."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_PROFILES.UPDATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
-    \ By User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Code"
-  physical_name: "updated_by_user_code"
-  description: "Mã người sửa (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_PROFILES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

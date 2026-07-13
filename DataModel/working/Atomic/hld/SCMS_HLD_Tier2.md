@@ -41,6 +41,7 @@
 | Event | [Event] Business Activity | Event | SC_FIRM_PROFILE_CHANGE | Lịch sử thay đổi hồ sơ CTCK (loại thay đổi, trước/sau, số văn bản) | Securities Company Profile Change | Fact Append | (1) BCV có `Change Event` hoặc `Profile Amendment` trong Business Activity/Event. (2) SC_FIRM_PROFILE_CHANGE ghi nhận từng lần thay đổi hồ sơ: ENTITY_TYPE (CTCK/CHI_NHANH/NHAN_SU...), BEFORE_INFO/AFTER_INFO, EVENT_TYPE_ID, số văn bản. Insert-only. (3) Chọn `[Event] Business Activity`, Fact Append. |
 | Condition | [Condition] Risk Scale | Condition | RISK_SCORING_SCALE | Thang điểm đánh giá rủi ro cho từng chỉ tiêu (mức điểm và mô tả điều kiện) | Securities Company Risk Indicator Scoring Scale | Relative | (1) BCV có `Risk Scale` hoặc `Rating Scale` trong Condition — điều kiện/quy tắc đánh giá. (2) RISK_SCORING_SCALE lưu thang điểm cho RISK_INDICATOR: từng mức điểm, mô tả điều kiện, khoảng giá trị. FK → RISK_INDICATOR.ID. (3) Chọn `[Condition] Risk Scale`. |
 | Condition | [Condition] Alert Rule | Condition | ALERT_INDICATOR_CONDITION | Điều kiện kích hoạt cảnh báo cho chỉ tiêu cảnh báo (ngưỡng, công thức) | Securities Company Alert Indicator Condition | Relative | (1) BCV có `Alert Rule` hoặc `Trigger Condition` trong Condition. (2) ALERT_INDICATOR_CONDITION lưu điều kiện cảnh báo: biểu thức logic, ngưỡng, công thức. FK → ALERT_INDICATOR.ID. (3) Chọn `[Condition] Alert Rule`. |
+| Business Activity | [Business Activity] Data Monitoring | Business Activity | ALERT_RUN | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ tiêu cảnh báo | Securities Company Alert Run | Fact Append | (1) Term candidate `Data Monitoring` (BCV id 7794, category Business Activity, type_of `Data Processing Activity`): "Identifies a Data Processing Activity Type that relates to the examination of data for specific purposes." Term `Operating Activity` (id 7793, "ongoing actions undertaken in support of business objectives") bị loại vì quá chung chung, không đặc tả bản chất "quét/kiểm tra dữ liệu". (2) ALERT_RUN: FK→ALERT_INDICATOR (chỉ tiêu được kiểm tra); ALERT_TARGET_ENTITY/DATA_YEAR/DATA_PERIOD mô tả phạm vi dữ liệu được quét; START_TIME/END_TIME/RECORD_STATUS/ALERT_COUNT_GENERATED/ERROR_MESSAGE mô tả vòng đời 1 lần thực thi việc kiểm tra dữ liệu phát hiện vi phạm — khớp đúng "examination of data for specific purposes". (3) Chọn `[Business Activity] Data Monitoring`. Fact Append vì grain = 1 occurrence thực thi, nguồn Append theo CREATED_AT. Đảo ngược quyết định loại-scope trước đây — xem Overview 7e (entry mới) và mục 6f T2-08. |
 | Involved Party | [Involved Party] Major Shareholder | Involved Party | SC_FIRM_MAJOR_SHAREHOLDER_RELATION | Quan hệ cổ đông lớn (sở hữu ≥5%) của CTCK | Securities Company Major Shareholder Relation | Relative | (1) BCV có `Major Shareholder` trong Involved Party — Involved Party nắm tỷ lệ sở hữu lớn. (2) Bảng: FK→SC_FIRM_INFO(FK cứng), SHAREHOLDER_ID(key: null — không phải FK). Grain = 1 cổ đông lớn × 1 CTCK. (3) Chọn `[Involved Party] Major Shareholder`. Chuyển từ Tier 3 xuống Tier 2 sau khi xác nhận BRD. |
 | Business Activity | [Business Activity] Business Activity | Business Activity | RISK_SUMMARY | Tổng hợp điểm rủi ro CTCK theo kỳ đánh giá (tổng điểm CAMEL + xếp hạng) | Securities Company Risk Summary | Fact Snapshot | (1) BCV có `Risk Summary` trong Business Activity — sự kiện tổng hợp kết quả đánh giá. (2) Bảng: FK→SC_FIRM_INFO(FK cứng), RISK_REPORTING_PERIOD_ID(FK suy luận→T1), RISK_SCORING_SC_FIRM_ID(key: null — không phải FK). Grain = 1 CTCK × 1 kỳ → Fact Snapshot. (3) Chuyển từ Tier 3 xuống Tier 2 sau khi xác nhận BRD. |
 
@@ -158,6 +159,11 @@ erDiagram
         int ID PK
         int SC_FIRM_INFO_ID FK
         int ALERT_INDICATOR_ID FK
+        int ALERT_RUN_ID FK
+    }
+    ALERT_RUN {
+        int ID PK
+        int ALERT_INDICATOR_ID FK
     }
     SC_FIRM_ADMIN_PENALTY_DECISION {
         int ID PK
@@ -238,6 +244,8 @@ erDiagram
     RISK_INDICATOR ||--o{ RISK_SCORING_SCALE : "RISK_INDICATOR_ID"
     ALERT_INDICATOR ||--o{ ALERT_INDICATOR_CONDITION : "ALERT_INDICATOR_ID"
     ALERT_INDICATOR ||--o{ SC_FIRM_ALERT_VIOLATION : "ALERT_INDICATOR_ID"
+    ALERT_INDICATOR ||--o{ ALERT_RUN : "ALERT_INDICATOR_ID"
+    ALERT_RUN ||--o{ SC_FIRM_ALERT_VIOLATION : "ALERT_RUN_ID"
 ```
 
 ---
@@ -346,6 +354,12 @@ erDiagram
         bigint ds_id PK
         bigint securities_company_id FK
         bigint securities_company_alert_indicator_id FK
+        bigint securities_company_alert_run_id FK
+    }
+    Securities_Company_Alert_Run {
+        bigint ds_id PK
+        bigint securities_company_alert_indicator_id FK
+        string run_code
     }
     Securities_Company_Administrative_Penalty_Decision {
         bigint ds_id PK
@@ -401,6 +415,8 @@ erDiagram
     Audit_Firm ||--o{ Audit_Firm_Auditor : "audit_firm_id"
     Securities_Company_Risk_Indicator ||--o{ Securities_Company_Risk_Scoring_Scale : "securities_company_risk_indicator_id"
     Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Indicator_Condition : "securities_company_alert_indicator_id"
+    Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Run : "securities_company_alert_indicator_id"
+    Securities_Company_Alert_Run ||--o{ Securities_Company_Alert_Violation : "securities_company_alert_run_id"
 ```
 
 ---
@@ -414,6 +430,8 @@ erDiagram
 | SC_FIRM_INSPECTION_SCHEDULE.RECORD_TYPE | Loại nghiệp vụ (KIEM_TRA / THANH_TRA) | `SCMS_INSPECTION_TYPE` | source_table | Values: KIEM_TRA, THANH_TRA |
 | SC_FIRM_ADMIN_SANCTION.FORM_TYPE | Hình thức xử phạt hành chính | `SCMS_ADMIN_SANCTION_TYPE` | source_table | Values: CANH_CAO, PHAT_TIEN, DINH_CHI, TUOC_GIAY_PHEP |
 | SC_FIRM_COMPLAINT_PETITION.PETITION_TYPE | Loại đơn thư | `SCMS_PETITION_TYPE` | source_table | Values: KHIEU_NAI, TO_CAO, KIEN_NGHI, PHAN_ANH |
+| ALERT_RUN.RECORD_STATUS | Trạng thái vòng đời của 1 lần chạy cảnh báo tự động | `SCMS_ALERT_RUN_RECORD_STATUS` | source_table | Values: 0=Đang xử lý, 1=Hoàn thành, -1=Lỗi, 2=Bị huỷ. Field kiểu Classification Value bắt buộc có Scheme Code, cùng pattern với các RECORD_STATUS khác trong SCMS |
+| ALERT_RUN.ALERT_TARGET_ENTITY | Đối tượng đích được quét trong lần chạy cảnh báo | — (không gán scheme) | — | Map 1:1 từ nguồn dạng Text — mô tả nguồn chưa rõ ràng, chưa có bằng chứng data xác nhận có cùng domain với `SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE` (scheme `SCMS_ALERT_ENTITY_TYPE`) hay không. Cần profile giá trị thực tế ở bước LLD trước khi quyết định có chuẩn hóa thành Classification Value hay không (xem 6f) |
 
 ---
 
@@ -436,5 +454,6 @@ erDiagram
 | T2-05 | SC_FIRM_SERVICE là bảng riêng bên cạnh LNK_SC_FIRM_SERVICE — 2 bảng này quan hệ gì? | **Đã xác nhận:** 2 bảng phản ánh 2 dữ liệu nghiệp vụ khác nhau. SC_FIRM_SERVICE = hồ sơ đăng ký/thu hồi dịch vụ theo từng văn bản (REGISTRATION_DOC_NUMBER/DATE, TERMINATION_DOC_NUMBER, END_DATE) → thiết kế thành entity `Securities Company Licensed Service` (`[Event] Party Registration`, Fundamental). LNK_SC_FIRM_SERVICE = danh mục số giấy phép hiện hành theo CTCK × dịch vụ (LICENSE_NUMBER, LICENSE_DATE) → giữ `scope_status: pending`, thiết kế thành entity riêng ở lượt sau (xem mục 6e). |
 | T2-06 | SC_FIRM_LICENSED_PRACTITIONER trước đây được LOCKED để extend source_table vào entity `Securities Practitioner` (NHNCK) — quyết định này có đúng không? | **Đã sửa lại 2026-07-09 (theo yêu cầu Data Modeler):** SAI — 2 bảng độc lập. `Securities Practitioner` (NHNCK.PROFESSIONALS) và `Securities Company Practitioner` (SCMS.SC_FIRM_LICENSED_PRACTITIONER, entity mới) tách thành 2 Fundamental entity riêng, chỉ liên kết chéo hệ thống qua cặp FK Id/Code (nullable) dựa trên NHN_ID. Đã cập nhật `atomic_entities.yaml`, LLD SCMS (main + 3 shared entity), `manifest.yaml`, xoá `entities/entity_securities_practitioner.yaml` (không còn multi-source). |
 | T2-07 | SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID, SC_FIRM_PERIODIC_REPORT/DISCLOSURE_REPORT/SC_FIRM_ADHOC_REPORT.APPROVED_BY/SENDER_ID/CANCELLED_BY và các field tương tự (PROCESSOR_ID, PERFORMED_BY, USER_ID) trước đây pending FK đến placeholder "SCMS.SYS_USER" — target thật là gì? | **Đã xác nhận 2026-07-10 (theo yêu cầu Data Modeler):** Target thật là `Identity and Access Management User` (IAM.USERS, xem `lld_IAM_USERS.yaml`). Đã đổi tên attribute `{Role} SCMS User Id/Code` → `{Role} IAM User Id/Code` trong 9 file LLD SCMS. Vẫn giữ `status: pending` vì SCMS lưu ID dạng NUMBER còn IAM.USERS.ID là UUIDv7 (string) — chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống. Cần Data Modeler xác nhận cách map giá trị trước khi chuyển draft. |
-| T2-08 | SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID (FK thật theo BRD → ALERT_RUN.ID) — có cần đưa ALERT_RUN vào scope thiết kế không? | **Quyết định 2026-07-10:** Chưa — giữ `status: pending`, không tạo entity ALERT_RUN trong lượt review này. Cần bổ sung Tier thiết kế riêng cho ALERT_RUN trước khi resolve FK này. |
+| T2-08 | SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID (FK thật theo BRD → ALERT_RUN.ID) — có cần đưa ALERT_RUN vào scope thiết kế không? | **Đã resolve (2026-07-12).** Đảo ngược quyết định loại-scope trước đây (2026-07-10) — thiết kế `ALERT_RUN` thành entity `Securities Company Alert Run` (`[Business Activity] Data Monitoring`, Fact Append, xem mục 6a). FK `SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID` → "Securities Company Alert Run" đã resolve. Đã xóa dòng ALERT_RUN khỏi Overview 7f/`atomic_out_of_scope.yaml`; xem Overview 7e entry mới. |
 | T2-09 | SC_FIRM_INFO.TOTAL_SHARES (số lượng cổ phần, NUMBER(38)) — data_domain nào phù hợp? | **Đề xuất 2026-07-10:** Không domain nào trong 12 domain chuẩn phù hợp (Small Counter=int quá nhỏ, các domain số khác mang ý nghĩa tiền tệ/lãi suất sai ngữ nghĩa). Đã tạm gắn `[PROPOSE NEW DOMAIN] Quantity (decimal(38,0))` trên attribute — cần Data Modeler duyệt bổ sung domain `Quantity` vào `reference/data_domains.md` (hiện `validate_lld_yaml.py` sẽ báo lỗi cho đến khi duyệt). |
+| T2-10 | ALERT_RUN.ALERT_TARGET_ENTITY (NVARCHAR2(80)) — mô tả nguồn chưa rõ ràng, có cùng domain giá trị với `SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE` (scheme `SCMS_ALERT_ENTITY_TYPE`: CTCK/CN_NUOC_NGOAI/VPDD_NUOC_NGOAI) hay là 1 domain khác? | **Chưa resolve.** Theo yêu cầu Data Modeler: map 1:1 từ nguồn dạng Text ở vòng HLD này, không gán scheme. Cần profile giá trị thực tế ở bước LLD để xác định có nên chuẩn hóa thành Classification Value hay không, và nếu có thì tái sử dụng `SCMS_ALERT_ENTITY_TYPE` hay tạo scheme riêng. |

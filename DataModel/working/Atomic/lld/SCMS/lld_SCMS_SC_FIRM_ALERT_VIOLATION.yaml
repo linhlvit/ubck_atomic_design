@@ -20,10 +20,11 @@ metadata:
   notes: "Vi phạm cảnh báo từ chỉ tiêu giám sát (Alert Indicator). Mỗi dòng = 1 cảnh\
     \ báo vi phạm được tạo ra khi run alert. ENTITY_TYPE + ENTITY_ID là polymorphic\
     \ FK: CTCK → Securities Company; CN_NUOC_NGOAI → Securities Company Foreign Branch;\
-    \ VPDD_NUOC_NGOAI → Securities Company Foreign Rep Office. ALERT_CONDITION_ID\
-    \ và ALERT_RUN_ID: pending vì không có trong HLD scope. CONDITION là chuỗi logic\
-    \ expression từ hệ thống — lưu dạng Text. Audit: CREATED_AT + CREATED_BY; không\
-    \ có LAST_MODIFIED_BY/AT."
+    \ VPDD_NUOC_NGOAI → Securities Company Foreign Rep Office. ALERT_CONDITION_ID:\
+    \ pending vì không có trong HLD scope. ALERT_RUN_ID: resolved 2026-07-12 — FK\
+    \ đến Securities Company Alert Run (xem lld_SCMS_ALERT_RUN.yaml). CONDITION là\
+    \ chuỗi logic expression từ hệ thống — lưu dạng Text. Audit: CREATED_AT + CREATED_BY;\
+    \ không có LAST_MODIFIED_BY/AT."
 attributes:
 - attribute_name: "Securities Company Alert Violation Id"
   physical_name: "sc_alert_violation_id"
@@ -148,31 +149,32 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Alert Run Id"
-  physical_name: "alert_run_id"
+- attribute_name: "Securities Company Alert Run Id"
+  physical_name: "sc_alert_run_id"
   description: "FK đến lần chạy alert tạo ra vi phạm này."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
-  comment: "Pending — ALERT_RUN là FK thật theo BRD (fk_note: FK → ALERT_RUN.ID) nhưng\
-    \ bảng ALERT_RUN chưa được đưa vào scope HLD/LLD SCMS. Cần bổ sung Tier thiết\
-    \ kế ALERT_RUN trước khi resolve FK này."
+  comment: "FK target: Securities Company Alert Run.Securities Company Alert Run Id.\
+    \ Hash: hash_id('SCMS.ALERT_RUN', ALERT_RUN_ID). Resolved 2026-07-12 — ALERT_RUN\
+    \ đã được đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Alert Run Code"
-  physical_name: "alert_run_code"
+- attribute_name: "Securities Company Alert Run Code"
+  physical_name: "sc_alert_run_code"
   description: "Mã lần chạy alert."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
-  comment: "Pending — Pair with Alert Run Id. Xem comment Id."
+  comment: "Lookup pair: Securities Company Alert Run.Securities Company Alert Run\
+    \ Code. Pair with Securities Company Alert Run Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

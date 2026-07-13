@@ -2358,7 +2358,6 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD"
     used_in_entities:
-      - "Securities Company Periodic Report"
       - "Securities Company Disclosure Report"
     values:
       - code: "NGAY"
@@ -2560,7 +2559,6 @@ schemes:
     source_table: "SCMS.DISCLOSURE_SECURITIES_OFFERING.DATA_SOURCE"
     used_in_entities:
       - "Securities Company Disclosure Securities Offering"
-      - "Securities Company Administrative Penalty Decision"
       - "Securities Company Complaint Petition"
     values:
       - code: "AUTO_SYNC"
@@ -2608,6 +2606,26 @@ schemes:
       - code: "VPDD_NUOC_NGOAI"
         label: "Văn phòng đại diện nước ngoài"
         source_value: "VPDD_NUOC_NGOAI"
+
+  - scheme_code: "SCMS_ALERT_RUN_RECORD_STATUS"
+    name: "Trạng thái vòng đời của 1 lần chạy cảnh báo tự động: Đang xử lý/Hoàn thành/Lỗi/Bị huỷ"
+    source_type: "source_table"
+    source_table: "SCMS.ALERT_RUN.RECORD_STATUS"
+    used_in_entities:
+      - "Securities Company Alert Run"
+    values:
+      - code: "0"
+        label: "Đang xử lý"
+        source_value: "0"
+      - code: "1"
+        label: "Hoàn thành"
+        source_value: "1"
+      - code: "-1"
+        label: "Lỗi"
+        source_value: "-1"
+      - code: "2"
+        label: "Bị huỷ"
+        source_value: "2"
 
   - scheme_code: "SCMS_IMPLEMENTATION_STATUS"
     name: "Trạng thái thực thi quyết định xử phạt: Chưa thực hiện, Đang thực hiện, Đã thực hiện, Quá hạn"
@@ -3153,8 +3171,8 @@ schemes:
     source_table: "IDS.report_catalog"
     used_in_entities:
       - "Financial Report Catalog"
-      - "Financial Report Row Template"
-      - "Financial Report Column Template"
+      - "Financial Report Form Row Template"
+      - "Financial Report Form Column Template"
     values: []
 
   - scheme_code: "IDS_REPORT_SCOPE"
@@ -3262,7 +3280,7 @@ schemes:
     source_type: "etl_derived"
     source_table: "IDS.rrow"
     used_in_entities:
-      - "Financial Report Row Template"
+      - "Financial Report Form Row Template"
     values: []
 
   - scheme_code: "IDS_PERIODIC_FORM_ROW_DATA_TYPE"
@@ -4800,7 +4818,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "IDS.RCOL.COL_TYPE_CD"
     used_in_entities:
-      - "Financial Report Column Template"
+      - "Financial Report Form Column Template"
     values: []
 
   - scheme_code: "IDS_POSITION"

@@ -4,7 +4,7 @@ metadata:
   source_system: "IDS"
   source_table: "COMPANY_DATA"
   atomic_entity: "Public Company Report Submission"
-  entity_physical_name: "public_company_report_submission"
+  entity_physical_name: "pc_report_submission"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Filing"
   table_type: "Fact Append"
@@ -23,7 +23,7 @@ metadata:
     \ chính), LINK_ID (liên kết bản VI/EN của cùng 1 tin)."
 attributes:
 - attribute_name: "Public Company Report Submission Id"
-  physical_name: "public_company_rpt_submission_id"
+  physical_name: "pc_report_submission_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,7 +35,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Report Submission Code"
-  physical_name: "public_company_rpt_submission_code"
+  physical_name: "pc_report_submission_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -60,7 +60,7 @@ attributes:
   etl_derived_value: "IDS.COMPANY_DATA"
   data_type: "string"
 - attribute_name: "Public Company Id"
-  physical_name: "public_company_id"
+  physical_name: "pc_id"
   description: "Id của công ty đại chúng nộp báo cáo."
   data_domain: "Surrogate Key"
   nullable: false
@@ -74,7 +74,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Code"
-  physical_name: "public_company_code"
+  physical_name: "pc_code"
   description: "Mã công ty đại chúng."
   data_domain: "Text"
   nullable: false
@@ -182,7 +182,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Parent Public Company Report Submission Id"
-  physical_name: "parent_public_company_rpt_submission_id"
+  physical_name: "parent_pc_report_submission_id"
   description: "Id bản ghi cha trong chuỗi phân cấp tin/hồ sơ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -196,7 +196,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Parent Public Company Report Submission Code"
-  physical_name: "parent_public_company_rpt_submission_code"
+  physical_name: "parent_pc_report_submission_code"
   description: "Mã bản ghi cha (denormalized lookup)."
   data_domain: "Text"
   nullable: true
@@ -328,7 +328,7 @@ attributes:
   etl_derived_value: null
   data_type: "int"
 - attribute_name: "Reference Public Company Report Submission Id"
-  physical_name: "reference_public_company_rpt_submission_id"
+  physical_name: "reference_pc_report_submission_id"
   description: "Id tin gốc, dùng khi bản ghi hiện tại là tin đính chính."
   data_domain: "Surrogate Key"
   nullable: true
@@ -343,7 +343,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Reference Public Company Report Submission Code"
-  physical_name: "reference_public_company_rpt_submission_code"
+  physical_name: "reference_pc_report_submission_code"
   description: "Mã tin gốc (denormalized lookup)."
   data_domain: "Text"
   nullable: true
@@ -424,7 +424,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
 - attribute_name: "Linked Public Company Report Submission Id"
-  physical_name: "linked_public_company_rpt_submission_id"
+  physical_name: "linked_pc_report_submission_id"
   description: "Id bản tin ngôn ngữ khác (liên kết cặp bản tin Tiếng Việt/Tiếng Anh)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -439,7 +439,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Linked Public Company Report Submission Code"
-  physical_name: "linked_public_company_rpt_submission_code"
+  physical_name: "linked_pc_report_submission_code"
   description: "Mã bản tin ngôn ngữ khác (denormalized lookup)."
   data_domain: "Text"
   nullable: true
@@ -464,90 +464,5 @@ attributes:
   comment: "Scheme: IDS_LANGUAGE (no_lookup) — chưa có trong HLD 6d, bổ sung scheme\
     \ mới. Values: VI (Tiếng Việt), EN (Tiếng Anh)."
   classification_context: "IDS_LANGUAGE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_DATA.CREATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày sửa."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_DATA.UPDATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Id"
-  physical_name: "created_by_user_id"
-  description: "Người tạo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_DATA.CREATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
-    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
-    \ thêm Hash."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By User Code"
-  physical_name: "created_by_user_code"
-  description: "Mã người tạo (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_DATA.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Id"
-  physical_name: "updated_by_user_id"
-  description: "Người sửa."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_DATA.UPDATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
-    \ By User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Code"
-  physical_name: "updated_by_user_code"
-  description: "Mã người sửa (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_DATA.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
   etl_derived_value: null
   data_type: "string"

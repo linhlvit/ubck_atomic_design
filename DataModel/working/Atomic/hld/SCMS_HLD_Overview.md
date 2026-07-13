@@ -57,6 +57,7 @@
 | 2 | Event | [Event] Business Activity | Event | SC_FIRM_PROFILE_CHANGE | Append | Sự kiện thay đổi thông tin hồ sơ CTCK hoặc đơn vị trực thuộc | Securities Company Profile Change | Fact Append | (1) Business Activity — BCV: "an Event involving an action or series of actions". (2) Bảng: FK→SC_FIRM_INFO, CHANGE_OBJECT_TYPE, CHANGE_TYPE_ID, CHANGE_DATE, APPROVAL_DOCUMENT_NUMBER, BEFORE_VALUE, AFTER_VALUE, STATUS. (3) Business Activity phù hợp. Fact Append — mỗi lần thay đổi là event insert-only. |
 | 2 | Condition | [Condition] Risk Scale | Condition | RISK_SCORING_SCALE | Update | Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu | Securities Company Risk Indicator Scoring Scale | Fundamental | (1) Risk Scale — BCV: "a Condition defining a scale for assessing risk". (2) Bảng: FK→RISK_INDICATOR, SCORE_LEVEL, MIN_VALUE, MAX_VALUE, DESCRIPTION — các mức điểm theo khoảng giá trị. (3) Risk Scale khớp. Condition vì đây là quy định, không phải instance. |
 | 2 | Condition | [Condition] Alert Rule | Condition | ALERT_INDICATOR_CONDITION | Update | Điều kiện kích hoạt cảnh báo cho từng chỉ tiêu cảnh báo | Securities Company Alert Indicator Condition | Fundamental | (1) Alert Rule — BCV: "a Condition defining rules that trigger an alert". (2) Bảng: FK→ALERT_INDICATOR, CONDITION_EXPRESSION, THRESHOLD_VALUE, COMPARISON_OPERATOR, EFFECTIVE_DATE. (3) Alert Rule khớp. Condition vì đây là quy tắc kích hoạt. |
+| 2 | Business Activity | [Business Activity] Data Monitoring | Business Activity | ALERT_RUN | Append | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ tiêu cảnh báo | Securities Company Alert Run | Fact Append | (1) Data Monitoring — BCV (id 7794): "Identifies a Data Processing Activity Type that relates to the examination of data for specific purposes". (2) Bảng: FK→ALERT_INDICATOR (chỉ tiêu được kiểm tra), ALERT_TARGET_ENTITY/DATA_YEAR/DATA_PERIOD (phạm vi dữ liệu quét), START_TIME/END_TIME/RECORD_STATUS/ALERT_COUNT_GENERATED/ERROR_MESSAGE (vòng đời 1 lần thực thi). (3) Data Monitoring khớp hơn `Operating Activity` (quá chung chung). Fact Append — grain 1 occurrence, nguồn Append. Đảo ngược quyết định loại-scope trước đây — xem 7e (entry mới) và SCMS_HLD_Tier2.md 6f T2-08. |
 | 2 | Event | [Event] Party Registration | Event | SC_FIRM_SERVICE | Update | Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK (đăng ký/thu hồi dịch vụ) | Securities Company Licensed Service | Fundamental | (1) Party Registration — BCV: "an Event that is a formal granting, by an authorized body, of rights/privileges/statuses to an Involved Party, backed up by a Registration Document; life cycle Effective/Revoked/Suspended". (2) Bảng: FK→SC_FIRM_INFO (CTCK được cấp), FK→CAT_SERVICE (dịch vụ được cấp), REGISTRATION_DOC_NUMBER/DATE, TERMINATION_DOC_NUMBER, END_DATE, RECORD_STATUS, PROVISIONAL — đầy đủ vòng đời cấp/thu hồi quyền hoạt động dịch vụ. (3) Party Registration khớp hơn Business Activity chung chung. Trả lời 7e-04: khác dữ liệu nghiệp vụ với LNK_SC_FIRM_SERVICE (danh mục giấy phép hiện hành) — thiết kế riêng, không loại bỏ. |
 | 3 | Involved Party | [Involved Party] Representative | Individual | SC_FIRM_SHAREHOLDER_REPRESENTATIVE | Update | Người được cổ đông tổ chức ủy quyền đại diện quyền lợi tại CTCK | Securities Company Shareholder Representative | Fundamental | (1) Representative — BCV: "an Involved Party acting on behalf of another". (2) Bảng: FK→SC_FIRM_SHAREHOLDER, FK→SC_FIRM_INFO, REPRESENTATIVE_NAME, ID_NUMBER, REPRESENTED_SHARES, APPOINTMENT_DATE. (3) Representative khớp. Phụ thuộc Securities Company Shareholder (T2). |
 | 3 | Event | [Event] Transaction | Event | SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE | Append | Giao dịch thay đổi sở hữu cổ đông CTCK | Securities Company Shareholder Ownership Change | Fact Append | (1) Transaction — BCV: "an Event that exchanges value between parties". (2) Bảng: FK→SC_FIRM_SHAREHOLDER, FK→SC_FIRM_INFO, CHANGE_DATE, SHARES_BEFORE, SHARES_AFTER, RATIO_BEFORE, RATIO_AFTER, VERIFICATION_STATUS. (3) Transaction khớp — thay đổi giá trị sở hữu insert-only. |
@@ -68,7 +69,7 @@
 | 3 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT | Update | Báo cáo định kỳ do chi nhánh CTCK nước ngoài nộp lên UBCKNN | Securities Company Foreign Branch Periodic Report | Fundamental | (1) Transaction — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_FOREIGN_BRANCH(T2), FORM_REPORT_ID(Classification Value), PERIOD, YEAR, DEADLINE, SUBMISSION_DATE, STATUS. (3) Transaction phù hợp. Phụ thuộc Securities Company Foreign Branch (T2). |
 | 3 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT | Update | Báo cáo định kỳ do VPĐD CTCK nước ngoài nộp lên UBCKNN | Securities Company Foreign Representative Office Periodic Report | Fundamental | (1) Transaction — BCV: cùng định nghĩa. (2) Bảng: FK→SC_FIRM_FOREIGN_REP_OFFICE(T2), FORM_REPORT_ID(Classification Value), PERIOD, YEAR, SUBMISSION_DATE, STATUS. (3) Transaction phù hợp. |
 
-**Tổng: 52 Atomic entities** (T1: 14 entities, T2: 33 entities, T3: 7 entities — bao gồm 5 entity mới bổ sung: Classification Firm Status, Classification Service, Classification Nationality, Classification Event Type, Securities Company Form Report — tất cả Tier 1)
+**Tổng: 53 Atomic entities** (T1: 14 entities, T2: 34 entities, T3: 7 entities — bao gồm 5 entity mới bổ sung ở lượt trước: Classification Firm Status, Classification Service, Classification Nationality, Classification Event Type, Securities Company Form Report (Tier 1); và 1 entity mới bổ sung ở lượt này: Securities Company Alert Run (Tier 2, đảo ngược quyết định loại-scope ALERT_RUN))
 *(`Securities Company Practitioner` (SC_FIRM_LICENSED_PRACTITIONER) là entity Fundamental độc lập — xem quyết định sửa lại 2026-07-09 tại mục 6a dòng SC_FIRM_LICENSED_PRACTITIONER. Geographic Area không còn extend từ SCMS — CAT_PROVINCE/CAT_DISTRICT/CAT_WARD loại khỏi scope (2026-07-10), xem mục 7f)*
 
 ---
@@ -124,6 +125,7 @@ graph TD
     ALERT_COND["**Securities Company Alert Indicator Condition**"]:::atomic
     MAJ_SH_REL["**Securities Company Major Shareholder Relation**"]:::atomic
     RISK_SUM["**Securities Company Risk Summary**"]:::atomic
+    ALERT_RUN["**Securities Company Alert Run**"]:::atomic
 
     %% Tier 3
     SH_REP["**Securities Company Shareholder Representative**"]:::atomic
@@ -161,6 +163,8 @@ graph TD
     AU_FIRM --> AUDITOR
     RISK_IND --> RISK_SCALE
     ALERT_IND --> ALERT_COND
+    ALERT_IND --> ALERT_RUN
+    ALERT_RUN --> ALERT_VIOL
     RISK_PER --> RISK_SUM
     FORM_RPT --> FORM_RPT
 
@@ -233,6 +237,7 @@ graph TD
 | 12 | T1 | `FORM_REPORT` — trước đây bị loại khỏi scope Atomic (đã xóa khỏi 7f/`atomic_out_of_scope.yaml` trong lượt này). Data Modeler yêu cầu đảo ngược, thiết kế thành entity `Securities Company Form Report`. Cả nhóm cascade (`FORM_SHEET*`, `FORM_REPORT_PERIODIC`, `FORM_REPORT_DEEP_CONFIG`, `FORM_REPORT_HISTORY`, `FORM_ROW_HEADER*`, `FORM_INDICATOR_*`, `LNK_EVENT_TYPE_FORM`) vẫn giữ ngoài scope trong 7f/`atomic_out_of_scope.yaml`, nhưng lý do cũ "Cascade từ FORM_REPORT đã loại" không còn đúng. | **Quyết định Data Modeler (chốt) — chỉ đảo ngược riêng FORM_REPORT.** Nhóm cascade cần đánh giá lại lý do loại-scope độc lập ở lượt thiết kế sau — CHƯA thực hiện trong task này. Không tự ý đưa nhóm cascade vào scope. |
 | 13 | T1 | `Table Type = Relative` cho `CAT_EVENT_TYPE` và `Securities Company Form Report` không khớp định nghĩa chuẩn trong skill ("phụ thuộc Fundamental qua FK") — cả 2 bảng không FK nghiệp vụ rõ ràng đến 1 Fundamental entity khác (FORM_REPORT chỉ tự tham chiếu PARENT_ID; CAT_EVENT_TYPE không FK đi đâu). | **Xác nhận từ Data Modeler: giữ nguyên Relative** — quyết định tường minh, ghi nhận ngoại lệ so với định nghĩa chuẩn. |
 | 14 | T2 | `SERVICE_ID` trên `Securities Company Licensed Service` (entity #48/SC_FIRM_SERVICE) dùng pattern Classification Value đơn (scheme `SCMS_SERVICE_TYPE`, nay deprecated) — cần đổi sang FK Id+Code khi `Classification Service` được thiết kế. | **Đã thực hiện trong lượt này** — `lld_SCMS_SC_FIRM_SERVICE.yaml` đã sửa: attribute `Service Code` → cặp `Classification Service Id` + `Classification Service Code`. Các entity tiêu thụ khác của 4 scheme deprecated (Securities Company, entity chi nhánh/VPĐD/PGD, Securities Company Custodian Bank, 7 bảng dùng Nationality, Securities Company Profile Change, Securities Company Disclosure Report) — CHƯA sửa, để LLD hóa sau (xem SCMS_HLD_Tier1.md 6f T1-08). |
+| 15 | T2 | `ALERT_RUN` — trước đây bị loại khỏi scope Atomic (nhóm "Loại sau review" trong 7f/`atomic_out_of_scope.yaml`), lý do "operational batch execution, không có giá trị nghiệp vụ độc lập". Tuy nhiên `SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID` là FK thật theo BRD → `ALERT_RUN.ID` (ghi nhận tại Tier2 6f T2-08, 2026-07-10), và `atomic_attributes.yaml` có 2 attribute pending (`Alert Run Id`/`Alert Run Code`) trên `Securities Company Alert Violation` chờ resolve. | **Quyết định Data Modeler (2026-07-12) — đảo ngược riêng `ALERT_RUN`**, theo đúng tiền lệ đã áp dụng cho `FORM_REPORT` (xem #12). Thiết kế thành entity `Securities Company Alert Run` (`[Business Activity] Data Monitoring`, Tier 2, Fact Append) — xem 7a + Entities. Đã xóa dòng `ALERT_RUN` khỏi 7f/`atomic_out_of_scope.yaml`. `CAT_ALERT` (bảng pending khác, không có FK với `ALERT_RUN`) giữ nguyên ngoài phạm vi thay đổi này. |
 
 ---
 
@@ -327,7 +332,6 @@ graph TD
 | Isolated | SMSVW_TLPROFILES | View hồ sơ TL từ schema SMS | View/shadow từ schema SMS cũ. |
 | Isolated | DISCLOSURE_NEWS | Tin tức công bố thông tin | Không tìm thấy FK rõ ràng đến SC_FIRM_INFO — cần xác nhận thêm. |
 | Isolated | DISCLOSURE_NEWS_FILE | Tệp đính kèm tin tức CBTT | Cascade từ DISCLOSURE_NEWS chưa xác định. |
-| Loại sau review | ALERT_RUN | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm | Không có trong danh sách entity đã review — entity operational batch execution, không có giá trị nghiệp vụ độc lập cần khai thác trên Atomic. |
 | Loại sau review | RISK_REPORTING_PERIOD_SC_FIRM | Gán kỳ đánh giá rủi ro cho từng CTCK cụ thể | Không có trong danh sách entity đã review — quan hệ gán kỳ được xử lý trực tiếp qua FK trên RISK_SUMMARY và RISK_SCORING_SC_FIRM_DETAIL, không cần entity trung gian. |
 | Loại sau review | RISK_SUMMARY_DETAIL | Chi tiết điểm tổng hợp rủi ro theo từng nhóm chỉ tiêu CAMEL | Không có trong danh sách entity đã review — thông tin điểm nhóm CAMEL có thể suy ra từ RISK_SCORING_SC_FIRM_DETAIL group by RISK_INDICATOR_GROUP. |
 
@@ -603,3 +607,9 @@ graph TD
 **Tier:** 1 | **Source:** `SCMS.FORM_REPORT` | **BCV Concept:** [Condition] Regulatory Reporting Requirement | **BCO:** Condition | **Table Type:** Relative
 **Domain Prefix:** Securities Company
 **Description:** Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/Chi nhánh/VPĐD phải nộp UBCKNN — căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con. Đảo ngược quyết định loại-scope trước đây (form metadata). BCV Concept là term mới đề xuất, chưa tồn tại sẵn trong knowledge base. Xem 7e #12/#13.
+
+
+### 54. Securities Company Alert Run
+**Tier:** 2 | **Source:** `SCMS.ALERT_RUN` | **BCV Concept:** [Business Activity] Data Monitoring | **BCO:** Business Activity | **Table Type:** Fact Append
+**Domain Prefix:** Securities Company Alert
+**Description:** Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ tiêu cảnh báo. Mỗi dòng = 1 lần thực thi insert-only, ghi nhận chỉ tiêu được kiểm tra, phạm vi dữ liệu quét, thời gian bắt đầu/kết thúc, trạng thái và số lượng cảnh báo phát sinh. Đảo ngược quyết định loại-scope trước đây — xem 7e #15.

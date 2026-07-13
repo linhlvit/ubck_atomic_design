@@ -20,8 +20,9 @@ metadata:
   notes: "ADDRESS → Involved Party Postal Address (1 địa chỉ, type PRIMARY). PHONE_NO/FAX_NO/WEBSITE\
     \ → Involved Party Electronic Address. IDENTITY_TYPE_CD là cột tổng hợp (comma-separated)\
     \ — chi tiết giấy tờ từng cái thiết kế ở Tier 2 qua bảng IDENTITY (Involved Party\
-    \ Alternative Identification, xem HLD Overview mục 7a dòng 62). CREATED_BY/UPDATED_BY\
-    \ → cùng pattern User FK pending như Public Company."
+    \ Alternative Identification, xem HLD Overview mục 7a dòng 62). Audit block\
+    \ (Created/Updated Timestamp, Created/Updated By User Id/Code) đã loại bỏ theo\
+    \ quyết định thiết kế — xem pending_design.yaml."
 attributes:
 - attribute_name: "Legal Entity Id"
   physical_name: "legal_entity_id"
@@ -226,88 +227,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.LEGAL_ENTITIES.CREATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày sửa."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.LEGAL_ENTITIES.UPDATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Id"
-  physical_name: "created_by_user_id"
-  description: "Người tạo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.LEGAL_ENTITIES.CREATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
-    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
-    \ thêm Hash."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By User Code"
-  physical_name: "created_by_user_code"
-  description: "Mã người tạo (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.LEGAL_ENTITIES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Id"
-  physical_name: "updated_by_user_id"
-  description: "Người sửa."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.LEGAL_ENTITIES.UPDATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
-    \ By User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Code"
-  physical_name: "updated_by_user_code"
-  description: "Mã người sửa (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.LEGAL_ENTITIES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"

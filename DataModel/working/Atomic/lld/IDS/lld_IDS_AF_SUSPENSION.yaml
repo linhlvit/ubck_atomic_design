@@ -4,7 +4,7 @@ metadata:
   source_system: "IDS"
   source_table: "AF_SUSPENSION"
   atomic_entity: "Audit Firm Suspension"
-  entity_physical_name: "audit_firm_suspension"
+  entity_physical_name: "af_suspension"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Enforcement Action"
   table_type: "Fact Append"
@@ -21,7 +21,7 @@ metadata:
     \ khi TARGET_TYPE_CD = KTV), AF_INSPECTION_ID (nullable)."
 attributes:
 - attribute_name: "Audit Firm Suspension Id"
-  physical_name: "audit_firm_suspension_id"
+  physical_name: "af_suspension_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -33,7 +33,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Suspension Code"
-  physical_name: "audit_firm_suspension_code"
+  physical_name: "af_suspension_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -58,7 +58,7 @@ attributes:
   etl_derived_value: "IDS.AF_SUSPENSION"
   data_type: "string"
 - attribute_name: "Audit Firm Id"
-  physical_name: "audit_firm_id"
+  physical_name: "af_id"
   description: "Link đến bảng AF_PROFILES."
   data_domain: "Surrogate Key"
   nullable: false
@@ -72,7 +72,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Code"
-  physical_name: "audit_firm_code"
+  physical_name: "af_code"
   description: "Mã công ty kiểm toán."
   data_domain: "Text"
   nullable: false
@@ -85,7 +85,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Auditor Id"
-  physical_name: "audit_firm_auditor_id"
+  physical_name: "af_auditor_id"
   description: "Link đến bảng AF_AUDITOR_PROFILES — chỉ có giá trị khi TARGET_TYPE_CD\
     \ = KTV."
   data_domain: "Surrogate Key"
@@ -100,7 +100,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Auditor Code"
-  physical_name: "audit_firm_auditor_code"
+  physical_name: "af_auditor_code"
   description: "Mã kiểm toán viên."
   data_domain: "Text"
   nullable: true
@@ -114,7 +114,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Inspection Id"
-  physical_name: "audit_firm_inspection_id"
+  physical_name: "af_inspection_id"
   description: "Link đến bảng AF_INSPECTION."
   data_domain: "Surrogate Key"
   nullable: true
@@ -128,7 +128,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Inspection Code"
-  physical_name: "audit_firm_inspection_code"
+  physical_name: "af_inspection_code"
   description: "Mã đợt kiểm tra."
   data_domain: "Text"
   nullable: true
@@ -261,88 +261,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_SUSPENSION.CREATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày sửa."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_SUSPENSION.UPDATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Id"
-  physical_name: "created_by_user_id"
-  description: "Người tạo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_SUSPENSION.CREATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
-    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
-    \ thêm Hash."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By User Code"
-  physical_name: "created_by_user_code"
-  description: "Mã người tạo (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_SUSPENSION.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Id"
-  physical_name: "updated_by_user_id"
-  description: "Người sửa."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_SUSPENSION.UPDATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
-    \ By User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Code"
-  physical_name: "updated_by_user_code"
-  description: "Mã người sửa (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.AF_SUSPENSION.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"

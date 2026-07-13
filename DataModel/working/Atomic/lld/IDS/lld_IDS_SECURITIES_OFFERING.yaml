@@ -4,7 +4,7 @@ metadata:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING"
   atomic_entity: "Public Company Securities Offering"
-  entity_physical_name: "public_company_securities_offering"
+  entity_physical_name: "pc_securities_offering"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
   table_type: "Fundamental"
@@ -22,7 +22,7 @@ metadata:
     \ Giữ cả 2 FK nullable trên Atomic entity."
 attributes:
 - attribute_name: "Public Company Securities Offering Id"
-  physical_name: "public_company_securities_offering_id"
+  physical_name: "pc_securities_offering_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -34,7 +34,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Securities Offering Code"
-  physical_name: "public_company_securities_offering_code"
+  physical_name: "pc_securities_offering_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -73,7 +73,7 @@ attributes:
   etl_derived_value: null
   data_type: "boolean"
 - attribute_name: "Public Company Id"
-  physical_name: "public_company_id"
+  physical_name: "pc_id"
   description: "Id công ty đại chúng đăng ký chào bán (khi APPLICANT_TYPE_FLG = 1)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -87,7 +87,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Code"
-  physical_name: "public_company_code"
+  physical_name: "pc_code"
   description: "Mã công ty đại chúng."
   data_domain: "Text"
   nullable: true
@@ -543,90 +543,6 @@ attributes:
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPROVER_COMMENT"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.CREATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày sửa."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.UPDATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Id"
-  physical_name: "created_by_user_id"
-  description: "Người tạo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.CREATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver\
-    \ User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By User Code"
-  physical_name: "created_by_user_code"
-  description: "Mã người tạo (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Id"
-  physical_name: "updated_by_user_id"
-  description: "Người sửa."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.UPDATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver\
-    \ User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Code"
-  physical_name: "updated_by_user_code"
-  description: "Mã người sửa (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

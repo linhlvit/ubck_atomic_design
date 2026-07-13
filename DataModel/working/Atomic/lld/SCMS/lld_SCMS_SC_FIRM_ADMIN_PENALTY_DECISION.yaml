@@ -184,17 +184,18 @@ attributes:
   classification_context: "SCMS_IMPLEMENTATION_STATUS"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Data Source Code"
-  physical_name: "data_src_code"
+- attribute_name: "Data Source"
+  physical_name: "data_src"
   description: "Nguồn dữ liệu của quyết định xử phạt."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADMIN_PENALTY_DECISION.DATA_SOURCE"
-  comment: "Scheme: SCMS_DATA_SOURCE. VARCHAR2(50). Dùng chung scheme với DISCLOSURE_SECURITIES_OFFERING."
-  classification_context: "SCMS_DATA_SOURCE"
+  comment: "VARCHAR2(50). Map 1:1 từ nguồn — không dùng Classification Value theo\
+    \ quyết định thiết kế."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fine Amount"

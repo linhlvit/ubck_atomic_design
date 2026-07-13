@@ -44,8 +44,8 @@
 | T2 | Documentation | [Documentation] Gov. Registration Document | Documentation | `PUB_COMPANY_REGISTRATION` | Append | Lịch sử đăng ký trở thành công ty đại chúng. | Public Company Registration | Fact Append | (1) [Documentation] Gov. Registration Document — hồ sơ đăng ký với cơ quan nhà nước. (2) FK → COMPANY_PROFILES. (3) Chọn [Documentation] Gov. Registration Document. |
 | T2 | Documentation | [Documentation] Gov. Registration Document | Documentation | `PUB_COMPANY_CANCELLATION` | Append | Lịch sử hủy đăng ký tư cách công ty đại chúng. | Public Company Cancellation | Fact Append | (1) [Documentation] Gov. Registration Document — quyết định hủy đăng ký. (2) FK → COMPANY_PROFILES. (3) Chọn [Documentation] Gov. Registration Document. |
 | T2 | Documentation | [Documentation] Filing | Documentation | `REPORT_EXTENSIONS` | Update | Gia hạn nộp báo cáo định kỳ của CTĐC: lý do, ngày gia hạn đến, trạng thái phê duyệt. | Public Company Report Extension | Fundamental | (1) [Documentation] Filing — hồ sơ xin gia hạn nộp báo cáo. (2) FK → COMPANY_PROFILES. (3) Chọn [Documentation] Filing. |
-| T2 | Condition | [Condition] Form Definition | Condition | `RROW` | Update | Định nghĩa hàng của template báo cáo tài chính: mã hàng, tên, cấp, công thức tổng hợp. | Financial Report Row Template | Fundamental | (1) [Condition] Form Definition — định nghĩa cấu trúc template BCTC. (2) FK → REPORT_CATALOG. (3) Chọn [Condition] Form Definition. |
-| T2 | Condition | [Condition] Form Definition | Condition | `RCOL` | Update | Định nghĩa cột của template báo cáo tài chính: mã cột, tên, kỳ tham chiếu. | Financial Report Column Template | Fundamental | (1) [Condition] Form Definition — định nghĩa cấu trúc template BCTC. (2) FK → REPORT_CATALOG. (3) Chọn [Condition] Form Definition. |
+| T2 | Condition | [Condition] Form Definition | Condition | `RROW` | Update | Định nghĩa hàng của template báo cáo tài chính: mã hàng, tên, cấp, công thức tổng hợp. | Financial Report Form Row Template | Fundamental | (1) [Condition] Form Definition — định nghĩa cấu trúc template BCTC. (2) FK → REPORT_CATALOG. (3) Chọn [Condition] Form Definition. |
+| T2 | Condition | [Condition] Form Definition | Condition | `RCOL` | Update | Định nghĩa cột của template báo cáo tài chính: mã cột, tên, kỳ tham chiếu. | Financial Report Form Column Template | Fundamental | (1) [Condition] Form Definition — định nghĩa cấu trúc template BCTC. (2) FK → REPORT_CATALOG. (3) Chọn [Condition] Form Definition. |
 | T2 | Condition | [Condition] Form Definition | Condition | `REP_ROW` | Update | Định nghĩa hàng của template báo cáo định kỳ. | Periodic Report Form Row Template | Fundamental | (1) [Condition] Form Definition — định nghĩa cấu trúc template báo cáo định kỳ. (2) FK → REP_FORMS. (3) Chọn [Condition] Form Definition. |
 | T2 | Condition | [Condition] Form Definition | Condition | `REP_COLUMN` | Update | Định nghĩa cột của template báo cáo định kỳ. | Periodic Report Form Column Template | Fundamental | (1) [Condition] Form Definition — định nghĩa cấu trúc template báo cáo định kỳ. (2) FK → REP_FORMS. (3) Chọn [Condition] Form Definition. |
 | T2 | Documentation | [Documentation] Gov. Registration Document | Documentation | `AF_APPROVAL` | Update | Quyết định chấp thuận/đình chỉ cho công ty KT hoặc KTV (TARGET_TYPE_CD phân biệt loại, SOURCE_TYPE_CD phân biệt cơ quan ban hành). | Audit Firm Approval | Relative | (1) [Documentation] Gov. Registration Document — quyết định chấp thuận từ cơ quan nhà nước. (2) FK → AF_PROFILES (bắt buộc) + AF_AUDITOR_PROFILES (nullable). Cấu trúc: TARGET_TYPE_CD, APPROVAL_DOC_NO, APPROVAL_ISSUE/START/END_DATE. (3) Chọn [Documentation] Gov. Registration Document. |
@@ -360,12 +360,12 @@ erDiagram
 **Domain Prefix:** (none)
 **Description:** Instance thông báo công bố thông tin đã được tạo ra trong hệ thống: gắn với form CBTT, trạng thái gửi, thời gian gửi.
 
-### 16. Financial Report Column Template
+### 16. Financial Report Form Column Template
 **Tier:** 2 | **Source:** `RCOL` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
 **Domain Prefix:** Financial Report
 **Description:** Định nghĩa từng cột trong template báo cáo tài chính: mã cột, tên, kỳ tham chiếu (hiện tại/kỳ trước).
 
-### 17. Financial Report Row Template
+### 17. Financial Report Form Row Template
 **Tier:** 2 | **Source:** `RROW` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental
 **Domain Prefix:** Financial Report
 **Description:** Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên, cấp phân cấp, công thức tổng hợp.

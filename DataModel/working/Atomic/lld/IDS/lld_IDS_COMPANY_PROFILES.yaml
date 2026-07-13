@@ -19,13 +19,12 @@ metadata:
   approved_at: null
   notes: "HEAD_OFFICE_ADDR/TRADING_OFFICE_ADDR + PROVINCE_ID → Involved Party Postal\
     \ Address (2 địa chỉ: HEAD_OFFICE, TRADING_OFFICE). WEBSITE/PHONE_NO/FAX_NO →\
-    \ Involved Party Electronic Address. CREATED_BY/UPDATED_BY → FK LOGINS.ID (ngoài\
-    \ scope IDS) — map sang Identity and Access Management User (IAM.USERS), status\
-    \ pending do khác kiểu khóa (LOGINS.ID NUMBER tự tăng vs IAM.USERS.ID VARCHAR2(36)\
-    \ GUID)."
+    \ Involved Party Electronic Address. Audit block (Created/Updated Timestamp,\
+    \ Created/Updated By User Id/Code) đã loại bỏ theo quyết định thiết kế — xem\
+    \ pending_design.yaml."
 attributes:
 - attribute_name: "Public Company Id"
-  physical_name: "public_company_id"
+  physical_name: "pc_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -37,7 +36,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Code"
-  physical_name: "public_company_code"
+  physical_name: "pc_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -62,7 +61,7 @@ attributes:
   etl_derived_value: "IDS.COMPANY_PROFILES"
   data_type: "string"
 - attribute_name: "Public Company Name"
-  physical_name: "public_company_nm"
+  physical_name: "pc_nm"
   description: "Tên công ty (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -75,7 +74,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company English Name"
-  physical_name: "public_company_english_nm"
+  physical_name: "pc_english_nm"
   description: "Tên công ty (tiếng Anh)."
   data_domain: "Text"
   nullable: true
@@ -370,7 +369,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Status Code"
-  physical_name: "public_company_status_code"
+  physical_name: "pc_status_code"
   description: "Trạng thái."
   data_domain: "Classification Value"
   nullable: true
@@ -490,7 +489,7 @@ attributes:
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Public Company Form Code"
-  physical_name: "public_company_form_code"
+  physical_name: "pc_form_code"
   description: "Hình thức trở thành công ty đại chúng."
   data_domain: "Classification Value"
   nullable: true
@@ -503,7 +502,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Type Code"
-  physical_name: "public_company_tp_code"
+  physical_name: "pc_tp_code"
   description: "Loại công ty đại chúng."
   data_domain: "Classification Value"
   nullable: true
@@ -689,90 +688,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.CREATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp, không\
-    \ cần ghi chú thêm."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày cập nhật."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.UPDATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Id"
-  physical_name: "created_by_user_id"
-  description: "Người tạo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.CREATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — LOGINS ngoài scope IDS (xem\
-    \ HLD 7f). Pending: LOGINS.ID là NUMBER(10) tự tăng, IAM.USERS.ID là VARCHAR2(36)\
-    \ GUID — chưa xác nhận crosswalk (VD: LOGINS.LOGIN_NAME ↔ IAM.USERS.USERNAME)\
-    \ nên chưa thêm Hash."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By User Code"
-  physical_name: "created_by_user_code"
-  description: "Mã người tạo (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Id"
-  physical_name: "updated_by_user_id"
-  description: "Người cập nhật."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.UPDATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
-    \ By User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Code"
-  physical_name: "updated_by_user_code"
-  description: "Mã người cập nhật (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"

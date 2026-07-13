@@ -1,0 +1,250 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "ALERT_RUN"
+  atomic_entity: "Securities Company Alert Run"
+  entity_physical_name: "sc_alert_run"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Data Monitoring"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ\
+    \ tiêu cảnh báo (ALERT_INDICATOR). Mỗi dòng = 1 lần thực thi insert-only. Đảo\
+    \ ngược quyết định loại-scope trước đây — xem SCMS_HLD_Overview.md 7e #15 và SCMS_HLD_Tier2.md\
+    \ 6f T2-08. Bảng có ID (PK kỹ thuật) + RUN_ID (mã định danh nghiệp vụ) — áp dụng\
+    \ pattern ID+CODE (Bước 3e). Chỉ có CREATED_AT, không có CREATED_BY/UPDATED_AT/UPDATED_BY\
+    \ — không đủ bộ để áp dụng Audit block chuẩn (Bước 3k). ALERT_TARGET_ENTITY map\
+    \ 1:1 dạng Text theo yêu cầu Data Modeler — chưa xác nhận cùng domain với SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE\
+    \ (xem 6f T2-10). RECORD_STATUS → Classification Value scheme SCMS_ALERT_RUN_RECORD_STATUS\
+    \ (0=Đang xử lý;1=Hoàn thành;-1=Lỗi;2=Bị huỷ). Resolve FK pending trên Securities\
+    \ Company Alert Violation (Alert Run Id/Code)."
+attributes:
+- attribute_name: "Securities Company Alert Run Id"
+  physical_name: "sc_alert_run_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Business Activity] Data Monitoring\". Lần chạy batch\
+    \ hệ thống cảnh báo kiểm tra ngưỡng vi phạm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Run Code"
+  physical_name: "sc_alert_run_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.ID"
+  comment: "BK chính. PK nguồn (NUMBER(19) — ETL convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Run Unique Key"
+  physical_name: "sc_alert_run_unique_key"
+  description: "Mã định danh lần chạy nghiệp vụ (RUN_ID)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.RUN_ID"
+  comment: "NVARCHAR2(64). Mã định danh nghiệp vụ của lần chạy — khác PK kỹ thuật\
+    \ ID. Pattern ID+CODE (Bước 3e): RUN_ID → Unique Key, ID → Code (BK chính). Chưa\
+    \ xác nhận ràng buộc NOT NULL từ BRD — cần profile."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.ALERT_RUN"
+  etl_derived_value: "SCMS.ALERT_RUN"
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Id"
+  physical_name: "sc_alert_indicator_id"
+  description: "FK đến chỉ tiêu cảnh báo được kiểm tra trong lần chạy này."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.ALERT_INDICATOR_ID"
+  comment: "FK target: Securities Company Alert Indicator.Securities Company Alert\
+    \ Indicator Id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Alert Indicator Code"
+  physical_name: "sc_alert_indicator_code"
+  description: "Mã chỉ tiêu cảnh báo được kiểm tra."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.ALERT_INDICATOR_ID"
+  comment: "Lookup pair: Securities Company Alert Indicator.Securities Company Alert\
+    \ Indicator Code. Pair with Securities Company Alert Indicator Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Alert Target Entity"
+  physical_name: "alert_target_entity"
+  description: "Đối tượng đích được quét trong lần chạy cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.ALERT_TARGET_ENTITY"
+  comment: "NVARCHAR2(80). Map 1:1 từ nguồn dạng Text theo yêu cầu Data Modeler —\
+    \ mô tả nguồn chưa rõ ràng, chưa xác nhận có cùng domain giá trị với SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE\
+    \ (scheme SCMS_ALERT_ENTITY_TYPE: CTCK/CN_NUOC_NGOAI/VPDD_NUOC_NGOAI) hay không.\
+    \ Xem SCMS_HLD_Tier2.md 6f T2-10 — cần profile giá trị thực tế trước khi cân nhắc\
+    \ chuẩn hóa Classification Value."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Year"
+  physical_name: "data_year"
+  description: "Năm dữ liệu được quét kiểm tra trong lần chạy."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.DATA_YEAR"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Data Period"
+  physical_name: "data_period"
+  description: "Kỳ dữ liệu được quét kiểm tra trong lần chạy."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.DATA_PERIOD"
+  comment: "NVARCHAR2(20). Mô tả gốc BRD không rõ giá trị cụ thể — cần profile dữ\
+    \ liệu thực tế trước khi cân nhắc Classification Value."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Performer Name"
+  physical_name: "performer_nm"
+  description: "Tên người/hệ thống thực thi lần chạy cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.PERFORMER_NAME"
+  comment: "NVARCHAR2(200). Denormalized text — BRD không có fk_note nên không tạo\
+    \ FK đến Involved Party/User."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Start Timestamp"
+  physical_name: "start_tms"
+  description: "Thời điểm bắt đầu thực thi lần chạy."
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.START_TIME"
+  comment: "TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "End Timestamp"
+  physical_name: "end_tms"
+  description: "Thời điểm kết thúc thực thi lần chạy."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.END_TIME"
+  comment: "TIMESTAMP(6). NULL khi Record Status Code = Đang xử lý (0)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Record Status Code"
+  physical_name: "record_status_code"
+  description: "Trạng thái vòng đời của lần chạy: 0=Đang xử lý; 1=Hoàn thành; -1=Lỗi;\
+    \ 2=Bị huỷ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.RECORD_STATUS"
+  comment: "Scheme: SCMS_ALERT_RUN_RECORD_STATUS. Nguồn lưu NVARCHAR2(30) dạng số\
+    \ string (0/1/-1/2)."
+  classification_context: "SCMS_ALERT_RUN_RECORD_STATUS"
+  etl_derived_value: "0=Đang xử lý;1=Hoàn thành;-1=Lỗi;2=Bị huỷ"
+  data_type: "string"
+- attribute_name: "Alert Count Generated"
+  physical_name: "alert_count_generated"
+  description: "Số lượng cảnh báo (vi phạm) được phát sinh trong lần chạy này."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.ALERT_COUNT_GENERATED"
+  comment: "NUMBER(10)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Error Message"
+  physical_name: "error_message"
+  description: "Thông báo lỗi khi lần chạy thất bại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.ERROR_MESSAGE"
+  comment: "NVARCHAR2(2000). Chỉ có giá trị khi Record Status Code = Lỗi (-1)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ALERT_RUN.CREATED_AT"
+  comment: "TIMESTAMP(6). Không có CREATED_BY/UPDATED_AT/UPDATED_BY — không áp dụng\
+    \ Audit block chuẩn (Bước 3k)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

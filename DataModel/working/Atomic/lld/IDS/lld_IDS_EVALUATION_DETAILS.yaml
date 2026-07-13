@@ -4,7 +4,7 @@ metadata:
   source_system: "IDS"
   source_table: "EVALUATION_DETAILS"
   atomic_entity: "Public Company Evaluation Detail"
-  entity_physical_name: "public_company_evaluation_detail"
+  entity_physical_name: "pc_evaluation_detail"
   bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Evaluation"
   table_type: "Fundamental"
@@ -23,7 +23,7 @@ metadata:
     \ cột và ngữ cảnh detail-table xác nhận là FK."
 attributes:
 - attribute_name: "Public Company Evaluation Detail Id"
-  physical_name: "public_company_evaluation_detail_id"
+  physical_name: "pc_evaluation_detail_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35,7 +35,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Evaluation Detail Code"
-  physical_name: "public_company_evaluation_detail_code"
+  physical_name: "pc_evaluation_detail_code"
   description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
   data_domain: "Text"
   nullable: false
@@ -60,7 +60,7 @@ attributes:
   etl_derived_value: "IDS.EVALUATION_DETAILS"
   data_type: "string"
 - attribute_name: "Public Company Evaluation Id"
-  physical_name: "public_company_evaluation_id"
+  physical_name: "pc_evaluation_id"
   description: "Id đợt đánh giá."
   data_domain: "Surrogate Key"
   nullable: false
@@ -75,7 +75,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Evaluation Code"
-  physical_name: "public_company_evaluation_code"
+  physical_name: "pc_evaluation_code"
   description: "Mã đợt đánh giá."
   data_domain: "Text"
   nullable: false
@@ -89,7 +89,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Evaluation Criterion Id"
-  physical_name: "public_company_evaluation_criterion_id"
+  physical_name: "pc_evaluation_criterion_id"
   description: "Id chỉ tiêu đánh giá."
   data_domain: "Surrogate Key"
   nullable: false
@@ -105,7 +105,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Evaluation Criterion Code"
-  physical_name: "public_company_evaluation_criterion_code"
+  physical_name: "pc_evaluation_criterion_code"
   description: "Mã chỉ tiêu đánh giá."
   data_domain: "Text"
   nullable: false
@@ -157,90 +157,5 @@ attributes:
   comment: "Scheme: IDS_PUBLIC_COMPANY_EVALUATION_DETAIL_LEVEL (modeler_defined) —\
     \ chưa có trong HLD 6d, bổ sung scheme mới."
   classification_context: "IDS_PUBLIC_COMPANY_EVALUATION_DETAIL_LEVEL"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.EVALUATION_DETAILS.CREATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày sửa."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.EVALUATION_DETAILS.UPDATED_DATE"
-  comment: "Nguồn DATE (không có giờ) — widening conversion sang Timestamp."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Id"
-  physical_name: "created_by_user_id"
-  description: "Người tạo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.EVALUATION_DETAILS.CREATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10)\
-    \ tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa\
-    \ thêm Hash."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By User Code"
-  physical_name: "created_by_user_code"
-  description: "Mã người tạo (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.EVALUATION_DETAILS.CREATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Created By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Id"
-  physical_name: "updated_by_user_id"
-  description: "Người sửa."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.EVALUATION_DETAILS.UPDATED_BY"
-  comment: "FK target: Identity and Access Management User.Identity and Access Management\
-    \ User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Created\
-    \ By User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By User Code"
-  physical_name: "updated_by_user_code"
-  description: "Mã người sửa (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.EVALUATION_DETAILS.UPDATED_BY"
-  comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
-    \ User Code. Pair with Updated By User Id. Pending — xem ghi chú ở Id."
-  classification_context: null
   etl_derived_value: null
   data_type: "string"
