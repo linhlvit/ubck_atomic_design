@@ -19,9 +19,8 @@ metadata:
   approved_at: null
   notes: "HEAD_OFFICE_ADDR/TRADING_OFFICE_ADDR + PROVINCE_ID → Involved Party Postal\
     \ Address (2 địa chỉ: HEAD_OFFICE, TRADING_OFFICE). WEBSITE/PHONE_NO/FAX_NO →\
-    \ Involved Party Electronic Address. Audit block (Created/Updated Timestamp,\
-    \ Created/Updated By User Id/Code) đã loại bỏ theo quyết định thiết kế — xem\
-    \ pending_design.yaml."
+    \ Involved Party Electronic Address. Audit block (Created/Updated Timestamp, Created/Updated\
+    \ By User Id/Code) đã loại bỏ theo quyết định thiết kế — xem pending_design.yaml."
 attributes:
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -168,33 +167,68 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Industry Category Level 1 Code"
-  physical_name: "industry_category_level_1_code"
+- attribute_name: "Level 1 Business Line Id"
+  physical_name: "level_1_business_line_id"
   description: "Ngành cấp 1."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
-  comment: "Scheme: IDS_INDUSTRY_CATEGORY. Nguồn CATEGORY_L1_ID (NUMBER FK → CATEGORIES.ID)\
-    \ — ETL resolve qua join CATEGORIES.ID để lấy INDUSTRY_CD làm classification value.\
-    \ CATEGORIES ngoài scope Atomic (chỉ dùng làm Classification Value, xem HLD 7c)."
-  classification_context: "IDS_INDUSTRY_CATEGORY"
+  comment: "FK target: Classification IDS Business Line.Classification IDS Business\
+    \ Line Id. Đảo ngược quyết định cũ (Classification Value scheme IDS_INDUSTRY_CATEGORY,\
+    \ nay deprecated) — CATEGORIES đã promote thành Atomic entity thật, xem IDS_HLD_Tier1.md\
+    \ T1-09 và lld_IDS_CATEGORIES.yaml. Nguồn CATEGORY_L1_ID lưu ID kỹ thuật của CATEGORIES\
+    \ — cần join CATEGORY_L1_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('IDS.CATEGORIES',\
+    \ industry_cd)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Industry Category Level 2 Code"
-  physical_name: "industry_category_level_2_code"
+- attribute_name: "Level 1 Business Line Code"
+  physical_name: "level_1_business_line_code"
+  description: "Mã ngành cấp 1 (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
+  comment: "Lookup pair: Classification IDS Business Line.Classification IDS Business\
+    \ Line Code. Pair with Level 1 Business Line Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Level 2 Business Line Id"
+  physical_name: "level_2_business_line_id"
   description: "Ngành cấp 2."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
-  comment: "Scheme: IDS_INDUSTRY_CATEGORY. Nguồn CATEGORY_L2_ID (NUMBER FK → CATEGORIES.ID)\
-    \ — ETL resolve qua join CATEGORIES.ID để lấy INDUSTRY_CD làm classification value."
-  classification_context: "IDS_INDUSTRY_CATEGORY"
+  comment: "FK target: Classification IDS Business Line.Classification IDS Business\
+    \ Line Id. Đảo ngược quyết định cũ (Classification Value scheme IDS_INDUSTRY_CATEGORY,\
+    \ nay deprecated) — CATEGORIES đã promote thành Atomic entity thật, xem IDS_HLD_Tier1.md\
+    \ T1-09 và lld_IDS_CATEGORIES.yaml. Nguồn CATEGORY_L2_ID lưu ID kỹ thuật của CATEGORIES\
+    \ — cần join CATEGORY_L2_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('IDS.CATEGORIES',\
+    \ industry_cd)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Level 2 Business Line Code"
+  physical_name: "level_2_business_line_code"
+  description: "Mã ngành cấp 2 (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
+  comment: "Lookup pair: Classification IDS Business Line.Classification IDS Business\
+    \ Line Code. Pair with Level 2 Business Line Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Enterprise Type Code"

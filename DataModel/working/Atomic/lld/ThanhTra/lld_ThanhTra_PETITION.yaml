@@ -28,34 +28,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ThanhTra.PETITION', ID). BCV: [Communication]\
+  comment: "PK surrogate. Hash: hash_id('ThanhTra.PETITION', CODE). BCV: [Communication]\
     \ Feedback."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Petition Unique Key"
-  physical_name: "petition_unique_key"
-  description: "Unique Key nghiệp vụ. Mã vụ việc tự sinh UNIQUE (VD: DA2540)."
+- attribute_name: "Petition Code"
+  physical_name: "petition_code"
+  description: "Mã vụ việc tự sinh UNIQUE (VD: DA2540). BK duy nhất — Id hash từ trường\
+    \ này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ThanhTra.PETITION.CODE"
-  comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Petition Code"
-  physical_name: "petition_code"
-  description: "Khóa chính UUID của bảng nguồn. BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.PETITION.ID"
-  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -240,8 +229,8 @@ attributes:
   status: "draft"
   source_columns:
   - "ThanhTra.PETITION.ORIGINAL_PETITION_ID"
-  comment: "FK target: Petition.Petition Id. Self-reference. Hash: hash_id('ThanhTra.PETITION',\
-    \ ORIGINAL_PETITION_ID)."
+  comment: "FK target: Petition.Petition Id. Self-reference. Resolve: join ORIGINAL_PETITION_ID\
+    \ → ThanhTra.PETITION.ID để lấy CODE, rồi hash_id('ThanhTra.PETITION', code_cha)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

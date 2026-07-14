@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "SCMS"
   source_table: "CAT_EVENT_TYPE"
-  atomic_entity: "Classification Event Type"
-  entity_physical_name: "cl_event_type"
+  atomic_entity: "Classification SCMS Event Type"
+  entity_physical_name: "cl_scms_event_type"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Event Type"
   table_type: "Relative"
@@ -31,8 +31,8 @@ metadata:
     \ tạo cặp FK Id+Code vì chưa xác nhận bảng đích. Audit block (CREATED_BY/CREATED_AT/UPDATED_BY/UPDATED_AT)\
     \ loại bỏ theo convention SCMS."
 attributes:
-- attribute_name: "Classification Event Type Id"
-  physical_name: "cl_event_type_id"
+- attribute_name: "Classification SCMS Event Type Id"
+  physical_name: "cl_scms_event_type_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -46,8 +46,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Event Type Code"
-  physical_name: "cl_event_type_code"
+- attribute_name: "Classification SCMS Event Type Code"
+  physical_name: "cl_scms_event_type_code"
   description: "Mã sự vụ (thành lập, điều chỉnh vốn, thay đổi tên). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -72,8 +72,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.CAT_EVENT_TYPE"
   etl_derived_value: "SCMS.CAT_EVENT_TYPE"
   data_type: "string"
-- attribute_name: "Classification Event Type Name"
-  physical_name: "cl_event_type_nm"
+- attribute_name: "Classification SCMS Event Type Name"
+  physical_name: "cl_scms_event_type_nm"
   description: "Tên sự vụ/sự kiện."
   data_domain: "Text"
   nullable: false

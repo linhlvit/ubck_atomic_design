@@ -18,9 +18,9 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "ADDRESS → Involved Party Postal Address (1 địa chỉ, type PRIMARY). PHONE_NO/FAX_NO/WEBSITE\
-    \ → Involved Party Electronic Address. ID + AUDIT_FIRM_CD (Bước 3e): ID → Audit\
-    \ Firm Code (BK chính), AUDIT_FIRM_CD → Audit Firm Unique Key. Shared entity với\
-    \ SCMS.CT_KIEM_TOAN (chưa thiết kế, xem HLD T1-05)."
+    \ → Involved Party Electronic Address. ID kỹ thuật (auto-increment) loại khỏi\
+    \ model — AUDIT_FIRM_CD (mã nghiệp vụ) → Audit Firm Code (BK duy nhất), Id hash\
+    \ từ Code. Shared entity với SCMS.CT_KIEM_TOAN (chưa thiết kế, xem HLD T1-05)."
 attributes:
 - attribute_name: "Audit Firm Id"
   physical_name: "af_id"
@@ -30,34 +30,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Involved Party] Organization\"."
+  comment: "PK surrogate. Hash: hash_id('IDS.AF_PROFILES', AUDIT_FIRM_CD). BCV: \"\
+    [Involved Party] Organization\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Audit Firm Code"
   physical_name: "af_code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  description: "Mã công ty kiểm toán. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.AF_PROFILES.ID"
-  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Audit Firm Unique Key"
-  physical_name: "af_unique_key"
-  description: "Mã công ty kiểm toán."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "IDS.AF_PROFILES.AUDIT_FIRM_CD"
-  comment: "Unique Key nghiệp vụ, tách biệt với Audit Firm Code (BK kỹ thuật từ ID)\
-    \ theo Bước 3e."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

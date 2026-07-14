@@ -771,8 +771,8 @@ brd_entries:
 
   # ─── UID-10 Danh mục ngành nghề ──────────────────────────────────────────
 
-  - brd_id: BRD-SRC-ECAT-ECAT_32_IndustryLv1
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_32_IndustryLv1"
+  - brd_id: BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_1
+    brd_name: "Design Atomic từ nguồn ECAT bảng BUSINESS_LINE_LEVEL_1"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
@@ -781,11 +781,11 @@ brd_entries:
       functional_group: "UID-10 Danh mục ngành nghề"
       scope_status: in_scope
       scope_reason: null
-      table: ECAT_32_IndustryLv1
+      table: BUSINESS_LINE_LEVEL_1
       related_tables:
-        - table: ECAT_33_IndustryLv2
+        - table: BUSINESS_LINE_LEVEL_2
           relation: "Bảng con — ngành nghề cấp 2"
-      notes: "CV scheme: ECAT_INDUSTRY_LV1"
+      notes: "Đã thiết kế Atomic entity 'Classification ECAT Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_32_IndustryLv1 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01)."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -793,8 +793,8 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_33_IndustryLv2
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_33_IndustryLv2"
+  - brd_id: BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_2
+    brd_name: "Design Atomic từ nguồn ECAT bảng BUSINESS_LINE_LEVEL_2"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
@@ -803,11 +803,11 @@ brd_entries:
       functional_group: "UID-10 Danh mục ngành nghề"
       scope_status: in_scope
       scope_reason: null
-      table: ECAT_33_IndustryLv2
+      table: BUSINESS_LINE_LEVEL_2
       related_tables:
-        - table: ECAT_32_IndustryLv1
+        - table: BUSINESS_LINE_LEVEL_1
           relation: "Parent — ngành nghề cấp 1"
-      notes: "CV scheme: ECAT_INDUSTRY_LV2 — parent → ECAT_INDUSTRY_LV1"
+      notes: "Đã thiết kế Atomic entity 'Classification ECAT Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_33_IndustryLv2 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01)."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:

@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "approved"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -23,7 +23,10 @@ metadata:
     \ DESCRIPTION nên là entity concept thật (rule 11 CLAUDE.md), không phải reference\
     \ data set thuần. Là FK target cross-source cho IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID\
     \ (xem lld_IAM_USERS.yaml) và cho 5 file NHNCK retrofit (APPLICATIONS, CERTIFICATE_RECORDS,\
-    \ EXAM_DETAILS, EXAM_SESSION_FEES, ORGANIZATION_REPORTS)."
+    \ EXAM_DETAILS, EXAM_SESSION_FEES, ORGANIZATION_REPORTS). Hạ lại design_status\
+    \ approved → draft (2026-07-13): đổi pattern Id+Code+Unique Key → Id+Code (bỏ\
+    \ Unique Key, Code nay = CERTIFICATE_CODE thay vì ID) — cần review/approve lại.\
+    \ Các file downstream tham chiếu Code cũ (ID-based) cần rà soát riêng."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Type Id"
   physical_name: "sp_license_certificate_type_id"
@@ -33,35 +36,24 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
+  comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE). BCV:\
+    \ [Documentation] Gov. Registration Document."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Code"
   physical_name: "sp_license_certificate_type_code"
-  description: "Mã loại chứng chỉ. BK từ PK bảng nguồn"
+  description: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: QLQY, PTDT,\
+    \ MTCK). BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATES.ID"
-  comment: "BK chính. Nguồn lưu NUMBER — ETL convert sang string."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Securities Practitioner License Certificate Type Unique Key"
-  physical_name: "sp_license_certificate_type_unique_key"
-  description: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: QLQY, PTDT,\
-    \ MTCK)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "NHNCK.CERTIFICATES.CERTIFICATE_CODE"
-  comment: "Unique Key nghiệp vụ — không phải BK. Bảng nguồn có cả ID (BK) và CERTIFICATE_CODE\
-    \ (unique key) theo Bước 3e SKILL."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -36,7 +36,9 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
+  comment: "PK surrogate. Hash theo từng source: hash_id('ECAT.COUNTRY', CODE) / hash_id('ECAT.REGION',\
+    \ CODE) / hash_id('ECAT.PROVINCE_NEW', CODE) / hash_id('ECAT.WARD_NEW', CODE).\
+    \ BCV: \"Geographic Area\" (Location)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -44,20 +46,6 @@ attributes:
     ECAT.REGION: null
     ECAT.PROVINCE_NEW: null
     ECAT.WARD_NEW: null
-- attribute_name: "Geographic Area Code"
-  physical_name: "geographic_area_code"
-  description: "Mã định danh bền vững của bản ghi qua các version. BK."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  comment: "BK chính. Dùng STABLE_ID (không dùng ID) vì ID đổi theo từng version nguồn."
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    ECAT.COUNTRY: "ECAT.COUNTRY.STABLE_ID"
-    ECAT.REGION: "ECAT.REGION.STABLE_ID"
-    ECAT.PROVINCE_NEW: "ECAT.PROVINCE_NEW.STABLE_ID"
-    ECAT.WARD_NEW: "ECAT.WARD_NEW.STABLE_ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã nguồn dữ liệu."
@@ -86,14 +74,15 @@ attributes:
     ECAT.REGION: null
     ECAT.PROVINCE_NEW: null
     ECAT.WARD_NEW: null
-- attribute_name: "Geographic Area Unique Key"
-  physical_name: "geographic_area_unique_key"
-  description: "Unique Key nghiệp vụ (do ECAT quản lý) — tách biệt với Geographic\
-    \ Area Code (BK kỹ thuật)."
+- attribute_name: "Geographic Area Code"
+  physical_name: "geographic_area_code"
+  description: "Mã nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  comment: null
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -153,8 +142,8 @@ attributes:
   is_primary_key: false
   comment: "FK target: Geographic Area.Geographic Area Id. Chuỗi phân cấp: WARD_NEW\
     \ → PROVINCE_NEW → REGION → COUNTRY (NULL). Resolve qua join FK.ID → bảng cha.ID\
-    \ để lấy STABLE_ID, rồi hash_id() theo STABLE_ID cha (không hash trực tiếp theo\
-    \ FK ID vì ID đổi theo version)."
+    \ để lấy CODE, rồi hash_id() theo CODE cha (không hash trực tiếp theo FK ID vì\
+    \ ID đổi theo version)."
   classification_context: null
   etl_derived_value: null
   source_mappings:

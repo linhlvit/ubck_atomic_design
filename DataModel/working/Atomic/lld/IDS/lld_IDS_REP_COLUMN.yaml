@@ -27,34 +27,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Condition] Form Definition\"."
+  comment: "PK surrogate. Hash: hash_id('IDS.REP_COLUMN', COL_CD). BCV: \"[Condition]\
+    \ Form Definition\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Periodic Report Form Column Template Code"
   physical_name: "prf_column_template_code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  description: "Lưu mã tự sinh của chỉ tiêu cột. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.REP_COLUMN.ID"
-  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Periodic Report Form Column Template Unique Key"
-  physical_name: "prf_column_template_unique_key"
-  description: "Lưu mã tự sinh của chỉ tiêu cột."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "IDS.REP_COLUMN.COL_CD"
-  comment: "Unique Key nghiệp vụ, tách biệt với Periodic Report Form Column Template\
-    \ Code (BK kỹ thuật từ ID) theo Bước 3e. Nguồn VARCHAR2(30)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Nguồn VARCHAR2(30). Cần profile dữ liệu nguồn\
+    \ xác nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -79,8 +68,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.REP_COLUMN.REP_FORM_ID"
-  comment: "FK target: Periodic Report Form.Periodic Report Form Id. Hash: hash_id('IDS.REP_FORMS',\
-    \ REP_FORM_ID)."
+  comment: "FK target: Periodic Report Form.Periodic Report Form Id. Resolve: join\
+    \ REP_FORM_ID → IDS.REP_FORMS.ID để lấy REPORT_CD, rồi hash_id('IDS.REP_FORMS',\
+    \ report_cd)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

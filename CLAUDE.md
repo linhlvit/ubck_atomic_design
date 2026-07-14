@@ -65,6 +65,8 @@ Hệ thống nguồn chính: **Temenos T24/Transact** — core banking platform.
 5. **Technical fields prefix ds_**: Tất cả technical fields trên Atomic có prefix ds_.
 6. **BCV — bắt buộc tra cứu trước khi gán**: Không suy luận BCV Concept từ tên bảng. Tra cứu BCV trong `knowledge/` trước.
 7. **Đặt tên Atomic entity**: Pattern [Domain Prefix] + [BCV Term]. Tất cả entity cùng nhóm nghiệp vụ phải chung prefix.
+   - **Entity Classification (bảng thật, promote từ Classification Value)**: Domain Prefix = `Classification [SOURCE]` — tên hệ thống nguồn (ECAT/NHNCK/SCMS/...) luôn chèn ngay sau "Classification". VD: `Classification ECAT Business Line`, `Classification NHNCK Application Status`, `Classification SCMS Firm Status`. Physical name theo cùng thứ tự: `cl_[source]_[term]` (VD: `cl_ecat_business_line`). Áp dụng cho mọi entity Classification mới thiết kế, không chỉ khi có collision tên.
+   - Quy tắc này KHÔNG áp dụng cho "Classification Value" — data domain thuộc tính dùng cho FK reference tới Fundamental (xem rule #4), không phải Atomic entity.
 8. **Entity con tham chiếu entity cha**: Tên entity cha phải là substring liên tục trong tên entity con.
 9. **Phân biệt Condition vs Transaction**: Biểu phí/quy định = [Condition]. Phí thực tế phát sinh từng hồ sơ = [Event] Transaction.
 10. **Gộp entity khi hợp lý**: Cấu trúc tương tự + ít trường → gộp, dùng Classification Value phân biệt.

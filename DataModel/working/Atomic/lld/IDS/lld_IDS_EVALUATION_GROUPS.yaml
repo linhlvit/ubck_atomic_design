@@ -18,11 +18,11 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "table_type = Classification theo xác nhận HLD Tier1 6f (T1-03) — nhóm chỉ\
-    \ tiêu cố định dùng để phân loại, dù có WEIGHT là attribute nghiệp vụ. ID + GROUP_CD\
-    \ (Bước 3e): ID → Code (BK chính), GROUP_CD → Unique Key. Domain prefix \"Public\
-    \ Company Evaluation\" dùng chung với Public Company Evaluation Period (T1), Public\
-    \ Company Evaluation Criterion (T2), Public Company Evaluation (T3), Public Company\
-    \ Evaluation Detail (T4)."
+    \ tiêu cố định dùng để phân loại, dù có WEIGHT là attribute nghiệp vụ. ID kỹ thuật\
+    \ loại khỏi model — GROUP_CD (mã nghiệp vụ) → Code (BK duy nhất), Id hash từ Code.\
+    \ Domain prefix \"Public Company Evaluation\" dùng chung với Public Company Evaluation\
+    \ Period (T1), Public Company Evaluation Criterion (T2), Public Company Evaluation\
+    \ (T3), Public Company Evaluation Detail (T4)."
 attributes:
 - attribute_name: "Public Company Evaluation Group Id"
   physical_name: "pc_evaluation_group_id"
@@ -32,34 +32,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Group] Group\"."
+  comment: "PK surrogate. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). BCV: \"\
+    [Group] Group\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Public Company Evaluation Group Code"
   physical_name: "pc_evaluation_group_code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  description: "Mã nhóm. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.EVALUATION_GROUPS.ID"
-  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Public Company Evaluation Group Unique Key"
-  physical_name: "pc_evaluation_group_unique_key"
-  description: "Mã nhóm."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "IDS.EVALUATION_GROUPS.GROUP_CD"
-  comment: "Unique Key nghiệp vụ, tách biệt với Public Company Evaluation Group Code\
-    \ (BK kỹ thuật từ ID) theo Bước 3e."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

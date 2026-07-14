@@ -18,8 +18,9 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "ECAT là nguồn duy nhất cho Geographic Area (thay thế NHNCK/FMS/SCMS/FIMS\
-    \ — xem ECAT_HLD_Tier1.md). Loại bỏ khỏi mapping: ID (chỉ dùng nội bộ để resolve\
-    \ FK, không map — BK dùng STABLE_ID), IDX_* (không phải cột thật), CREATED_AT/UPDATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_BY_ID/UPDATED_BY_NAME\
+    \ — xem ECAT_HLD_Tier1.md). Loại bỏ khỏi mapping: ID và STABLE_ID (chỉ dùng nội\
+    \ bộ để resolve FK/join, không map — BK dùng CODE, mã nghiệp vụ), IDX_* (không\
+    \ phải cột thật), CREATED_AT/UPDATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_BY_ID/UPDATED_BY_NAME\
     \ (audit kỹ thuật), OLD_ID (con trỏ kỹ thuật). Giữ 1:1 (không gộp): EFFECTIVE/ACTIVE/DELETED\
     \ (3 indicator riêng), VERSION, DISPLAY_LABEL, ACTIVE_REASON, DELETED_REASON."
 attributes:
@@ -31,21 +32,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Geographic Area Code"
-  physical_name: "geographic_area_code"
-  description: "Mã định danh bền vững của bản ghi qua các version. BK"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ECAT.COUNTRY.STABLE_ID"
-  comment: "BK chính. Dùng STABLE_ID (không dùng ID) vì ID đổi theo từng version nguồn\
-    \ — STABLE_ID là định danh ổn định xuyên suốt các version."
+  comment: "PK surrogate. Hash: hash_id('ECAT.COUNTRY', CODE). BCV: \"Geographic Area\"\
+    \ (Location)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -73,16 +61,19 @@ attributes:
   classification_context: "GEOGRAPHIC_AREA_TYPE=COUNTRY"
   etl_derived_value: "COUNTRY"
   data_type: "string"
-- attribute_name: "Geographic Area Unique Key"
-  physical_name: "geographic_area_unique_key"
-  description: "Mã quốc gia nghiệp vụ (do ECAT quản lý)"
+- attribute_name: "Geographic Area Code"
+  physical_name: "geographic_area_code"
+  description: "Mã quốc gia nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ\
+    \ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ECAT.COUNTRY.CODE"
-  comment: "Unique Key nghiệp vụ — tách biệt với Geographic Area Code (BK kỹ thuật)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

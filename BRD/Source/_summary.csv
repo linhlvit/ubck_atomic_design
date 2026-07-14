@@ -1,4 +1,6 @@
 ﻿source,brd_id,table,functional_group,scope_status,scope_reason,table_meaning,notes,ba_email,steward_email
+ECAT,BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_1,BUSINESS_LINE_LEVEL_1,UID-10 Danh mục ngành nghề,in_scope,,Danh mục ngành nghề cấp 1,"Đã thiết kế Atomic entity 'Classification ECAT Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_32_IndustryLv1 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01).",username@fssc.com.vn,username@ubck.com.vn
+ECAT,BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_2,BUSINESS_LINE_LEVEL_2,UID-10 Danh mục ngành nghề,in_scope,,Danh mục ngành nghề cấp 2,"Đã thiết kế Atomic entity 'Classification ECAT Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_33_IndustryLv2 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01).",username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_01_Country,ECAT_01_Country,UID-01 Danh mục địa lý hành chính,in_scope,,Danh mục quốc gia,Map vào Geographic Area với geographic_area_type_code = COUNTRY,username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_02_Region,ECAT_02_Region,UID-01 Danh mục địa lý hành chính,in_scope,,Danh mục vùng/miền,Map vào Geographic Area với geographic_area_type_code = REGION,username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_03_ProvinceOld,ECAT_03_ProvinceOld,UID-01 Danh mục địa lý hành chính,in_scope,,"Danh mục tỉnh/thành phố (cũ, pre-2025)",Map vào Geographic Area với geographic_area_type_code = PROVINCE_OLD — giữ để tra cứu lịch sử trước sáp nhập 2025,username@fssc.com.vn,username@ubck.com.vn
@@ -30,8 +32,6 @@ ECAT,BRD-SRC-ECAT-ECAT_28_ProfessionalCertType,ECAT_28_ProfessionalCertType,UID-
 ECAT,BRD-SRC-ECAT-ECAT_29_HolidayInfo,ECAT_29_HolidayInfo,UID-08 Danh mục lịch & ngày nghỉ,in_scope,,Thông tin ngày nghỉ,Nguồn cho Calendar Date entity — ECAT cung cấp holiday_flag + holiday_name; ETL tự generate dense calendar,username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_30_AdminProcedure,ECAT_30_AdminProcedure,UID-09 Danh mục thủ tục hành chính,in_scope,,Danh mục thủ tục hành chính,"CV scheme: ECAT_ADMINISTRATIVE_PROCEDURE (cấp phép thành lập CTCK, đăng ký phát hành...)",username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_31_AdminProcedureComponent,ECAT_31_AdminProcedureComponent,UID-09 Danh mục thủ tục hành chính,in_scope,,Danh mục thành phần TTHC,CV scheme: ECAT_ADMINISTRATIVE_PROCEDURE_COMPONENT — parent → ECAT_ADMINISTRATIVE_PROCEDURE,username@fssc.com.vn,username@ubck.com.vn
-ECAT,BRD-SRC-ECAT-ECAT_32_IndustryLv1,ECAT_32_IndustryLv1,UID-10 Danh mục ngành nghề,in_scope,,Danh mục ngành nghề cấp 1,CV scheme: ECAT_INDUSTRY_LV1,username@fssc.com.vn,username@ubck.com.vn
-ECAT,BRD-SRC-ECAT-ECAT_33_IndustryLv2,ECAT_33_IndustryLv2,UID-10 Danh mục ngành nghề,in_scope,,Danh mục ngành nghề cấp 2,CV scheme: ECAT_INDUSTRY_LV2 — parent → ECAT_INDUSTRY_LV1,username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_34_ApprovalStatus,ECAT_34_ApprovalStatus,UID-11 Danh mục trạng thái & quy trình xử lý,in_scope,,Danh mục trạng thái duyệt,"CV scheme: ECAT_APPROVAL_STATUS (chờ duyệt, đã duyệt, từ chối...)",username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_35_FrequencyType,ECAT_35_FrequencyType,UID-05 Danh mục nghiệp vụ & dịch vụ,in_scope,,Danh mục loại tần suất,CV scheme: ECAT_FREQUENCY_TYPE,username@fssc.com.vn,username@ubck.com.vn
 ECAT,BRD-SRC-ECAT-ECAT_36_Frequency,ECAT_36_Frequency,UID-05 Danh mục nghiệp vụ & dịch vụ,in_scope,,Danh mục tần suất,CV scheme: ECAT_FREQUENCY — parent → ECAT_FREQUENCY_TYPE,username@fssc.com.vn,username@ubck.com.vn
@@ -450,7 +450,7 @@ IDS,BRD-SRC-IDS-AF_TECHNICAL_AUDIT,AF_TECHNICAL_AUDIT,audit_firm,in_scope,,,,,
 IDS,BRD-SRC-IDS-AF_WARNING,AF_WARNING,audit_firm,in_scope,,,,,
 IDS,BRD-SRC-IDS-BOND_LISTING_HISTORY,BOND_LISTING_HISTORY,capital_activity,in_scope,,,,,
 IDS,BRD-SRC-IDS-CAPITAL_MOBILIZATION,CAPITAL_MOBILIZATION,capital_activity,in_scope,,,,,
-IDS,BRD-SRC-IDS-CATEGORIES,CATEGORIES,public_company,pending,,,,,
+IDS,BRD-SRC-IDS-CATEGORIES,CATEGORIES,public_company,in_scope,,,,,
 IDS,BRD-SRC-IDS-COMPANY_ADD_CAPITAL,COMPANY_ADD_CAPITAL,capital_activity,in_scope,,,,,
 IDS,BRD-SRC-IDS-COMPANY_CHANGE_ROLE_HIS,COMPANY_CHANGE_ROLE_HIS,public_company,pending,,,,,
 IDS,BRD-SRC-IDS-COMPANY_DATA,COMPANY_DATA,reporting,in_scope,,,,,
@@ -604,7 +604,7 @@ NHNCK,BRD-SRC-NHNCK-APPLICATION_PROFESSIONALS,APPLICATION_PROFESSIONALS,UID03 Qu
 NHNCK,BRD-SRC-NHNCK-APPLICATION_RE_EXAMS,APPLICATION_RE_EXAMS,UID03 Quản lý hồ sơ,in_scope,,Hồ sơ đăng ký thi lại,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-APPLICATION_SOURCES,APPLICATION_SOURCES,UID02 Quản lý danh mục dùng riêng,out_of_scope,,Hình thức nộp hồ sơ,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-APPLICATION_SPECIALIZATIONS,APPLICATION_SPECIALIZATIONS,UID03 Quản lý hồ sơ,in_scope,,Chuyên môn liên quan đến hồ sơ,,username@fssc.com.vn,username@ubck.com.vn
-NHNCK,BRD-SRC-NHNCK-APPLICATION_STATUSES,APPLICATION_STATUSES,UID02 Quản lý danh mục dùng riêng,in_scope,Đã thiết kế Atomic entity Classification Application Status (2026-07-09),Định nghĩa các trạng thái của hồ sơ,,username@fssc.com.vn,username@ubck.com.vn
+NHNCK,BRD-SRC-NHNCK-APPLICATION_STATUSES,APPLICATION_STATUSES,UID02 Quản lý danh mục dùng riêng,in_scope,Đã thiết kế Atomic entity Classification NHNCK Application Status (2026-07-09),Định nghĩa các trạng thái của hồ sơ,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-APPLICATION_SUPPLEMENTS,APPLICATION_SUPPLEMENTS,UID03 Quản lý hồ sơ,out_of_scope,,Thông tin bổ sung hồ sơ CCHN,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-AUTO_INCREMENT_CODES,AUTO_INCREMENT_CODES,UID01 Quản trị phân hệ,out_of_scope,Sequence/counter table,Quản lý số tự tăng cho mã CCHN và mã tài liệu,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-BACKUPS,BACKUPS,UID01 Quản trị phân hệ,out_of_scope,Operational/system data,Thông tin file sao lưu cơ sở dữ liệu,,username@fssc.com.vn,username@ubck.com.vn
@@ -630,7 +630,7 @@ NHNCK,BRD-SRC-NHNCK-DEPARTMENT_ACCESS,DEPARTMENT_ACCESS,UID01 Quản trị phân
 NHNCK,BRD-SRC-NHNCK-DIGITAL_CERTIFICATES,DIGITAL_CERTIFICATES,UID01 Quản trị phân hệ,out_of_scope,Operational/PKI data,Chứng thư số,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-DIGITAL_CERTIFICATE_USERS,DIGITAL_CERTIFICATE_USERS,UID01 Quản trị phân hệ,out_of_scope,Operational/PKI data,Tài khoản được sử dụng chứng thư số,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-DISTRICTS,DISTRICTS,UID02 Quản lý danh mục dùng riêng,out_of_scope,Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity (2026-07-10),Danh mục quận/huyện,,username@fssc.com.vn,username@ubck.com.vn
-NHNCK,BRD-SRC-NHNCK-DOCUMENTS,DOCUMENTS,UID02 Quản lý danh mục dùng riêng,in_scope,Đã thiết kế Atomic entity Classification Document (2026-07-09),Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ,,username@fssc.com.vn,username@ubck.com.vn
+NHNCK,BRD-SRC-NHNCK-DOCUMENTS,DOCUMENTS,UID02 Quản lý danh mục dùng riêng,in_scope,Đã thiết kế Atomic entity Classification NHNCK Document (2026-07-09),Danh mục tài liệu liên quan đến hồ sơ hoặc chứng chỉ,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-DOCUMENT_SIGN_LOGS,DOCUMENT_SIGN_LOGS,UID01 Quản trị phân hệ,out_of_scope,Operational log,Nhật ký ký số tài liệu,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-EDUCATION_LEVELS,EDUCATION_LEVELS,UID02 Quản lý danh mục dùng riêng,out_of_scope,,Danh mục trình độ học vấn,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-EMAIL_LOGS,EMAIL_LOGS,UID01 Quản trị phân hệ,out_of_scope,Operational log,Nhật ký gửi email trong hệ thống,,username@fssc.com.vn,username@ubck.com.vn
@@ -663,7 +663,7 @@ NHNCK,BRD-SRC-NHNCK-ROLES,ROLES,UID01 Quản trị phân hệ,out_of_scope,Opera
 NHNCK,BRD-SRC-NHNCK-SEND_AND_RECIEVE_LOGS,SEND_AND_RECIEVE_LOGS,UID01 Quản trị phân hệ,out_of_scope,Operational log,Nhật ký gửi nhận dữ liệu tích hợp,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-SIGNATURE_LOGS,SIGNATURE_LOGS,UID01 Quản trị phân hệ,out_of_scope,Operational log,Nhật ký ký số hồ sơ/CCHN,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-SMS_LOGS,SMS_LOGS,UID01 Quản trị phân hệ,out_of_scope,Operational log,Nhật ký gửi SMS trong hệ thống,,username@fssc.com.vn,username@ubck.com.vn
-NHNCK,BRD-SRC-NHNCK-SPECIALIZATIONS,SPECIALIZATIONS,UID02 Quản lý danh mục dùng riêng,in_scope,Đã thiết kế Atomic entity Classification Specialization (2026-07-09),Danh mục chuyên môn/chứng chỉ chuyên môn,,username@fssc.com.vn,username@ubck.com.vn
+NHNCK,BRD-SRC-NHNCK-SPECIALIZATIONS,SPECIALIZATIONS,UID02 Quản lý danh mục dùng riêng,in_scope,Đã thiết kế Atomic entity Classification NHNCK Specialization (2026-07-09),Danh mục chuyên môn/chứng chỉ chuyên môn,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-SPECIALIZATION_COURSES,SPECIALIZATION_COURSES,UID04/UID10 Quản lý thi sát hạch và đào tạo tập huấn,in_scope,,Danh mục khóa học chuyên môn,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-SPECIALIZATION_COURSE_DETAILS,SPECIALIZATION_COURSE_DETAILS,UID04/UID10 Quản lý thi sát hạch và đào tạo tập huấn,in_scope,,Chi tiết người tham gia khóa học chuyên môn,,username@fssc.com.vn,username@ubck.com.vn
 NHNCK,BRD-SRC-NHNCK-SYSTEM_PARAMETERS,SYSTEM_PARAMETERS,UID01 Quản trị phân hệ,out_of_scope,Config data,Tham số hệ thống,,username@fssc.com.vn,username@ubck.com.vn

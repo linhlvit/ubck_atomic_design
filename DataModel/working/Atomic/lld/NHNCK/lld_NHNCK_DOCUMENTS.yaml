@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "NHNCK"
   source_table: "DOCUMENTS"
-  atomic_entity: "Classification Document"
-  entity_physical_name: "cl_document"
+  atomic_entity: "Classification NHNCK Document"
+  entity_physical_name: "cl_nhnck_document"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Document"
   table_type: "Relative"
@@ -19,16 +19,16 @@ metadata:
   approved_at: null
   notes: "BCV Core Object gán Common theo quy tắc mặc định. Đây là danh mục các tài\
     \ liệu (catalog liệt kê từng loại hồ sơ/tài liệu cần nộp), không phải \"loại tài\
-    \ liệu\" phân loại — đặt tên Classification Document, không phải Document Type.\
-    \ Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật — xem\
-    \ NHNCK_HLD_Overview.md 7e #9. RECORD_STATUS (nguồn) loại khỏi thiết kế — trùng\
-    \ ý nghĩa với ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ ACTIVE làm\
-    \ chuẩn. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY loại khỏi thiết kế — theo\
-    \ đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml, lld_NHNCK_PROFESSIONALS.yaml),\
+    \ liệu\" phân loại — đặt tên Classification NHNCK Document, không phải Document\
+    \ Type. Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật\
+    \ — xem NHNCK_HLD_Overview.md 7e #9. RECORD_STATUS (nguồn) loại khỏi thiết kế\
+    \ — trùng ý nghĩa với ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ ACTIVE\
+    \ làm chuẩn. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY loại khỏi thiết kế —\
+    \ theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml, lld_NHNCK_PROFESSIONALS.yaml),\
     \ không giữ dạng pending."
 attributes:
-- attribute_name: "Classification Document Id"
-  physical_name: "cl_document_id"
+- attribute_name: "Classification NHNCK Document Id"
+  physical_name: "cl_nhnck_document_id"
   description: "Id tự sinh (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -41,8 +41,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification Document Code"
-  physical_name: "cl_document_code"
+- attribute_name: "Classification NHNCK Document Code"
+  physical_name: "cl_nhnck_document_code"
   description: "Mã tài liệu — BK của entity."
   data_domain: "Text"
   nullable: false
@@ -66,8 +66,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=NHNCK.DOCUMENTS"
   etl_derived_value: "NHNCK.DOCUMENTS"
   data_type: "string"
-- attribute_name: "Classification Document Name"
-  physical_name: "cl_document_nm"
+- attribute_name: "Classification NHNCK Document Name"
+  physical_name: "cl_nhnck_document_nm"
   description: "Tên tài liệu."
   data_domain: "Text"
   nullable: false

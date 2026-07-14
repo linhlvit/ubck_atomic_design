@@ -17,8 +17,8 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "ID + VIOLATION_CD (Bước 3e): ID → Code (BK chính), VIOLATION_CD → Unique\
-    \ Key."
+  notes: "ID kỹ thuật loại khỏi model — VIOLATION_CD (mã nghiệp vụ) → Code (BK duy\
+    \ nhất), Id hash từ Code."
 attributes:
 - attribute_name: "Disclosure Form Definition Violation Template Id"
   physical_name: "disclosure_form_definition_violation_template_id"
@@ -28,34 +28,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Condition] Compliance Rule\"."
+  comment: "PK surrogate. Hash: hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_CD).\
+    \ BCV: \"[Condition] Compliance Rule\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Disclosure Form Definition Violation Template Code"
   physical_name: "disclosure_form_definition_violation_template_code"
-  description: "Khóa chính - ID tự tăng. BK của entity — map từ PK bảng nguồn."
+  description: "Mã vi phạm. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.VIOLATION_TEMPLATES.ID"
-  comment: "BK chính. PK nguồn NUMBER(38) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Disclosure Form Definition Violation Template Unique Key"
-  physical_name: "disclosure_form_definition_violation_template_unique_key"
-  description: "Mã vi phạm."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "IDS.VIOLATION_TEMPLATES.VIOLATION_CD"
-  comment: "Unique Key nghiệp vụ, tách biệt với Disclosure Form Definition Violation\
-    \ Template Code (BK kỹ thuật từ ID) theo Bước 3e."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -80,8 +69,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.VIOLATION_TEMPLATES.FORM_ID"
-  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Hash:\
-    \ hash_id('IDS.FORMS', FORM_ID)."
+  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Resolve:\
+    \ join FORM_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', form_cd)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

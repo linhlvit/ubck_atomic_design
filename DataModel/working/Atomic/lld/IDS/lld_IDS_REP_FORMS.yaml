@@ -17,8 +17,8 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "ID + REPORT_CD (Bước 3e): ID → Periodic Report Form Code (BK chính), REPORT_CD\
-    \ → Periodic Report Form Unique Key."
+  notes: "ID kỹ thuật loại khỏi model — REPORT_CD (mã nghiệp vụ) → Periodic Report\
+    \ Form Code (BK duy nhất), Id hash từ Code."
 attributes:
 - attribute_name: "Periodic Report Form Id"
   physical_name: "prf_id"
@@ -28,34 +28,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Condition] Form Definition\"."
+  comment: "PK surrogate. Hash: hash_id('IDS.REP_FORMS', REPORT_CD). BCV: \"[Condition]\
+    \ Form Definition\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Periodic Report Form Code"
   physical_name: "prf_code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  description: "Mã form. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.REP_FORMS.ID"
-  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Periodic Report Form Unique Key"
-  physical_name: "prf_unique_key"
-  description: "Mã form."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "IDS.REP_FORMS.REPORT_CD"
-  comment: "Unique Key nghiệp vụ, tách biệt với Periodic Report Form Code (BK kỹ thuật\
-    \ từ ID) theo Bước 3e."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

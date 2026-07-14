@@ -20,8 +20,8 @@ metadata:
   notes: "Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ\
     \ tiêu cảnh báo (ALERT_INDICATOR). Mỗi dòng = 1 lần thực thi insert-only. Đảo\
     \ ngược quyết định loại-scope trước đây — xem SCMS_HLD_Overview.md 7e #15 và SCMS_HLD_Tier2.md\
-    \ 6f T2-08. Bảng có ID (PK kỹ thuật) + RUN_ID (mã định danh nghiệp vụ) — áp dụng\
-    \ pattern ID+CODE (Bước 3e). Chỉ có CREATED_AT, không có CREATED_BY/UPDATED_AT/UPDATED_BY\
+    \ 6f T2-08. ID (PK kỹ thuật) loại khỏi model — RUN_ID (mã định danh nghiệp vụ)\
+    \ → Code (BK duy nhất), Id hash từ Code. Chỉ có CREATED_AT, không có CREATED_BY/UPDATED_AT/UPDATED_BY\
     \ — không đủ bộ để áp dụng Audit block chuẩn (Bước 3k). ALERT_TARGET_ENTITY map\
     \ 1:1 dạng Text theo yêu cầu Data Modeler — chưa xác nhận cùng domain với SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE\
     \ (xem 6f T2-10). RECORD_STATUS → Classification Value scheme SCMS_ALERT_RUN_RECORD_STATUS\
@@ -36,36 +36,25 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Business Activity] Data Monitoring\". Lần chạy batch\
-    \ hệ thống cảnh báo kiểm tra ngưỡng vi phạm."
+  comment: "PK surrogate. Hash: hash_id('SCMS.ALERT_RUN', RUN_ID). BCV: \"[Business\
+    \ Activity] Data Monitoring\". Lần chạy batch hệ thống cảnh báo kiểm tra ngưỡng\
+    \ vi phạm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Alert Run Code"
   physical_name: "sc_alert_run_code"
-  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  description: "Mã định danh lần chạy nghiệp vụ (RUN_ID). BK duy nhất — Id hash từ\
+    \ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.ALERT_RUN.ID"
-  comment: "BK chính. PK nguồn (NUMBER(19) — ETL convert sang string)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Securities Company Alert Run Unique Key"
-  physical_name: "sc_alert_run_unique_key"
-  description: "Mã định danh lần chạy nghiệp vụ (RUN_ID)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "SCMS.ALERT_RUN.RUN_ID"
-  comment: "NVARCHAR2(64). Mã định danh nghiệp vụ của lần chạy — khác PK kỹ thuật\
-    \ ID. Pattern ID+CODE (Bước 3e): RUN_ID → Unique Key, ID → Code (BK chính). Chưa\
-    \ xác nhận ràng buộc NOT NULL từ BRD — cần profile."
+  comment: "NVARCHAR2(64). BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) +\
+    \ Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác\
+    \ nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

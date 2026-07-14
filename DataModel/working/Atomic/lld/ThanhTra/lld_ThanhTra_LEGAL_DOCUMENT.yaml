@@ -27,34 +27,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ThanhTra.LEGAL_DOCUMENT', ID). BCV: [Business\
+  comment: "PK surrogate. Hash: hash_id('ThanhTra.LEGAL_DOCUMENT', CODE). BCV: [Business\
     \ Direction] Law."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Legal Document Unique Key"
-  physical_name: "legal_document_unique_key"
-  description: "Unique Key nghiệp vụ. Mã văn bản pháp luật tự sinh UNIQUE (VD: VBPL-XXXX)."
+- attribute_name: "Legal Document Code"
+  physical_name: "legal_document_code"
+  description: "Mã văn bản pháp luật tự sinh UNIQUE (VD: VBPL-XXXX). BK duy nhất —\
+    \ Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ThanhTra.LEGAL_DOCUMENT.CODE"
-  comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Legal Document Code"
-  physical_name: "legal_document_code"
-  description: "Khóa chính UUID của bảng nguồn. BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.LEGAL_DOCUMENT.ID"
-  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

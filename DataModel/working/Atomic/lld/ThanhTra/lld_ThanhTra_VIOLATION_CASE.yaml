@@ -28,34 +28,22 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_CASE', ID). BCV: [Business\
+  comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_CASE', CODE). BCV: [Business\
     \ Activity] Conduct Violation."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Violation Case Unique Key"
-  physical_name: "violation_case_unique_key"
-  description: "Unique Key nghiệp vụ. Mã hồ sơ VPHC tự sinh UNIQUE."
+- attribute_name: "Violation Case Code"
+  physical_name: "violation_case_code"
+  description: "Mã hồ sơ VPHC tự sinh UNIQUE. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ThanhTra.VIOLATION_CASE.CODE"
-  comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Violation Case Code"
-  physical_name: "violation_case_code"
-  description: "Khóa chính UUID của bảng nguồn. BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.VIOLATION_CASE.ID"
-  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -93,8 +81,9 @@ attributes:
   status: "draft"
   source_columns:
   - "ThanhTra.VIOLATION_CASE.INSPECTION_TEAM_ID"
-  comment: "FK target: Inspection Team.Inspection Team Id. Hash: hash_id('ThanhTra.INSPECTION_TEAM',\
-    \ INSPECTION_TEAM_ID). Nullable — case có thể không từ thanh tra."
+  comment: "FK target: Inspection Team.Inspection Team Id. Resolve: join INSPECTION_TEAM_ID\
+    \ → ThanhTra.INSPECTION_TEAM.ID để lấy CODE, rồi hash_id('ThanhTra.INSPECTION_TEAM',\
+    \ code). Nullable — case có thể không từ thanh tra."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -121,8 +110,9 @@ attributes:
   status: "draft"
   source_columns:
   - "ThanhTra.VIOLATION_CASE.EXAMINATION_TEAM_ID"
-  comment: "FK target: Examination Team.Examination Team Id. Hash: hash_id('ThanhTra.EXAMINATION_TEAM',\
-    \ EXAMINATION_TEAM_ID). Nullable — case có thể không từ kiểm tra."
+  comment: "FK target: Examination Team.Examination Team Id. Resolve: join EXAMINATION_TEAM_ID\
+    \ → ThanhTra.EXAMINATION_TEAM.ID để lấy CODE, rồi hash_id('ThanhTra.EXAMINATION_TEAM',\
+    \ code). Nullable — case có thể không từ kiểm tra."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

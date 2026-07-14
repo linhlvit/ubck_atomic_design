@@ -1,0 +1,250 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  atomic_entity: "Classification ECAT Business Line"
+  entity_physical_name: "cl_ecat_business_line"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Industry Classification"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Gộp với BUSINESS_LINE_LEVEL_1 thành 1 Atomic entity self-referencing \"\
+    Classification ECAT Business Line\" (ECAT_HLD_Tier1.md, T1-07). LEVEL_2 là cấp\
+    \ con — Parent Business Line Id/Code map từ PARENT_LINE_ID (theo Source/ECAT_Columns.csv:\
+    \ PARENT_LINE_ID lưu trực tiếp STABLE_ID của bản ghi cha — \"Stable Id ngành nghề\
+    \ cấp 1\", không cần join qua ID như REGION.COUNTRY_ID). PARENT_LINE_VERSION_ID\
+    \ (lưu ID phiên bản kỹ thuật cụ thể của bản ghi cha, không phải STABLE_ID) loại\
+    \ khỏi mapping — resolve điểm T1-08, xem pending_design.yaml. BK dùng CODE (mã\
+    \ nghiệp vụ), không dùng ID/STABLE_ID. Loại bỏ khỏi mapping: ID (chỉ dùng nội\
+    \ bộ để resolve FK, không map), OLD_ID (con trỏ kỹ thuật), CREATED_AT/UPDATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_BY_ID/UPDATED_BY_NAME\
+    \ (audit kỹ thuật, cùng cách xử lý với COUNTRY/REGION). Giữ 1:1 (không gộp): EFFECTIVE/ACTIVE/DELETED\
+    \ (3 indicator riêng — theo T1-04, nhất quán COUNTRY/REGION), VERSION, DISPLAY_LABEL,\
+    \ ACTIVE_REASON, DELETED_REASON."
+attributes:
+- attribute_name: "Classification ECAT Business Line Id"
+  physical_name: "cl_ecat_business_line_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_2', CODE). BCV Term:\
+    \ \"Industry Classification\" (Common)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "SOURCE_SYSTEM=ECAT.BUSINESS_LINE_LEVEL_2"
+  etl_derived_value: "ECAT.BUSINESS_LINE_LEVEL_2"
+  data_type: "string"
+- attribute_name: "Classification ECAT Business Line Level Code"
+  physical_name: "cl_ecat_business_line_level_code"
+  description: "Phân biệt cấp ngành nghề — Cấp 2"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
+  classification_context: "ECAT_BUSINESS_LINE_LEVEL=LEVEL_2"
+  etl_derived_value: "LEVEL_2"
+  data_type: "string"
+- attribute_name: "Classification ECAT Business Line Code"
+  physical_name: "cl_ecat_business_line_code"
+  description: "Mã ngành nghề cấp 2. BK duy nhất — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.CODE"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification ECAT Business Line Name"
+  physical_name: "cl_ecat_business_line_nm"
+  description: "Tên ngành nghề cấp 2"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Classification ECAT Business Line Id"
+  physical_name: "parent_cl_ecat_business_line_id"
+  description: "FK đến ngành nghề cấp 1 cha (self-ref)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID"
+  comment: "FK target: Classification ECAT Business Line.Classification ECAT Business\
+    \ Line Id. Parent luôn là bản ghi LEVEL_1. PARENT_LINE_ID lưu STABLE_ID của cha\
+    \ (không phải CODE) — nay Code/Id hash dựa trên CODE nên PHẢI join: match PARENT_LINE_ID\
+    \ = ECAT.BUSINESS_LINE_LEVEL_1.STABLE_ID để lấy CODE, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1',\
+    \ code_cha). Trước đây không cần join do Code cũ = STABLE_ID; nay Code đổi sang\
+    \ CODE nên phát sinh thêm 1 bước resolve so với thiết kế cũ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Classification ECAT Business Line Code"
+  physical_name: "parent_cl_ecat_business_line_code"
+  description: "Mã ngành nghề cấp 1 cha"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID"
+  comment: "Lookup pair: Classification ECAT Business Line.Classification ECAT Business\
+    \ Line Code. Pair with Parent Classification ECAT Business Line Id. Giá trị lấy\
+    \ qua join (xem Parent Classification ECAT Business Line Id) — không còn dùng\
+    \ trực tiếp PARENT_LINE_ID vì Code cha nay là CODE, không phải STABLE_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Display Label"
+  physical_name: "display_label"
+  description: "Nhãn hiển thị"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.DISPLAY_LABEL"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective Indicator"
+  physical_name: "effective_indicator"
+  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Deleted Indicator"
+  physical_name: "deleted_indicator"
+  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.DELETED"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Effective Start Date"
+  physical_name: "effective_start_dt"
+  description: "Ngày bắt đầu hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Effective End Date"
+  physical_name: "effective_end_dt"
+  description: "Ngày kết thúc hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Version Number"
+  physical_name: "version_nbr"
+  description: "Số phiên bản bản ghi tại nguồn"
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.VERSION"
+  comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật\
+    \ versioning của nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Active Reason"
+  physical_name: "active_reason"
+  description: "Lý do thay đổi trạng thái sử dụng"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Deleted Reason"
+  physical_name: "deleted_reason"
+  description: "Lý do xóa"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "ECAT.BUSINESS_LINE_LEVEL_2.DELETED_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

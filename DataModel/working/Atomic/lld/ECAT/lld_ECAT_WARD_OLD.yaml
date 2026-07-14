@@ -30,21 +30,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Geographic Area\" (Location) — entity riêng Geographic\
-    \ Area Old cho phân cấp lịch sử pre-2025."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Geographic Area Old Code"
-  physical_name: "geographic_area_old_code"
-  description: "Mã định danh bền vững của bản ghi qua các version. BK"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ECAT.WARD_OLD.STABLE_ID"
-  comment: "BK chính. Dùng STABLE_ID (không dùng ID) vì ID đổi theo từng version nguồn."
+  comment: "PK surrogate. Hash: hash_id('ECAT.WARD_OLD', CODE). BCV: \"Geographic\
+    \ Area\" (Location) — entity riêng Geographic Area Old cho phân cấp lịch sử pre-2025."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -72,16 +59,19 @@ attributes:
   classification_context: "GEOGRAPHIC_AREA_OLD_TYPE=WARD_OLD"
   etl_derived_value: "WARD_OLD"
   data_type: "string"
-- attribute_name: "Geographic Area Old Unique Key"
-  physical_name: "geographic_area_old_unique_key"
-  description: "Mã phường/xã cũ nghiệp vụ (do ECAT quản lý)"
+- attribute_name: "Geographic Area Old Code"
+  physical_name: "geographic_area_old_code"
+  description: "Mã phường/xã cũ nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash\
+    \ từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ECAT.WARD_OLD.CODE"
-  comment: "Unique Key nghiệp vụ — tách biệt với Geographic Area Old Code (BK kỹ thuật)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -134,8 +124,8 @@ attributes:
   source_columns:
   - "ECAT.WARD_OLD.DISTRICT_OLD_ID"
   comment: "FK target: Geographic Area Old.Geographic Area Old Id. Parent là DISTRICT_OLD.\
-    \ Resolve: join DISTRICT_OLD_ID → ECAT.DISTRICT_OLD.ID để lấy STABLE_ID, rồi hash_id('ECAT.DISTRICT_OLD',\
-    \ stable_id_cha)."
+    \ Resolve: join DISTRICT_OLD_ID → ECAT.DISTRICT_OLD.ID để lấy CODE, rồi hash_id('ECAT.DISTRICT_OLD',\
+    \ code_cha)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -165,7 +155,7 @@ attributes:
   - "ECAT.WARD_OLD.WARD_NEW_ID"
   comment: "FK target: Geographic Area.Geographic Area Id (KHÁC entity — successor\
     \ mapping sau sáp nhập hành chính). Resolve: join WARD_NEW_ID → ECAT.WARD_NEW.ID\
-    \ để lấy STABLE_ID, rồi hash_id('ECAT.WARD_NEW', stable_id)."
+    \ để lấy CODE, rồi hash_id('ECAT.WARD_NEW', code)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -29,20 +29,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"Geographic Area\" (Location)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Geographic Area Code"
-  physical_name: "geographic_area_code"
-  description: "Mã định danh bền vững của bản ghi qua các version. BK"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ECAT.WARD_NEW.STABLE_ID"
-  comment: "BK chính. Dùng STABLE_ID (không dùng ID) vì ID đổi theo từng version nguồn."
+  comment: "PK surrogate. Hash: hash_id('ECAT.WARD_NEW', CODE). BCV: \"Geographic\
+    \ Area\" (Location)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -70,16 +58,19 @@ attributes:
   classification_context: "GEOGRAPHIC_AREA_TYPE=WARD"
   etl_derived_value: "WARD"
   data_type: "string"
-- attribute_name: "Geographic Area Unique Key"
-  physical_name: "geographic_area_unique_key"
-  description: "Mã phường/xã nghiệp vụ (do ECAT quản lý)"
+- attribute_name: "Geographic Area Code"
+  physical_name: "geographic_area_code"
+  description: "Mã phường/xã nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ\
+    \ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ECAT.WARD_NEW.CODE"
-  comment: "Unique Key nghiệp vụ — tách biệt với Geographic Area Code (BK kỹ thuật)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -133,7 +124,7 @@ attributes:
   - "ECAT.WARD_NEW.PROVINCE_NEW_ID"
   comment: "FK target: Geographic Area.Geographic Area Id. Parent là PROVINCE_NEW\
     \ (không qua cấp quận/huyện — đã bỏ sau sáp nhập 2025). Resolve: join PROVINCE_NEW_ID\
-    \ → ECAT.PROVINCE_NEW.ID để lấy STABLE_ID, rồi hash_id('ECAT.PROVINCE_NEW', stable_id_cha)."
+    \ → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW', code_cha)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

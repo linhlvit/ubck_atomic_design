@@ -1,0 +1,187 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "CATEGORIES"
+  atomic_entity: "Classification IDS Business Line"
+  entity_physical_name: "cl_ids_business_line"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Industry Classification"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Promote từ Classification Value (scheme IDS_INDUSTRY_CATEGORY, nay deprecated)\
+    \ lên Atomic entity thật — xem IDS_HLD_Tier1.md 6f T1-06/T1-07/T1-09. Table Type\
+    \ = Relative theo quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification\
+    \ Value), cùng pattern Classification ECAT Business Line (ECAT) và Disclosure\
+    \ Form Definition (IDS.FORMS) — cả 2 đều self-referencing cùng Tier 1. Self-reference\
+    \ PARENT_ID lưu ID kỹ thuật của bản ghi cha (không phải INDUSTRY_CD) — ETL phải\
+    \ join PARENT_ID → IDS.CATEGORIES.ID để lấy INDUSTRY_CD cha rồi hash, giống pattern\
+    \ IDS.FORMS.PARENT_ID. PK kỹ thuật ID loại khỏi model hoàn toàn — chỉ dùng nội\
+    \ bộ để resolve self-reference (xem pending_design.yaml). BK dùng INDUSTRY_CD\
+    \ (mã nghiệp vụ), Id hash từ chính INDUSTRY_CD theo rule 3e hiện hành (2026-07-13)\
+    \ — khác với Classification SCMS Firm Status (hash từ ID kỹ thuật, quyết định\
+    \ cũ trước rule 3e). CREATED_DATE/UPDATED_DATE/CREATED_BY/UPDATED_BY loại bỏ hoàn\
+    \ toàn khỏi Atomic entity — mirror quyết định \"loại bỏ audit block khỏi Atomic\
+    \ entity phân hệ IDS\" đã áp dụng cho toàn bộ lld_IDS_*.yaml khác (xem remove_ids_audit_block.py\
+    \ + pending_design.yaml), KHÔNG dùng pattern Cross-source FK IAM User pending\
+    \ như EVALUATIONS.APPROVED_BY/NOTIFICATIONS.LOGIN_ID (business role field, không\
+    \ phải generic audit block). SYSTEM_CD (T1-08, mô tả gốc trống) dùng lại scheme\
+    \ IDS_SYSTEM_CD đã đăng ký từ IDS.FORMS.SYSTEM_CD — cùng ý nghĩa (hệ thống con\
+    \ trong IDS), chưa xác nhận giá trị thực tế. ACTIVE_FLG (mô tả gốc \"Chọn\") và\
+    \ STATUS_FLG (mô tả gốc rõ 1=Active/0=Inactive) map 1:1 thành 2 Boolean riêng\
+    \ — tên cột và mô tả không khớp nhau (ACTIVE_FLG tên gợi ý active nhưng mô tả\
+    \ là cờ chọn UI, STATUS_FLG tên gợi ý trạng thái nhưng mô tả rõ active/inactive)\
+    \ — không coi là trùng lặp, cần Data Modeler xác nhận ý nghĩa ACTIVE_FLG trước\
+    \ go-live (bổ sung Điểm cần xác nhận T1-10)."
+attributes:
+- attribute_name: "Classification IDS Business Line Id"
+  physical_name: "cl_ids_business_line_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('IDS.CATEGORIES', INDUSTRY_CD). BCV: \"[Common]\
+    \ Industry Classification\"."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS.CATEGORIES"
+  etl_derived_value: "IDS.CATEGORIES"
+  data_type: "string"
+- attribute_name: "Classification IDS Business Line Code"
+  physical_name: "cl_ids_business_line_code"
+  description: "Mã ngành nghề. BK duy nhất — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.INDUSTRY_CD"
+  comment: "BK chính (mã nghiệp vụ). Thay thế PK kỹ thuật ID — không map ID vào model\
+    \ (xem pending_design.yaml). Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Classification IDS Business Line Id"
+  physical_name: "parent_cl_ids_business_line_id"
+  description: "FK đến ngành nghề cấp cha (self-reference). NULL cho ngành nghề cấp\
+    \ cao nhất."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.PARENT_ID"
+  comment: "FK target: Classification IDS Business Line.Classification IDS Business\
+    \ Line Id. Self-reference. PARENT_ID lưu ID kỹ thuật của bản ghi cha — cần join\
+    \ PARENT_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('IDS.CATEGORIES',\
+    \ industry_cd_cha). Cùng pattern IDS.FORMS.PARENT_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Classification IDS Business Line Code"
+  physical_name: "parent_cl_ids_business_line_code"
+  description: "Mã ngành nghề cấp cha."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.PARENT_ID"
+  comment: "Lookup pair: Classification IDS Business Line.Classification IDS Business\
+    \ Line Code. Pair with Parent Classification IDS Business Line Id. Giá trị lấy\
+    \ qua join (xem Parent Classification IDS Business Line Id)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification IDS Business Line Name"
+  physical_name: "cl_ids_business_line_nm"
+  description: "Tên ngành nghề."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.INDUSTRY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Selected Indicator"
+  physical_name: "selected_indicator"
+  description: "Chọn."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.ACTIVE_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0). Tên cột nguồn ACTIVE_FLG\
+    \ gợi ý cờ hiệu lực, nhưng mô tả gốc BRD chỉ ghi \"Chọn\" — có thể là cờ UI (checked/selected)\
+    \ khác với Active Indicator (STATUS_FLG). Cần Data Modeler xác nhận ý nghĩa thực\
+    \ tế trước go-live — xem Điểm cần xác nhận T1-10."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Active Indicator"
+  physical_name: "active_indicator"
+  description: "1: Active (Hiệu lực);  0: Inactive (Hết hiệu lực)."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.STATUS_FLG"
+  comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1,0). Không gộp với Selected\
+    \ Indicator (ACTIVE_FLG) — xem ghi chú tại đó và Điểm cần xác nhận T1-10."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "System Code"
+  physical_name: "stm_code"
+  description: "Mã hệ thống (mô tả gốc BRD trống)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.CATEGORIES.SYSTEM_CD"
+  comment: "Scheme: IDS_SYSTEM_CD (no_lookup, dùng chung với Disclosure Form Definition\
+    \ — xem lld_IDS_FORMS.yaml). HLD Tier1 T1-08: mô tả gốc trống, chưa rõ ý nghĩa\
+    \ cụ thể / giá trị domain — cần đối chiếu dữ liệu thực tế trước go-live."
+  classification_context: "IDS_SYSTEM_CD"
+  etl_derived_value: null
+  data_type: "string"

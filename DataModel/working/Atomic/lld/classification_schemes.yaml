@@ -140,7 +140,7 @@ schemes:
       - "App Document Attachment"
     values: []
     deprecated: true
-    deprecated_reason: "NHNCK.DOCUMENTS đã nâng cấp thành Atomic entity thật 'Classification Document' (table_type Classification, 2026-07-09) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application Employment Experience) đã đổi sang cặp FK Document Id + Document Code."
+    deprecated_reason: "NHNCK.DOCUMENTS đã nâng cấp thành Atomic entity thật 'Classification NHNCK Document' (table_type Classification, 2026-07-09) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application Employment Experience) đã đổi sang cặp FK Document Id + Document Code."
 
   - scheme_code: "EDUCATION_LEVEL"
     name: "Trình độ học vấn — values from EducationLevels"
@@ -389,7 +389,7 @@ schemes:
       - "Securities Practitioner License Application"
     values: []
     deprecated: true
-    deprecated_reason: "NHNCK.APPLICATION_STATUSES đã nâng cấp thành Atomic entity thật 'Classification Application Status' (table_type Classification, 2026-07-09) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application) đã đổi sang cặp FK Application Status Id + Application Status Code."
+    deprecated_reason: "NHNCK.APPLICATION_STATUSES đã nâng cấp thành Atomic entity thật 'Classification NHNCK Application Status' (table_type Classification, 2026-07-09) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application) đã đổi sang cặp FK Application Status Id + Application Status Code."
 
   - scheme_code: "APPLICATION_TYPE"
     name: "Loại hồ sơ (Cấp mới/Cấp lại)"
@@ -1272,7 +1272,7 @@ schemes:
       - "App Education Certificate Document"
     values: []
     deprecated: true
-    deprecated_reason: "NHNCK.SPECIALIZATIONS đã nâng cấp thành Atomic entity thật 'Classification Specialization' (table_type Classification, 2026-07-09) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application Education Certificate Document) đã đổi sang cặp FK Specialization Id + Specialization Code."
+    deprecated_reason: "NHNCK.SPECIALIZATIONS đã nâng cấp thành Atomic entity thật 'Classification NHNCK Specialization' (table_type Classification, 2026-07-09) — không còn dùng scheme này. Entity tiêu thụ (Securities Practitioner License Application Education Certificate Document) đã đổi sang cặp FK Specialization Id + Specialization Code."
 
   - scheme_code: "SYNC_STATUS"
     name: "Trạng thái đồng bộ"
@@ -1678,7 +1678,7 @@ schemes:
       - "Securities Company Organization Unit"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_SC_FIRM_STATUS đã nâng cấp thành Atomic entity thật 'Classification Firm Status' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Firm Status Id + Code trong: lld_SCMS_SC_FIRM_INFO.yaml, lld_SCMS_SC_FIRM_BRANCH.yaml, lld_SCMS_SC_FIRM_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_TRANSACTION_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml (tất cả cùng consolidate về entity 'Securities Company Organization Unit'). 'Securities Company Foreign Branch' KHÔNG có cột status tương ứng trong BRD nguồn — đã loại khỏi danh sách consumer (không phải gap thiết kế)."
+    deprecated_reason: "SCMS.CAT_SC_FIRM_STATUS đã nâng cấp thành Atomic entity thật 'Classification SCMS Firm Status' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification SCMS Firm Status Id + Code trong: lld_SCMS_SC_FIRM_INFO.yaml, lld_SCMS_SC_FIRM_BRANCH.yaml, lld_SCMS_SC_FIRM_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_TRANSACTION_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml (tất cả cùng consolidate về entity 'Securities Company Organization Unit'). 'Securities Company Foreign Branch' KHÔNG có cột status tương ứng trong BRD nguồn — đã loại khỏi danh sách consumer (không phải gap thiết kế)."
 
   - scheme_code: "SCMS_SERVICE_TYPE"
     name: "Loại dịch vụ chứng khoán"
@@ -1689,7 +1689,7 @@ schemes:
       - "Securities Company Foreign Branch"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification Service' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Entity tiêu thụ 'Securities Company Licensed Service' đã đổi sang cặp FK Classification Service Id + Classification Service Code (xem lld_SCMS_SC_FIRM_SERVICE.yaml). 'Securities Company Foreign Branch' (junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE, denormalized ARRAY) migrated 2026-07-10 sang Array<Struct> {classification_service_id; classification_service_code}. 'Securities Company Custodian Bank' đã được xác nhận KHÔNG có cột nguồn liên kết CAT_SERVICE — loại khỏi danh sách consumer (thông tin cũ/sai)."
+    deprecated_reason: "SCMS.CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification SCMS Service' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Entity tiêu thụ 'Securities Company Licensed Service' đã đổi sang cặp FK Classification SCMS Service Id + Classification SCMS Service Code (xem lld_SCMS_SC_FIRM_SERVICE.yaml). 'Securities Company Foreign Branch' (junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE, denormalized ARRAY) migrated 2026-07-10 sang Array<Struct> {classification_service_id; classification_service_code}. 'Securities Company Custodian Bank' đã được xác nhận KHÔNG có cột nguồn liên kết CAT_SERVICE — loại khỏi danh sách consumer (thông tin cũ/sai)."
 
   - scheme_code: "SCMS_SERVICE_RECORD_STATUS"
     name: "Trạng thái dịch vụ được cấp phép: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực"
@@ -1712,6 +1712,8 @@ schemes:
     used_in_entities:
       - "Securities Company"
     values: []
+    deprecated: true
+    deprecated_reason: "SCMS.CAT_BUSINESS_LINE đã nâng cấp thành Atomic entity thật 'Classification SCMS Business Line' (table_type Classification, HLD bổ sung SCMS Tier1, xem 6f T1-09) — không còn dùng scheme này. Junction LNK_SC_FIRM_BUSINESS_LINE (trên 'Securities Company') và LNK_PRACTITIONER_BUSINESS_LINE (trên 'Securities Company Practitioner') cần migrate sang Array<Struct> {classification_scms_business_line_id; classification_scms_business_line_code} khi thiết kế LLD."
 
   - scheme_code: "SCMS_NATIONALITY"
     name: "Quốc tịch"
@@ -1726,7 +1728,7 @@ schemes:
       - "Securities Company Practitioner"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_NATIONALITY đã nâng cấp thành Atomic entity thật 'Classification Nationality' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Nationality Id + Code trong: lld_SCMS_SC_FIRM_SENIOR_PERSONNEL.yaml, lld_SCMS_SC_FIRM_SHAREHOLDER.yaml, lld_SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION.yaml, lld_SCMS_SC_FIRM_INSIDER_RELATION.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml, lld_SCMS_SC_FIRM_DOMESTIC_REP_OFFICE.yaml (2 file cuối consolidate về entity 'Securities Company Organization Unit'), và lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml (gap-fill — cột NATIONALITY_ID trước đó chưa map). 'Securities Company Foreign Branch Personnel' và 'Securities Company Foreign Representative Office Personnel' KHÔNG migrate — cột nguồn là NATIONALITY (text tự do), không phải NATIONALITY_ID, chưa đủ cơ sở tạo FK; cần xác nhận với BA."
+    deprecated_reason: "SCMS.CAT_NATIONALITY đã nâng cấp thành Atomic entity thật 'Classification SCMS Nationality' (table_type Classification, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification SCMS Nationality Id + Code trong: lld_SCMS_SC_FIRM_SENIOR_PERSONNEL.yaml, lld_SCMS_SC_FIRM_SHAREHOLDER.yaml, lld_SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION.yaml, lld_SCMS_SC_FIRM_INSIDER_RELATION.yaml, lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml, lld_SCMS_SC_FIRM_DOMESTIC_REP_OFFICE.yaml (2 file cuối consolidate về entity 'Securities Company Organization Unit'), và lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml (gap-fill — cột NATIONALITY_ID trước đó chưa map). 'Securities Company Foreign Branch Personnel' và 'Securities Company Foreign Representative Office Personnel' KHÔNG migrate — cột nguồn là NATIONALITY (text tự do), không phải NATIONALITY_ID, chưa đủ cơ sở tạo FK; cần xác nhận với BA."
 
   - scheme_code: "SCMS_ALERT_INDICATOR_TYPE"
     name: "Loại chỉ tiêu cảnh báo"
@@ -1744,7 +1746,7 @@ schemes:
       - "Securities Company Risk Indicator Group"
     values: []
 
-  # --- Tier 1 schemes — Classification Firm Status / Service / Nationality / Event Type,
+  # --- Tier 1 schemes — Classification SCMS Firm Status / Service / Nationality / Event Type,
   #     Securities Company Form Report (HLD bổ sung, xem SCMS_HLD_Tier1.md 6f T1-05/T1-06) ---
 
   - scheme_code: "SCMS_FIRM_STATUS_APPLICABLE_ENTITY"
@@ -1752,7 +1754,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY"
     used_in_entities:
-      - "Classification Firm Status"
+      - "Classification SCMS Firm Status"
     values: []
 
   - scheme_code: "SCMS_FIRM_STATUS_RECORD_STATUS"
@@ -1760,7 +1762,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_SC_FIRM_STATUS.RECORD_STATUS"
     used_in_entities:
-      - "Classification Firm Status"
+      - "Classification SCMS Firm Status"
     values:
       - code: "ACTIVE"
         label: "Đang sử dụng"
@@ -1774,7 +1776,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_SERVICE.RECORD_STATUS"
     used_in_entities:
-      - "Classification Service"
+      - "Classification SCMS Service"
     values:
       - code: "ACTIVE"
         label: "Đang sử dụng"
@@ -1788,7 +1790,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_NATIONALITY.RECORD_STATUS"
     used_in_entities:
-      - "Classification Nationality"
+      - "Classification SCMS Nationality"
     values:
       - code: "ACTIVE"
         label: "Đang sử dụng"
@@ -1802,7 +1804,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.RECORD_STATUS"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values:
       - code: "ACTIVE"
         label: "Đang sử dụng"
@@ -1816,7 +1818,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.OBLIGATION_TYPE"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values:
       - code: "REPORT_ONLY"
         label: "Chỉ báo cáo (không CBTT)"
@@ -1836,7 +1838,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.TARGET_ENTITY"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_EVENT_CATEGORY"
@@ -1844,7 +1846,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.EVENT_CATEGORY"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_CYCLE"
@@ -1852,7 +1854,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.CYCLE"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_FREQUENCY"
@@ -1860,7 +1862,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.FREQUENCY"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_SUBMISSION_METHOD"
@@ -1868,7 +1870,7 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.SUBMISSION_METHOD"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values: []
 
   - scheme_code: "SCMS_EVENT_TYPE_DEADLINE_CALC_METHOD"
@@ -1876,8 +1878,25 @@ schemes:
     source_type: "source_table"
     source_table: "SCMS.CAT_EVENT_TYPE.DEADLINE_CALCULATION_METHOD"
     used_in_entities:
-      - "Classification Event Type"
+      - "Classification SCMS Event Type"
     values: []
+
+  # --- Tier 1 scheme — Classification SCMS Business Line (HLD bổ sung,
+  #     xem SCMS_HLD_Tier1.md 6f T1-09 / Overview 7e #16) ---
+
+  - scheme_code: "SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS"
+    name: "Trạng thái bản ghi danh mục Business Line: 1=Đang sử dụng; 0=Ngừng sử dụng"
+    source_type: "source_table"
+    source_table: "SCMS.CAT_BUSINESS_LINE.RECORD_STATUS"
+    used_in_entities:
+      - "Classification SCMS Business Line"
+    values:
+      - code: "ACTIVE"
+        label: "Đang sử dụng"
+        source_value: "1"
+      - code: "INACTIVE"
+        label: "Ngừng sử dụng"
+        source_value: "0"
 
   - scheme_code: "SCMS_FORM_REPORT_RECORD_STATUS"
     name: "Trạng thái biểu mẫu báo cáo: 0=Không sử dụng; 1=Đang sử dụng (hoạt động); 2=Bản nháp"
@@ -2031,7 +2050,7 @@ schemes:
       - "Securities Company Foreign Representative Office Periodic Report"
     values: []
     deprecated: true
-    deprecated_reason: "SCMS.CAT_EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification Event Type' (table_type Relative, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification Event Type Id + Code trong toàn bộ entity tiêu thụ liệt kê ở trên (danh sách trước đó chỉ ghi 2 entity, đã lỗi thời)."
+    deprecated_reason: "SCMS.CAT_EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification SCMS Event Type' (table_type Relative, HLD bổ sung SCMS Tier1) — không còn dùng scheme này. Migrated 2026-07-10 sang cặp FK Classification SCMS Event Type Id + Code trong toàn bộ entity tiêu thụ liệt kê ở trên (danh sách trước đó chỉ ghi 2 entity, đã lỗi thời)."
 
   - scheme_code: "SCMS_PROFILE_STATUS"
     name: "Trạng thái hồ sơ phê duyệt"
@@ -3164,6 +3183,11 @@ schemes:
     used_in_entities:
       - "Public Company"
     values: []
+    deprecated: true
+    deprecated_note: "CATEGORIES đã promote thành Atomic entity thật Classification IDS
+      Business Line (xem IDS_HLD_Tier1.md T1-09, lld_IDS_CATEGORIES.yaml). Public Company
+      (lld_IDS_COMPANY_PROFILES.yaml) đã đổi CATEGORY_L1_ID/CATEGORY_L2_ID sang cặp FK
+      Id+Code (Level 1/2 Business Line Id/Code) thay vì Classification Value scheme này."
 
   - scheme_code: "IDS_REPORT_CATALOG_TYPE"
     name: "Loại danh mục báo cáo tài chính (rc_type_cd từ report_catalog)"
@@ -4128,6 +4152,20 @@ schemes:
       - code: "WARD"
         name: "Phường/Xã/Thị trấn (hiện hành — post-sáp nhập 2025) — từ ECAT.WARD_NEW"
         source_table: "ECAT.WARD_NEW"
+
+  - scheme_code: "ECAT_BUSINESS_LINE_LEVEL"
+    name: "Phân biệt cấp ngành nghề trên entity Classification ECAT Business Line"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Classification ECAT Business Line"
+    values:
+      - code: "LEVEL_1"
+        name: "Ngành nghề cấp 1 — từ ECAT.BUSINESS_LINE_LEVEL_1"
+        source_table: "ECAT.BUSINESS_LINE_LEVEL_1"
+      - code: "LEVEL_2"
+        name: "Ngành nghề cấp 2 — từ ECAT.BUSINESS_LINE_LEVEL_2"
+        source_table: "ECAT.BUSINESS_LINE_LEVEL_2"
 
   - scheme_code: "GEOGRAPHIC_AREA_OLD_TYPE"
     name: null

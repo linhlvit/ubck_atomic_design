@@ -29,34 +29,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR', ID). BCV: [Business\
-    \ Activity] Conduct Violation."
+  comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR', CODE). BCV:\
+    \ [Business Activity] Conduct Violation."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Violation Behavior Unique Key"
-  physical_name: "violation_behavior_unique_key"
-  description: "Unique Key nghiệp vụ. Mã hành vi vi phạm tự sinh UNIQUE."
+- attribute_name: "Violation Behavior Code"
+  physical_name: "violation_behavior_code"
+  description: "Mã hành vi vi phạm tự sinh UNIQUE. BK duy nhất — Id hash từ trường\
+    \ này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ThanhTra.VIOLATION_BEHAVIOR.CODE"
-  comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Violation Behavior Code"
-  physical_name: "violation_behavior_code"
-  description: "Khóa chính UUID của bảng nguồn. BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.VIOLATION_BEHAVIOR.ID"
-  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

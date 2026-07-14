@@ -21,9 +21,9 @@
 | 1 | Involved Party | [Involved Party] Organization | Organization | ORGANIZATIONS | Update | Thông tin các tổ chức tham gia TTCK (CTCK, QLQ, Ngân hàng...) | Securities Organization Reference | Fundamental | Organization — entity nghiệp vụ phong phú, FK từ nhiều bảng. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | DECISIONS | Update | Danh mục các quyết định hành chính do UBCKNN ban hành | Securities Practitioner License Decision Document | Fundamental | Government Registration Document — được FK từ Certificate Document (×3), Certificate Group Document, Conduct Violation, Examination Assessment. |
 | 1 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | CERTIFICATES | Update | Danh mục các loại chứng chỉ hành nghề chứng khoán | Securities Practitioner License Certificate Type | Fundamental | Government Registration Document — danh mục loại CCHN, có processing_days/sort_order/description nên là entity thật (không phải Classification Value). FK target cho Certificate Type Id ở License Application/Certificate Document/Organization Employment Report/Examination Assessment Result/Fee, và cross-source từ IAM User. |
-| 1 | Common | [Common] Application Status | — | APPLICATION_STATUSES | Update | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification Application Status | Relative | BCV Core Object gán Common theo quy tắc mặc định. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS, 2026-07-09) lên entity thật vì có đầy đủ audit fields + SORT_ORDER + LABEL. |
-| 1 | Common | [Common] Document | — | DOCUMENTS | Update | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification Document | Relative | BCV Core Object gán Common theo quy tắc mặc định. Danh mục các tài liệu (không phải "loại tài liệu"). Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE, 2026-07-09) lên entity thật. |
-| 1 | Common | [Common] Specialization | — | SPECIALIZATIONS | Update | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification Specialization | Relative | BCV Core Object gán Common theo quy tắc mặc định — term BCV gần nhất ([Involved Party] Employment Position Qualification) khớp yếu, không dùng. Nâng cấp từ Classification Value (scheme SPECIALIZATION, 2026-07-09) lên entity thật. |
+| 1 | Common | [Common] Application Status | — | APPLICATION_STATUSES | Update | Danh mục trạng thái hồ sơ đăng ký CCHN | Classification NHNCK Application Status | Relative | BCV Core Object gán Common theo quy tắc mặc định. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS, 2026-07-09) lên entity thật vì có đầy đủ audit fields + SORT_ORDER + LABEL. |
+| 1 | Common | [Common] Document | — | DOCUMENTS | Update | Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN | Classification NHNCK Document | Relative | BCV Core Object gán Common theo quy tắc mặc định. Danh mục các tài liệu (không phải "loại tài liệu"). Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE, 2026-07-09) lên entity thật. |
+| 1 | Common | [Common] Specialization | — | SPECIALIZATIONS | Update | Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán | Classification NHNCK Specialization | Relative | BCV Core Object gán Common theo quy tắc mặc định — term BCV gần nhất ([Involved Party] Employment Position Qualification) khớp yếu, không dùng. Nâng cấp từ Classification Value (scheme SPECIALIZATION, 2026-07-09) lên entity thật. |
 | 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONALS | Update | Thông tin người hành nghề chứng khoán | Securities Practitioner | Fundamental | Individual — master entity người hành nghề. |
 | 2 | Involved Party | [Involved Party] Individual | Individual | PROFESSIONAL_HISTORIES | Update | Lịch sử thay đổi thông tin cá nhân của người hành nghề | Securities Practitioner Reason Change History | Fundamental | Individual — ghi nhận 1 lần thay đổi thông tin (ai/khi nào/lý do). Thiết kế lại 2026-07-07 — bản cũ map nhầm sang PROFESSIONALS. FK đến Securities Practitioner qua PROFESSIONAL_ID. |
 | 2 | Event | [Event] Training Course | Training Course | SPECIALIZATION_COURSES | Update | Danh mục khóa học chuyên môn bổ sung kiến thức | Securities Practitioner Professional Training Class | Fundamental | Training Course — master entity khóa học, không gắn với người cụ thể. |
@@ -59,9 +59,9 @@ graph TD
     SECORG["**Securities Organization Reference**"]:::atomic
     DECISION["**Securities Practitioner License Decision Document**"]:::atomic
     OFFICER["**Identity and Access Management User**\n(pending — xem IAM, thay Regulatory\nAuthority Officer đã loại khỏi scope)"]:::atomic
-    APPSTATUS["**Classification Application Status**"]:::atomic
-    CLSDOC["**Classification Document**"]:::atomic
-    CLSSPEC["**Classification Specialization**"]:::atomic
+    APPSTATUS["**Classification NHNCK Application Status**"]:::atomic
+    CLSDOC["**Classification NHNCK Document**"]:::atomic
+    CLSSPEC["**Classification NHNCK Specialization**"]:::atomic
     %% Shared
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
@@ -275,17 +275,17 @@ graph TD
 **Tier:** 1 | **Source:** `CERTIFICATES` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fundamental
 **Description:** Danh mục loại chứng chỉ hành nghề chứng khoán — tên CCHN, mô tả, số ngày xử lý, thứ tự hiển thị. FK target cho `Certificate Type Id` (License Application ×2, Certificate Document, Examination Assessment Result, Examination Assessment Fee, Organization Employment Report) và cross-source cho IAM User (`Practice Certificate Type Id`, pending). Xem 7e #8.
 
-### 5c. Classification Application Status — MỚI (2026-07-09)
+### 5c. Classification NHNCK Application Status — MỚI (2026-07-09)
 **Tier:** 1 | **Source:** `APPLICATION_STATUSES` | **BCV Concept:** [Common] Application Status | **BCO:** Common | **Table Type:** Relative
 **Domain Prefix:** Classification
 **Description:** Danh mục trạng thái hồ sơ đăng ký CCHN — mã, tên, nhãn hiển thị, mô tả, thứ tự sắp xếp. Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS) lên entity thật. FK target cho Application Status Id (Securities Practitioner License Application). Xem 7e #9.
 
-### 5d. Classification Document — MỚI (2026-07-09)
+### 5d. Classification NHNCK Document — MỚI (2026-07-09)
 **Tier:** 1 | **Source:** `DOCUMENTS` | **BCV Concept:** [Common] Document | **BCO:** Common | **Table Type:** Relative
 **Domain Prefix:** Classification
 **Description:** Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục cấp CCHN — mã, tên, mô tả tham chiếu. Là danh mục các tài liệu, không phải phân loại "loại tài liệu". Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật. FK target cho Document Id (Securities Practitioner License Application Employment Experience). Xem 7e #9.
 
-### 5e. Classification Specialization — MỚI (2026-07-09)
+### 5e. Classification NHNCK Specialization — MỚI (2026-07-09)
 **Tier:** 1 | **Source:** `SPECIALIZATIONS` | **BCV Concept:** [Common] Specialization | **BCO:** Common | **Table Type:** Relative
 **Domain Prefix:** Classification
 **Description:** Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán. Nâng cấp từ Classification Value (scheme SPECIALIZATION) lên entity thật. FK target cho Specialization Id (Securities Practitioner License Application Education Certificate Document). Xem 7e #9.

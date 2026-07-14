@@ -172,13 +172,14 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
   > **Lưu ý quan trọng — IP Postal Address:** Nếu bảng nguồn **chỉ có 1 loại địa chỉ cụ thể** (VD: chỉ có `PERMANENT_ADDRESS`, không có cột address_type), KHÔNG dùng bare `IP_ADDR_TYPE` — phải hardcode: `IP_ADDR_TYPE=PERMANENT`. Bare context khiến aggregate bỏ sót `Address Type Code` khi merge nhiều source. Chỉ dùng `IP_ADDR_TYPE` (bare/dynamic) khi nguồn thực sự có cột type động qua lookup.
 
 #### 3e. PK nguồn và BK
-- PK bảng nguồn (VD: `ID`) → map vào **Entity Code (BK)**, không đưa vào technical field.
-- Mã nghiệp vụ khác có tính unique (VD: `MA_SO_THUE`) → trường nghiệp vụ riêng, không phải BK.
-- **Bảng nguồn có cả `ID` và `CODE`** (PK kỹ thuật tự tăng/UUID + cột mã nghiệp vụ unique riêng,
-  VD: `CODE`, `MA_CTCK`): `ID` → `{Entity} Code` (BK chính, theo bullet trên); `CODE` → `{Entity}
-  Unique Key` (data domain `Text`) — **KHÔNG** đặt tên generic kiểu `Organization Code`. Pattern
-  tham khảo (`lld_ThanhTra_VIOLATION_CASE.yaml`): `Violation Case Id` (surrogate) + `Violation Case
-  Unique Key` (từ `CODE` — "Unique Key nghiệp vụ") + `Violation Case Code` (từ `ID` — "BK chính").
+- PK kỹ thuật bảng nguồn (VD: `ID` auto-increment/UUID) **KHÔNG map vào Atomic** — loại khỏi model hoàn toàn, không giữ lại dưới bất kỳ hình thức nào (kể cả technical field).
+- Mã nghiệp vụ duy nhất của bảng nguồn (VD: `CODE`, `MA_CTCK`, `MA_SO_THUE`) → `{Entity} Code` — **BK duy nhất** của entity, data domain `Text`, `nullable: false`. **KHÔNG** đặt tên generic kiểu `Organization Code`.
+- `{Entity} Id` (surrogate) hash **từ chính `{Entity} Code`**: `hash_id('SRC.TABLE', CODE_COLUMN)` — không hash từ ID kỹ thuật.
+- **Bảng nguồn có cả `ID` và `CODE`**: chỉ map `CODE` → `{Entity} Code`; bỏ qua `ID` hoàn toàn (không tạo cặp Code kỹ thuật + Unique Key như trước đây).
+- Không còn pattern `{Entity} Unique Key` — đã gộp vào `{Entity} Code` duy nhất (quyết định 2026-07-13, thay thế pattern Id+Code+Unique Key cũ).
+- Pattern tham khảo (`lld_ThanhTra_VIOLATION_CASE.yaml`): `Violation Case Id` (surrogate, hash từ CODE) + `Violation Case Code` (từ `CODE` nguồn — mã hồ sơ VPHC tự sinh, BK duy nhất).
+- FK trỏ đến entity khác trong 15 core objects cũng phải hash theo Code của entity đích: nếu cột FK nguồn lưu ID kỹ thuật của bảng cha, phải `join FK_COL → TARGET_TABLE.ID` để lấy `CODE` rồi mới `hash_id('TARGET_TABLE', code)` — không hash trực tiếp theo FK ID.
+- Nếu mã nghiệp vụ nguồn hiện đang nullable, cần ghi chú yêu cầu profile dữ liệu xác nhận NOT NULL/unique trước go-live (Code nay đóng vai trò BK).
 
 #### 3f. Source System Code
 
@@ -341,7 +342,7 @@ Trước khi xuất file:
 - [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, ghi lý do NULL.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
 - [ ] **Technical bundle** (xem Bước 2c): Nếu bảng nguồn có đủ 9 cột audit/soft-delete/optimistic-locking chuẩn (`STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME, VERSION`) → đã loại trừ và ghi 9 dòng `pending_design.yaml` chưa? Nếu chỉ có một phần → đã ghi "Điểm cần xác nhận" trong HLD Tier chưa?
-- [ ] **ID + CODE pattern** (xem Bước 3e): Nếu bảng nguồn có cả `ID` và `CODE` → `CODE` map vào `{Entity} Unique Key` (không đặt tên generic như `Organization Code`)?
+- [ ] **ID + CODE pattern** (xem Bước 3e): PK kỹ thuật nguồn (`ID`) loại khỏi model — mã nghiệp vụ (`CODE`) map vào `{Entity} Code` duy nhất (không đặt tên generic như `Organization Code`, không còn `{Entity} Unique Key`), và Id hash từ chính `{Entity} Code`?
 - [ ] Format `source_columns` nhất quán: fully qualified `SOURCE_SYSTEM.schema.Table.Column`.
 - [ ] Shared entity: FK dùng `Involved Party Id` / `Involved Party Code` — không dùng tên entity cha.
 - [ ] Bảng junction denormalized theo HLD → attribute ARRAY đã thêm vào entity cha, không có trong manifest.

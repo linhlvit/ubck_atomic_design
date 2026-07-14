@@ -27,34 +27,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ThanhTra.INSPECTION_TEAM', ID). BCV: [Business\
+  comment: "PK surrogate. Hash: hash_id('ThanhTra.INSPECTION_TEAM', CODE). BCV: [Business\
     \ Activity] Business Review."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Inspection Team Unique Key"
-  physical_name: "inspection_team_unique_key"
-  description: "Unique Key nghiệp vụ. Mã hồ sơ đoàn thanh tra tự sinh UNIQUE (HSTT-YYYY-XXX)."
+- attribute_name: "Inspection Team Code"
+  physical_name: "inspection_team_code"
+  description: "Mã hồ sơ đoàn thanh tra tự sinh UNIQUE (HSTT-YYYY-XXX). BK duy nhất\
+    \ — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ThanhTra.INSPECTION_TEAM.CODE"
-  comment: "UK nghiệp vụ. Mã tự sinh UNIQUE."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Inspection Team Code"
-  physical_name: "inspection_team_code"
-  description: "Khóa chính UUID của bảng nguồn. BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.INSPECTION_TEAM.ID"
-  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

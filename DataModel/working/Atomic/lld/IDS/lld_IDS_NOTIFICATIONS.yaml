@@ -17,9 +17,10 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "ID + NOTI_CD (Bước 3e): ID → Code (BK chính), NOTI_CD → Unique Key. LOGIN_ID/LOGIN_NAME\
-    \ = người quản lý thông báo — FK pending sang Identity and Access Management User\
-    \ (cùng pattern Created/Updated By User, khác cột nghiệp vụ)."
+  notes: "ID kỹ thuật loại khỏi model — NOTI_CD (mã nghiệp vụ) → Code (BK duy nhất),\
+    \ Id hash từ Code. LOGIN_ID/LOGIN_NAME = người quản lý thông báo — FK pending\
+    \ sang Identity and Access Management User (cùng pattern Created/Updated By User,\
+    \ khác cột nghiệp vụ)."
 attributes:
 - attribute_name: "Disclosure Notification Id"
   physical_name: "disclosure_notification_id"
@@ -29,34 +30,23 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Communication] Notification\"."
+  comment: "PK surrogate. Hash: hash_id('IDS.NOTIFICATIONS', NOTI_CD). BCV: \"[Communication]\
+    \ Notification\"."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Disclosure Notification Code"
   physical_name: "disclosure_notification_code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
+  description: "Mã thông báo. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.NOTIFICATIONS.ID"
-  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Disclosure Notification Unique Key"
-  physical_name: "disclosure_notification_unique_key"
-  description: "Mã thông báo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
   - "IDS.NOTIFICATIONS.NOTI_CD"
-  comment: "Unique Key nghiệp vụ, tách biệt với Disclosure Notification Code (BK kỹ\
-    \ thuật từ ID) theo Bước 3e."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -81,8 +71,8 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS.FORM_ID"
-  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Hash:\
-    \ hash_id('IDS.FORMS', FORM_ID)."
+  comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Resolve:\
+    \ join FORM_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', form_cd)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -110,7 +100,7 @@ attributes:
   source_columns:
   - "IDS.NOTIFICATIONS.FORM_CD"
   comment: "Denormalized snapshot — trùng lặp với Disclosure Form Definition.Disclosure\
-    \ Form Definition Unique Key (FORM_CD), lưu dự phòng để tránh join."
+    \ Form Definition Code (FORM_CD), lưu dự phòng để tránh join."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
