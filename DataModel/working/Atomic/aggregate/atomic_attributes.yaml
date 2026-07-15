@@ -10774,7 +10774,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Application Status Id"
+  atomic_attribute: "Classification Application Status Id"
   description: "FK đến trạng thái hồ sơ hiện tại."
   data_domain: "Surrogate Key"
   nullable: false
@@ -10782,18 +10782,18 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.STATUS_ID"
-  comment: "FK target: Classification NHNCK Application Status.Classification NHNCK\
-    \ Application Status Id. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID).\
-    \ Thêm 2026-07-09 khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code,\
-    \ scheme NHNCK_APPLICATION_STATUS đã deprecate)."
+  comment: "FK target: Classification Application Status.Classification Application\
+    \ Status Id. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09\
+    \ khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS\
+    \ đã deprecate)."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "application_status_id"
+  atomic_column: "cl_application_status_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
-  atomic_attribute: "Application Status Code"
+  atomic_attribute: "Classification Application Status Code"
   description: "Mã trạng thái hồ sơ hiện tại (denormalized lookup)."
   data_domain: "Text"
   nullable: false
@@ -10801,12 +10801,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.STATUS_ID"
-  comment: "Lookup pair: Classification NHNCK Application Status.Classification NHNCK\
-    \ Application Status Code. Pair with Application Status Id."
+  comment: "Lookup pair: Classification Application Status.Classification Application\
+    \ Status Code. Pair with Classification Application Status Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATIONS'"
   etl_derived_value: null
   atomic_table: "securities_practitioner_license_application"
-  atomic_column: "application_status_code"
+  atomic_column: "cl_application_status_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
@@ -11498,7 +11498,7 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
     \ Document"
-  atomic_attribute: "Specialization Id"
+  atomic_attribute: "Classification Specialization Id"
   description: "FK đến chuyên ngành CCHN đăng ký"
   data_domain: "Surrogate Key"
   nullable: false
@@ -11506,19 +11506,19 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
-  comment: "FK target: Classification NHNCK Specialization.Classification NHNCK Specialization\
+  comment: "FK target: Classification Specialization.Classification Specialization\
     \ Id. Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_ID). Đổi tên 2026-07-09\
     \ từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION\
     \ đã deprecate)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
-  atomic_column: "specialization_id"
+  atomic_column: "cl_specialization_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
     \ Document"
-  atomic_attribute: "Specialization Code"
+  atomic_attribute: "Classification Specialization Code"
   description: "Mã chuyên ngành CCHN đăng ký (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -11526,12 +11526,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
-  comment: "Lookup pair: Classification NHNCK Specialization.Classification NHNCK\
-    \ Specialization Code. Pair with Specialization Id."
+  comment: "Lookup pair: Classification Specialization.Classification Specialization\
+    \ Code. Pair with Classification Specialization Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_SPECIALIZATIONS'"
   etl_derived_value: null
   atomic_table: "sp_license_application_education_certificate_document"
-  atomic_column: "specialization_code"
+  atomic_column: "cl_specialization_code"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application Education Certificate\
@@ -13261,7 +13261,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Licensed Service"
-  atomic_attribute: "Classification SCMS Service Id"
+  atomic_attribute: "Classification Service Id"
   description: "FK -> cat_service: Dịch vụ chứng khoán được cấp phép."
   data_domain: "Surrogate Key"
   nullable: false
@@ -13269,16 +13269,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SERVICE"
   source_column: "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "FK target: Classification SCMS Service.Classification SCMS Service Id.\
-    \ Hash: hash_id('SCMS.CAT_SERVICE', SERVICE_ID)."
+  comment: "FK target: Classification Service.Classification Service Id. Hash: hash_id('SCMS.CAT_SERVICE',\
+    \ SERVICE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
   etl_derived_value: null
   atomic_table: "sc_licensed_service"
-  atomic_column: "cl_scms_service_id"
+  atomic_column: "cl_service_id"
   data_type: "string"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Licensed Service"
-  atomic_attribute: "Classification SCMS Service Code"
+  atomic_attribute: "Classification Service Code"
   description: "Mã dịch vụ chứng khoán được cấp phép."
   data_domain: "Text"
   nullable: false
@@ -13286,12 +13286,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SERVICE"
   source_column: "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "Lookup pair: Classification SCMS Service.Classification SCMS Service Code.\
-    \ Pair with Classification SCMS Service Id."
+  comment: "Lookup pair: Classification Service.Classification Service Code. Pair\
+    \ with Classification Service Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SERVICE'"
   etl_derived_value: null
   atomic_table: "sc_licensed_service"
-  atomic_column: "cl_scms_service_code"
+  atomic_column: "cl_service_code"
   data_type: "string"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Licensed Service"
@@ -21009,7 +21009,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Practitioner"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của người hành nghề."
   data_domain: "Surrogate Key"
   nullable: true
@@ -21017,16 +21017,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
   etl_derived_value: null
   atomic_table: "sc_practitioner"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Practitioner"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của người hành nghề."
   data_domain: "Text"
   nullable: true
@@ -21034,12 +21034,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONALITY_ID"
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
   etl_derived_value: null
   atomic_table: "sc_practitioner"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Practitioner"
@@ -21242,19 +21242,41 @@ attributes:
   data_type: "date"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Practitioner"
-  atomic_attribute: "Business Line Code"
+  atomic_attribute: "Classification Business Transaction Id"
   description: "Nghiệp vụ kinh doanh người hành nghề phụ trách (FK → CAT_BUSINESS_LINE)."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
-  comment: "Scheme: SCMS_BUSINESS_LINE. VARCHAR2(100) — có thể là code hoặc ID."
+  comment: "FK target: Classification Business Transaction.Classification SCMS Business\
+    \ Line Id. Thay thế Classification Value scheme SCMS_BUSINESS_LINE (deprecated)\
+    \ — xem lld_SCMS_CAT_BUSINESS_LINE.yaml. Nguồn BUSINESS_LINE_ID khai báo VARCHAR2(100)\
+    \ nhưng fk_note trỏ CAT_BUSINESS_LINE.ID (kỹ thuật) — cần join BUSINESS_LINE_ID\
+    \ = SCMS.CAT_BUSINESS_LINE.ID để lấy BUSINESS_LINE_CODE, rồi hash_id('SCMS.CAT_BUSINESS_LINE',\
+    \ business_line_code)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
   etl_derived_value: null
   atomic_table: "sc_practitioner"
-  atomic_column: "business_line_code"
+  atomic_column: "cl_business_transaction_id"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Securities Company Practitioner"
+  atomic_attribute: "Classification Business Transaction Code"
+  description: "Mã nghiệp vụ kinh doanh người hành nghề phụ trách (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  source_column: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID"
+  comment: "Lookup pair: Classification Business Transaction.Classification SCMS Business\
+    \ Line Code. Pair with Classification Business Transaction Id."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_LICENSED_PRACTITIONER'"
+  etl_derived_value: null
+  atomic_table: "sc_practitioner"
+  atomic_column: "cl_business_transaction_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Practitioner"
@@ -23204,7 +23226,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
-  atomic_attribute: "Document Id"
+  atomic_attribute: "Classification Document Id"
   description: "FK đến tài liệu yêu cầu kèm hồ sơ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -23212,17 +23234,17 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
-  comment: "FK target: Classification NHNCK Document.Classification NHNCK Document\
-    \ Id. Hash: hash_id('NHNCK.DOCUMENTS', DOCUMENT_ID). Đổi tên 2026-07-09 từ Document\
-    \ Type Code khi DOCUMENTS lên entity thật (scheme DOCUMENT_TYPE đã deprecate)."
+  comment: "FK target: Classification Document.Classification Document Id. Hash: hash_id('NHNCK.DOCUMENTS',\
+    \ DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type Code khi DOCUMENTS lên entity\
+    \ thật (scheme DOCUMENT_TYPE đã deprecate)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
   etl_derived_value: null
   atomic_table: "sp_license_application_employment_experience"
-  atomic_column: "document_id"
+  atomic_column: "cl_document_id"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
-  atomic_attribute: "Document Code"
+  atomic_attribute: "Classification Document Code"
   description: "Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -23230,12 +23252,12 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_EXPERIENCES"
   source_column: "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
-  comment: "Lookup pair: Classification NHNCK Document.Classification NHNCK Document\
-    \ Code. Pair with Document Id."
+  comment: "Lookup pair: Classification Document.Classification Document Code. Pair\
+    \ with Classification Document Id."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
   etl_derived_value: null
   atomic_table: "sp_license_application_employment_experience"
-  atomic_column: "document_code"
+  atomic_column: "cl_document_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Practitioner License Application Employment Experience"
@@ -34902,542 +34924,9 @@ attributes:
   atomic_table: "citizen_reception"
   atomic_column: "updated_by_officer_code"
   data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: null
-  comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_1', CODE). BCV Term:\
-    \ \"Industry Classification\" (Common)."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_id"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Source System Code"
-  description: "Mã nguồn dữ liệu"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: "ECAT.BUSINESS_LINE_LEVEL_1"
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Level Code"
-  description: "Phân biệt cấp ngành nghề — Cấp 1"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: null
-  comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: "LEVEL_1"
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_level_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Code"
-  description: "Mã ngành nghề cấp 1. BK duy nhất — Id hash từ trường này."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.CODE"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
-    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
-    \ NULL/unique trước go-live."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Name"
-  description: "Tên ngành nghề cấp 1"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.NAME"
-  comment: null
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_nm"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Parent Classification ECAT Business Line Id"
-  description: "FK đến ngành nghề cấp 1 cha (self-ref). NULL cho cấp 1 — cấp cao nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: null
-  comment: "FK target: Classification ECAT Business Line.Classification ECAT Business\
-    \ Line Id. NULL vì BUSINESS_LINE_LEVEL_1 không có parent trong ECAT."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "parent_cl_ecat_business_line_id"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Parent Classification ECAT Business Line Code"
-  description: "Mã ngành nghề cấp 1 cha"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: null
-  comment: "Lookup pair: Classification ECAT Business Line.Classification ECAT Business\
-    \ Line Code. Pair with Parent Classification ECAT Business Line Id. NULL cho cấp\
-    \ 1."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "parent_cl_ecat_business_line_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Display Label"
-  description: "Nhãn hiển thị"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.DISPLAY_LABEL"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "display_label"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Boolean"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "effective_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Boolean"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
-    \ Indicator."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "active_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Boolean"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.DELETED"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "deleted_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "effective_start_dt"
-  data_type: "timestamp"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "effective_end_dt"
-  data_type: "timestamp"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật\
-    \ versioning của nguồn."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "version_nbr"
-  data_type: "int"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "active_reason"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_1"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.DELETED_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "deleted_reason"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Id"
-  description: "Id tự sinh (surrogate key)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: null
-  comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_2', CODE). BCV Term:\
-    \ \"Industry Classification\" (Common)."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_id"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Source System Code"
-  description: "Mã nguồn dữ liệu"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: "ECAT.BUSINESS_LINE_LEVEL_2"
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Level Code"
-  description: "Phân biệt cấp ngành nghề — Cấp 2"
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: null
-  comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: "LEVEL_2"
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_level_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Code"
-  description: "Mã ngành nghề cấp 2. BK duy nhất — Id hash từ trường này."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.CODE"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
-    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
-    \ NULL/unique trước go-live."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Classification ECAT Business Line Name"
-  description: "Tên ngành nghề cấp 2"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.NAME"
-  comment: null
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "cl_ecat_business_line_nm"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Parent Classification ECAT Business Line Id"
-  description: "FK đến ngành nghề cấp 1 cha (self-ref)"
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID"
-  comment: "FK target: Classification ECAT Business Line.Classification ECAT Business\
-    \ Line Id. Parent luôn là bản ghi LEVEL_1. PARENT_LINE_ID lưu STABLE_ID của cha\
-    \ (không phải CODE) — nay Code/Id hash dựa trên CODE nên PHẢI join: match PARENT_LINE_ID\
-    \ = ECAT.BUSINESS_LINE_LEVEL_1.STABLE_ID để lấy CODE, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1',\
-    \ code_cha). Trước đây không cần join do Code cũ = STABLE_ID; nay Code đổi sang\
-    \ CODE nên phát sinh thêm 1 bước resolve so với thiết kế cũ."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "parent_cl_ecat_business_line_id"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Parent Classification ECAT Business Line Code"
-  description: "Mã ngành nghề cấp 1 cha"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID"
-  comment: "Lookup pair: Classification ECAT Business Line.Classification ECAT Business\
-    \ Line Code. Pair with Parent Classification ECAT Business Line Id. Giá trị lấy\
-    \ qua join (xem Parent Classification ECAT Business Line Id) — không còn dùng\
-    \ trực tiếp PARENT_LINE_ID vì Code cha nay là CODE, không phải STABLE_ID."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "parent_cl_ecat_business_line_code"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Display Label"
-  description: "Nhãn hiển thị"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.DISPLAY_LABEL"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "display_label"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Boolean"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "effective_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Boolean"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
-    \ Indicator."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "active_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Boolean"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.DELETED"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "deleted_indicator"
-  data_type: "boolean"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "effective_start_dt"
-  data_type: "timestamp"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "effective_end_dt"
-  data_type: "timestamp"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật\
-    \ versioning của nguồn."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "version_nbr"
-  data_type: "int"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "active_reason"
-  data_type: "string"
-- bcv_core_object: "Common"
-  atomic_entity: "Classification ECAT Business Line"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "BUSINESS_LINE_LEVEL_2"
-  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.DELETED_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
-  etl_derived_value: null
-  atomic_table: "cl_ecat_business_line"
-  atomic_column: "deleted_reason"
-  data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
-  atomic_attribute: "Classification NHNCK Application Status Id"
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Classification Application Status Id"
   description: "Id tự sinh (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35449,12 +34938,12 @@ attributes:
     \ ID)."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
-  atomic_column: "cl_nhnck_application_status_id"
+  atomic_table: "cl_application_status"
+  atomic_column: "cl_application_status_id"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
-  atomic_attribute: "Classification NHNCK Application Status Code"
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Classification Application Status Code"
   description: "Mã trạng thái hồ sơ — BK của entity."
   data_domain: "Text"
   nullable: false
@@ -35468,11 +34957,11 @@ attributes:
     \ với BRD."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
-  atomic_column: "cl_nhnck_application_status_code"
+  atomic_table: "cl_application_status"
+  atomic_column: "cl_application_status_code"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
+  atomic_entity: "Classification Application Status"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn."
   data_domain: "Classification Value"
@@ -35484,12 +34973,12 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: "NHNCK.APPLICATION_STATUSES"
-  atomic_table: "cl_nhnck_application_status"
+  atomic_table: "cl_application_status"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
-  atomic_attribute: "Classification NHNCK Application Status Name"
+  atomic_entity: "Classification Application Status"
+  atomic_attribute: "Classification Application Status Name"
   description: "Tên trạng thái hồ sơ hiển thị trên giao diện."
   data_domain: "Text"
   nullable: false
@@ -35500,11 +34989,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
-  atomic_column: "cl_nhnck_application_status_nm"
+  atomic_table: "cl_application_status"
+  atomic_column: "cl_application_status_nm"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
+  atomic_entity: "Classification Application Status"
   atomic_attribute: "Label"
   description: "Nhãn hiển thị ngắn gọn trên badge/tag."
   data_domain: "Text"
@@ -35516,11 +35005,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
+  atomic_table: "cl_application_status"
   atomic_column: "label"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
+  atomic_entity: "Classification Application Status"
   atomic_attribute: "Description"
   description: "Mô tả chi tiết trạng thái."
   data_domain: "Text"
@@ -35532,11 +35021,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
+  atomic_table: "cl_application_status"
   atomic_column: "description"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
+  atomic_entity: "Classification Application Status"
   atomic_attribute: "Sort Order"
   description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)."
   data_domain: "Small Counter"
@@ -35548,11 +35037,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
+  atomic_table: "cl_application_status"
   atomic_column: "sort_order"
   data_type: "int"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
+  atomic_entity: "Classification Application Status"
   atomic_attribute: "Active Indicator"
   description: "Cờ đang kích hoạt/hiệu lực."
   data_domain: "Indicator"
@@ -35564,11 +35053,11 @@ attributes:
   comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
+  atomic_table: "cl_application_status"
   atomic_column: "active_indicator"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Application Status"
+  atomic_entity: "Classification Application Status"
   atomic_attribute: "Original Data Indicator"
   description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
   data_domain: "Indicator"
@@ -35580,12 +35069,665 @@ attributes:
   comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
   classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_application_status"
+  atomic_table: "cl_application_status"
   atomic_column: "original_data_indicator"
   data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_1', CODE). BCV Term:\
+    \ \"Industry Classification\" (Common)."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: "ECAT.BUSINESS_LINE_LEVEL_1"
+  atomic_table: "cl_business_line"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Level Code"
+  description: "Phân biệt cấp ngành nghề — Cấp 1"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: null
+  comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: "LEVEL_1"
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_level_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Code"
+  description: "Mã ngành nghề cấp 1. BK duy nhất — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.CODE"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL/unique trước go-live."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Name"
+  description: "Tên ngành nghề cấp 1"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.NAME"
+  comment: null
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Parent Classification Business Line Id"
+  description: "FK đến ngành nghề cấp 1 cha (self-ref). NULL cho cấp 1 — cấp cao nhất"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: null
+  comment: "FK target: Classification Business Line.Classification Business Line Id.\
+    \ NULL vì BUSINESS_LINE_LEVEL_1 không có parent trong ECAT."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "parent_cl_business_line_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Parent Classification Business Line Code"
+  description: "Mã ngành nghề cấp 1 cha"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: null
+  comment: "Lookup pair: Classification Business Line.Classification Business Line\
+    \ Code. Pair with Parent Classification Business Line Id. NULL cho cấp 1."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "parent_cl_business_line_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Display Label"
+  description: "Nhãn hiển thị"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.DISPLAY_LABEL"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "display_label"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Effective Indicator"
+  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "effective_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Active Indicator"
+  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.ACTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "active_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Deleted Indicator"
+  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.DELETED"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "deleted_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Effective Start Date"
+  description: "Ngày bắt đầu hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE_START_DATE"
+  comment: null
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "effective_start_dt"
+  data_type: "timestamp"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Effective End Date"
+  description: "Ngày kết thúc hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE_END_DATE"
+  comment: null
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "effective_end_dt"
+  data_type: "timestamp"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Version Number"
+  description: "Số phiên bản bản ghi tại nguồn"
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.VERSION"
+  comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật\
+    \ versioning của nguồn."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "version_nbr"
+  data_type: "int"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Active Reason"
+  description: "Lý do thay đổi trạng thái sử dụng"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.ACTIVE_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "active_reason"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Deleted Reason"
+  description: "Lý do xóa"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_1"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_1.DELETED_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "deleted_reason"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_2', CODE). BCV Term:\
+    \ \"Industry Classification\" (Common)."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: "ECAT.BUSINESS_LINE_LEVEL_2"
+  atomic_table: "cl_business_line"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Level Code"
+  description: "Phân biệt cấp ngành nghề — Cấp 2"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: null
+  comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: "LEVEL_2"
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_level_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Code"
+  description: "Mã ngành nghề cấp 2. BK duy nhất — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.CODE"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL/unique trước go-live."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Classification Business Line Name"
+  description: "Tên ngành nghề cấp 2"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.NAME"
+  comment: null
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "cl_business_line_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Parent Classification Business Line Id"
+  description: "FK đến ngành nghề cấp 1 cha (self-ref)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID"
+  comment: "FK target: Classification Business Line.Classification Business Line Id.\
+    \ Parent luôn là bản ghi LEVEL_1. PARENT_LINE_ID lưu STABLE_ID của cha (không\
+    \ phải CODE) — nay Code/Id hash dựa trên CODE nên PHẢI join: match PARENT_LINE_ID\
+    \ = ECAT.BUSINESS_LINE_LEVEL_1.STABLE_ID để lấy CODE, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1',\
+    \ code_cha). Trước đây không cần join do Code cũ = STABLE_ID; nay Code đổi sang\
+    \ CODE nên phát sinh thêm 1 bước resolve so với thiết kế cũ."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "parent_cl_business_line_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Parent Classification Business Line Code"
+  description: "Mã ngành nghề cấp 1 cha"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID"
+  comment: "Lookup pair: Classification Business Line.Classification Business Line\
+    \ Code. Pair with Parent Classification Business Line Id. Giá trị lấy qua join\
+    \ (xem Parent Classification Business Line Id) — không còn dùng trực tiếp PARENT_LINE_ID\
+    \ vì Code cha nay là CODE, không phải STABLE_ID."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "parent_cl_business_line_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Display Label"
+  description: "Nhãn hiển thị"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.DISPLAY_LABEL"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "display_label"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Effective Indicator"
+  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "effective_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Active Indicator"
+  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "active_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Deleted Indicator"
+  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+  data_domain: "Boolean"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.DELETED"
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "deleted_indicator"
+  data_type: "boolean"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Effective Start Date"
+  description: "Ngày bắt đầu hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_START_DATE"
+  comment: null
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "effective_start_dt"
+  data_type: "timestamp"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Effective End Date"
+  description: "Ngày kết thúc hiệu lực"
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_END_DATE"
+  comment: null
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "effective_end_dt"
+  data_type: "timestamp"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Version Number"
+  description: "Số phiên bản bản ghi tại nguồn"
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.VERSION"
+  comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật\
+    \ versioning của nguồn."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "version_nbr"
+  data_type: "int"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Active Reason"
+  description: "Lý do thay đổi trạng thái sử dụng"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "active_reason"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Line"
+  atomic_attribute: "Deleted Reason"
+  description: "Lý do xóa"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "BUSINESS_LINE_LEVEL_2"
+  source_column: "ECAT.BUSINESS_LINE_LEVEL_2.DELETED_REASON"
+  comment: "Đẩy 1:1 theo yêu cầu."
+  classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_2'"
+  etl_derived_value: null
+  atomic_table: "cl_business_line"
+  atomic_column: "deleted_reason"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Transaction"
+  atomic_attribute: "Classification Business Transaction Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "CAT_BUSINESS_LINE"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('SCMS.CAT_BUSINESS_LINE', BUSINESS_LINE_CODE).\
+    \ BCV: \"[Common] Business Line\"."
+  classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+  etl_derived_value: null
+  atomic_table: "cl_business_transaction"
+  atomic_column: "cl_business_transaction_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Transaction"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_BUSINESS_LINE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+  etl_derived_value: "SCMS.CAT_BUSINESS_LINE"
+  atomic_table: "cl_business_transaction"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Transaction"
+  atomic_attribute: "Classification Business Transaction Code"
+  description: "Mã nghiệp vụ kinh doanh chứng khoán. BK duy nhất — Id hash từ trường\
+    \ này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_BUSINESS_LINE"
+  source_column: "SCMS.CAT_BUSINESS_LINE.BUSINESS_LINE_CODE"
+  comment: "BK chính (mã nghiệp vụ). Thay thế PK kỹ thuật ID — không map ID vào model\
+    \ (xem pending_design.yaml). Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+  etl_derived_value: null
+  atomic_table: "cl_business_transaction"
+  atomic_column: "cl_business_transaction_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Transaction"
+  atomic_attribute: "Classification Business Transaction Name"
+  description: "Tên nghiệp vụ kinh doanh chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_BUSINESS_LINE"
+  source_column: "SCMS.CAT_BUSINESS_LINE.BUSINESS_LINE_NAME"
+  comment: null
+  classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+  etl_derived_value: null
+  atomic_table: "cl_business_transaction"
+  atomic_column: "cl_business_transaction_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Transaction"
+  atomic_attribute: "Note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_BUSINESS_LINE"
+  source_column: "SCMS.CAT_BUSINESS_LINE.NOTE"
+  comment: null
+  classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+  etl_derived_value: null
+  atomic_table: "cl_business_transaction"
+  atomic_column: "note"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Transaction"
+  atomic_attribute: "Legal Capital Amount"
+  description: "Vốn pháp định tối thiểu theo quy định pháp luật cho nghiệp vụ này\
+    \ (mô tả gốc BRD trống)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_BUSINESS_LINE"
+  source_column: "SCMS.CAT_BUSINESS_LINE.LEGAL_CAPITAL"
+  comment: "Nguồn NUMBER(38) không khai báo đơn vị/scale — cần profile xác nhận đơn\
+    \ vị tiền (VND?) và số chữ số thập phân trước go-live. Mô tả bổ sung theo SCMS_HLD_Overview.md\
+    \ #55 (\"vốn pháp định tối thiểu\")."
+  classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+  etl_derived_value: null
+  atomic_table: "cl_business_transaction"
+  atomic_column: "legal_capital_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Business Transaction"
+  atomic_attribute: "Record Status Code"
+  description: "Trạng thái bản ghi nghiệp vụ kinh doanh: 1 = Đang sử dụng; 0 = Ngừng\
+    \ sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_BUSINESS_LINE"
+  source_column: "SCMS.CAT_BUSINESS_LINE.RECORD_STATUS"
+  comment: "Scheme: SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS (đã pre-đăng ký\
+    \ trong classification_schemes.yaml, xem SCMS_HLD_Tier1.md 6f T1-09)."
+  classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+  etl_derived_value: null
+  atomic_table: "cl_business_transaction"
+  atomic_column: "record_status_code"
+  data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
-  atomic_attribute: "Classification NHNCK Document Id"
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Classification Document Id"
   description: "Id tự sinh (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35597,12 +35739,12 @@ attributes:
     \ ID)."
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
-  atomic_column: "cl_nhnck_document_id"
+  atomic_table: "cl_document"
+  atomic_column: "cl_document_id"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
-  atomic_attribute: "Classification NHNCK Document Code"
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Classification Document Code"
   description: "Mã tài liệu — BK của entity."
   data_domain: "Text"
   nullable: false
@@ -35613,11 +35755,11 @@ attributes:
   comment: "BK chính. Mã định danh duy nhất trong danh mục tài liệu."
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
-  atomic_column: "cl_nhnck_document_code"
+  atomic_table: "cl_document"
+  atomic_column: "cl_document_code"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
+  atomic_entity: "Classification Document"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn."
   data_domain: "Classification Value"
@@ -35629,12 +35771,12 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: "NHNCK.DOCUMENTS"
-  atomic_table: "cl_nhnck_document"
+  atomic_table: "cl_document"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
-  atomic_attribute: "Classification NHNCK Document Name"
+  atomic_entity: "Classification Document"
+  atomic_attribute: "Classification Document Name"
   description: "Tên tài liệu."
   data_domain: "Text"
   nullable: false
@@ -35645,11 +35787,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
-  atomic_column: "cl_nhnck_document_nm"
+  atomic_table: "cl_document"
+  atomic_column: "cl_document_nm"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
+  atomic_entity: "Classification Document"
   atomic_attribute: "Legal Reference"
   description: "Trích dẫn căn cứ pháp lý liên quan đến tài liệu."
   data_domain: "Text"
@@ -35663,11 +35805,11 @@ attributes:
     \ xác nhận ý nghĩa thực tế."
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
+  atomic_table: "cl_document"
   atomic_column: "legal_reference"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
+  atomic_entity: "Classification Document"
   atomic_attribute: "Sort Order"
   description: "Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước)."
   data_domain: "Small Counter"
@@ -35679,11 +35821,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
+  atomic_table: "cl_document"
   atomic_column: "sort_order"
   data_type: "int"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
+  atomic_entity: "Classification Document"
   atomic_attribute: "Active Indicator"
   description: "Cờ đang kích hoạt/hiệu lực."
   data_domain: "Indicator"
@@ -35695,11 +35837,11 @@ attributes:
   comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
+  atomic_table: "cl_document"
   atomic_column: "active_indicator"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
+  atomic_entity: "Classification Document"
   atomic_attribute: "Original Data Indicator"
   description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
   data_domain: "Indicator"
@@ -35711,11 +35853,11 @@ attributes:
   comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
+  atomic_table: "cl_document"
   atomic_column: "original_data_indicator"
   data_type: "string"
 - bcv_core_object: null
-  atomic_entity: "Classification NHNCK Document"
+  atomic_entity: "Classification Document"
   atomic_attribute: "Public Service Portal Code"
   description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
   data_domain: "Text"
@@ -35727,143 +35869,12 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
   etl_derived_value: null
-  atomic_table: "cl_nhnck_document"
-  atomic_column: "public_service_portal_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Classification NHNCK Specialization Id"
-  description: "Id tự sinh (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: "NHNCK.SPECIALIZATIONS.ID"
-  comment: "PK surrogate. BCV: [Common] Specialization. Hash: hash_id('NHNCK.SPECIALIZATIONS',\
-    \ ID)."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "cl_nhnck_specialization"
-  atomic_column: "cl_nhnck_specialization_id"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Classification NHNCK Specialization Code"
-  description: "Mã chuyên ngành CCHN — BK của entity."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
-  comment: "BK chính. Mã định danh duy nhất trong danh mục chuyên môn."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "cl_nhnck_specialization"
-  atomic_column: "cl_nhnck_specialization_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: "NHNCK.SPECIALIZATIONS"
-  atomic_table: "cl_nhnck_specialization"
-  atomic_column: "src_stm_code"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Classification NHNCK Specialization Name"
-  description: "Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "cl_nhnck_specialization"
-  atomic_column: "cl_nhnck_specialization_nm"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Legal Reference"
-  description: "Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: "NHNCK.SPECIALIZATIONS.REFERENCE"
-  comment: "Nguồn lưu NCLOB — ETL convert sang string. Mô tả BRD ghi \"của quyết định\"\
-    \ — có thể là mô tả mẫu dùng chung, không riêng cho SPECIALIZATIONS; cần Data\
-    \ Modeler xác nhận ý nghĩa thực tế."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "cl_nhnck_specialization"
-  atomic_column: "legal_reference"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Active Indicator"
-  description: "Cờ đang kích hoạt/hiệu lực."
-  data_domain: "Indicator"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: "NHNCK.SPECIALIZATIONS.ACTIVE"
-  comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "cl_nhnck_specialization"
-  atomic_column: "active_indicator"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Original Data Indicator"
-  description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
-  data_domain: "Indicator"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: "NHNCK.SPECIALIZATIONS.ORIGINAL_DATA"
-  comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "cl_nhnck_specialization"
-  atomic_column: "original_data_indicator"
-  data_type: "string"
-- bcv_core_object: null
-  atomic_entity: "Classification NHNCK Specialization"
-  atomic_attribute: "Public Service Portal Code"
-  description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "SPECIALIZATIONS"
-  source_column: "NHNCK.SPECIALIZATIONS.MCDT_CODE"
-  comment: null
-  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
-  etl_derived_value: null
-  atomic_table: "cl_nhnck_specialization"
+  atomic_table: "cl_document"
   atomic_column: "public_service_portal_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_entity: "Classification Event Type"
+  atomic_attribute: "Classification Event Type Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -35876,12 +35887,12 @@ attributes:
     \ ID)."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_table: "cl_event_type"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_entity: "Classification Event Type"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã sự vụ (thành lập, điều chỉnh vốn, thay đổi tên). BK của entity."
   data_domain: "Text"
   nullable: false
@@ -35893,11 +35904,11 @@ attributes:
     \ pending_design.yaml."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_table: "cl_event_type"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -35909,12 +35920,12 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: "SCMS.CAT_EVENT_TYPE"
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
-  atomic_attribute: "Classification SCMS Event Type Name"
+  atomic_entity: "Classification Event Type"
+  atomic_attribute: "Classification Event Type Name"
   description: "Tên sự vụ/sự kiện."
   data_domain: "Text"
   nullable: false
@@ -35925,11 +35936,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
-  atomic_column: "cl_scms_event_type_nm"
+  atomic_table: "cl_event_type"
+  atomic_column: "cl_event_type_nm"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Record Status Code"
   description: "Trạng thái danh mục sự vụ: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
   data_domain: "Classification Value"
@@ -35941,11 +35952,11 @@ attributes:
   comment: "Scheme: SCMS_EVENT_TYPE_RECORD_STATUS."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "record_status_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "License Required Indicator"
   description: "Cờ sự vụ này cần có giấy phép/văn bản chấp thuận: 1=Có, 0=Không."
   data_domain: "Boolean"
@@ -35957,11 +35968,11 @@ attributes:
   comment: "NUMBER(1)."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "license_required_indicator"
   data_type: "boolean"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Disclosure Required Indicator"
   description: "Cờ sự vụ này yêu cầu công bố thông tin."
   data_domain: "Boolean"
@@ -35974,11 +35985,11 @@ attributes:
     \ Mô tả gốc BRD trống, suy luận từ tên cột theo pattern REQUIRES_*."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "disclosure_required_indicator"
   data_type: "boolean"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Obligation Type Code"
   description: "Loại nghĩa vụ áp dụng: 1 = Chỉ báo cáo (không CBTT); 2 = Chỉ CBTT\
     \ (không báo cáo); 3 = Vừa báo cáo vừa CBTT; 4 = Thay đổi hồ sơ CTCK."
@@ -35992,11 +36003,11 @@ attributes:
     \ mapping 1/2/3/4 theo mô tả nguồn."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "obligation_tp_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Target Entity Code"
   description: "Đối tượng áp dụng của loại sự vụ (mô tả gốc BRD trống)."
   data_domain: "Classification Value"
@@ -36010,11 +36021,11 @@ attributes:
     \ tương tự APPLICABLE_ENTITY/SENDER_ENTITY ở các bảng CAT_ khác."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "target_entity_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Event Category Code"
   description: "Phân loại sự vụ (loại thay đổi hồ sơ)."
   data_domain: "Classification Value"
@@ -36026,11 +36037,11 @@ attributes:
   comment: "Scheme: SCMS_EVENT_TYPE_EVENT_CATEGORY. Values chưa profile."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "event_category_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Cycle Code"
   description: "Chu kỳ áp dụng của sự vụ (mô tả gốc BRD trống)."
   data_domain: "Classification Value"
@@ -36043,11 +36054,11 @@ attributes:
     \ trước khi ETL."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "cycle_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Frequency Code"
   description: "Tần suất áp dụng của sự vụ (mô tả gốc BRD trống)."
   data_domain: "Classification Value"
@@ -36060,11 +36071,11 @@ attributes:
     \ liệu trước khi ETL."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "frequency_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Cutoff Date"
   description: "Ngày chốt sổ/hạn xử lý liên quan sự vụ (mô tả gốc BRD trống)."
   data_domain: "Date"
@@ -36077,11 +36088,11 @@ attributes:
     \ format và giá trị non-date trước khi ETL."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "cutoff_dt"
   data_type: "date"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Submission Method Code"
   description: "Phương thức nộp/xử lý sự vụ (mô tả gốc BRD trống)."
   data_domain: "Classification Value"
@@ -36094,11 +36105,11 @@ attributes:
     \ dữ liệu trước khi ETL."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "submission_method_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Effective Date"
   description: "Ngày văn bản/thay đổi có hiệu lực."
   data_domain: "Date"
@@ -36110,11 +36121,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "effective_dt"
   data_type: "date"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Expiry Date"
   description: "Ngày hết hiệu lực (mô tả gốc BRD trống)."
   data_domain: "Date"
@@ -36126,11 +36137,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "expiry_dt"
   data_type: "date"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Deadline Calculation Method Code"
   description: "Phương pháp tính hạn xử lý (mô tả gốc BRD trống)."
   data_domain: "Classification Value"
@@ -36143,11 +36154,11 @@ attributes:
     \ profile dữ liệu trước khi ETL."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "deadline_calculation_method_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Extended Data"
   description: "Dữ liệu mở rộng (du_lieu_mo_rong) — xem thêm tài liệu đặc tả SCMS."
   data_domain: "Text"
@@ -36160,11 +36171,11 @@ attributes:
     \ dung trước ETL."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "extended_data"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Event Group Code"
   description: "Cột event_group_id (mô tả gốc BRD trống)."
   data_domain: "Text"
@@ -36179,11 +36190,11 @@ attributes:
     \ Nếu sau này xác định được bảng đích, cần đổi sang FK chuẩn."
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "event_group_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   atomic_attribute: "Note"
   description: "Ghi chú bổ sung, không bắt buộc."
   data_domain: "Text"
@@ -36195,12 +36206,12 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_EVENT_TYPE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_event_type"
+  atomic_table: "cl_event_type"
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
-  atomic_attribute: "Classification SCMS Firm Status Id"
+  atomic_entity: "Classification Firm Status"
+  atomic_attribute: "Classification Firm Status Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -36213,12 +36224,12 @@ attributes:
     \ ID)."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_table: "cl_firm_status"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_entity: "Classification Firm Status"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Mã trạng thái hoạt động CTCK. BK của entity."
   data_domain: "Text"
   nullable: false
@@ -36230,11 +36241,11 @@ attributes:
     \ ID kỹ thuật (NUMBER tự tăng) — xem pending_design.yaml."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_table: "cl_firm_status"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -36246,12 +36257,12 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: "SCMS.CAT_SC_FIRM_STATUS"
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
-  atomic_attribute: "Classification SCMS Firm Status Name"
+  atomic_entity: "Classification Firm Status"
+  atomic_attribute: "Classification Firm Status Name"
   description: "Tên trạng thái hoạt động CTCK."
   data_domain: "Text"
   nullable: false
@@ -36262,11 +36273,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
-  atomic_column: "cl_scms_firm_status_nm"
+  atomic_table: "cl_firm_status"
+  atomic_column: "cl_firm_status_nm"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Applicable Entity Code"
   description: "Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai)."
   data_domain: "Classification Value"
@@ -36279,11 +36290,11 @@ attributes:
     \ CTCK/CN/VPDD/NH/Cả hai theo mô tả nguồn."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "applicable_entity_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Report Submission Required Indicator"
   description: "Cờ CTCK ở trạng thái này phải nộp báo cáo: 1=Phải nộp, 0=Không."
   data_domain: "Boolean"
@@ -36295,11 +36306,11 @@ attributes:
   comment: "NUMBER(1)."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "rpt_submission_required_indicator"
   data_type: "boolean"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Disclosure Required Indicator"
   description: "Cờ CTCK ở trạng thái này phải CBTT: 1=Phải CBTT, 0=Không."
   data_domain: "Boolean"
@@ -36311,11 +36322,11 @@ attributes:
   comment: "NUMBER(1)."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "disclosure_required_indicator"
   data_type: "boolean"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Record Status Code"
   description: "Trạng thái bản ghi danh mục: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
   data_domain: "Classification Value"
@@ -36327,11 +36338,11 @@ attributes:
   comment: "Scheme: SCMS_FIRM_STATUS_RECORD_STATUS."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "record_status_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Description"
   description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
   data_domain: "Text"
@@ -36343,11 +36354,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "description"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Note"
   description: "Ghi chú bổ sung, không bắt buộc."
   data_domain: "Text"
@@ -36359,11 +36370,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Item Code"
   description: "Mã định danh (mã viết tắt, mã nghiệp vụ)."
   data_domain: "Text"
@@ -36373,14 +36384,14 @@ attributes:
   source_table: "CAT_SC_FIRM_STATUS"
   source_column: "SCMS.CAT_SC_FIRM_STATUS.CODE"
   comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
-    \ với Classification SCMS Firm Status Code (SC_FIRM_STATUS_CODE)."
+    \ với Classification Firm Status Code (SC_FIRM_STATUS_CODE)."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "item_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Item Name"
   description: "Cột item_name (mô tả gốc BRD trống)."
   data_domain: "Text"
@@ -36390,14 +36401,14 @@ attributes:
   source_table: "CAT_SC_FIRM_STATUS"
   source_column: "SCMS.CAT_SC_FIRM_STATUS.ITEM_NAME"
   comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
-    \ với Classification SCMS Firm Status Name (SC_FIRM_STATUS_NAME)."
+    \ với Classification Firm Status Name (SC_FIRM_STATUS_NAME)."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "item_nm"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   atomic_attribute: "Active Indicator"
   description: "Cột active (mô tả gốc BRD trống)."
   data_domain: "Boolean"
@@ -36410,12 +36421,12 @@ attributes:
     \ với Record Status Code (RECORD_STATUS)."
   classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
   etl_derived_value: null
-  atomic_table: "cl_scms_firm_status"
+  atomic_table: "cl_firm_status"
   atomic_column: "active_indicator"
   data_type: "boolean"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Nationality"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_entity: "Classification Nationality"
+  atomic_attribute: "Classification Nationality Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -36427,12 +36438,12 @@ attributes:
     \ hash_id('SCMS.CAT_NATIONALITY', ID)."
   classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
   etl_derived_value: null
-  atomic_table: "cl_scms_nationality"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_table: "cl_nationality"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Nationality"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_entity: "Classification Nationality"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch. BK của entity."
   data_domain: "Text"
   nullable: false
@@ -36444,11 +36455,11 @@ attributes:
     \ pending_design.yaml."
   classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
   etl_derived_value: null
-  atomic_table: "cl_scms_nationality"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_table: "cl_nationality"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Nationality"
+  atomic_entity: "Classification Nationality"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -36460,12 +36471,12 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
   etl_derived_value: "SCMS.CAT_NATIONALITY"
-  atomic_table: "cl_scms_nationality"
+  atomic_table: "cl_nationality"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Nationality"
-  atomic_attribute: "Classification SCMS Nationality Name"
+  atomic_entity: "Classification Nationality"
+  atomic_attribute: "Classification Nationality Name"
   description: "Tên quốc tịch."
   data_domain: "Text"
   nullable: false
@@ -36476,11 +36487,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
   etl_derived_value: null
-  atomic_table: "cl_scms_nationality"
-  atomic_column: "cl_scms_nationality_nm"
+  atomic_table: "cl_nationality"
+  atomic_column: "cl_nationality_nm"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Nationality"
+  atomic_entity: "Classification Nationality"
   atomic_attribute: "Record Status Code"
   description: "Trạng thái bản ghi quốc tịch: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
   data_domain: "Classification Value"
@@ -36492,11 +36503,11 @@ attributes:
   comment: "Scheme: SCMS_NATIONALITY_RECORD_STATUS."
   classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
   etl_derived_value: null
-  atomic_table: "cl_scms_nationality"
+  atomic_table: "cl_nationality"
   atomic_column: "record_status_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Nationality"
+  atomic_entity: "Classification Nationality"
   atomic_attribute: "Note"
   description: "Ghi chú bổ sung, không bắt buộc."
   data_domain: "Text"
@@ -36508,12 +36519,12 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_NATIONALITY'"
   etl_derived_value: null
-  atomic_table: "cl_scms_nationality"
+  atomic_table: "cl_nationality"
   atomic_column: "note"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Service"
-  atomic_attribute: "Classification SCMS Service Id"
+  atomic_entity: "Classification Service"
+  atomic_attribute: "Classification Service Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -36525,12 +36536,12 @@ attributes:
     \ được cấp phép. Hash: hash_id('SCMS.CAT_SERVICE', ID)."
   classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_service"
-  atomic_column: "cl_scms_service_id"
+  atomic_table: "cl_service"
+  atomic_column: "cl_service_id"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Service"
-  atomic_attribute: "Classification SCMS Service Code"
+  atomic_entity: "Classification Service"
+  atomic_attribute: "Classification Service Code"
   description: "Mã dịch vụ chứng khoán. BK của entity."
   data_domain: "Text"
   nullable: false
@@ -36541,11 +36552,11 @@ attributes:
   comment: "BK chính. Dùng SERVICE_CODE (mã nghiệp vụ) thay vì ID kỹ thuật — xem pending_design.yaml."
   classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_service"
-  atomic_column: "cl_scms_service_code"
+  atomic_table: "cl_service"
+  atomic_column: "cl_service_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Service"
+  atomic_entity: "Classification Service"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
@@ -36557,12 +36568,12 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
   etl_derived_value: "SCMS.CAT_SERVICE"
-  atomic_table: "cl_scms_service"
+  atomic_table: "cl_service"
   atomic_column: "src_stm_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Service"
-  atomic_attribute: "Classification SCMS Service Name"
+  atomic_entity: "Classification Service"
+  atomic_attribute: "Classification Service Name"
   description: "Tên dịch vụ chứng khoán."
   data_domain: "Text"
   nullable: false
@@ -36573,11 +36584,11 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_service"
-  atomic_column: "cl_scms_service_nm"
+  atomic_table: "cl_service"
+  atomic_column: "cl_service_nm"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Service"
+  atomic_entity: "Classification Service"
   atomic_attribute: "Record Status Code"
   description: "Trạng thái bản ghi dịch vụ chứng khoán: 1 = Đang sử dụng; 0 = Ngừng\
     \ sử dụng."
@@ -36590,11 +36601,11 @@ attributes:
   comment: "Scheme: SCMS_CLASSIFICATION_SERVICE_RECORD_STATUS."
   classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_service"
+  atomic_table: "cl_service"
   atomic_column: "record_status_code"
   data_type: "string"
 - bcv_core_object: "Common"
-  atomic_entity: "Classification SCMS Service"
+  atomic_entity: "Classification Service"
   atomic_attribute: "Note"
   description: "Ghi chú bổ sung, không bắt buộc."
   data_domain: "Text"
@@ -36606,8 +36617,139 @@ attributes:
   comment: null
   classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
   etl_derived_value: null
-  atomic_table: "cl_scms_service"
+  atomic_table: "cl_service"
   atomic_column: "note"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Classification Specialization Id"
+  description: "Id tự sinh (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.ID"
+  comment: "PK surrogate. BCV: [Common] Specialization. Hash: hash_id('NHNCK.SPECIALIZATIONS',\
+    \ ID)."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "cl_specialization"
+  atomic_column: "cl_specialization_id"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Classification Specialization Code"
+  description: "Mã chuyên ngành CCHN — BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
+  comment: "BK chính. Mã định danh duy nhất trong danh mục chuyên môn."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "cl_specialization"
+  atomic_column: "cl_specialization_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: "NHNCK.SPECIALIZATIONS"
+  atomic_table: "cl_specialization"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Classification Specialization Name"
+  description: "Tên chuyên ngành CCHN (VD: Phân tích đầu tư, Quản lý quỹ...)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "cl_specialization"
+  atomic_column: "cl_specialization_nm"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Legal Reference"
+  description: "Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.REFERENCE"
+  comment: "Nguồn lưu NCLOB — ETL convert sang string. Mô tả BRD ghi \"của quyết định\"\
+    \ — có thể là mô tả mẫu dùng chung, không riêng cho SPECIALIZATIONS; cần Data\
+    \ Modeler xác nhận ý nghĩa thực tế."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "cl_specialization"
+  atomic_column: "legal_reference"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Active Indicator"
+  description: "Cờ đang kích hoạt/hiệu lực."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.ACTIVE"
+  comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "cl_specialization"
+  atomic_column: "active_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Original Data Indicator"
+  description: "Cờ dữ liệu gốc của hệ thống (không được xóa)."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.ORIGINAL_DATA"
+  comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "cl_specialization"
+  atomic_column: "original_data_indicator"
+  data_type: "string"
+- bcv_core_object: null
+  atomic_entity: "Classification Specialization"
+  atomic_attribute: "Public Service Portal Code"
+  description: "Mã đồng bộ chuyên ngành trên hệ thống Cổng Dịch vụ công quốc gia (MCĐT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  source_column: "NHNCK.SPECIALIZATIONS.MCDT_CODE"
+  comment: null
+  classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
+  etl_derived_value: null
+  atomic_table: "cl_specialization"
+  atomic_column: "public_service_portal_code"
   data_type: "string"
 - bcv_core_object: "Product"
   atomic_entity: "Corporate Bond Trading Snapshot"
@@ -47884,38 +48026,40 @@ attributes:
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Public Company"
-  atomic_attribute: "Industry Category Level 1 Code"
-  description: "Ngành cấp 1."
+  atomic_attribute: "Business Line Level 1 Code"
+  description: "Mã ngành cấp 1."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
-  comment: "Scheme: IDS_INDUSTRY_CATEGORY. Nguồn CATEGORY_L1_ID (NUMBER FK → CATEGORIES.ID)\
-    \ — ETL resolve qua join CATEGORIES.ID để lấy INDUSTRY_CD làm classification value.\
-    \ CATEGORIES ngoài scope Atomic (chỉ dùng làm Classification Value, xem HLD 7c)."
+  comment: "Scheme: IDS_INDUSTRY_CATEGORY (source_table IDS.categories). IDS.CATEGORIES\
+    \ không thiết kế thành Atomic entity — theo quyết định tường minh của Data Modeler\
+    \ (2026-07-14), IDS không dùng chung entity 'Classification Business Line' (ECAT)\
+    \ vì khác nguồn dữ liệu. Giữ nguyên dạng Classification Value, không tạo cặp FK\
+    \ Id+Code (CLAUDE.md #4)."
   classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
   etl_derived_value: null
   atomic_table: "public_company"
-  atomic_column: "industry_category_level_1_code"
+  atomic_column: "business_line_level_1_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Public Company"
-  atomic_attribute: "Industry Category Level 2 Code"
-  description: "Ngành cấp 2."
+  atomic_attribute: "Business Line Level 2 Code"
+  description: "Mã ngành cấp 2."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
-  comment: "Scheme: IDS_INDUSTRY_CATEGORY. Nguồn CATEGORY_L2_ID (NUMBER FK → CATEGORIES.ID)\
-    \ — ETL resolve qua join CATEGORIES.ID để lấy INDUSTRY_CD làm classification value."
+  comment: "Scheme: IDS_INDUSTRY_CATEGORY (source_table IDS.categories). Xem ghi chú\
+    \ tại Business Line Level 1 Code."
   classification_context: "Source System Code = 'IDS_COMPANY_PROFILES'"
   etl_derived_value: null
   atomic_table: "public_company"
-  atomic_column: "industry_category_level_2_code"
+  atomic_column: "business_line_level_2_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Public Company"
@@ -58727,8 +58871,8 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company"
-  atomic_attribute: "Classification SCMS Firm Status Id"
-  description: "Trạng thái pháp lý CTCK — FK tới Classification SCMS Firm Status (Đang\
+  atomic_attribute: "Classification Firm Status Id"
+  description: "Trạng thái pháp lý CTCK — FK tới Classification Firm Status (Đang\
     \ hoạt động, Tạm ngừng, Đình chỉ, Đóng cửa)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -58736,16 +58880,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
   source_column: "SCMS.SC_FIRM_INFO.RECORD_STATUS"
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
   etl_derived_value: null
   atomic_table: "securities_company"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Mã trạng thái pháp lý CTCK."
   data_domain: "Text"
   nullable: true
@@ -58753,33 +58897,33 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
   source_column: "SCMS.SC_FIRM_INFO.RECORD_STATUS"
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
   etl_derived_value: null
   atomic_table: "securities_company"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company"
-  atomic_attribute: "Classification SCMS Event Type Id"
-  description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification SCMS Event Type."
+  atomic_attribute: "Classification Event Type Id"
+  description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Event Type."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
   source_column: "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
   etl_derived_value: null
   atomic_table: "securities_company"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -58787,12 +58931,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
   source_column: "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
   etl_derived_value: null
   atomic_table: "securities_company"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company"
@@ -59805,7 +59949,7 @@ attributes:
   data_type: "boolean"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -59813,16 +59957,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_ADHOC_REPORT"
   source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Text"
   nullable: true
@@ -59830,12 +59974,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_ADHOC_REPORT"
   source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Adhoc Report"
@@ -63643,7 +63787,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -63651,16 +63795,16 @@ attributes:
   source_system: "SCMS"
   source_table: "DISCLOSURE_REPORT"
   source_column: "SCMS.DISCLOSURE_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Text"
   nullable: true
@@ -63668,12 +63812,12 @@ attributes:
   source_system: "SCMS"
   source_table: "DISCLOSURE_REPORT"
   source_column: "SCMS.DISCLOSURE_REPORT.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_report"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Report"
@@ -64223,7 +64367,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Securities Offering"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -64231,16 +64375,16 @@ attributes:
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING"
   source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_securities_offering"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Securities Offering"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -64248,12 +64392,12 @@ attributes:
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING"
   source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
   etl_derived_value: null
   atomic_table: "sc_disclosure_securities_offering"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Disclosure Securities Offering"
@@ -65893,7 +66037,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -65901,16 +66045,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH"
   source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH'"
   etl_derived_value: null
   atomic_table: "securities_company_foreign_branch"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -65918,12 +66062,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH"
   source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH'"
   etl_derived_value: null
   atomic_table: "securities_company_foreign_branch"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch"
@@ -66258,8 +66402,8 @@ attributes:
   source_column: "SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE.CAT_SERVICE_ID"
   comment: "Pure junction LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE → denormalize thành ARRAY.\
     \ Struct: {classification_service_id: Surrogate Key; classification_service_code:\
-    \ Text}. Scheme nguồn: Classification SCMS Service (SCMS.CAT_SERVICE) — đã nâng\
-    \ cấp từ Classification Value đơn. HLD decision: SCMS_HLD_Tier2.md §6d."
+    \ Text}. Scheme nguồn: Classification Service (SCMS.CAT_SERVICE) — đã nâng cấp\
+    \ từ Classification Value đơn. HLD decision: SCMS_HLD_Tier2.md §6d."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH'"
   etl_derived_value: null
   atomic_table: "securities_company_foreign_branch"
@@ -66381,7 +66525,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự kiện pháp lý tương ứng với báo cáo định kỳ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -66389,16 +66533,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_branch_periodic_report"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự kiện pháp lý."
   data_domain: "Text"
   nullable: true
@@ -66406,12 +66550,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_branch_periodic_report"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
@@ -67341,7 +67485,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự kiện pháp lý tương ứng với báo cáo định kỳ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -67349,16 +67493,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_representative_office_periodic_report"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự kiện pháp lý."
   data_domain: "Text"
   nullable: true
@@ -67366,12 +67510,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_foreign_representative_office_periodic_report"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
@@ -68262,7 +68406,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Insider Related Person"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của người nội bộ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -68270,16 +68414,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_INSIDER_RELATION"
   source_column: "SCMS.SC_FIRM_INSIDER_RELATION.NATIONALITY_ID"
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION'"
   etl_derived_value: null
   atomic_table: "sc_insider_related_person"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Insider Related Person"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của người nội bộ."
   data_domain: "Text"
   nullable: true
@@ -68287,12 +68431,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_INSIDER_RELATION"
   source_column: "SCMS.SC_FIRM_INSIDER_RELATION.NATIONALITY_ID"
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_INSIDER_RELATION'"
   etl_derived_value: null
   atomic_table: "sc_insider_related_person"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Insider Related Person"
@@ -69093,7 +69237,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Major Shareholder Relation"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của cổ đông lớn."
   data_domain: "Surrogate Key"
   nullable: true
@@ -69101,16 +69245,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
   source_column: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NATIONALITY_ID"
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
   etl_derived_value: null
   atomic_table: "sc_major_shareholder_relation"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Major Shareholder Relation"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của cổ đông lớn."
   data_domain: "Text"
   nullable: true
@@ -69118,12 +69262,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
   source_column: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.NATIONALITY_ID"
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_MAJOR_SHAREHOLDER_RELATION'"
   etl_derived_value: null
   atomic_table: "sc_major_shareholder_relation"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Major Shareholder Relation"
@@ -69454,7 +69598,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Id"
+  atomic_attribute: "Classification Firm Status Id"
   description: "FK đến trạng thái pháp lý chi nhánh."
   data_domain: "Surrogate Key"
   nullable: true
@@ -69462,16 +69606,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
   source_column: "SCMS.SC_FIRM_BRANCH.BRANCH_STATUS"
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', BRANCH_STATUS)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', BRANCH_STATUS)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Mã trạng thái pháp lý chi nhánh."
   data_domain: "Text"
   nullable: true
@@ -69479,12 +69623,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
   source_column: "SCMS.SC_FIRM_BRANCH.BRANCH_STATUS"
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -69732,7 +69876,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -69740,16 +69884,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
   source_column: null
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -69757,12 +69901,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -69928,7 +70072,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của tổ chức VPDD."
   data_domain: "Surrogate Key"
   nullable: true
@@ -69936,16 +70080,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
   source_column: null
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của tổ chức VPDD."
   data_domain: "Text"
   nullable: true
@@ -69953,12 +70097,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -70387,7 +70531,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Id"
+  atomic_attribute: "Classification Firm Status Id"
   description: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm\
     \ ngừng; 4=Đình chỉ."
   data_domain: "Surrogate Key"
@@ -70396,16 +70540,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_REP_OFFICE.REP_OFFICE_STATUS"
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm\
     \ ngừng; 4=Đình chỉ."
   data_domain: "Text"
@@ -70414,12 +70558,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_REP_OFFICE.REP_OFFICE_STATUS"
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -70667,7 +70811,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -70675,16 +70819,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -70692,12 +70836,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -70863,7 +71007,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của tổ chức VPDD."
   data_domain: "Surrogate Key"
   nullable: true
@@ -70871,16 +71015,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
   source_column: null
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của tổ chức VPDD."
   data_domain: "Text"
   nullable: true
@@ -70888,12 +71032,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -71322,25 +71466,24 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Id"
-  description: "Trạng thái pháp lý phòng giao dịch — FK tới Classification SCMS Firm\
-    \ Status."
+  atomic_attribute: "Classification Firm Status Id"
+  description: "Trạng thái pháp lý phòng giao dịch — FK tới Classification Firm Status."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
   source_column: "SCMS.SC_FIRM_TRANSACTION_OFFICE.TRANSACTION_OFFICE_STATUS"
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', TRANSACTION_OFFICE_STATUS)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', TRANSACTION_OFFICE_STATUS)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Mã trạng thái pháp lý phòng giao dịch."
   data_domain: "Text"
   nullable: true
@@ -71348,12 +71491,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
   source_column: "SCMS.SC_FIRM_TRANSACTION_OFFICE.TRANSACTION_OFFICE_STATUS"
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -71601,7 +71744,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -71609,16 +71752,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
   source_column: "SCMS.SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -71626,12 +71769,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
   source_column: "SCMS.SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -71797,7 +71940,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của tổ chức VPDD."
   data_domain: "Surrogate Key"
   nullable: true
@@ -71805,16 +71948,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
   source_column: null
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của tổ chức VPDD."
   data_domain: "Text"
   nullable: true
@@ -71822,12 +71965,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_TRANSACTION_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -72259,7 +72402,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Id"
+  atomic_attribute: "Classification Firm Status Id"
   description: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm\
     \ ngừng; 4=Đình chỉ."
   data_domain: "Surrogate Key"
@@ -72268,23 +72411,23 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_DOMESTIC_REP_OFFICE"
   source_column: null
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', BRANCH_STATUS). // FK target: Classification\
-    \ SCMS Firm Status.Classification SCMS Firm Status Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS',\
-    \ REP_OFFICE_STATUS). // FK target: Classification SCMS Firm Status.Classification\
-    \ SCMS Firm Status Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', TRANSACTION_OFFICE_STATUS).\
-    \ // FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS_ID). // FK target:\
-    \ Classification SCMS Firm Status.Classification SCMS Firm Status Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS',\
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', BRANCH_STATUS). // FK target: Classification\
+    \ Firm Status.Classification Firm Status Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS',\
+    \ REP_OFFICE_STATUS). // FK target: Classification Firm Status.Classification\
+    \ Firm Status Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', TRANSACTION_OFFICE_STATUS).\
+    \ // FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS_ID). // FK target: Classification\
+    \ Firm Status.Classification Firm Status Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS',\
     \ RECORD_STATUS)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Trạng thái pháp lý văn phòng đại diện: 1=Hoạt động; 2=Đóng cửa; 3=Tạm\
     \ ngừng; 4=Đình chỉ."
   data_domain: "Text"
@@ -72293,12 +72436,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_DOMESTIC_REP_OFFICE"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -72552,7 +72695,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -72560,16 +72703,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_DOMESTIC_REP_OFFICE"
   source_column: null
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -72577,12 +72720,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_DOMESTIC_REP_OFFICE"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -72748,7 +72891,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của tổ chức VPDD."
   data_domain: "Surrogate Key"
   nullable: true
@@ -72756,16 +72899,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_DOMESTIC_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.NATIONALITY_ID"
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của tổ chức VPDD."
   data_domain: "Text"
   nullable: true
@@ -72773,12 +72916,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_DOMESTIC_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.NATIONALITY_ID"
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_DOMESTIC_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -73210,25 +73353,25 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Id"
-  description: "Trạng thái pháp lý VPDD CTCK nước ngoài — FK tới Classification SCMS\
-    \ Firm Status."
+  atomic_attribute: "Classification Firm Status Id"
+  description: "Trạng thái pháp lý VPDD CTCK nước ngoài — FK tới Classification Firm\
+    \ Status."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.REP_OFFICE_STATUS_ID"
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS_ID)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', REP_OFFICE_STATUS_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Mã trạng thái pháp lý VPDD CTCK nước ngoài."
   data_domain: "Text"
   nullable: true
@@ -73236,12 +73379,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.REP_OFFICE_STATUS_ID"
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -73493,7 +73636,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -73501,16 +73644,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -73518,12 +73661,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -73689,7 +73832,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của tổ chức VPDD."
   data_domain: "Surrogate Key"
   nullable: true
@@ -73697,16 +73840,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
   source_column: null
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của tổ chức VPDD."
   data_domain: "Text"
   nullable: true
@@ -73714,12 +73857,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -74151,7 +74294,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Id"
+  atomic_attribute: "Classification Firm Status Id"
   description: "FK đến trạng thái hoạt động: 1=Hoạt động; 2=Đóng cửa; 3=Tạm ngừng;\
     \ 4=Đình chỉ."
   data_domain: "Surrogate Key"
@@ -74160,16 +74303,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.RECORD_STATUS"
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_id"
+  atomic_column: "cl_firm_status_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Firm Status Code"
+  atomic_attribute: "Classification Firm Status Code"
   description: "Mã trạng thái hoạt động."
   data_domain: "Text"
   nullable: true
@@ -74177,12 +74320,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.RECORD_STATUS"
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_firm_status_code"
+  atomic_column: "cl_firm_status_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -74433,7 +74576,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "Loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Surrogate Key"
   nullable: true
@@ -74441,16 +74584,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
   source_column: null
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -74458,12 +74601,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
   source_column: null
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -74629,7 +74772,7 @@ attributes:
   data_type: "date"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của tổ chức."
   data_domain: "Surrogate Key"
   nullable: true
@@ -74637,16 +74780,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.NATIONALITY_ID"
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của tổ chức."
   data_domain: "Text"
   nullable: true
@@ -74654,12 +74797,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_VN"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.NATIONALITY_ID"
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_FOREIGN_REP_OFFICE_VN'"
   etl_derived_value: null
   atomic_table: "sc_organization_unit"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Organization Unit"
@@ -75449,7 +75592,7 @@ attributes:
   data_type: "int"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -75457,16 +75600,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE)."
   data_domain: "Text"
   nullable: true
@@ -75474,12 +75617,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
   etl_derived_value: null
   atomic_table: "sc_periodic_report"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Periodic Report"
@@ -75905,7 +76048,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự vụ/sự kiện nghiệp vụ (loại thay đổi hồ sơ)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -75913,16 +76056,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
   source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PROFILE_CHANGE'"
   etl_derived_value: null
   atomic_table: "sc_profile_change"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -75930,12 +76073,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
   source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_PROFILE_CHANGE'"
   etl_derived_value: null
   atomic_table: "sc_profile_change"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Profile Change"
@@ -78500,7 +78643,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Senior Personnel"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "Quốc tịch (FK đến CAT_NATIONALITY)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -78508,16 +78651,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SENIOR_PERSONNEL"
   source_column: "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONALITY_ID"
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
   etl_derived_value: null
   atomic_table: "sc_senior_personnel"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Senior Personnel"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Quốc tịch (FK đến CAT_NATIONALITY)."
   data_domain: "Text"
   nullable: true
@@ -78525,12 +78668,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SENIOR_PERSONNEL"
   source_column: "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONALITY_ID"
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
   etl_derived_value: null
   atomic_table: "sc_senior_personnel"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Senior Personnel"
@@ -79183,7 +79326,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Shareholder"
-  atomic_attribute: "Classification SCMS Nationality Id"
+  atomic_attribute: "Classification Nationality Id"
   description: "FK đến quốc tịch của cổ đông."
   data_domain: "Surrogate Key"
   nullable: true
@@ -79191,16 +79334,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER"
   source_column: "SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID"
-  comment: "FK target: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+  comment: "FK target: Classification Nationality.Classification Nationality Id. Hash:\
+    \ hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
   etl_derived_value: null
   atomic_table: "securities_company_shareholder"
-  atomic_column: "cl_scms_nationality_id"
+  atomic_column: "cl_nationality_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Shareholder"
-  atomic_attribute: "Classification SCMS Nationality Code"
+  atomic_attribute: "Classification Nationality Code"
   description: "Mã quốc tịch của cổ đông."
   data_domain: "Text"
   nullable: true
@@ -79208,12 +79351,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER"
   source_column: "SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID"
-  comment: "Lookup pair: Classification SCMS Nationality.Classification SCMS Nationality\
-    \ Code. Pair with Classification SCMS Nationality Id."
+  comment: "Lookup pair: Classification Nationality.Classification Nationality Code.\
+    \ Pair with Classification Nationality Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
   etl_derived_value: null
   atomic_table: "securities_company_shareholder"
-  atomic_column: "cl_scms_nationality_code"
+  atomic_column: "cl_nationality_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Shareholder"
@@ -80752,7 +80895,7 @@ attributes:
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Shareholder Transfer"
-  atomic_attribute: "Classification SCMS Event Type Id"
+  atomic_attribute: "Classification Event Type Id"
   description: "FK đến loại sự kiện pháp lý tương ứng với giao dịch chuyển nhượng."
   data_domain: "Surrogate Key"
   nullable: true
@@ -80760,16 +80903,16 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER_TRANSFER"
   source_column: "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
   etl_derived_value: null
   atomic_table: "sc_shareholder_transfer"
-  atomic_column: "cl_scms_event_type_id"
+  atomic_column: "cl_event_type_id"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Shareholder Transfer"
-  atomic_attribute: "Classification SCMS Event Type Code"
+  atomic_attribute: "Classification Event Type Code"
   description: "Mã loại sự kiện pháp lý."
   data_domain: "Text"
   nullable: true
@@ -80777,12 +80920,12 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER_TRANSFER"
   source_column: "SCMS.SC_FIRM_SHAREHOLDER_TRANSFER.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_TRANSFER'"
   etl_derived_value: null
   atomic_table: "sc_shareholder_transfer"
-  atomic_column: "cl_scms_event_type_code"
+  atomic_column: "cl_event_type_code"
   data_type: "string"
 - bcv_core_object: null
   atomic_entity: "Securities Company Shareholder Transfer"

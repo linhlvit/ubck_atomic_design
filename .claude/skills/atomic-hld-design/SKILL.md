@@ -154,11 +154,13 @@ Quy trình tra BCV:
   - Shared entity dùng chung toàn dự án (IP Postal Address, IP Electronic Address, IP Alt
     Identification) → Domain Prefix cố định = `Involved Party`.
   - **Entity Classification (bảng thật, promote từ Classification Value)** → Domain Prefix =
-    `Classification [SOURCE]`, tên hệ thống nguồn (ECAT/NHNCK/SCMS/...) luôn chèn ngay sau
-    "Classification" — không dùng "Classification" trần. VD: `Classification ECAT Business Line`,
-    `Classification NHNCK Application Status`, `Classification SCMS Firm Status`. Áp dụng ngay từ
-    entity Classification đầu tiên của mỗi source, không đợi xảy ra collision tên mới sửa.
-    Physical name theo cùng thứ tự: `cl_[source]_[term]` (VD: `cl_ecat_business_line`).
+    `Classification` (trần, KHÔNG chèn tên nguồn). VD: `Classification Business Line`,
+    `Classification Application Status`, `Classification Firm Status`. Physical name:
+    `cl_[term]` (VD: `cl_business_line`).
+    Nếu phát sinh trùng bare name giữa 2 source nhưng khác BCV concept → KHÔNG chèn lại tên nguồn để
+    né trùng. Xử lý bằng cách: (a) chọn BCV Term chi tiết hơn, phản ánh đúng concept riêng của từng
+    bên, hoặc (b) nếu thực chất cùng 1 concept → gộp thành 1 shared entity, bổ sung `source_table` thứ
+    2 vào cùng dòng `atomic_entities.yaml` thay vì tạo entity trùng.
   - Ghi giá trị này vào `atomic_entities.yaml` cột `domain_prefix` ở Bước 8.
 
 ### Bước 5 — Rà soát shared entity

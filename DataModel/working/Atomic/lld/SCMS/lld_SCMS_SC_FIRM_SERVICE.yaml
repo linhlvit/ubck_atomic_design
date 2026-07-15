@@ -27,10 +27,10 @@ metadata:
     \ 1 Involved Party) — sát nghĩa hơn [Event] Business Activity dùng trước đây (pattern\
     \ mượn từ SC_FIRM_ADMIN_PENALTY_DECISION/SC_FIRM_ADMIN_SANCTION vốn là biện pháp\
     \ chế tài, khác bản chất). SERVICE_ID → CAT_SERVICE: cập nhật (HLD bổ sung SCMS\
-    \ Tier1) — CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification SCMS\
+    \ Tier1) — CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification\
     \ Service' (table_type Classification), thay cho scheme SCMS_SERVICE_TYPE cũ (nay\
     \ deprecated). SERVICE_ID đổi từ single Classification Value code sang cặp FK\
-    \ chuẩn Classification SCMS Service Id + Classification SCMS Service Code. DM_DICH_VU_ID\
+    \ chuẩn Classification Service Id + Classification Service Code. DM_DICH_VU_ID\
     \ nghi ngờ trùng SERVICE_ID — xem pending_design.yaml."
 attributes:
 - attribute_name: "Securities Company Licensed Service Id"
@@ -99,8 +99,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Service Id"
-  physical_name: "cl_scms_service_id"
+- attribute_name: "Classification Service Id"
+  physical_name: "cl_service_id"
   description: "FK -> cat_service: Dịch vụ chứng khoán được cấp phép."
   data_domain: "Surrogate Key"
   nullable: false
@@ -108,13 +108,13 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "FK target: Classification SCMS Service.Classification SCMS Service Id.\
+  comment: "FK target: Classification Service.Classification Service Id.\
     \ Hash: hash_id('SCMS.CAT_SERVICE', SERVICE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Service Code"
-  physical_name: "cl_scms_service_code"
+- attribute_name: "Classification Service Code"
+  physical_name: "cl_service_code"
   description: "Mã dịch vụ chứng khoán được cấp phép."
   data_domain: "Text"
   nullable: false
@@ -122,8 +122,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "Lookup pair: Classification SCMS Service.Classification SCMS Service Code.\
-    \ Pair with Classification SCMS Service Id."
+  comment: "Lookup pair: Classification Service.Classification Service Code.\
+    \ Pair with Classification Service Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -1,0 +1,221 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: FOREIGN_FUND_BRANCH
+brd_ref: BRD-SRC-ECAT-FOREIGN_FUND_BRANCH
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Khóa chính (UUIDv7)*"
+    key: PK
+    fk_note: null
+  - name: NAME
+    data_type: "VARCHAR2(255)"
+    description: "*Tên VPĐD/Chi nhánh*"
+    key: null
+    fk_note: null
+  - name: EN_NAME
+    data_type: "VARCHAR2(255)"
+    description: "*Tên tiếng Anh*"
+    key: null
+    fk_note: null
+  - name: SHORT_NAME
+    data_type: "VARCHAR2(255)"
+    description: "*Tên viết tắt*"
+    key: null
+    fk_note: null
+  - name: IS_BRANCH
+    data_type: "NUMBER(1)"
+    description: "*Loại hình: 0-VPĐD, 1-Chi nhánh*"
+    key: null
+    fk_note: null
+  - name: PARENT_NAME
+    data_type: "NVARCHAR2(255)"
+    description: "*Tên công ty mẹ*"
+    key: null
+    fk_note: null
+  - name: PARENT_CODE
+    data_type: "NVARCHAR2(255)"
+    description: "*Số ĐKKD công ty mẹ*"
+    key: null
+    fk_note: null
+  - name: NAT_ID
+    data_type: "VARCHAR2(36 char)"
+    description: "*Stable Id bảng country*"
+    key: null
+    fk_note: null
+  - name: NAT_VERSION_ID
+    data_type: "VARCHAR2(36 char)"
+    description: "*Id bảng country*"
+    key: null
+    fk_note: null
+  - name: PARENT_ADDRESS
+    data_type: "CLOB"
+    description: "*Địa chỉ công ty mẹ*"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: "CLOB"
+    description: "*ịa chỉ VPĐD/Chi nhánh tại VN*"
+    key: null
+    fk_note: null
+  - name: PHONE
+    data_type: "VARCHAR2(255)"
+    description: "*Số điện thoại*"
+    key: null
+    fk_note: null
+  - name: FAX
+    data_type: "VARCHAR2(255)"
+    description: "*Số fax*"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: "VARCHAR2(255)"
+    description: "*Email*"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: "VARCHAR2(255)"
+    description: "*Website*"
+    key: null
+    fk_note: null
+  - name: REG_NO
+    data_type: "VARCHAR2(255)"
+    description: "*Giấy chứng nhận ĐKDN*"
+    key: null
+    fk_note: null
+  - name: TAX_CODE
+    data_type: "VARCHAR2(255)"
+    description: "*Mã số thuế*"
+    key: null
+    fk_note: null
+  - name: CAPITAL
+    data_type: "NUMBER(18, 2)"
+    description: "*Vốn điều lệ*"
+    key: null
+    fk_note: null
+  - name: LICENSE
+    data_type: "VARCHAR2(255)"
+    description: "*Giấy CN ĐKHĐ*"
+    key: null
+    fk_note: null
+  - name: LICENSE_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*N**gày cấp GCN ĐKHĐ*"
+    key: null
+    fk_note: null
+  - name: START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu hoạt động*"
+    key: null
+    fk_note: null
+  - name: END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày kết thúc hoạt động*"
+    key: null
+    fk_note: null
+  - name: CHANGE_LICENSE
+    data_type: "VARCHAR2(255)"
+    description: "*Số GP điều chỉnh gần nhất*"
+    key: null
+    fk_note: null
+  - name: CHANGE_LICENSE_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày chấp thuận điều chỉnh*"
+    key: null
+    fk_note: null
+  - name: CHANGE_NOTE
+    data_type: "CLOB"
+    description: "*Lý do sửa đổi*"
+    key: null
+    fk_note: null
+  - name: STATUS_ID
+    data_type: "VARCHAR2(36)"
+    description: "*Trạng thái hoạt động*"
+    key: null
+    fk_note: null
+  - name: FILE_DATA
+    data_type: "NCLOB"
+    description: "*File đính kèm*"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: "CLOB"
+    description: "*Ghi chú*"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: "*Lý do hoạt động*"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "*Xóa mềm (0: Chưa xóa, 1: Đã xóa)*"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "*Lý do xóa*"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER(MAX)"
+    description: "*Phiên bản*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày kết thúc*"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID cũ*"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày tạo*"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cập nhật*"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID bản ghi ổn định - không đổi qua các version*"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái bản ghi (1: active) (Đổi tên từ ACTIVE theo DDL UAT)"
+    key: null
+    fk_note: null

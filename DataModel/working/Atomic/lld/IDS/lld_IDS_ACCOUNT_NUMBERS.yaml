@@ -99,16 +99,15 @@ attributes:
 - attribute_name: "Securities Company Code"
   physical_name: "sc_code"
   description: "Mã CTy chứng khoán."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.ACCOUNT_NUMBERS.SEC_COMPANY_CD"
-  comment: "Scheme: IDS_SECURITIES_COMPANY_CODE (no_lookup) — chưa xác nhận cross-source\
-    \ FK đến Securities Company entity (SCMS), giữ Classification Value cho đến khi\
-    \ Data Modeler xác nhận."
-  classification_context: "IDS_SECURITIES_COMPANY_CODE"
+  comment: "Denormalized — chưa xác nhận cross-source FK đến Securities Company entity\
+    \ (SCMS), giữ Text cho đến khi Data Modeler xác nhận."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Account Open Date"

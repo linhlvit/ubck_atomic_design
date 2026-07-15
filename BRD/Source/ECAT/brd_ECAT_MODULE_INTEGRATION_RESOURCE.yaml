@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: MODULE_INTEGRATION_RESOURCE
+brd_ref: BRD-SRC-ECAT-MODULE_INTEGRATION_RESOURCE
+columns:
+  - name: MODULE_INTEGRATION_CONFIG_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID phân hệ (FK tới MODULE_INTEGRATION_CONFIG)"
+    key: PK/FK
+    fk_note: "FK → MODULE_INTEGRATION_CONFIG.ID"
+  - name: RESOURCE_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID tài nguyên (FK tới RESOURCE)"
+    key: PK/FK
+    fk_note: "FK → RESOURCE.ID (bảng ngoài phạm vi ECAT)"
+  - name: RESOURCE_CODE
+    data_type: "VARCHAR2(400)"
+    description: null
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: "NUMBER(1,0)"
+    description: null
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: null
+    key: null
+    fk_note: null

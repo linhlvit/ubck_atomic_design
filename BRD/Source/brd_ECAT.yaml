@@ -1,103 +1,31 @@
 source: ECAT
 description: "Danh mục điện tử dùng chung"
 brd_entries:
-  # ─── UID-01 Danh mục địa lý hành chính ───────────────────────────────────
+  # ─── UID-01 Danh mục địa lý hành chính ─────────────────────────────────────
 
-  - brd_id: BRD-SRC-ECAT-ECAT_01_Country
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_01_Country"
+  - brd_id: BRD-SRC-ECAT-COUNTRY
+    brd_name: "Design Atomic từ nguồn ECAT bảng COUNTRY"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục quốc gia"
+      table_meaning: "Danh mục Quốc gia"
       functional_group: "UID-01 Danh mục địa lý hành chính"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_01_Country
-      related_tables: []
-      notes: "Map vào Geographic Area với geographic_area_type_code = COUNTRY"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_02_Region
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_02_Region"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục vùng/miền"
-      functional_group: "UID-01 Danh mục địa lý hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_02_Region
-      related_tables: []
-      notes: "Map vào Geographic Area với geographic_area_type_code = REGION"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_03_ProvinceOld
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_03_ProvinceOld"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục tỉnh/thành phố (cũ, pre-2025)"
-      functional_group: "UID-01 Danh mục địa lý hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_03_ProvinceOld
-      related_tables: []
-      notes: "Map vào Geographic Area với geographic_area_type_code = PROVINCE_OLD — giữ để tra cứu lịch sử trước sáp nhập 2025"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_04_Province
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_04_Province"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục tỉnh/thành phố (mới, post-sáp nhập 2025)"
-      functional_group: "UID-01 Danh mục địa lý hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_04_Province
-      related_tables: []
-      notes: "Map vào Geographic Area với geographic_area_type_code = PROVINCE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_05_DistrictOld
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_05_DistrictOld"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục quận/huyện (cũ)"
-      functional_group: "UID-01 Danh mục địa lý hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_05_DistrictOld
+      table: COUNTRY
       related_tables:
-        - table: ECAT_03_ProvinceOld
-          relation: "Parent — tỉnh/thành phố cũ chứa quận/huyện này"
-      notes: "Map vào Geographic Area với geographic_area_type_code = DISTRICT_OLD; parent_code → province_old"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: CURRENCY
+                relation: "1-N — Danh mục Tiền tệ"
+              - table: PROVINCE_NEW
+                relation: "1-N — Danh mục Tỉnh/Thành phố (mới)"
+              - table: PROVINCE_OLD
+                relation: "1-N — Danh mục Tỉnh/Thành phố (cũ)"
+              - table: REGION
+                relation: "1-N — Danh mục Vùng/miền"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -105,21 +33,27 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_06_WardOld
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_06_WardOld"
+  - brd_id: BRD-SRC-ECAT-REGION
+    brd_name: "Design Atomic từ nguồn ECAT bảng REGION"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục phường/xã/thị trấn (cũ)"
+      table_meaning: "Danh mục Vùng/miền"
       functional_group: "UID-01 Danh mục địa lý hành chính"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_06_WardOld
+      table: REGION
       related_tables:
-        - table: ECAT_05_DistrictOld
-          relation: "Parent — quận/huyện cũ chứa phường/xã này"
-      notes: "Map vào Geographic Area với geographic_area_type_code = WARD_OLD"
+              - table: COUNTRY
+                relation: "FK cha — Danh mục Quốc gia"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: PROVINCE_NEW
+                relation: "1-N — Danh mục Tỉnh/Thành phố (mới)"
+              - table: PROVINCE_OLD
+                relation: "1-N — Danh mục Tỉnh/Thành phố (cũ)"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -127,21 +61,33 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_07_Ward
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_07_Ward"
+  - brd_id: BRD-SRC-ECAT-PROVINCE_NEW
+    brd_name: "Design Atomic từ nguồn ECAT bảng PROVINCE_NEW"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục phường/xã/thị trấn (mới)"
+      table_meaning: "Danh mục Tỉnh/Thành phố (mới)"
       functional_group: "UID-01 Danh mục địa lý hành chính"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_07_Ward
+      table: PROVINCE_NEW
       related_tables:
-        - table: ECAT_04_Province
-          relation: "Parent — tỉnh/thành phố mới chứa phường/xã này"
-      notes: "Map vào Geographic Area với geographic_area_type_code = WARD (cấp quận/huyện bị bỏ trong sáp nhập 2025)"
+              - table: COUNTRY
+                relation: "FK cha — Danh mục Quốc gia"
+              - table: REGION
+                relation: "FK cha — Danh mục Vùng/miền"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: FUND_MANAGEMENT_COMPANY
+                relation: "1-N — Bảng quản lý Công ty quản lý quỹ"
+              - table: PROVINCE_OLD
+                relation: "1-N — Danh mục Tỉnh/Thành phố (cũ)"
+              - table: SECURITY_COMPANY
+                relation: "1-N — Danh mục Công ty chứng khoán"
+              - table: WARD_NEW
+                relation: "1-N — Danh mục Phường/Xã/Thị trấn (mới)"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -149,43 +95,141 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  # ─── UID-02 Danh mục tổ chức & nhân sự ───────────────────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_08_Department
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_08_Department"
+  - brd_id: BRD-SRC-ECAT-PROVINCE_OLD
+    brd_name: "Design Atomic từ nguồn ECAT bảng PROVINCE_OLD"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục đơn vị/phòng ban"
+      table_meaning: "Danh mục Tỉnh/Thành phố (cũ)"
+      functional_group: "UID-01 Danh mục địa lý hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: PROVINCE_OLD
+      related_tables:
+              - table: COUNTRY
+                relation: "FK cha — Danh mục Quốc gia"
+              - table: PROVINCE_NEW
+                relation: "FK cha — Danh mục Tỉnh/Thành phố (mới)"
+              - table: REGION
+                relation: "FK cha — Danh mục Vùng/miền"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: DISTRICT_OLD
+                relation: "1-N — Danh mục Quận/Huyện (cũ)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-DISTRICT_OLD
+    brd_name: "Design Atomic từ nguồn ECAT bảng DISTRICT_OLD"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Quận/Huyện (cũ)"
+      functional_group: "UID-01 Danh mục địa lý hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: DISTRICT_OLD
+      related_tables:
+              - table: PROVINCE_OLD
+                relation: "FK cha — Danh mục Tỉnh/Thành phố (cũ)"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: FUND_MANAGEMENT_COMPANY
+                relation: "1-N — Bảng quản lý Công ty quản lý quỹ"
+              - table: SECURITY_COMPANY
+                relation: "1-N — Danh mục Công ty chứng khoán"
+              - table: WARD_OLD
+                relation: "1-N — Danh mục Phường/Xã/Thị trấn (cũ)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-WARD_NEW
+    brd_name: "Design Atomic từ nguồn ECAT bảng WARD_NEW"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Phường/Xã/Thị trấn (mới)"
+      functional_group: "UID-01 Danh mục địa lý hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: WARD_NEW
+      related_tables:
+              - table: PROVINCE_NEW
+                relation: "FK cha — Danh mục Tỉnh/Thành phố (mới)"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: FUND_MANAGEMENT_COMPANY
+                relation: "1-N — Bảng quản lý Công ty quản lý quỹ"
+              - table: SECURITY_COMPANY
+                relation: "1-N — Danh mục Công ty chứng khoán"
+              - table: WARD_OLD
+                relation: "1-N — Danh mục Phường/Xã/Thị trấn (cũ)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-WARD_OLD
+    brd_name: "Design Atomic từ nguồn ECAT bảng WARD_OLD"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Phường/Xã/Thị trấn (cũ)"
+      functional_group: "UID-01 Danh mục địa lý hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: WARD_OLD
+      related_tables:
+              - table: DISTRICT_OLD
+                relation: "FK cha — Danh mục Quận/Huyện (cũ)"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: WARD_NEW
+                relation: "FK cha — Danh mục Phường/Xã/Thị trấn (mới)"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-02 Danh mục tổ chức & nhân sự ─────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-DEPARTMENT
+    brd_name: "Design Atomic từ nguồn ECAT bảng DEPARTMENT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Phòng ban"
       functional_group: "UID-02 Danh mục tổ chức & nhân sự"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_08_Department
-      related_tables: []
-      notes: "CV scheme: ECAT_ORGANIZATION_UNIT"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_09_PositionType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_09_PositionType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại chức vụ"
-      functional_group: "UID-02 Danh mục tổ chức & nhân sự"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_09_PositionType
+      table: DEPARTMENT
       related_tables:
-        - table: ECAT_10_Position
-          relation: "Bảng con — chức vụ cụ thể thuộc loại này"
-      notes: "CV scheme: ECAT_POSITION_TYPE (chức vụ nội bộ UBCKNN)"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: UBCK_STAFF
+                relation: "1-N — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -193,21 +237,23 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_10_Position
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_10_Position"
+  - brd_id: BRD-SRC-ECAT-ENTERPRISE_POSITION_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng ENTERPRISE_POSITION_TYPE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục chức vụ"
+      table_meaning: "Danh mục Loại chức vụ doanh nghiệp"
       functional_group: "UID-02 Danh mục tổ chức & nhân sự"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_10_Position
+      table: ENTERPRISE_POSITION_TYPE
       related_tables:
-        - table: ECAT_09_PositionType
-          relation: "Parent — loại chức vụ"
-      notes: "CV scheme: ECAT_POSITION — parent → ECAT_POSITION_TYPE"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: ENTERPRISE_POSITION
+                relation: "1-N — Danh mục Chức vụ doanh nghiệp"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -215,21 +261,317 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  # ─── UID-03 Danh mục tiền tệ ──────────────────────────────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_11_Currency
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_11_Currency"
+  - brd_id: BRD-SRC-ECAT-ENTERPRISE_POSITION
+    brd_name: "Design Atomic từ nguồn ECAT bảng ENTERPRISE_POSITION"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục đơn vị tiền tệ"
+      table_meaning: "Danh mục Chức vụ doanh nghiệp"
+      functional_group: "UID-02 Danh mục tổ chức & nhân sự"
+      scope_status: pending
+      scope_reason: null
+      table: ENTERPRISE_POSITION
+      related_tables:
+              - table: ENTERPRISE_POSITION_TYPE
+                relation: "FK cha — Danh mục Loại chức vụ doanh nghiệp"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-POSITION_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng POSITION_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Loại chức danh"
+      functional_group: "UID-02 Danh mục tổ chức & nhân sự"
+      scope_status: pending
+      scope_reason: null
+      table: POSITION_TYPE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: POSITION
+                relation: "1-N — Danh mục Chức danh"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-POSITION
+    brd_name: "Design Atomic từ nguồn ECAT bảng POSITION"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Chức danh"
+      functional_group: "UID-02 Danh mục tổ chức & nhân sự"
+      scope_status: pending
+      scope_reason: null
+      table: POSITION
+      related_tables:
+              - table: ENTERPRISE_TYPE
+                relation: "FK cha — Danh mục Loại hình doanh nghiệp"
+              - table: POSITION_TYPE
+                relation: "FK cha — Danh mục Loại chức danh"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: UBCK_STAFF
+                relation: "1-N — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-ORGANIZATION_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng ORGANIZATION_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại tổ chức"
+      functional_group: "UID-02 Danh mục tổ chức & nhân sự"
+      scope_status: pending
+      scope_reason: null
+      table: ORGANIZATION_TYPE
+      related_tables:
+              - table: ORGANIZATION_TYPE_USER_TYPE
+                relation: "1-N — Bảng trung gian nhiều-nhiều giữa loại tổ chức và đối tượng"
+              - table: UBCK_STAFF
+                relation: "1-N — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-ORGANIZATION_TYPE_USER_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng ORGANIZATION_TYPE_USER_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian nhiều-nhiều giữa loại tổ chức và đối tượng"
+      functional_group: "UID-02 Danh mục tổ chức & nhân sự"
+      scope_status: pending
+      scope_reason: null
+      table: ORGANIZATION_TYPE_USER_TYPE
+      related_tables:
+              - table: ORGANIZATION_TYPE
+                relation: "FK cha — Danh mục loại tổ chức"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-UBCK_STAFF
+    brd_name: "Design Atomic từ nguồn ECAT bảng UBCK_STAFF"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục nhân sự Ủy ban chứng khoán"
+      functional_group: "UID-02 Danh mục tổ chức & nhân sự"
+      scope_status: pending
+      scope_reason: null
+      table: UBCK_STAFF
+      related_tables:
+              - table: DEPARTMENT
+                relation: "FK cha — Danh mục Phòng ban"
+              - table: ORGANIZATION_TYPE
+                relation: "FK cha — Danh mục loại tổ chức"
+              - table: POSITION
+                relation: "FK cha — Danh mục Chức danh"
+              - table: ACTIVITY_STATUS
+                relation: "1-N — Danh mục tình trạng hoạt động"
+              - table: ADMINISTRATIVE_PROCEDURE
+                relation: "1-N — Danh mục Thủ tục hành chính"
+              - table: ADMINISTRATIVE_PROCEDURE_COMPONENT
+                relation: "1-N — Thành phần Thủ tục hành chính"
+              - table: AGENT_TYPE
+                relation: "1-N — Danh mục loại đại lý"
+              - table: APPLIED_SUBJECT
+                relation: "1-N — Danh mục Đối tượng áp dụng"
+              - table: APPROVED_AUDITORS
+                relation: "1-N — Bảng lưu thông tin kiểm toán viên"
+              - table: APPROVED_AUDIT_FIRM
+                relation: "1-N — Danh mục Tổ chức kiểm toán được chấp thuận"
+              - table: BTC_SHARE_CONFIG
+                relation: "1-N — Cấu hình chia sẻ dữ liệu Bộ Tài chính"
+              - table: BTC_SYNC_CONFIG
+                relation: "1-N — Cấu hình đồng bộ dữ liệu từ CSDL Bộ Tài chính"
+              - table: BUSINESS_ACTIVITY
+                relation: "1-N — Danh mục Hoạt động kinh doanh"
+              - table: BUSINESS_EVENT
+                relation: "1-N — Danh mục Sự vụ"
+              - table: BUSINESS_LINE_LEVEL_1
+                relation: "1-N — Danh mục Ngành nghề cấp 1"
+              - table: BUSINESS_LINE_LEVEL_2
+                relation: "1-N — Danh mục Ngành nghề cấp 2"
+              - table: BUSINESS_SERVICE
+                relation: "1-N — Danh mục Dịch vụ kinh doanh"
+              - table: COUNTRY
+                relation: "1-N — Danh mục Quốc gia"
+              - table: CURRENCY
+                relation: "1-N — Danh mục Tiền tệ"
+              - table: CUSTODIAN_BANK
+                relation: "1-N — Danh mục Ngân hàng lưu kí giám sát"
+              - table: DEPARTMENT
+                relation: "1-N — Danh mục Phòng ban"
+              - table: DISCLOSURE_REPORT
+                relation: "1-N — Danh mục báo cáo công bố thông tin"
+              - table: DISTRICT_OLD
+                relation: "1-N — Danh mục Quận/Huyện (cũ)"
+              - table: DVCQG_SYNC_CONFIG
+                relation: "1-N — Cấu hình đồng bộ dữ liệu Giới tính và Dân tộc từ DVCQG"
+              - table: ENTERPRISE_POSITION
+                relation: "1-N — Danh mục Chức vụ doanh nghiệp"
+              - table: ENTERPRISE_POSITION_TYPE
+                relation: "1-N — Danh mục Loại chức vụ doanh nghiệp"
+              - table: ENTERPRISE_TYPE
+                relation: "1-N — Danh mục Loại hình doanh nghiệp"
+              - table: FINANCIAL_INDICATOR
+                relation: "1-N — Danh mục Chỉ tiêu tài chính"
+              - table: FINANCIAL_REPORT_TYPE
+                relation: "1-N — Danh mục Loại báo cáo tài chính"
+              - table: FOREIGN_BRANCH
+                relation: "1-N — Thông tin Văn phòng đại diện / Chi nhánh công ty chứng khoán nước ngoài"
+              - table: FOREIGN_FUND_BRANCH
+                relation: "1-N — Bảng thông tin Văn phòng đại diện / Chi nhánh của quỹ nước ngoài tại Việt Nam"
+              - table: FOREIGN_INVESTOR_TYPE
+                relation: "1-N — Danh mục loại nhà đầu tư nước ngoài"
+              - table: FREQUENCY_REPORT
+                relation: "1-N — Danh mục Kỳ báo cáo"
+              - table: FUND_DISTRIBUTOR
+                relation: "1-N — Danh mục Tổ chức phân phối quỹ"
+              - table: FUND_MANAGEMENT_COMPANY
+                relation: "1-N — Bảng quản lý Công ty quản lý quỹ"
+              - table: FUND_TYPE
+                relation: "1-N — Danh mục loại hình quỹ"
+              - table: GENDER
+                relation: "1-N — Danh mục giới tính"
+              - table: INSPECTION_BASIS
+                relation: "1-N — Danh mục Căn cứ thanh tra"
+              - table: INSPECTION_CONTENT
+                relation: "1-N — Danh mục Nội dung thanh tra"
+              - table: INSPECTION_TARGET
+                relation: "1-N — Danh mục Tổ chức kiểm toán được chấp thuận"
+              - table: INVESTMENT_FUND
+                relation: "1-N — Danh mục Quỹ đầu tư chứng khoán"
+              - table: INVESTOR_CATEGORY
+                relation: "1-N — Danh mục loại nhà đầu tư/cổ đông"
+              - table: INVESTOR_TYPE
+                relation: "1-N — Loại hình nhà đầu tư/cổ đông"
+              - table: LEGAL_DOCUMENT
+                relation: "1-N — Bảng thông tin văn bản pháp lý"
+              - table: LOG_DATA_CHANGES
+                relation: "1-N — Bảng lưu log thay đổi dữ liệu"
+              - table: MARKET
+                relation: "1-N — Danh mục Thị trường"
+              - table: MODULE_INTEGRATION_CONFIG
+                relation: "1-N — Bảng cấu hình phân hệ trong hệ thống UBCK"
+              - table: NATION
+                relation: "1-N — Danh mục dân tộc"
+              - table: OPERATIONAL_STATUS_TYPE
+                relation: "1-N — Danh mục Loại trạng thái hoạt động"
+              - table: PAR_VALUE
+                relation: "1-N — Danh mục Mệnh giá chứng khoán"
+              - table: PAYMENT_CUSTODIAN_BANK
+                relation: "1-N — Danh mục Ngân hàng thanh toán/lưu ký"
+              - table: PENALTY_FORM
+                relation: "1-N — Danh mục Hình thức xử phạt"
+              - table: POSITION
+                relation: "1-N — Danh mục Chức danh"
+              - table: POSITION_TYPE
+                relation: "1-N — Danh mục Loại chức danh"
+              - table: PRACTICE_CERTIFICATE
+                relation: "1-N — Danh mục Chứng chỉ hành nghề"
+              - table: PRACTICE_CERTIFICATE_TYPE
+                relation: "1-N — Danh mục Loại chứng chỉ hành nghề"
+              - table: PROFESSIONAL_CERTIFICATE_TYPES
+                relation: "1-N — Danh mục loại chứng chỉ chuyên môn"
+              - table: PROVINCE_NEW
+                relation: "1-N — Danh mục Tỉnh/Thành phố (mới)"
+              - table: PROVINCE_OLD
+                relation: "1-N — Danh mục Tỉnh/Thành phố (cũ)"
+              - table: PUBLIC_COMPANY
+                relation: "1-N — Danh mục công ty đại chúng"
+              - table: QUALIFICATION_CATEGORY
+                relation: "1-N — Danh mục Trình độ"
+              - table: REGION
+                relation: "1-N — Danh mục Vùng/miền"
+              - table: RELATIONSHIP_CATEGORY
+                relation: "1-N — Danh mục Quan hệ"
+              - table: SECURITY
+                relation: "1-N — Danh mục Chứng khoán"
+              - table: SECURITY_COMPANY
+                relation: "1-N — Danh mục Công ty chứng khoán"
+              - table: SECURITY_TYPE
+                relation: "1-N — Danh mục Loại chứng khoán"
+              - table: SHAREHOLDER_TRANSACTION_TYPE
+                relation: "1-N — Danh mục loại giao dịch của cổ đông"
+              - table: VIOLATION_BEHAVIOR
+                relation: "1-N — Danh mục hành vi vi phạm"
+              - table: VIOLATION_TYPE
+                relation: "1-N — Danh mục loại vi phạm"
+              - table: WARD_NEW
+                relation: "1-N — Danh mục Phường/Xã/Thị trấn (mới)"
+              - table: WARD_OLD
+                relation: "1-N — Danh mục Phường/Xã/Thị trấn (cũ)"
+              - table: WORKING_SCHEDULE
+                relation: "1-N — Danh mục Lịch làm việc"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-03 Danh mục tiền tệ ───────────────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-CURRENCY
+    brd_name: "Design Atomic từ nguồn ECAT bảng CURRENCY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Tiền tệ"
       functional_group: "UID-03 Danh mục tiền tệ"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_11_Currency
-      related_tables: []
-      notes: "ECAT là source authoritative cho Currency entity — chuẩn ISO 4217"
+      table: CURRENCY
+      related_tables:
+              - table: COUNTRY
+                relation: "FK cha — Danh mục Quốc gia"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: BUSINESS_ACTIVITY
+                relation: "1-N — Danh mục Hoạt động kinh doanh"
+              - table: PAR_VALUE
+                relation: "1-N — Danh mục Mệnh giá chứng khoán"
+              - table: VIOLATION_TYPE
+                relation: "1-N — Danh mục loại vi phạm"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -237,23 +579,27 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  # ─── UID-04 Danh mục chứng khoán & thị trường ────────────────────────────
+  # ─── UID-04 Danh mục chứng khoán & thị trường ──────────────────────────────
 
-  - brd_id: BRD-SRC-ECAT-ECAT_12_SecurityType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_12_SecurityType"
+  - brd_id: BRD-SRC-ECAT-SECURITY_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng SECURITY_TYPE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục loại chứng khoán"
+      table_meaning: "Danh mục Loại chứng khoán"
       functional_group: "UID-04 Danh mục chứng khoán & thị trường"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_12_SecurityType
+      table: SECURITY_TYPE
       related_tables:
-        - table: ECAT_14_Security
-          relation: "Tham chiếu — cột security_type_code trong Security entity"
-      notes: "CV scheme: ECAT_SECURITY_TYPE"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: PUBLIC_COMPANY
+                relation: "1-N — Danh mục công ty đại chúng"
+              - table: SECURITY
+                relation: "1-N — Danh mục Chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -261,21 +607,25 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_13_Market
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_13_Market"
+  - brd_id: BRD-SRC-ECAT-MARKET
+    brd_name: "Design Atomic từ nguồn ECAT bảng MARKET"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục thị trường"
+      table_meaning: "Danh mục Thị trường"
       functional_group: "UID-04 Danh mục chứng khoán & thị trường"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_13_Market
+      table: MARKET
       related_tables:
-        - table: ECAT_14_Security
-          relation: "Tham chiếu — cột market_code trong Security entity"
-      notes: "CV scheme: ECAT_MARKET"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: SECURITY
+                relation: "1-N — Danh mục Chứng khoán"
+              - table: SECURITY_COMPANY
+                relation: "1-N — Danh mục Công ty chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -283,23 +633,29 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_14_Security
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_14_Security"
+  - brd_id: BRD-SRC-ECAT-SECURITY
+    brd_name: "Design Atomic từ nguồn ECAT bảng SECURITY"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục chứng khoán"
+      table_meaning: "Danh mục Chứng khoán"
       functional_group: "UID-04 Danh mục chứng khoán & thị trường"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_14_Security
+      table: SECURITY
       related_tables:
-        - table: ECAT_12_SecurityType
-          relation: "FK — loại chứng khoán"
-        - table: ECAT_13_Market
-          relation: "FK — thị trường niêm yết/giao dịch"
-      notes: "ECAT là source authoritative cho Security entity — security_code unique toàn thị trường"
+              - table: MARKET
+                relation: "FK cha — Danh mục Thị trường"
+              - table: SECURITY_TYPE
+                relation: "FK cha — Danh mục Loại chứng khoán"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: PUBLIC_COMPANY
+                relation: "1-N — Danh mục công ty đại chúng"
+              - table: SECURITY_COMPANY
+                relation: "1-N — Danh mục Công ty chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -307,103 +663,23 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_15_SharePar
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_15_SharePar"
+  - brd_id: BRD-SRC-ECAT-PAR_VALUE
+    brd_name: "Design Atomic từ nguồn ECAT bảng PAR_VALUE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục mệnh giá cổ phần"
+      table_meaning: "Danh mục Mệnh giá chứng khoán"
       functional_group: "UID-04 Danh mục chứng khoán & thị trường"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_15_SharePar
-      related_tables: []
-      notes: "CV scheme: ECAT_SHARE_PAR_VALUE — dùng chung, không gắn trực tiếp vào entity cụ thể"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # ─── UID-05 Danh mục nghiệp vụ & dịch vụ ────────────────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_16_Indicator
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_16_Indicator"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục chỉ tiêu nghiệp vụ chung"
-      functional_group: "UID-13 Danh mục chỉ tiêu nghiệp vụ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_16_Indicator
-      related_tables: []
-      notes: "CV scheme: ECAT_BUSINESS_INDICATOR — chỉ tiêu nghiệp vụ chung (không phải risk indicator)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_17_FinancialReportType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_17_FinancialReportType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại báo cáo tài chính"
-      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_17_FinancialReportType
-      related_tables: []
-      notes: "CV scheme: ECAT_FINANCIAL_REPORT_TYPE (bảng CĐKT, KQHĐKD, LCTT...)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_18_BusinessOperation
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_18_BusinessOperation"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục nghiệp vụ kinh doanh"
-      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_18_BusinessOperation
-      related_tables: []
-      notes: "CV scheme: ECAT_BUSINESS_OPERATION (môi giới, tự doanh, bảo lãnh phát hành...)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_19_CorporatePositionType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_19_CorporatePositionType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại chức vụ doanh nghiệp"
-      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_19_CorporatePositionType
+      table: PAR_VALUE
       related_tables:
-        - table: ECAT_20_CorporatePosition
-          relation: "Bảng con — chức vụ doanh nghiệp cụ thể"
-      notes: "CV scheme: ECAT_CORPORATE_POSITION_TYPE (khác với chức vụ nội bộ UBCKNN UID-02)"
+              - table: CURRENCY
+                relation: "FK cha — Danh mục Tiền tệ"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -411,21 +687,35 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_20_CorporatePosition
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_20_CorporatePosition"
+  - brd_id: BRD-SRC-ECAT-SECURITY_COMPANY
+    brd_name: "Design Atomic từ nguồn ECAT bảng SECURITY_COMPANY"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục chức vụ trong doanh nghiệp"
-      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
+      table_meaning: "Danh mục Công ty chứng khoán"
+      functional_group: "UID-04 Danh mục chứng khoán & thị trường"
+      scope_status: pending
       scope_reason: null
-      table: ECAT_20_CorporatePosition
+      table: SECURITY_COMPANY
       related_tables:
-        - table: ECAT_19_CorporatePositionType
-          relation: "Parent — loại chức vụ doanh nghiệp"
-      notes: "CV scheme: ECAT_CORPORATE_POSITION — parent → ECAT_CORPORATE_POSITION_TYPE"
+              - table: DISTRICT_OLD
+                relation: "FK cha — Danh mục Quận/Huyện (cũ)"
+              - table: ENTERPRISE_TYPE
+                relation: "FK cha — Danh mục Loại hình doanh nghiệp"
+              - table: MARKET
+                relation: "FK cha — Danh mục Thị trường"
+              - table: PROVINCE_NEW
+                relation: "FK cha — Danh mục Tỉnh/Thành phố (mới)"
+              - table: SECURITY
+                relation: "FK cha — Danh mục Chứng khoán"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: WARD_NEW
+                relation: "FK cha — Danh mục Phường/Xã/Thị trấn (mới)"
+              - table: PAYMENT_CUSTODIAN_BANK
+                relation: "1-N — Danh mục Ngân hàng thanh toán/lưu ký"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -433,61 +723,25 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_21_CompanyType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_21_CompanyType"
+  - brd_id: BRD-SRC-ECAT-PUBLIC_COMPANY
+    brd_name: "Design Atomic từ nguồn ECAT bảng PUBLIC_COMPANY"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục loại công ty"
-      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
+      table_meaning: "Danh mục công ty đại chúng"
+      functional_group: "UID-04 Danh mục chứng khoán & thị trường"
+      scope_status: pending
       scope_reason: null
-      table: ECAT_21_CompanyType
-      related_tables: []
-      notes: "CV scheme: ECAT_COMPANY_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_22_Service
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_22_Service"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục dịch vụ"
-      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_22_Service
-      related_tables: []
-      notes: "CV scheme: ECAT_SERVICE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_35_FrequencyType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_35_FrequencyType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại tần suất"
-      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_35_FrequencyType
+      table: PUBLIC_COMPANY
       related_tables:
-        - table: ECAT_36_Frequency
-          relation: "Bảng con — tần suất cụ thể"
-      notes: "CV scheme: ECAT_FREQUENCY_TYPE"
+              - table: SECURITY
+                relation: "FK cha — Danh mục Chứng khoán"
+              - table: SECURITY_TYPE
+                relation: "FK cha — Danh mục Loại chứng khoán"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -495,21 +749,33 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_36_Frequency
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_36_Frequency"
+  # ─── UID-05 Danh mục nghiệp vụ & dịch vụ ───────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-ENTERPRISE_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng ENTERPRISE_TYPE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục tần suất"
+      table_meaning: "Danh mục Loại hình doanh nghiệp"
       functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_36_Frequency
+      table: ENTERPRISE_TYPE
       related_tables:
-        - table: ECAT_35_FrequencyType
-          relation: "Parent — loại tần suất"
-      notes: "CV scheme: ECAT_FREQUENCY — parent → ECAT_FREQUENCY_TYPE"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: BUSINESS_ACTIVITY
+                relation: "1-N — Danh mục Hoạt động kinh doanh"
+              - table: BUSINESS_SERVICE
+                relation: "1-N — Danh mục Dịch vụ kinh doanh"
+              - table: FUND_MANAGEMENT_COMPANY
+                relation: "1-N — Bảng quản lý Công ty quản lý quỹ"
+              - table: POSITION
+                relation: "1-N — Danh mục Chức danh"
+              - table: SECURITY_COMPANY
+                relation: "1-N — Danh mục Công ty chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -517,19 +783,21 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_43_EnterpriseType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_43_EnterpriseType"
+  - brd_id: BRD-SRC-ECAT-FINANCIAL_INDICATOR
+    brd_name: "Design Atomic từ nguồn ECAT bảng FINANCIAL_INDICATOR"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục loại hình doanh nghiệp"
+      table_meaning: "Danh mục Chỉ tiêu tài chính"
       functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_43_EnterpriseType
-      related_tables: []
-      notes: "CV scheme: ECAT_ENTERPRISE_TYPE"
+      table: FINANCIAL_INDICATOR
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -537,19 +805,21 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_44_FundType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_44_FundType"
+  - brd_id: BRD-SRC-ECAT-FINANCIAL_REPORT_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng FINANCIAL_REPORT_TYPE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục loại hình quỹ đầu tư"
+      table_meaning: "Danh mục Loại báo cáo tài chính"
       functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_44_FundType
-      related_tables: []
-      notes: "CV scheme: ECAT_FUND_TYPE"
+      table: FINANCIAL_REPORT_TYPE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -557,21 +827,21 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  # ─── UID-06 Danh mục đối tượng tham gia thị trường ───────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_23_Case
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_23_Case"
+  - brd_id: BRD-SRC-ECAT-APPLIED_SUBJECT
+    brd_name: "Design Atomic từ nguồn ECAT bảng APPLIED_SUBJECT"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục sự vụ"
-      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
-      scope_status: in_scope
+      table_meaning: "Danh mục Đối tượng áp dụng"
+      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
+      scope_status: pending
       scope_reason: null
-      table: ECAT_23_Case
-      related_tables: []
-      notes: "CV scheme: ECAT_CASE_TYPE"
+      table: APPLIED_SUBJECT
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -579,19 +849,115 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_24_InvestorType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_24_InvestorType"
+  - brd_id: BRD-SRC-ECAT-BUSINESS_ACTIVITY
+    brd_name: "Design Atomic từ nguồn ECAT bảng BUSINESS_ACTIVITY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Hoạt động kinh doanh"
+      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
+      scope_status: pending
+      scope_reason: null
+      table: BUSINESS_ACTIVITY
+      related_tables:
+              - table: CURRENCY
+                relation: "FK cha — Danh mục Tiền tệ"
+              - table: ENTERPRISE_TYPE
+                relation: "FK cha — Danh mục Loại hình doanh nghiệp"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-BUSINESS_SERVICE
+    brd_name: "Design Atomic từ nguồn ECAT bảng BUSINESS_SERVICE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Dịch vụ kinh doanh"
+      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
+      scope_status: pending
+      scope_reason: null
+      table: BUSINESS_SERVICE
+      related_tables:
+              - table: ENTERPRISE_TYPE
+                relation: "FK cha — Danh mục Loại hình doanh nghiệp"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-BUSINESS_EVENT
+    brd_name: "Design Atomic từ nguồn ECAT bảng BUSINESS_EVENT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Sự vụ"
+      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
+      scope_status: pending
+      scope_reason: null
+      table: BUSINESS_EVENT
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-BUSINESS_EVENT_ENTERPRISE_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng BUSINESS_EVENT_ENTERPRISE_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian N-N: Sự vụ - Loại hình doanh nghiệp"
+      functional_group: "UID-05 Danh mục nghiệp vụ & dịch vụ"
+      scope_status: pending
+      scope_reason: null
+      table: BUSINESS_EVENT_ENTERPRISE_TYPE
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-06 Danh mục đối tượng tham gia thị trường ─────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-INVESTOR_CATEGORY
+    brd_name: "Design Atomic từ nguồn ECAT bảng INVESTOR_CATEGORY"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Danh mục loại nhà đầu tư/cổ đông"
       functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_24_InvestorType
-      related_tables: []
-      notes: "CV scheme: ECAT_INVESTOR_TYPE"
+      table: INVESTOR_CATEGORY
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -599,147 +965,71 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_25_AgentType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_25_AgentType"
+  - brd_id: BRD-SRC-ECAT-INVESTOR_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng INVESTOR_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Loại hình nhà đầu tư/cổ đông"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: INVESTOR_TYPE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-FUND_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng FUND_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại hình quỹ"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: FUND_TYPE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: AGENT_TYPE
+                relation: "1-N — Danh mục loại đại lý"
+              - table: INVESTMENT_FUND
+                relation: "1-N — Danh mục Quỹ đầu tư chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-AGENT_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng AGENT_TYPE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
       table_meaning: "Danh mục loại đại lý"
       functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_25_AgentType
-      related_tables: []
-      notes: "CV scheme: ECAT_AGENT_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_26_Relationship
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_26_Relationship"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục mối quan hệ"
-      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_26_Relationship
-      related_tables: []
-      notes: "CV scheme: ECAT_RELATIONSHIP_TYPE (người liên quan, bên liên quan...)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_46_ShareholderType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_46_ShareholderType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại hình cổ đông/nhà đầu tư"
-      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_46_ShareholderType
-      related_tables: []
-      notes: "CV scheme: ECAT_SHAREHOLDER_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # ─── UID-07 Danh mục hành nghề & trình độ ────────────────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_27_EducationLevel
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_27_EducationLevel"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục trình độ"
-      functional_group: "UID-07 Danh mục hành nghề & trình độ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_27_EducationLevel
-      related_tables: []
-      notes: "CV scheme: ECAT_EDUCATION_LEVEL"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_28_ProfessionalCertType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_28_ProfessionalCertType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại chứng chỉ hành nghề"
-      functional_group: "UID-07 Danh mục hành nghề & trình độ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_28_ProfessionalCertType
-      related_tables: []
-      notes: "CV scheme: ECAT_PROFESSIONAL_CERTIFICATE_TYPE (MGCK, PTTC, TVTC...)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # ─── UID-08 Danh mục lịch & ngày nghỉ ────────────────────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_29_HolidayInfo
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_29_HolidayInfo"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Thông tin ngày nghỉ"
-      functional_group: "UID-08 Danh mục lịch & ngày nghỉ"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_29_HolidayInfo
-      related_tables: []
-      notes: "Nguồn cho Calendar Date entity — ECAT cung cấp holiday_flag + holiday_name; ETL tự generate dense calendar"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  # ─── UID-09 Danh mục thủ tục hành chính ──────────────────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_30_AdminProcedure
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_30_AdminProcedure"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục thủ tục hành chính"
-      functional_group: "UID-09 Danh mục thủ tục hành chính"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_30_AdminProcedure
+      table: AGENT_TYPE
       related_tables:
-        - table: ECAT_31_AdminProcedureComponent
-          relation: "Bảng con — thành phần hồ sơ của TTHC"
-      notes: "CV scheme: ECAT_ADMINISTRATIVE_PROCEDURE (cấp phép thành lập CTCK, đăng ký phát hành...)"
+              - table: FUND_TYPE
+                relation: "FK cha — Danh mục loại hình quỹ"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -747,21 +1037,31 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_31_AdminProcedureComponent
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_31_AdminProcedureComponent"
+  - brd_id: BRD-SRC-ECAT-FUND_MANAGEMENT_COMPANY
+    brd_name: "Design Atomic từ nguồn ECAT bảng FUND_MANAGEMENT_COMPANY"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục thành phần TTHC"
-      functional_group: "UID-09 Danh mục thủ tục hành chính"
-      scope_status: in_scope
+      table_meaning: "Bảng quản lý Công ty quản lý quỹ"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
       scope_reason: null
-      table: ECAT_31_AdminProcedureComponent
+      table: FUND_MANAGEMENT_COMPANY
       related_tables:
-        - table: ECAT_30_AdminProcedure
-          relation: "Parent — thủ tục hành chính"
-      notes: "CV scheme: ECAT_ADMINISTRATIVE_PROCEDURE_COMPONENT — parent → ECAT_ADMINISTRATIVE_PROCEDURE"
+              - table: DISTRICT_OLD
+                relation: "FK cha — Danh mục Quận/Huyện (cũ)"
+              - table: ENTERPRISE_TYPE
+                relation: "FK cha — Danh mục Loại hình doanh nghiệp"
+              - table: PROVINCE_NEW
+                relation: "FK cha — Danh mục Tỉnh/Thành phố (mới)"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: WARD_NEW
+                relation: "FK cha — Danh mục Phường/Xã/Thị trấn (mới)"
+              - table: INVESTMENT_FUND
+                relation: "1-N — Danh mục Quỹ đầu tư chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -769,7 +1069,465 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  # ─── UID-10 Danh mục ngành nghề ──────────────────────────────────────────
+  - brd_id: BRD-SRC-ECAT-SHAREHOLDER_TRANSACTION_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng SHAREHOLDER_TRANSACTION_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại giao dịch của cổ đông"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: SHAREHOLDER_TRANSACTION_TYPE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-FOREIGN_BRANCH
+    brd_name: "Design Atomic từ nguồn ECAT bảng FOREIGN_BRANCH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thông tin Văn phòng đại diện / Chi nhánh công ty chứng khoán nước ngoài"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: FOREIGN_BRANCH
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-FOREIGN_INVESTOR_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng FOREIGN_INVESTOR_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại nhà đầu tư nước ngoài"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: FOREIGN_INVESTOR_TYPE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-CUSTODIAN_BANK
+    brd_name: "Design Atomic từ nguồn ECAT bảng CUSTODIAN_BANK"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Ngân hàng lưu kí giám sát"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: CUSTODIAN_BANK
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: INVESTMENT_FUND
+                relation: "1-N — Danh mục Quỹ đầu tư chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-PAYMENT_CUSTODIAN_BANK
+    brd_name: "Design Atomic từ nguồn ECAT bảng PAYMENT_CUSTODIAN_BANK"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Ngân hàng thanh toán/lưu ký"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: PAYMENT_CUSTODIAN_BANK
+      related_tables:
+              - table: SECURITY_COMPANY
+                relation: "FK cha — Danh mục Công ty chứng khoán"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-FUND_DISTRIBUTOR
+    brd_name: "Design Atomic từ nguồn ECAT bảng FUND_DISTRIBUTOR"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Tổ chức phân phối quỹ"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: FUND_DISTRIBUTOR
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-FOREIGN_FUND_BRANCH
+    brd_name: "Design Atomic từ nguồn ECAT bảng FOREIGN_FUND_BRANCH"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng thông tin Văn phòng đại diện / Chi nhánh của quỹ nước ngoài tại Việt Nam"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: FOREIGN_FUND_BRANCH
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-INVESTMENT_FUND
+    brd_name: "Design Atomic từ nguồn ECAT bảng INVESTMENT_FUND"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Quỹ đầu tư chứng khoán"
+      functional_group: "UID-06 Danh mục đối tượng tham gia thị trường"
+      scope_status: pending
+      scope_reason: null
+      table: INVESTMENT_FUND
+      related_tables:
+              - table: CUSTODIAN_BANK
+                relation: "FK cha — Danh mục Ngân hàng lưu kí giám sát"
+              - table: FUND_MANAGEMENT_COMPANY
+                relation: "FK cha — Bảng quản lý Công ty quản lý quỹ"
+              - table: FUND_TYPE
+                relation: "FK cha — Danh mục loại hình quỹ"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-07 Danh mục hành nghề & trình độ ──────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-RELATIONSHIP_CATEGORY
+    brd_name: "Design Atomic từ nguồn ECAT bảng RELATIONSHIP_CATEGORY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Quan hệ"
+      functional_group: "UID-07 Danh mục hành nghề & trình độ"
+      scope_status: pending
+      scope_reason: null
+      table: RELATIONSHIP_CATEGORY
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QUALIFICATION_CATEGORY
+    brd_name: "Design Atomic từ nguồn ECAT bảng QUALIFICATION_CATEGORY"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Trình độ"
+      functional_group: "UID-07 Danh mục hành nghề & trình độ"
+      scope_status: pending
+      scope_reason: null
+      table: QUALIFICATION_CATEGORY
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-PRACTICE_CERTIFICATE_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng PRACTICE_CERTIFICATE_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Loại chứng chỉ hành nghề"
+      functional_group: "UID-07 Danh mục hành nghề & trình độ"
+      scope_status: pending
+      scope_reason: null
+      table: PRACTICE_CERTIFICATE_TYPE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-PRACTICE_CERTIFICATE
+    brd_name: "Design Atomic từ nguồn ECAT bảng PRACTICE_CERTIFICATE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Chứng chỉ hành nghề"
+      functional_group: "UID-07 Danh mục hành nghề & trình độ"
+      scope_status: pending
+      scope_reason: null
+      table: PRACTICE_CERTIFICATE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-APPROVED_AUDIT_FIRM
+    brd_name: "Design Atomic từ nguồn ECAT bảng APPROVED_AUDIT_FIRM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Tổ chức kiểm toán được chấp thuận"
+      functional_group: "UID-07 Danh mục hành nghề & trình độ"
+      scope_status: pending
+      scope_reason: null
+      table: APPROVED_AUDIT_FIRM
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-APPROVED_AUDITORS
+    brd_name: "Design Atomic từ nguồn ECAT bảng APPROVED_AUDITORS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng lưu thông tin kiểm toán viên"
+      functional_group: "UID-07 Danh mục hành nghề & trình độ"
+      scope_status: pending
+      scope_reason: null
+      table: APPROVED_AUDITORS
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-PROFESSIONAL_CERTIFICATE_TYPES
+    brd_name: "Design Atomic từ nguồn ECAT bảng PROFESSIONAL_CERTIFICATE_TYPES"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại chứng chỉ chuyên môn"
+      functional_group: "UID-07 Danh mục hành nghề & trình độ"
+      scope_status: pending
+      scope_reason: null
+      table: PROFESSIONAL_CERTIFICATE_TYPES
+      related_tables:
+              - table: ADMINISTRATIVE_PROCEDURE_COMPONENT
+                relation: "FK cha — Thành phần Thủ tục hành chính"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-08 Danh mục lịch & kỳ báo cáo ─────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-FREQUENCY_REPORT
+    brd_name: "Design Atomic từ nguồn ECAT bảng FREQUENCY_REPORT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Kỳ báo cáo"
+      functional_group: "UID-08 Danh mục lịch & kỳ báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: FREQUENCY_REPORT
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-WORKING_SCHEDULE
+    brd_name: "Design Atomic từ nguồn ECAT bảng WORKING_SCHEDULE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Lịch làm việc"
+      functional_group: "UID-08 Danh mục lịch & kỳ báo cáo"
+      scope_status: pending
+      scope_reason: null
+      table: WORKING_SCHEDULE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-09 Danh mục thủ tục hành chính ────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE_COMPONENT
+    brd_name: "Design Atomic từ nguồn ECAT bảng ADMINISTRATIVE_PROCEDURE_COMPONENT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Thành phần Thủ tục hành chính"
+      functional_group: "UID-09 Danh mục thủ tục hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: ADMINISTRATIVE_PROCEDURE_COMPONENT
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: PROFESSIONAL_CERTIFICATE_TYPES
+                relation: "1-N — Danh mục loại chứng chỉ chuyên môn"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE
+    brd_name: "Design Atomic từ nguồn ECAT bảng ADMINISTRATIVE_PROCEDURE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Thủ tục hành chính"
+      functional_group: "UID-09 Danh mục thủ tục hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: ADMINISTRATIVE_PROCEDURE
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE_COMPONENT_MAPPING
+    brd_name: "Design Atomic từ nguồn ECAT bảng ADMINISTRATIVE_PROCEDURE_COMPONENT_MAPPING"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian N-N: TTHC - Thành phần TTHC"
+      functional_group: "UID-09 Danh mục thủ tục hành chính"
+      scope_status: pending
+      scope_reason: null
+      table: ADMINISTRATIVE_PROCEDURE_COMPONENT_MAPPING
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-10 Danh mục ngành nghề ────────────────────────────────────────────
 
   - brd_id: BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_1
     brd_name: "Design Atomic từ nguồn ECAT bảng BUSINESS_LINE_LEVEL_1"
@@ -785,7 +1543,7 @@ brd_entries:
       related_tables:
         - table: BUSINESS_LINE_LEVEL_2
           relation: "Bảng con — ngành nghề cấp 2"
-      notes: "Đã thiết kế Atomic entity 'Classification ECAT Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_32_IndustryLv1 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01)."
+      notes: "Đã thiết kế Atomic entity 'Classification Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_32_IndustryLv1 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01)."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -807,7 +1565,7 @@ brd_entries:
       related_tables:
         - table: BUSINESS_LINE_LEVEL_1
           relation: "Parent — ngành nghề cấp 1"
-      notes: "Đã thiết kế Atomic entity 'Classification ECAT Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_33_IndustryLv2 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01)."
+      notes: "Đã thiết kế Atomic entity 'Classification Business Line' (Relative, self-referencing) — xem ECAT_HLD_Tier1.md. Tên bảng đã sửa từ synthetic ECAT_33_IndustryLv2 sang tên bảng thật theo Source/DDL UAT/ECAT_UAT_schema.txt (xem T1-01)."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -815,63 +1573,23 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  # ─── UID-11 Danh mục trạng thái & quy trình xử lý ────────────────────────
+  # ─── UID-11 Danh mục trạng thái & quy trình xử lý ──────────────────────────
 
-  - brd_id: BRD-SRC-ECAT-ECAT_34_ApprovalStatus
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_34_ApprovalStatus"
+  - brd_id: BRD-SRC-ECAT-OPERATIONAL_STATUS_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng OPERATIONAL_STATUS_TYPE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục trạng thái duyệt"
+      table_meaning: "Danh mục Loại trạng thái hoạt động"
       functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_34_ApprovalStatus
-      related_tables: []
-      notes: "CV scheme: ECAT_APPROVAL_STATUS (chờ duyệt, đã duyệt, từ chối...)"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_39_ReportProcessingStatusType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_39_ReportProcessingStatusType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại trạng thái xử lý báo cáo"
-      functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_39_ReportProcessingStatusType
-      related_tables: []
-      notes: "CV scheme: ECAT_REPORT_PROCESSING_STATUS_TYPE"
-      data_volume_hint: null
-      refresh_frequency: null
-      ingestion:
-        data_change_mode: Update
-        filter_logic: null
-        filter_note: null
-
-  - brd_id: BRD-SRC-ECAT-ECAT_41_NotificationStatusType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_41_NotificationStatusType"
-    type: Theo Source
-    ba_email: username@fssc.com.vn
-    steward_email: username@ubck.com.vn
-    content:
-      table_meaning: "Danh mục loại trạng thái thông báo"
-      functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
-      scope_status: in_scope
-      scope_reason: null
-      table: ECAT_41_NotificationStatusType
+      table: OPERATIONAL_STATUS_TYPE
       related_tables:
-        - table: ECAT_42_NotificationStatus
-          relation: "Bảng con — trạng thái thông báo cụ thể"
-      notes: "CV scheme: ECAT_NOTIFICATION_STATUS_TYPE"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -879,21 +1597,41 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_42_NotificationStatus
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_42_NotificationStatus"
+  - brd_id: BRD-SRC-ECAT-OPERATIONAL_STATUS_TYPE_ENTERPRISE_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng OPERATIONAL_STATUS_TYPE_ENTERPRISE_TYPE"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục trạng thái thông báo"
+      table_meaning: "Bảng trung gian N-N: Trạng thái hoạt động - Loại hình doanh nghiệp"
       functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_42_NotificationStatus
+      table: OPERATIONAL_STATUS_TYPE_ENTERPRISE_TYPE
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-ACTIVITY_STATUS
+    brd_name: "Design Atomic từ nguồn ECAT bảng ACTIVITY_STATUS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục tình trạng hoạt động"
+      functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
+      scope_status: pending
+      scope_reason: null
+      table: ACTIVITY_STATUS
       related_tables:
-        - table: ECAT_41_NotificationStatusType
-          relation: "Parent — loại trạng thái thông báo"
-      notes: "CV scheme: ECAT_NOTIFICATION_STATUS — parent → ECAT_NOTIFICATION_STATUS_TYPE"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -901,19 +1639,19 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_45_OperatingStatus
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_45_OperatingStatus"
+  - brd_id: BRD-SRC-ECAT-ACTIVE_STATUS
+    brd_name: "Design Atomic từ nguồn ECAT bảng ACTIVE_STATUS"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục trạng thái hoạt động"
+      table_meaning: "Bảng trạng thái hoạt động"
       functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
-      scope_status: in_scope
+      scope_status: pending
       scope_reason: null
-      table: ECAT_45_OperatingStatus
+      table: ACTIVE_STATUS
       related_tables: []
-      notes: "CV scheme: ECAT_OPERATING_STATUS (hoạt động, tạm dừng, giải thể...)"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -921,21 +1659,21 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  # ─── UID-12 Danh mục cảnh báo ────────────────────────────────────────────
-
-  - brd_id: BRD-SRC-ECAT-ECAT_37_AlertType
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_37_AlertType"
+  - brd_id: BRD-SRC-ECAT-GENDER
+    brd_name: "Design Atomic từ nguồn ECAT bảng GENDER"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục loại cảnh báo"
-      functional_group: "UID-12 Danh mục cảnh báo"
-      scope_status: in_scope
+      table_meaning: "Danh mục giới tính"
+      functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
+      scope_status: pending
       scope_reason: null
-      table: ECAT_37_AlertType
-      related_tables: []
-      notes: "CV scheme: ECAT_ALERT_TYPE (giao dịch bất thường, vi phạm công bố thông tin...)"
+      table: GENDER
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -943,19 +1681,21 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_38_AlertSeverity
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_38_AlertSeverity"
+  - brd_id: BRD-SRC-ECAT-NATION
+    brd_name: "Design Atomic từ nguồn ECAT bảng NATION"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục mức độ cảnh báo"
-      functional_group: "UID-12 Danh mục cảnh báo"
-      scope_status: in_scope
+      table_meaning: "Danh mục dân tộc"
+      functional_group: "UID-11 Danh mục trạng thái & quy trình xử lý"
+      scope_status: pending
       scope_reason: null
-      table: ECAT_38_AlertSeverity
-      related_tables: []
-      notes: "CV scheme: ECAT_ALERT_SEVERITY (thấp, trung bình, cao, nghiêm trọng)"
+      table: NATION
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -963,19 +1703,819 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-ECAT-ECAT_40_AlertProcessingStatus
-    brd_name: "Design Atomic từ nguồn ECAT bảng ECAT_40_AlertProcessingStatus"
+  # ─── UID-13 Danh mục vi phạm & xử phạt ─────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-PENALTY_FORM
+    brd_name: "Design Atomic từ nguồn ECAT bảng PENALTY_FORM"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
     content:
-      table_meaning: "Danh mục trạng thái xử lý cảnh báo"
-      functional_group: "UID-12 Danh mục cảnh báo"
-      scope_status: in_scope
+      table_meaning: "Danh mục Hình thức xử phạt"
+      functional_group: "UID-13 Danh mục vi phạm & xử phạt"
+      scope_status: pending
       scope_reason: null
-      table: ECAT_40_AlertProcessingStatus
+      table: PENALTY_FORM
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: PENALTY_FORM_VIOLATION_TYPE
+                relation: "1-N — Bảng trung gian N-N giữa hình thức xử phạt và loại vi phạm"
+              - table: VIOLATION_BEHAVIOR_PENALTY_FORM
+                relation: "1-N — Bảng trung gian N-N: Hành vi vi phạm - Hình thức xử phạt"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-VIOLATION_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng VIOLATION_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục loại vi phạm"
+      functional_group: "UID-13 Danh mục vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: VIOLATION_TYPE
+      related_tables:
+              - table: CURRENCY
+                relation: "FK cha — Danh mục Tiền tệ"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: PENALTY_FORM_VIOLATION_TYPE
+                relation: "1-N — Bảng trung gian N-N giữa hình thức xử phạt và loại vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-PENALTY_FORM_VIOLATION_TYPE
+    brd_name: "Design Atomic từ nguồn ECAT bảng PENALTY_FORM_VIOLATION_TYPE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian N-N giữa hình thức xử phạt và loại vi phạm"
+      functional_group: "UID-13 Danh mục vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: PENALTY_FORM_VIOLATION_TYPE
+      related_tables:
+              - table: PENALTY_FORM
+                relation: "FK cha — Danh mục Hình thức xử phạt"
+              - table: VIOLATION_TYPE
+                relation: "FK cha — Danh mục loại vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-VIOLATION_BEHAVIOR
+    brd_name: "Design Atomic từ nguồn ECAT bảng VIOLATION_BEHAVIOR"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục hành vi vi phạm"
+      functional_group: "UID-13 Danh mục vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: VIOLATION_BEHAVIOR
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: VIOLATION_BEHAVIOR_PENALTY_FORM
+                relation: "1-N — Bảng trung gian N-N: Hành vi vi phạm - Hình thức xử phạt"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-VIOLATION_BEHAVIOR_PENALTY_FORM
+    brd_name: "Design Atomic từ nguồn ECAT bảng VIOLATION_BEHAVIOR_PENALTY_FORM"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian N-N: Hành vi vi phạm - Hình thức xử phạt"
+      functional_group: "UID-13 Danh mục vi phạm & xử phạt"
+      scope_status: pending
+      scope_reason: null
+      table: VIOLATION_BEHAVIOR_PENALTY_FORM
+      related_tables:
+              - table: PENALTY_FORM
+                relation: "FK cha — Danh mục Hình thức xử phạt"
+              - table: VIOLATION_BEHAVIOR
+                relation: "FK cha — Danh mục hành vi vi phạm"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-14 Danh mục thanh tra ─────────────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-INSPECTION_TARGET
+    brd_name: "Design Atomic từ nguồn ECAT bảng INSPECTION_TARGET"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Tổ chức kiểm toán được chấp thuận"
+      functional_group: "UID-14 Danh mục thanh tra"
+      scope_status: pending
+      scope_reason: null
+      table: INSPECTION_TARGET
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: INSPECTION_CONTENT
+                relation: "1-N — Danh mục Nội dung thanh tra"
+              - table: INSPECTION_TARGET_INSPECTION_CONTENT
+                relation: "1-N — Bảng trung gian N-N: Đối tượng thanh tra - Nội dung thanh tra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-INSPECTION_BASIS
+    brd_name: "Design Atomic từ nguồn ECAT bảng INSPECTION_BASIS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Căn cứ thanh tra"
+      functional_group: "UID-14 Danh mục thanh tra"
+      scope_status: pending
+      scope_reason: null
+      table: INSPECTION_BASIS
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-INSPECTION_CONTENT
+    brd_name: "Design Atomic từ nguồn ECAT bảng INSPECTION_CONTENT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục Nội dung thanh tra"
+      functional_group: "UID-14 Danh mục thanh tra"
+      scope_status: pending
+      scope_reason: null
+      table: INSPECTION_CONTENT
+      related_tables:
+              - table: INSPECTION_TARGET
+                relation: "FK cha — Danh mục Tổ chức kiểm toán được chấp thuận"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: INSPECTION_TARGET_INSPECTION_CONTENT
+                relation: "1-N — Bảng trung gian N-N: Đối tượng thanh tra - Nội dung thanh tra"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-INSPECTION_TARGET_INSPECTION_CONTENT
+    brd_name: "Design Atomic từ nguồn ECAT bảng INSPECTION_TARGET_INSPECTION_CONTENT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian N-N: Đối tượng thanh tra - Nội dung thanh tra"
+      functional_group: "UID-14 Danh mục thanh tra"
+      scope_status: pending
+      scope_reason: null
+      table: INSPECTION_TARGET_INSPECTION_CONTENT
+      related_tables:
+              - table: INSPECTION_CONTENT
+                relation: "FK cha — Danh mục Nội dung thanh tra"
+              - table: INSPECTION_TARGET
+                relation: "FK cha — Danh mục Tổ chức kiểm toán được chấp thuận"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-15 Danh mục công bố thông tin & văn bản pháp lý ───────────────────
+
+  - brd_id: BRD-SRC-ECAT-LEGAL_DOCUMENT
+    brd_name: "Design Atomic từ nguồn ECAT bảng LEGAL_DOCUMENT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng thông tin văn bản pháp lý"
+      functional_group: "UID-15 Danh mục công bố thông tin & văn bản pháp lý"
+      scope_status: pending
+      scope_reason: null
+      table: LEGAL_DOCUMENT
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-DISCLOSURE_REPORT
+    brd_name: "Design Atomic từ nguồn ECAT bảng DISCLOSURE_REPORT"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh mục báo cáo công bố thông tin"
+      functional_group: "UID-15 Danh mục công bố thông tin & văn bản pháp lý"
+      scope_status: pending
+      scope_reason: null
+      table: DISCLOSURE_REPORT
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-16 Đồng bộ dữ liệu liên thông ─────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-BTC_SHARE_CONFIG
+    brd_name: "Design Atomic từ nguồn ECAT bảng BTC_SHARE_CONFIG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình chia sẻ dữ liệu Bộ Tài chính"
+      functional_group: "UID-16 Đồng bộ dữ liệu liên thông"
+      scope_status: pending
+      scope_reason: null
+      table: BTC_SHARE_CONFIG
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-BTC_SYNC_CONFIG
+    brd_name: "Design Atomic từ nguồn ECAT bảng BTC_SYNC_CONFIG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình đồng bộ dữ liệu từ CSDL Bộ Tài chính"
+      functional_group: "UID-16 Đồng bộ dữ liệu liên thông"
+      scope_status: pending
+      scope_reason: null
+      table: BTC_SYNC_CONFIG
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-DVCQG_SYNC_CONFIG
+    brd_name: "Design Atomic từ nguồn ECAT bảng DVCQG_SYNC_CONFIG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Cấu hình đồng bộ dữ liệu Giới tính và Dân tộc từ DVCQG"
+      functional_group: "UID-16 Đồng bộ dữ liệu liên thông"
+      scope_status: pending
+      scope_reason: null
+      table: DVCQG_SYNC_CONFIG
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-SOAP_INCOMING_LOG
+    brd_name: "Design Atomic từ nguồn ECAT bảng SOAP_INCOMING_LOG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Log nhận gói tin SOAP từ Bộ Tài chính"
+      functional_group: "UID-16 Đồng bộ dữ liệu liên thông"
+      scope_status: pending
+      scope_reason: null
+      table: SOAP_INCOMING_LOG
       related_tables: []
-      notes: "CV scheme: ECAT_ALERT_PROCESSING_STATUS"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {etl_date} AND created_at < {etl_date} + 1"
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-SOAP_RECONCILE_DATA_MAPPING
+    brd_name: "Design Atomic từ nguồn ECAT bảng SOAP_RECONCILE_DATA_MAPPING"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng mapping giữa gói tin đối soát và gói tin thay đổi dữ liệu"
+      functional_group: "UID-16 Đồng bộ dữ liệu liên thông"
+      scope_status: pending
+      scope_reason: null
+      table: SOAP_RECONCILE_DATA_MAPPING
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {etl_date} AND created_at < {etl_date} + 1"
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-SOAP_SYNC_LOG
+    brd_name: "Design Atomic từ nguồn ECAT bảng SOAP_SYNC_LOG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Log đồng bộ SOAP sang Bộ Tài chính phục vụ đối soát"
+      functional_group: "UID-16 Đồng bộ dữ liệu liên thông"
+      scope_status: pending
+      scope_reason: null
+      table: SOAP_SYNC_LOG
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Append
+        filter_logic: "created_at >= {etl_date} AND created_at < {etl_date} + 1"
+        filter_note: null
+
+  # ─── UID-17 Quản trị hệ thống & phân quyền ─────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-LOG_DATA_CHANGES
+    brd_name: "Design Atomic từ nguồn ECAT bảng LOG_DATA_CHANGES"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng lưu log thay đổi dữ liệu"
+      functional_group: "UID-17 Quản trị hệ thống & phân quyền"
+      scope_status: pending
+      scope_reason: null
+      table: LOG_DATA_CHANGES
+      related_tables:
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-FILES
+    brd_name: "Design Atomic từ nguồn ECAT bảng FILES"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng lưu trữ thông tin file (hỗ trợ download)"
+      functional_group: "UID-17 Quản trị hệ thống & phân quyền"
+      scope_status: pending
+      scope_reason: null
+      table: FILES
+      related_tables: []
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-MODULE
+    brd_name: "Design Atomic từ nguồn ECAT bảng MODULE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Danh sách phân hệ trong hệ thống"
+      functional_group: "UID-17 Quản trị hệ thống & phân quyền"
+      scope_status: pending
+      scope_reason: null
+      table: MODULE
+      related_tables:
+              - table: MODULE_INTEGRATION_CONFIG
+                relation: "1-N — Bảng cấu hình phân hệ trong hệ thống UBCK"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-MODULE_INTEGRATION_CONFIG
+    brd_name: "Design Atomic từ nguồn ECAT bảng MODULE_INTEGRATION_CONFIG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng cấu hình phân hệ trong hệ thống UBCK"
+      functional_group: "UID-17 Quản trị hệ thống & phân quyền"
+      scope_status: pending
+      scope_reason: null
+      table: MODULE_INTEGRATION_CONFIG
+      related_tables:
+              - table: MODULE
+                relation: "FK cha — Danh sách phân hệ trong hệ thống"
+              - table: UBCK_STAFF
+                relation: "FK cha — Danh mục nhân sự Ủy ban chứng khoán"
+              - table: MODULE_INTEGRATION_PERMISSION
+                relation: "1-N — Bảng trung gian N-N: Phân hệ - Quyền"
+              - table: MODULE_INTEGRATION_RESOURCE
+                relation: "1-N — Bảng trung gian N-N: Phân hệ - Tài nguyên"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-MODULE_INTEGRATION_PERMISSION
+    brd_name: "Design Atomic từ nguồn ECAT bảng MODULE_INTEGRATION_PERMISSION"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian N-N: Phân hệ - Quyền"
+      functional_group: "UID-17 Quản trị hệ thống & phân quyền"
+      scope_status: pending
+      scope_reason: null
+      table: MODULE_INTEGRATION_PERMISSION
+      related_tables:
+              - table: MODULE_INTEGRATION_CONFIG
+                relation: "FK cha — Bảng cấu hình phân hệ trong hệ thống UBCK"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-MODULE_INTEGRATION_RESOURCE
+    brd_name: "Design Atomic từ nguồn ECAT bảng MODULE_INTEGRATION_RESOURCE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Bảng trung gian N-N: Phân hệ - Tài nguyên"
+      functional_group: "UID-17 Quản trị hệ thống & phân quyền"
+      scope_status: pending
+      scope_reason: null
+      table: MODULE_INTEGRATION_RESOURCE
+      related_tables:
+              - table: MODULE_INTEGRATION_CONFIG
+                relation: "FK cha — Bảng cấu hình phân hệ trong hệ thống UBCK"
+      notes: null
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  # ─── UID-18 Bảng kỹ thuật hệ thống ─────────────────────────────────────────
+
+  - brd_id: BRD-SRC-ECAT-DATABASECHANGELOG
+    brd_name: "Design Atomic từ nguồn ECAT bảng DATABASECHANGELOG"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lịch sử migration cơ sở dữ liệu"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: DATABASECHANGELOG
+      related_tables: []
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-DATABASECHANGELOGLOCK
+    brd_name: "Design Atomic từ nguồn ECAT bảng DATABASECHANGELOGLOCK"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Lock khi Liquibase đang chạy"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: DATABASECHANGELOGLOCK
+      related_tables: []
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_BLOB_TRIGGERS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_BLOB_TRIGGERS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Blob Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_BLOB_TRIGGERS
+      related_tables:
+              - table: QRTZ_TRIGGERS
+                relation: "FK cha — Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_CALENDARS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_CALENDARS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Calendar (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_CALENDARS
+      related_tables: []
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_CRON_TRIGGERS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_CRON_TRIGGERS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Cron Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_CRON_TRIGGERS
+      related_tables:
+              - table: QRTZ_TRIGGERS
+                relation: "FK cha — Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_FIRED_TRIGGERS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_FIRED_TRIGGERS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Trigger đã được kích hoạt (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_FIRED_TRIGGERS
+      related_tables: []
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_JOB_DETAILS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_JOB_DETAILS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Thông tin chi tiết Job (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_JOB_DETAILS
+      related_tables:
+              - table: QRTZ_TRIGGERS
+                relation: "1-N — Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_LOCKS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_LOCKS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Lock cho cluster (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_LOCKS
+      related_tables: []
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_PAUSED_TRIGGER_GRPS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_PAUSED_TRIGGER_GRPS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Nhóm Trigger bị tạm dừng (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_PAUSED_TRIGGER_GRPS
+      related_tables: []
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_SCHEDULER_STATE
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_SCHEDULER_STATE"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Trạng thái Scheduler (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_SCHEDULER_STATE
+      related_tables: []
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_SIMPLE_TRIGGERS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_SIMPLE_TRIGGERS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Simple Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_SIMPLE_TRIGGERS
+      related_tables:
+              - table: QRTZ_TRIGGERS
+                relation: "FK cha — Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_SIMPROP_TRIGGERS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_SIMPROP_TRIGGERS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Simple Property Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_SIMPROP_TRIGGERS
+      related_tables:
+              - table: QRTZ_TRIGGERS
+                relation: "FK cha — Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
+      data_volume_hint: null
+      refresh_frequency: null
+      ingestion:
+        data_change_mode: Update
+        filter_logic: null
+        filter_note: null
+
+  - brd_id: BRD-SRC-ECAT-QRTZ_TRIGGERS
+    brd_name: "Design Atomic từ nguồn ECAT bảng QRTZ_TRIGGERS"
+    type: Theo Source
+    ba_email: username@fssc.com.vn
+    steward_email: username@ubck.com.vn
+    content:
+      table_meaning: "Quartz - Thông tin Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      functional_group: "UID-18 Bảng kỹ thuật hệ thống"
+      scope_status: pending
+      scope_reason: null
+      table: QRTZ_TRIGGERS
+      related_tables:
+              - table: QRTZ_JOB_DETAILS
+                relation: "FK cha — Quartz - Thông tin chi tiết Job (bảng kỹ thuật lập lịch job, out_of_scope)"
+              - table: QRTZ_BLOB_TRIGGERS
+                relation: "1-N — Quartz - Blob Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+              - table: QRTZ_CRON_TRIGGERS
+                relation: "1-N — Quartz - Cron Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+              - table: QRTZ_SIMPLE_TRIGGERS
+                relation: "1-N — Quartz - Simple Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+              - table: QRTZ_SIMPROP_TRIGGERS
+                relation: "1-N — Quartz - Simple Property Trigger (bảng kỹ thuật lập lịch job, out_of_scope)"
+      notes: "Bảng kỹ thuật hệ thống (scheduler/migration) — cần xác nhận in/out of scope khi thiết kế LLD."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:

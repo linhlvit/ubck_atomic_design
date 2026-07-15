@@ -100,13 +100,14 @@ attributes:
 - attribute_name: "Evaluation Period Status Code"
   physical_name: "evaluation_period_status_code"
   description: "Trạng thái (approved or draft)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_PERIODS.STATUS"
-  comment: "Scheme: IDS_EVAL_PERIOD_STATUS. Values lấy trực tiếp từ cột nguồn."
-  classification_context: "IDS_EVAL_PERIOD_STATUS"
+  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
+    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

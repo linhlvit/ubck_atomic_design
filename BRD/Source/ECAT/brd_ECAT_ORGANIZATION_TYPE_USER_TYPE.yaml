@@ -1,0 +1,21 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: ORGANIZATION_TYPE_USER_TYPE
+brd_ref: BRD-SRC-ECAT-ORGANIZATION_TYPE_USER_TYPE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Khóa chính (UUID)*"
+    key: PK
+    fk_note: null
+  - name: ORGANIZATION_TYPE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID loại tổ chức*"
+    key: FK
+    fk_note: "FK → ORGANIZATION_TYPE.ID"
+  - name: USER_TYPE
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Loại đối tượng (1=Nội bộ, 3=Tổ chức ngoài, 4=Cá nhân ngoài)*"
+    key: null
+    fk_note: null

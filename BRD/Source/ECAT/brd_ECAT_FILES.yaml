@@ -1,0 +1,31 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: FILES
+brd_ref: BRD-SRC-ECAT-FILES
+columns:
+  - name: ID
+    data_type: "VARCHAR2(144)"
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: FILE_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên file"
+    key: null
+    fk_note: null
+  - name: FILE_PATH
+    data_type: "CLOB"
+    description: "Đường dẫn lưu trữ file"
+    key: null
+    fk_note: null
+  - name: REF_TYPE
+    data_type: "VARCHAR2(1020)"
+    description: "Loại tham chiếu (vd: foreign_fund_branch, etc.)"
+    key: null
+    fk_note: null
+  - name: REF_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID tham chiếu (vd: foreign_fund_branch.stableId, etc.) (Tham chiếu đa hình (polymorphic) - tùy REF_TYPE)"
+    key: null
+    fk_note: null

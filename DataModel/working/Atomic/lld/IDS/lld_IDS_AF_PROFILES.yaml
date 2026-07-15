@@ -20,7 +20,10 @@ metadata:
   notes: "ADDRESS → Involved Party Postal Address (1 địa chỉ, type PRIMARY). PHONE_NO/FAX_NO/WEBSITE\
     \ → Involved Party Electronic Address. ID kỹ thuật (auto-increment) loại khỏi\
     \ model — AUDIT_FIRM_CD (mã nghiệp vụ) → Audit Firm Code (BK duy nhất), Id hash\
-    \ từ Code. Shared entity với SCMS.CT_KIEM_TOAN (chưa thiết kế, xem HLD T1-05)."
+    \ từ Code. Shared entity với SCMS.CT_KIEM_TOAN (chưa thiết kế, xem HLD T1-05).\
+    \ BUSINESS_REG_NO/ELIGIBILITY_CERT_NO đã tách ra shared entity IP Alt Identification\
+    \ (xem lld_IDS_AF_PROFILES_IP_Alt_Identification.yaml) — không còn map denormalized\
+    \ tại entity này."
 attributes:
 - attribute_name: "Audit Firm Id"
   physical_name: "af_id"
@@ -98,34 +101,6 @@ attributes:
   source_columns:
   - "IDS.AF_PROFILES.SHORT_NAME"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Business Registration Number"
-  physical_name: "business_registration_nbr"
-  description: "Giấy chứng nhận ĐKKD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_PROFILES.BUSINESS_REG_NO"
-  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
-    \ scheme kèm theo)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Eligibility Certificate Number"
-  physical_name: "eligibility_certificate_nbr"
-  description: "Giấy chứng nhận đủ điều kiện kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.AF_PROFILES.ELIGIBILITY_CERT_NO"
-  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
-    \ scheme kèm theo)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -207,8 +182,8 @@ attributes:
   classification_context: "IDS_AF_STATUS"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "External Reference Code"
-  physical_name: "external_reference_code"
+- attribute_name: "External Reference ID"
+  physical_name: "external_reference_id"
   description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)."
   data_domain: "Text"
   nullable: true
@@ -217,7 +192,8 @@ attributes:
   source_columns:
   - "IDS.AF_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
-    \ trong scope Atomic."
+    \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang\
+    \ string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

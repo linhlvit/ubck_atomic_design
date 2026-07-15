@@ -57,19 +57,19 @@ entries:
   design_status: approved
 - source_system: NHNCK
   source_table: APPLICATION_STATUSES
-  atomic_entity: Classification NHNCK Application Status
+  atomic_entity: Classification Application Status
   group: T1
   lld_file: NHNCK/lld_NHNCK_APPLICATION_STATUSES.yaml
   design_status: draft
 - source_system: NHNCK
   source_table: DOCUMENTS
-  atomic_entity: Classification NHNCK Document
+  atomic_entity: Classification Document
   group: T1
   lld_file: NHNCK/lld_NHNCK_DOCUMENTS.yaml
   design_status: draft
 - source_system: NHNCK
   source_table: SPECIALIZATIONS
-  atomic_entity: Classification NHNCK Specialization
+  atomic_entity: Classification Specialization
   group: T1
   lld_file: NHNCK/lld_NHNCK_SPECIALIZATIONS.yaml
   design_status: draft
@@ -1725,37 +1725,37 @@ entries:
   design_status: approved
 - source_system: ECAT
   source_table: BUSINESS_LINE_LEVEL_1
-  atomic_entity: Classification ECAT Business Line
+  atomic_entity: Classification Business Line
   group: T1
   lld_file: ECAT/lld_ECAT_BUSINESS_LINE_LEVEL_1.yaml
   design_status: draft
 - source_system: ECAT
   source_table: BUSINESS_LINE_LEVEL_2
-  atomic_entity: Classification ECAT Business Line
+  atomic_entity: Classification Business Line
   group: T1
   lld_file: ECAT/lld_ECAT_BUSINESS_LINE_LEVEL_2.yaml
   design_status: draft
 - source_system: SCMS
   source_table: CAT_SC_FIRM_STATUS
-  atomic_entity: Classification SCMS Firm Status
+  atomic_entity: Classification Firm Status
   group: T1
   lld_file: SCMS/lld_SCMS_CAT_SC_FIRM_STATUS.yaml
   design_status: draft
 - source_system: SCMS
   source_table: CAT_SERVICE
-  atomic_entity: Classification SCMS Service
+  atomic_entity: Classification Service
   group: T1
   lld_file: SCMS/lld_SCMS_CAT_SERVICE.yaml
   design_status: draft
 - source_system: SCMS
   source_table: CAT_NATIONALITY
-  atomic_entity: Classification SCMS Nationality
+  atomic_entity: Classification Nationality
   group: T1
   lld_file: SCMS/lld_SCMS_CAT_NATIONALITY.yaml
   design_status: draft
 - source_system: SCMS
   source_table: CAT_EVENT_TYPE
-  atomic_entity: Classification SCMS Event Type
+  atomic_entity: Classification Event Type
   group: T1
   lld_file: SCMS/lld_SCMS_CAT_EVENT_TYPE.yaml
   design_status: draft
@@ -1767,21 +1767,27 @@ entries:
   design_status: draft
 - source_system: SCMS
   source_table: CAT_BUSINESS_LINE
-  atomic_entity: Classification SCMS Business Line
+  atomic_entity: Classification Business Transaction
   group: T1
   lld_file: SCMS/lld_SCMS_CAT_BUSINESS_LINE.yaml
+  design_status: draft
+- source_system: SCMS
+  source_table: LNK_SC_FIRM_BUSINESS_LINE
+  atomic_entity: Securities Company Business Transaction Relationship
+  group: T2
+  lld_file: SCMS/lld_SCMS_LNK_SC_FIRM_BUSINESS_LINE.yaml
+  design_status: draft
+- source_system: SCMS
+  source_table: LNK_PRACTITIONER_BUSINESS_LINE
+  atomic_entity: Securities Company Practitioner Business Transaction Relationship
+  group: T3
+  lld_file: SCMS/lld_SCMS_LNK_PRACTITIONER_BUSINESS_LINE.yaml
   design_status: draft
 - source_system: IDS
   source_table: COMPANY_PROFILES
   atomic_entity: Public Company
   group: T1
   lld_file: IDS/lld_IDS_COMPANY_PROFILES.yaml
-  design_status: draft
-- source_system: IDS
-  source_table: CATEGORIES
-  atomic_entity: Classification IDS Business Line
-  group: T1
-  lld_file: IDS/lld_IDS_CATEGORIES.yaml
   design_status: draft
 - source_system: IDS
   source_table: COMPANY_PROFILES
@@ -1830,6 +1836,12 @@ entries:
   atomic_entity: Involved Party Electronic Address
   group: T2
   lld_file: IDS/lld_IDS_AF_PROFILES_IP_Electronic_Address.yaml
+  design_status: draft
+- source_system: IDS
+  source_table: AF_PROFILES
+  atomic_entity: Involved Party Alternative Identification
+  group: T2
+  lld_file: IDS/lld_IDS_AF_PROFILES_IP_Alt_Identification.yaml
   design_status: draft
 - source_system: IDS
   source_table: FORMS
@@ -1980,12 +1992,6 @@ entries:
   atomic_entity: Public Company Evaluation Criterion
   group: T2
   lld_file: IDS/lld_IDS_EVALUATION_CRITERIA.yaml
-  design_status: draft
-- source_system: IDS
-  source_table: DATA
-  atomic_entity: Public Company Financial Report Value
-  group: T2
-  lld_file: IDS/lld_IDS_DATA.yaml
   design_status: draft
 - source_system: IDS
   source_table: FOREIGN_OWNER_LIMIT

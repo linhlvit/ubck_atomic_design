@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: MODULE_INTEGRATION_CONFIG
+brd_ref: BRD-SRC-ECAT-MODULE_INTEGRATION_CONFIG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(144)"
+    description: "Primary key - UUID v7"
+    key: PK
+    fk_note: null
+  - name: NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên phân hệ"
+    key: null
+    fk_note: null
+  - name: MODULE_ID
+    data_type: "VARCHAR2(144)"
+    description: "Loại phân hệ (IAM, HRM, CRM, etc.)"
+    key: FK
+    fk_note: "FK → MODULE.ID"
+  - name: CLIENT_ID
+    data_type: "VARCHAR2(1020)"
+    description: "Client ID của phân hệ trong Keycloak hoặc OAuth2"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái: 1 - ACTIVE / 0 - INACTIVE"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian tạo"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người tạo"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian cập nhật"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người cập nhật"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày bắt đầu hiệu lực"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày kết thúc hiệu lực"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm: 0 - chưa xóa, 1 - đã xóa"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER"
+    description: "Phiên bản của bản ghi (Optimistic locking version control)"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "VARCHAR2(1020)"
+    description: "Lý do thay đổi trạng thái"
+    key: null
+    fk_note: null
+  - name: STABLE_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID bản ghi ổn định - không đổi qua các version"
+    key: null
+    fk_note: null

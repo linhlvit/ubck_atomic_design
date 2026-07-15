@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "SCMS"
   source_table: "CAT_SC_FIRM_STATUS"
-  atomic_entity: "Classification SCMS Firm Status"
-  entity_physical_name: "cl_scms_firm_status"
+  atomic_entity: "Classification Firm Status"
+  entity_physical_name: "cl_firm_status"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Firm Status"
   table_type: "Classification"
@@ -29,8 +29,8 @@ metadata:
     \ Audit fields (CREATED_BY/CREATED_AT) loại bỏ theo convention SCMS (không FK\
     \ target hợp lệ, SYS_USER ngoài phạm vi Atomic)."
 attributes:
-- attribute_name: "Classification SCMS Firm Status Id"
-  physical_name: "cl_scms_firm_status_id"
+- attribute_name: "Classification Firm Status Id"
+  physical_name: "cl_firm_status_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -44,8 +44,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Firm Status Code"
-  physical_name: "cl_scms_firm_status_code"
+- attribute_name: "Classification Firm Status Code"
+  physical_name: "cl_firm_status_code"
   description: "Mã trạng thái hoạt động CTCK. BK của entity."
   data_domain: "Text"
   nullable: false
@@ -70,8 +70,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.CAT_SC_FIRM_STATUS"
   etl_derived_value: "SCMS.CAT_SC_FIRM_STATUS"
   data_type: "string"
-- attribute_name: "Classification SCMS Firm Status Name"
-  physical_name: "cl_scms_firm_status_nm"
+- attribute_name: "Classification Firm Status Name"
+  physical_name: "cl_firm_status_nm"
   description: "Tên trạng thái hoạt động CTCK."
   data_domain: "Text"
   nullable: false
@@ -172,7 +172,7 @@ attributes:
   source_columns:
   - "SCMS.CAT_SC_FIRM_STATUS.CODE"
   comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
-    \ với Classification SCMS Firm Status Code (SC_FIRM_STATUS_CODE)."
+    \ với Classification Firm Status Code (SC_FIRM_STATUS_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -186,7 +186,7 @@ attributes:
   source_columns:
   - "SCMS.CAT_SC_FIRM_STATUS.ITEM_NAME"
   comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp\
-    \ với Classification SCMS Firm Status Name (SC_FIRM_STATUS_NAME)."
+    \ với Classification Firm Status Name (SC_FIRM_STATUS_NAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

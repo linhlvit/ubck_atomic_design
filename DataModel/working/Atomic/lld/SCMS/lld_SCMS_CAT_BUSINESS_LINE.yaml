@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "SCMS"
   source_table: "CAT_BUSINESS_LINE"
-  atomic_entity: "Classification SCMS Business Line"
-  entity_physical_name: "cl_scms_business_line"
+  atomic_entity: "Classification Business Transaction"
+  entity_physical_name: "cl_business_transaction"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Business Line"
   table_type: "Classification"
@@ -19,15 +19,20 @@ metadata:
   approved_at: null
   notes: "Nâng cấp từ Classification Value (scheme SCMS_BUSINESS_LINE, nay deprecated)\
     \ lên entity thật — xem SCMS_HLD_Overview.md #55 và SCMS_HLD_Tier1.md 6f T1-09\
-    \ / 7e #16. PK kỹ thuật ID loại khỏi model hoàn toàn — BK dùng BUSINESS_LINE_CODE,\
+    \ / 7e #16. Đổi tên từ 'Classification SCMS Business Line' thành 'Classification\
+    \ Business Transaction' (2026-07-14) — bỏ tiền tố nguồn theo CLAUDE.md #7 rev.\
+    \ + đổi BCV Term hiển thị theo yêu cầu Data Modeler (BCV Concept giữ nguyên [Common]\
+    \ Business Line). PK kỹ thuật ID loại khỏi model hoàn toàn — BK dùng BUSINESS_LINE_CODE,\
     \ Id hash từ chính BUSINESS_LINE_CODE theo rule 3e hiện hành (2026-07-13), khác\
-    \ với Classification SCMS Firm Status (hash từ ID kỹ thuật, quyết định cũ trước\
-    \ rule 3e). ID vẫn cần cho ETL resolve FK phía consumer đang lưu ID kỹ thuật.\
+    \ với Classification Firm Status (hash từ ID kỹ thuật, quyết định cũ trước rule\
+    \ 3e). ID vẫn cần cho ETL resolve FK phía consumer đang lưu ID kỹ thuật.\
     \ SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID đã đổi sang cặp FK Classification\
-    \ SCMS Business Line Id+Code (xem lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml).\
-    \ Còn lại LNK_SC_FIRM_BUSINESS_LINE.BUSINESS_LINE_ID và LNK_PRACTITIONER_BUSINESS_LINE.BUSINESS_LINE_ID\
-    \ (2 bảng junction riêng, chưa có LLD) cần thiết kế/đổi sang cặp FK Id+Code khi\
-    \ thiết kế LLD Tier tiếp theo. CREATED_BY/CREATED_AT loại bỏ theo convention SCMS\
+    \ Business Transaction Id+Code (xem lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml).\
+    \ LNK_SC_FIRM_BUSINESS_LINE và LNK_PRACTITIONER_BUSINESS_LINE KHÔNG denormalize\
+    \ ARRAY<STRUCT> — đã tách thành 2 entity Relative độc lập 'Securities Company Business\
+    \ Transaction Relationship' và 'Securities Company Practitioner Business Transaction\
+    \ Relationship' (đảo ngược quyết định denormalize cũ, xem SCMS_HLD_Overview.md 7d/7e).\
+    \ CREATED_BY/CREATED_AT loại bỏ theo convention SCMS\
     \ đã áp dụng cho CAT_SC_FIRM_STATUS/CAT_SERVICE/ CAT_NATIONALITY (CREATED_BY không\
     \ có FK target hợp lệ, SYS_USER ngoài phạm vi Atomic) — xem pending_design.yaml.\
     \ RECORD_STATUS dùng scheme SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS đã\
@@ -36,8 +41,8 @@ metadata:
     \ thiểu theo quy định pháp luật\") — Currency Amount, cần profile xác nhận đơn\
     \ vị/scale trước go-live."
 attributes:
-- attribute_name: "Classification SCMS Business Line Id"
-  physical_name: "cl_scms_business_line_id"
+- attribute_name: "Classification Business Transaction Id"
+  physical_name: "cl_business_transaction_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -61,8 +66,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.CAT_BUSINESS_LINE"
   etl_derived_value: "SCMS.CAT_BUSINESS_LINE"
   data_type: "string"
-- attribute_name: "Classification SCMS Business Line Code"
-  physical_name: "cl_scms_business_line_code"
+- attribute_name: "Classification Business Transaction Code"
+  physical_name: "cl_business_transaction_code"
   description: "Mã nghiệp vụ kinh doanh chứng khoán. BK duy nhất — Id hash từ trường\
     \ này."
   data_domain: "Text"
@@ -77,8 +82,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Business Line Name"
-  physical_name: "cl_scms_business_line_nm"
+- attribute_name: "Classification Business Transaction Name"
+  physical_name: "cl_business_transaction_nm"
   description: "Tên nghiệp vụ kinh doanh chứng khoán."
   data_domain: "Text"
   nullable: false

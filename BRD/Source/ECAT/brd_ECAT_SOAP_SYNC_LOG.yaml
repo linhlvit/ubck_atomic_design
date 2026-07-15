@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: SOAP_SYNC_LOG
+brd_ref: BRD-SRC-ECAT-SOAP_SYNC_LOG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: MSG_ID
+    data_type: "VARCHAR2(50)"
+    description: "Mã gói tin đã gửi"
+    key: null
+    fk_note: null
+  - name: MSG_REF_ID
+    data_type: "VARCHAR2(50)"
+    description: "Mã gói tham chiếu"
+    key: null
+    fk_note: null
+  - name: TRAN_CODE
+    data_type: "VARCHAR2(10)"
+    description: "Mã danh mục (0035, 0036, ...)"
+    key: null
+    fk_note: null
+  - name: TRAN_NAME
+    data_type: "VARCHAR2(150)"
+    description: "Tên danh mục"
+    key: null
+    fk_note: null
+  - name: TRAN_NUM
+    data_type: "NUMBER(5,0)"
+    description: "Số lượng bản ghi trong gói tin"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "VARCHAR2(20)"
+    description: "Trạng thái: SUCCESS, FAILED"
+    key: null
+    fk_note: null
+  - name: ERROR_NUMBER
+    data_type: "VARCHAR2(10)"
+    description: "Mã lỗi từ BTC"
+    key: null
+    fk_note: null
+  - name: ERROR_MESSAGE
+    data_type: "VARCHAR2(500)"
+    description: "Nội dung lỗi từ BTC"
+    key: null
+    fk_note: null
+  - name: SENT_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm gửi"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo"
+    key: null
+    fk_note: null
+  - name: HEADER_XML
+    data_type: "CLOB"
+    description: "Header XML đã mask (ẩn SPARE2)"
+    key: null
+    fk_note: null
+  - name: BODY_XML
+    data_type: "CLOB"
+    description: "Nội dung body XML raw"
+    key: null
+    fk_note: null
+  - name: RECEIVER_CODE
+    data_type: "VARCHAR2(50)"
+    description: null
+    key: null
+    fk_note: null
+  - name: RECEIVER_NAME
+    data_type: "VARCHAR2(255)"
+    description: null
+    key: null
+    fk_note: null
+  - name: ORIGINAL_CODE
+    data_type: "VARCHAR2(50)"
+    description: null
+    key: null
+    fk_note: null
+  - name: ORIGINAL_NAME
+    data_type: "VARCHAR2(255)"
+    description: null
+    key: null
+    fk_note: null

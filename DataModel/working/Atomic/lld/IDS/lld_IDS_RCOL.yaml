@@ -17,8 +17,9 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "REPORT_YEAR/RC_TYPE_CD denormalized snapshot từ REPORT_CATALOG — không map\
-    \ lại, chỉ giữ Text đối chiếu."
+  notes: "REPORT_YEAR/RC_TYPE_CD đã loại bỏ khỏi model theo yêu cầu Data Modeler\
+    \ (2026-07-14) — thông tin lấy qua FK Financial Report Catalog Id/Code (hash\
+    \ từ REPORT_CATALOG_ID) đã có sẵn, không cần denormalize thêm. Xem pending_design.yaml."
 attributes:
 - attribute_name: "Financial Report Form Column Template Id"
   physical_name: "frf_column_template_id"
@@ -156,34 +157,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Year Snapshot"
-  physical_name: "rpt_year_snpst"
-  description: "Lưu năm tạo báo cáo, lấy từ bảng REPORT_CATALOG."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.RCOL.REPORT_YEAR"
-  comment: "Denormalized snapshot — trùng lặp với Financial Report Catalog.Report\
-    \ Year."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Report Catalog Type Code Snapshot"
-  physical_name: "rpt_catalog_tp_code_snpst"
-  description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.RCOL.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Denormalized snapshot — trùng lặp với\
-    \ Financial Report Catalog.Report Catalog Type Code."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Trạng thái - (0 - không sử dụng, 1 - đang sử dụng)."
@@ -215,15 +188,15 @@ attributes:
 - attribute_name: "System Code"
   physical_name: "stm_code"
   description: "Hệ thống con trong IDS."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.RCOL.SYSTEM_CD"
-  comment: "Scheme: IDS_SYSTEM_CD (no_lookup). Dùng chung scheme với Disclosure Form\
-    \ Definition.System Code."
-  classification_context: "IDS_SYSTEM_CD"
+  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
+    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Column Description"

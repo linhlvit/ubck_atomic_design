@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "ECAT"
   source_table: "BUSINESS_LINE_LEVEL_1"
-  atomic_entity: "Classification ECAT Business Line"
-  entity_physical_name: "cl_ecat_business_line"
+  atomic_entity: "Classification Business Line"
+  entity_physical_name: "cl_business_line"
   bcv_core_object: "Common"
   bcv_concept: "[Common] Industry Classification"
   table_type: "Relative"
@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Gộp với BUSINESS_LINE_LEVEL_2 thành 1 Atomic entity self-referencing \"\
-    Classification ECAT Business Line\" (ECAT_HLD_Tier1.md, T1-07 — Table Type = Relative\
+    Classification Business Line\" (ECAT_HLD_Tier1.md, T1-07 — Table Type = Relative\
     \ theo quyết định tường minh của Data Modeler, không theo rule mặc định Common→Classification\
     \ Value). LEVEL_1 là cấp cao nhất — Parent Business Line Id/Code = NULL. BK dùng\
     \ CODE (mã nghiệp vụ, không dùng ID/STABLE_ID) — nhất quán với Geographic Area\
@@ -28,8 +28,8 @@ metadata:
     \ (3 indicator riêng — theo T1-04, nhất quán COUNTRY/REGION), VERSION, DISPLAY_LABEL,\
     \ ACTIVE_REASON, DELETED_REASON."
 attributes:
-- attribute_name: "Classification ECAT Business Line Id"
-  physical_name: "cl_ecat_business_line_id"
+- attribute_name: "Classification Business Line Id"
+  physical_name: "cl_business_line_id"
   description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
@@ -53,8 +53,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=ECAT.BUSINESS_LINE_LEVEL_1"
   etl_derived_value: "ECAT.BUSINESS_LINE_LEVEL_1"
   data_type: "string"
-- attribute_name: "Classification ECAT Business Line Level Code"
-  physical_name: "cl_ecat_business_line_level_code"
+- attribute_name: "Classification Business Line Level Code"
+  physical_name: "cl_business_line_level_code"
   description: "Phân biệt cấp ngành nghề — Cấp 1"
   data_domain: "Classification Value"
   nullable: false
@@ -65,8 +65,8 @@ attributes:
   classification_context: "ECAT_BUSINESS_LINE_LEVEL=LEVEL_1"
   etl_derived_value: "LEVEL_1"
   data_type: "string"
-- attribute_name: "Classification ECAT Business Line Code"
-  physical_name: "cl_ecat_business_line_code"
+- attribute_name: "Classification Business Line Code"
+  physical_name: "cl_business_line_code"
   description: "Mã ngành nghề cấp 1. BK duy nhất — Id hash từ trường này."
   data_domain: "Text"
   nullable: false
@@ -80,8 +80,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification ECAT Business Line Name"
-  physical_name: "cl_ecat_business_line_nm"
+- attribute_name: "Classification Business Line Name"
+  physical_name: "cl_business_line_nm"
   description: "Tên ngành nghề cấp 1"
   data_domain: "Text"
   nullable: false
@@ -93,29 +93,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Parent Classification ECAT Business Line Id"
-  physical_name: "parent_cl_ecat_business_line_id"
+- attribute_name: "Parent Classification Business Line Id"
+  physical_name: "parent_cl_business_line_id"
   description: "FK đến ngành nghề cấp 1 cha (self-ref). NULL cho cấp 1 — cấp cao nhất"
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "FK target: Classification ECAT Business Line.Classification ECAT Business\
-    \ Line Id. NULL vì BUSINESS_LINE_LEVEL_1 không có parent trong ECAT."
+  comment: "FK target: Classification Business Line.Classification Business Line\
+    \ Id. NULL vì BUSINESS_LINE_LEVEL_1 không có parent trong ECAT."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Parent Classification ECAT Business Line Code"
-  physical_name: "parent_cl_ecat_business_line_code"
+- attribute_name: "Parent Classification Business Line Code"
+  physical_name: "parent_cl_business_line_code"
   description: "Mã ngành nghề cấp 1 cha"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Lookup pair: Classification ECAT Business Line.Classification ECAT Business\
-    \ Line Code. Pair with Parent Classification ECAT Business Line Id. NULL cho cấp\
+  comment: "Lookup pair: Classification Business Line.Classification Business Line\
+    \ Code. Pair with Parent Classification Business Line Id. NULL cho cấp\
     \ 1."
   classification_context: null
   etl_derived_value: null

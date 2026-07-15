@@ -1,0 +1,201 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: PUBLIC_COMPANY
+brd_ref: BRD-SRC-ECAT-PUBLIC_COMPANY
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Khóa chính (UUIDv7)*"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Mã công ty đại chúng*"
+    key: null
+    fk_note: null
+  - name: COMPANY_NAME_VN
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "*Tên công ty (tiếng Việt)*"
+    key: null
+    fk_note: null
+  - name: COMPANY_NAME_EN
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "*Tên công ty (tiếng Anh)*"
+    key: null
+    fk_note: null
+  - name: EXCHANGE
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Sàn niêm yết*"
+    key: null
+    fk_note: null
+  - name: SECURITY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable Id bảng Security (security.stableId)*"
+    key: FK
+    fk_note: "FK → SECURITY.ID"
+  - name: LISTED_FLAG
+    data_type: "NUMBER(1)"
+    description: "*Trạng thái niêm **yết(0: Không, 1: Có)*"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LINE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable Id loại **ngành nghề (Ngành nghề cấp 1, ngành nghề cấp 2)*"
+    key: null
+    fk_note: null
+  - name: ISIN_CODE
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*ISIN*"
+    key: null
+    fk_note: null
+  - name: AUTO_APPROVAL_FLG
+    data_type: "NUMBER(1)"
+    description: "*Tự động duyệt (0: Không, 1: Có)*"
+    key: null
+    fk_note: null
+  - name: COMPANY_LOGIN
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "*User của công ty niêm yết*"
+    key: null
+    fk_note: null
+  - name: PARENT_COMPANY_FLAG
+    data_type: "NUMBER(1)"
+    description: "*Là công ty mẹ**( 0: Không, 1: Có)*"
+    key: null
+    fk_note: null
+  - name: SECURITY_TYPE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable Id **bảng SecurityType (security_type.stableId)*"
+    key: FK
+    fk_note: "FK → SECURITY_TYPE.ID"
+  - name: REPORT_TYPE
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*L**oại báo cáo** (Bảo hiểm/ Tín dụng/ Chứng khoán/ Doanh nghiệp)*"
+    key: null
+    fk_note: null
+  - name: PUBLIC_COMPANY_FORM_CD
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Hình thức công ty đại chúng*"
+    key: null
+    fk_note: null
+  - name: FY_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu năm tài chính*"
+    key: null
+    fk_note: null
+  - name: APPROVER_COMMENT
+    data_type: "VARCHAR2(4000)"
+    description: "*Ý kiến người duyệt*"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: "NUMBER(1)"
+    description: "*Trạng thái hoạt động (1: Đang sử dụng, **0: Không sử dụng)*"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: "*Lý do hoạt động*"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "*Xóa mềm (0: Chưa xóa, 1: Đã xóa)*"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "*Lý do xóa*"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER(MAX)"
+    description: "*Phiên bản*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày kết thúc*"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID cũ*"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày tạo*"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cập nhật*"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID bản ghi ổn định - không đổi qua các version*"
+    key: null
+    fk_note: null
+  - name: SECURITY_VERSION_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID của mã chứng khoán*"
+    key: null
+    fk_note: null
+  - name: SECURITY_TYPE_VERSION_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID của loại chứng khoán*"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LINE_VERSION_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID của ngành nghề cấp 1 hoặc ngành nghề cấp 2*"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_USER_NAME
+    data_type: "VARCHAR2(30 CHAR)"
+    description: "*Người tạo (được đồng bộ về)*"
+    key: null
+    fk_note: null
+  - name: CREATED_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày tạo* *(được đồng bộ về)*"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_USER_NAME
+    data_type: "VARCHAR2(30 CHAR)"
+    description: "*Người cập nhật (được đồng bộ về)*"
+    key: null
+    fk_note: null
+  - name: UPDATED_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cập nhật (được đồng bộ về)*"
+    key: null
+    fk_note: null

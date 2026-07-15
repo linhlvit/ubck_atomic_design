@@ -44,6 +44,7 @@
 | Business Activity | [Business Activity] Data Monitoring | Business Activity | ALERT_RUN | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ tiêu cảnh báo | Securities Company Alert Run | Fact Append | (1) Term candidate `Data Monitoring` (BCV id 7794, category Business Activity, type_of `Data Processing Activity`): "Identifies a Data Processing Activity Type that relates to the examination of data for specific purposes." Term `Operating Activity` (id 7793, "ongoing actions undertaken in support of business objectives") bị loại vì quá chung chung, không đặc tả bản chất "quét/kiểm tra dữ liệu". (2) ALERT_RUN: FK→ALERT_INDICATOR (chỉ tiêu được kiểm tra); ALERT_TARGET_ENTITY/DATA_YEAR/DATA_PERIOD mô tả phạm vi dữ liệu được quét; START_TIME/END_TIME/RECORD_STATUS/ALERT_COUNT_GENERATED/ERROR_MESSAGE mô tả vòng đời 1 lần thực thi việc kiểm tra dữ liệu phát hiện vi phạm — khớp đúng "examination of data for specific purposes". (3) Chọn `[Business Activity] Data Monitoring`. Fact Append vì grain = 1 occurrence thực thi, nguồn Append theo CREATED_AT. Đảo ngược quyết định loại-scope trước đây — xem Overview 7e (entry mới) và mục 6f T2-08. |
 | Involved Party | [Involved Party] Major Shareholder | Involved Party | SC_FIRM_MAJOR_SHAREHOLDER_RELATION | Quan hệ cổ đông lớn (sở hữu ≥5%) của CTCK | Securities Company Major Shareholder Relation | Relative | (1) BCV có `Major Shareholder` trong Involved Party — Involved Party nắm tỷ lệ sở hữu lớn. (2) Bảng: FK→SC_FIRM_INFO(FK cứng), SHAREHOLDER_ID(key: null — không phải FK). Grain = 1 cổ đông lớn × 1 CTCK. (3) Chọn `[Involved Party] Major Shareholder`. Chuyển từ Tier 3 xuống Tier 2 sau khi xác nhận BRD. |
 | Business Activity | [Business Activity] Business Activity | Business Activity | RISK_SUMMARY | Tổng hợp điểm rủi ro CTCK theo kỳ đánh giá (tổng điểm CAMEL + xếp hạng) | Securities Company Risk Summary | Fact Snapshot | (1) BCV có `Risk Summary` trong Business Activity — sự kiện tổng hợp kết quả đánh giá. (2) Bảng: FK→SC_FIRM_INFO(FK cứng), RISK_REPORTING_PERIOD_ID(FK suy luận→T1), RISK_SCORING_SC_FIRM_ID(key: null — không phải FK). Grain = 1 CTCK × 1 kỳ → Fact Snapshot. (3) Chuyển từ Tier 3 xuống Tier 2 sau khi xác nhận BRD. |
+| Event | [Event] Party Registration | Event | LNK_SC_FIRM_BUSINESS_LINE | Liên kết CTCK và nghiệp vụ kinh doanh chứng khoán được cấp phép (FK SC_FIRM_ID + BUSINESS_LINE_ID), kèm trạng thái liên kết | Securities Company Business Transaction Relationship | Relative | (1) Term candidate `Party Registration` (BCV id 9819) — cùng pattern đã dùng cho `Securities Company Licensed Service` (SC_FIRM_SERVICE, xem trên): cấp quyền hoạt động nghiệp vụ cho Involved Party, có vòng đời hiệu lực. (2) Cấu trúc bảng: SC_FIRM_ID (FK → Securities Company), BUSINESS_LINE_ID (FK → Classification Business Transaction, Tier 1), RECORD_STATUS (1=đang hoạt động/0=ngừng hoạt động), ID (PK riêng) — có attribute trạng thái + PK riêng, KHÔNG phải pure junction 2-cột (khác rule mặc định "denormalize ARRAY<STRUCT>" cho pure junction giữa 2 Atomic entity). (3) Chọn `[Event] Party Registration`, Table Type = Relative theo chỉ đạo tường minh của Data Modeler — tách entity riêng thay vì denormalize, đảo ngược quyết định cũ (xem 6f T2-11, Overview 7d/7e). |
 
 ---
 
@@ -67,6 +68,9 @@ erDiagram
         int ID PK
     }
     RISK_REPORTING_PERIOD {
+        int ID PK
+    }
+    CAT_BUSINESS_LINE {
         int ID PK
     }
 
@@ -209,6 +213,12 @@ erDiagram
         int ID PK
         int ALERT_INDICATOR_ID FK
     }
+    LNK_SC_FIRM_BUSINESS_LINE {
+        int ID PK
+        int SC_FIRM_ID FK
+        int BUSINESS_LINE_ID FK
+        int RECORD_STATUS
+    }
 
     SC_FIRM_INFO ||--o{ SC_FIRM_BRANCH : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_REP_OFFICE : "SC_FIRM_INFO_ID"
@@ -246,6 +256,8 @@ erDiagram
     ALERT_INDICATOR ||--o{ SC_FIRM_ALERT_VIOLATION : "ALERT_INDICATOR_ID"
     ALERT_INDICATOR ||--o{ ALERT_RUN : "ALERT_INDICATOR_ID"
     ALERT_RUN ||--o{ SC_FIRM_ALERT_VIOLATION : "ALERT_RUN_ID"
+    SC_FIRM_INFO ||--o{ LNK_SC_FIRM_BUSINESS_LINE : "SC_FIRM_ID"
+    CAT_BUSINESS_LINE ||--o{ LNK_SC_FIRM_BUSINESS_LINE : "BUSINESS_LINE_ID"
 ```
 
 ---
@@ -277,6 +289,10 @@ erDiagram
     Securities_Company_Risk_Reporting_Period {
         bigint ds_risk_reporting_period_id PK
         string period_value
+    }
+    Classification_Business_Transaction {
+        bigint ds_classification_business_transaction_id PK
+        string classification_business_transaction_code
     }
     Securities_Company_Organization_Unit {
         bigint ds_org_unit_id PK
@@ -407,6 +423,14 @@ erDiagram
         bigint ds_id PK
         bigint securities_company_alert_indicator_id FK
     }
+    Securities_Company_Business_Transaction_Relationship {
+        bigint ds_id PK
+        bigint securities_company_id FK
+        string securities_company_code
+        bigint classification_business_transaction_id FK
+        string classification_business_transaction_code
+        string ds_record_status_code
+    }
 
     Securities_Company ||--o{ Securities_Company_Organization_Unit : "securities_company_id"
     Securities_Company ||--o{ Securities_Company_Foreign_Branch : "securities_company_id"
@@ -417,6 +441,8 @@ erDiagram
     Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Indicator_Condition : "securities_company_alert_indicator_id"
     Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Run : "securities_company_alert_indicator_id"
     Securities_Company_Alert_Run ||--o{ Securities_Company_Alert_Violation : "securities_company_alert_run_id"
+    Securities_Company ||--o{ Securities_Company_Business_Transaction_Relationship : "securities_company_id"
+    Classification_Business_Transaction ||--o{ Securities_Company_Business_Transaction_Relationship : "classification_business_transaction_id"
 ```
 
 ---
@@ -457,3 +483,4 @@ erDiagram
 | T2-08 | SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID (FK thật theo BRD → ALERT_RUN.ID) — có cần đưa ALERT_RUN vào scope thiết kế không? | **Đã resolve (2026-07-12).** Đảo ngược quyết định loại-scope trước đây (2026-07-10) — thiết kế `ALERT_RUN` thành entity `Securities Company Alert Run` (`[Business Activity] Data Monitoring`, Fact Append, xem mục 6a). FK `SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID` → "Securities Company Alert Run" đã resolve. Đã xóa dòng ALERT_RUN khỏi Overview 7f/`atomic_out_of_scope.yaml`; xem Overview 7e entry mới. |
 | T2-09 | SC_FIRM_INFO.TOTAL_SHARES (số lượng cổ phần, NUMBER(38)) — data_domain nào phù hợp? | **Đề xuất 2026-07-10:** Không domain nào trong 12 domain chuẩn phù hợp (Small Counter=int quá nhỏ, các domain số khác mang ý nghĩa tiền tệ/lãi suất sai ngữ nghĩa). Đã tạm gắn `[PROPOSE NEW DOMAIN] Quantity (decimal(38,0))` trên attribute — cần Data Modeler duyệt bổ sung domain `Quantity` vào `reference/data_domains.md` (hiện `validate_lld_yaml.py` sẽ báo lỗi cho đến khi duyệt). |
 | T2-10 | ALERT_RUN.ALERT_TARGET_ENTITY (NVARCHAR2(80)) — mô tả nguồn chưa rõ ràng, có cùng domain giá trị với `SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE` (scheme `SCMS_ALERT_ENTITY_TYPE`: CTCK/CN_NUOC_NGOAI/VPDD_NUOC_NGOAI) hay là 1 domain khác? | **Chưa resolve.** Theo yêu cầu Data Modeler: map 1:1 từ nguồn dạng Text ở vòng HLD này, không gán scheme. Cần profile giá trị thực tế ở bước LLD để xác định có nên chuẩn hóa thành Classification Value hay không, và nếu có thì tái sử dụng `SCMS_ALERT_ENTITY_TYPE` hay tạo scheme riêng. |
+| T2-11 | `LNK_SC_FIRM_BUSINESS_LINE` — quyết định cũ (SCMS_HLD_Overview.md 7d, xem Tier1 T1-09) coi đây là pure junction giữa 2 Atomic entity, denormalize thành `business_lines ARRAY<STRUCT<business_line_id, business_line_code>>` trên Securities Company. Data Modeler yêu cầu đảo ngược (2026-07-14): tách thành entity Relative độc lập `Securities Company Business Transaction Relationship`, Tier 2 (phụ thuộc Securities Company T1 + Classification Business Transaction T1). | **Đã xử lý.** Lý do đảo ngược: bảng có `RECORD_STATUS` + PK riêng (`ID`) — không còn thỏa điều kiện "pure junction 2 cột không attribute riêng" của skill rule. Xem mục 6a/6b/6c, Overview 7a/7d/7e. |

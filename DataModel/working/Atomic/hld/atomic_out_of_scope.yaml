@@ -923,135 +923,176 @@ entries:
   group: Xử lý luồng khác
   reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
 - source_system: IDS
-  source_table: '`company_change_role_his`'
-  description: Lịch sử thay đổi vai trò user theo công ty
-  group: '`Audit Log nguồn`'
-  reason: Audit Log nguồn — không phải sự kiện nghiệp vụ
-- source_system: IDS
-  source_table: '`company_detail_his`'
-  description: Lịch sử thay đổi chi tiết công ty đại chúng
-  group: '`Audit Log nguồn`'
-  reason: Audit Log nguồn — Atomic tự track SCD4A/SCD2 trên Public Company
-- source_system: IDS
-  source_table: '`company_profiles_his`'
-  description: Lịch sử thay đổi hồ sơ công ty đại chúng
-  group: '`Audit Log nguồn`'
-  reason: Audit Log nguồn — Atomic tự track SCD4A/SCD2 trên Public Company
-- source_system: IDS
-  source_table: '`fields_history`'
-  description: Lịch sử thay đổi định nghĩa fields
-  group: '`Audit Log nguồn`'
+  source_table: '`COMPANY_CHANGE_ROLE_HIS`'
+  description: Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn.
+  group: Audit Log nguồn
   reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
     kiện nghiệp vụ
 - source_system: IDS
-  source_table: '`form_fields_history`'
-  description: Lịch sử thay đổi form_fields
-  group: '`Audit Log nguồn`'
+  source_table: '`HISTORY_CHANGE_LOG`'
+  description: Bảng lịch sử thay đổi dữ liệu toàn hệ thống IDS theo cơ chế generic
+    (change_mode = Append).
+  group: Audit Log nguồn
   reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
     kiện nghiệp vụ
 - source_system: IDS
-  source_table: '`stockholder_history`'
-  description: Lịch sử thay đổi hồ sơ cổ đông
-  group: '`Audit Log nguồn`'
-  reason: Audit Log nguồn — Atomic tự track SCD2 trên Stock Holder
+  source_table: '`DATA_VALUES`'
+  description: Bảng giá trị tham chiếu cho field trong form.
+  group: Form Metadata
+  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
 - source_system: IDS
-  source_table: '`positions`'
-  description: Chức vụ của cổ đông giao dịch (Chủ tịch HĐQT, Thành viên BGĐ...)
-  group: '`Chưa có cột`'
-  reason: Chưa có thông tin cột đầy đủ trong tài liệu thiết kế — xếp pending thiết
-    kế
+  source_table: '`FIELDS_MGR`'
+  description: Quản lý field metadata trong hệ thống.
+  group: Form Metadata
+  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
 - source_system: IDS
-  source_table: '`fields`'
-  description: Định nghĩa trường của form CBTT (tên field, kiểu dữ liệu, bắt buộc/không)
-  group: '`Form Metadata`'
-  reason: Cascade drop từ form_fields — metadata định nghĩa form, chưa có Gold requirement
-    trực tiếp
+  source_table: '`FIELDS`'
+  description: Định nghĩa field trong form CBTT.
+  group: Form Metadata
+  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
 - source_system: IDS
-  source_table: '`form_fields`'
-  description: 'Bảng nối: danh sách fields trong một form'
-  group: '`Form Metadata`'
-  reason: Pure junction table không có business attribute — denormalized vào data_values
+  source_table: '`FORM_FIELDS`'
+  description: Mapping field vào form CBTT.
+  group: Form Metadata
+  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
 - source_system: IDS
-  source_table: '`data_values`'
-  description: Giá trị nhập theo từng field của form CBTT
-  group: '`Intermediate`'
-  reason: Dữ liệu field-level động cần map cả field_id + form_field_id, chưa có Gold
-    requirement; xử lý cùng anchor fields đã drop
+  source_table: '`FORM_FIELD_HISTORY`'
+  description: Lịch sử thay đổi field trong form.
+  group: Form Metadata
+  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
 - source_system: IDS
-  source_table: '`noti_config_apply`'
-  description: Áp dụng cấu hình thông báo cho công ty cụ thể
-  group: '`Junction`'
-  reason: Pure junction table không có business attribute — Cascade drop do không
-    có value riêng
-- source_system: IDS
-  source_table: '`data_access_rules`'
-  description: Phân quyền dữ liệu theo user
-  group: '`Operational / System`'
+  source_table: '`DEPARTMENTS`'
+  description: Phòng ban nội bộ của IDS (không phải đơn vị nghiệp vụ).
+  group: Hệ thống / Phân quyền
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`data_types`'
-  description: Kiểu dữ liệu cho fields của form
-  group: '`Operational / System`'
+  source_table: '`LOGINS`'
+  description: Tài khoản đăng nhập của người dùng IDS (CTĐC và cán bộ UBCKNN).
+  group: Hệ thống / Phân quyền
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`departments`'
-  description: Phòng ban của UBCKNN
-  group: '`Operational / System`'
-  reason: Dùng shared Regulatory Authority Organization Unit khi cần FK — không tạo
-    entity mới
-- source_system: IDS
-  source_table: '`logins`'
-  description: Tài khoản đăng nhập vào IDS (nội bộ + công ty)
-  group: '`Operational / System`'
+  source_table: '`LOGIN_PERMISSION_BY_CODE`'
+  description: Phân quyền theo mã permission cho tài khoản đăng nhập.
+  group: Hệ thống / Phân quyền
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`report_approval`'
-  description: Phê duyệt tin công bố (quy trình nội bộ hệ thống)
-  group: '`Operational / System`'
-  reason: Operational/system data — không có giá trị nghiệp vụ; quy trình nội bộ IDS
-- source_system: IDS
-  source_table: '`report_extensions`'
-  description: Gia hạn nộp báo cáo (quy trình nội bộ hệ thống)
-  group: '`Operational / System`'
-  reason: Operational/system data — không có giá trị nghiệp vụ; quy trình nội bộ IDS
-- source_system: IDS
-  source_table: '`sms_log`'
-  description: Log gửi SMS liên kết với company_profiles
-  group: '`Operational / System`'
+  source_table: '`SYS_PARAMETERS`'
+  description: Tham số cấu hình hệ thống IDS.
+  group: Hệ thống / Phân quyền
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`sys_parameters`'
-  description: Tham số cấu hình hệ thống IDS
-  group: '`Operational / System`'
+  source_table: '`COMPANY_DIGITAL_CERTIFICATES`'
+  description: Chứng chỉ số của CTĐC dùng để ký điện tử trong IDS.
+  group: Operational / System
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`user_audit_log`'
-  description: Log thao tác của user trong hệ thống
-  group: '`Operational / System`'
+  source_table: '`FILES`'
+  description: Bảng quản lý file đính kèm (tên file, đường dẫn, loại file).
+  group: Operational / System
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`users`'
-  description: Tài khoản sử dụng hệ thống phân hệ kiểm toán
-  group: '`Operational / System`'
+  source_table: '`INTEGRATION_JOB_DEFINITION`'
+  description: Định nghĩa các job tích hợp hệ thống.
+  group: Operational / System
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`categories`'
-  description: Danh mục ngành nghề 2 cấp (self-ref)
-  group: '`Reference Data`'
+  source_table: '`INTEGRATION_SYNC_LOG`'
+  description: Log đồng bộ tích hợp giữa các hệ thống.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`INTG_FINANCIAL_STATEMENT`'
+  description: Staging bảng BCTC từ hệ thống tích hợp.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`INTG_FORM_MAPPING`'
+  description: Mapping form giữa các hệ thống tích hợp.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`INTG_IMPORT_DATA_LOG`'
+  description: Log import dữ liệu từ hệ thống ngoài.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`INTG_REPORT_CONFIG`'
+  description: Cấu hình báo cáo cho tích hợp.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`INTG_REPORT_FIELD`'
+  description: Mapping field báo cáo cho tích hợp.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`INTG_SIGNATURE_CONFIG`'
+  description: Cấu hình chữ ký điện tử cho tích hợp.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`MANUAL_DOCUMENT`'
+  description: Tài liệu hướng dẫn sử dụng được lưu trong IDS.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`MIGRATION_EXECUTIONS`'
+  description: Metadata quản lý tiến trình migration dữ liệu vào IDS.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`MIGRATION_LOGS`'
+  description: Log chi tiết từng bước migration (change_mode = Append).
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`SMS_LOG`'
+  description: Log tin nhắn SMS được gửi từ hệ thống IDS.
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`UBCK_SYNC_ITEM_LOG`'
+  description: Log đồng bộ item với hệ thống UBCK khác (change_mode = Append).
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`USER_AUDIT_LOG`'
+  description: Log hành động người dùng trong hệ thống IDS (change_mode = Append).
+  group: Operational / System
+  reason: Operational/system data — không có giá trị nghiệp vụ
+- source_system: IDS
+  source_table: '`COUNTRIES`'
+  description: Danh mục quốc gia.
+  group: Reference Data
+  reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
+    qua IDS
+- source_system: IDS
+  source_table: '`DATA_TYPES`'
+  description: Danh mục kiểu dữ liệu của trường trong form BCTC.
+  group: Reference Data
   reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
-    scheme IDS_INDUSTRY_CATEGORY
 - source_system: IDS
-  source_table: '`countries`'
-  description: Danh mục quốc gia (Code + Name)
-  group: '`Reference Data`'
-  reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành FK đến shared Geographic
-    Area (COUNTRY)
+  source_table: '`HOLIDAY_CALENDAR`'
+  description: Danh mục ngày lễ/nghỉ.
+  group: Reference Data
+  reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
 - source_system: IDS
-  source_table: '`provinces`'
-  description: Danh mục tỉnh thành (Code + Name)
-  group: '`Reference Data`'
-  reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành FK đến shared Geographic
-    Area (PROVINCE)
+  source_table: '`LOOKUP_VALUES`'
+  description: Master bảng danh mục của toàn hệ thống IDS.
+  group: Reference Data
+  reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
+- source_system: IDS
+  source_table: '`PROVINCES`'
+  description: Danh mục tỉnh/thành phố.
+  group: Reference Data
+  reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
+    qua IDS
+- source_system: IDS
+  source_table: '`WARDS`'
+  description: Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES.
+  group: Reference Data
+  reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
+    qua IDS
 - source_system: KNT
   source_table: MSG_PACKET
   description: Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính (nội

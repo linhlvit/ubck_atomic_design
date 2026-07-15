@@ -1,0 +1,191 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: ADMINISTRATIVE_PROCEDURE
+brd_ref: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Khóa chính (UUIDv7)*"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Mã TTHC*"
+    key: null
+    fk_note: null
+  - name: NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên TTHC*"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: "CLOB"
+    description: "*Mô tả chi tiết*"
+    key: null
+    fk_note: null
+  - name: FIELD_GROUP
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "*Lĩnh vực*"
+    key: null
+    fk_note: null
+  - name: IMPLEMENTATION_SEQUENCE
+    data_type: "CLOB"
+    description: "*Trình tự thực hiện*"
+    key: null
+    fk_note: null
+  - name: PROCEDURE_GROUP
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Nhóm TTHC*"
+    key: null
+    fk_note: null
+  - name: PROCEDURE_LEVEL
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Mức độ (1/2/3/4)*"
+    key: null
+    fk_note: null
+  - name: IMPLEMENTATION_METHOD
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "*Cách thức thực hiện*"
+    key: null
+    fk_note: null
+  - name: APPLIED_SUBJECT
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Đối tượng áp dụng*"
+    key: null
+    fk_note: null
+  - name: PROCESSING_TIME_AMOUNT
+    data_type: "NUMBER(10)"
+    description: "*Thời gian giải quyết*"
+    key: null
+    fk_note: null
+  - name: PROCESSING_TIME_UNIT
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Đơn vị tính thời gian*"
+    key: null
+    fk_note: null
+  - name: FEE_AMOUNT
+    data_type: "NUMBER(19, 4)"
+    description: "*Lệ phí*"
+    key: null
+    fk_note: null
+  - name: FEE_UNIT_CURRENCY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable Id** tiền tệ lệ phí (tham chiếu currency.**stableI**d)*"
+    key: null
+    fk_note: null
+  - name: FEE_PAYMENT_METHOD
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "*Hình thức nộp lệ phí*"
+    key: null
+    fk_note: null
+  - name: COMPETENT_AUTHORITY
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Cơ quan có thẩm quyền*"
+    key: null
+    fk_note: null
+  - name: COORDINATING_AGENCY
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Cơ quan phối hợp*"
+    key: null
+    fk_note: null
+  - name: LEGAL_BASIS
+    data_type: "CLOB"
+    description: "*Căn cứ pháp lý*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_STATUS_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày có hiệu lực*"
+    key: null
+    fk_note: null
+  - name: EXPIRATION_STATUS_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày hết hiệu lực*"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: "NUMBER(1)"
+    description: "Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: "*Lý do hoạt động*"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "Xóa mềm (0: Chưa xóa, 1: Đã xóa)"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "*Lý do xóa*"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER(MAX)"
+    description: "*Phiên bản*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày kết thúc*"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID cũ*"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày tạo*"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cập nhật*"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID bản ghi ổn định - không đổi qua các version*"
+    key: null
+    fk_note: null
+  - name: FEE_UNIT_CURRENCY_VERSION_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID của đơn vị tiền tệ phí*"
+    key: null
+    fk_note: null
+  - name: IMPLEMENTATION_RESULT
+    data_type: "CLOB"
+    description: null
+    key: null
+    fk_note: null

@@ -1,0 +1,226 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: PAYMENT_CUSTODIAN_BANK
+brd_ref: BRD-SRC-ECAT-PAYMENT_CUSTODIAN_BANK
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Khóa chính (UUIDv7)*"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Mã ngân hàng*"
+    key: null
+    fk_note: null
+  - name: NAME_VN
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên tiếng Việt*"
+    key: null
+    fk_note: null
+  - name: NAME_EN
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên tiếng Anh*"
+    key: null
+    fk_note: null
+  - name: SHORT_NAME
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "*Tên viết tắt*"
+    key: null
+    fk_note: null
+  - name: TYPE
+    data_type: "NUMBER(1)"
+    description: "*Phân loại ngân hàng*"
+    key: null
+    fk_note: null
+  - name: ADDRESS
+    data_type: "VARCHAR2(1000 CHAR)"
+    description: "*Địa chỉ*"
+    key: null
+    fk_note: null
+  - name: PHONE_NUMBER
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Số điện thoại*"
+    key: null
+    fk_note: null
+  - name: FAX
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Số fax*"
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: "VARCHAR2(400 CHAR)"
+    description: "*Email*"
+    key: null
+    fk_note: null
+  - name: WEBSITE
+    data_type: "CLOB"
+    description: "*Website*"
+    key: null
+    fk_note: null
+  - name: BUSINESS_LICENSE_NO
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "*Giấy phép thành lập*"
+    key: null
+    fk_note: null
+  - name: LICENSE_ISSUE_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cấp giấy phép*"
+    key: null
+    fk_note: null
+  - name: LICENSE_ISSUER
+    data_type: "VARCHAR2(500)"
+    description: "*Nơi cấp*"
+    key: null
+    fk_note: null
+  - name: CHARTER_CAPITAL
+    data_type: "VARCHAR2(100)"
+    description: "*Vốn điều lệ*"
+    key: null
+    fk_note: null
+  - name: APPROVAL_DECISION_NO
+    data_type: "VARCHAR2(200)"
+    description: "*Số QĐ chấp thuậ*"
+    key: null
+    fk_note: null
+  - name: APPROVAL_DECISION_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày QĐ chấp thuận*"
+    key: null
+    fk_note: null
+  - name: OPERATION_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu hoạt động chính thức (theo QĐ).*"
+    key: null
+    fk_note: null
+  - name: OPERATION_REGISTRATION_CERT
+    data_type: "VARCHAR2(200)"
+    description: "*Giấy chứng nhận đăng ký hoạt động*"
+    key: null
+    fk_note: null
+  - name: OPERATION_REGISTRATION_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cấp giấy chứng nhận đăng ký hoạt động.*"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1)"
+    description: "*Trạng thái hoạt động*"
+    key: null
+    fk_note: null
+  - name: CUSTODY_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu lưu ký*"
+    key: null
+    fk_note: null
+  - name: CUSTODY_MEMBERSHIP_CERT
+    data_type: "TIMESTAMP(6))"
+    description: "*Giấy chứng nhận tư cách thành viên lưu ký.*"
+    key: null
+    fk_note: null
+  - name: CUSTODY_MEMBERSHIP_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cấp giấy chứng nhận tư cách thành viên lưu ký.*"
+    key: null
+    fk_note: null
+  - name: REVOCATION_DECISION_NO
+    data_type: "VARCHAR2(200)"
+    description: "*Số quyết định thu hồi/giải thể/thay đổi*"
+    key: null
+    fk_note: null
+  - name: REVOCATION_DECISION_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày ra quyết định thu hồi/giải thể.*"
+    key: null
+    fk_note: null
+  - name: MANAGED_BY_COMPANY_ID
+    data_type: "VARCHAR2(36 char)"
+    description: "*Stable Id bảng Security*"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: "CLOB"
+    description: "*Ghi chú*"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: "NUMBER(1)"
+    description: "*Trạng thái hoạt động (1: Đang sử dụng, 0: Không sử dụng)*"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: "*Lý do hoạt động*"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1)"
+    description: "*Xóa mềm (0: Chưa xóa, 1: Đã xóa)*"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "*Lý do xóa*"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER(MAX)"
+    description: "*Phiên bản*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày bắt đầu*"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày kết thúc*"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID cũ*"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày tạo*"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Ngày cập nhật*"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người tạo*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID bản ghi ổn định - không đổi qua các version*"
+    key: null
+    fk_note: null
+  - name: SECURITY_COMPANY_VERSION_ID
+    data_type: "VARCHAR2(144)"
+    description: null
+    key: FK
+    fk_note: "FK → SECURITY_COMPANY.ID"

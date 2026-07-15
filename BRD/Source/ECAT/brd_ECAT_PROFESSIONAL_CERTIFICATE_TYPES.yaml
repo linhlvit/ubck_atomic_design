@@ -1,0 +1,116 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: PROFESSIONAL_CERTIFICATE_TYPES
+brd_ref: BRD-SRC-ECAT-PROFESSIONAL_CERTIFICATE_TYPES
+columns:
+  - name: ID
+    data_type: "VARCHAR2(144)"
+    description: "ID loại chứng chỉ chuyên môn"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: "VARCHAR2(80)"
+    description: "Mã loại chứng chỉ chuyên môn"
+    key: null
+    fk_note: null
+  - name: NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên loại chứng chỉ chuyên môn"
+    key: null
+    fk_note: null
+  - name: LEGAL_CITATION
+    data_type: "CLOB"
+    description: "Trích dẫn pháp lý"
+    key: null
+    fk_note: null
+  - name: OPERATION_STATUS
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái hoạt động"
+    key: null
+    fk_note: null
+  - name: FORM_COMPONENT_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID của mã thành phần hồ sơ"
+    key: FK
+    fk_note: "FK → ADMINISTRATIVE_PROCEDURE_COMPONENT.ID"
+  - name: FORM_COMPONENT_VERSION_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID phiên bản của mã thành phần hồ sơ"
+    key: FK
+    fk_note: "FK → ADMINISTRATIVE_PROCEDURE_COMPONENT.ID"
+  - name: ACTIVE
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái hoạt động"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: "Lý do thay đổi trạng thái hoạt động"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Xóa (1: Đã xóa, 0: Chưa xóa)"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "Lý do xóa bản ghi"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER"
+    description: "Phiên bản bản ghi"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Thời điểm bắt đầu hiệu lực của bản ghi"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Thời điểm kết thúc hiệu lực của bản ghi"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID cũ"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời điểm cập nhật bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người tạo bản ghi"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người cập nhật bản ghi"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null
+  - name: STABLE_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID ổn định dùng để liên kết các phiên bản của cùng một thực thể"
+    key: null
+    fk_note: null

@@ -19,7 +19,8 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "design_status quay lại draft (2026-07-09) — đổi Specialization Type Code\
-    \ thành Specialization Code + thêm FK Specialization Id. Cần review/approve lại."
+    \ thành Classification Specialization Code + thêm FK Classification\
+    \ Specialization Id. Cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Application Education Certificate\
     \ Document Id"
@@ -90,8 +91,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Specialization Id"
-  physical_name: "specialization_id"
+- attribute_name: "Classification Specialization Id"
+  physical_name: "cl_specialization_id"
   description: "FK đến chuyên ngành CCHN đăng ký"
   data_domain: "Surrogate Key"
   nullable: false
@@ -99,15 +100,15 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
-  comment: "FK target: Classification NHNCK Specialization.Classification NHNCK Specialization\
+  comment: "FK target: Classification Specialization.Classification Specialization\
     \ Id. Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_ID). Đổi tên 2026-07-09\
     \ từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION\
     \ đã deprecate)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Specialization Code"
-  physical_name: "specialization_code"
+- attribute_name: "Classification Specialization Code"
+  physical_name: "cl_specialization_code"
   description: "Mã chuyên ngành CCHN đăng ký (denormalized lookup)"
   data_domain: "Text"
   nullable: false
@@ -115,8 +116,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID"
-  comment: "Lookup pair: Classification NHNCK Specialization.Classification NHNCK\
-    \ Specialization Code. Pair with Specialization Id."
+  comment: "Lookup pair: Classification Specialization.Classification\
+    \ Specialization Code. Pair with Classification Specialization Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

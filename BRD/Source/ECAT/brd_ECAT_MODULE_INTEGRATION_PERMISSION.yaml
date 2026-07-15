@@ -1,0 +1,16 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: MODULE_INTEGRATION_PERMISSION
+brd_ref: BRD-SRC-ECAT-MODULE_INTEGRATION_PERMISSION
+columns:
+  - name: MODULE_INTEGRATION_CONFIG_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID phân hệ (FK tới MODULE_INTEGRATION_CONFIG)"
+    key: PK/FK
+    fk_note: "FK → MODULE_INTEGRATION_CONFIG.ID"
+  - name: PERMISSION_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID quyền (FK tới PERMISSION)"
+    key: PK/FK
+    fk_note: "FK → PERMISSION.ID (bảng ngoài phạm vi ECAT)"

@@ -198,14 +198,14 @@ attributes:
 - attribute_name: "System Code"
   physical_name: "stm_code"
   description: "Hệ thống con trong IDS."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.REP_ROW.SYSTEM_CD"
-  comment: "Scheme: IDS_SYSTEM_CD (no_lookup). Dùng chung scheme với Disclosure Form\
-    \ Definition.System Code."
-  classification_context: "IDS_SYSTEM_CD"
+  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
+    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

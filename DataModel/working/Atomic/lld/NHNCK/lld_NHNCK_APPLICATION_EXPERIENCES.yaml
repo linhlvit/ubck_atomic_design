@@ -18,7 +18,8 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "design_status quay lại draft (2026-07-09) — đổi Document Type Code thành\
-    \ Document Code + thêm FK Document Id. Cần review/approve lại."
+    \ Classification Document Code + thêm FK Classification Document Id.\
+    \ Cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Application Employment Experience\
     \ Id"
@@ -89,8 +90,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Document Id"
-  physical_name: "document_id"
+- attribute_name: "Classification Document Id"
+  physical_name: "cl_document_id"
   description: "FK đến tài liệu yêu cầu kèm hồ sơ"
   data_domain: "Surrogate Key"
   nullable: true
@@ -98,14 +99,14 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
-  comment: "FK target: Classification NHNCK Document.Classification NHNCK Document\
+  comment: "FK target: Classification Document.Classification Document\
     \ Id. Hash: hash_id('NHNCK.DOCUMENTS', DOCUMENT_ID). Đổi tên 2026-07-09 từ Document\
     \ Type Code khi DOCUMENTS lên entity thật (scheme DOCUMENT_TYPE đã deprecate)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Document Code"
-  physical_name: "document_code"
+- attribute_name: "Classification Document Code"
+  physical_name: "cl_document_code"
   description: "Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)"
   data_domain: "Text"
   nullable: true
@@ -113,8 +114,8 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID"
-  comment: "Lookup pair: Classification NHNCK Document.Classification NHNCK Document\
-    \ Code. Pair with Document Id."
+  comment: "Lookup pair: Classification Document.Classification Document\
+    \ Code. Pair with Classification Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

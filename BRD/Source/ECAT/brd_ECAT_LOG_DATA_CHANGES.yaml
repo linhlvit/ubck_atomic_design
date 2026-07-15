@@ -1,0 +1,126 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: LOG_DATA_CHANGES
+brd_ref: BRD-SRC-ECAT-LOG_DATA_CHANGES
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Khóa chính (UUIDv7)*"
+    key: null
+    fk_note: null
+  - name: APPLICATION
+    data_type: "VARCHAR2(20 CHAR)"
+    description: "*Tên application*"
+    key: null
+    fk_note: null
+  - name: IP_CLIENT
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "*Client IP*"
+    key: null
+    fk_note: null
+  - name: USER_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID người dùng (NO FK)*"
+    key: null
+    fk_note: null
+  - name: USER_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Username*"
+    key: null
+    fk_note: null
+  - name: FULL_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Tên đầy đủ*"
+    key: null
+    fk_note: null
+  - name: URL
+    data_type: "VARCHAR2(1000 CHAR)"
+    description: "*API / URL được gọi*"
+    key: null
+    fk_note: null
+  - name: USER_AGENT
+    data_type: "VARCHAR2(500 CHAR)"
+    description: "*Browser / client info*"
+    key: null
+    fk_note: null
+  - name: ACTION_CUSTOM
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Action logic (custom)*"
+    key: null
+    fk_note: null
+  - name: FILTER_CUSTOM
+    data_type: "VARCHAR2(1000 CHAR)"
+    description: "*Filter / condition*"
+    key: null
+    fk_note: null
+  - name: ACTION_REAL
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Action thực tế (INSERT/UPDATE/DELETE)*"
+    key: null
+    fk_note: null
+  - name: CLASS_NAME
+    data_type: "VARCHAR2(255 CHAR)"
+    description: "*Entity / Class name*"
+    key: null
+    fk_note: null
+  - name: DATA_CHANGE
+    data_type: "CLOB"
+    description: "*Dữ liệu thay đổi (JSON/text)*"
+    key: null
+    fk_note: null
+  - name: CREATED_ENTITY_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Thời điểm entity được tạo*"
+    key: null
+    fk_note: null
+  - name: UPDATED_ENTITY_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Thời điểm entity được cập nhật*"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Thời điểm ghi log*"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID người tạo log*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(250 CHAR)"
+    description: "*Tên người tạo log*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "*Thời điểm cập nhật log*"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(250 CHAR)"
+    description: "*Tên người cập nhật*"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: ENTITY_ID
+    data_type: "VARCHAR2(144)"
+    description: null
+    key: null
+    fk_note: null
+  - name: ENTITY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: null
+    key: null
+    fk_note: null
+  - name: HTTP_METHOD
+    data_type: "VARCHAR2(80)"
+    description: null
+    key: null
+    fk_note: null

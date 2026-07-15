@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: INSPECTION_TARGET_INSPECTION_CONTENT
+brd_ref: BRD-SRC-ECAT-INSPECTION_TARGET_INSPECTION_CONTENT
+columns:
+  - name: INSPECTION_TARGET_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID của Inspection Target (part of PK)"
+    key: PK/FK
+    fk_note: "FK → INSPECTION_TARGET.ID"
+  - name: INSPECTION_CONTENT_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID của Inspection Content (part of PK)"
+    key: PK/FK
+    fk_note: "FK → INSPECTION_CONTENT.ID"
+  - name: INSPECTION_TARGET_STABLE_ID
+    data_type: "VARCHAR2(144)"
+    description: "Stable ID của Inspection Target - ID ổn định xuyên suốt các phiên bản"
+    key: null
+    fk_note: null
+  - name: INSPECTION_CONTENT_STABLE_ID
+    data_type: "VARCHAR2(144)"
+    description: "Stable ID của Inspection Content - ID ổn định xuyên suốt các phiên bản"
+    key: null
+    fk_note: null

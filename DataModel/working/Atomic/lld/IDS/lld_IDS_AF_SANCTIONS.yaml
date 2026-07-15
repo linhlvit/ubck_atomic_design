@@ -86,15 +86,15 @@ attributes:
 - attribute_name: "Sanction Authority Code"
   physical_name: "sanction_authority_code"
   description: "Đơn vị xử phạt (BTC hay UB)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.AF_SANCTIONS.SANCTION_AUTHORITY_CD"
-  comment: "Scheme: IDS_SANCTION_AUTHORITY. Values load từ LOOKUP_VALUES — scheme\
-    \ đã đăng ký sẵn (dùng chung khái niệm Audit Firm Sanction)."
-  classification_context: "IDS_SANCTION_AUTHORITY"
+  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
+    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Number"

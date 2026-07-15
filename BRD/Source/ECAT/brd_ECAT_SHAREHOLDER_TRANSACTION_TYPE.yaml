@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: SHAREHOLDER_TRANSACTION_TYPE
+brd_ref: BRD-SRC-ECAT-SHAREHOLDER_TRANSACTION_TYPE
+columns:
+  - name: ID
+    data_type: "VARCHAR2(144)"
+    description: "Khóa chính (UUID v7)"
+    key: PK
+    fk_note: null
+  - name: CODE
+    data_type: "VARCHAR2(80)"
+    description: "Mã loại giao dịch"
+    key: null
+    fk_note: null
+  - name: NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên loại giao dịch"
+    key: null
+    fk_note: null
+  - name: DESCRIPTION
+    data_type: "VARCHAR2(1020)"
+    description: "Mô tả"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái (1: Đang hoạt động, 0: Dừng hoạt động)"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: "Lý do thay đổi trạng thái"
+    key: null
+    fk_note: null
+  - name: STABLE_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID ổn định cho các phiên bản"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER"
+    description: "Số phiên bản"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian bắt đầu hiệu lực phiên bản"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian kết thúc hiệu lực phiên bản"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID của phiên bản trước đó"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Cờ xóa mềm (0: chưa xóa, 1: đã xóa)"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "Lý do xóa"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian tạo"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người tạo"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(1000)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian cập nhật"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người cập nhật"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(1000)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null

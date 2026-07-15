@@ -7,7 +7,7 @@ entries:
     source_column: "PARENT_LINE_VERSION_ID"
     description: "Id phiên bản của bản ghi cha (business_line_level_1) — theo Source/ECAT_Columns.csv, trỏ tới BUSINESS_LINE_LEVEL_1.ID (version-specific), khác PARENT_LINE_ID (trỏ tới BUSINESS_LINE_LEVEL_1.STABLE_ID)."
     reason: "Trùng lặp về mặt nghiệp vụ với PARENT_LINE_ID — Atomic chỉ cần 1 FK parent duy nhất, dùng STABLE_ID (BK) làm chuẩn resolve theo quyết định T1-05/T1-08 (ECAT_HLD_Tier1.md). PARENT_LINE_VERSION_ID là con trỏ kỹ thuật đến 1 version cụ thể của bản ghi cha — không cần thiết khi Atomic không lưu vết version-specific ID."
-    action: "Không map. Parent Classification ECAT Business Line Id/Code đã resolve qua PARENT_LINE_ID (xem lld_ECAT_BUSINESS_LINE_LEVEL_2.yaml)."
+    action: "Không map. Parent Classification Business Line Id/Code đã resolve qua PARENT_LINE_ID (xem lld_ECAT_BUSINESS_LINE_LEVEL_2.yaml)."
 
   - source_system: "SCMS"
     source_table: "SC_FIRM_REP_OFFICE"
@@ -1805,8 +1805,8 @@ entries:
     source_table: "CAT_SC_FIRM_STATUS"
     source_column: "ID"
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng SC_FIRM_STATUS_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification SCMS Firm Status Id (xem lld_SCMS_CAT_SC_FIRM_STATUS.yaml)."
-    action: "Referenced — dùng làm source_columns của Classification SCMS Firm Status Id (hash lineage), không tạo attribute BK riêng."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng SC_FIRM_STATUS_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification Firm Status Id (xem lld_SCMS_CAT_SC_FIRM_STATUS.yaml)."
+    action: "Referenced — dùng làm source_columns của Classification Firm Status Id (hash lineage), không tạo attribute BK riêng."
 
   - source_system: "SCMS"
     source_table: "CAT_SC_FIRM_STATUS"
@@ -1819,8 +1819,8 @@ entries:
     source_table: "CAT_SERVICE"
     source_column: "ID"
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng SERVICE_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification SCMS Service Id (xem lld_SCMS_CAT_SERVICE.yaml)."
-    action: "Referenced — dùng làm source_columns của Classification SCMS Service Id (hash lineage), không tạo attribute BK riêng."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng SERVICE_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification Service Id (xem lld_SCMS_CAT_SERVICE.yaml)."
+    action: "Referenced — dùng làm source_columns của Classification Service Id (hash lineage), không tạo attribute BK riêng."
 
   - source_system: "SCMS"
     source_table: "CAT_SERVICE"
@@ -1833,8 +1833,8 @@ entries:
     source_table: "CAT_NATIONALITY"
     source_column: "ID"
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng NATIONALITY_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification SCMS Nationality Id (xem lld_SCMS_CAT_NATIONALITY.yaml)."
-    action: "Referenced — dùng làm source_columns của Classification SCMS Nationality Id (hash lineage), không tạo attribute BK riêng."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng NATIONALITY_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification Nationality Id (xem lld_SCMS_CAT_NATIONALITY.yaml)."
+    action: "Referenced — dùng làm source_columns của Classification Nationality Id (hash lineage), không tạo attribute BK riêng."
 
   - source_system: "SCMS"
     source_table: "CAT_NATIONALITY"
@@ -1847,8 +1847,8 @@ entries:
     source_table: "CAT_EVENT_TYPE"
     source_column: "ID"
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)"
-    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng EVENT_TYPE_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification SCMS Event Type Id (xem lld_SCMS_CAT_EVENT_TYPE.yaml)."
-    action: "Referenced — dùng làm source_columns của Classification SCMS Event Type Id (hash lineage), không tạo attribute BK riêng."
+    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng EVENT_TYPE_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification Event Type Id (xem lld_SCMS_CAT_EVENT_TYPE.yaml)."
+    action: "Referenced — dùng làm source_columns của Classification Event Type Id (hash lineage), không tạo attribute BK riêng."
 
   - source_system: "SCMS"
     source_table: "CAT_EVENT_TYPE"
@@ -1921,6 +1921,13 @@ entries:
     action: "Excluded — không thiết kế Atomic attribute cho cột này trong lld_IDS_HTE_VIOLATION_REPORT.yaml."
 
   - source_system: "IDS"
+    source_table: "HTE_VIOLATION_REPORT"
+    source_column: "FORMS_ID"
+    description: "ID ky thuat cua FORMS, dung de join lay FORM_CD truoc day."
+    reason: "Theo yeu cau Data Modeler (2026-07-14): FORM_CD (ma nghiep vu) da co san truc tiep tai bang nguon nay va trung khop FORMS.FORM_CD — dung truc tiep FORM_CD de hash Disclosure Form Definition Id/Code, khong can join qua FORMS_ID ky thuat nua."
+    action: "Excluded — khong con dung FORMS_ID trong lld_IDS_HTE_VIOLATION_REPORT.yaml, thay bang FORM_CD."
+
+  - source_system: "IDS"
     source_table: "AF_TECHNICAL_AUDIT"
     source_column: "LOGIN_PERMISSION_BY_CODE"
     description: "Xuất hiện trong Source/IDS_Columns.csv (dòng 1576) như một cột của AF_TECHNICAL_AUDIT, nhưng nội dung ('Bảng LOGIN_PERMISSION_BY_CODE') cho thấy đây là artifact tiêu đề bảng LOGIN_PERMISSION_BY_CODE (bảng riêng, module auth, scope_status=pending trong BRD/Source/_summary.csv) bị lẫn vào khi trích xuất CSV — không phải cột thật của AF_TECHNICAL_AUDIT (không xuất hiện trong brd_IDS_AF_TECHNICAL_AUDIT.yaml)."
@@ -1975,6 +1982,13 @@ entries:
     description: "Audit block created/updated by-at"
     reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_AF_PROFILES.yaml."
+
+  - source_system: "IDS"
+    source_table: "AF_PROFILES"
+    source_column: "BUSINESS_REG_NO, ELIGIBILITY_CERT_NO"
+    description: "Giay chung nhan DKKD / Giay chung nhan du dieu kien kinh doanh"
+    reason: "Theo yeu cau Data Modeler (2026-07-14): day 2 truong nay ra shared entity IP Alt Identification thay vi giu denormalized Text tai entity chinh. Truoc day khong gop vi khong co type-code scheme kem theo — nay hardcode type BUSINESS_LICENSE (BUSINESS_REG_NO) va BUSINESS_ELIGIBILITY_LICENSE (ELIGIBILITY_CERT_NO, gia tri moi bo sung vao scheme IP_ALT_ID_TYPE)."
+    action: "Moved — da xoa attribute Business Registration Number / Eligibility Certificate Number khoi lld_IDS_AF_PROFILES.yaml, tao lld_IDS_AF_PROFILES_IP_Alt_Identification.yaml (2 block)."
 
   - source_system: "IDS"
     source_table: "AF_SANCTIONS"
@@ -2101,13 +2115,6 @@ entries:
     description: "Audit block created/updated by-at"
     reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_COMPANY_TREASURY_STOCKS.yaml."
-
-  - source_system: "IDS"
-    source_table: "DATA"
-    source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
-    description: "Audit block created/updated by-at"
-    reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
-    action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_DATA.yaml."
 
   - source_system: "IDS"
     source_table: "EVALUATION_CBONDS"
@@ -2339,20 +2346,6 @@ entries:
     description: "Audit block created/updated by-at"
     reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_VIOLATION_TEMPLATES.yaml."
-
-  - source_system: "IDS"
-    source_table: "CATEGORIES"
-    source_column: "ID"
-    description: "Khóa chính"
-    reason: "PK kỹ thuật — không map thành attribute BK riêng (BK dùng INDUSTRY_CD, Id hash từ chính INDUSTRY_CD theo rule 3e). ID vẫn cần cho ETL resolve self-reference PARENT_ID → CATEGORIES.ID để lấy INDUSTRY_CD cha."
-    action: "Referenced — dùng làm join key nội bộ để resolve self-reference PARENT_ID, không tạo attribute BK riêng trong lld_IDS_CATEGORIES.yaml."
-
-  - source_system: "IDS"
-    source_table: "CATEGORIES"
-    source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
-    description: "Audit block created/updated by-at"
-    reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
-    action: "Excluded — không thiết kế Atomic attribute cho 4 cột này trong lld_IDS_CATEGORIES.yaml."
 
   - source_system: "SCMS"
     source_table: "CAT_BUSINESS_LINE"

@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: PENALTY_FORM_VIOLATION_TYPE
+brd_ref: BRD-SRC-ECAT-PENALTY_FORM_VIOLATION_TYPE
+columns:
+  - name: PENALTY_FORM_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID hình thức xử phạt (tới penalty_form)*"
+    key: FK
+    fk_note: "FK → PENALTY_FORM.ID"
+  - name: PENALTY_FORM_STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable ID hình thức xử phạt*"
+    key: null
+    fk_note: null
+  - name: VIOLATION_TYPE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID loại vi phạm (tới violation_type)*"
+    key: FK
+    fk_note: "FK → VIOLATION_TYPE.ID"
+  - name: VIOLATION_TYPE_STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable ID loại vi phạm *"
+    key: null
+    fk_note: null

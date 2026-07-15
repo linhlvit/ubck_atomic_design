@@ -193,15 +193,16 @@ attributes:
 - attribute_name: "Login Type Code"
   physical_name: "login_tp_code"
   description: "Loại user."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.LOGIN_TYPE"
-  comment: "Scheme: IDS_LOGIN_TYPE (no_lookup) — chưa liệt kê trong HLD Tier3 6d,\
-    \ bổ sung scheme mới. Nguồn lưu dạng số — ETL cần convert sang string code."
-  classification_context: "IDS_LOGIN_TYPE"
+  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
+    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn. Nguồn\
+    \ lưu dạng số — ETL cần convert sang string."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Equity Listing Exchange Code"

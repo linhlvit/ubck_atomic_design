@@ -1,0 +1,26 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: OPERATIONAL_STATUS_TYPE_ENTERPRISE_TYPE
+brd_ref: BRD-SRC-ECAT-OPERATIONAL_STATUS_TYPE_ENTERPRISE_TYPE
+columns:
+  - name: OPERATIONAL_STATUS_TYPE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID loại trạng thái hoạt động (FK tham chiếu operational_status_type.id)*"
+    key: PK
+    fk_note: null
+  - name: ENTERPRISE_TYPE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*ID loại hình doanh nghiệp (tham chiếu enterprise_type.id)*"
+    key: PK
+    fk_note: null
+  - name: OPERATIONAL_STATUS_TYPE_STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable ID của operational_status_type - ID ổn định xuyên suốt các phiên bản*"
+    key: null
+    fk_note: null
+  - name: ENTERPRISE_TYPE_STABLE_ID
+    data_type: "VARCHAR2(36 CHAR)"
+    description: "*Stable ID của enterprise_type - ID ổn định xuyên suốt các phiên bản*"
+    key: null
+    fk_note: null

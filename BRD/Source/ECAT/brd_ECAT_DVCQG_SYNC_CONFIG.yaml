@@ -1,0 +1,106 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: DVCQG_SYNC_CONFIG
+brd_ref: BRD-SRC-ECAT-DVCQG_SYNC_CONFIG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(144)"
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên danh mục cấu hình"
+    key: null
+    fk_note: null
+  - name: URL_PATH
+    data_type: "VARCHAR2(2000)"
+    description: "URL tích hợp"
+    key: null
+    fk_note: null
+  - name: HTTP_METHOD
+    data_type: "VARCHAR2(40)"
+    description: "Phương thức HTTP (GET/POST/PUT/...)"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái: 1-Active, 0-Inactive"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "VARCHAR2(2000)"
+    description: "Lý do thay đổi trạng thái"
+    key: null
+    fk_note: null
+  - name: DISPLAY_ORDER
+    data_type: "NUMBER"
+    description: "Thứ tự hiển thị trên màn hình"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian tạo"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người tạo"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người tạo"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Thời gian cập nhật"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người cập nhật"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Xóa mềm: 0-chưa xóa, 1-đã xóa"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "VARCHAR2(4000)"
+    description: "Lý do xóa mềm"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER"
+    description: "Số phiên bản bản ghi"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày bắt đầu hiệu lực"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày kết thúc hiệu lực"
+    key: null
+    fk_note: null
+  - name: STABLE_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID ổn định xuyên suốt các version"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID của version trước"
+    key: null
+    fk_note: null

@@ -269,17 +269,15 @@ attributes:
 - attribute_name: "Target System Code"
   physical_name: "target_stm_code"
   description: "Hệ thống IDS hoặc AUDIT."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS.SYSTEM_CD"
-  comment: "Scheme: IDS_NOTIFICATION_TARGET_SYSTEM. Values load từ LOOKUP_VALUES —\
-    \ scheme đã đăng ký sẵn (hệ thống đích nhận thông báo), khác với IDS_SYSTEM_CD\
-    \ dùng ở Disclosure Form Definition/Financial Report Catalog (phân hệ con trong\
-    \ IDS)."
-  classification_context: "IDS_NOTIFICATION_TARGET_SYSTEM"
+  comment: "Denormalized — nguồn không có FK/lookup annotation tới LOOKUP_VALUES trong\
+    \ tài liệu thiết kế (IDS_Columns.csv), giữ nguyên dạng Text theo DDL nguồn."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Manager User Id"

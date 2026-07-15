@@ -22,6 +22,7 @@
 | Business Activity | [Business Activity] Transaction | Business Activity | SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT | Báo cáo định kỳ của VPDD CTCK nước ngoài | Securities Company Foreign Representative Office Periodic Report | Relative | (1) Tương tự SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT. (2) FK → SC_FIRM_FOREIGN_REP_OFFICE_ID. (3) Chọn `[Event] Transaction`. |
 ~~| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_BRANCH_PERSONNEL | ... | Securities Company Foreign Branch Personnel | Fundamental | Đã chuyển lên Tier 2 — xem SCMS_HLD_Tier2.md |~~
 ~~| Involved Party | [Involved Party] Key Personnel | Involved Party | SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL | ... | Securities Company Foreign Representative Office Personnel | Fundamental | Đã chuyển lên Tier 2 — xem SCMS_HLD_Tier2.md |~~
+| Event | [Event] Party Registration | Event | LNK_PRACTITIONER_BUSINESS_LINE | Liên kết người hành nghề chứng khoán và nghiệp vụ kinh doanh chứng khoán được phép thực hiện (FK LICENSED_PRACTITIONER_ID + BUSINESS_LINE_ID) | Securities Company Practitioner Business Transaction Relationship | Relative | (1) Cùng BCV Concept `[Event] Party Registration` với `Securities Company Business Transaction Relationship` (Tier 2) — cấp quyền thực hiện nghiệp vụ cho Involved Party cá nhân. (2) Cấu trúc bảng: LICENSED_PRACTITIONER_ID (FK → SCMS.SC_FIRM_LICENSED_PRACTITIONER = Securities Company Practitioner, Tier 2), BUSINESS_LINE_ID (FK → Classification Business Transaction, Tier 1) — chỉ 2 cột FK, không PK riêng, không attribute khác. (3) Table Type = Relative theo chỉ đạo tường minh của Data Modeler — giữ nhất quán với `Securities Company Business Transaction Relationship` (Tier 2) dù bảng nguồn không có RECORD_STATUS/PK riêng (khác điều kiện "có attribute nghiệp vụ" mà rule mặc định pure-junction yêu cầu để tách entity) — xem 6f T3-05. Đặt Tier 3 vì phụ thuộc Securities Company Practitioner (Tier 2). |
 
 ---
 
@@ -55,6 +56,12 @@ erDiagram
         int ID PK
         int SC_FIRM_INFO_ID FK
         int RISK_REPORTING_PERIOD_ID FK
+    }
+    SC_FIRM_LICENSED_PRACTITIONER {
+        int ID PK
+    }
+    CAT_BUSINESS_LINE {
+        int ID PK
     }
 
     SC_FIRM_SHAREHOLDER_REPRESENTATIVE {
@@ -93,6 +100,10 @@ erDiagram
         int ID PK
         int SC_FIRM_FOREIGN_REP_OFFICE_ID FK
     }
+    LNK_PRACTITIONER_BUSINESS_LINE {
+        int LICENSED_PRACTITIONER_ID FK
+        int BUSINESS_LINE_ID FK
+    }
 
     SC_FIRM_SHAREHOLDER ||--o{ SC_FIRM_SHAREHOLDER_REPRESENTATIVE : "SC_FIRM_SHAREHOLDER_ID"
     SC_FIRM_SHAREHOLDER ||--o{ SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE : "SHAREHOLDER_ID"
@@ -104,6 +115,8 @@ erDiagram
     RISK_REPORTING_PERIOD ||--o{ RISK_SCORING_SC_FIRM_DETAIL : "RISK_REPORTING_PERIOD_ID"
     SC_FIRM_FOREIGN_BRANCH ||--o{ SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT : "SC_FIRM_FOREIGN_BRANCH_ID"
     SC_FIRM_FOREIGN_REP_OFFICE ||--o{ SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT : "SC_FIRM_FOREIGN_REP_OFFICE_ID"
+    SC_FIRM_LICENSED_PRACTITIONER ||--o{ LNK_PRACTITIONER_BUSINESS_LINE : "LICENSED_PRACTITIONER_ID"
+    CAT_BUSINESS_LINE ||--o{ LNK_PRACTITIONER_BUSINESS_LINE : "BUSINESS_LINE_ID"
 ```
 
 ---
@@ -130,6 +143,13 @@ erDiagram
     }
     Securities_Company_Risk_Reporting_Period {
         bigint ds_id PK
+    }
+    Securities_Company_Practitioner {
+        bigint ds_id PK
+    }
+    Classification_Business_Transaction {
+        bigint ds_classification_business_transaction_id PK
+        string classification_business_transaction_code
     }
 
     Securities_Company_Shareholder_Representative {
@@ -182,6 +202,13 @@ erDiagram
         int report_year
         int period
     }
+    Securities_Company_Practitioner_Business_Transaction_Relationship {
+        bigint ds_id PK
+        bigint securities_company_practitioner_id FK
+        string securities_company_practitioner_code
+        bigint classification_business_transaction_id FK
+        string classification_business_transaction_code
+    }
 
     Securities_Company_Shareholder ||--o{ Securities_Company_Shareholder_Representative : "securities_company_shareholder_id"
     Securities_Company_Shareholder ||--o{ Securities_Company_Shareholder_Ownership_Change : "securities_company_shareholder_id"
@@ -192,6 +219,8 @@ erDiagram
     Securities_Company_Risk_Reporting_Period ||--o{ Securities_Company_Risk_Scoring_Detail : "securities_company_risk_reporting_period_id"
     Securities_Company_Foreign_Branch ||--o{ Securities_Company_Foreign_Branch_Periodic_Report : "securities_company_foreign_branch_id"
     Securities_Company_Foreign_Representative_Office ||--o{ Securities_Company_Foreign_Representative_Office_Periodic_Report : "securities_company_foreign_representative_office_id"
+    Securities_Company_Practitioner ||--o{ Securities_Company_Practitioner_Business_Transaction_Relationship : "securities_company_practitioner_id"
+    Classification_Business_Transaction ||--o{ Securities_Company_Practitioner_Business_Transaction_Relationship : "classification_business_transaction_id"
 ```
 
 ---
@@ -219,3 +248,4 @@ erDiagram
 | T3-04 | RISK_SUMMARY_DETAIL (trước đây Tier 4) — đã bổ sung vào Tier 3, sau đó loại khỏi scope. | **Đã loại:** RISK_SUMMARY_DETAIL bị loại khỏi scope sau review — xem SCMS_HLD_Overview.md mục 7f. Đã xóa khỏi 6a/6b/6c của file này. |
 | T3-02 | RISK_SCORING_SC_FIRM_DETAIL có FK đến RISK_REPORTING_PERIOD (T1) trực tiếp — tại sao đặt T3 mà không phải T2? | RISK_SCORING_SC_FIRM_DETAIL cũng có FK đến RISK_SCORING_SCALE (T2) → phụ thuộc T2 → đặt T3 là đúng. |
 | T3-03 | SC_FIRM_SHAREHOLDER_TRANSFER có 2 FK cùng trỏ đến SC_FIRM_SHAREHOLDER (TRANSFEROR + TRANSFEREE) — circular không? | Không circular — chỉ là self-join trên cùng entity SC_FIRM_SHAREHOLDER. Thiết kế bình thường với 2 FK riêng biệt. |
+| T3-05 | `LNK_PRACTITIONER_BUSINESS_LINE` chỉ có 2 cột FK (không RECORD_STATUS, không PK riêng) — theo skill rule "Pure junction table giữa 2 Atomic entity" thì phải denormalize `ARRAY<STRUCT>` trên Securities Company Practitioner (bên Many), không tạo Atomic entity riêng. Data Modeler vẫn yêu cầu tách thành entity Relative độc lập để nhất quán với `Securities Company Business Transaction Relationship` (Tier 2, bảng có RECORD_STATUS nên đúng điều kiện tách entity). | **Quyết định tường minh của Data Modeler (2026-07-14) — ngoại lệ so với rule mặc định.** Lý do: nhất quán 1 pattern xử lý cho cả 2 bảng LNK cùng nhóm nghiệp vụ (CTCK × Business Transaction, Practitioner × Business Transaction), thay vì 1 bảng thành entity + 1 bảng denormalize ARRAY gây khó theo dõi lịch sử/audit sau này. Ghi nhận đây là ngoại lệ minh bạch, không phải suy luận sai rule. |

@@ -21,7 +21,11 @@ metadata:
     \ per HLD Tier3 xác nhận (mục 6/7a). Nguồn không có PK nghiệp vụ rõ ràng — cột\
     \ RN_ (row number, PK kỹ thuật) bị loại (xem pending_design.yaml); dùng cột ID\
     \ (NUMBER(19,0), không đánh dấu PK trong BRD nhưng đóng vai trò tương đương ID\
-    \ của VIOLATION_REPORT) làm BK."
+    \ của VIOLATION_REPORT) làm BK. Disclosure Form Definition Id/Code nay hash trực\
+    \ tiếp từ FORM_CD (mã nghiệp vụ có sẵn tại bảng này) thay vì join qua FORMS_ID\
+    \ kỹ thuật — theo yêu cầu Data Modeler (2026-07-14); FORMS_ID không còn dùng,\
+    \ xem pending_design.yaml. Attribute Disclosure Form Definition Code Snapshot\
+    \ (từng denormalize FORM_CD) đã xóa — trùng lặp với Code chính thức."
 attributes:
 - attribute_name: "Public Company Violation Report Id"
   physical_name: "pc_violation_report_id"
@@ -127,10 +131,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.HTE_VIOLATION_REPORT.FORMS_ID"
+  - "IDS.HTE_VIOLATION_REPORT.FORM_CD"
   comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Hash:\
-    \ hash_id('IDS.FORMS', FORMS_ID). Lưu ý tên cột nguồn là FORMS_ID (khác FORM_ID\
-    \ ở VIOLATION_REPORT)."
+    \ hash_id('IDS.FORMS', FORM_CD). Dùng trực tiếp mã nghiệp vụ FORM_CD (đã trùng\
+    \ khớp FORMS.FORM_CD) — không cần join qua FORMS_ID kỹ thuật như trước đây."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -142,23 +146,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.HTE_VIOLATION_REPORT.FORMS_ID"
+  - "IDS.HTE_VIOLATION_REPORT.FORM_CD"
   comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code.\
     \ Pair with Disclosure Form Definition Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Disclosure Form Definition Code Snapshot"
-  physical_name: "disclosure_form_definition_code_snpst"
-  description: "Mã mẫu báo cáo (snapshot text tại thời điểm ghi nhận, độc lập với\
-    \ Disclosure Form Definition Code)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.HTE_VIOLATION_REPORT.FORM_CD"
-  comment: "Denormalized snapshot — nguồn lưu song song với FORMS_ID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

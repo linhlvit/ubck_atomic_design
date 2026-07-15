@@ -1,0 +1,96 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: GENDER
+brd_ref: BRD-SRC-ECAT-GENDER
+columns:
+  - name: ID
+    data_type: "VARCHAR2(144)"
+    description: "Khóa chính (UUID v7)"
+    key: PK
+    fk_note: null
+  - name: STABLE_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID ổn định (UUID v7)"
+    key: null
+    fk_note: null
+  - name: CODE
+    data_type: "VARCHAR2(80)"
+    description: "Mã giới tính"
+    key: null
+    fk_note: null
+  - name: NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên giới tính"
+    key: null
+    fk_note: null
+  - name: ACTIVE
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái hoạt động (1: Active, 0: Inactive)"
+    key: null
+    fk_note: null
+  - name: ACTIVE_REASON
+    data_type: "CLOB"
+    description: "Lý do thay đổi trạng thái active"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: "NUMBER(1,0)"
+    description: "Trạng thái xóa (1: Deleted, 0: Not Deleted)"
+    key: null
+    fk_note: null
+  - name: DELETED_REASON
+    data_type: "CLOB"
+    description: "Lý do xóa"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER"
+    description: "Số phiên bản"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_START_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày bắt đầu hiệu lực của bản ghi"
+    key: null
+    fk_note: null
+  - name: EFFECTIVE_END_DATE
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày kết thúc hiệu lực của bản ghi"
+    key: null
+    fk_note: null
+  - name: OLD_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID cũ, dùng để lưu trữ khi chuyển đổi dữ liệu từ hệ thống cũ sang (nếu có)"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày giờ tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: UPDATED_AT
+    data_type: "TIMESTAMP(6)"
+    description: "Ngày giờ cập nhật bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người tạo bản ghi"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: CREATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: UPDATED_BY_ID
+    data_type: "VARCHAR2(144)"
+    description: "ID người cập nhật bản ghi"
+    key: FK
+    fk_note: "FK → UBCK_STAFF.ID"
+  - name: UPDATED_BY_NAME
+    data_type: "VARCHAR2(1020)"
+    description: "Tên người cập nhật bản ghi"
+    key: null
+    fk_note: null

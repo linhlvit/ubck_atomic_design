@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: ECAT
+table: SOAP_INCOMING_LOG
+brd_ref: BRD-SRC-ECAT-SOAP_INCOMING_LOG
+columns:
+  - name: ID
+    data_type: "VARCHAR2(36)"
+    description: "Khóa chính"
+    key: PK
+    fk_note: null
+  - name: MSG_ID
+    data_type: "VARCHAR2(50)"
+    description: "Mã gói tin nhận - Msg_ID"
+    key: null
+    fk_note: null
+  - name: MSG_REF_ID
+    data_type: "VARCHAR2(50)"
+    description: "Mã gói tham chiếu - Msg_RefID"
+    key: null
+    fk_note: null
+  - name: SENDER_CODE
+    data_type: "VARCHAR2(50)"
+    description: "Mã ứng dụng gửi - Sender_Code (VD: TTA0000000)"
+    key: null
+    fk_note: null
+  - name: TRAN_CODE
+    data_type: "VARCHAR2(10)"
+    description: "Mã danh mục (0035, 0036, 1003...)"
+    key: null
+    fk_note: null
+  - name: TRAN_NAME
+    data_type: "VARCHAR2(150)"
+    description: "Tên danh mục"
+    key: null
+    fk_note: null
+  - name: TRAN_NUM
+    data_type: "NUMBER(5,0)"
+    description: "Số bản ghi trong body"
+    key: null
+    fk_note: null
+  - name: MESSAGE_TYPE
+    data_type: "VARCHAR2(30)"
+    description: "Loại tin: DATA_CHANGE | RECONCILIATION"
+    key: null
+    fk_note: null
+  - name: HEADER_XML
+    data_type: "CLOB"
+    description: "Header XML đã mask (ẩn SPARE2)"
+    key: null
+    fk_note: null
+  - name: BODY_XML
+    data_type: "CLOB"
+    description: "Nội dung body XML raw"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: "VARCHAR2(20)"
+    description: "Trạng thái: RECEIVED / PROCESSED / FAILED"
+    key: null
+    fk_note: null
+  - name: ERROR_MESSAGE
+    data_type: "VARCHAR2(500)"
+    description: "Nội dung lỗi khi xử lý (nếu có)"
+    key: null
+    fk_note: null
+  - name: RECEIVED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm nhận gói tin"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: "TIMESTAMP(6) WITH TIME ZONE"
+    description: "Thời điểm tạo record"
+    key: null
+    fk_note: null
+  - name: CHANGED_COUNT
+    data_type: "NUMBER(10,0)"
+    description: "So ban ghi duoc tao moi hoac cap nhat thanh cong khi sync inbound SOAP"
+    key: null
+    fk_note: null
+  - name: RECEIVER_CODE
+    data_type: "VARCHAR2(50)"
+    description: null
+    key: null
+    fk_note: null
+  - name: RECEIVER_NAME
+    data_type: "VARCHAR2(255)"
+    description: null
+    key: null
+    fk_note: null
+  - name: ORIGINAL_CODE
+    data_type: "VARCHAR2(50)"
+    description: null
+    key: null
+    fk_note: null
+  - name: ORIGINAL_NAME
+    data_type: "VARCHAR2(255)"
+    description: null
+    key: null
+    fk_note: null

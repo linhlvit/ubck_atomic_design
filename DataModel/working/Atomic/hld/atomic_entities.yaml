@@ -383,6 +383,23 @@ entities:
   status: "approved"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Party Registration"
+  atomic_entity: "Securities Company Business Transaction Relationship"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_business_transaction_relationship"
+  description: "Ghi nhận CTCK được cấp phép hoạt động nghiệp vụ kinh doanh chứng khoán\
+    \ nào (FK Securities Company Id + Classification Business Transaction Id/Code),\
+    \ kèm trạng thái liên kết (RECORD_STATUS: đang hoạt động/ngừng hoạt động). BCV\
+    \ Concept `[Event] Party Registration` — cùng pattern với Securities Company Licensed\
+    \ Service (SC_FIRM_SERVICE): cấp quyền hoạt động nghiệp vụ cho Involved Party,\
+    \ có vòng đời hiệu lực qua RECORD_STATUS. Có PK riêng + attribute trạng thái nên\
+    \ không phải pure junction 2-cột — tách entity Relative độc lập (theo chỉ đạo\
+    \ tường minh Data Modeler) thay vì denormalize ARRAY<STRUCT>, đảo ngược quyết\
+    \ định cũ tại SCMS_HLD_Overview.md 7d/7e (cũ)."
+  source_table: "SCMS.LNK_SC_FIRM_BUSINESS_LINE"
+  status: "draft"
+- bcv_core_object: "Event"
+  bcv_concept: "[Event] Party Registration"
   atomic_entity: "Securities Company Licensed Service"
   table_type: "Fundamental"
   domain_prefix: "Securities Company"
@@ -391,6 +408,22 @@ entities:
     \ ký, văn bản/ngày chấm dứt (nếu có), trạng thái hiệu lực. Khác dữ liệu với LNK_SC_FIRM_SERVICE\
     \ (giấy phép hiện hành) — xem 7e-04."
   source_table: "SCMS.SC_FIRM_SERVICE"
+  status: "draft"
+- bcv_core_object: "Event"
+  bcv_concept: "[Event] Party Registration"
+  atomic_entity: "Securities Company Practitioner Business Transaction Relationship"
+  table_type: "Relative"
+  domain_prefix: "Securities Company Practitioner"
+  entity_physical_name: "sc_practitioner_business_transaction_relationship"
+  description: "Ghi nhận người hành nghề chứng khoán (Securities Company Practitioner)\
+    \ được phép thực hiện nghiệp vụ kinh doanh chứng khoán nào (FK Securities Company\
+    \ Practitioner Id + Classification Business Transaction Id/Code). BCV Concept\
+    \ `[Event] Party Registration`, cùng pattern với Securities Company Business Transaction\
+    \ Relationship. Bảng nguồn chỉ có 2 cột FK, không có attribute riêng — theo yêu\
+    \ cầu tường minh của Data Modeler vẫn tách thành entity Relative độc lập (nhất\
+    \ quán với Securities Company Business Transaction Relationship) thay vì denormalize\
+    \ ARRAY<STRUCT>, đảo ngược quyết định cũ tại SCMS_HLD_Overview.md 7d/7e (cũ)."
+  source_table: "SCMS.LNK_PRACTITIONER_BUSINESS_LINE"
   status: "draft"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Training Course"
@@ -999,79 +1032,62 @@ entities:
     \ đối tượng, nội dung tóm tắt, liên kết hồ sơ đơn thư nếu có."
   source_table: "ThanhTra.CITIZEN_RECEPTION"
   status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Classification Application Status"
+  table_type: ""
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_application_status"
+  description: ""
+  source_table: "NHNCK.APPLICATION_STATUSES"
+  status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Industry Classification"
-  atomic_entity: "Classification ECAT Business Line"
+  atomic_entity: "Classification Business Line"
   table_type: "Relative"
-  domain_prefix: "Classification ECAT"
-  entity_physical_name: "cl_ecat_business_line"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_business_line"
   description: "Danh mục ngành nghề kinh doanh 2 cấp (cấp 1 + cấp 2), self-referencing\
     \ qua Parent Business Line. Gộp từ ECAT.BUSINESS_LINE_LEVEL_1 + BUSINESS_LINE_LEVEL_2\
     \ theo quy tắc \"Gộp entity khi hợp lý\" (CLAUDE.md #10). Table Type = Relative\
     \ theo quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification\
-    \ Value) — xem ECAT_HLD_Tier1.md T1-07."
+    \ Value) — xem ECAT_HLD_Tier1.md T1-07. Tên bỏ tiền tố nguồn (ECAT) theo rule\
+    \ đặt tên Classification mới (CLAUDE.md #7). IDS.CATEGORIES không dùng chung entity\
+    \ này — đã chuyển ra ngoài scope, xem IDS_HLD_Overview.md mục 7f."
   source_table: "ECAT.BUSINESS_LINE_LEVEL_1, ECAT.BUSINESS_LINE_LEVEL_2"
   status: "draft"
 - bcv_core_object: "Common"
-  bcv_concept: "[Common] Industry Classification"
-  atomic_entity: "Classification IDS Business Line"
-  table_type: "Relative"
-  domain_prefix: "Classification IDS"
-  entity_physical_name: "cl_ids_business_line"
-  description: "Danh mục ngành nghề kinh doanh của công ty đại chúng, phân cấp qua
-    self-reference PARENT_ID trong cùng 1 bảng nguồn (khớp
-    COMPANY_PROFILES.CATEGORY_L1_ID/CATEGORY_L2_ID). Nâng cấp từ Classification
-    Value (scheme IDS_INDUSTRY_CATEGORY) lên entity thật. Table Type = Relative
-    theo quyết định tường minh của Data Modeler, tương tự Classification ECAT
-    Business Line. Xem IDS_HLD_Tier1.md T1-06/T1-07/T1-09."
-  source_table: "IDS.CATEGORIES"
+  bcv_concept: "[Common] Business Line"
+  atomic_entity: "Classification Business Transaction"
+  table_type: "Classification"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_business_transaction"
+  description: "Danh mục nghiệp vụ kinh doanh chứng khoán được UBCKNN cấp phép cho\
+    \ CTCK (môi giới, tự doanh, bảo lãnh phát hành, tư vấn đầu tư, quản lý quỹ...)\
+    \ — mã, tên, vốn pháp định tối thiểu theo quy định pháp luật cho từng nghiệp vụ.\
+    \ Nâng cấp từ Classification Value (scheme SCMS_BUSINESS_LINE) lên entity thật.\
+    \ Đổi tên từ \"Classification SCMS Business Line\" theo yêu cầu tường minh của\
+    \ Data Modeler (bỏ tiền tố nguồn + đổi BCV Term hiển thị thành \"Business Transaction\"\
+    ); BCV Concept giữ nguyên [Common] Business Line do không tìm thấy BCV Term \"\
+    Business Transaction\" khớp hơn trong knowledge/terms.csv. Xem SCMS_HLD_Overview.md\
+    \ #55 / 7e #16."
+  source_table: "SCMS.CAT_BUSINESS_LINE"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Classification NHNCK Application Status"
+  atomic_entity: "Classification Document"
   table_type: ""
-  domain_prefix: "Classification NHNCK"
-  entity_physical_name: "cl_nhnck_application_status"
-  description: ""
-  source_table: "NHNCK.APPLICATION_STATUSES"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Classification NHNCK Document"
-  table_type: ""
-  domain_prefix: "Classification NHNCK"
-  entity_physical_name: "cl_nhnck_document"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_document"
   description: ""
   source_table: "NHNCK.DOCUMENTS"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Classification NHNCK Specialization"
-  table_type: ""
-  domain_prefix: "Classification NHNCK"
-  entity_physical_name: "cl_nhnck_specialization"
-  description: ""
-  source_table: "NHNCK.SPECIALIZATIONS"
-  status: "draft"
-- bcv_core_object: "Common"
-  bcv_concept: "[Common] Business Line"
-  atomic_entity: "Classification SCMS Business Line"
-  table_type: "Classification"
-  domain_prefix: "Classification SCMS"
-  entity_physical_name: "cl_scms_business_line"
-  description: "Danh mục nghiệp vụ kinh doanh chứng khoán được UBCKNN cấp phép cho
-    CTCK (môi giới, tự doanh, bảo lãnh phát hành, tư vấn đầu tư, quản lý quỹ...) —
-    mã, tên, vốn pháp định tối thiểu theo quy định pháp luật cho từng nghiệp vụ.
-    Nâng cấp từ Classification Value (scheme SCMS_BUSINESS_LINE) lên entity thật.
-    Xem SCMS_HLD_Overview.md #55 / 7e #16."
-  source_table: "SCMS.CAT_BUSINESS_LINE"
-  status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Event Type"
-  atomic_entity: "Classification SCMS Event Type"
+  atomic_entity: "Classification Event Type"
   table_type: "Relative"
-  domain_prefix: "Classification SCMS"
-  entity_physical_name: "cl_scms_event_type"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_event_type"
   description: "Danh mục loại sự kiện/sự vụ nghiệp vụ (thành lập, điều chỉnh vốn,\
     \ đổi tên...) làm cơ sở xác định nghĩa vụ báo cáo/CBTT của CTCK. Nâng cấp từ Classification\
     \ Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác\
@@ -1080,10 +1096,10 @@ entities:
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Firm Status"
-  atomic_entity: "Classification SCMS Firm Status"
+  atomic_entity: "Classification Firm Status"
   table_type: "Classification"
-  domain_prefix: "Classification SCMS"
-  entity_physical_name: "cl_scms_firm_status"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_firm_status"
   description: "Danh mục trạng thái pháp lý áp dụng cho CTCK, Chi nhánh, VPĐD, PGD,\
     \ Ngân hàng đối tác — mã, tên, cờ yêu cầu nộp báo cáo/CBTT theo từng trạng thái.\
     \ Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS) lên entity thật.\
@@ -1092,10 +1108,10 @@ entities:
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Nationality"
-  atomic_entity: "Classification SCMS Nationality"
+  atomic_entity: "Classification Nationality"
   table_type: "Classification"
-  domain_prefix: "Classification SCMS"
-  entity_physical_name: "cl_scms_nationality"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_nationality"
   description: "Danh mục quốc tịch dùng cho nhân sự, cổ đông, người liên quan của\
     \ CTCK. Nâng cấp từ Classification Value (scheme SCMS_NATIONALITY) lên entity\
     \ thật. Xem 7e #11."
@@ -1103,15 +1119,24 @@ entities:
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Service"
-  atomic_entity: "Classification SCMS Service"
+  atomic_entity: "Classification Service"
   table_type: "Classification"
-  domain_prefix: "Classification SCMS"
-  entity_physical_name: "cl_scms_service"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_service"
   description: "Danh mục dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK. Nâng cấp\
     \ từ Classification Value (scheme SCMS_SERVICE_TYPE) lên entity thật. FK target\
-    \ cho Classification SCMS Service Id trên Securities Company Licensed Service.\
-    \ Xem 7e #11/#14."
+    \ cho Classification Service Id trên Securities Company Licensed Service. Xem\
+    \ 7e #11/#14."
   source_table: "SCMS.CAT_SERVICE"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
+  atomic_entity: "Classification Specialization"
+  table_type: ""
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_specialization"
+  description: ""
+  source_table: "NHNCK.SPECIALIZATIONS"
   status: "draft"
 - bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"

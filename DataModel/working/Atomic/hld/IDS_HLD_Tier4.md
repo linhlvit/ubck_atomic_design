@@ -6,7 +6,7 @@
 - Con của **Public Company Evaluation** (T3) + **Public Company Evaluation Criterion** (T2): Public Company Evaluation Detail
 
 Lưu ý: Một số entity ban đầu dự kiến ở Tier 4 được điều chỉnh về Tier thấp hơn sau khi phân tích FK:
-- `Financial Report Data` (DATA): FK → REPORT_CATALOG (T1) + COMPANY_PROFILES (T1) → Tier 2
+- `Financial Report Data` (DATA): ~~FK → REPORT_CATALOG (T1) + COMPANY_PROFILES (T1) → Tier 2~~ — Loại khỏi scope theo quyết định Data Modeler (2026-07-14), xem Overview mục 7f.
 - `Disclosure Notification Recipient` (NOTIFICATIONS_DTL): FK → NOTIFICATIONS (T2) → Tier 3
 - `Audit Firm Technical Audit` (AF_TECHNICAL_AUDIT): FK → AF_INSPECTION (T2) + AF_PROFILES (T1) → Tier 3
 

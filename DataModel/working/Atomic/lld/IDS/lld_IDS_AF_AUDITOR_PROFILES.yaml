@@ -255,8 +255,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "External Reference Code"
-  physical_name: "external_reference_code"
+- attribute_name: "External Reference ID"
+  physical_name: "external_reference_id"
   description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)."
   data_domain: "Text"
   nullable: true
@@ -265,7 +265,8 @@ attributes:
   source_columns:
   - "IDS.AF_AUDITOR_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
-    \ trong scope Atomic."
+    \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang\
+    \ string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

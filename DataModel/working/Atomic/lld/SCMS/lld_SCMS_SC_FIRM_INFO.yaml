@@ -23,7 +23,7 @@ metadata:
     \ SC_FIRM_INFO_ID là self-FK (không phải PK). COMPANY_TYPE_ID → FK đến CAT_COMPANY_TYPE\
     \ (Classification Value). PROVINCE_ID/DISTRICT_ID/WARD_ID → FK đến Geographic\
     \ Area (tách vào IP Postal Address). RECORD_STATUS/EVENT_TYPE_ID → migrated 2026-07-10\
-    \ sang cặp FK Classification SCMS Firm Status Id/Code và Classification SCMS Event\
+    \ sang cặp FK Classification Firm Status Id/Code và Classification Event\
     \ Type Id/Code (không còn Classification Value đơn). BUSINESS_LICENSE/DECISION_NUMBER/LICENSE_EXPIRY_DATE\
     \ đã loại bỏ khỏi entity chính (đã capture qua IP Alt Identification, xem pending_design.yaml).\
     \ BUSINESS_LINES/ADDITIONAL_BUSINESS_LINES map 1:1 dạng Text (không parse ARRAY,\
@@ -154,9 +154,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Firm Status Id"
-  physical_name: "cl_scms_firm_status_id"
-  description: "Trạng thái pháp lý CTCK — FK tới Classification SCMS Firm Status (Đang\
+- attribute_name: "Classification Firm Status Id"
+  physical_name: "cl_firm_status_id"
+  description: "Trạng thái pháp lý CTCK — FK tới Classification Firm Status (Đang\
     \ hoạt động, Tạm ngừng, Đình chỉ, Đóng cửa)."
   data_domain: "Surrogate Key"
   nullable: true
@@ -164,13 +164,13 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.RECORD_STATUS"
-  comment: "FK target: Classification SCMS Firm Status.Classification SCMS Firm Status\
+  comment: "FK target: Classification Firm Status.Classification Firm Status\
     \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Firm Status Code"
-  physical_name: "cl_scms_firm_status_code"
+- attribute_name: "Classification Firm Status Code"
+  physical_name: "cl_firm_status_code"
   description: "Mã trạng thái pháp lý CTCK."
   data_domain: "Text"
   nullable: true
@@ -178,27 +178,27 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.RECORD_STATUS"
-  comment: "Lookup pair: Classification SCMS Firm Status.Classification SCMS Firm\
-    \ Status Code. Pair with Classification SCMS Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm\
+    \ Status Code. Pair with Classification Firm Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Event Type Id"
-  physical_name: "cl_scms_event_type_id"
-  description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification SCMS Event Type."
+- attribute_name: "Classification Event Type Id"
+  physical_name: "cl_event_type_id"
+  description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Event Type."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "FK target: Classification SCMS Event Type.Classification SCMS Event Type\
+  comment: "FK target: Classification Event Type.Classification Event Type\
     \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Classification SCMS Event Type Code"
-  physical_name: "cl_scms_event_type_code"
+- attribute_name: "Classification Event Type Code"
+  physical_name: "cl_event_type_code"
   description: "Mã loại sự vụ/sự kiện nghiệp vụ."
   data_domain: "Text"
   nullable: true
@@ -206,8 +206,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification SCMS Event Type.Classification SCMS Event\
-    \ Type Code. Pair with Classification SCMS Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event\
+    \ Type Code. Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
