@@ -23,8 +23,8 @@ metadata:
     \ SC_FIRM_INFO_ID là self-FK (không phải PK). COMPANY_TYPE_ID → FK đến CAT_COMPANY_TYPE\
     \ (Classification Value). PROVINCE_ID/DISTRICT_ID/WARD_ID → FK đến Geographic\
     \ Area (tách vào IP Postal Address). RECORD_STATUS/EVENT_TYPE_ID → migrated 2026-07-10\
-    \ sang cặp FK Classification Firm Status Id/Code và Classification Event\
-    \ Type Id/Code (không còn Classification Value đơn). BUSINESS_LICENSE/DECISION_NUMBER/LICENSE_EXPIRY_DATE\
+    \ sang cặp FK Classification Firm Status Id/Code và Classification Event Type\
+    \ Id/Code (không còn Classification Value đơn). BUSINESS_LICENSE/DECISION_NUMBER/LICENSE_EXPIRY_DATE\
     \ đã loại bỏ khỏi entity chính (đã capture qua IP Alt Identification, xem pending_design.yaml).\
     \ BUSINESS_LINES/ADDITIONAL_BUSINESS_LINES map 1:1 dạng Text (không parse ARRAY,\
     \ quyết định 2026-07-10 — trước đó denormalize từ LNK_SC_FIRM_BUSINESS_LINE dạng\
@@ -164,8 +164,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.RECORD_STATUS"
-  comment: "FK target: Classification Firm Status.Classification Firm Status\
-    \ Id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
+  comment: "FK target: Classification Firm Status.Classification Firm Status Id. Hash:\
+    \ hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -178,8 +178,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.RECORD_STATUS"
-  comment: "Lookup pair: Classification Firm Status.Classification Firm\
-    \ Status Code. Pair with Classification Firm Status Id."
+  comment: "Lookup pair: Classification Firm Status.Classification Firm Status Code.\
+    \ Pair with Classification Firm Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -192,8 +192,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "FK target: Classification Event Type.Classification Event Type\
-    \ Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+  comment: "FK target: Classification Event Type.Classification Event Type Id. Hash:\
+    \ hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -206,8 +206,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "Lookup pair: Classification Event Type.Classification Event\
-    \ Type Code. Pair with Classification Event Type Id."
+  comment: "Lookup pair: Classification Event Type.Classification Event Type Code.\
+    \ Pair with Classification Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -51,16 +51,17 @@ columns:
   fk_note: null
 - name: APPLICATION_TYPE
   data_type: NUMBER(10,0)
-  description: 'Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN'
+  description: 'Loại hồ sơ: 0=Cấp mới, 1=Cấp lại do thu hồi, 2=Cấp lại thay đổi thông
+    tin, 3=Cấp lại mất CCHN'
   key: null
   fk_note: null
 - name: APPLICATION_CODE
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Mã hồ sơ (mã định danh duy nhất do hệ thống sinh)
   key: null
   fk_note: null
 - name: TITLE
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Tiêu đề/tên hồ sơ hoặc nhóm
   key: null
   fk_note: null
@@ -85,7 +86,7 @@ columns:
   key: null
   fk_note: null
 - name: CERTIFICATE_NUMBER
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Số CCHN cấp cho NHNCK
   key: null
   fk_note: null
@@ -95,7 +96,7 @@ columns:
   key: null
   fk_note: null
 - name: PREVIOUS_CERTIFICATE_NUMBER
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Số CCHN cũ (trước khi cấp lại)
   key: null
   fk_note: null
@@ -105,16 +106,16 @@ columns:
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
-- name: VIOLATED
+- name: IS_VIOLATED
   data_type: NUMBER(1,0)
   description: 'Cờ NHNCK vi phạm quy định: 1=Có vi phạm, 0=Không vi phạm'
   key: null
   fk_note: null
-- name: DATA_EXPLOITABLE
+- name: IS_DATA_EXPLOITABLE
   data_type: NUMBER(1,0)
   description: 'Cờ dữ liệu có thể khai thác/sử dụng: 1=Có thể dùng, 0=Không'
   key: null
@@ -135,7 +136,7 @@ columns:
   key: null
   fk_note: null
 - name: CERTIFICATE_RECEIPT_ADDRESS
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Địa chỉ nhận CCHN qua bưu điện
   key: null
   fk_note: null
@@ -150,12 +151,12 @@ columns:
   key: null
   fk_note: null
 - name: CERTIFICATE_RECEIPT_PHONE
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Số điện thoại liên lạc khi nhận CCHN
   key: null
   fk_note: null
 - name: REISSUE_HSM
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Thông tin HSM (Hardware Security Module) khi cấp CCHN điện tử
   key: null
   fk_note: null
@@ -173,9 +174,14 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: CREATED_BY
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
+- name: MCDT_CONTENT_ITEM_ID
+  data_type: NVARCHAR2(100)
+  description: ContentItemId hồ sơ TTHC trên DVC (MCĐT)
+  key: null
+  fk_note: null

@@ -144,29 +144,29 @@ attributes:
 - attribute_name: "Suspension Target Type Code"
   physical_name: "suspension_target_tp_code"
   description: "Nhắc nhở Công ty kiểm toán hay Kiểm toán viên."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.AF_SUSPENSION.TARGET_TYPE_CD"
-  comment: "Scheme: IDS_SUSPENSION_TARGET_TYPE. Values load từ LOOKUP_VALUES — scheme\
-    \ đã đăng ký sẵn (xem HLD Tier3 6d)."
-  classification_context: "IDS_SUSPENSION_TARGET_TYPE"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
+    \ (2026-07-15)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Suspension Source Type Code"
   physical_name: "suspension_src_tp_code"
   description: "Đình chỉ từ BTC hay UBCKNN."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.AF_SUSPENSION.SOURCE_TYPE_CD"
-  comment: "Scheme: IDS_SUSPENSION_SOURCE_TYPE (no_lookup) — chưa liệt kê trong HLD\
-    \ Tier3 6d, bổ sung scheme mới."
-  classification_context: "IDS_SUSPENSION_SOURCE_TYPE"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
+    \ (2026-07-15)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Suspension Document Number"
@@ -237,15 +237,15 @@ attributes:
 - attribute_name: "Suspension Type Code"
   physical_name: "suspension_tp_code"
   description: "Loại đình chỉ (Sau kiểm tra, Qua công tác giám sát)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.AF_SUSPENSION.SUSPENSION_TYPE_CD"
-  comment: "Scheme: IDS_SUSPENSION_TYPE (no_lookup) — chưa liệt kê trong HLD Tier3\
-    \ 6d, bổ sung scheme mới."
-  classification_context: "IDS_SUSPENSION_TYPE"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
+    \ (2026-07-15)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"

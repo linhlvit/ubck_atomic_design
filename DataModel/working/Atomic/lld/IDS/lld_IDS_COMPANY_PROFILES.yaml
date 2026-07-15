@@ -19,8 +19,11 @@ metadata:
   approved_at: null
   notes: "HEAD_OFFICE_ADDR/TRADING_OFFICE_ADDR + PROVINCE_ID → Involved Party Postal\
     \ Address (2 địa chỉ: HEAD_OFFICE, TRADING_OFFICE). WEBSITE/PHONE_NO/FAX_NO →\
-    \ Involved Party Electronic Address. Audit block (Created/Updated Timestamp, Created/Updated\
-    \ By User Id/Code) đã loại bỏ theo quyết định thiết kế — xem pending_design.yaml."
+    \ Involved Party Electronic Address. BUSINESS_REG_NO → Involved Party Alternative\
+    \ Identification (type TAX_ID) — xem lld_IDS_COMPANY_PROFILES_IP_Alt_Identification.yaml.\
+    \ Trước đây field này map denormalized Text tại đây — đã tách ra shared entity\
+    \ theo yêu cầu Data Modeler (2026-07-15). Audit block (Created/Updated Timestamp,\
+    \ Created/Updated By User Id/Code) đã loại bỏ theo quyết định thiết kế — xem pending_design.yaml."
 attributes:
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
@@ -82,20 +85,6 @@ attributes:
   source_columns:
   - "IDS.COMPANY_PROFILES.COMPANY_NAME_EN"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Business Registration Number"
-  physical_name: "business_registration_nbr"
-  description: "Mã số thuế."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_PROFILES.BUSINESS_REG_NO"
-  comment: "Denormalized text — không gộp vào IP Alt Identification (không có type-code\
-    \ scheme kèm theo tại bảng này)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -10,17 +10,17 @@ columns:
   key: PK
   fk_note: null
 - name: DECISION_NUMBER
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(1000)
   description: 'Số quyết định hành chính (VD: 123/QĐ-UBCK)'
   key: null
   fk_note: null
 - name: TITLE
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Tiêu đề/tên hồ sơ hoặc nhóm
   key: null
   fk_note: null
 - name: REFERENCE
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Trích dẫn căn cứ pháp lý của quyết định
   key: null
   fk_note: null
@@ -35,27 +35,27 @@ columns:
   key: null
   fk_note: null
 - name: SIGNATORY
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(1000)
   description: Họ tên người ký quyết định
   key: null
   fk_note: null
 - name: POSITION
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Chức vụ/vị trí đảm nhiệm
   key: null
   fk_note: null
 - name: DECISION_UNIT
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(4000)
   description: 'Đơn vị ban hành quyết định (VD: Ủy ban Chứng khoán Nhà nước)'
   key: null
   fk_note: null
 - name: FILE_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Tên file sao lưu hoặc file đính kèm
   key: null
   fk_note: null
 - name: FILE_PATH
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Đường dẫn file lưu trữ (chứng từ thanh toán, văn bản...)
   key: null
   fk_note: null
@@ -68,7 +68,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: UPDATED_AT
   data_type: DATE
   description: Thời điểm cập nhật bản ghi lần cuối
@@ -76,10 +76,12 @@ columns:
   fk_note: null
 - name: DECISION_TYPE_ID
   data_type: NUMBER(10,0)
-  description: 'Loại quyết định: 1=Cấp mới chứng chỉ, 2=Thu hồi chứng chỉ, 3=Cấp lại chứng chỉ, 4=Công nhận KQ thi sát hạch, 5=Xử lý vi phạm NHNCK, 6=Hủy chứng chỉ hành nghề, 7=Khác'
+  description: 'Loại quyết định: 1=Cấp mới chứng chỉ, 2=Thu hồi chứng chỉ, 3=Cấp lại
+    chứng chỉ, 4=Công nhận KQ thi sát hạch, 5=Xử lý vi phạm NHNCK, 6=Hủy chứng chỉ
+    hành nghề, 7=Khác'
   key: null
   fk_note: null
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
@@ -89,7 +91,7 @@ columns:
   description: Nội dung của thông báo/thư điện tử/bổ sung hồ sơ
   key: null
   fk_note: null
-- name: ACTIVE
+- name: IS_ACTIVE
   data_type: NUMBER(1,0)
   description: 'Cờ đang kích hoạt/hiệu lực: 1=Đang dùng, 0=Vô hiệu'
   key: null
@@ -98,4 +100,4 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID

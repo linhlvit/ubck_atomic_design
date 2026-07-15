@@ -502,7 +502,6 @@ erDiagram
 | `AF_WARNING.TARGET_TYPE_CD` | Đối tượng nhắc nhở (công ty KT / KTV) | `IDS_WARNING_TARGET_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
 | `AF_WARNING.SOURCE_TYPE_CD` | Cơ quan nhắc nhở (BTC / UBCKNN) | `IDS_WARNING_SOURCE_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
 | `AF_SANCTIONS.SANCTION_AUTHORITY_CD` | Cơ quan xử phạt | `IDS_SANCTION_AUTHORITY` | source_table | Values load từ `LOOKUP_VALUES` |
-| `AF_SUSPENSION.TARGET_TYPE_CD` | Đối tượng đình chỉ | `IDS_SUSPENSION_TARGET_TYPE` | source_table | Values load từ `LOOKUP_VALUES` |
 | `EVALUATIONS.TYPE` | Loại đánh giá xếp hạng (A/B/C) | `IDS_EVALUATION_TYPE` | etl_derived | Values lấy trực tiếp từ cột nguồn |
 | `SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD` | Thủ tục hành chính chào bán | `IDS_SO_ADMINISTRATIVE_PROC` | source_table | Values từ LOOKUP_VALUES (LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE') |
 | `COMPANY_DATA.NEWS_TYPE_CD` | Loại tin CBTT | `IDS_NEWS_TYPE` | source_table | Scheme dùng chung với Disclosure Form Definition |

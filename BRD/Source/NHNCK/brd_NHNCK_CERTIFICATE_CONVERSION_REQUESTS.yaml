@@ -14,7 +14,7 @@ columns:
   description: 'FK -> CERTIFICATE_RECORDS: Bản ghi CCHN trong sổ đăng bộ'
   key: FK
   fk_note: FK → CERTIFICATE_RECORDS.ID
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
@@ -33,7 +33,7 @@ columns:
   data_type: NUMBER(10,0)
   description: 'FK -> USERS: Người xử lý yêu cầu chuyển đổi'
   key: FK
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: CREATED_AT
   data_type: DATE
   description: Thời điểm tạo bản ghi
@@ -54,3 +54,18 @@ columns:
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: FK suy luận → USERS.ID
+- name: ASSIGNEE_ID
+  data_type: NUMBER(10,0)
+  description: TBD - cần bổ sung mô tả
+  key: null
+  fk_note: null
+- name: INFO_VERIFY_ID
+  data_type: NUMBER(10,0)
+  description: TBD - cần bổ sung mô tả
+  key: null
+  fk_note: null
+- name: REQUEST_PAYLOAD
+  data_type: NCLOB
+  description: TBD - cần bổ sung mô tả
+  key: null
+  fk_note: null

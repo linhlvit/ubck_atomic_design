@@ -100,14 +100,15 @@ attributes:
 - attribute_name: "Bond Type Code"
   physical_name: "bond_tp_code"
   description: "Loại hình trái phiếu."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.BOND_LISTING_HISTORY.BOND_TYPE_CD"
-  comment: "Scheme: IDS_BOND_TYPE. Values load từ LOOKUP_VALUES."
-  classification_context: "IDS_BOND_TYPE"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
+    \ (2026-07-15)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Decision Number"
@@ -217,14 +218,15 @@ attributes:
 - attribute_name: "Issuance Category Code"
   physical_name: "issuance_category_code"
   description: "Phân loại."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.BOND_LISTING_HISTORY.ISSUANCE_CATEGORY_CD"
-  comment: "Scheme: IDS_BOND_ISSUANCE_CATEGORY. Values load từ LOOKUP_VALUES."
-  classification_context: "IDS_BOND_ISSUANCE_CATEGORY"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
+    \ (2026-07-15)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Deleted Indicator"

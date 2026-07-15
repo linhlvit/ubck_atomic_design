@@ -97,8 +97,9 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_CBONDS.BUSINESS_REG_NO"
-  comment: "Denormalized snapshot — trùng lặp với Public Company.Business Registration\
-    \ Number tại thời điểm ghi nhận, giữ lại để đối chiếu."
+  comment: "Denormalized snapshot — trùng lặp với Involved Party Alternative Identification\
+    \ (Identification Number, type TAX_ID) của Public Company này tại thời điểm ghi\
+    \ nhận, giữ lại để đối chiếu."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -131,15 +132,15 @@ attributes:
 - attribute_name: "Ranking Code"
   physical_name: "ranking_code"
   description: "Xếp hạng doanh nghiệp (A, B, C, E)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.EVALUATION_CBONDS.RANKING"
-  comment: "Scheme: IDS_BOND_EVALUATION_RANKING (no_lookup) — chưa liệt kê trong HLD\
-    \ Tier2 6d, bổ sung scheme mới."
-  classification_context: "IDS_BOND_EVALUATION_RANKING"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler\
+    \ (2026-07-15)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Evaluation Year"

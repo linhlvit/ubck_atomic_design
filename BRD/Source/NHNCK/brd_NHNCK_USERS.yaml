@@ -25,27 +25,27 @@ columns:
   key: FK
   fk_note: FK → POSITIONS.ID
 - name: USERNAME
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Tên đăng nhập vào hệ thống
   key: null
   fk_note: null
 - name: PASSWORD
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(510)
   description: Mật khẩu đã mã hóa (bcrypt hash)
   key: null
   fk_note: null
 - name: FULL_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Họ và tên đầy đủ của người hành nghề
   key: null
   fk_note: null
 - name: EMAIL
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Địa chỉ email liên lạc
   key: null
   fk_note: null
 - name: PHONE_NUMBER
-  data_type: NVARCHAR2(20)
+  data_type: NVARCHAR2(20 CHAR)
   description: Số điện thoại cố định
   key: null
   fk_note: null
@@ -55,7 +55,7 @@ columns:
   key: null
   fk_note: null
 - name: LDAP
-  data_type: NVARCHAR2(200)
+  data_type: NVARCHAR2(1020)
   description: Thông tin LDAP/AD của tài khoản (dùng cho đăng nhập SSO nội bộ)
   key: null
   fk_note: null
@@ -73,13 +73,13 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
-- name: RECORD_STATUS
+  fk_note: FK suy luận → USERS.ID
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
   fk_note: null
-- name: RECORD_TYPE
+- name: TYPE
   data_type: NUMBER(10,0)
   description: Loại/phân loại của bản ghi
   key: null
@@ -88,7 +88,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: UPDATED_PASSWORD_AT
   data_type: DATE
   description: Ngày đổi mật khẩu lần cuối
@@ -99,3 +99,13 @@ columns:
   description: 'FK -> PROFESSIONALS: Người hành nghề liên quan'
   key: FK
   fk_note: FK → PROFESSIONALS.ID
+- name: IDENTITY_NUMBER
+  data_type: NVARCHAR2(100)
+  description: TBD - cần bổ sung mô tả
+  key: null
+  fk_note: null
+- name: SSO_USER_ID
+  data_type: VARCHAR2(36)
+  description: TBD - cần bổ sung mô tả
+  key: null
+  fk_note: null

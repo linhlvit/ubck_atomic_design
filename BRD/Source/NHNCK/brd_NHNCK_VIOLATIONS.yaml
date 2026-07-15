@@ -15,7 +15,7 @@ columns:
   key: FK
   fk_note: FK → PROFESSIONALS.ID
 - name: FULL_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Họ và tên đầy đủ của người hành nghề
   key: null
   fk_note: null
@@ -25,12 +25,12 @@ columns:
   key: null
   fk_note: null
 - name: IDENTITY_NUMBER
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Số CMND/CCCD/Hộ chiếu của người hành nghề
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
@@ -38,7 +38,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: CREATED_AT
   data_type: DATE
   description: Thời điểm tạo bản ghi
@@ -49,12 +49,12 @@ columns:
   description: 'FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm'
   key: FK
   fk_note: FK → DECISIONS.ID
-- name: RECORD_TYPE
+- name: TYPE
   data_type: NUMBER(10,0)
   description: Loại/phân loại của bản ghi
   key: null
   fk_note: null
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
@@ -63,7 +63,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: UPDATED_AT
   data_type: DATE
   description: Thời điểm cập nhật bản ghi lần cuối

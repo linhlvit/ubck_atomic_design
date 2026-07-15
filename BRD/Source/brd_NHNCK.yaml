@@ -2285,3 +2285,83 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
+- brd_id: BRD-SRC-NHNCK-CERTIFICATE_CONVERSION_REQUEST_LOGS
+  brd_name: Design Atomic từ nguồn NHNCK bảng CERTIFICATE_CONVERSION_REQUEST_LOGS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Nhật ký hành động xử lý yêu cầu chuyển đổi chứng chỉ hành nghề (log theo từng ACTION/DETAIL)
+    functional_group: TBD - cần xác định nhóm chức năng
+    scope_status: pending
+    scope_reason: null
+    table: CERTIFICATE_CONVERSION_REQUEST_LOGS
+    related_tables: null
+    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-POST_CERT_TRAINING_RESULTS
+  brd_name: Design Atomic từ nguồn NHNCK bảng POST_CERT_TRAINING_RESULTS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kết quả tham gia khóa đào tạo sau cấp CCHN của người hành nghề (số giờ đào tạo, kết quả phân loại)
+    functional_group: TBD - cần xác định nhóm chức năng
+    scope_status: pending
+    scope_reason: null
+    table: POST_CERT_TRAINING_RESULTS
+    related_tables:
+    - table: PROFESSIONALS
+      relation: FK cha — Người hành nghề tham gia đào tạo
+    - table: POST_CERT_TRAINING_COURSES
+      relation: FK cha — Khóa đào tạo sau cấp CCHN
+    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-REPORT_TEMPLATES
+  brd_name: Design Atomic từ nguồn NHNCK bảng REPORT_TEMPLATES
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Mẫu biểu báo cáo (report template) cấu hình JSON theo từng module
+    functional_group: TBD - cần xác định nhóm chức năng
+    scope_status: pending
+    scope_reason: null
+    table: REPORT_TEMPLATES
+    related_tables: null
+    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-NHNCK-VERIFY_CERTIFICATE_CONVERSION_STATUSES
+  brd_name: Design Atomic từ nguồn NHNCK bảng VERIFY_CERTIFICATE_CONVERSION_STATUSES
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái chứng chỉ (lý do thẩm định theo từng cấp xét duyệt)
+    functional_group: TBD - cần xác định nhóm chức năng
+    scope_status: pending
+    scope_reason: null
+    table: VERIFY_CERTIFICATE_CONVERSION_STATUSES
+    related_tables: null
+    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null

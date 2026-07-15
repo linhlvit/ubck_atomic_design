@@ -56,6 +56,26 @@ attributes:
   classification_context: "SOURCE_SYSTEM=NHNCK.ORGANIZATION_REPORTS"
   etl_derived_value: "NHNCK.ORGANIZATION_REPORTS"
   data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition\
+    \ Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic\
+    \ theo created_at (xem BRD/Source/brd_NHNCK.yaml)."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.ORGANIZATION_REPORTS.CREATED_AT"
+  comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo\
+    \ quyết định audit-block Data Modeler (2026-07-07, xem pending_design.yaml) nhưng\
+    \ bảng dùng Append/incremental filter theo created_at, cần giữ lại làm partition\
+    \ key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân\
+    \ vùng, tách biệt khỏi audit block (CREATED_BY/UPDATED_AT/UPDATED_BY vẫn loại\
+    \ trừ)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
 - attribute_name: "Securities Organization Reference Id"
   physical_name: "securities_organization_reference_id"
   description: "FK đến tổ chức kinh doanh chứng khoán."

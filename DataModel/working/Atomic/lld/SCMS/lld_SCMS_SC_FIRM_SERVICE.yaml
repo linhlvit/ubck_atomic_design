@@ -27,11 +27,11 @@ metadata:
     \ 1 Involved Party) — sát nghĩa hơn [Event] Business Activity dùng trước đây (pattern\
     \ mượn từ SC_FIRM_ADMIN_PENALTY_DECISION/SC_FIRM_ADMIN_SANCTION vốn là biện pháp\
     \ chế tài, khác bản chất). SERVICE_ID → CAT_SERVICE: cập nhật (HLD bổ sung SCMS\
-    \ Tier1) — CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification\
-    \ Service' (table_type Classification), thay cho scheme SCMS_SERVICE_TYPE cũ (nay\
-    \ deprecated). SERVICE_ID đổi từ single Classification Value code sang cặp FK\
-    \ chuẩn Classification Service Id + Classification Service Code. DM_DICH_VU_ID\
-    \ nghi ngờ trùng SERVICE_ID — xem pending_design.yaml."
+    \ Tier1) — CAT_SERVICE đã nâng cấp thành Atomic entity thật 'Classification Service'\
+    \ (table_type Classification), thay cho scheme SCMS_SERVICE_TYPE cũ (nay deprecated).\
+    \ SERVICE_ID đổi từ single Classification Value code sang cặp FK chuẩn Classification\
+    \ Service Id + Classification Service Code. DM_DICH_VU_ID nghi ngờ trùng SERVICE_ID\
+    \ — xem pending_design.yaml."
 attributes:
 - attribute_name: "Securities Company Licensed Service Id"
   physical_name: "sc_licensed_service_id"
@@ -108,8 +108,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "FK target: Classification Service.Classification Service Id.\
-    \ Hash: hash_id('SCMS.CAT_SERVICE', SERVICE_ID)."
+  comment: "FK target: Classification Service.Classification Service Id. Hash: hash_id('SCMS.CAT_SERVICE',\
+    \ SERVICE_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -122,8 +122,8 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SERVICE.SERVICE_ID"
-  comment: "Lookup pair: Classification Service.Classification Service Code.\
-    \ Pair with Classification Service Id."
+  comment: "Lookup pair: Classification Service.Classification Service Code. Pair\
+    \ with Classification Service Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

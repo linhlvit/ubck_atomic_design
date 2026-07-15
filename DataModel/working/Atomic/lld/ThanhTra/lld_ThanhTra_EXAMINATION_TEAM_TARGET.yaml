@@ -89,14 +89,16 @@ attributes:
   physical_name: "target_tp_code"
   description: "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY,\
     \ AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ThanhTra.EXAMINATION_TEAM_TARGET.TARGET_TYPE"
-  comment: "Scheme: TEAM_TARGET_TYPE."
-  classification_context: "TEAM_TARGET_TYPE"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value. Giá trị tham chiếu\
+    \ chéo loại đối tượng qua Target Reference Id đến nhiều source system khác nhau\
+    \ (SCMS/FMS/IDS), không phải reference data set cố định trong ThanhTra."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Target Reference Id"
@@ -151,19 +153,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Address"
-  physical_name: "adr"
-  description: "Địa chỉ đối tượng được kiểm tra."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.EXAMINATION_TEAM_TARGET.ADDRESS"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Citizen Id"
   physical_name: "citizen_id"
   description: "Số CCCD/CMND — chỉ dùng cho cá nhân (targetType=INDIVIDUAL)."
@@ -213,88 +202,6 @@ attributes:
   source_columns:
   - "ThanhTra.EXAMINATION_TEAM_TARGET.LEGAL_REP_CITIZEN_ID"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.EXAMINATION_TEAM_TARGET.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật gần nhất."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.EXAMINATION_TEAM_TARGET.LAST_MODIFIED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By Officer Id"
-  physical_name: "created_by_officer_id"
-  description: "ID người dùng tạo bản ghi."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.EXAMINATION_TEAM_TARGET.CREATED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', CREATED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created By Officer Code"
-  physical_name: "created_by_officer_code"
-  description: "Mã người dùng tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.EXAMINATION_TEAM_TARGET.CREATED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Created By Officer Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Id"
-  physical_name: "updated_by_officer_id"
-  description: "ID người dùng cập nhật gần nhất."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.EXAMINATION_TEAM_TARGET.LAST_MODIFIED_BY"
-  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
-    \ Hash: hash_id('NHNCK.USERS', LAST_MODIFIED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated By Officer Code"
-  physical_name: "updated_by_officer_code"
-  description: "Mã người dùng cập nhật gần nhất."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "ThanhTra.EXAMINATION_TEAM_TARGET.LAST_MODIFIED_BY"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Updated By Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

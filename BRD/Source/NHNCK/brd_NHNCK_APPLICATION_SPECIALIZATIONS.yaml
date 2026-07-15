@@ -25,17 +25,17 @@ columns:
   key: null
   fk_note: null
 - name: ISSUE_PLACE
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Nơi cấp chứng chỉ chuyên môn
   key: null
   fk_note: null
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
   fk_note: null
 - name: NOTE
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Ghi chú bổ sung
   key: null
   fk_note: null
@@ -53,7 +53,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: CREATED_AT
   data_type: DATE
   description: Thời điểm tạo bản ghi
@@ -73,4 +73,4 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID

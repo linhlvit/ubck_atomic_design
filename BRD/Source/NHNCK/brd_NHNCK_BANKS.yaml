@@ -10,27 +10,27 @@ columns:
   key: PK
   fk_note: null
 - name: BANK_CODE
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Mã ngân hàng (BIN code hoặc mã NAPAS)
   key: null
   fk_note: null
 - name: BANK_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Tên đầy đủ của ngân hàng
   key: null
   fk_note: null
 - name: SHORT_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: 'Tên viết tắt ngân hàng (VD: Vietcombank, VietinBank)'
   key: null
   fk_note: null
 - name: BANK_KEY
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Khóa tra cứu ngân hàng (mã giao dịch nội bộ)
   key: null
   fk_note: null
 - name: ENGLISH_BANK_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Tên tiếng Anh của ngân hàng
   key: null
   fk_note: null
@@ -48,9 +48,9 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: UPDATED_BY
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID

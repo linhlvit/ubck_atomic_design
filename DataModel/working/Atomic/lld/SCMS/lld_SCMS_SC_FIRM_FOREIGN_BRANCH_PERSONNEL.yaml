@@ -63,6 +63,26 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
   etl_derived_value: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
   data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition\
+    \ Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic\
+    \ theo created_at (xem BRD/Source/brd_SCMS.yaml)."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.CREATED_AT"
+  comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo\
+    \ quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental\
+    \ filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at'\
+    \ sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi\
+    \ audit block. Nguồn lưu TIMESTAMP(6) — ETL truncate về Date (00:00:00) khi map\
+    \ vào Data Date, phù hợp granularity partition theo ngày."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
 - attribute_name: "Securities Company Foreign Branch Id"
   physical_name: "sc_foreign_branch_id"
   description: "FK -> sc_firm_foreign_branch: Chi nhánh CTCK NN liên quan."

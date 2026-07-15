@@ -10,16 +10,16 @@ columns:
   key: PK
   fk_note: null
 - name: COUNTRY_CODE
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Mã quốc gia theo chuẩn ISO 3166-1 alpha-2
   key: null
   fk_note: null
 - name: COUNTRY_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Tên quốc gia/vùng lãnh thổ
   key: null
   fk_note: null
-- name: DEFAULT_FLAG
+- name: IS_DEFAULT
   data_type: NUMBER(1,0)
   description: 'Cờ là mẫu/giá trị mặc định: 1=Mặc định, 0=Không phải mặc định'
   key: null
@@ -33,13 +33,13 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: UPDATED_AT
   data_type: DATE
   description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
@@ -48,4 +48,9 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
+- name: ECATALOG_ID
+  data_type: VARCHAR2(36)
+  description: TBD - cần bổ sung mô tả
+  key: null
+  fk_note: null

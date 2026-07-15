@@ -13,44 +13,46 @@ columns:
   data_type: NUMBER(10,0)
   description: 'FK -> cùng bảng: đơn vị/bản ghi cha trong cấu trúc phân cấp'
   key: FK
-  fk_note: FK → ORGANIZATIONS.ID
+  fk_note: FK suy luận → ORGANIZATIONS.ID
 - name: ORGANIZATION_TYPE_ID
   data_type: NUMBER(10,0)
-  description: 'FK -> loại tổ chức kinh doanh CK: 0=Khác, 1=Công ty chứng khoán (CTCK), 2=Công ty quản lý quỹ (QLQ), 3=Ngân hàng'
+  description: 'FK -> loại tổ chức kinh doanh CK: 0=Khác, 1=Công ty chứng khoán (CTCK),
+    2=Công ty quản lý quỹ (QLQ), 3=Ngân hàng'
   key: FK
-  fk_note: FK → ORGANIZATIONS.ID
+  fk_note: null
 - name: LINKED_ID
   data_type: NUMBER(10,0)
   description: ID liên kết với tổ chức trong hệ thống FMS hoặc SCMS
   key: null
   fk_note: null
 - name: SYNC_ID
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(100 CHAR)
   description: ID đồng bộ từ hệ thống FMS/SCMS sang NHNCK
   key: null
   fk_note: null
 - name: LEVEL_
-  data_type: NVARCHAR2(100)
-  description: 'Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh từ khóa Oracle)'
+  data_type: NVARCHAR2(100 CHAR)
+  description: 'Cấp độ trong cây phân cấp tổ chức — tên gốc: Level (thêm _ để tránh
+    từ khóa Oracle)'
   key: null
   fk_note: null
 - name: ORGANIZATION_CODE
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(100 CHAR)
   description: Mã tổ chức kinh doanh chứng khoán
   key: null
   fk_note: null
 - name: ORGANIZATION_NAME
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Tên đầy đủ của tổ chức kinh doanh chứng khoán
   key: null
   fk_note: null
 - name: ENGLISH_NAME
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Tên tiếng Anh của tổ chức
   key: null
   fk_note: null
 - name: ABBREVIATION
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Tên viết tắt của tổ chức/quyền
   key: null
   fk_note: null
@@ -60,27 +62,27 @@ columns:
   key: null
   fk_note: null
 - name: FAX
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(100 CHAR)
   description: Số fax liên lạc
   key: null
   fk_note: null
 - name: PHONE_NUMBER
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(100 CHAR)
   description: Số điện thoại cố định
   key: null
   fk_note: null
 - name: MOBILE_NUMBER
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(100 CHAR)
   description: Số điện thoại di động
   key: null
   fk_note: null
 - name: REPRESENTATIVE
-  data_type: NVARCHAR2(510)
+  data_type: NVARCHAR2(510 CHAR)
   description: Tên người đại diện theo pháp luật của tổ chức
   key: null
   fk_note: null
 - name: EMAIL
-  data_type: NVARCHAR2(200)
+  data_type: NVARCHAR2(200 CHAR)
   description: Địa chỉ email liên lạc
   key: null
   fk_note: null
@@ -90,12 +92,12 @@ columns:
   key: null
   fk_note: null
 - name: LICENSE_NUMBER
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(100 CHAR)
   description: Số giấy phép hoạt động kinh doanh chứng khoán
   key: null
   fk_note: null
 - name: LICENSE_ISSUER
-  data_type: NVARCHAR2(100)
+  data_type: NVARCHAR2(100 CHAR)
   description: Cơ quan cấp giấy phép (UBCKNN)
   key: null
   fk_note: null
@@ -104,7 +106,7 @@ columns:
   description: Ngày cấp giấy phép hoạt động
   key: null
   fk_note: null
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
@@ -133,7 +135,7 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: UPDATED_AT
   data_type: DATE
   description: Thời điểm cập nhật bản ghi lần cuối
@@ -143,14 +145,14 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: WEBSITE
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Địa chỉ website của tổ chức
   key: null
   fk_note: null
 - name: CHARTER_CAPITAL
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Vốn điều lệ của tổ chức kinh doanh CK
   key: null
   fk_note: null

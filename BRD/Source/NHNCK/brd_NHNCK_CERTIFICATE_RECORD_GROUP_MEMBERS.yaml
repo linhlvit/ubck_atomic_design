@@ -28,19 +28,20 @@ columns:
   data_type: NUMBER(10,0)
   description: 'FK -> USERS: Người thêm bản ghi CCHN vào nhóm'
   key: FK
-  fk_note: FK → USERS.ID
-- name: RECORD_STATUS
+  fk_note: FK suy luận → USERS.ID
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
   fk_note: null
-- name: REISSUE
+- name: IS_REISSUE
   data_type: NUMBER(10,0)
-  description: 'Cờ bản ghi CCHN này là cấp lại (không phải cấp mới): 1=Cấp lại, 0=Cấp mới'
+  description: 'Cờ bản ghi CCHN này là cấp lại (không phải cấp mới): 1=Cấp lại, 0=Cấp
+    mới'
   key: null
   fk_note: null
 - name: REVOCATION_REASON
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Lý do thu hồi CCHN
   key: null
   fk_note: null

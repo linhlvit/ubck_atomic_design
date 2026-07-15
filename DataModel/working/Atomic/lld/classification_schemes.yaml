@@ -1452,15 +1452,6 @@ schemes:
 
   # --- Tier 3 schemes ---
 
-  - scheme_code: "TEAM_TARGET_TYPE"
-    name: "Loại đối tượng thanh tra/kiểm tra thực tế theo đoàn — mở rộng hơn kế hoạch: thêm AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION"
-    source_type: "source_table"
-    source_table: "THANHTRA.INSPECTION_TEAM_TARGET"
-    used_in_entities:
-      - "Inspection Team Target"
-      - "Examination Team Target"
-    values: []
-
   - scheme_code: "CONCLUSION_EXECUTION_STATUS"
     name: "Trạng thái thực hiện kết luận thanh tra: NOT_EXECUTED, FULLY_EXECUTED, PARTIALLY_EXECUTED"
     source_type: "source_table"
@@ -4889,23 +4880,6 @@ schemes:
       - "Legal Entity Position"
     values: []
 
-  - scheme_code: "IDS_BOND_TYPE"
-    name: "Loại hình trái phiếu (LOOKUP_GROUP = BOND_TYPE) — IDS"
-    source_type: "source_table"
-    source_table: "IDS.LOOKUP_VALUES"
-    used_in_entities:
-      - "Public Company Bond Listing History"
-    values: []
-
-  - scheme_code: "IDS_BOND_ISSUANCE_CATEGORY"
-    name: "Phân loại phát hành trái phiếu (LOOKUP_GROUP = BOND_ISSUANCE_CATEGORY)\
-      \ — IDS"
-    source_type: "source_table"
-    source_table: "IDS.LOOKUP_VALUES"
-    used_in_entities:
-      - "Public Company Bond Listing History"
-    values: []
-
   - scheme_code: "IDS_PUB_CO_CANCEL_TYPE"
     name: "Loại hủy đăng ký công ty đại chúng — IDS"
     source_type: "source_table"
@@ -4922,26 +4896,6 @@ schemes:
     used_in_entities:
       - "Public Company Stock Listing History"
     values: []
-
-  - scheme_code: "IDS_BOND_EVALUATION_RANKING"
-    name: "Xếp hạng doanh nghiệp theo chỉ số trái phiếu (A/B/C/E) — IDS"
-    source_type: "modeler_defined"
-    source_table: "IDS.EVALUATION_CBONDS.RANKING"
-    used_in_entities:
-      - "Public Company Bond Evaluation"
-    values:
-      - code: "A"
-        label: "A"
-        source_value: "A"
-      - code: "B"
-        label: "B"
-        source_value: "B"
-      - code: "C"
-        label: "C"
-        source_value: "C"
-      - code: "E"
-        label: "E"
-        source_value: "E"
 
   # ── IDS — Tier 3: bổ sung scheme phát sinh khi thiết kế LLD (chưa có trong scaffold pre-seed) ──
   - scheme_code: "IDS_AUDITOR_STATUS_EVENT_TYPE"
@@ -4992,30 +4946,6 @@ schemes:
     source_table: "IDS.AF_WARNING.WARNING_TYPE_CD"
     used_in_entities:
       - "Audit Firm Warning"
-    values: []
-
-  - scheme_code: "IDS_SUSPENSION_SOURCE_TYPE"
-    name: "Nguồn phát sinh quyết định đình chỉ — IDS"
-    source_type: "source_table"
-    source_table: "IDS.AF_SUSPENSION.SOURCE_TYPE_CD"
-    used_in_entities:
-      - "Audit Firm Suspension"
-    values: []
-
-  - scheme_code: "IDS_SUSPENSION_TARGET_TYPE"
-    name: "Đối tượng bị đình chỉ (công ty kiểm toán/kiểm toán viên) — IDS"
-    source_type: "source_table"
-    source_table: "IDS.AF_SUSPENSION.TARGET_TYPE_CD"
-    used_in_entities:
-      - "Audit Firm Suspension"
-    values: []
-
-  - scheme_code: "IDS_SUSPENSION_TYPE"
-    name: "Loại hình thức đình chỉ — IDS"
-    source_type: "source_table"
-    source_table: "IDS.AF_SUSPENSION.SUSPENSION_TYPE_CD"
-    used_in_entities:
-      - "Audit Firm Suspension"
     values: []
 
   - scheme_code: "IDS_AF_TECHNICAL_AUDIT_ACTION"

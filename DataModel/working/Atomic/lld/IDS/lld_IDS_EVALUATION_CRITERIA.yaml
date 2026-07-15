@@ -19,7 +19,10 @@ metadata:
   approved_at: null
   notes: "ID kỹ thuật loại khỏi model — CRITERION_CD (mã nghiệp vụ) → Code (BK duy\
     \ nhất), Id hash từ Code. domain_prefix \"Public Company Evaluation\" dùng chung\
-    \ với Public Company Evaluation Group/Period (T1)."
+    \ với Public Company Evaluation Group/Period (T1). GROUP_ID không map — Public\
+    \ Company Evaluation Group Id/Code hash trực tiếp từ GROUP_CD (đã có sẵn trên\
+    \ cùng dòng nguồn), không join qua EVALUATION_GROUPS.ID kỹ thuật (quyết định Data\
+    \ Modeler 2026-07-15). Xem pending_design.yaml."
 attributes:
 - attribute_name: "Public Company Evaluation Criterion Id"
   physical_name: "pc_evaluation_criterion_id"
@@ -69,11 +72,12 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.EVALUATION_CRITERIA.GROUP_ID"
+  - "IDS.EVALUATION_CRITERIA.GROUP_CD"
   comment: "FK target: Public Company Evaluation Group.Public Company Evaluation Group\
-    \ Id. Resolve: join GROUP_ID → IDS.EVALUATION_GROUPS.ID để lấy GROUP_CD, rồi hash_id('IDS.EVALUATION_GROUPS',\
-    \ group_cd). Nguồn không khai báo fk_note tường minh nhưng theo mô tả cột (Id\
-    \ của nhóm đánh giá) và HLD Tier2 xác nhận đây là FK đến EVALUATION_GROUPS."
+    \ Id. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). Hash trực tiếp từ GROUP_CD\
+    \ (đã có sẵn trên cùng dòng nguồn) — không join qua EVALUATION_GROUPS.ID kỹ thuật,\
+    \ theo yêu cầu Data Modeler (2026-07-15). Cần profile dữ liệu nguồn xác nhận NOT\
+    \ NULL trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -85,7 +89,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IDS.EVALUATION_CRITERIA.GROUP_ID"
+  - "IDS.EVALUATION_CRITERIA.GROUP_CD"
   comment: "Lookup pair: Public Company Evaluation Group.Public Company Evaluation\
     \ Group Code. Pair with Public Company Evaluation Group Id."
   classification_context: null
@@ -127,20 +131,6 @@ attributes:
   source_columns:
   - "IDS.EVALUATION_CRITERIA.SUBGROUP_NAME"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Group Code Snapshot"
-  physical_name: "group_code_snpst"
-  description: "Mã nhóm (denormalized snapshot)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.EVALUATION_CRITERIA.GROUP_CD"
-  comment: "Denormalized snapshot — trùng lặp với Public Company Evaluation Group.Public\
-    \ Company Evaluation Group Code, giữ lại tại đây để tránh join khi hiển thị."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -15,12 +15,12 @@ columns:
   key: FK
   fk_note: FK → UNITS.ID
 - name: DEPARTMENT_CODE
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Mã phòng ban
   key: null
   fk_note: null
 - name: DEPARTMENT_NAME
-  data_type: NVARCHAR2(255)
+  data_type: NVARCHAR2(255 CHAR)
   description: Tên phòng ban
   key: null
   fk_note: null
@@ -30,12 +30,17 @@ columns:
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Mô tả chi tiết
   key: null
   fk_note: null
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
+  key: null
+  fk_note: null
+- name: ECATALOG_ID
+  data_type: VARCHAR2(36)
+  description: TBD - cần bổ sung mô tả
   key: null
   fk_note: null

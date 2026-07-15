@@ -25,18 +25,16 @@ metadata:
     \ Business Line). PK kỹ thuật ID loại khỏi model hoàn toàn — BK dùng BUSINESS_LINE_CODE,\
     \ Id hash từ chính BUSINESS_LINE_CODE theo rule 3e hiện hành (2026-07-13), khác\
     \ với Classification Firm Status (hash từ ID kỹ thuật, quyết định cũ trước rule\
-    \ 3e). ID vẫn cần cho ETL resolve FK phía consumer đang lưu ID kỹ thuật.\
-    \ SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID đã đổi sang cặp FK Classification\
-    \ Business Transaction Id+Code (xem lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml).\
+    \ 3e). ID vẫn cần cho ETL resolve FK phía consumer đang lưu ID kỹ thuật. SC_FIRM_LICENSED_PRACTITIONER.BUSINESS_LINE_ID\
+    \ đã đổi sang cặp FK Classification Business Transaction Id+Code (xem lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml).\
     \ LNK_SC_FIRM_BUSINESS_LINE và LNK_PRACTITIONER_BUSINESS_LINE KHÔNG denormalize\
-    \ ARRAY<STRUCT> — đã tách thành 2 entity Relative độc lập 'Securities Company Business\
-    \ Transaction Relationship' và 'Securities Company Practitioner Business Transaction\
-    \ Relationship' (đảo ngược quyết định denormalize cũ, xem SCMS_HLD_Overview.md 7d/7e).\
-    \ CREATED_BY/CREATED_AT loại bỏ theo convention SCMS\
-    \ đã áp dụng cho CAT_SC_FIRM_STATUS/CAT_SERVICE/ CAT_NATIONALITY (CREATED_BY không\
-    \ có FK target hợp lệ, SYS_USER ngoài phạm vi Atomic) — xem pending_design.yaml.\
-    \ RECORD_STATUS dùng scheme SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS đã\
-    \ pre-đăng ký sẵn trong classification_schemes.yaml. LEGAL_CAPITAL (mô tả gốc\
+    \ ARRAY<STRUCT> — đã tách thành 2 entity Relative độc lập 'Securities Company\
+    \ Business Transaction Relationship' và 'Securities Company Practitioner Business\
+    \ Transaction Relationship' (đảo ngược quyết định denormalize cũ, xem SCMS_HLD_Overview.md\
+    \ 7d/7e). CREATED_BY/CREATED_AT loại bỏ theo convention SCMS đã áp dụng cho CAT_SC_FIRM_STATUS/CAT_SERVICE/\
+    \ CAT_NATIONALITY (CREATED_BY không có FK target hợp lệ, SYS_USER ngoài phạm vi\
+    \ Atomic) — xem pending_design.yaml. RECORD_STATUS dùng scheme SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS\
+    \ đã pre-đăng ký sẵn trong classification_schemes.yaml. LEGAL_CAPITAL (mô tả gốc\
     \ BRD trống) map theo mô tả nghiệp vụ tại HLD Overview #55 (\"vốn pháp định tối\
     \ thiểu theo quy định pháp luật\") — Currency Amount, cần profile xác nhận đơn\
     \ vị/scale trước go-live."
@@ -66,6 +64,28 @@ attributes:
   classification_context: "SOURCE_SYSTEM=SCMS.CAT_BUSINESS_LINE"
   etl_derived_value: "SCMS.CAT_BUSINESS_LINE"
   data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition\
+    \ Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic\
+    \ theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at\
+    \ 2026-07-15)."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_BUSINESS_LINE.CREATED_AT"
+  comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo\
+    \ quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental\
+    \ filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at'\
+    \ sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi\
+    \ audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate\
+    \ về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo\
+    \ ngày."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
 - attribute_name: "Classification Business Transaction Code"
   physical_name: "cl_business_transaction_code"
   description: "Mã nghiệp vụ kinh doanh chứng khoán. BK duy nhất — Id hash từ trường\

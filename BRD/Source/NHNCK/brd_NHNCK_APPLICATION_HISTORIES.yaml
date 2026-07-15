@@ -20,7 +20,7 @@ columns:
   key: FK
   fk_note: FK → APPLICATION_STATUSES.ID
 - name: TITLE
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Tiêu đề/tên hồ sơ hoặc nhóm
   key: null
   fk_note: null
@@ -45,11 +45,11 @@ columns:
   key: FK
   fk_note: FK → USERS.ID
 - name: RECEIVER_NAME
-  data_type: NVARCHAR2(1024)
+  data_type: NVARCHAR2(1024 CHAR)
   description: Tên người nhận (snapshot tại thời điểm xử lý)
   key: null
   fk_note: null
-- name: REJECTED
+- name: IS_REJECTED
   data_type: NUMBER(1,0)
   description: 'Cờ hồ sơ bị trả lại: 1=Bị trả lại, 0=Không'
   key: null
@@ -68,9 +68,9 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: UPDATED_BY
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID

@@ -30,7 +30,7 @@ columns:
   key: FK
   fk_note: FK → DECISIONS.ID
 - name: CERTIFICATE_NUMBER
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Số CCHN cấp cho NHNCK
   key: null
   fk_note: null
@@ -45,17 +45,17 @@ columns:
   key: null
   fk_note: null
 - name: REVOCATION_REASON
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Lý do thu hồi CCHN
   key: null
   fk_note: null
-- name: RECORD_STATUS
+- name: STATUS
   data_type: NUMBER(10,0)
   description: 'Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động'
   key: null
   fk_note: null
 - name: DESCRIPTION
-  data_type: NVARCHAR2(2000)
+  data_type: NVARCHAR2(2000 CHAR)
   description: Mô tả chi tiết
   key: null
   fk_note: null
@@ -68,14 +68,14 @@ columns:
   data_type: NUMBER(10,0)
   description: ID tài khoản người tạo bản ghi
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
 - name: ALLOW_REISSUE
   data_type: NUMBER(10,0)
   description: Số lần được phép cấp lại CCHN (0=không được cấp lại)
   key: null
   fk_note: null
 - name: PROFESSIONAL_FULL_NAME
-  data_type: NVARCHAR2(50)
+  data_type: NVARCHAR2(50 CHAR)
   description: Họ tên người hành nghề tại thời điểm cấp CCHN (snapshot)
   key: null
   fk_note: null
@@ -86,11 +86,12 @@ columns:
   fk_note: null
 - name: PROCESS_STATUS
   data_type: NUMBER(10,0)
-  description: 'Trạng thái quy trình xử lý CCHN: 1=Đã cấp, 2=Đã ký nháy, 3=Đã ký, 4=Đã trả'
+  description: 'Trạng thái quy trình xử lý CCHN: 1=Đã cấp, 2=Đã ký nháy, 3=Đã ký,
+    4=Đã trả'
   key: null
   fk_note: null
 - name: CER_PATH
-  data_type: VARCHAR2(500)
+  data_type: VARCHAR2(500 CHAR)
   description: Đường dẫn file chứng chỉ số dùng để ký
   key: null
   fk_note: null
@@ -101,11 +102,12 @@ columns:
   fk_note: FK → DECISIONS.ID
 - name: CONVERSION_STATUS
   data_type: NUMBER(10,0)
-  description: 'Trạng thái chuyển đổi CCHN điện tử: 1=Chứng chỉ giấy, 2=Chờ chuyển đổi điện tử, 3=Chứng chỉ số'
+  description: 'Trạng thái chuyển đổi CCHN điện tử: 1=Chứng chỉ giấy, 2=Chờ chuyển
+    đổi điện tử, 3=Chứng chỉ số'
   key: null
   fk_note: null
 - name: UPDATED_BY
   data_type: NUMBER(10,0)
   description: ID tài khoản người cập nhật bản ghi lần cuối
   key: null
-  fk_note: FK → USERS.ID
+  fk_note: FK suy luận → USERS.ID
