@@ -977,18 +977,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner"]
-        SV2["Securities Practitioner License Certificate Document"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner 360 Profile"]
     end
     subgraph RPT["Bao cao - Nhom 5"]
         R1["K_NHNCK_33-41: Thong tin chung NHN 360"]
     end
-    SV1 --> G1
-    SV2 --> G1
     G1 --> R1
 ```
 
@@ -1057,22 +1051,15 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner Related Party"]
-        SV2["Securities Practitioner Organization Employment Report"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Related Party Profile"]
         G2["Practitioner Listed Company Role"]
     end
     subgraph RPT["Bao cao - Nhom 6"]
-        R1["K_NHNCK_75-80,86: Nguoi lien quan"]
-        R2["K_NHNCK_81-82: DN niem yet (reuse Nhom 7)"]
+        R1["K_NHNCK_75-82,86: Mang luoi nguoi lien quan"]
     end
-    SV1 --> G1
-    SV2 --> G2
     G1 --> R1
-    G2 --> R2
+    G2 --> R1
 ```
 
 **Bảng grain — Nhóm 6:**
@@ -1135,26 +1122,15 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner Organization Employment Report"]
-        SV2["Securities Organization Reference"]
-        SV3["Securities Practitioner Related Party"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Listed Company Role"]
         G2["Practitioner Related Party Profile (Reuse Nhóm 6)"]
     end
     subgraph RPT["Bao cao - Nhom 7"]
-        R1["K_NHNCK_81-85: Vai tro tai DN niem yet"]
-        R2["K_NHNCK_75,76,77,79: Mang luoi nguoi lien quan (Reuse)"]
-        R3["K_NHNCK_87-89: Tai khoan cross-broker (PENDING)"]
+        R1["K_NHNCK_75-89: Ho so va Danh muc NHNCK"]
     end
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G2
     G1 --> R1
-    G1 --> R3
-    G2 --> R2
+    G2 --> R1
 ```
 
 **Bảng grain — Nhóm 7:**
@@ -1220,18 +1196,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner Organization Employment Report"]
-        SV2["Securities Organization Reference"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Employment History"]
     end
     subgraph RPT["Bao cao - Nhom 8"]
         R1["K_NHNCK_49,50,51,52,53,90,91: Qua trinh hanh nghe"]
     end
-    SV1 --> G1
-    SV2 --> G1
     G1 --> R1
 ```
 
@@ -1297,18 +1267,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner License Certificate Document"]
-        SV2["Securities Practitioner License Decision Document"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Certificate History"]
     end
     subgraph RPT["Bao cao - Nhom 9"]
         R1["K_NHNCK_43-48,92: Lich su cap CCHN"]
     end
-    SV1 --> G1
-    SV2 --> G1
     G1 --> R1
 ```
 
@@ -1383,20 +1347,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner Qualification Examination Assessment Result"]
-        SV2["Securities Practitioner Qualification Examination Assessment"]
-        SV3["Securities Practitioner License Decision Document"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Exam History"]
     end
     subgraph RPT["Bao cao - Nhom 10"]
         R1["K_NHNCK_59-63,93-95,103: Dot thi sat hach"]
     end
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
     G1 --> R1
 ```
 
@@ -1464,21 +1420,13 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner Professional Training Class Enrollment"]
-        SV2["Securities Practitioner Professional Training Class"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Training History"]
     end
     subgraph RPT["Bao cao - Nhom 11"]
-        R1["K_NHNCK_66,96-100: Chi tiet enrollment"]
-        R2["K_NHNCK_67: Trang thai du 8h (PENDING)"]
+        R1["K_NHNCK_66,67,96-100: Cap nhat kien thuc hanh nghe"]
     end
-    SV1 --> G1
-    SV2 --> G1
     G1 --> R1
-    G1 --> R2
 ```
 
 **Bảng grain — Nhóm 11:**
@@ -1539,18 +1487,12 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner Conduct Violation"]
-        SV2["Securities Practitioner License Decision Document"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Violation History"]
     end
     subgraph RPT["Bao cao - Nhom 12"]
         R1["K_NHNCK_54-58: Lich su vi pham"]
     end
-    SV1 --> G1
-    SV2 --> G1
     G1 --> R1
 ```
 
@@ -1625,23 +1567,13 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SIL["Atomic"]
-        SV1["Securities Practitioner"]
-        SV2["Securities Practitioner License Certificate Document"]
-        SV3["Securities Practitioner Organization Employment Report"]
-    end
     subgraph Datamart["Datamart"]
         G1["Practitioner Data Explorer"]
     end
     subgraph RPT["Bao cao - Nhom 13"]
-        R1["K_NHNCK_68-73: Bang tra cuu CCHN"]
-        R2["K_NHNCK_74: Tong so NHN"]
+        R1["K_NHNCK_68-74,102: Bang tra cuu CCHN"]
     end
-    SV1 --> G1
-    SV2 --> G1
-    SV3 --> G1
     G1 --> R1
-    G1 --> R2
 ```
 
 **Bảng grain — Nhóm 13:**

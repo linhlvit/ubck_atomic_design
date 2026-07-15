@@ -86,6 +86,39 @@ Các trường sau do ETL tự quản lý — không đưa vào schema Datamart:
 
 ---
 
+## Mỗi cột trong Fact phải trace được về KPI/mockup — không copy nguyên attribute entity nguồn
+
+**Quy tắc:** Trước khi đưa 1 attribute từ Atomic entity vào Fact, tự hỏi: attribute này phục vụ **KPI nào** (đo lường/GROUP BY/filter hiển thị) hoặc **mockup nào** đang thiết kế? Nếu không trả lời được → loại khỏi Fact.
+
+❌ **Sai — đưa nguyên attribute còn lại của entity nguồn vào Fact "cho đủ":**
+```
+Fact_Securities_Company_Service_Registration {
+    int Registration_Date_Dimension_Id FK
+    int Securities_Company_Dimension_Id FK
+    int Service_Type_Dimension_Id FK
+    string Registration_Document_Number   ← không KPI nào dùng
+    date Valid_Dossier_Date               ← không KPI nào dùng
+    string Provisional_Indicator          ← không KPI nào dùng
+}
+```
+
+✅ **Đúng — chỉ giữ FK + attribute có KPI tham chiếu:**
+```
+Fact_Securities_Company_Service_Registration {
+    int Registration_Date_Dimension_Id FK
+    int Securities_Company_Dimension_Id FK
+    int Service_Type_Dimension_Id FK
+}
+```
+
+**Trường hợp đặc biệt — cột chỉ dùng làm điều kiện lọc ETL (SCD4A current-state):** Khi Atomic entity nguồn có cột kiểu `Record_Status_Code`/`Is_Draft_Indicator` + `End_Date`/`Termination_Date` dùng để xác định "bản ghi nào đang hiệu lực tại ngày D", và Fact populate theo SCD4A (ETL lọc sẵn `Effective_Date <= D AND (End_Date IS NULL OR End_Date > D) AND Status_Code = 'ACTIVE'`) — 2 cột này **cũng không đưa vào erDiagram**, dù có "dùng" cho công thức KPI dưới dạng điều kiện WHERE. Lý do: sau khi ETL đã lọc, mọi row trong Fact chắc chắn là bản ghi hiệu lực rồi — filter lại vô nghĩa. Chỉ ghi chú bằng text ngay trong phần mô tả Nhóm:
+
+> **ETL filter khi populate Fact (không xuất hiện trong schema Fact đã build):** `Record_Status_Code = '1'` AND `Effective_Date <= D` AND `(End_Date IS NULL OR End_Date > D)`.
+
+**Checklist trước khi chốt Star Schema của 1 Nhóm:** rà từng cột trong Fact block, đối chiếu ngược lại bảng KPI của Nhóm đó — cột nào không xuất hiện trong bất kỳ công thức KPI nào → loại, trừ khi là FK trục thời gian/dimension chính hoặc đã ghi chú rõ là ETL filter.
+
+---
+
 ## Nhất quán toàn file HLD
 
 **Quy tắc quan trọng:** Mỗi bảng Datamart phải có **số trường và tên trường giống hệt nhau** ở mọi erDiagram trong toàn file HLD.

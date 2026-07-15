@@ -79,6 +79,26 @@ flowchart LR
 ```
 
 > ⚠️ **Chỉ vẽ từ GOLD (Datamart) lên báo cáo** — KHÔNG vẽ Atomic entities (SIL layer) trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational thuộc GOLD layer.
+>
+> ⚠️ **Gộp 1 report node duy nhất cho toàn bộ Nhóm** — KHÔNG tách report node riêng theo từng Chiều/KPI/measure. Node báo cáo ghi dạng `"K_{MODULE}_N-M,X,Y: {Tên Nhóm ngắn gọn}"` (liệt kê dải/danh sách KPI ID trong cùng 1 node), không phải 1 node cho measure + 1 node riêng cho mỗi Chiều.
+
+```
+✅ Đúng:
+subgraph RPT["Báo cáo — Nhóm 13"]
+    R1["K_QLKD_46-50b,2814: Nguon von tang them trong ky"]
+end
+F1 --> R1
+
+❌ Sai (tách report node theo từng Chiều/KPI):
+subgraph RPT["Báo cáo — Nhóm 13"]
+    R1["Nguồn vốn tăng thêm theo tháng (K_QLKD_47–50b)"]
+    R2["Chiều hình thức tăng vốn (K_QLKD_46)"]
+    R3["Chiều thời gian theo tháng (K_QLKD_2814)"]
+end
+F1 --> R1
+D2 --> R2
+D3 --> R3
+```
 
 **Bảng grain:**
 

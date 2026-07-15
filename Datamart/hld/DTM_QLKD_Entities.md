@@ -1,6 +1,8 @@
 # DTM_QLKD_Entities — Star Schema per Nhóm báo cáo
-**Module:** QLKD — Quản lý kinh doanh
-**Phiên bản:** 2.0 — 05/05/2026
+**Module:** QLKD — Quản lý kinh doanh (Hoạt động CTCK)
+**Phiên bản:** 4.2 — 13/07/2026 (khớp DTM_QLKD_HLD.md v4.2)
+
+---
 
 ## Tab TỔNG QUAN
 
@@ -8,195 +10,203 @@
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : "Securities Company Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Status_Snapshot : " "
 ```
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Status Snapshot | Periodic Snapshot tình trạng CTCK — 1 CTCK × 1 ngày | 1 CTCK × 1 ngày snapshot | K_QLKD_1–11 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Status Snapshot | Fact Snapshot | new | Tình trạng CTCK theo trạng thái pháp lý | 1 CTCK × 1 ngày snapshot | K_QLKD_1–11 (K_QLKD_12–13 PENDING, xem O_QLKD_1) |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
-### Nhóm 2 — Biểu đồ Nghiệp vụ (K_QLKD_12–15)
+### Nhóm 2 — Biểu đồ Nghiệp vụ (K_QLKD_14–19) — PENDING
+
+> Atomic entity chưa cover quan hệ N:N CTCK↔nghiệp vụ (`Securities Company.Business Lines` là Text thô chưa parse) — xem O_QLKD_20. Không vẽ Star Schema chi tiết cho block PENDING.
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Business Line Registration (dự kiến) | Fact Event | new | Đăng ký nghiệp vụ kinh doanh chứng khoán per CTCK | 1 CTCK × 1 nghiệp vụ | K_QLKD_14–19 (PENDING) |
+| Business Line Dimension | Dimension | reuse (cls_dim) | Nghiệp vụ kinh doanh chứng khoán — Classification Value scheme SCMS_BUSINESS_LINE | 1 nghiệp vụ (SCD4A) | — |
+
+### Nhóm 3/4 — Biểu đồ Dịch vụ & Dịch vụ phái sinh (K_QLKD_20–29)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Business_Type_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Business_Type_Snapshot : "Securities Company Dimension Id"
-    Business_Type_Dimension ||--o{ Fact_Securities_Company_Business_Type_Snapshot : "Business Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Registration : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Registration : " "
+    Service_Type_Dimension ||--o{ Fact_Securities_Company_Service_Registration : " "
 ```
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Business Type Snapshot | Periodic Snapshot nghiệp vụ CTCK (FIMS) — 1 CTCK × 1 nghiệp vụ × 1 ngày | 1 CTCK × 1 nghiệp vụ × 1 ngày snapshot | K_QLKD_12–15 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Business Type Dimension | Nghiệp vụ CTCK (FIMS_BUSINESS_TYPE) — môi giới/bảo lãnh/tư vấn/tự doanh (SCD2) | 1 mã nghiệp vụ (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Service Registration | Fact Event | new | Đăng ký dịch vụ CTCK (ký quỹ/ứng trước/lưu ký/phái sinh) | 1 CTCK × 1 dịch vụ × 1 lần đăng ký | K_QLKD_20–29 |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Service Type Dimension | Dimension | new | Dịch vụ CTCK — Atomic entity Classification Service (entity riêng, không phải cv) | 1 dịch vụ (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
-### Nhóm 3/4 — Biểu đồ Dịch vụ & Dịch vụ phái sinh (K_QLKD_16–21)
+### Nhóm 5/6/7 — Duy trì điều kiện cấp phép (GPHL/Phái sinh KDCKPS/Phái sinh BTTT) (K_QLKD_30–40)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Service_Registration : "Registration Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Service_Registration : "Securities Company Dimension Id"
-    Service_Type_Dimension ||--o{ Fact_Securities_Company_Service_Registration : "Service Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_License_Condition_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_License_Condition_Snapshot : " "
 ```
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Service Registration | Event đăng ký dịch vụ CTCK (SCMS) — 1 CTCK × 1 dịch vụ × 1 lần đăng ký | 1 CTCK × 1 dịch vụ × 1 lần đăng ký (Event) | K_QLKD_16–21 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Service Type Dimension | Dịch vụ CTCK (SCMS_SERVICE_TYPE) — ký quỹ/ứng trước/lưu ký/phái sinh (SCD2) | 1 mã dịch vụ (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company License Condition Snapshot | Fact Snapshot | new | Duy trì điều kiện cấp phép — dùng chung 3 nhóm, phân biệt bằng Indicator_Code | 1 CTCK × 1 loại giấy phép × 1 ngày snapshot | K_QLKD_30–40 |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
-### Nhóm 8/9 — Cơ cấu tài chính toàn thị trường (K_QLKD_31–40)
+### Nhóm 8/9 — Cơ cấu tài sản / nguồn vốn toàn thị trường (K_QLKD_41–52) — PENDING
+
+> Atomic entity `REPORT_CELL_VALUE` không tồn tại trong track hiện hành (O_QLKD_23) — không vẽ Star Schema chi tiết.
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Chỉ tiêu BCTC toàn thị trường/per CTCK — dùng chung nhiều Nhóm | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_41–52 (PENDING, xem O_QLKD_23) |
+| Report Indicator Dimension | Dimension | new | Chỉ tiêu báo cáo BCTC | 1 chỉ tiêu (SCD4A) | — |
+
+### Nhóm 13 — Nguồn vốn tăng thêm (K_QLKD_66–72)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
-    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Capital_Raising_Event : " "
+    Offering_Form_Dimension ||--o{ Fact_Securities_Company_Capital_Raising_Event : " "
 ```
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot chỉ tiêu BCTC — 1 CTCK × 1 chỉ tiêu × 1 kỳ | 1 CTCK × 1 chỉ tiêu × 1 kỳ | K_QLKD_31–86 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Report Indicator Dimension | Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu | 1 chỉ tiêu báo cáo | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Capital Raising Event | Fact Event | new | Nguồn vốn tăng thêm từ chào bán/phát hành — toàn thị trường theo tháng | 1 đợt chào bán/phát hành hợp lệ (aggregated theo tháng × hình thức tăng vốn) | K_QLKD_66–72 |
+| Offering Form Dimension | Dimension | new | Hình thức tăng vốn — ETL-derived (5 giá trị) | 1 hình thức (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+### Nhóm 16 — Diễn biến thị trường (K_QLKD_88–91)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Market_Index_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Market Index Snapshot | Fact Snapshot | new | Chỉ số thị trường VN-Index/HNX/UPCOM/VN30 | 1 chỉ số (marketCode) × 1 tháng | K_QLKD_88–91 |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+---
 
 ## Tab GIÁM SÁT
 
-### Nhóm GS-1→GS-8 — Hoạt động tài chính CTCK (K_QLKD_41–69)
+### Sub-tab GIÁM SÁT HOẠT ĐỘNG — Nhóm 11/12/14/15/16/17/18 (K_QLKD_59–99) — PENDING
 
-> Tái sử dụng `Fact Securities Company Financial Structure Snapshot` — Star Schema giống Nhóm 8/9
+> Toàn bộ dùng chung `Fact Securities Company Financial Structure Snapshot` (xem Nhóm 8/9) — PENDING theo O_QLKD_23. Ngoại lệ K_QLKD_88–91 (Nhóm 16, xem Market Index Snapshot ở trên).
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot chỉ tiêu BCTC — 1 CTCK × 1 chỉ tiêu × 1 kỳ | 1 CTCK × 1 chỉ tiêu × 1 kỳ | K_QLKD_31–86 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Report Indicator Dimension | Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu | 1 chỉ tiêu báo cáo | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Reuse từ Nhóm 8/9 — mở rộng VCSH, doanh thu, lợi nhuận, thị phần, margin, ATTC | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–87, 92–99 (Nhóm 14/15/16/17/18) — PENDING |
 
-### Nhóm GS-9 — Giám sát tuân thủ nộp báo cáo (K_QLKD_70–73)
+### Sub-tab GIÁM SÁT TUÂN THỦ — Nhóm 10 (K_QLKD_53–58) — PENDING
+
+> Atomic entity đã READY (`Member Periodic Report`/`Report Submission Obligation`) — PENDING chỉ do gating dữ liệu động, không phải gap Atomic.
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : "Snapshot Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : "Securities Company Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : " "
+    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Report_Compliance_Snapshot : " "
 ```
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Report Compliance Snapshot | Periodic Snapshot tuân thủ nộp báo cáo — 1 CTCK × 1 biểu mẫu × 1 kỳ | 1 CTCK × 1 biểu mẫu × 1 kỳ | K_QLKD_70–73 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Report Compliance Snapshot | Fact Snapshot | new | Tuân thủ nộp báo cáo định kỳ — PENDING (gating dữ liệu động) | 1 CTCK × 1 biểu mẫu × 1 kỳ nghĩa vụ | K_QLKD_53–58 (PENDING) |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+---
 
 ## Tab HỒ SƠ CTCK 360
 
-### Nhóm 360-2→5 — Biểu đồ tài chính per CTCK (K_QLKD_79–86)
+### Nhóm 19–27 — Banner tổng quan & Biểu đồ tài chính per CTCK (K_QLKD_100–140) — PENDING
 
-> Tái sử dụng `Fact Securities Company Financial Structure Snapshot`
+> Toàn bộ tái sử dụng `Fact Securities Company Financial Structure Snapshot` — PENDING theo O_QLKD_23. Nhóm 26/27 (Lịch sử BCTC) dùng thêm `Securities Company Financial Report History` (Tác nghiệp).
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot chỉ tiêu BCTC — 1 CTCK × 1 chỉ tiêu × 1 kỳ | 1 CTCK × 1 chỉ tiêu × 1 kỳ | K_QLKD_31–86 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Report Indicator Dimension | Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu | 1 chỉ tiêu báo cáo | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Reuse từ Nhóm 8/9 — banner + cơ cấu tài sản/nguồn vốn/doanh thu per CTCK | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_100–128 (Nhóm 19–25) — PENDING |
+| Securities Company Financial Report History | Tác nghiệp | new | Lịch sử BCTC — DT/LN/ROA/ROE theo từng kỳ | 1 CTCK × 1 kỳ báo cáo BCTC | K_QLKD_129–140 (Nhóm 26/27) — PENDING |
 
-### Nhóm 360-1 Banner (K_QLKD_74–78) (Phân tích — tái sử dụng Fact)
+### Sub-tab Nhân sự — Nhóm 31 (K_QLKD_154–161)
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Date Dimension Id"
-    Securities_Company_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Securities Company Dimension Id"
-    Report_Indicator_Dimension ||--o{ Fact_Securities_Company_Financial_Structure_Snapshot : "Report Indicator Dimension Id"
-```
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Securities Company Personnel Profile | Tác nghiệp | new | HĐQT/HĐTV/BKS/BĐH, cổ đông lớn, lịch sử thay đổi nhân sự | 1 nhân sự cao cấp × 1 CTCK (latest state) | K_QLKD_154–159, 161 |
+| Securities Company Shareholder Profile | Tác nghiệp | new | Cổ đông lớn nắm giữ >5% VĐL | 1 cổ đông × 1 CTCK (latest state) | K_QLKD_160 |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot chỉ tiêu BCTC — 1 CTCK × 1 chỉ tiêu × 1 kỳ | 1 CTCK × 1 chỉ tiêu × 1 kỳ | K_QLKD_31–86 |
-| Securities Company Dimension | CTCK — tên, mã, trạng thái, vốn điều lệ, niêm yết (SCD2) | 1 CTCK (SCD2) | — |
-| Report Indicator Dimension | Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu | 1 chỉ tiêu báo cáo | — |
-| Calendar Date Dimension | Lịch ngày — năm/quý/tháng/tuần phục vụ slicer và time-series | 1 ngày | — |
+### Sub-tab Tuân thủ — Nhóm 38/39/40 (K_QLKD_187–203) — Partial READY
 
-### Nhóm 360-6 Lịch sử BCTC (K_QLKD_87–90) (Tác nghiệp)
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Securities Company Compliance History | Tác nghiệp | new | BC nộp + quyết định xử phạt hành chính (READY) + thanh tra/kiểm tra (READY, trừ Chiều ngày PENDING) | 1 CTCK × 1 sự kiện | K_QLKD_189, 197–203 READY; K_QLKD_187–188, 190–196 PENDING |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Securities Company Financial Report History | Lịch sử BCTC CTCK — 1 CTCK × 1 biểu mẫu × 1 kỳ × 1 chỉ tiêu | 1 CTCK × 1 biểu mẫu × 1 kỳ × 1 chỉ tiêu | K_QLKD_87–90 |
+### Sub-tab CN, PGD, VPĐD — Nhóm 32/33/34/35/36/37 (K_QLKD_162–186) — Partial READY
 
-### Nhóm 360-7 NHNCK (K_QLKD_91–95) (Tác nghiệp)
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Securities Company Organization Unit Profile | Tác nghiệp | new | CN/PGD/VPĐD — số lượng, dịch vụ chấp thuận (READY); nghiệp vụ N:N, duy trì điều kiện cấp phép (PENDING) | 1 đơn vị × 1 CTCK | K_QLKD_162–165, 171–178, 182–183, 185–186 READY; K_QLKD_166–170, 179–181, 184 PENDING |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Securities Company Practitioner Profile | Người hành nghề CK tại CTCK — GCN, chứng chỉ, trạng thái | 1 NHN × 1 CTCK | K_QLKD_91–95 |
-
-### Nhóm 360-8 Nhân sự & Cổ đông (K_QLKD_96–98) (Tác nghiệp)
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Securities Company Personnel Profile | Nhân sự cao cấp CTCK — HĐQT/BĐH/BKS, thông tin cá nhân, email, phone | 1 nhân sự × 1 CTCK | K_QLKD_96–98 |
-| Securities Company Shareholder Profile | Cổ đông CTCK — tên, tỷ lệ sở hữu, số tài khoản | 1 cổ đông × 1 CTCK | K_QLKD_97 |
-
-### Nhóm 360-9 Tuân thủ & Vi phạm (K_QLKD_99–102) (Tác nghiệp)
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Securities Company Compliance History | Lịch sử tuân thủ & vi phạm CTCK — BC định kỳ + thanh tra | 1 lần nộp BC / 1 kết luận × 1 CTCK | K_QLKD_99–102 |
-
-### Nhóm 360-10 CN/PGD/VPĐD (K_QLKD_103, 108) (Tác nghiệp)
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Securities Company Organization Unit Profile | CN/PGD/VPĐD của CTCK — tên, địa chỉ, ngày thành lập | 1 đơn vị × 1 CTCK | K_QLKD_103, 108 |
+---
 
 ## Tab TRA CỨU CÁ NHÂN
 
-### Nhóm TCA-1 Landing page (K_QLKD_109) (Tác nghiệp)
+### Nhóm 41a — Landing page: Danh sách cá nhân (K_QLKD_205–206)
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Individual Profile | Hồ sơ cá nhân nội bộ/NHN — merge SCMS + NHNCK theo CMND/CCCD | 1 cá nhân (latest state) | K_QLKD_109 |
+```mermaid
+erDiagram
+    Individual_Profile
+```
 
-### Nhóm TCA-2 Mạng lưới 360° (K_QLKD_110–111) (Tác nghiệp)
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Individual Profile | Tác nghiệp | new | Merge Securities Company Senior Personnel (SCMS) + Securities Practitioner (NHNCK) theo CCCD | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_205–206 |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Individual Related Party Network | Mạng lưới người liên quan — gia đình + DN niêm yết nodes | 1 người liên quan × 1 cá nhân | K_QLKD_110–111, 114, 117 |
+### Nhóm 41b/41d — Mạng lưới quan hệ 360° & Mạng lưới người liên quan chi tiết (K_QLKD_111, 204, 207–210)
 
-### Nhóm TCA-3 Vai trò DN niêm yết (K_QLKD_112–113) (Tác nghiệp)
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Individual Related Party Network | Tác nghiệp | new | Self-reference Securities Company Insider Related Person | 1 người liên quan × 1 cá nhân chính | K_QLKD_111, 207–210 READY; K_QLKD_204 (Chiều ngày) PENDING |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Individual Listed Company Role | Vai trò cá nhân tại DN niêm yết — VCB/FPT/HPG... (IDS) | 1 vai trò × 1 DN niêm yết × 1 cá nhân | K_QLKD_112–113 |
+### Nhóm 41c — Hồ sơ: Vai trò tại DN niêm yết (K_QLKD_211–212)
 
-### Nhóm TCA-4/4b Người liên quan & Tài khoản (K_QLKD_114–118) (Tác nghiệp)
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Individual Listed Company Role | Tác nghiệp | new | Vai trò + số CP nắm giữ tại tổ chức khác | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_211–212 |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Individual Related Party Network | Mạng lưới người liên quan — gia đình + DN niêm yết nodes | 1 người liên quan × 1 cá nhân | K_QLKD_110–111, 114, 117 |
-| Individual Trading Account | Tài khoản giao dịch CK cá nhân mở tại CTCK | 1 tài khoản × 1 CTCK × 1 cá nhân | K_QLKD_118 |
+### Nhóm 41e — Hồ sơ: Tài khoản giao dịch (K_QLKD_213)
 
-### Nhóm TCA-5 Quá trình hành nghề (K_QLKD_119–122) (Tác nghiệp)
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Individual Trading Account | Tác nghiệp | new | Tài khoản giao dịch — bao gồm cả tài khoản người liên quan | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_213 |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Individual Work History | Lịch sử công tác CTCK — 1 cá nhân × 1 lần bổ nhiệm × 1 CTCK | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_119–122 |
+### Nhóm 41f — Quá trình hành nghề: Lịch sử công tác (K_QLKD_214–218)
 
-### Nhóm TCA-6 Lịch sử vi phạm (K_QLKD_123–127) (Tác nghiệp)
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Individual Work History | Tác nghiệp | new | Lịch sử bổ nhiệm — tên công ty, chức vụ, thời gian, trạng thái | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_215–218 READY; K_QLKD_214 (Chiều ngày) PENDING |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Individual Violation History | Lịch sử vi phạm & xử phạt cá nhân — ThanhTra TT_HO_SO + TT_KET_LUAN | 1 kết luận × 1 cá nhân | K_QLKD_123–127 |
+### Nhóm 41g — Lịch sử vi phạm & xử phạt cá nhân (K_QLKD_219–224)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Individual Violation History | Tác nghiệp | new | Quyết định xử phạt hành chính cá nhân — schema INSPECT | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_220–224 READY; K_QLKD_219 (Chiều ngày) PENDING |
+
+---
 
 ## Tab DATA EXPLORER
 
-### Nhóm DE-1 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_128+)
+### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_225–4261) — PENDING
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Securities Company Report Data | Báo cáo biểu mẫu định kỳ EAV — 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu | 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu | K_QLKD_128+ |
-| Report Indicator Dimension | Chỉ tiêu báo cáo — mã, tên, hàng/cột/sheet biểu mẫu | 1 chỉ tiêu báo cáo | — |
+> Toàn bộ PENDING — gating dữ liệu động + gap Atomic entity `REPORT_CELL_VALUE` (O_QLKD_23). Không vẽ Star Schema chi tiết.
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Securities Company Report Data (dự kiến) | Tác nghiệp | new | EAV — 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu, 104 STT / 4036 chỉ tiêu | 1 chỉ tiêu × 1 kỳ báo cáo × 1 CTCK × 1 biểu mẫu | K_QLKD_225–4261 (PENDING) |

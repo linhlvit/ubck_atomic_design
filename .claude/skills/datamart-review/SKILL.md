@@ -217,6 +217,7 @@ Thực hiện tuần tự cho từng nhóm trong scope. Với mỗi nhóm:
 | **Grain** | Grain mô tả rõ ràng, đúng với logic BA |
 | **Bảng Fact/Dim** | Fact/Dim đủ để phản ánh dimension filter/slicer trong BA |
 | **Chiều (Slicer/Filter)** | Mọi dòng BA `Phân loại = Chiều` phải có KPI_ID trong HLD |
+| **Cột Fact thừa (không trace được về KPI)** | Với mỗi cột trong Fact block (erDiagram), kiểm tra có xuất hiện trong công thức của ít nhất 1 KPI trong bảng KPI của nhóm đó không. Không trace được và không phải FK trục thời gian/dimension chính → cột thừa, có thể do copy nguyên attribute entity nguồn vào Fact. Ngoại lệ: cột đã ghi chú rõ là "ETL filter khi populate Fact" (SCD4A current-state) — không cần xuất hiện trong công thức KPI |
 
 Output lớp 1:
 ```
