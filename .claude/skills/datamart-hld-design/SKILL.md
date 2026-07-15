@@ -76,6 +76,7 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
    - `Phân loại = Chiều` → slicer/filter dimension — **phải có KPI_ID**, không được bỏ qua
    - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
    - Ghi nhận `Trạng thái mapping` — phân biệt Done/Doing/Pending
+   - Ghi nhận cột **`Loại dữ liệu`** (`Dữ liệu tĩnh` / `Dữ liệu động`) cho từng dòng — dùng ở Bước 2 (Scope Gating) để quyết định READY/PENDING, độc lập với gating theo Atomic
    - ❌ Không bỏ qua dòng `Phân loại = Chiều` — đây là phần của bảng KPI, không chỉ là gợi ý thiết kế
 
 2. **Screenshot** — xác định scope boundary (tab, nhóm, loại thông tin hiển thị)
@@ -85,6 +86,8 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
    - Không có entry tương ứng → PENDING
    - Nếu tên nguồn trong BA không tìm thấy → tra [`reference/source_alias_mapping.md`](reference/source_alias_mapping.md) trước khi kết luận PENDING
    - Mỗi `physical_name` có thể có nhiều entry (nhiều source table) — tra tất cả entry cùng `physical_name`, không dừng ở entry đầu tiên
+   - **Cấm gán READY cho 1 entity chỉ vì "nghe quen"/đã dùng ở nhóm khác trong cùng module** — mọi entity dùng làm nguồn PHẢI có bằng chứng grep trực tiếp: `grep -rl "{physical_name}" DataModel/Atomic/**/*.yaml` hoặc entry `status: approved` trong `dm_manifest.yaml`. Không tìm thấy = PENDING, kể cả khi tên entity trùng khớp hợp lý với khái niệm nghiệp vụ (VD: đã có nhiều lần thiết kế giả định tồn tại 1 entity EAV kiểu "Member Report Indicator Value" cho báo cáo định kỳ CTCK, nhưng entity đó chưa từng có LLD approved trong track hiện hành — chỉ tồn tại ở track cũ đã revert).
+   - Khi 1 Nhóm định dùng lại đúng entity nguồn đã xác nhận READY ở Nhóm trước (cùng module) — vẫn phải tự chạy lại bước grep/tra manifest cho Nhóm này, không suy diễn "đã xác nhận rồi thì chắc vẫn đúng". BA có thể đổi nguồn giữa các Nhóm dùng chung khái niệm nghiệp vụ.
 
 4. **Entity YAML files** (`DataModel/Atomic/{BCV_Folder}/dm_atm_{physical_name}-{SOURCE}.{TABLE}.yaml`) — xác nhận tên entity/attribute khi cần (không đoán). Đọc `ldm.physical_name` = `atomic_table`, `attribute.physical_name` = `atomic_column`.
 
@@ -99,6 +102,8 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
   - Sau khi lấy code từ BA → cross-check với `DataModel/working/Atomic/lld/classification_schemes.yaml` để xác nhận scheme tồn tại.
   - Chỉ tạo Open Issue khi BA **thực sự không cung cấp** giá trị code. Nếu BA đã ghi rõ → dùng thẳng, không tạo issue thừa.
   - Ví dụ thực tế (VP module): BA ghi `Buy/Sell Client House Classification Code = '30'` → Tự doanh; `Foreign Investor Type Code <> '00'` → NĐTNN (negative filter). Sai nếu dùng `'PROP'` hay `= 'FI'` mà không đọc BA.
+- [ ] **Đọc full SQL/công thức tham khảo của MỌI dòng BA trước khi kết luận nguồn Atomic** — không suy diễn tên bảng/cột nguồn chỉ từ tên KPI hoặc khái niệm nghiệp vụ. Bắt buộc mở nguyên văn ô Công thức/Mô tả (thường chứa SQL tham khảo) và trích đúng: tên bảng JOIN, tên cột, điều kiện filter/LIKE — rồi mới tra sang Atomic. KHÔNG được giả định "chắc dùng entity X" vì nhóm trước cùng module đã dùng X cho khái niệm nghiệp vụ tương tự.
+- [ ] **Không copy pattern nguồn từ Nhóm trước khi chưa tự đọc SQL của chính dòng BA đang xét** — kể cả khi Nhóm N-1 đã xác nhận Atomic entity Y là nguồn đúng cho 1 khái niệm (VD: "Dư nợ margin"), Nhóm N nhắc lại đúng khái niệm đó KHÔNG được mặc định dùng lại Y. Phải tự đọc SQL riêng của Nhóm N — nếu BA đổi bảng/report code/sheet khác thì đó là nguồn khác, không reuse. Đây là nguyên nhân đã gây sai lặp lại nhiều lần trong thực tế (QLKD: hàng loạt Nhóm giả định dùng chung 1 entity EAV suy diễn theo tên, trong khi BA SQL thực tế của từng Nhóm chỉ ra các report_code/sheet_name/cột LIKE khác nhau hoàn toàn — phải re-verify từng Nhóm riêng lẻ mới phát hiện ra).
 
 ---
 
@@ -117,6 +122,23 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 > **Pattern "Fact thiếu FK":** Atomic entity nguồn đã READY nhưng Fact hiện tại thiếu FK đến một chiều cần bổ sung (VD: `Member Report Indicator Value` đã có nhưng cần thêm `Securities Company Dimension` để breakdown per-CTCK) → vẫn là **PENDING**, lý do ghi là "Fact cần bổ sung FK đến [Dimension]", Atomic cần bổ sung ghi tên Fact + chiều cần thêm.
 
 ❌ Không reuse fact/dim từ module khác để lấp KPI thiếu Atomic.
+
+### Gating bổ sung theo cột "Loại dữ liệu" (mọi Nhóm yêu cầu)
+
+BA file có cột **"Loại dữ liệu"** với 2 giá trị: `Dữ liệu tĩnh` và `Dữ liệu động`. Đây là lớp gating **độc lập, áp dụng SAU** bảng gating theo Atomic ở trên — kể cả khi Atomic đã READY và `Trạng thái mapping = Done`, vẫn phải kiểm tra thêm cột này. Áp dụng cho **mọi Nhóm yêu cầu** (Dashboard, Data Explorer, ...), không chỉ riêng Dashboard.
+
+| Loại dữ liệu | Ý nghĩa | Hành xử |
+|---|---|---|
+| `Dữ liệu tĩnh` | BA đã chốt logic mapping/nguồn cụ thể (bảng nguồn + trường nguồn + SQL tham khảo rõ ràng, không còn ghi chú "xác nhận lại") | Thiết kế **READY** theo đúng logic mapping BA cung cấp (nếu Atomic tương ứng cũng READY) |
+| `Dữ liệu động` | Nguồn dữ liệu là báo cáo định kỳ/số liệu do phân hệ khác nộp — logic khai thác (bảng, cột, điều kiện lọc) **chưa được thống nhất**, dù BA có kèm SQL tham khảo. Dấu hiệu nhận biết: SQL có comment "xác nhận lại", "hỏi bên phân hệ xem lưu ở bảng nào" | **PENDING** — không đưa vào ETL/mapping chính thức đợt này, lý do ghi "Dữ liệu động — chưa thống nhất quy tắc khai thác" |
+
+> **Lưu ý — không tự suy diễn từ tên cột:** Đừng cho rằng "Chiều" luôn tĩnh và "Chỉ tiêu" luôn động. Trong 1 nhóm, cả Chiều lẫn Chỉ tiêu đều có thể là `Dữ liệu động` (VD: "Chiều thời gian theo ngày" lấy từ bảng báo cáo định kỳ `MEMBER_REPORT.DATA_DATE` → động, trong khi cùng nhóm đó "Chiều Trạng thái công ty" lấy từ danh mục hệ thống → tĩnh). Đọc đúng giá trị cột "Loại dữ liệu" của từng dòng, không suy đoán theo `Phân loại`.
+
+> **Ví dụ thực tế (QLKD Nhóm 1 — Chỉ tiêu thống kê chung, 13/07/2026):** K_QLKD_1–9 (tổng CTCK + 7 trạng thái) đánh `Dữ liệu tĩnh` — nguồn `SC_FIRM_INFO` + `CAT_SC_FIRM_STATUS` (danh mục hệ thống, logic rõ ràng) → READY. K_QLKD_10–11 (số TK phát sinh GD, số dư tiền gửi) đánh `Dữ liệu động` — nguồn `REPORT_CELL_VALUE`/`CAT_INDICATOR` (báo cáo định kỳ), SQL kèm note "Hỏi bên phân hệ xem lưu ở bảng nào, cột nào, dòng nào?" → PENDING dù Atomic `Member Report Indicator Value` đã READY.
+
+> **Trong 1 block/nhóm có cả tĩnh lẫn động (rất phổ biến):** KHÔNG gộp chung 1 block READY duy nhất. Tách theo đúng Bước 2 Scope Gating: phần tĩnh vào block READY (bảng KPI 5 cột đầy đủ), phần động tách thành block PENDING riêng ngay sau đó (4 cột, có "KPI liên quan / Lý do / Atomic cần bổ sung / Mart dự kiến" theo format PENDING chuẩn — xem checklist Section 2). Nếu measure động vốn được thiết kế nằm chung Fact với các measure tĩnh (VD: cùng `Fact X Snapshot`), ghi rõ trong block PENDING: "measure này KHÔNG lưu trên [Fact] ở giai đoạn hiện tại — bổ sung khi thống nhất xong".
+>
+> **Nếu measure "động" là cột điều kiện snapshot/grain (VD: Calendar Date dùng để so sánh `<= ngày`)** — không thể pending cả Fact chỉ vì 1 cột ngày động. Trước khi kết luận PENDING, kiểm tra xem BA có chỉ định nguồn ngày thay thế (một cột ngày khác, đã tĩnh, cùng ý nghĩa nghiệp vụ) hay không — nếu có, dùng nguồn thay thế đó và ghi chú lý do đổi nguồn; chỉ pending nếu không có nguồn thay thế nào tĩnh.
 
 ## BƯỚC 3 — CHECK REUSE (DATAMART MODEL)
 
@@ -358,8 +380,10 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
   - Ví dụ đúng: BA ghi `Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro`, STT=2 → Nhóm: `#### Nhóm 2 - Phân tích đóng góp rủi ro`
   - Sai: `#### Nhóm Thanh khoản thị trường` (thiếu số STT); sai: `#### Nhóm 1` (thiếu tên)
 - [ ] Block READY có đủ: Phân loại / Atomic / Mockup / Source / Bảng KPI / Star Schema / Lineage Mart → Báo cáo / Bảng grain
+- [ ] **Mỗi cột trong Fact phải trace được về KPI/mockup của Nhóm đó** — sau khi viết xong bảng KPI, rà lại từng cột trong Fact block: cột nào không xuất hiện trong bất kỳ công thức KPI nào → loại khỏi Star Schema, trừ khi là FK trục thời gian/dimension chính hoặc là điều kiện ETL filter SCD4A đã ghi chú riêng bằng text (xem `reference/erdiagram_rules.md`). Không đưa nguyên attribute còn lại của Atomic entity nguồn vào Fact "cho đủ"
 - [ ] **Bảng KPI READY chỉ có 1 bảng duy nhất** — KHÔNG tách thành `*KPI mới:*` và `*KPI reuse:*` thành 2 bảng riêng. Reuse được liệt kê cùng bảng với KPI mới; thêm cột "Ghi chú" để đánh dấu nguồn gốc reuse
 - [ ] **Lineage Mart → Báo cáo chỉ vẽ từ Datamart lên báo cáo** — KHÔNG vẽ Atomic entities trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational (physical name trong GOLD layer), không phải Atomic entity
+- [ ] **Lineage Mart → Báo cáo gộp 1 report node duy nhất cho toàn bộ Nhóm** — KHÔNG tách report node riêng theo từng Chiều/KPI/measure. Ghi dạng `"K_{MODULE}_N-M,X,Y: {Tên Nhóm}"` liệt kê dải/danh sách KPI ID trong 1 node duy nhất (xem ví dụ đúng/sai trong `reference/section_structure.md`)
 - [ ] Block PENDING có đủ: KPI liên quan / Lý do / Atomic cần bổ sung / Mart dự kiến (chỉ tên + grain) / Bảng mapping nguồn (Atomic Placeholder)
 - [ ] Bảng mapping nguồn: mỗi dòng = 1 Atomic entity, điền đủ Bảng nguồn BA + Atomic entity dự kiến + Atomic table dự kiến (TBD nếu chưa rõ)
 - [ ] Bảng KPI PENDING: chỉ 4 cột (KPI ID / Tên KPI / Tính chất / Trạng thái) — không có Đơn vị, Công thức
@@ -380,6 +404,8 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] **Cấm thêm KPI không có dòng BA tương ứng:** Bảng KPI READY chỉ chứa KPI có dòng BA trong nhóm đó (mới hoặc reuse). Không thêm KPI từ suy luận nghiệp vụ dù hợp lý
 - [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse **trong cùng bảng KPI 6 cột duy nhất** — điền cột Ghi chú = "Reuse từ Nhóm X". KHÔNG tạo bảng reuse riêng.
 - [ ] **Đồng bộ "KPI liên quan" trong PENDING header:** Sau khi hoàn thiện bảng KPI PENDING, kiểm tra lại dòng `**KPI liên quan:**` — phải khớp chính xác với tất cả ID xuất hiện trong bảng (cả mới lẫn reuse). Nếu bảng KPI thay đổi → cập nhật dòng này ngay
+- [ ] **Gating theo "Loại dữ liệu":** Với mọi dòng BA (mọi Nhóm yêu cầu), kiểm tra cột `Loại dữ liệu` — `Dữ liệu động` → PENDING dù Atomic đã READY/Trạng thái mapping = Done (lý do: "chưa thống nhất quy tắc khai thác"); `Dữ liệu tĩnh` → theo gating Atomic bình thường. KHÔNG suy đoán tĩnh/động theo `Phân loại` (Chiều/Cơ sở/Phái sinh) — đọc đúng giá trị cột này
+- [ ] **Block có cả tĩnh lẫn động:** Tách thành 2 block riêng (READY cho phần tĩnh, PENDING cho phần động) — không gộp chung 1 bảng KPI 5 cột
 
 ### Section 3 — Mô hình tổng thể
 - [ ] Không bao gồm PENDING
