@@ -43,6 +43,23 @@ graph TB có: DIM_DATE --> FACT_MKT  và  DIM_CO --> FACT_MKT
 3. Nhiều nguồn: nối ` / ` theo thứ tự driving table trước, join table sau
 4. PENDING chưa xác định Atomic → để trống hoặc `TBD`
 
+### Rule loại bảng PENDING toàn bộ khỏi Entities.csv
+
+**Bắt buộc:** Fact/Dim/Operational **PENDING TOÀN BỘ** (không có bất kỳ KPI/Nhóm nào ở trạng thái READY trong Section 3/Section 2 HLD — 100% Gap Atomic hoặc chờ nguồn) → **KHÔNG đưa vào Entities.csv**.
+
+**Lý do:** Nếu đưa vào CSV chính, `datamart-lld-design` Phase 1 (sinh Attributes) có thể xử lý nhầm như bảng đã sẵn sàng → map cột vào Atomic entity/attribute chưa tồn tại → sai lệch lan xuống Detail Mapping trước khi Atomic thực sự approved.
+
+**Phân biệt quan trọng — chỉ loại khi PENDING 100%, không loại khi PENDING một phần:**
+
+| Trường hợp | Xử lý |
+|---|---|
+| Fact/Dim có ít nhất 1 KPI/Nhóm READY (dù các KPI khác cùng bảng PENDING) | **Giữ trong Entities.csv** — phần READY cần Attributes thật để LLD thiết kế đúng |
+| Fact/Dim PENDING toàn bộ (100% KPI/Nhóm dùng bảng đó đều PENDING, không có ngoại lệ) | **Loại khỏi Entities.csv** — liệt kê riêng trong Entities.md, không đưa vào CSV |
+
+Ví dụ: `Fact Public Company Financial Summary Snapshot` có K_GSDC_46/47 READY dù K_GSDC_48/49 PENDING → **giữ trong CSV**. `Fact Public Company Financial Report Value` 100% PENDING (toàn bộ Nhóm dùng bảng này đều Gap Atomic) → **loại khỏi CSV**.
+
+**Cách thể hiện trong Entities.md:** thêm mục "Bảng PENDING (không thiết kế trong Phase 2)" ở cuối file — bảng 3 cột `Datamart Entity | Lý do PENDING | Issue` (tham chiếu ID Open Issue ở Section 4/5 HLD). Không thêm bảng PENDING vào CSV, kể cả với `source_table = TBD`.
+
 ---
 
 ## Entities.csv

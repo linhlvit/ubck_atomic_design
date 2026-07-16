@@ -1,6 +1,8 @@
 # Section Structure — DTM_{MODULE}_HLD.md
 
-## 4 Section cố định (bắt buộc, đúng thứ tự)
+## Section cố định (bắt buộc, đúng thứ tự)
+
+Mặc định 4 Section:
 
 ```
 #### Section 1 — Data Lineage
@@ -8,6 +10,18 @@
 #### Section 3 — Mô hình tổng thể
 #### Section 4 — Vấn đề mở
 ```
+
+**Biến thể 5 Section** — dùng khi module có nhiều KPI reuse xuyên suốt nhiều Nhóm/Fact (reuse ở cấp KPI/cột, gate rule theo "Loại dữ liệu", gap Atomic dùng chung nhiều Nhóm) đủ phức tạp để cần một Section tổng hợp riêng thay vì rải rác trong từng Nhóm ở Section 2:
+
+```
+#### Section 1 — Data Lineage
+#### Section 2 — Tổng quan báo cáo
+#### Section 3 — Mô hình tổng thể
+#### Section 4 — Reuse Analysis
+#### Section 5 — Vấn đề mở
+```
+
+Ví dụ áp dụng: `DTM_NHNCK_HLD.md` (file chuẩn tham chiếu), `DTM_GSDC_HLD.md`, `DTM_QLKD_HLD.md`. Khi dùng biến thể 5-section, "Vấn đề mở" luôn là Section cuối cùng (Section 5), không phải Section 4.
 
 ---
 
@@ -158,6 +172,11 @@ D3 --> R3
 - Mart dự kiến ghi "(reuse)" để rõ không tạo Fact mới
 - Lý do pending và Atomic cần bổ sung ghi ngắn "xem Nhóm [tên nhóm đầu tiên]"
 
+**Pattern: Nhóm READY reuse toàn bộ Fact/KPI từ Nhóm khác (VD: Data Explorer reuse Fact chấm điểm gốc):**
+- **Bảng KPI vẫn bắt buộc đầy đủ** — liệt kê lại toàn bộ KPI_ID reuse với đủ 6 cột (KPI ID | Tên KPI | Đơn vị | Tính chất | Atomic Entity/Table/Attribute/Column | Ghi chú "Reuse từ Nhóm X"). KHÔNG được thay bằng 1 dòng văn xuôi "KPI liên quan: liệt kê ID" — đây là căn cứ duy nhất để trace KPI Done trong BA → KPI_ID trong HLD ở Lớp 1 review.
+- Chỉ **Star Schema / Lineage / Bảng grain** được phép rút gọn thành "giống Nhóm X" khi Fact/Dim dùng chung 100% với Nhóm gốc — không cần vẽ lại mermaid.
+- Mockup/Source có thể refer ngắn gọn nếu giao diện Data Explorer chỉ là bảng dữ liệu thô (không có chart riêng).
+
 ---
 
 ## Section 3 — Mô hình tổng thể
@@ -166,43 +185,48 @@ D3 --> R3
 
 ```mermaid
 graph TB
-    classDef fact fill:#4472C4,color:#fff
-    classDef dim fill:#70AD47,color:#fff
-    classDef operational fill:#ED7D31,color:#fff
+    classDef dim fill:#E6F1FB,stroke:#185FA5,color:#0C447C
+    classDef fact fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
+    classDef oper fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
 
-    FactA([Fact A]):::fact
-    DimB([Dim B]):::dim
-    OpC([Op C]):::operational
+    DimB["Dim B"]:::dim
+    FactA["Fact A"]:::fact
+    OpC["Op C"]:::oper
 
     DimB --> FactA
 ```
 
-Hiển thị node + edge + màu phân loại. Không thêm thông tin khác.
+Hiển thị node + edge + màu phân loại (dim/fact/oper). Không thêm thông tin khác.
 Node label không dùng `\n` — viết trên 1 dòng duy nhất.
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
-| Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính |
+| Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
 
-- `Fact Pattern`: `Fact Event` hoặc `Fact Snapshot`
-- `Mô tả`: 1 câu ngắn mục đích nghiệp vụ
+- `Pattern`: `Periodic Snapshot` hoặc `Event`
+- `Grain`: mô tả ngắn 1 dòng đại diện cho gì
+- `KPI`: liệt kê dải/danh sách KPI_ID kèm `(Nhóm N)` — gộp reuse cùng dòng nếu Fact dùng chung nhiều Nhóm
+- `Trạng thái`: READY / READY (Atomic draft — chưa approved) / PENDING, kèm ghi chú ngắn gap nếu có
 
 ### 3.3 Bảng Tác nghiệp
 
-Ghi "Không có" khi không có bảng Tác nghiệp.
+Ghi "Không có." khi không có bảng Tác nghiệp.
 
-| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính |
+| Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
+
+Cùng quy tắc cột KPI/Trạng thái như 3.2. Áp dụng khi module có nhiều Operational table denormalized theo entity 360 (VD: NHNCK — Practitioner 360 Profile, Certificate History...).
 
 ### 3.4 Bảng Dimension (chỉ liệt kê Dimension)
 
-*Tất cả Dimension áp dụng SCD Type 4A.*
+*Tất cả Dimension áp dụng SCD Type 4A (trừ khi ghi chú khác, VD SCD2 khi kế thừa từ module khác).*
 
-| Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính | Conformed |
+| Dimension | Loại | Mô tả | Scheme | Trạng thái |
 |---|---|---|---|---|
 
-- `Conformed`: `Có` (dùng chung cross-module) hoặc `Không`
+- `Loại`: `Conformed` (dùng chung cross-module) / `Reference per module` / `SCD2` (nếu kế thừa thiết kế cũ)
+- `Scheme`: liệt kê Classification Value scheme dùng trong Dimension này, `—` nếu không có
 
 ---
 

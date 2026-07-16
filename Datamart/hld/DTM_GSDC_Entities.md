@@ -1,424 +1,274 @@
-# DTM_GSTT_Entities — v1.2
+# DTM_GSDC_Entities — v1.0
 
-**Phiên bản:** 1.2
-**Ngày cập nhật:** 2026-05-15
-**Phạm vi:** Star schema diagram per nhóm báo cáo — GSTT module
-**Thay đổi so với v1.1:**
-- E-01: Nhóm 28 — xóa attribute block lỗi (`BK` gây Mermaid parse error), giữ entity name rỗng
-- E-02: Data Explorer — sửa KPI range từ `K_GSTT_100–115` thành `K_GSTT_107` (READY only)
-- E-03: Nhóm 3 — bổ sung `Public Company Industry Dimension` vào erDiagram và bảng tóm tắt
-- E-04: Nhóm 27b — bổ sung `K_GSTT_2, K_GSTT_19–21` vào KPI range
+**Phiên bản:** 1.0
+**Ngày cập nhật:** 2026-07-15
+**Phạm vi:** Star schema diagram per nhóm báo cáo — GSDC module (Phase 2, dựa trên Section 3/4 của `DTM_GSDC_HLD.md`)
 
 ---
 
-## Tab Danh mục CK
+## Màn hình 1 — Phân loại & Xếp hạng Rủi ro CTDC
 
-### Nhóm 1 — Bảng số liệu Cổ phiếu
+### Nhóm 1 — Tổng hợp chấm điểm phân loại CTDC
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Risk_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Risk_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Tổng hợp thị trường CK EOD | 1 row / mã CK / ngày | K_GSTT_1–25 |
-| Security Dimension | Mã CK, Sàn, Loại CK, Chỉ số | 1 row / mã CK (SCD2) | Slicer Mã CK / Sàn / Loại / Chỉ số |
-| Public Company Industry Dimension | Ngành kinh tế cấp 1 (10 ngành IDS) | 1 row / mã CP (SCD2) | Slicer Ngành |
-| Calendar Date Dimension | Ngày giao dịch, Năm, Tháng, Quý | 1 row / ngày | Slicer Ngày / Kỳ |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Risk Score Snapshot | Fact Snapshot | new | Điểm Tuân thủ/Phát hành/Tài chính/Phi TC/Xếp hạng TN/Tổng điểm | 1 row / CTDC / kỳ đánh giá (SCD4A current state) | K_GSDC_1–8 |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer Mã CK / Tên DN |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer Kỳ |
 
 ---
 
-### Nhóm 2 — Bảng số liệu Trái phiếu DN niêm yết
+### Nhóm 2 — Top CTDC theo chỉ tiêu tuân thủ
 
 ```mermaid
 erDiagram
-    Fact_Corporate_Bond_Daily_Market_Summary ||--o{ Corporate_Bond_Issuer_Dimension : ""
-    Fact_Corporate_Bond_Daily_Market_Summary ||--o{ Corporate_Bond_Issuer_Industry_Dimension : ""
-    Fact_Corporate_Bond_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Compliance_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Compliance_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Corporate Bond Daily Market Summary | Tổng hợp thị trường TPDN EOD | 1 row / mã TP / ngày | K_GSTT_14b–23 |
-| Corporate Bond Issuer Dimension | Tổ chức phát hành TPDN | 1 row / mã TP (SCD2) | Slicer Mã TP / Tên nhà phát hành |
-| Corporate Bond Issuer Industry Dimension | Ngành TPDN cấp 1 (10 ngành IDS) | 1 row / mã TP (SCD2) | Slicer Ngành TPDN |
-| Calendar Date Dimension | Ngày giao dịch | 1 row / ngày | Slicer Ngày / Kỳ |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Compliance Score Snapshot | Fact Snapshot | new | 15 tiêu chí Tuân thủ + Tổng điểm | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8 (reuse), K_GSDC_9–23 |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-### Nhóm 3 — Biểu đồ kỹ thuật Cổ phiếu
+### Nhóm 3 — Top CTDC theo chỉ tiêu phát hành
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Issuance_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Issuance_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — OHLCV + BCTC theo mã CK / ngày | 1 row / mã CK / ngày | K_GSTT_19–25 |
-| Security Dimension | Slicer Mã CK | 1 row / mã CK (SCD2) | Slicer Mã CK |
-| Public Company Industry Dimension | Slicer Ngành | 1 row / mã CP (SCD2) | Slicer Ngành |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer Ngày / Kỳ |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Issuance Score Snapshot | Fact Snapshot | new | 7 tiêu chí Phát hành + Tổng điểm | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8 (reuse), K_GSDC_24–31 |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Top Khối lượng
-
-### Nhóm 6 — Top Khối lượng Toàn thị trường (Bảng số liệu)
+### Nhóm 4 — Top CTDC theo chỉ tiêu tài chính
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — ranking theo KL | 1 row / mã CK / ngày | K_GSTT_1–3, K_GSTT_49–52 |
-| Security Dimension | Slicer Mã CK / Sàn / Chỉ số | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Slicer Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Từ ngày / Đến ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Score Snapshot | Fact Snapshot | new | 10 tiêu chí Tài chính + Tổng điểm | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8 (reuse), K_GSDC_32–42 |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-### Nhóm 7 — Top Khối lượng Toàn thị trường (Biểu đồ kỹ thuật)
+### Nhóm 5 — Top CTDC theo chỉ tiêu phi tài chính & M-Score
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Non_Financial_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Non_Financial_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — OHLCV cho mã được chọn | 1 row / mã CK / ngày | K_GSTT_19–22, K_GSTT_25 |
-| Security Dimension | Slicer Mã CK | 1 row / mã CK (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Non-Financial Score Snapshot | Fact Snapshot | new | 2 tiêu chí Phi TC & M-Score + Tổng điểm | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8 (reuse), K_GSDC_43–45 |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-### Nhóm 8 — Top Khối lượng theo Sàn / Chỉ số / Ngành (Bảng số liệu)
+## Màn hình 2 — Giám sát Tổng hợp
+
+### Nhóm 6 / 9 / 10 / 12 / 14 / 16 — Thống kê niêm yết theo sàn (toàn TT / chưa niêm yết / HNX / HOSE / UPCOM / OTC)
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — filter theo Sàn / Chỉ số / Ngành | 1 row / mã CK / ngày | K_GSTT_1–3, K_GSTT_53–59 |
-| Security Dimension | Filter Floor_Code / Index_Codes | 1 row / mã CK (SCD2) | Slicer Sàn / Chỉ số |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer Ngành |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Summary Snapshot | Fact Snapshot | new | Số DN, Tỷ lệ nộp BCTC (PENDING), Số DN báo lãi (PENDING) — theo sàn | 1 row / CTDC / kỳ báo cáo (năm × quý) | K_GSDC_46–49 (Nhóm 6); K_GSDC_77 (Nhóm 9); K_GSDC_46-49+78 reuse (Nhóm 10/12/14/16) |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN, Sàn | 1 row / công ty đại chúng (SCD2) | Slicer Sàn |
+| Calendar Date Dimension | Dimension | reuse | Kỳ thống kê | 1 row / ngày (Conformed) | Slicer |
+
+> **Ghi chú:** K_GSDC_48/49 PENDING theo gate rule "Dữ liệu động" ở mọi Nhóm 6/10/12/14/16 — không thiết kế Attributes cho 2 cột này trong Phase 1 LLD cho đến khi gỡ gate.
 
 ---
 
-### Nhóm 9 — Top Khối lượng theo Sàn / Chỉ số / Ngành (Biểu đồ kỹ thuật)
+### Nhóm 8 — Tổng hợp chỉ tiêu tài chính & thống kê ngành (toàn thị trường)
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — OHLCV + filter Sàn / Chỉ số | 1 row / mã CK / ngày | K_GSTT_19–22, K_GSTT_25 |
-| Security Dimension | Filter Floor_Code / Index_Codes | 1 row / mã CK (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Summary Snapshot | Fact Snapshot | reuse | Chiều Ngành kinh tế (READY); 13 KPI CTTC theo ngành PENDING | 1 row / CTDC / kỳ báo cáo | K_GSDC_63 (READY); K_GSDC_64–76 (PENDING — không thiết kế) |
+| Public Company Dimension | Dimension | reuse | Ngành kinh tế cấp 1 | 1 row / công ty đại chúng (SCD2) | Group by Ngành |
+| Calendar Date Dimension | Dimension | reuse | Kỳ thống kê | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Top Đột phá
+## Màn hình 3 — Data Explorer: Dữ liệu tài chính doanh nghiệp (Nhóm 32–36 — reuse Score Snapshot)
 
-### Nhóm 10–13 — Top Đột phá (Bảng số liệu + Biểu đồ kỹ thuật × Toàn TT + Sàn/Chỉ số/Ngành)
+### Nhóm 32 — Dữ liệu tổng hợp chấm điểm phân loại CTDC
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Risk_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Risk_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — filter đột phá KLGD/KLGDTB | 1 row / mã CK / ngày | K_GSTT_1, K_GSTT_53–59 |
-| Security Dimension | Filter Sàn / Chỉ số | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
-
-> **Ghi chú:** Nhóm 10, 12 — Bảng số liệu. Nhóm 11, 13 — Biểu đồ kỹ thuật. Schema giống nhau, KPI đột phá tính tại query layer từ `Total_Match_Volume` (O_GSTT_16 Confirmed).
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Risk Score Snapshot | Fact Snapshot | reuse | Reuse toàn bộ từ Nhóm 1, không tính lại | 1 row / CTDC / kỳ đánh giá (SCD4A current state) | K_GSDC_1–8 (reuse từ Nhóm 1) |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Top Giá trị Giao dịch
-
-### Nhóm 14–15 — Top Giá trị (Bảng số liệu + Biểu đồ kỹ thuật)
+### Nhóm 33 — Phân loại CTDC theo chỉ tiêu tuân thủ
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Compliance_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Compliance_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — ranking theo GT | 1 row / mã CK / ngày | K_GSTT_1, K_GSTT_4 |
-| Security Dimension | Filter Sàn / Chỉ số | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Compliance Score Snapshot | Fact Snapshot | reuse | Reuse toàn bộ từ Nhóm 2, không tính lại | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8, K_GSDC_9–23 (reuse từ Nhóm 2) |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Top Tăng Giá / Giảm Giá
-
-### Nhóm 16–19 — Top Tăng Giá + Top Giảm Giá (Bảng số liệu + Biểu đồ kỹ thuật)
+### Nhóm 34 — Phân loại CTDC theo chỉ tiêu tài chính
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — filter % thay đổi > 0 / < 0 | 1 row / mã CK / ngày | K_GSTT_2, K_GSTT_3, K_GSTT_53 |
-| Security Dimension | Filter Sàn / Chỉ số | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
-
-> **Ghi chú:** % Thay đổi = `(Close_Price − Reference_Price) / Reference_Price × 100` — tính tại query layer (O_GSTT_20 Confirmed).
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Score Snapshot | Fact Snapshot | reuse | Reuse toàn bộ từ Nhóm 4 (trừ K_GSDC_38 đã loại), không tính lại | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8, K_GSDC_32–42 (reuse từ Nhóm 4) |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Top Vượt Đỉnh / Thùng Đáy
-
-### Nhóm 20–23 — Top Vượt Đỉnh + Top Thùng Đáy (Bảng số liệu + Biểu đồ kỹ thuật)
+### Nhóm 35 — Phân loại CTDC theo chỉ tiêu phát hành
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Issuance_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Issuance_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — filter Vượt Đỉnh / Thùng Đáy theo preset | 1 row / mã CK / ngày | K_GSTT_1–4, K_GSTT_60–61 |
-| Security Dimension | Filter Sàn / Chỉ số | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
-
-> **Ghi chú:** Đỉnh Cũ / Đáy Cũ = `MAX/MIN(High/Low Price) OVER preset` tại query layer. Preset cố định: 3 THÁNG / 6 THÁNG / 1 NĂM (O_GSTT_17 Confirmed).
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Issuance Score Snapshot | Fact Snapshot | reuse | Reuse toàn bộ từ Nhóm 3, không tính lại | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8, K_GSDC_24–31 (reuse từ Nhóm 3) |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Top NDTNN
-
-### Nhóm 24 — Top NDTNN (Bảng số liệu)
+### Nhóm 36 — Phân loại CTDC theo chỉ tiêu phi tài chính
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Non_Financial_Score_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Non_Financial_Score_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — ranking theo KL/GT NN mua/bán ròng | 1 row / mã CK / ngày | K_GSTT_8–13, K_GSTT_62–63 |
-| Security Dimension | Filter Sàn / Chỉ số | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Từ ngày / Đến ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Non-Financial Score Snapshot | Fact Snapshot | reuse | Reuse toàn bộ từ Nhóm 5, không tính lại | 1 row / CTDC / kỳ đánh giá | K_GSDC_7–8, K_GSDC_43–45 (reuse từ Nhóm 5) |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ đánh giá | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-### Nhóm 25 — Top NDTNN (Biểu đồ kỹ thuật)
+## Màn hình 4 — Báo cáo giám sát CTDC
+
+### Nhóm 38 — BC01.1: Báo cáo vĩ mô theo sàn
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — OHLCV + KL/GT NN | 1 row / mã CK / ngày | K_GSTT_8–13, K_GSTT_19–22 |
-| Security Dimension | Slicer Mã CK | 1 row / mã CK (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Summary Snapshot | Fact Snapshot | reuse | Số DN, số BCTC đến hạn/đã nộp, tỷ lệ nộp, số DN báo lãi theo sàn | 1 row / CTDC / kỳ báo cáo | K_GSDC_700–708 |
+| Public Company Dimension | Dimension | reuse | Sàn NY/ĐKGD | 1 row / công ty đại chúng (SCD2) | Group by Sàn |
+| Calendar Date Dimension | Dimension | reuse | Kỳ báo cáo | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Bản Đồ Nhiệt
-
-### Nhóm 26 — Bản Đồ Nhiệt
+### Nhóm 39 — BC01.2: Báo cáo vĩ mô theo ngành
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — kích thước ô + màu sắc heatmap | 1 row / mã CK / ngày | K_GSTT_1, K_GSTT_3, K_GSTT_4, K_GSTT_8–13, K_GSTT_64–65 |
-| Security Dimension | Group by Industry Level1 (view Ngành) | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Aggregate theo ngành | 1 row / mã CP (SCD2) | Group by |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Summary Snapshot | Fact Snapshot | reuse | Chiều Ngành (READY); 8 KPI đo lường PENDING | 1 row / CTDC / kỳ báo cáo | K_GSDC_709 (READY); K_GSDC_710–717 (PENDING — không thiết kế) |
+| Public Company Dimension | Dimension | reuse | Ngành kinh tế cấp 1 | 1 row / công ty đại chúng (SCD2) | Group by Ngành |
+| Calendar Date Dimension | Dimension | reuse | Kỳ báo cáo | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-## Tab Xu Hướng Dòng Tiền
-
-### Nhóm 27b — Sub-tab Nước Ngoài / Biểu đồ GTNN (STT 41)
+### Nhóm 40 — BC01.3: Báo cáo vĩ mô đa kỳ (N / N-1 / N-2)
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — GT NN mua/bán/ròng tích lũy EOD + OHLC | 1 row / mã CK / ngày | K_GSTT_2, K_GSTT_11–13, K_GSTT_19–21 |
-| Security Dimension | Filter Sàn | 1 row / mã CK (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày / Kỳ | 1 row / ngày | Slicer |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Summary Snapshot | Fact Snapshot | reuse | Chiều Kỳ báo cáo (READY); 21 KPI đo lường đa kỳ PENDING | 1 row / CTDC / kỳ báo cáo | K_GSDC_718 (READY); K_GSDC_719–739 (PENDING — không thiết kế) |
+| Public Company Dimension | Dimension | reuse | Mã CK, Tên DN | 1 row / công ty đại chúng (SCD2) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Kỳ báo cáo N/N-1/N-2 | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
-### Nhóm 27b_heatmap — Sub-tab Nước Ngoài / Bản đồ nhiệt KLNN (STT 42)
+### Nhóm 41 — BC22: Tổng hợp tình hình tài chính CTDC theo sàn
 
 ```mermaid
 erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Public_Company_Dimension : ""
+    Fact_Public_Company_Financial_Summary_Snapshot ||--o{ Calendar_Date_Dimension : ""
 ```
 
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — KL NN mua/bán/ròng heatmap | 1 row / mã CK / ngày | K_GSTT_8–10, K_GSTT_3 |
-| Security Dimension | Slicer Mã CK / Sàn | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
-
----
-
-### Nhóm 27c — Sub-tab Tự Doanh (STT 43)
-
-```mermaid
-erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
-```
-
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — GT Tự doanh mua/bán/ròng | 1 row / mã CK / ngày | K_GSTT_2, K_GSTT_3, K_GSTT_71–73 |
-| Security Dimension | Filter Sàn | 1 row / mã CK (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
-
----
-
-### Nhóm 27d — Sub-tab Phân Loại Nhà Đầu Tư / Biểu đồ GT ròng (STT 44)
-
-```mermaid
-erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
-```
-
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — GT ròng 4 nhóm NĐT | 1 row / mã CK / ngày | K_GSTT_11–13, K_GSTT_71–73, K_GSTT_77–84 |
-| Security Dimension | Slicer Sàn | 1 row / mã CK (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày / Kỳ | 1 row / ngày | Slicer |
-
----
-
-### Nhóm 27d_heatmap — Sub-tab Phân Loại Nhà Đầu Tư / Bản đồ nhiệt GT ròng (STT 45)
-
-```mermaid
-erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
-```
-
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — GT ròng theo nhóm NĐT heatmap | 1 row / mã CK / ngày | K_GSTT_3, K_GSTT_4, K_GSTT_15, K_GSTT_77–84, K_GSTT_89 |
-| Security Dimension | Slicer Mã CK | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Filter Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
-
----
-
-## Tab Data Explorer — Giao dịch & Thanh khoản (STT 49)
-
-### Data Explorer
-
-```mermaid
-erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Public_Company_Industry_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
-```
-
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — metrics giao dịch & thanh khoản | 1 row / mã CK / ngày | K_GSTT_107 |
-| Security Dimension | Slicer Mã CK / Sàn / Chỉ số | 1 row / mã CK (SCD2) | Slicer |
-| Public Company Industry Dimension | Slicer Ngành | 1 row / mã CP (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Từ ngày / Đến ngày | 1 row / ngày | Slicer |
-
-> **Ghi chú:** K_GSTT_108–115 PENDING (O_GSTT_12, O_GSTT_13, O_GSTT_26) — không thiết kế trong Phase 2.
-
----
-
-## Tab Biểu đồ Phân tích Kỹ thuật (STT 38 / 46)
-
-### Biểu đồ kỹ thuật
-
-```mermaid
-erDiagram
-    Fact_Security_Daily_Market_Summary ||--o{ Security_Dimension : ""
-    Fact_Security_Daily_Market_Summary ||--o{ Calendar_Date_Dimension : ""
-```
-
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Security Daily Market Summary | Reuse — OHLCV candlestick + tài chính | 1 row / mã CK / ngày | K_GSTT_116–120 |
-| Security Dimension | Slicer Mã CK | 1 row / mã CK (SCD2) | Slicer |
-| Calendar Date Dimension | Slicer Ngày | 1 row / ngày | Slicer |
-
----
-
-## Tab Sở hữu và giao dịch nội bộ (STT 47)
-
-### Nhóm 28 — Thông tin sở hữu và người nội bộ
-
-```mermaid
-erDiagram
-    Stock_Holder_Ownership_Profile
-```
-
-| Datamart Entity | Description | Grain | KPI |
-|---|---|---|---|
-| Stock Holder Ownership Profile | Thông tin cổ đông và người nội bộ | 1 row / cổ đông / công ty đại chúng | K_GSTT_123–128 |
-
-> **Ghi chú:** Bảng Tác nghiệp standalone — không join qua Dimension. Filter theo `pblc_co_code` tại query layer.
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Summary Snapshot | Fact Snapshot | reuse | Chiều Theo sàn (READY); 22 KPI đo lường + YoY PENDING | 1 row / CTDC / kỳ báo cáo | K_GSDC_740 (READY); K_GSDC_741–751+YOY (PENDING — không thiết kế) |
+| Public Company Dimension | Dimension | reuse | Sàn NY/ĐKGD | 1 row / công ty đại chúng (SCD2) | Group by Sàn |
+| Calendar Date Dimension | Dimension | reuse | Kỳ báo cáo | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
@@ -426,10 +276,8 @@ erDiagram
 
 | Datamart Entity | Lý do PENDING | Issue |
 |---|---|---|
-| Fact Index Constituent Contribution Snapshot | IDXInfor schema chưa ổn định | O_GSTT_12 |
-| Fact Market Index Daily Snapshot | IDXInfor schema chưa ổn định | O_GSTT_12 |
-| Fact Market Valuation Snapshot | IDXInfor + VSDC TT138 chưa có Atomic | O_GSTT_12, O_GSTT_13 |
-| Fact Security Valuation Snapshot | VSDC TT138 + IDS BCTC blocker | O_GSTT_13, O_GSTT_26 |
-| Market Index Dimension | IDXInfor schema chưa ổn định | O_GSTT_12 |
-| Nhóm 27a — Sub-tab Tỷ Trọng | IDXInfor + FREE FLOAT chưa có Atomic | O_GSTT_12, O_GSTT_25 |
-| Tab Báo cáo BM021 (STT 48) | VSDC TT138 + IDS BCTC chưa đủ Atomic | O_GSTT_13, O_GSTT_26 |
+| Fact Public Company Financial Report Value | 100% Nhóm dùng bảng này (Nhóm 7/8/11/13/15/17/19-30/37) đều PENDING — Atomic `Public Company Financial Report Value` chưa có LLD (nguồn `IDS.data`/`report_catalog`/`rrow`/`rcol`) | O_GSDC_5 |
+| Fact Public Company Listing Info Snapshot | 100% PENDING — nguồn MSS chưa có Atomic thiết kế (Nhóm 31, DB33) | (Section 5 — Nhóm 31, chưa có Open Issue ID riêng) |
+| Financial Report Catalog Dimension | 100% PENDING — cả 3 nguồn Atomic đều `design_status: draft`, chưa approved: `Financial Report Catalog` (`financial_report_catalog`), `Financial Report Form Row Template` (`frf_row_template`), `Financial Report Form Column Template` (`frf_column_template`). Chỉ dùng ở Nhóm 18 và MH3 Data Explorer (Nhóm 19-30) — cả 2 phạm vi đều 100% PENDING | O_GSDC_3, O_GSDC_5 |
+
+> **Sửa lỗi so với bản trước:** Section 3 HLD từng ghi nhầm `Financial Report Catalog Dimension` = READY/new dù cả 3 entity nguồn (`Financial Report Catalog`, `Financial Report Form Row Template`, `Financial Report Form Column Template`) đều `design_status: draft` trong `DataModel/working/Atomic/lld/IDS/` — đã sửa lại thành PENDING trong Section 3/4 HLD và loại khỏi Entities.csv.

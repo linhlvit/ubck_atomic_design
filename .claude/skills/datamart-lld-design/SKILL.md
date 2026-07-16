@@ -57,11 +57,14 @@ description: |
 
 ```
 Phase 0 (PLAN):
-           Claude đọc HLD (Section 2) + Entities.csv → trích danh sách nhóm báo cáo
+           Claude đọc HLD (Section 2) + Entities.csv → trích danh sách TOÀN BỘ nhóm báo cáo
+           (Nhóm 1 → Nhóm N_max — kể cả nhóm PENDING toàn bộ không có bảng nào cần thiết kế)
            → với mỗi nhóm: liệt kê KPI IDs + bảng cần thiết kế (new/partial) + bảng reuse
+             — nhóm PENDING toàn bộ ghi "— (PENDING toàn bộ, không có bảng)"
            → dim dùng chung: nhóm đầu tiên dùng → thiết kế; nhóm sau → check datamart_model.yaml
              (reuse nếu đủ cột / partial nếu thiếu cột)
-           → trình bày plan tổng dạng bảng (xem định dạng bên dưới)
+           → trình bày plan tổng dạng bảng (xem định dạng bên dưới) — tổng số dòng Plan PHẢI
+             bằng tổng số nhóm trong HLD Section 2, không chỉ nhóm có bảng READY
            → DỪNG chờ human approve plan → sau khi approve mới bắt đầu Nhóm 1
 
 Loop mỗi nhóm N — Phase 1 (HOÀN THÀNH TOÀN BỘ NHÓM TRƯỚC KHI CHUYỂN PHASE 2):
@@ -81,16 +84,29 @@ Loop mỗi nhóm N — Phase 1 (HOÀN THÀNH TOÀN BỘ NHÓM TRƯỚC KHI CHUY�
 > Điều kiện bắt buộc: **tất cả nhóm** (Nhóm 1 → Nhóm N_max) đã có file Attributes được human approve và merge vào master.
 > Trước khi chuyển Phase 2: liệt kê toàn bộ nhóm + trạng thái Phase 1 → báo cáo human → DỪNG chờ xác nhận.
 
-Loop mỗi nhóm N — Phase 2 (sau khi TOÀN BỘ Phase 1 đã xong):
+Phase 2 — Bước 0 (TODO LIST — bắt buộc, chạy 1 lần trước khi vào loop):
+             Quét lại HLD Section 2 từ đầu (độc lập với Phase 0 Plan) → lập danh sách
+             TOÀN BỘ nhóm 1 → N_max kèm trạng thái (READY / READY thu hẹp / PENDING toàn bộ)
+             → đây là todo list kiểm soát tiến độ Phase 2, KHÔNG lấy lại danh sách từ Phase 0 Plan
+             (Plan Phase 0 có thể đã lược bỏ nhóm PENDING toàn bộ vì không cần bảng Attributes)
+             → trình bày todo list dạng bảng: Nhóm | Trạng thái HLD | Đã có trong Detail Mapping? (chưa/rồi)
+             → DỪNG chờ human xác nhận todo list trước khi bắt đầu loop Nhóm 1
+
+Loop mỗi nhóm N — Phase 2 (theo TODO LIST vừa lập, N = 1 → N_max, xử lý cả nhóm PENDING toàn bộ):
   Phase 2:   Cross-check BA ↔ HLD cho KPI của nhóm N → báo gap nếu có
              → DỪNG chờ human xử lý gap (nếu có)
-             → xuất block KPI nhóm N → append vào DTM_{MODULE}_Detail_Mapping.csv
+             → xuất block KPI nhóm N (kể cả nhóm PENDING toàn bộ — xem quy tắc PENDING trong
+               reference/phase2_detail_mapping.md) → append vào DTM_{MODULE}_Detail_Mapping.csv
+               theo ĐÚNG THỨ TỰ SỐ NHÓM TĂNG DẦN (không append cuối file nếu nhóm đó có số nhỏ hơn
+               nhóm đã append trước đó — xem TC6)
              → SELF-REVIEW 4 TC → sửa nếu FAIL → trình bày SELF-REVIEW + block KPI
              → DỪNG chờ human duyệt block KPI nhóm N
-             → làm Nhóm N+1 Phase 2 → ... → làm đến hết Nhóm cuối Phase 2
+             → cập nhật todo list (đánh dấu Nhóm N đã xong) → làm Nhóm N+1 Phase 2 → ... → hết Nhóm cuối
 
-  → Sau khi human approve toàn bộ Phase 2:
-             DỪNG — báo "Tất cả nhóm Phase 2 hoàn thành." → chờ human xác nhận chuyển Phase 3
+  → Sau khi tất cả nhóm trong todo list đã xử lý:
+             Chạy SELF-REVIEW module-level TC5 (đối chiếu tổng số nhóm/KPI) + TC6 (thứ tự nhóm)
+             → sửa nếu FAIL → DỪNG — báo "Tất cả nhóm Phase 2 hoàn thành, TC5+TC6 PASS."
+             → chờ human xác nhận chuyển Phase 3
 
 Phase 3:   Sau khi tất cả nhóm đã duyệt → báo số bảng flat
            → DỪNG chờ human xác nhận
@@ -131,9 +147,15 @@ Tổng: N nhóm | M bảng new | P bảng partial | Q bảng reuse
 
 ### Bước P1 — Đọc HLD Section 2
 
-Đọc `DTM_{MODULE}_HLD.md` Section 2 → trích danh sách nhóm báo cáo:
-- Tên nhóm (Nhóm 1, Nhóm 2, ...)
+Đọc `DTM_{MODULE}_HLD.md` Section 2 từ đầu đến hết → trích danh sách **TOÀN BỘ** nhóm báo cáo
+(Nhóm 1 → Nhóm N_max), không bỏ sót nhóm nào dù trạng thái gì:
+- Tên nhóm (Nhóm 1, Nhóm 2, ..., Nhóm N_max)
+- Trạng thái HLD của nhóm: READY / READY (thu hẹp) / PENDING toàn bộ
 - KPI IDs thuộc nhóm (bao gồm Chiều + Pending)
+
+> ❌ Không bỏ sót nhóm PENDING toàn bộ chỉ vì nhóm đó không cần bảng Attributes nào ở Phase 1 —
+> nhóm này vẫn phải xuất hiện trong Plan (cột "Bảng cần thiết kế" ghi "— (PENDING toàn bộ)")
+> để Phase 2 không bỏ sót khi lập todo list.
 
 ### Bước P2 — Map bảng cho từng nhóm
 
@@ -144,6 +166,8 @@ Tổng: N nhóm | M bảng new | P bảng partial | Q bảng reuse
    - Conformed dim (Calendar Date Dimension): luôn reuse — không thiết kế lại ở bất kỳ nhóm nào
    - Dim nội bộ module: nhóm đầu tiên dùng → gán `new`; nhóm sau → gán `reuse` (check `datamart_model.yaml` trước)
    - Nếu `datamart_model.yaml` có entry nhưng thiếu cột → gán `partial` cho nhóm đó, sẽ báo delta khi đến nhóm đó
+4. **Nhóm PENDING toàn bộ** (không có Atomic source hoặc Fact/Dim nào sẵn sàng): vẫn giữ trong Plan
+   với cột "Bảng cần thiết kế" = "— (PENDING toàn bộ, không có bảng)" — KHÔNG loại khỏi Plan
 
 ### Bước P3 — Trình bày plan và GATE
 
@@ -520,6 +544,18 @@ Export encoding: **UTF-8 BOM** (`utf-8-sig`).
 ### Checklist Phase 2
 
 ```
+BƯỚC 0 — TODO LIST TOÀN MODULE (bắt buộc, chạy 1 lần trước khi vào loop nhóm):
+□ Quét lại HLD Section 2 từ đầu đến hết (Nhóm 1 → Nhóm N_max) — ĐỘC LẬP với Phase 0 Plan,
+  không copy danh sách nhóm từ Plan (Plan có thể đã lược bỏ nhóm PENDING toàn bộ vì không cần
+  bảng Attributes ở Phase 1)
+□ Lập bảng todo list: Nhóm | Tên nhóm | Trạng thái HLD (READY/READY thu hẹp/PENDING toàn bộ) |
+  Đã xử lý Phase 2? (chưa)
+□ Tổng số dòng todo list PHẢI bằng tổng số nhóm xuất hiện trong HLD Section 2 — kể cả nhóm
+  PENDING toàn bộ không có bảng nào ở Phase 1
+□ Trình bày todo list cho human → DỪNG chờ xác nhận trước khi bắt đầu Nhóm 1
+□ Cập nhật cột "Đã xử lý Phase 2?" ngay sau khi mỗi nhóm được human duyệt block KPI — dùng
+  bảng này để xác định "Nhóm cuối" thay vì suy đoán theo Plan Phase 0
+
 PRE-CHECK (trước khi sinh — bắt buộc, chỉ cho KPI của nhóm đang xử lý):
 □ Cross-check BA ↔ HLD: mọi dòng Done/Doing/Pending (kể cả Chiều) của nhóm N đều có KPI_ID trong HLD
 □ Nếu dòng BA nào chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap
@@ -540,9 +576,11 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ DERIVED: mart_table và mart_column để trống
 □ MEASURE: chỉ phép tính thuần (COUNT/SUM/AVG) — condition tách thành FILTER riêng
 □ NaN/trống trong cột Trạng thái mapping → ghi chú, xác nhận với BA
+□ Append đúng THỨ TỰ SỐ NHÓM TĂNG DẦN — xem TC6; nếu file hiện tại đã append lệch thứ tự từ
+  trước, KHÔNG tự ý append tiếp theo thứ tự sai đó, báo cho human trước
 □ Sau khi human duyệt block: append vào DTM_{MODULE}_Detail_Mapping.csv → báo "Đã append N dòng nhóm [N] vào Detail Mapping"
 
-SELF-REVIEW Phase 2 (bắt buộc trước khi trình bày — chạy 4 testcase, báo kết quả):
+SELF-REVIEW Phase 2 — mỗi nhóm (bắt buộc trước khi trình bày — chạy 4 testcase, báo kết quả):
 
 TC1 — Mô tả khớp chỉ tiêu:
 □ Kiểm tra cột `kpi_name` trong Detail Mapping khớp với tên KPI trong HLD bảng KPI (Section 2)
@@ -572,9 +610,40 @@ TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.y
 
 GATE CUỐI NHÓM:
 □ Phase 1 (Attributes) + Phase 2 (Detail Mapping block) của nhóm N đã được human duyệt
+□ Cập nhật todo list Bước 0: đánh dấu Nhóm N = đã xử lý
 → Báo: "Nhóm [N] — [Tên nhóm] hoàn thành. Tiếp tục Nhóm [N+1] — [Tên nhóm N+1]?"
 → DỪNG chờ human xác nhận → ❌ KHÔNG tự bắt đầu nhóm tiếp theo
-→ Sau khi tất cả nhóm hoàn thành: báo "Tất cả nhóm hoàn thành. Chuyển sang Phase 3?"
+→ "Nhóm cuối" = nhóm cuối trong todo list Bước 0 (toàn bộ HLD), KHÔNG phải nhóm cuối trong
+  Phase 0 Plan — nếu Plan Phase 0 không liệt kê hết nhóm HLD, vẫn phải tiếp tục xử lý các nhóm
+  còn thiếu trong todo list trước khi coi là hoàn thành
+
+SELF-REVIEW Phase 2 — module-level (bắt buộc, chạy 1 lần sau khi TẤT CẢ nhóm trong todo list
+đã xử lý, TRƯỚC KHI báo "Tất cả nhóm hoàn thành"):
+
+TC5 — Đối chiếu tổng số nhóm/KPI toàn module (không chỉ từng nhóm riêng lẻ):
+□ Lấy tập hợp số nhóm (cột `nhom`, parse ra số nhóm) xuất hiện trong Detail Mapping
+□ Lấy tập hợp số nhóm xuất hiện trong HLD Section 2 (Nhóm 1 → Nhóm N_max)
+□ Đối chiếu 2 tập — báo danh sách nhóm có trong HLD nhưng THIẾU trong Detail Mapping
+□ Lấy toàn bộ KPI_ID unique trong HLD (mọi nhóm, mọi trạng thái) và toàn bộ KPI_ID unique trong
+  Detail Mapping → đối chiếu, báo danh sách KPI_ID có trong HLD nhưng thiếu trong Detail Mapping
+□ Báo: ✅ TC5 PASS: [N_nhom] nhóm, [N_kpi] KPI_ID unique — khớp đủ HLD
+  hoặc ❌ TC5 FAIL: thiếu [X] nhóm ([danh sách]), thiếu [Y] KPI_ID ([danh sách])
+□ Nếu FAIL → bổ sung nhóm/KPI còn thiếu trước khi báo hoàn thành Phase 2 (không được báo hoàn
+  thành khi TC5 còn FAIL)
+
+TC6 — Thứ tự nhóm trong file tăng dần theo số nhóm:
+□ Duyệt cột `nhom` theo thứ tự xuất hiện trong file (top-to-bottom), parse số nhóm bằng regex
+  (VD: `Nhóm (\d+)`) — KHÔNG so sánh dạng chuỗi (string sort xếp "Nhóm 11" trước "Nhóm 2" là SAI)
+□ Nhóm nào xuất hiện lần đầu ở dòng thứ i thì số nhóm phải ≥ số nhóm xuất hiện lần đầu ở mọi dòng
+  trước i — tức thứ tự nhóm-xuất-hiện-lần-đầu phải là 1, 2, 3, ..., N_max tăng dần liên tục
+□ Báo: ✅ TC6 PASS: thứ tự nhóm đúng 1→N_max
+  hoặc ❌ TC6 FAIL: nhóm [X] xuất hiện trước nhóm [Y] dù X > Y — [vị trí dòng cụ thể]
+□ Nếu FAIL → sắp xếp lại toàn bộ file theo đúng thứ tự số nhóm tăng dần (giữ nguyên nội dung
+  từng dòng, chỉ đổi thứ tự dòng) — báo cho human trước khi ghi đè file, vì đây là thay đổi
+  toàn file không phải append
+
+□ TC5 + TC6 đều PASS → báo "Tất cả nhóm hoàn thành. Chuyển sang Phase 3?"
+→ DỪNG chờ human xác nhận chuyển Phase 3
 ```
 
 ---
