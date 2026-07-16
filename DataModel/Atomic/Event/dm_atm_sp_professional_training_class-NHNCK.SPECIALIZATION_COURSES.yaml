@@ -158,7 +158,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
-    comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES', PROVINCE_ID)."
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null
 
@@ -172,6 +172,6 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSES
     source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province Id."
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSES'"
     etl_derived_value: null

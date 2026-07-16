@@ -1,0 +1,41 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: KNT
+table: HIGH_RISK_ENTERPRISE
+brd_ref: BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
+columns:
+- name: ID
+  data_type: "NUMBER"
+  description: "Khóa chính của bản ghi (ID số tự tăng)"
+  key: PK
+  fk_note: null
+- name: ENTERPRISE_CODE
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Mã số doanh nghiệp đăng ký kinh doanh"
+  key: null
+  fk_note: null
+- name: ENTERPRISE_NAME
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Tên doanh nghiệp rủi ro cao"
+  key: null
+  fk_note: null
+- name: HQ_ADDRESS
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Địa chỉ trụ sở chính của doanh nghiệp"
+  key: null
+  fk_note: null
+- name: MANAGING_TAX_AUTHORITY
+  data_type: "VARCHAR2(200 CHAR)"
+  description: "Cơ quan thuế quản lý doanh nghiệp rủi ro cao"
+  key: null
+  fk_note: null
+- name: RISK_ASSESSMENT_YEAR
+  data_type: "VARCHAR2(20 CHAR)"
+  description: "Năm Cục Thuế đánh giá doanh nghiệp là rủi ro cao"
+  key: null
+  fk_note: null
+- name: MSG_PACKET_ID
+  data_type: "NUMBER"
+  description: "Gói tin trao đổi liên quan"
+  key: FK
+  fk_note: "FK → MSG_PACKET.ID"

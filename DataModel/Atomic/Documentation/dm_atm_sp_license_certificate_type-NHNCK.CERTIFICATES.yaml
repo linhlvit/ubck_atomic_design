@@ -32,35 +32,21 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATES
     source_column: null
-    comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
+    comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE). BCV: [Documentation] Gov. Registration Document."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Code
     physical_name: sp_license_certificate_type_code
-    business_meaning: Mã loại chứng chỉ. BK từ PK bảng nguồn
+    business_meaning: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: QLQY, PTDT, MTCK). BK duy nhất — Id hash từ trường này."
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATES
-    source_column: NHNCK.CERTIFICATES.ID
-    comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
-    classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
-    etl_derived_value: null
-
-  - name: Securities Practitioner License Certificate Type Unique Key
-    physical_name: sp_license_certificate_type_unique_key
-    business_meaning: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD: QLQY, PTDT, MTCK)"
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: CERTIFICATES
     source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
-    comment: Unique Key nghiệp vụ — không phải BK. Bảng nguồn có cả ID (BK) và CERTIFICATE_CODE (unique key) theo Bước 3e SKILL.
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATES'"
     etl_derived_value: null
 

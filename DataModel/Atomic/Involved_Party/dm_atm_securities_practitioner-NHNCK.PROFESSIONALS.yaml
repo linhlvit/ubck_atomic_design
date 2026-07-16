@@ -172,7 +172,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.STATUS_WORK
-    comment: "Scheme: PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
+    comment: "Scheme: PRACTITIONER_PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.STATUS_ACCOUNT
-    comment: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động / 2=Khóa."
+    comment: "Scheme: PRACTITIONER_ACCOUNT_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động / 2=Khóa."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -228,7 +228,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.NATIONALITY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.NATIONALITY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -242,7 +242,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.NATIONALITY_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality Id."
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 

@@ -92,8 +92,8 @@ attributes:
     classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
     etl_derived_value: null
 
-  - name: Document Id
-    physical_name: document_id
+  - name: Classification Document Id
+    physical_name: cl_document_id
     business_meaning: FK đến tài liệu yêu cầu kèm hồ sơ
     data_domain: Surrogate Key
     data_type: string
@@ -102,12 +102,12 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_EXPERIENCES
     source_column: NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID
-    comment: "FK target: classification_document.classification_document_id. Hash: hash_id('NHNCK.DOCUMENTS', DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type Code khi DOCUMENTS lên entity thật (scheme DOCUMENT_TYPE đã deprecate)."
+    comment: "FK target: cl_document.cl_document_id. Hash: hash_id('NHNCK.DOCUMENTS', DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type Code khi DOCUMENTS lên entity thật (scheme DOCUMENT_TYPE đã deprecate)."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
     etl_derived_value: null
 
-  - name: Document Code
-    physical_name: document_code
+  - name: Classification Document Code
+    physical_name: cl_document_code
     business_meaning: Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)
     data_domain: Text
     data_type: string
@@ -116,7 +116,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_EXPERIENCES
     source_column: NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID
-    comment: "Lookup pair: classification_document.classification_document_code. Pair with Document Id."
+    comment: "Lookup pair: cl_document.cl_document_code. Pair with cl_document_id."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_EXPERIENCES'"
     etl_derived_value: null
 

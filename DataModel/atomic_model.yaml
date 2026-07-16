@@ -1956,7 +1956,11 @@ entities:
     physical_name: permanent_residence_country_id
     business_meaning_1st: FK đến quốc gia thường trú (snapshot)
     comment_1st: "FK target: geographic_area.geographic_area_id. Snapshot tại thời\
-      \ điểm đăng ký. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
+      \ điểm đăng ký. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng\
+      \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia PERMANENT_COUNTRY_ID\
+      \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+      \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
+      \ với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1970,12 +1974,16 @@ entities:
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
         business_meaning: FK đến quốc gia thường trú (snapshot)
         comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời\
-          \ điểm đăng ký. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
+          \ điểm đăng ký. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia\
+          \ PERMANENT_COUNTRY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE)\
+          \ hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk\
+          \ nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Permanent Residence Country Code
     physical_name: permanent_residence_country_code
     business_meaning_1st: Mã quốc gia thường trú
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent\
-      \ Residence Country Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Permanent Residence Country Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -1988,13 +1996,17 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
         business_meaning: Mã quốc gia thường trú
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent\
-          \ Residence Country Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Permanent Residence Country Id."
   - name: Permanent Residence Province Id
     physical_name: permanent_residence_province_id
     business_meaning_1st: FK đến tỉnh/thành thường trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Snapshot tại thời\
-      \ điểm đăng ký. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+      \ Code = PROVINCE. Snapshot tại thời điểm đăng ký. Nguồn Geographic Area đã\
+      \ chuyển sang ECAT (NHNCK.PROVINCES ngừng thiết kế) — resolve bằng lookup giá\
+      \ trị: đối chiếu mã/tên tỉnh/thành PERMANENT_PROVINCE_ID với Geographic Area\
+      \ Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() trực tiếp\
+      \ theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2007,13 +2019,18 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID
         business_meaning: FK đến tỉnh/thành thường trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời\
-          \ điểm đăng ký. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = PROVINCE. Snapshot tại thời điểm đăng ký. Nguồn Geographic Area\
+          \ đã chuyển sang ECAT (NHNCK.PROVINCES ngừng thiết kế) — resolve bằng lookup\
+          \ giá trị: đối chiếu mã/tên tỉnh/thành PERMANENT_PROVINCE_ID với Geographic\
+          \ Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id()\
+          \ trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn\
+          \ mã với ECAT."
   - name: Permanent Residence Province Code
     physical_name: permanent_residence_province_code
     business_meaning_1st: Mã tỉnh/thành thường trú
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent\
-      \ Residence Province Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Permanent Residence Province Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -2026,13 +2043,18 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID
         business_meaning: Mã tỉnh/thành thường trú
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent\
-          \ Residence Province Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Permanent Residence Province Id."
   - name: Permanent Residence District Id
     physical_name: permanent_residence_district_id
     business_meaning_1st: FK đến quận/huyện thường trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Snapshot tại thời\
-      \ điểm đăng ký. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
+    comment_1st: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+      \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+      \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area\
+      \ Old (Geographic Area Old Type Code = DISTRICT_OLD). Snapshot tại thời điểm\
+      \ đăng ký. Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện PERMANENT_DISTRICT_ID\
+      \ với Geographic Area Old Business Code (ECAT.DISTRICT_OLD.CODE) hoặc Name.\
+      \ Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -2045,12 +2067,18 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID
         business_meaning: FK đến quận/huyện thường trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời\
-          \ điểm đăng ký. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
+        comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+          \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+          \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic\
+          \ Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Snapshot tại\
+          \ thời điểm đăng ký. Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện\
+          \ PERMANENT_DISTRICT_ID với Geographic Area Old Business Code (ECAT.DISTRICT_OLD.CODE)\
+          \ hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Permanent Residence District Code
     physical_name: permanent_residence_district_code
     business_meaning_1st: Mã quận/huyện thường trú
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent\
+    comment_1st: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+      \ ECAT — ĐỔI TARGET, xem Permanent Residence District Id). Pair with Permanent\
       \ Residence District Id."
     data_domain_most: Text
     data_type_most: string
@@ -2064,13 +2092,14 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID
         business_meaning: Mã quận/huyện thường trú
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent\
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+          \ ECAT — ĐỔI TARGET, xem Permanent Residence District Id). Pair with Permanent\
           \ Residence District Id."
   - name: Practitioner Identity Type Code At Enrollment
     physical_name: practitioner_identity_tp_code_at_enrollment
     business_meaning_1st: Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)
-    comment_1st: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu.\
-      \ Snapshot — entity grain là enrollment, không phải Involved Party."
+    comment_1st: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ\
+      \ chiếu. Snapshot — entity grain là enrollment, không phải Involved Party."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -2083,8 +2112,8 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE
         business_meaning: Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)
-        comment: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu.\
-          \ Snapshot — entity grain là enrollment, không phải Involved Party."
+        comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ\
+          \ chiếu. Snapshot — entity grain là enrollment, không phải Involved Party."
   - name: Practitioner Identity Number At Enrollment
     physical_name: practitioner_identity_nbr_at_enrollment
     business_meaning_1st: Số định danh tại thời điểm đăng ký (snapshot)
@@ -2158,7 +2187,7 @@ entities:
   - name: Training Result Code
     physical_name: training_result_code
     business_meaning_1st: Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt)
-    comment_1st: "Scheme: TRAINING_RESULT."
+    comment_1st: "Scheme: EXAM_RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -2171,7 +2200,7 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.RESULT
         business_meaning: Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt)
-        comment: "Scheme: TRAINING_RESULT."
+        comment: "Scheme: EXAM_RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
   - name: Description
     physical_name: description
     business_meaning_1st: Mô tả
@@ -5053,7 +5082,7 @@ entities:
     physical_name: law_result_code
     business_meaning_1st: "Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1:\
       \ Đạt)"
-    comment_1st: "Scheme: EXAM_SCORE_RESULT."
+    comment_1st: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -5067,7 +5096,7 @@ entities:
         source_column: NHNCK.EXAM_DETAILS.LAW_RESULT
         business_meaning: "Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1:\
           \ Đạt)"
-        comment: "Scheme: EXAM_SCORE_RESULT."
+        comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
   - name: Specialization Score
     physical_name: specialization_score
     business_meaning_1st: Điểm thi chuyên ngành
@@ -5089,7 +5118,7 @@ entities:
     physical_name: specialization_result_code
     business_meaning_1st: "Kết quả thi chuyên ngành (-1: Không thi, 0: Không đạt,\
       \ 1: Đạt)"
-    comment_1st: "Scheme: EXAM_SCORE_RESULT."
+    comment_1st: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -5103,11 +5132,11 @@ entities:
         source_column: NHNCK.EXAM_DETAILS.SPECIALIZATION_RESULT
         business_meaning: "Kết quả thi chuyên ngành (-1: Không thi, 0: Không đạt,\
           \ 1: Đạt)"
-        comment: "Scheme: EXAM_SCORE_RESULT."
+        comment: "Scheme: EXAM_RESULT (gộp từ EXAM_SCORE_RESULT, 2026-07-09)."
   - name: Overall Result Code
     physical_name: overall_result_code
     business_meaning_1st: "Kết quả thi tổng thể (-1: Không thi, 0: Không đạt, 1: Đạt)"
-    comment_1st: "Scheme: EXAMINATION_RESULT."
+    comment_1st: "Scheme: EXAM_RESULT (gộp từ EXAMINATION_RESULT, 2026-07-09)."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -5120,7 +5149,7 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.RESULT
         business_meaning: "Kết quả thi tổng thể (-1: Không thi, 0: Không đạt, 1: Đạt)"
-        comment: "Scheme: EXAMINATION_RESULT."
+        comment: "Scheme: EXAM_RESULT (gộp từ EXAMINATION_RESULT, 2026-07-09)."
   - name: Examination Note
     physical_name: examination_note
     business_meaning_1st: Ghi chú
@@ -6094,8 +6123,8 @@ entities:
   - name: Application Type Code
     physical_name: application_tp_code
     business_meaning_1st: Loại hồ sơ.
-    comment_1st: "Scheme: NHNCK_APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp\
-      \ lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
+    comment_1st: "Scheme: APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do\
+      \ thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -6108,15 +6137,15 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.APPLICATION_TYPE
         business_meaning: Loại hồ sơ.
-        comment: "Scheme: NHNCK_APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp\
-          \ lại do thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
-  - name: Application Status Id
-    physical_name: application_status_id
+        comment: "Scheme: APPLICATION_TYPE. Map từ NUMBER: 0=Cấp mới, 1=Cấp lại do\
+          \ thu hồi, 2=Cấp lại thay đổi thông tin, 3=Cấp lại mất CCHN."
+  - name: Classification Application Status Id
+    physical_name: cl_application_status_id
     business_meaning_1st: FK đến trạng thái hồ sơ hiện tại.
-    comment_1st: "FK target: classification_application_status.classification_application_status_id.\
-      \ Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09 khi\
-      \ APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS\
-      \ đã deprecate)."
+    comment_1st: "FK target: cl_application_status.cl_application_status_id. Hash:\
+      \ hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09 khi APPLICATION_STATUSES\
+      \ lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS đã\
+      \ deprecate)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -6129,15 +6158,15 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.STATUS_ID
         business_meaning: FK đến trạng thái hồ sơ hiện tại.
-        comment: "FK target: classification_application_status.classification_application_status_id.\
-          \ Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09\
-          \ khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme\
-          \ NHNCK_APPLICATION_STATUS đã deprecate)."
-  - name: Application Status Code
-    physical_name: application_status_code
+        comment: "FK target: cl_application_status.cl_application_status_id. Hash:\
+          \ hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09 khi\
+          \ APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS\
+          \ đã deprecate)."
+  - name: Classification Application Status Code
+    physical_name: cl_application_status_code
     business_meaning_1st: Mã trạng thái hồ sơ hiện tại (denormalized lookup).
-    comment_1st: "Lookup pair: classification_application_status.classification_application_status_code.\
-      \ Pair with Application Status Id."
+    comment_1st: "Lookup pair: cl_application_status.cl_application_status_code. Pair\
+      \ with cl_application_status_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -6150,13 +6179,13 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.STATUS_ID
         business_meaning: Mã trạng thái hồ sơ hiện tại (denormalized lookup).
-        comment: "Lookup pair: classification_application_status.classification_application_status_code.\
-          \ Pair with Application Status Id."
+        comment: "Lookup pair: cl_application_status.cl_application_status_code. Pair\
+          \ with cl_application_status_id."
   - name: Registration Type Code
     physical_name: registration_tp_code
     business_meaning_1st: Nguồn tiếp nhận hồ sơ.
-    comment_1st: "Scheme: NHNCK_REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC,\
-      \ 1=Nhập tay."
+    comment_1st: "Scheme: REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập\
+      \ tay."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -6169,8 +6198,8 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.REGISTRATION_TYPE
         business_meaning: Nguồn tiếp nhận hồ sơ.
-        comment: "Scheme: NHNCK_REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC,\
-          \ 1=Nhập tay."
+        comment: "Scheme: REGISTRATION_TYPE. Map từ NUMBER: 0=MCĐT/cổng DVC, 1=Nhập\
+          \ tay."
   - name: Securities Practitioner License Certificate Type Id
     physical_name: sp_license_certificate_type_id
     business_meaning_1st: FK đến loại chứng chỉ hành nghề đăng ký.
@@ -6420,8 +6449,8 @@ entities:
   - name: Certificate Receipt Method Code
     physical_name: certificate_receipt_method_code
     business_meaning_1st: Phương thức nhận CCHN.
-    comment_1st: "Scheme: NHNCK_CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN,\
-      \ 2=Gửi bưu điện, 3=Điện tử."
+    comment_1st: "Scheme: CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi\
+      \ bưu điện, 3=Điện tử."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -6434,8 +6463,8 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.CERTIFICATE_RECEIPT_METHOD
         business_meaning: Phương thức nhận CCHN.
-        comment: "Scheme: NHNCK_CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN,\
-          \ 2=Gửi bưu điện, 3=Điện tử."
+        comment: "Scheme: CERT_RECEIPT_METHOD. Map từ NUMBER: 1=Nhận tại UBCKNN, 2=Gửi\
+          \ bưu điện, 3=Điện tử."
   - name: Certificate Receipt Address
     physical_name: certificate_receipt_adr
     business_meaning_1st: Địa chỉ nhận CCHN qua bưu điện.
@@ -6473,7 +6502,7 @@ entities:
   - name: Receipt Status Code
     physical_name: receipt_status_code
     business_meaning_1st: Trạng thái nhận CCHN.
-    comment_1st: "Scheme: NHNCK_RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
+    comment_1st: "Scheme: RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -6486,7 +6515,7 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.RECEIPT_STATUS
         business_meaning: Trạng thái nhận CCHN.
-        comment: "Scheme: NHNCK_RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
+        comment: "Scheme: RECEIPT_STATUS. Map từ NUMBER: 0=Chưa nhận, 1=Đã nhận."
   - name: Violated Indicator
     physical_name: violated_indicator
     business_meaning_1st: Cờ người hành nghề vi phạm quy định.
@@ -6916,13 +6945,12 @@ entities:
         business_meaning: Mã hồ sơ đăng ký. Lookup pair
         comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
           \ Pair with securities_practitioner_license_application_id."
-  - name: Specialization Id
-    physical_name: specialization_id
+  - name: Classification Specialization Id
+    physical_name: cl_specialization_id
     business_meaning_1st: FK đến chuyên ngành CCHN đăng ký
-    comment_1st: "FK target: classification_specialization.classification_specialization_id.\
-      \ Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_ID). Đổi tên 2026-07-09\
-      \ từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION\
-      \ đã deprecate)."
+    comment_1st: "FK target: cl_specialization.cl_specialization_id. Hash: hash_id('NHNCK.SPECIALIZATIONS',\
+      \ SPECIALIZATION_ID). Đổi tên 2026-07-09 từ Specialization Type Code khi SPECIALIZATIONS\
+      \ lên entity thật (scheme SPECIALIZATION đã deprecate)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -6935,15 +6963,14 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID
         business_meaning: FK đến chuyên ngành CCHN đăng ký
-        comment: "FK target: classification_specialization.classification_specialization_id.\
-          \ Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_ID). Đổi tên 2026-07-09\
-          \ từ Specialization Type Code khi SPECIALIZATIONS lên entity thật (scheme\
-          \ SPECIALIZATION đã deprecate)."
-  - name: Specialization Code
-    physical_name: specialization_code
+        comment: "FK target: cl_specialization.cl_specialization_id. Hash: hash_id('NHNCK.SPECIALIZATIONS',\
+          \ SPECIALIZATION_ID). Đổi tên 2026-07-09 từ Specialization Type Code khi\
+          \ SPECIALIZATIONS lên entity thật (scheme SPECIALIZATION đã deprecate)."
+  - name: Classification Specialization Code
+    physical_name: cl_specialization_code
     business_meaning_1st: Mã chuyên ngành CCHN đăng ký (denormalized lookup)
-    comment_1st: "Lookup pair: classification_specialization.classification_specialization_code.\
-      \ Pair with Specialization Id."
+    comment_1st: "Lookup pair: cl_specialization.cl_specialization_code. Pair with\
+      \ cl_specialization_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -6956,8 +6983,8 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.SPECIALIZATION_ID
         business_meaning: Mã chuyên ngành CCHN đăng ký (denormalized lookup)
-        comment: "Lookup pair: classification_specialization.classification_specialization_code.\
-          \ Pair with Specialization Id."
+        comment: "Lookup pair: cl_specialization.cl_specialization_code. Pair with\
+          \ cl_specialization_id."
   - name: Certificate Issue Date
     physical_name: certificate_issue_dt
     business_meaning_1st: Ngày cấp chứng chỉ chuyên môn
@@ -7651,7 +7678,7 @@ entities:
     physical_name: process_status_code
     business_meaning_1st: Trạng thái xử lý chứng chỉ (1=Đã cấp 2=Đã ký nháy 3=Đã ký
       4=Đã trả)
-    comment_1st: null
+    comment_1st: "Scheme: LICENSE_CERTIFICATE_PROCESS_STATUS."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -7665,7 +7692,7 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.PROCESS_STATUS
         business_meaning: Trạng thái xử lý chứng chỉ (1=Đã cấp 2=Đã ký nháy 3=Đã ký
           4=Đã trả)
-        comment: null
+        comment: "Scheme: LICENSE_CERTIFICATE_PROCESS_STATUS."
   - name: Certificate File Path
     physical_name: certificate_file_path
     business_meaning_1st: Đường dẫn file chứng chỉ số
@@ -7687,7 +7714,7 @@ entities:
     physical_name: conversion_status_code
     business_meaning_1st: Trạng thái chuyển đổi chứng chỉ (1=Giấy 2=Chờ điện tử 3=Chứng
       chỉ số)
-    comment_1st: null
+    comment_1st: "Scheme: LICENSE_CERTIFICATE_CONVERSION_STATUS."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -7701,7 +7728,7 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.CONVERSION_STATUS
         business_meaning: Trạng thái chuyển đổi chứng chỉ (1=Giấy 2=Chờ điện tử 3=Chứng
           chỉ số)
-        comment: null
+        comment: "Scheme: LICENSE_CERTIFICATE_CONVERSION_STATUS."
   - name: Description
     physical_name: description
     business_meaning_1st: Mô tả bổ sung cho chứng chỉ hành nghề
@@ -7747,7 +7774,8 @@ entities:
   - name: Securities Practitioner License Certificate Type Id
     physical_name: sp_license_certificate_type_id
     business_meaning_1st: Id tự sinh (surrogate key)
-    comment_1st: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
+    comment_1st: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE).\
+      \ BCV: [Documentation] Gov. Registration Document."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -7760,11 +7788,15 @@ entities:
       - source_table: CERTIFICATES
         source_column: null
         business_meaning: Id tự sinh (surrogate key)
-        comment: "PK surrogate. BCV: [Documentation] Gov. Registration Document."
+        comment: "PK surrogate. Hash: hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE).\
+          \ BCV: [Documentation] Gov. Registration Document."
   - name: Securities Practitioner License Certificate Type Code
     physical_name: sp_license_certificate_type_code
-    business_meaning_1st: Mã loại chứng chỉ. BK từ PK bảng nguồn
-    comment_1st: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
+    business_meaning_1st: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD:\
+      \ QLQY, PTDT, MTCK). BK duy nhất — Id hash từ trường này."
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key
+      cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT
+      NULL/unique trước go-live.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -7775,30 +7807,12 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.ID
-        business_meaning: Mã loại chứng chỉ. BK từ PK bảng nguồn
-        comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
-  - name: Securities Practitioner License Certificate Type Unique Key
-    physical_name: sp_license_certificate_type_unique_key
-    business_meaning_1st: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD:\
-      \ QLQY, PTDT, MTCK)"
-    comment_1st: Unique Key nghiệp vụ — không phải BK. Bảng nguồn có cả ID (BK) và
-      CERTIFICATE_CODE (unique key) theo Bước 3e SKILL.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: CERTIFICATES
         source_column: NHNCK.CERTIFICATES.CERTIFICATE_CODE
         business_meaning: "Mã định danh nghiệp vụ duy nhất của loại chứng chỉ (VD:\
-          \ QLQY, PTDT, MTCK)"
-        comment: Unique Key nghiệp vụ — không phải BK. Bảng nguồn có cả ID (BK) và
-          CERTIFICATE_CODE (unique key) theo Bước 3e SKILL.
+          \ QLQY, PTDT, MTCK). BK duy nhất — Id hash từ trường này."
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key
+          cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận
+          NOT NULL/unique trước go-live.
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã nguồn dữ liệu
@@ -8175,8 +8189,8 @@ entities:
     physical_name: decision_tp_code
     business_meaning_1st: Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại
       / ...)
-    comment_1st: "Scheme: DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi; 3=Cấp lại;\
-      \ 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
+    comment_1st: "Scheme: LICENSE_CERTIFICATE_DECISION_TYPE. Values: 1=Cấp mới; 2=Thu\
+      \ hồi; 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -8190,8 +8204,8 @@ entities:
         source_column: NHNCK.DECISIONS.DECISION_TYPE_ID
         business_meaning: Loại quyết định hành chính (Cấp mới / Thu hồi / Cấp lại
           / ...)
-        comment: "Scheme: DECISION_TYPE. Values: 1=Cấp mới; 2=Thu hồi; 3=Cấp lại;\
-          \ 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
+        comment: "Scheme: LICENSE_CERTIFICATE_DECISION_TYPE. Values: 1=Cấp mới; 2=Thu\
+          \ hồi; 3=Cấp lại; 4=Công nhận KQ thi; 5=Xử lý vi phạm; 6=Hủy CCHN; 7=Khác."
   - name: Notification Content
     physical_name: notification_content
     business_meaning_1st: Nội dung thông báo hoặc yêu cầu bổ sung hồ sơ kèm theo
@@ -8305,6 +8319,37 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn\
+      \ cứ partition Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append,\
+      \ filter_logic theo created_at (xem BRD/Source/brd_NHNCK.yaml)."
+    comment_1st: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị\
+      \ loại theo quyết định audit-block Data Modeler (2026-07-07, xem pending_design.yaml)\
+      \ nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại làm\
+      \ partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò\
+      \ ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY/UPDATED_AT/UPDATED_BY\
+      \ vẫn loại trừ)."
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: ORGANIZATION_REPORTS
+        source_column: NHNCK.ORGANIZATION_REPORTS.CREATED_AT
+        business_meaning: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn\
+          \ cứ partition Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append,\
+          \ filter_logic theo created_at (xem BRD/Source/brd_NHNCK.yaml)."
+        comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị\
+          \ loại theo quyết định audit-block Data Modeler (2026-07-07, xem pending_design.yaml)\
+          \ nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại\
+          \ làm partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh\
+          \ vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY/UPDATED_AT/UPDATED_BY\
+          \ vẫn loại trừ)."
   - name: Securities Organization Reference Id
     physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức kinh doanh chứng khoán.
@@ -12061,8 +12106,12 @@ entities:
   - name: Province Id
     physical_name: province_id
     business_meaning_1st: FK đến tỉnh/thành nơi tổ chức thi
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES',\
-      \ PROVINCE_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+      \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES\
+      \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+      \ NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE)\
+      \ hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk\
+      \ nếu NHNCK không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -12075,13 +12124,17 @@ entities:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
         business_meaning: FK đến tỉnh/thành nơi tổ chức thi
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES',\
-          \ PROVINCE_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+          \ NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID với Geographic Area Unique Key\
+          \ (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() trực tiếp theo\
+          \ NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Province Code
     physical_name: province_code
     business_meaning_1st: Mã tỉnh/thành nơi tổ chức thi (lookup pair)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-      \ Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Province Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -12094,8 +12147,8 @@ entities:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.SPECIALIZATION_COURSES.PROVINCE_ID
         business_meaning: Mã tỉnh/thành nơi tổ chức thi (lookup pair)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Province Id."
 - ldm:
     id: ATM-ip_alternative_identification
     logical_name_1st: Involved Party Alternative Identification
@@ -12321,13 +12374,14 @@ entities:
   - name: Identification Type Code
     physical_name: identification_tp_code
     business_meaning_1st: Loại giấy tờ định danh.
-    comment_1st: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=CMND, 2=CCCD, 3=PASSPORT."
+    comment_1st: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=NATIONAL_ID, 2=CITIZEN_ID,\
+      \ 3=PASSPORT."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
-    - 1=CMND;2=CCCD;3=PASSPORT
+    - 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT
     - OPERATION_LICENSE
     - NATIONAL_ID
     - LEGACY_CMND
@@ -12338,7 +12392,8 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.IDENTITY_TYPE
         business_meaning: Loại giấy tờ định danh.
-        comment: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=CMND, 2=CCCD, 3=PASSPORT."
+        comment: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=NATIONAL_ID, 2=CITIZEN_ID,\
+          \ 3=PASSPORT."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -12620,6 +12675,12 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: null
+        business_meaning: Ngày cấp.
+        comment: null
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_INFO
@@ -12653,6 +12714,12 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: null
+        business_meaning: Nơi cấp.
+        comment: null
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_INFO
@@ -13636,9 +13703,19 @@ entities:
         comment: null
   - name: Province Id
     physical_name: province_id
-    business_meaning_1st: FK đến Geographic Area cấp tỉnh/thành phố.
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_PROVINCE',\
-      \ PROVINCE_ID)."
+    business_meaning_1st: FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính).
+    comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+      \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE\
+      \ ngừng thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển\
+      \ khai) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID\
+      \ với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name, không\
+      \ còn hash_id() theo SCMS.CAT_PROVINCE. Cần crosswalk nếu SCMS không cùng chuẩn\
+      \ mã với ECAT. // FK target: geographic_area.geographic_area_id. Geographic\
+      \ Area Type Code = PROVINCE. IDS.PROVINCES ngoài scope (xem HLD 7f) — resolve\
+      \ bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic\
+      \ Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không hash_id() trực tiếp\
+      \ theo IDS.PROVINCES. Cần crosswalk nếu IDS không cùng chuẩn mã với ECAT. Nguồn\
+      \ PROVINCE_ID VARCHAR2(50) dù tên cột gợi ý ID — cần profile giá trị thực tế."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -13650,19 +13727,45 @@ entities:
       source_tables:
       - source_table: ORGANIZATIONS
         source_column: null
-        business_meaning: FK đến Geographic Area cấp tỉnh/thành phố.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_PROVINCE',\
-          \ PROVINCE_ID)."
+        business_meaning: FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính).
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE\
+          \ ngừng thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa\
+          \ triển khai) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+          \ PROVINCE_ID với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE)\
+          \ hoặc Name, không còn hash_id() theo SCMS.CAT_PROVINCE. Cần crosswalk nếu\
+          \ SCMS không cùng chuẩn mã với ECAT. // FK target: geographic_area.geographic_area_id.\
+          \ Geographic Area Type Code = PROVINCE. IDS.PROVINCES ngoài scope (xem HLD\
+          \ 7f) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID\
+          \ với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không\
+          \ hash_id() trực tiếp theo IDS.PROVINCES. Cần crosswalk nếu IDS không cùng\
+          \ chuẩn mã với ECAT. Nguồn PROVINCE_ID VARCHAR2(50) dù tên cột gợi ý ID\
+          \ — cần profile giá trị thực tế."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID
         business_meaning: FK đến Geographic Area — tỉnh/thành.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES',\
-          \ PERMANENT_PROVINCE_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+          \ NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID với Geographic Area Unique Key\
+          \ (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() trực tiếp theo\
+          \ NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
       - source_table: UNITS
         source_column: null
-        business_meaning: FK đến Geographic Area cấp tỉnh/thành phố.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_PROVINCE',\
-          \ PROVINCE_ID)."
+        business_meaning: FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính).
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE\
+          \ ngừng thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa\
+          \ triển khai) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+          \ PROVINCE_ID với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE)\
+          \ hoặc Name, không còn hash_id() theo SCMS.CAT_PROVINCE. Cần crosswalk nếu\
+          \ SCMS không cùng chuẩn mã với ECAT. // FK target: geographic_area.geographic_area_id.\
+          \ Geographic Area Type Code = PROVINCE. IDS.PROVINCES ngoài scope (xem HLD\
+          \ 7f) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID\
+          \ với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không\
+          \ hash_id() trực tiếp theo IDS.PROVINCES. Cần crosswalk nếu IDS không cùng\
+          \ chuẩn mã với ECAT. Nguồn PROVINCE_ID VARCHAR2(50) dù tên cột gợi ý ID\
+          \ — cần profile giá trị thực tế."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -13722,9 +13825,9 @@ entities:
           \ hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
   - name: Province Code
     physical_name: province_code
-    business_meaning_1st: Mã tỉnh/thành phố.
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-      \ Id."
+    business_meaning_1st: Mã tỉnh/thành phố (trụ sở chính).
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Province Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -13736,19 +13839,19 @@ entities:
       source_tables:
       - source_table: ORGANIZATIONS
         source_column: null
-        business_meaning: Mã tỉnh/thành phố.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-          \ Id."
+        business_meaning: Mã tỉnh/thành phố (trụ sở chính).
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Province Id."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID
         business_meaning: Mã tỉnh/thành.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Province Id."
       - source_table: UNITS
         source_column: null
-        business_meaning: Mã tỉnh/thành phố.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Province\
-          \ Id."
+        business_meaning: Mã tỉnh/thành phố (trụ sở chính).
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Province Id."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -13783,9 +13886,14 @@ entities:
           \ không còn CAT_PROVINCE). Pair with Province Id."
   - name: District Id
     physical_name: district_id
-    business_meaning_1st: FK đến Geographic Area cấp quận/huyện.
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_DISTRICT',\
-      \ DISTRICT_ID)."
+    business_meaning_1st: FK đến Geographic Area Old cấp quận/huyện (cũ).
+    comment_1st: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+      \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+      \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area\
+      \ Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá\
+      \ trị: đối chiếu mã/tên quận/huyện DISTRICT_ID với Geographic Area Old Unique\
+      \ Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu SCMS không cùng\
+      \ chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -13797,19 +13905,34 @@ entities:
       source_tables:
       - source_table: ORGANIZATIONS
         source_column: null
-        business_meaning: FK đến Geographic Area cấp quận/huyện.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_DISTRICT',\
-          \ DISTRICT_ID)."
+        business_meaning: FK đến Geographic Area Old cấp quận/huyện (cũ).
+        comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+          \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+          \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic\
+          \ Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quận/huyện DISTRICT_ID với Geographic\
+          \ Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk\
+          \ nếu SCMS không cùng chuẩn mã với ECAT."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID
         business_meaning: FK đến Geographic Area — quận/huyện.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.DISTRICTS',\
-          \ PERMANENT_DISTRICT_ID)."
+        comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+          \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+          \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic\
+          \ Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quận/huyện NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID\
+          \ với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name.\
+          \ Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
       - source_table: UNITS
         source_column: null
-        business_meaning: FK đến Geographic Area cấp quận/huyện.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_DISTRICT',\
-          \ DISTRICT_ID)."
+        business_meaning: FK đến Geographic Area Old cấp quận/huyện (cũ).
+        comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+          \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+          \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic\
+          \ Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quận/huyện DISTRICT_ID với Geographic\
+          \ Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk\
+          \ nếu SCMS không cùng chuẩn mã với ECAT."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -13875,8 +13998,8 @@ entities:
   - name: District Code
     physical_name: district_code
     business_meaning_1st: Mã quận/huyện.
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with District\
-      \ Id."
+    comment_1st: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+      \ ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -13889,18 +14012,18 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: null
         business_meaning: Mã quận/huyện.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with District\
-          \ Id."
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+          \ ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID
         business_meaning: Mã quận/huyện.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with District\
-          \ Id."
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+          \ ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
       - source_table: UNITS
         source_column: null
         business_meaning: Mã quận/huyện.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with District\
-          \ Id."
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+          \ ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -13937,8 +14060,8 @@ entities:
     physical_name: district_nm
     business_meaning_1st: Tên quận/huyện (denormalized để tiện query mà không cần
       join CAT_DISTRICT).
-    comment_1st: Denormalized từ CAT_DISTRICT.DISTRICT_NAME — ETL lookup theo DISTRICT_ID.
-      Lưu dự phòng để tránh join nhiều tầng.
+    comment_1st: Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm),
+      không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -13952,14 +14075,14 @@ entities:
         source_column: null
         business_meaning: Tên quận/huyện (denormalized để tiện query mà không cần
           join CAT_DISTRICT).
-        comment: Denormalized từ CAT_DISTRICT.DISTRICT_NAME — ETL lookup theo DISTRICT_ID.
-          Lưu dự phòng để tránh join nhiều tầng.
+        comment: Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm),
+          không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id.
       - source_table: UNITS
         source_column: null
         business_meaning: Tên quận/huyện (denormalized để tiện query mà không cần
           join CAT_DISTRICT).
-        comment: Denormalized từ CAT_DISTRICT.DISTRICT_NAME — ETL lookup theo DISTRICT_ID.
-          Lưu dự phòng để tránh join nhiều tầng.
+        comment: Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm),
+          không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id.
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -13976,8 +14099,12 @@ entities:
   - name: Ward Id
     physical_name: ward_id
     business_meaning_1st: FK đến Geographic Area cấp phường/xã.
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_WARD',\
-      \ WARD_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+      \ Code = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng\
+      \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID\
+      \ với Geographic Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name, không còn\
+      \ hash_id() theo SCMS.CAT_WARD. Cần crosswalk nếu SCMS không cùng chuẩn mã với\
+      \ ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -13990,13 +14117,21 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: null
         business_meaning: FK đến Geographic Area cấp phường/xã.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_WARD',\
-          \ WARD_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã\
+          \ WARD_ID với Geographic Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name,\
+          \ không còn hash_id() theo SCMS.CAT_WARD. Cần crosswalk nếu SCMS không cùng\
+          \ chuẩn mã với ECAT."
       - source_table: UNITS
         source_column: null
         business_meaning: FK đến Geographic Area cấp phường/xã.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('SCMS.CAT_WARD',\
-          \ WARD_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã\
+          \ WARD_ID với Geographic Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name,\
+          \ không còn hash_id() theo SCMS.CAT_WARD. Cần crosswalk nếu SCMS không cùng\
+          \ chuẩn mã với ECAT."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -14035,8 +14170,8 @@ entities:
   - name: Ward Code
     physical_name: ward_code
     business_meaning_1st: Mã phường/xã.
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward\
-      \ Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Ward Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -14049,13 +14184,13 @@ entities:
       - source_table: ORGANIZATIONS
         source_column: null
         business_meaning: Mã phường/xã.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Ward Id."
       - source_table: UNITS
         source_column: null
         business_meaning: Mã phường/xã.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Ward\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Ward Id."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
@@ -14121,8 +14256,12 @@ entities:
   - name: Country Id
     physical_name: country_id
     business_meaning_1st: FK đến Geographic Area — quốc gia.
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-      \ PERMANENT_COUNTRY_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+      \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup\
+      \ giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID\
+      \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+      \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
+      \ với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -14135,8 +14274,12 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia.
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-          \ PERMANENT_COUNTRY_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+          \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID\
+          \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn\
+          \ hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không\
+          \ cùng chuẩn mã với ECAT."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_INSIDER_RELATION
@@ -14160,8 +14303,8 @@ entities:
   - name: Country Code
     physical_name: country_code
     business_meaning_1st: Mã quốc gia.
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Country\
-      \ Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Country Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -14174,8 +14317,8 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID
         business_meaning: Mã quốc gia.
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Country Id."
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_INSIDER_RELATION
@@ -21086,8 +21229,8 @@ entities:
   - name: Practice Status Code
     physical_name: practice_status_code
     business_meaning_1st: Trạng thái hành nghề chứng khoán
-    comment_1st: "Scheme: PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi\
-      \ có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
+    comment_1st: "Scheme: PRACTITIONER_PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang\
+      \ HN / 2=Thu hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -21100,13 +21243,13 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.STATUS_WORK
         business_meaning: Trạng thái hành nghề chứng khoán
-        comment: "Scheme: PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang HN / 2=Thu hồi\
-          \ có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
+        comment: "Scheme: PRACTITIONER_PRACTICE_STATUS. Nguồn: 0=Chưa HN / 1=Đang\
+          \ HN / 2=Thu hồi có cấp lại / 3=Thu hồi không cấp lại / 4=Cấp có thời hạn."
   - name: Account Status Code
     physical_name: account_status_code
     business_meaning_1st: Trạng thái tài khoản người dùng trên cổng NHNCK
-    comment_1st: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động /\
-      \ 2=Khóa."
+    comment_1st: "Scheme: PRACTITIONER_ACCOUNT_STATUS. Reuse — 0=Chưa kích hoạt /\
+      \ 1=Hoạt động / 2=Khóa."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -21119,8 +21262,8 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.STATUS_ACCOUNT
         business_meaning: Trạng thái tài khoản người dùng trên cổng NHNCK
-        comment: "Scheme: OFFICER_STATUS. Reuse — 0=Chưa kích hoạt / 1=Hoạt động /\
-          \ 2=Khóa."
+        comment: "Scheme: PRACTITIONER_ACCOUNT_STATUS. Reuse — 0=Chưa kích hoạt /\
+          \ 1=Hoạt động / 2=Khóa."
   - name: Securities Organization Reference Id
     physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức chứng khoán hiện tại (nullable)
@@ -21165,7 +21308,11 @@ entities:
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch)
     comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
-      \ Code = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
+      \ Code = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES\
+      \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.NATIONALITY_ID\
+      \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+      \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
+      \ với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -21179,12 +21326,16 @@ entities:
         source_column: NHNCK.PROFESSIONALS.NATIONALITY_ID
         business_meaning: FK đến Geographic Area (quốc tịch)
         comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
-          \ Code = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
+          \ Code = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia\
+          \ NHNCK.PROFESSIONALS.NATIONALITY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE)\
+          \ hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk\
+          \ nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch (denormalized)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-      \ Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Nationality Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -21197,8 +21348,8 @@ entities:
       - source_table: PROFESSIONALS
         source_column: NHNCK.PROFESSIONALS.NATIONALITY_ID
         business_meaning: Mã quốc gia/quốc tịch (denormalized)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Nationality Id."
   - name: Workplace Name
     physical_name: workplace_nm
     business_meaning_1st: Nơi làm việc hiện tại (tên tổ chức — denormalized text tự
@@ -21759,12 +21910,12 @@ entities:
         business_meaning: Mã hồ sơ đăng ký CCHN
         comment: "Lookup pair: securities_practitioner_license_application.securities_practitioner_license_application_code.\
           \ Pair with securities_practitioner_license_application_id."
-  - name: Document Id
-    physical_name: document_id
+  - name: Classification Document Id
+    physical_name: cl_document_id
     business_meaning_1st: FK đến tài liệu yêu cầu kèm hồ sơ
-    comment_1st: "FK target: classification_document.classification_document_id. Hash:\
-      \ hash_id('NHNCK.DOCUMENTS', DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type\
-      \ Code khi DOCUMENTS lên entity thật (scheme DOCUMENT_TYPE đã deprecate)."
+    comment_1st: "FK target: cl_document.cl_document_id. Hash: hash_id('NHNCK.DOCUMENTS',\
+      \ DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type Code khi DOCUMENTS lên entity\
+      \ thật (scheme DOCUMENT_TYPE đã deprecate)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -21777,14 +21928,13 @@ entities:
       - source_table: APPLICATION_EXPERIENCES
         source_column: NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID
         business_meaning: FK đến tài liệu yêu cầu kèm hồ sơ
-        comment: "FK target: classification_document.classification_document_id. Hash:\
-          \ hash_id('NHNCK.DOCUMENTS', DOCUMENT_ID). Đổi tên 2026-07-09 từ Document\
-          \ Type Code khi DOCUMENTS lên entity thật (scheme DOCUMENT_TYPE đã deprecate)."
-  - name: Document Code
-    physical_name: document_code
+        comment: "FK target: cl_document.cl_document_id. Hash: hash_id('NHNCK.DOCUMENTS',\
+          \ DOCUMENT_ID). Đổi tên 2026-07-09 từ Document Type Code khi DOCUMENTS lên\
+          \ entity thật (scheme DOCUMENT_TYPE đã deprecate)."
+  - name: Classification Document Code
+    physical_name: cl_document_code
     business_meaning_1st: Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)
-    comment_1st: "Lookup pair: classification_document.classification_document_code.\
-      \ Pair with Document Id."
+    comment_1st: "Lookup pair: cl_document.cl_document_code. Pair with cl_document_id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -21797,8 +21947,7 @@ entities:
       - source_table: APPLICATION_EXPERIENCES
         source_column: NHNCK.APPLICATION_EXPERIENCES.DOCUMENT_ID
         business_meaning: Mã tài liệu yêu cầu kèm hồ sơ (denormalized lookup)
-        comment: "Lookup pair: classification_document.classification_document_code.\
-          \ Pair with Document Id."
+        comment: "Lookup pair: cl_document.cl_document_code. Pair with cl_document_id."
   - name: Securities Organization Reference Id
     physical_name: securities_organization_reference_id
     business_meaning_1st: FK đến tổ chức kinh doanh chứng khoán trong hệ thống (nullable
@@ -22225,7 +22374,11 @@ entities:
     physical_name: nationality_id
     business_meaning_1st: FK đến Geographic Area (quốc tịch snapshot)
     comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
-      \ Code = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
+      \ Code = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES\
+      \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NATIONALITY_ID\
+      \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+      \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
+      \ với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -22239,12 +22392,16 @@ entities:
         source_column: NHNCK.APPLICATION_PROFESSIONALS.NATIONALITY_ID
         business_meaning: FK đến Geographic Area (quốc tịch snapshot)
         comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
-          \ Code = COUNTRY. Hash: hash_id('NHNCK.COUNTRIES', NATIONALITY_ID)."
+          \ Code = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia\
+          \ NATIONALITY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc\
+          \ Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk\
+          \ nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch (denormalized)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-      \ Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Nationality Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -22257,8 +22414,8 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.NATIONALITY_ID
         business_meaning: Mã quốc gia/quốc tịch (denormalized)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Nationality Id."
   - name: Snapshot Full Name
     physical_name: snpst_full_nm
     business_meaning_1st: Họ và tên đầy đủ tại thời điểm nộp hồ sơ
@@ -22381,8 +22538,8 @@ entities:
   - name: Snapshot Identity Type Code
     physical_name: snpst_identity_tp_code
     business_meaning_1st: Loại giấy tờ định danh tại thời điểm nộp hồ sơ
-    comment_1st: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ chiếu.\
-      \ Grain ≠ Involved Party → không tách IP Alt ID."
+    comment_1st: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ\
+      \ chiếu. Grain ≠ Involved Party → không tách IP Alt ID."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -22395,8 +22552,8 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.IDENTITY_TYPE
         business_meaning: Loại giấy tờ định danh tại thời điểm nộp hồ sơ
-        comment: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ chiếu.\
-          \ Grain ≠ Involved Party → không tách IP Alt ID."
+        comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND / 2=CCCD / 3=Hộ\
+          \ chiếu. Grain ≠ Involved Party → không tách IP Alt ID."
   - name: Snapshot Identity Number
     physical_name: snpst_identity_nbr
     business_meaning_1st: Số giấy tờ định danh tại thời điểm nộp hồ sơ
@@ -22621,8 +22778,11 @@ entities:
   - name: Snapshot Permanent Country Id
     physical_name: snpst_permanent_country_id
     business_meaning_1st: FK đến Geographic Area — quốc gia thường trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-      \ PERMANENT_COUNTRY_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+      \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup\
+      \ giá trị: đối chiếu mã/tên quốc gia PERMANENT_COUNTRY_ID với Geographic Area\
+      \ Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp\
+      \ theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -22635,13 +22795,17 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia thường trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-          \ PERMANENT_COUNTRY_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+          \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quốc gia PERMANENT_COUNTRY_ID với Geographic\
+          \ Area Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+          \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn\
+          \ mã với ECAT."
   - name: Snapshot Permanent Country Code
     physical_name: snpst_permanent_country_code
     business_meaning_1st: Mã quốc gia thường trú (denormalized snapshot)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-      \ Permanent Country Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Snapshot Permanent Country Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -22654,13 +22818,17 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID
         business_meaning: Mã quốc gia thường trú (denormalized snapshot)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-          \ Permanent Country Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Snapshot Permanent Country Id."
   - name: Snapshot Permanent Province Id
     physical_name: snpst_permanent_province_id
     business_meaning_1st: FK đến Geographic Area — tỉnh thường trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES',\
-      \ PERMANENT_PROVINCE_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+      \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES\
+      \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+      \ PERMANENT_PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE)\
+      \ hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk\
+      \ nếu NHNCK không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -22673,13 +22841,17 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID
         business_meaning: FK đến Geographic Area — tỉnh thường trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES',\
-          \ PERMANENT_PROVINCE_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+          \ PERMANENT_PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE)\
+          \ hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk\
+          \ nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Snapshot Permanent Province Code
     physical_name: snpst_permanent_province_code
     business_meaning_1st: Mã tỉnh thường trú (denormalized snapshot)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-      \ Permanent Province Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Snapshot Permanent Province Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -22692,13 +22864,18 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_PROVINCE_ID
         business_meaning: Mã tỉnh thường trú (denormalized snapshot)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-          \ Permanent Province Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Snapshot Permanent Province Id."
   - name: Snapshot Permanent District Id
     physical_name: snpst_permanent_district_id
     business_meaning_1st: FK đến Geographic Area — huyện thường trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.DISTRICTS',\
-      \ PERMANENT_DISTRICT_ID)."
+    comment_1st: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+      \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+      \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area\
+      \ Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá\
+      \ trị: đối chiếu mã/tên quận/huyện PERMANENT_DISTRICT_ID với Geographic Area\
+      \ Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK\
+      \ không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -22711,12 +22888,18 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID
         business_meaning: FK đến Geographic Area — huyện thường trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.DISTRICTS',\
-          \ PERMANENT_DISTRICT_ID)."
+        comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+          \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+          \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic\
+          \ Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quận/huyện PERMANENT_DISTRICT_ID với\
+          \ Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần\
+          \ crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Snapshot Permanent District Code
     physical_name: snpst_permanent_district_code
     business_meaning_1st: Mã huyện thường trú (denormalized snapshot)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
+    comment_1st: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+      \ ECAT — ĐỔI TARGET, xem Snapshot Permanent District Id). Pair with Snapshot\
       \ Permanent District Id."
     data_domain_most: Text
     data_type_most: string
@@ -22730,13 +22913,17 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_DISTRICT_ID
         business_meaning: Mã huyện thường trú (denormalized snapshot)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+          \ ECAT — ĐỔI TARGET, xem Snapshot Permanent District Id). Pair with Snapshot\
           \ Permanent District Id."
   - name: Snapshot Current Country Id
     physical_name: snpst_current_country_id
     business_meaning_1st: FK đến Geographic Area — quốc gia tạm trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-      \ CURRENT_COUNTRY_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+      \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup\
+      \ giá trị: đối chiếu mã/tên quốc gia CURRENT_COUNTRY_ID với Geographic Area\
+      \ Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp\
+      \ theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -22749,13 +22936,17 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia tạm trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-          \ CURRENT_COUNTRY_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+          \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quốc gia CURRENT_COUNTRY_ID với Geographic\
+          \ Area Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+          \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn\
+          \ mã với ECAT."
   - name: Snapshot Current Country Code
     physical_name: snpst_current_country_code
     business_meaning_1st: Mã quốc gia tạm trú (denormalized snapshot)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-      \ Current Country Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Snapshot Current Country Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -22768,13 +22959,17 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID
         business_meaning: Mã quốc gia tạm trú (denormalized snapshot)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-          \ Current Country Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Snapshot Current Country Id."
   - name: Snapshot Current Province Id
     physical_name: snpst_current_province_id
     business_meaning_1st: FK đến Geographic Area — tỉnh tạm trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES',\
-      \ CURRENT_PROVINCE_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+      \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES\
+      \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+      \ CURRENT_PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE)\
+      \ hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk\
+      \ nếu NHNCK không cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -22787,13 +22982,17 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID
         business_meaning: FK đến Geographic Area — tỉnh tạm trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.PROVINCES',\
-          \ CURRENT_PROVINCE_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type\
+          \ Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES\
+          \ ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành\
+          \ CURRENT_PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE)\
+          \ hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk\
+          \ nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Snapshot Current Province Code
     physical_name: snpst_current_province_code
     business_meaning_1st: Mã tỉnh tạm trú (denormalized snapshot)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-      \ Current Province Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Snapshot Current Province Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -22806,13 +23005,18 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_PROVINCE_ID
         business_meaning: Mã tỉnh tạm trú (denormalized snapshot)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-          \ Current Province Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Snapshot Current Province Id."
   - name: Snapshot Current District Id
     physical_name: snpst_current_district_id
     business_meaning_1st: FK đến Geographic Area — huyện tạm trú (snapshot)
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.DISTRICTS',\
-      \ CURRENT_DISTRICT_ID)."
+    comment_1st: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+      \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+      \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area\
+      \ Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá\
+      \ trị: đối chiếu mã/tên quận/huyện CURRENT_DISTRICT_ID với Geographic Area Old\
+      \ Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không\
+      \ cùng chuẩn mã với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -22825,13 +23029,19 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID
         business_meaning: FK đến Geographic Area — huyện tạm trú (snapshot)
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.DISTRICTS',\
-          \ CURRENT_DISTRICT_ID)."
+        comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET\
+          \ — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc\
+          \ địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic\
+          \ Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quận/huyện CURRENT_DISTRICT_ID với Geographic\
+          \ Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk\
+          \ nếu NHNCK không cùng chuẩn mã với ECAT."
   - name: Snapshot Current District Code
     physical_name: snpst_current_district_code
     business_meaning_1st: Mã huyện tạm trú (denormalized snapshot)
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
-      \ Current District Id."
+    comment_1st: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+      \ ECAT — ĐỔI TARGET, xem Snapshot Current District Id). Pair with Snapshot Current\
+      \ District Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -22844,7 +23054,8 @@ entities:
       - source_table: APPLICATION_PROFESSIONALS
         source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID
         business_meaning: Mã huyện tạm trú (denormalized snapshot)
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Snapshot\
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn\
+          \ ECAT — ĐỔI TARGET, xem Snapshot Current District Id). Pair with Snapshot\
           \ Current District Id."
 - ldm:
     id: ATM-sp_professional_training_history
@@ -23459,8 +23670,12 @@ entities:
   - name: Country Id
     physical_name: country_id
     business_meaning_1st: FK đến Geographic Area — quốc gia
-    comment_1st: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-      \ COUNTRY_ID)."
+    comment_1st: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+      \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup\
+      \ giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID\
+      \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
+      \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
+      \ với ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -23473,13 +23688,17 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID
         business_meaning: FK đến Geographic Area — quốc gia
-        comment: "FK target: geographic_area.geographic_area_id. Hash: hash_id('NHNCK.COUNTRIES',\
-          \ COUNTRY_ID)."
+        comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic\
+          \ Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng\
+          \ lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID\
+          \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn\
+          \ hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không\
+          \ cùng chuẩn mã với ECAT."
   - name: Country Code
     physical_name: country_code
     business_meaning_1st: Mã quốc gia
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Country\
-      \ Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+      \ Pair with Country Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -23492,8 +23711,8 @@ entities:
       - source_table: PROFESSIONAL_RELATIONSHIPS
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID
         business_meaning: Mã quốc gia
-        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Country\
-          \ Id."
+        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
+          \ Pair with Country Id."
   - name: Note
     physical_name: note
     business_meaning_1st: Ghi chú

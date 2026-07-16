@@ -200,7 +200,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.COUNTRIES', PERMANENT_COUNTRY_ID)."
+    comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời điểm đăng ký. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia PERMANENT_COUNTRY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -214,7 +214,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent Residence Country Id."
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Permanent Residence Country Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -228,7 +228,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID
-    comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.PROVINCES', PERMANENT_PROVINCE_ID)."
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Snapshot tại thời điểm đăng ký. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PERMANENT_PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -242,7 +242,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_PROVINCE_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent Residence Province Id."
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Permanent Residence Province Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -256,7 +256,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID
-    comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời điểm đăng ký. Hash: hash_id('NHNCK.DISTRICTS', PERMANENT_DISTRICT_ID)."
+    comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Snapshot tại thời điểm đăng ký. Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện PERMANENT_DISTRICT_ID với Geographic Area Old Business Code (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -270,7 +270,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_DISTRICT_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Permanent Residence District Id."
+    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem Permanent Residence District Id). Pair with Permanent Residence District Id."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -284,7 +284,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE
-    comment: "Scheme: IDENTITY_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu. Snapshot — entity grain là enrollment, không phải Involved Party."
+    comment: "Scheme: IDENTIFICATION_DOCUMENT_TYPE. Nguồn: 1=CMND, 2=CCCD, 3=Hộ chiếu. Snapshot — entity grain là enrollment, không phải Involved Party."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -354,7 +354,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.RESULT
-    comment: "Scheme: TRAINING_RESULT."
+    comment: "Scheme: EXAM_RESULT (gộp từ TRAINING_RESULT, 2026-07-09)."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
