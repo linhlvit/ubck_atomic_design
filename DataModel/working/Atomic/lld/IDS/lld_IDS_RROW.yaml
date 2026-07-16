@@ -172,15 +172,15 @@ attributes:
 - attribute_name: "Report Catalog Type Code Snapshot"
   physical_name: "rpt_catalog_tp_code_snpst"
   description: "Loại báo cáo, lấy từ bảng REPORT_CATALOG."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.RROW.RC_TYPE_CD"
-  comment: "Scheme: IDS_REPORT_CATALOG_TYPE. Denormalized snapshot — trùng lặp với\
-    \ Financial Report Catalog.Report Catalog Type Code."
-  classification_context: "IDS_REPORT_CATALOG_TYPE"
+  comment: "Map 1:1 từ nguồn — không qua Classification Value/Scheme. Denormalized\
+    \ snapshot — trùng lặp với Financial Report Catalog.Report Catalog Type Code."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Description"

@@ -1,0 +1,625 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-securities_company_shareholder-SCMS.SC_FIRM_SHAREHOLDER
+  logical_name: Securities Company Shareholder
+  physical_name: securities_company_shareholder
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Shareholder"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Cổ đông của CTCK (cá nhân hoặc tổ chức). Ghi nhận thông tin định danh, loại cổ đông, quốc tịch, số cổ phần và tỷ lệ sở hữu.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
+
+attributes:
+  - name: Securities Company Shareholder Id
+    physical_name: sc_shareholder_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Securities Company Shareholder Code
+    physical_name: sc_shareholder_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: SCMS.SC_FIRM_SHAREHOLDER
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán có cổ đông này.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Securities Company Senior Personnel Id
+    physical_name: sc_senior_personnel_id
+    business_meaning: FK đến nhân sự cao cấp CTCK (nếu cổ đông cũng là nhân sự cao cấp).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_PERSONNEL_ID
+    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', SC_FIRM_PERSONNEL_ID). Nullable — cổ đông có thể không phải nhân sự cao cấp."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Securities Company Senior Personnel Code
+    physical_name: sc_senior_personnel_code
+    business_meaning: Mã nhân sự cao cấp CTCK liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SC_FIRM_PERSONNEL_ID
+    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with sc_senior_personnel_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Shareholder Type Code
+    physical_name: shareholder_tp_code
+    business_meaning: "Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông sáng lập; CO_DONG_PHO_THONG=Cổ đông phổ thông."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_TYPE
+    comment: "Scheme: SCMS_SHAREHOLDER_TYPE. NVARCHAR2(100)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Shareholder Entity Type Code
+    physical_name: shareholder_entity_tp_code
+    business_meaning: "Loại hình cổ đông: CA_NHAN=Cá nhân; TO_CHUC_TRONG_NUOC=Tổ chức trong nước; TO_CHUC_NUOC_NGOAI=Tổ chức nước ngoài."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_ENTITY_TYPE
+    comment: "Scheme: SCMS_SHAREHOLDER_ENTITY_TYPE. VARCHAR2(100). Chi tiết hơn INDIVIDUAL (chỉ CA_NHAN/TO_CHUC)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái bản ghi cổ đông: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.RECORD_STATUS
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Classification Nationality Id
+    physical_name: cl_nationality_id
+    business_meaning: FK đến quốc tịch của cổ đông.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID
+    comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Classification Nationality Code
+    physical_name: cl_nationality_code
+    business_meaning: Mã quốc tịch của cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.NATIONALITY_ID
+    comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with cl_nationality_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Individual Indicator
+    physical_name: individual_indicator
+    business_meaning: "Cờ là cá nhân: 1=Cá nhân; 0=Tổ chức."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.INDIVIDUAL
+    comment: "NUMBER(1). ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Shareholder Name
+    physical_name: shareholder_nm
+    business_meaning: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức) của cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SHAREHOLDER_NAME
+    comment: NVARCHAR2(250). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dt_of_birth
+    business_meaning: Ngày sinh (dd/mm/yyyy).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.DATE_OF_BIRTH
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Place Of Birth
+    physical_name: place_of_birth
+    business_meaning: Nơi sinh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.PLACE_OF_BIRTH
+    comment: NVARCHAR2(1000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Issue Date
+    physical_name: issue_dt
+    business_meaning: Ngày cấp giấy tờ/chứng chỉ định danh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ISSUE_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Issue Place
+    physical_name: issue_place
+    business_meaning: Nơi cấp giấy tờ/chứng chỉ định danh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ISSUE_PLACE
+    comment: NVARCHAR2(250).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Education Level
+    physical_name: education_level
+    business_meaning: Trình độ học vấn của cổ đông cá nhân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.EDUCATION_LEVEL
+    comment: NVARCHAR2(100). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Degree
+    physical_name: degree
+    business_meaning: Bằng cấp chuyên môn của cổ đông cá nhân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.DEGREE
+    comment: NVARCHAR2(100). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Occupation
+    physical_name: occupation
+    business_meaning: Nghề nghiệp của cổ đông cá nhân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.OCCUPATION
+    comment: VARCHAR2(200). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Workplace
+    physical_name: workplace
+    business_meaning: Nơi làm việc của cổ đông cá nhân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.WORKPLACE
+    comment: NVARCHAR2(1000). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Job Title
+    physical_name: job_title
+    business_meaning: Chức danh/chức vụ của cổ đông cá nhân tại nơi làm việc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.JOB_TITLE
+    comment: NVARCHAR2(250). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Trading Account
+    physical_name: trading_account
+    business_meaning: Số tài khoản giao dịch chứng khoán của cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.TRADING_ACCOUNT
+    comment: NVARCHAR2(30). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Org Short Name
+    physical_name: org_short_nm
+    business_meaning: Tên viết tắt của tổ chức cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ORG_SHORT_NAME
+    comment: "NVARCHAR2(200). Chỉ áp dụng khi INDIVIDUAL=0."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Legal Representative Name
+    physical_name: legal_representative_nm
+    business_meaning: Tên người đại diện pháp luật của tổ chức cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.LEGAL_REPRESENTATIVE_NAME
+    comment: NVARCHAR2(500). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Representative Position
+    physical_name: representative_position
+    business_meaning: Chức vụ của người đại diện pháp luật của tổ chức cổ đông.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.REPRESENTATIVE_POSITION
+    comment: NVARCHAR2(200). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Shares Held
+    physical_name: shares_held
+    business_meaning: Số lượng cổ phần đang nắm giữ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.SHARES_HELD
+    comment: "NUMBER(38). Không có scale — integer-like. ETL cần long/BigInteger type."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Freely Tradable Shares
+    physical_name: freely_tradable_shares
+    business_meaning: Số cổ phần tự do giao dịch.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.FREELY_TRADABLE_SHARES
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Pledged Shares
+    physical_name: pledged_shares
+    business_meaning: Số cổ phần đang cầm cố/thế chấp.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.PLEDGED_SHARES
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Restricted Shares
+    physical_name: restricted_shares
+    business_meaning: Số cổ phần bị hạn chế chuyển nhượng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.RESTRICTED_SHARES
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Ownership Ratio
+    physical_name: ownership_ratio
+    business_meaning: "Tỷ lệ sở hữu vốn (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.OWNERSHIP_RATIO
+    comment: "NUMBER(10,4). Lưu dạng thập phân (VD: 15.25 = 15.25%)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Contributed Capital
+    physical_name: contributed_capital
+    business_meaning: "Vốn góp (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.CONTRIBUTED_CAPITAL
+    comment: "NUMBER(22,4). Đơn vị VND."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Large Shareholder Date
+    physical_name: large_shareholder_dt
+    business_meaning: "Ngày đạt tỷ lệ sở hữu cổ đông lớn (từ 5% trở lên)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.LARGE_SHAREHOLDER_DATE
+    comment: DATE.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Controlling Shareholder
+    physical_name: controlling_shareholder
+    business_meaning: Thông tin cổ đông kiểm soát.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.CONTROLLING_SHAREHOLDER
+    comment: NVARCHAR2(40). Mô tả gốc BRD trống — data type gợi ý là chuỗi text (tên/mã) không phải Boolean.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Founding Shareholder Indicator
+    physical_name: founding_shareholder_indicator
+    business_meaning: "Cờ là cổ đông sáng lập: 1=Có; 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.FOUNDING_SHAREHOLDER
+    comment: "NUMBER(1). ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Owner Indicator
+    physical_name: owner_indicator
+    business_meaning: Cờ là chủ sở hữu.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.OWNER
+    comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Party Member Indicator
+    physical_name: party_member_indicator
+    business_meaning: Cờ là đảng viên.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.PARTY_MEMBER
+    comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Legal Entity Representative Indicator
+    physical_name: legal_entity_representative_indicator
+    business_meaning: Cờ là người đại diện pháp luật.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.LEGAL_ENTITY_REPRESENTATIVE
+    comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Company Employee Indicator
+    physical_name: company_employee_indicator
+    business_meaning: Cờ là nhân viên của CTCK.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.COMPANY_EMPLOYEE
+    comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Foreign Investment Indicator
+    physical_name: foreign_investment_indicator
+    business_meaning: "Cờ là vốn đầu tư nước ngoài: 1=Có; 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.FOREIGN_INVESTMENT
+    comment: "NUMBER(1). ETL: 1→true, 0/null→false."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Practitioner Legacy Id
+    physical_name: practitioner_legacy_id
+    business_meaning: Mã tham chiếu người hành nghề từ hệ thống cũ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.PRACTITIONER_LEGACY_ID
+    comment: "NUMBER(5) — ETL convert sang string. ID tham chiếu hệ thống legacy, không phải FK constraint."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.NOTE
+    comment: VARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER'"
+    etl_derived_value: null

@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_firm_status-SCMS.CAT_SC_FIRM_STATUS
+  logical_name: Classification Firm Status
+  physical_name: cl_firm_status
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Firm Status"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  description: |
+    Danh mục trạng thái pháp lý áp dụng cho CTCK, Chi nhánh, VPĐD, PGD, Ngân hàng đối tác — mã, tên, cờ yêu cầu nộp báo cáo/CBTT theo từng trạng thái. Nâng cấp từ Classification Value (scheme SCMS_SC_FIRM_STATUS) lên entity thật. Xem 7e #11.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CAT_SC_FIRM_STATUS
+
+attributes:
+  - name: Classification Firm Status Id
+    physical_name: cl_firm_status_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.ID
+    comment: "PK surrogate. BCV: \"[Common] Firm Status\". Danh mục trạng thái pháp lý CTCK/Chi nhánh/VPĐD/PGD/Ngân hàng. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', ID)."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Classification Firm Status Code
+    physical_name: cl_firm_status_code
+    business_meaning: Mã trạng thái hoạt động CTCK. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE
+    comment: BK chính. Dùng SC_FIRM_STATUS_CODE (mã nghiệp vụ chuyên biệt) thay vì ID kỹ thuật (NUMBER tự tăng) — xem pending_design.yaml.
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: SCMS.CAT_SC_FIRM_STATUS
+
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at 2026-07-15)."
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.CREATED_AT
+    comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo ngày."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Classification Firm Status Name
+    physical_name: cl_firm_status_nm
+    business_meaning: Tên trạng thái hoạt động CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_NAME
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Applicable Entity
+    physical_name: applicable_entity
+    business_meaning: Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY
+    comment: "Map 1:1 từ nguồn — không phải Classification Value theo chỉ đạo Data Modeler (2026-07-15). NVARCHAR2(100)."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Report Submission Required Indicator
+    physical_name: rpt_submission_required_indicator
+    business_meaning: "Cờ CTCK ở trạng thái này phải nộp báo cáo: 1=Phải nộp, 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.REPORT_SUBMISSION_ENABLED
+    comment: NUMBER(1).
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Disclosure Required Indicator
+    physical_name: disclosure_required_indicator
+    business_meaning: "Cờ CTCK ở trạng thái này phải CBTT: 1=Phải CBTT, 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.DISCLOSURE_ENABLED
+    comment: NUMBER(1).
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái bản ghi danh mục: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.RECORD_STATUS
+    comment: "Scheme: SCMS_FIRM_STATUS_RECORD_STATUS."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết nội dung/mục đích của bản ghi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.NOTE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Item Code
+    physical_name: item_code
+    business_meaning: "Mã định danh (mã viết tắt, mã nghiệp vụ)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.CODE
+    comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp với Classification Firm Status Code (SC_FIRM_STATUS_CODE)."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Item Name
+    physical_name: item_nm
+    business_meaning: Cột item_name (mô tả gốc BRD trống).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.ITEM_NAME
+    comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp với Classification Firm Status Name (SC_FIRM_STATUS_NAME)."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null
+
+  - name: Active Indicator
+    physical_name: active_indicator
+    business_meaning: Cột active (mô tả gốc BRD trống).
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SC_FIRM_STATUS
+    source_column: SCMS.CAT_SC_FIRM_STATUS.ACTIVE
+    comment: "Map 1:1 theo chỉ đạo Data Modeler (2026-07-10) — không coi là trùng lặp với Record Status Code (RECORD_STATUS)."
+    classification_context: "Source System Code = 'SCMS_CAT_SC_FIRM_STATUS'"
+    etl_derived_value: null

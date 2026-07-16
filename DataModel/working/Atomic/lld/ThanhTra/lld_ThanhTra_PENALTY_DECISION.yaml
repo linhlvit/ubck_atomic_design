@@ -182,8 +182,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Assigned Officer Code"
-  physical_name: "assigned_officer_code"
+- attribute_name: "Assigned Officer Name"
+  physical_name: "assigned_officer_nm"
   description: "Tên cán bộ được phân công (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -191,8 +191,9 @@ attributes:
   status: "draft"
   source_columns:
   - "ThanhTra.PENALTY_DECISION.ASSIGNED_OFFICER_NAME"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Assigned Officer Id."
+  comment: "Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải Code\
+    \ nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern Lookup\
+    \ pair Code. Pair with Assigned Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

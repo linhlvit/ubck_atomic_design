@@ -1,0 +1,569 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_periodic_report-SCMS.SC_FIRM_PERIODIC_REPORT
+  logical_name: Securities Company Periodic Report
+  physical_name: sc_periodic_report
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Transaction"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Báo cáo định kỳ của CTCK nộp lên UBCKNN (tài chính, hoạt động kinh doanh). Ghi nhận kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng thái xử lý.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
+
+attributes:
+  - name: Securities Company Periodic Report Id
+    physical_name: sc_periodic_report_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Securities Company Periodic Report Code
+    physical_name: sc_periodic_report_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.ID
+    comment: BK. NUMBER(19) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: SCMS.SC_FIRM_PERIODIC_REPORT
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán nộp báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Securities Company Form Report Id
+    physical_name: sc_form_rpt_id
+    business_meaning: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
+    comment: "FK target: Securities Company Form Report.Securities Company Form Report Id. Hash: hash_id('SCMS.FORM_REPORT', FORM_REPORT_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Securities Company Form Report Code
+    physical_name: sc_form_rpt_code
+    business_meaning: Mã biểu mẫu báo cáo liên quan (FORM_REPORT).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
+    comment: "Lookup pair: Securities Company Form Report.Securities Company Form Report Code. Pair with Securities Company Form Report Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo/biểu mẫu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_NAME
+    comment: NVARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_YEAR
+    comment: "NUMBER(10) — giá trị năm (VD: 2024)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Period
+    physical_name: period
+    business_meaning: "Kỳ số (1-4 cho quý, 1-12 cho tháng)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.PERIOD
+    comment: NUMBER(10). Kết hợp với Report Month/Quarter để xác định kỳ báo cáo.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Quarter
+    physical_name: quarter
+    business_meaning: "Quý trong năm (1, 2, 3, 4)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.QUARTER
+    comment: NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng trong năm.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_MONTH
+    comment: NUMBER(10). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning: Kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REPORT_PERIOD
+    comment: "VARCHAR2(20). Map 1:1 từ nguồn — không dùng Classification Value theo quyết định thiết kế."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.START_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.END_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Submission Deadline Date
+    physical_name: submission_deadline_dt
+    business_meaning: Hạn nộp báo cáo theo quy định.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE
+    comment: SUBMISSION_DEADLINE_AT (TIMESTAMP 0) là duplicate dạng Timestamp — ETL dùng SUBMISSION_DEADLINE (DATE).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Submission Deadline Timestamp
+    physical_name: submission_deadline_tms
+    business_meaning: Hạn nộp báo cáo theo quy định (có giờ).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT
+    comment: TIMESTAMP(0) — bản đầy đủ giờ của SUBMISSION_DEADLINE. ETL dùng cột này nếu cần độ chính xác giờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Report Submission Status Code
+    physical_name: rpt_submission_status_code
+    business_meaning: "Trạng thái nộp báo cáo định kỳ: 0=Chưa gửi; 1=Đã gửi; 2=Đã duyệt; -1=Từ chối; 3=Bị hủy."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.RECORD_STATUS
+    comment: "Scheme: SCMS_REPORT_SUBMISSION_STATUS. NUMBER(10) với giá trị 0/1/2/-1/3."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Overdue Days
+    physical_name: overdue_days
+    business_meaning: Số ngày nộp báo cáo quá hạn.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.OVERDUE_DAYS
+    comment: NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Classification Event Type Id
+    physical_name: cl_event_tp_id
+    business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
+    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Classification Event Type Code
+    physical_name: cl_event_tp_code
+    business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
+    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Sent Timestamp
+    physical_name: sent_tms
+    business_meaning: Thời điểm gửi báo cáo lên UBCKNN.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENT_AT
+    comment: TIMESTAMP(6).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Approved Timestamp
+    physical_name: approved_tms
+    business_meaning: Thời điểm phê duyệt báo cáo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_AT
+    comment: TIMESTAMP(6).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancelled Timestamp
+    physical_name: cancelled_tms
+    business_meaning: Thời điểm hủy báo cáo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_AT
+    comment: TIMESTAMP(6).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Approved By IAM User Id
+    physical_name: approved_by_iam_user_id
+    business_meaning: FK đến người phê duyệt báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Approved By IAM User Code
+    physical_name: approved_by_iam_user_code
+    business_meaning: Mã người phê duyệt báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.APPROVED_BY
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approved By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk (xem comment Id)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Sender IAM User Id
+    physical_name: sender_iam_user_id
+    business_meaning: FK đến người gửi báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Sender IAM User Code
+    physical_name: sender_iam_user_code
+    business_meaning: Mã người gửi báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SENDER_ID
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Sender IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk (xem comment Id)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancelled By IAM User Id
+    physical_name: cancelled_by_iam_user_id
+    business_meaning: FK đến người hủy báo cáo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancelled By IAM User Code
+    physical_name: cancelled_by_iam_user_code
+    business_meaning: Mã người hủy báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLED_BY
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Cancelled By IAM User Id. Cross-source FK (SCMS → IAM), pending crosswalk (xem comment Id)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Valid Digital Signature Indicator
+    physical_name: valid_digital_signature_indicator
+    business_meaning: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DIGITAL_SIGNATURE
+    comment: NUMBER(1). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Valid Data Indicator
+    physical_name: valid_data_indicator
+    business_meaning: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ; 0=Không hợp lệ."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.VALID_DATA
+    comment: NUMBER(1). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Digital Signature File
+    physical_name: digital_signature_file
+    business_meaning: Đường dẫn file chữ ký số.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.DIGITAL_SIGNATURE_FILE
+    comment: VARCHAR2(2000). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Summary
+    physical_name: summary
+    business_meaning: Tóm tắt nội dung trích yếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.SUMMARY
+    comment: NCLOB.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Import File Path
+    physical_name: import_file_path
+    business_meaning: Đường dẫn file Excel import dữ liệu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.IMPORT_FILE_PATH
+    comment: VARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.ATTACHMENT_PATH
+    comment: NCLOB.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.NOTE
+    comment: NCLOB.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Cancellation Reason
+    physical_name: cancellation_reason
+    business_meaning: Lý do hủy báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.CANCELLATION_REASON
+    comment: NCLOB.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null
+
+  - name: Rejection Reason
+    physical_name: rejection_reason
+    business_meaning: Lý do từ chối báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_PERIODIC_REPORT
+    source_column: SCMS.SC_FIRM_PERIODIC_REPORT.REJECTION_REASON
+    comment: NCLOB.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
+    etl_derived_value: null

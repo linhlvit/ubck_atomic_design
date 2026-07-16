@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Broker Dealer"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -38,7 +38,7 @@ attributes:
   nullable: false
   is_primary_key: true
   status: "draft"
-  source_columns: null
+  source_columns: []
   comment: "PK surrogate. Hash: hash_id('SCMS.SC_FIRM_INFO', CODE). BCV: \"[Involved\
     \ Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép."
   classification_context: null
@@ -51,7 +51,7 @@ attributes:
   nullable: false
   is_primary_key: false
   status: "draft"
-  source_columns: null
+  source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_INFO"
   etl_derived_value: "SCMS.SC_FIRM_INFO"
@@ -268,18 +268,19 @@ attributes:
 - attribute_name: "Total Shares"
   physical_name: "total_shares"
   description: "Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá 10.000đ)."
-  data_domain: "Quantity"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.TOTAL_SHARES"
-  comment: "[PROPOSE NEW DOMAIN] Quantity (decimal(38,0)) — không domain nào trong\
-    \ 12 domain chuẩn phù hợp cho số lượng cổ phần lớn (NUMBER(38)); Small Counter\
-    \ (int) sẽ overflow. Cần reviewer duyệt bổ sung domain 'Quantity' vào reference/data_domains.md."
+  comment: "Tạm dùng Currency Amount (decimal(23,2)) dù không phải tiền tệ — 12 domain\
+    \ chuẩn chưa có domain số đếm lớn cho NUMBER(38) (Small Counter/int sẽ overflow).\
+    \ Data Modeler đã quyết định tạm thời (2026-07-16), chờ xác nhận domain 'Quantity'\
+    \ trước khi chính thức hóa."
   classification_context: null
   etl_derived_value: null
-  data_type: null
+  data_type: "decimal(23,2)"
 - attribute_name: "Business Lines"
   physical_name: "business_lines"
   description: "Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép (denormalized\
@@ -674,19 +675,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Provisional Indicator"
-  physical_name: "provisional_indicator"
+- attribute_name: "Provisional Status Code"
+  physical_name: "provisional_status_code"
   description: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
-  data_domain: "Boolean"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.PROVISIONAL"
-  comment: "NUMBER(1) — ETL cần convert sang boolean."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "boolean"
+  comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
+  classification_context: "SCMS_PROVISIONAL_STATUS"
+  etl_derived_value: "1=Bản nháp;0=Chính thức"
+  data_type: "string"
 - attribute_name: "Synced From Admin Process Indicator"
   physical_name: "synced_from_admin_process_indicator"
   description: "Cờ đã đồng bộ từ Thủ tục hành chính: 1=Đã đồng bộ; 0=Chưa đồng bộ."

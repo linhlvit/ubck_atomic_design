@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Senior Officer"
   table_type: "Relative"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -302,19 +302,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Provisional Indicator"
-  physical_name: "provisional_indicator"
+- attribute_name: "Provisional Status Code"
+  physical_name: "provisional_status_code"
   description: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
-  data_domain: "Boolean"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.PROVISIONAL"
-  comment: "NUMBER(1)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "boolean"
+  comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
+  classification_context: "SCMS_PROVISIONAL_STATUS"
+  etl_derived_value: "1=Bản nháp;0=Chính thức"
+  data_type: "string"
 - attribute_name: "Legal Representative Indicator"
   physical_name: "legal_representative_indicator"
   description: "Là người đại diện theo pháp luật: 1=Có; 0=Không."

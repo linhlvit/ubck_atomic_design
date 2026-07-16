@@ -1,0 +1,135 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_business_transaction-SCMS.CAT_BUSINESS_LINE
+  logical_name: Classification Business Transaction
+  physical_name: cl_business_transaction
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Business Line"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  description: |
+    Danh mục nghiệp vụ kinh doanh chứng khoán được UBCKNN cấp phép cho CTCK (môi giới, tự doanh, bảo lãnh phát hành, tư vấn đầu tư, quản lý quỹ...) — mã, tên, vốn pháp định tối thiểu theo quy định pháp luật cho từng nghiệp vụ. Nâng cấp từ Classification Value (scheme SCMS_BUSINESS_LINE) lên entity thật. Đổi tên từ "Classification SCMS Business Line" theo yêu cầu tường minh của Data Modeler (bỏ tiền tố nguồn + đổi BCV Term hiển thị thành "Business Transaction"); BCV Concept giữ nguyên [Common] Business Line do không tìm thấy BCV Term "Business Transaction" khớp hơn trong knowledge/terms.csv. Xem SCMS_HLD_Overview.md #55 / 7e #16.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CAT_BUSINESS_LINE
+
+attributes:
+  - name: Classification Business Transaction Id
+    physical_name: cl_business_transaction_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('SCMS.CAT_BUSINESS_LINE', BUSINESS_LINE_CODE). BCV: \"[Common] Business Line\"."
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: SCMS.CAT_BUSINESS_LINE
+
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at 2026-07-15)."
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: SCMS.CAT_BUSINESS_LINE.CREATED_AT
+    comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo ngày."
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: null
+
+  - name: Classification Business Transaction Code
+    physical_name: cl_business_transaction_code
+    business_meaning: Mã nghiệp vụ kinh doanh chứng khoán. BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: SCMS.CAT_BUSINESS_LINE.BUSINESS_LINE_CODE
+    comment: "BK chính (mã nghiệp vụ). Thay thế PK kỹ thuật ID — không map ID vào model (xem pending_design.yaml). Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: null
+
+  - name: Classification Business Transaction Name
+    physical_name: cl_business_transaction_nm
+    business_meaning: Tên nghiệp vụ kinh doanh chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: SCMS.CAT_BUSINESS_LINE.BUSINESS_LINE_NAME
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: SCMS.CAT_BUSINESS_LINE.NOTE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: null
+
+  - name: Legal Capital Amount
+    physical_name: legal_capital_amt
+    business_meaning: Vốn pháp định tối thiểu theo quy định pháp luật cho nghiệp vụ này (mô tả gốc BRD trống).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: SCMS.CAT_BUSINESS_LINE.LEGAL_CAPITAL
+    comment: "Nguồn NUMBER(38) không khai báo đơn vị/scale — cần profile xác nhận đơn vị tiền (VND?) và số chữ số thập phân trước go-live. Mô tả bổ sung theo SCMS_HLD_Overview.md #55 (\"vốn pháp định tối thiểu\")."
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái bản ghi nghiệp vụ kinh doanh: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_BUSINESS_LINE
+    source_column: SCMS.CAT_BUSINESS_LINE.RECORD_STATUS
+    comment: "Scheme: SCMS_CLASSIFICATION_BUSINESS_LINE_RECORD_STATUS (đã pre-đăng ký trong classification_schemes.yaml, xem SCMS_HLD_Tier1.md 6f T1-09)."
+    classification_context: "Source System Code = 'SCMS_CAT_BUSINESS_LINE'"
+    etl_derived_value: null

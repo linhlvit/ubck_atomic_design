@@ -1,188 +1,32 @@
 schema_type: dm_manifest
 schema_version: "1.0"
 entries:
-- subfolder: Arrangement
-  file_name: dm_atm_discretionary_investment_account-FMS.INVES_ACC.yaml
-  id: ATM-discretionary_investment_account-FMS.INVES_ACC
-  physical_name: discretionary_investment_account
-  logical_name: Discretionary Investment Account
-  bcv_core_object: Arrangement
-  bcv_concept: "[Arrangement] Investment Account"
+- subfolder: Business_Activity
+  file_name: dm_atm_sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT.yaml
+  id: ATM-sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT
+  physical_name: sc_adhoc_report
+  logical_name: Securities Company Adhoc Report
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Transaction"
   table_type: Relative
   etl_pattern: SCD2
-  source: FMS
+  source: SCMS
   status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-FMS-INVES_ACC
-- subfolder: Arrangement
-  file_name: dm_atm_investment_fund_investor_membership-FMS.MB_FUND.yaml
-  id: ATM-investment_fund_investor_membership-FMS.MB_FUND
-  physical_name: investment_fund_investor_membership
-  logical_name: Investment Fund Investor Membership
-  bcv_core_object: Arrangement
-  bcv_concept: "[Arrangement] Investment Fund"
+  attribute_count: 39
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADHOC_REPORT
+- subfolder: Business_Activity
+  file_name: dm_atm_sc_periodic_report-SCMS.SC_FIRM_PERIODIC_REPORT.yaml
+  id: ATM-sc_periodic_report-SCMS.SC_FIRM_PERIODIC_REPORT
+  physical_name: sc_periodic_report
+  logical_name: Securities Company Periodic Report
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Transaction"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: FMS
+  source: SCMS
   status: draft
-  attribute_count: 26
-  brd_ref: BRD-SRC-FMS-MB_FUND
-- subfolder: Business_Activity
-  file_name: dm_atm_fmc_insider_shareholding_change_log-FMS.INSID_CHANGE.yaml
-  id: ATM-fmc_insider_shareholding_change_log-FMS.INSID_CHANGE
-  physical_name: fmc_insider_shareholding_change_log
-  logical_name: Fund Management Company Insider Shareholding Change Log
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: FMS
-  status: draft
-  attribute_count: 18
-  brd_ref: BRD-SRC-FMS-INSID_CHANGE
-- subfolder: Business_Activity
-  file_name: dm_atm_fmc_securities_offering-FMS.OFFERING.yaml
-  id: ATM-fmc_securities_offering-FMS.OFFERING
-  physical_name: fmc_securities_offering
-  logical_name: Fund Management Company Securities Offering
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Corporate Action"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 49
-  brd_ref: BRD-SRC-FMS-OFFERING
-- subfolder: Business_Activity
-  file_name: dm_atm_fmc_securities_offering_plan-FMS.OFFERING_PLAN.yaml
-  id: ATM-fmc_securities_offering_plan-FMS.OFFERING_PLAN
-  physical_name: fmc_securities_offering_plan
-  logical_name: Fund Management Company Securities Offering Plan
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Corporate Action"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 22
-  brd_ref: BRD-SRC-FMS-OFFERING_PLAN
-- subfolder: Business_Activity
-  file_name: dm_atm_fund_management_conduct_violation-FMS.VIOLT.yaml
-  id: ATM-fund_management_conduct_violation-FMS.VIOLT
-  physical_name: fund_management_conduct_violation
-  logical_name: Fund Management Conduct Violation
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Conduct Violation"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 38
-  brd_ref: BRD-SRC-FMS-VIOLT
-- subfolder: Business_Activity
-  file_name: dm_atm_investment_fund_investor_capital_change_log-FMS.MB_CHANGE.yaml
-  id: ATM-investment_fund_investor_capital_change_log-FMS.MB_CHANGE
-  physical_name: investment_fund_investor_capital_change_log
-  logical_name: Investment Fund Investor Capital Change Log
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: FMS
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-FMS-MB_CHANGE
-- subfolder: Business_Activity
-  file_name: dm_atm_member_inspection_penalty_decision-FMS.INSPECTION_PENALTY_DECISION.yaml
-  id: ATM-member_inspection_penalty_decision-FMS.INSPECTION_PENALTY_DECISION
-  physical_name: member_inspection_penalty_decision
-  logical_name: Member Inspection Penalty Decision
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Conduct Violation"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 18
-  brd_ref: BRD-SRC-FMS-INSPECTION_PENALTY_DECISION
-- subfolder: Business_Activity
-  file_name: dm_atm_member_inspection_round-FMS.INSPECTION_ROUND.yaml
-  id: ATM-member_inspection_round-FMS.INSPECTION_ROUND
-  physical_name: member_inspection_round
-  logical_name: Member Inspection Round
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Audit Investigation"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 15
-  brd_ref: BRD-SRC-FMS-INSPECTION_ROUND
-- subfolder: Business_Activity
-  file_name: dm_atm_member_inspection_target-FMS.INSPECTION_TARGET.yaml
-  id: ATM-member_inspection_target-FMS.INSPECTION_TARGET
-  physical_name: member_inspection_target
-  logical_name: Member Inspection Target
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity Target Involved Party"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: FMS
-  status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-INSPECTION_TARGET
-- subfolder: Business_Activity
-  file_name: dm_atm_member_rating-FMS.RANK.yaml
-  id: ATM-member_rating-FMS.RANK
-  physical_name: member_rating
-  logical_name: Member Rating
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: FMS
-  status: draft
-  attribute_count: 12
-  brd_ref: BRD-SRC-FMS-RANK
-- subfolder: Business_Activity
-  file_name: dm_atm_member_rating_period-FMS.RATING_PD.yaml
-  id: ATM-member_rating_period-FMS.RATING_PD
-  physical_name: member_rating_period
-  logical_name: Member Rating Period
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Assessment Period"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-RATING_PD
-- subfolder: Business_Activity
-  file_name: dm_atm_member_rating_ranking_criterion-FMS.RNK_FACTOR.yaml
-  id: ATM-member_rating_ranking_criterion-FMS.RNK_FACTOR
-  physical_name: member_rating_ranking_criterion
-  logical_name: Member Rating Ranking Criterion
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 20
-  brd_ref: BRD-SRC-FMS-RNK_FACTOR
-- subfolder: Business_Activity
-  file_name: dm_atm_member_rating_ranking_criterion_group-FMS.RNK_GR_FTOR.yaml
-  id: ATM-member_rating_ranking_criterion_group-FMS.RNK_GR_FTOR
-  physical_name: member_rating_ranking_criterion_group
-  logical_name: Member Rating Ranking Criterion Group
-  bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Business Activity"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 11
-  brd_ref: BRD-SRC-FMS-RNK_GR_FTOR
+  attribute_count: 39
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_PERIODIC_REPORT
 - subfolder: Business_Activity
   file_name: dm_atm_sp_conduct_violation-NHNCK.VIOLATIONS.yaml
   id: ATM-sp_conduct_violation-NHNCK.VIOLATIONS
@@ -209,19 +53,58 @@ entries:
   status: approved
   attribute_count: 28
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSE_DETAILS
-- subfolder: Communication
-  file_name: dm_atm_member_disclosure_announcement-FMS.ANNOUNCE.yaml
-  id: ATM-member_disclosure_announcement-FMS.ANNOUNCE
-  physical_name: member_disclosure_announcement
-  logical_name: Member Disclosure Announcement
-  bcv_core_object: Communication
-  bcv_concept: "[Communication] Announcement"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: FMS
+- subfolder: Common
+  file_name: dm_atm_cl_business_transaction-SCMS.CAT_BUSINESS_LINE.yaml
+  id: ATM-cl_business_transaction-SCMS.CAT_BUSINESS_LINE
+  physical_name: cl_business_transaction
+  logical_name: Classification Business Transaction
+  bcv_core_object: Common
+  bcv_concept: "[Common] Business Line"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
   status: draft
-  attribute_count: 32
-  brd_ref: BRD-SRC-FMS-ANNOUNCE
+  attribute_count: 8
+  brd_ref: BRD-SRC-SCMS-CAT_BUSINESS_LINE
+- subfolder: Common
+  file_name: dm_atm_cl_firm_status-SCMS.CAT_SC_FIRM_STATUS.yaml
+  id: ATM-cl_firm_status-SCMS.CAT_SC_FIRM_STATUS
+  physical_name: cl_firm_status
+  logical_name: Classification Firm Status
+  bcv_core_object: Common
+  bcv_concept: "[Common] Firm Status"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-SCMS-CAT_SC_FIRM_STATUS
+- subfolder: Common
+  file_name: dm_atm_cl_nationality-SCMS.CAT_NATIONALITY.yaml
+  id: ATM-cl_nationality-SCMS.CAT_NATIONALITY
+  physical_name: cl_nationality
+  logical_name: Classification Nationality
+  bcv_core_object: Common
+  bcv_concept: "[Common] Nationality"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-SCMS-CAT_NATIONALITY
+- subfolder: Common
+  file_name: dm_atm_cl_service-SCMS.CAT_SERVICE.yaml
+  id: ATM-cl_service-SCMS.CAT_SERVICE
+  physical_name: cl_service
+  logical_name: Classification Service
+  bcv_core_object: Common
+  bcv_concept: "[Common] Service"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-SCMS-CAT_SERVICE
 - subfolder: Communication
   file_name: dm_atm_securities_order-ORDERTRADE.ORDER_BOOK_HNX.yaml
   id: ATM-securities_order-ORDERTRADE.ORDER_BOOK_HNX
@@ -275,71 +158,6 @@ entries:
   attribute_count: 19
   brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
 - subfolder: Condition
-  file_name: dm_atm_member_rating_criterion-FMS.FACTOR.yaml
-  id: ATM-member_rating_criterion-FMS.FACTOR
-  physical_name: member_rating_criterion
-  logical_name: Member Rating Criterion
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Scoring Criterion"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 19
-  brd_ref: BRD-SRC-FMS-FACTOR
-- subfolder: Condition
-  file_name: dm_atm_member_rating_criterion_group-FMS.GRP_FACTOR.yaml
-  id: ATM-member_rating_criterion_group-FMS.GRP_FACTOR
-  physical_name: member_rating_criterion_group
-  logical_name: Member Rating Criterion Group
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Scoring Criterion"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 11
-  brd_ref: BRD-SRC-FMS-GRP_FACTOR
-- subfolder: Condition
-  file_name: dm_atm_member_rating_criterion_scale-FMS.FTOR_SCALE.yaml
-  id: ATM-member_rating_criterion_scale-FMS.FTOR_SCALE
-  physical_name: member_rating_criterion_scale
-  logical_name: Member Rating Criterion Scale
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Scoring Criterion"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-FMS-FTOR_SCALE
-- subfolder: Condition
-  file_name: dm_atm_member_warning_condition-FMS.CDT_WARN.yaml
-  id: ATM-member_warning_condition-FMS.CDT_WARN
-  physical_name: member_warning_condition
-  logical_name: Member Warning Condition
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Scoring Criterion"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 23
-  brd_ref: BRD-SRC-FMS-CDT_WARN
-- subfolder: Condition
-  file_name: dm_atm_member_warning_parameter-FMS.PARA_WARN.yaml
-  id: ATM-member_warning_parameter-FMS.PARA_WARN
-  physical_name: member_warning_parameter
-  logical_name: Member Warning Parameter
-  bcv_core_object: Condition
-  bcv_concept: "[Condition] Scoring Criterion"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 11
-  brd_ref: BRD-SRC-FMS-PARA_WARN
-- subfolder: Condition
   file_name: dm_atm_sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES.yaml
   id: ATM-sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES
   physical_name: sp_qualification_examination_assessment_fee
@@ -353,6 +171,32 @@ entries:
   attribute_count: 9
   brd_ref: BRD-SRC-NHNCK-EXAM_SESSION_FEES
 - subfolder: Documentation
+  file_name: dm_atm_sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION.yaml
+  id: ATM-sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION
+  physical_name: sc_administrative_penalty_decision
+  logical_name: Securities Company Administrative Penalty Decision
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Legal Decision"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 20
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_PENALTY_DECISION
+- subfolder: Documentation
+  file_name: dm_atm_sc_administrative_sanction-SCMS.SC_FIRM_ADMIN_SANCTION.yaml
+  id: ATM-sc_administrative_sanction-SCMS.SC_FIRM_ADMIN_SANCTION
+  physical_name: sc_administrative_sanction
+  logical_name: Securities Company Administrative Sanction
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Legal Decision"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: draft
+  attribute_count: 16
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ADMIN_SANCTION
+- subfolder: Documentation
   file_name: dm_atm_securities_practitioner_license_application-NHNCK.APPLICATIONS.yaml
   id: ATM-securities_practitioner_license_application-NHNCK.APPLICATIONS
   physical_name: securities_practitioner_license_application
@@ -363,7 +207,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 40
+  attribute_count: 41
   brd_ref: BRD-SRC-NHNCK-APPLICATIONS
 - subfolder: Documentation
   file_name: dm_atm_sp_license_application_education_certificate_document-NHNCK.APPLICATION_SPECIALIZATIONS.yaml
@@ -377,7 +221,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 13
+  attribute_count: 14
   brd_ref: BRD-SRC-NHNCK-APPLICATION_SPECIALIZATIONS
 - subfolder: Documentation
   file_name: dm_atm_sp_license_application_re_exam_request-NHNCK.APPLICATION_RE_EXAMS.yaml
@@ -415,7 +259,7 @@ entries:
   table_type: Fundamental
   etl_pattern: SCD4A
   source: NHNCK
-  status: draft
+  status: approved
   attribute_count: 10
   brd_ref: BRD-SRC-NHNCK-CERTIFICATES
 - subfolder: Documentation
@@ -445,18 +289,57 @@ entries:
   attribute_count: 34
   brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORTS
 - subfolder: Event
-  file_name: dm_atm_sc_licensed_service-SCMS.SC_FIRM_SERVICE.yaml
-  id: ATM-sc_licensed_service-SCMS.SC_FIRM_SERVICE
-  physical_name: sc_licensed_service
-  logical_name: Securities Company Licensed Service
+  file_name: dm_atm_sc_alert_violation-SCMS.SC_FIRM_ALERT_VIOLATION.yaml
+  id: ATM-sc_alert_violation-SCMS.SC_FIRM_ALERT_VIOLATION
+  physical_name: sc_alert_violation
+  logical_name: Securities Company Alert Violation
   bcv_core_object: Event
-  bcv_concept: "[Event] Party Registration"
+  bcv_concept: "[Event] Business Activity"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  status: draft
+  attribute_count: 33
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_ALERT_VIOLATION
+- subfolder: Event
+  file_name: dm_atm_sc_disclosure_securities_offering-SCMS.DISCLOSURE_SECURITIES_OFFERING.yaml
+  id: ATM-sc_disclosure_securities_offering-SCMS.DISCLOSURE_SECURITIES_OFFERING
+  physical_name: sc_disclosure_securities_offering
+  logical_name: Securities Company Disclosure Securities Offering
+  bcv_core_object: Event
+  bcv_concept: "[Event] Communication"
   table_type: Fundamental
   etl_pattern: SCD4A
   source: SCMS
   status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_SERVICE
+  attribute_count: 84
+  brd_ref: BRD-SRC-SCMS-DISCLOSURE_SECURITIES_OFFERING
+- subfolder: Event
+  file_name: dm_atm_sc_shareholder_ownership_change-SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.yaml
+  id: ATM-sc_shareholder_ownership_change-SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+  physical_name: sc_shareholder_ownership_change
+  logical_name: Securities Company Shareholder Ownership Change
+  bcv_core_object: Event
+  bcv_concept: "[Event] Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  status: draft
+  attribute_count: 18
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
+- subfolder: Event
+  file_name: dm_atm_securities_company_alert_indicator-SCMS.ALERT_INDICATOR.yaml
+  id: ATM-securities_company_alert_indicator-SCMS.ALERT_INDICATOR
+  physical_name: securities_company_alert_indicator
+  logical_name: Securities Company Alert Indicator
+  bcv_core_object: Event
+  bcv_concept: "[Event] Alert Indicator"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 26
+  brd_ref: BRD-SRC-SCMS-ALERT_INDICATOR
 - subfolder: Event
   file_name: dm_atm_sp_professional_training_class-NHNCK.SPECIALIZATION_COURSES.yaml
   id: ATM-sp_professional_training_class-NHNCK.SPECIALIZATION_COURSES
@@ -470,474 +353,6 @@ entries:
   status: approved
   attribute_count: 11
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
-- subfolder: Group
-  file_name: dm_atm_index_constituent_snapshot-MDDS.JAD_CSIDXINFOR.yaml
-  id: ATM-index_constituent_snapshot-MDDS.JAD_CSIDXINFOR
-  physical_name: index_constituent_snapshot
-  logical_name: Index Constituent Snapshot
-  bcv_core_object: Group
-  bcv_concept: "[Group] Share Index"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-MDDS-JAD_CSIDXINFOR
-- subfolder: Group
-  file_name: dm_atm_market_index_snapshot-MDDS.JAD_MARKETINFOR.yaml
-  id: ATM-market_index_snapshot-MDDS.JAD_MARKETINFOR
-  physical_name: market_index_snapshot
-  logical_name: Market Index Snapshot
-  bcv_core_object: Group
-  bcv_concept: "[Group] Share Index"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 35
-  brd_ref: BRD-SRC-MDDS-JAD_MARKETINFOR
-- subfolder: Involved_Party
-  file_name: dm_atm_custodian_bank-FMS.BANK_MONI.yaml
-  id: ATM-custodian_bank-FMS.BANK_MONI
-  physical_name: custodian_bank
-  logical_name: Custodian Bank
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-FMS-BANK_MONI
-- subfolder: Involved_Party
-  file_name: dm_atm_custodian_bank_employee-FMS.BANK_EMPLOY.yaml
-  id: ATM-custodian_bank_employee-FMS.BANK_EMPLOY
-  physical_name: custodian_bank_employee
-  logical_name: Custodian Bank Employee
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 14
-  brd_ref: BRD-SRC-FMS-BANK_EMPLOY
-- subfolder: Involved_Party
-  file_name: dm_atm_discretionary_investment_investor-FMS.INVES.yaml
-  id: ATM-discretionary_investment_investor-FMS.INVES
-  physical_name: discretionary_investment_investor
-  logical_name: Discretionary Investment Investor
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-FMS-INVES
-- subfolder: Involved_Party
-  file_name: dm_atm_fmc_insider-FMS.INSIDER.yaml
-  id: ATM-fmc_insider-FMS.INSIDER
-  physical_name: fmc_insider
-  logical_name: Fund Management Company Insider
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 29
-  brd_ref: BRD-SRC-FMS-INSIDER
-- subfolder: Involved_Party
-  file_name: dm_atm_fmc_insider_related_person-FMS.INSDER_RELA.yaml
-  id: ATM-fmc_insider_related_person-FMS.INSDER_RELA
-  physical_name: fmc_insider_related_person
-  logical_name: Fund Management Company Insider Related Person
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Related Family Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 12
-  brd_ref: BRD-SRC-FMS-INSDER_RELA
-- subfolder: Involved_Party
-  file_name: dm_atm_fmc_insider_representative-FMS.INSDER_RPRST.yaml
-  id: ATM-fmc_insider_representative-FMS.INSDER_RPRST
-  physical_name: fmc_insider_representative
-  logical_name: Fund Management Company Insider Representative
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Designated Representative"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-INSDER_RPRST
-- subfolder: Involved_Party
-  file_name: dm_atm_fmc_key_person_related_person-FMS.TL_PRO_RELA.yaml
-  id: ATM-fmc_key_person_related_person-FMS.TL_PRO_RELA
-  physical_name: fmc_key_person_related_person
-  logical_name: Fund Management Company Key Person Related Person
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Related Family Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-TL_PRO_RELA
-- subfolder: Involved_Party
-  file_name: dm_atm_fmc_organization_unit-FMS.BRANCHS.yaml
-  id: ATM-fmc_organization_unit-FMS.BRANCHS
-  physical_name: fmc_organization_unit
-  logical_name: Fund Management Company Organization Unit
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 24
-  brd_ref: BRD-SRC-FMS-BRANCHS
-- subfolder: Involved_Party
-  file_name: dm_atm_foreign_fm_ou_staff-FMS.STF_FG_BRCH.yaml
-  id: ATM-foreign_fm_ou_staff-FMS.STF_FG_BRCH
-  physical_name: foreign_fm_ou_staff
-  logical_name: Foreign Fund Management Organization Unit Staff
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 24
-  brd_ref: BRD-SRC-FMS-STF_FG_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_foreign_fund_management_organization_unit-FMS.FOR_BRCH.yaml
-  id: ATM-foreign_fund_management_organization_unit-FMS.FOR_BRCH
-  physical_name: foreign_fund_management_organization_unit
-  logical_name: Foreign Fund Management Organization Unit
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 23
-  brd_ref: BRD-SRC-FMS-FOR_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_fund_distribution_agent-FMS.AGENCIES.yaml
-  id: ATM-fund_distribution_agent-FMS.AGENCIES
-  physical_name: fund_distribution_agent
-  logical_name: Fund Distribution Agent
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-FMS-AGENCIES
-- subfolder: Involved_Party
-  file_name: dm_atm_fund_distribution_agent_organization_unit-FMS.AGENCIES_BRA.yaml
-  id: ATM-fund_distribution_agent_organization_unit-FMS.AGENCIES_BRA
-  physical_name: fund_distribution_agent_organization_unit
-  logical_name: Fund Distribution Agent Organization Unit
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 9
-  brd_ref: BRD-SRC-FMS-AGENCIES_BRA
-- subfolder: Involved_Party
-  file_name: dm_atm_fund_management_company-FMS.SECURITIES.yaml
-  id: ATM-fund_management_company-FMS.SECURITIES
-  physical_name: fund_management_company
-  logical_name: Fund Management Company
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Portfolio Fund Management Company"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 51
-  brd_ref: BRD-SRC-FMS-SECURITIES
-- subfolder: Involved_Party
-  file_name: dm_atm_fund_management_company_key_person-FMS.TL_PROFILES.yaml
-  id: ATM-fund_management_company_key_person-FMS.TL_PROFILES
-  physical_name: fund_management_company_key_person
-  logical_name: Fund Management Company Key Person
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 50
-  brd_ref: BRD-SRC-FMS-TL_PROFILES
-- subfolder: Involved_Party
-  file_name: dm_atm_investment_fund-FMS.FUNDS.yaml
-  id: ATM-investment_fund-FMS.FUNDS
-  physical_name: investment_fund
-  logical_name: Investment Fund
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Funds"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 33
-  brd_ref: BRD-SRC-FMS-FUNDS
-- subfolder: Involved_Party
-  file_name: dm_atm_investment_fund_representative_board_member-FMS.REPRESENT.yaml
-  id: ATM-investment_fund_representative_board_member-FMS.REPRESENT
-  physical_name: investment_fund_representative_board_member
-  logical_name: Investment Fund Representative Board Member
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 20
-  brd_ref: BRD-SRC-FMS-REPRESENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.BANK_EMPLOY.yaml
-  id: ATM-ip_alternative_identification-FMS.BANK_EMPLOY
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-BANK_EMPLOY
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.DISTRIBUTOR_AGENT.yaml
-  id: ATM-ip_alternative_identification-FMS.DISTRIBUTOR_AGENT
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 22
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.FOR_BRCH.yaml
-  id: ATM-ip_alternative_identification-FMS.FOR_BRCH
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-FMS-FOR_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.FUNDS.yaml
-  id: ATM-ip_alternative_identification-FMS.FUNDS
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-FUNDS
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.INSDER_RELA.yaml
-  id: ATM-ip_alternative_identification-FMS.INSDER_RELA
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-INSDER_RELA
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.INSDER_RPRST.yaml
-  id: ATM-ip_alternative_identification-FMS.INSDER_RPRST
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-INSDER_RPRST
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.INSIDER.yaml
-  id: ATM-ip_alternative_identification-FMS.INSIDER
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-INSIDER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.INVES.yaml
-  id: ATM-ip_alternative_identification-FMS.INVES
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-INVES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.MB_FUND.yaml
-  id: ATM-ip_alternative_identification-FMS.MB_FUND
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-MB_FUND
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.OTHER_AGENT.yaml
-  id: ATM-ip_alternative_identification-FMS.OTHER_AGENT
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-FMS-OTHER_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.PENSION_AGENT.yaml
-  id: ATM-ip_alternative_identification-FMS.PENSION_AGENT
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-FMS-PENSION_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.PENSION_PROVIDER.yaml
-  id: ATM-ip_alternative_identification-FMS.PENSION_PROVIDER
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-FMS-PENSION_PROVIDER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.REPRESENT.yaml
-  id: ATM-ip_alternative_identification-FMS.REPRESENT
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-REPRESENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.SECURITIES.yaml
-  id: ATM-ip_alternative_identification-FMS.SECURITIES
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-SECURITIES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.STF_FG_BRCH.yaml
-  id: ATM-ip_alternative_identification-FMS.STF_FG_BRCH
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-STF_FG_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.TL_PRO_RELA.yaml
-  id: ATM-ip_alternative_identification-FMS.TL_PRO_RELA
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-TL_PRO_RELA
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.TL_PROFILES.yaml
-  id: ATM-ip_alternative_identification-FMS.TL_PROFILES
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-FMS-TL_PROFILES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-FMS.TRANSFER_AGENT.yaml
-  id: ATM-ip_alternative_identification-FMS.TRANSFER_AGENT
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-FMS-TRANSFER_AGENT
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-NHNCK.PROFESSIONALS.yaml
   id: ATM-ip_alternative_identification-NHNCK.PROFESSIONALS
@@ -952,58 +367,6 @@ entries:
   attribute_count: 8
   brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.AUDIT_FIRM.yaml
-  id: ATM-ip_alternative_identification-SCMS.AUDIT_FIRM
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-SCMS-AUDIT_FIRM
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.AUDITOR.yaml
-  id: ATM-ip_alternative_identification-SCMS.AUDITOR
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-SCMS-AUDITOR
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.BANK.yaml
-  id: ATM-ip_alternative_identification-SCMS.BANK
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-BANK
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.CUSTODIAN_BANK.yaml
-  id: ATM-ip_alternative_identification-SCMS.CUSTODIAN_BANK
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-CUSTODIAN_BANK
-- subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_BRANCH.yaml
   id: ATM-ip_alternative_identification-SCMS.SC_FIRM_BRANCH
   physical_name: ip_alternative_identification
@@ -1017,84 +380,6 @@ entries:
   attribute_count: 5
   brd_ref: BRD-SRC-SCMS-SC_FIRM_BRANCH
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_DOMESTIC_REP_OFFICE
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_DOMESTIC_REP_OFFICE
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_BRANCH.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_BRANCH
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_PERSONNEL
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_REP_OFFICE.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_REP_OFFICE
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_VN
-- subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_INFO.yaml
   id: ATM-ip_alternative_identification-SCMS.SC_FIRM_INFO
   physical_name: ip_alternative_identification
@@ -1105,7 +390,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 8
+  attribute_count: 10
   brd_ref: BRD-SRC-SCMS-SC_FIRM_INFO
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_INSIDER_RELATION.yaml
@@ -1118,47 +403,8 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 8
+  attribute_count: 10
   brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_LICENSED_PRACTITIONER.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_LICENSED_PRACTITIONER
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 16
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_LICENSED_PRACTITIONER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_MAJOR_SHAREHOLDER_RELATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_OWNERSHIP_RELATION.yaml
-  id: ATM-ip_alternative_identification-SCMS.SC_FIRM_OWNERSHIP_RELATION
-  physical_name: ip_alternative_identification
-  logical_name: Involved Party Alternative Identification
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 8
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_OWNERSHIP_RELATION
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_RELATED_PERSON.yaml
   id: ATM-ip_alternative_identification-SCMS.SC_FIRM_RELATED_PERSON
@@ -1170,7 +416,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 8
+  attribute_count: 10
   brd_ref: BRD-SRC-SCMS-SC_FIRM_RELATED_PERSON
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SENIOR_PERSONNEL.yaml
@@ -1183,7 +429,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 16
+  attribute_count: 18
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER.yaml
@@ -1196,7 +442,7 @@ entries:
   etl_pattern: SCD4A
   source: SCMS
   status: approved
-  attribute_count: 8
+  attribute_count: 10
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-SCMS.SC_FIRM_SHAREHOLDER_RELATION.yaml
@@ -1224,227 +470,6 @@ entries:
   status: approved
   attribute_count: 8
   brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.AGENCIES.yaml
-  id: ATM-ip_electronic_address-FMS.AGENCIES
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-AGENCIES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.AGENCIES_BRA.yaml
-  id: ATM-ip_electronic_address-FMS.AGENCIES_BRA
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-AGENCIES_BRA
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.BANK_MONI.yaml
-  id: ATM-ip_electronic_address-FMS.BANK_MONI
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-FMS-BANK_MONI
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.BRANCHS.yaml
-  id: ATM-ip_electronic_address-FMS.BRANCHS
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-BRANCHS
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.DISTRIBUTOR_AGENT.yaml
-  id: ATM-ip_electronic_address-FMS.DISTRIBUTOR_AGENT
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.DISTRIBUTOR_LOCATION.yaml
-  id: ATM-ip_electronic_address-FMS.DISTRIBUTOR_LOCATION
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_LOCATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.DISTRIBUTOR_PERSONNEL.yaml
-  id: ATM-ip_electronic_address-FMS.DISTRIBUTOR_PERSONNEL
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_PERSONNEL
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.FOR_BRCH.yaml
-  id: ATM-ip_electronic_address-FMS.FOR_BRCH
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-FMS-FOR_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.INSIDER.yaml
-  id: ATM-ip_electronic_address-FMS.INSIDER
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-FMS-INSIDER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.OTHER_AGENT.yaml
-  id: ATM-ip_electronic_address-FMS.OTHER_AGENT
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-OTHER_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.PENSION_AGENT.yaml
-  id: ATM-ip_electronic_address-FMS.PENSION_AGENT
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-PENSION_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.PENSION_PROVIDER.yaml
-  id: ATM-ip_electronic_address-FMS.PENSION_PROVIDER
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-PENSION_PROVIDER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.REPRESENT.yaml
-  id: ATM-ip_electronic_address-FMS.REPRESENT
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-FMS-REPRESENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.SECURITIES.yaml
-  id: ATM-ip_electronic_address-FMS.SECURITIES
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-FMS-SECURITIES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.STF_FG_BRCH.yaml
-  id: ATM-ip_electronic_address-FMS.STF_FG_BRCH
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-STF_FG_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.TL_PROFILES.yaml
-  id: ATM-ip_electronic_address-FMS.TL_PROFILES
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 25
-  brd_ref: BRD-SRC-FMS-TL_PROFILES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-FMS.TRANSFER_AGENT.yaml
-  id: ATM-ip_electronic_address-FMS.TRANSFER_AGENT
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-TRANSFER_AGENT
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-NHNCK.ORGANIZATIONS.yaml
   id: ATM-ip_electronic_address-NHNCK.ORGANIZATIONS
@@ -1485,45 +510,6 @@ entries:
   attribute_count: 15
   brd_ref: BRD-SRC-NHNCK-UNITS
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.AUDIT_FIRM.yaml
-  id: ATM-ip_electronic_address-SCMS.AUDIT_FIRM
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-SCMS-AUDIT_FIRM
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.BANK.yaml
-  id: ATM-ip_electronic_address-SCMS.BANK
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-SCMS-BANK
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.CUSTODIAN_BANK.yaml
-  id: ATM-ip_electronic_address-SCMS.CUSTODIAN_BANK
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 20
-  brd_ref: BRD-SRC-SCMS-CUSTODIAN_BANK
-- subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_BRANCH.yaml
   id: ATM-ip_electronic_address-SCMS.SC_FIRM_BRANCH
   physical_name: ip_electronic_address
@@ -1536,58 +522,6 @@ entries:
   status: approved
   attribute_count: 20
   brd_ref: BRD-SRC-SCMS-SC_FIRM_BRANCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_FOREIGN_BRANCH.yaml
-  id: ATM-ip_electronic_address-SCMS.SC_FIRM_FOREIGN_BRANCH
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.yaml
-  id: ATM-ip_electronic_address-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_PERSONNEL
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE.yaml
-  id: ATM-ip_electronic_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.yaml
-  id: ATM-ip_electronic_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_INFO.yaml
   id: ATM-ip_electronic_address-SCMS.SC_FIRM_INFO
@@ -1614,32 +548,6 @@ entries:
   status: approved
   attribute_count: 10
   brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_LICENSED_PRACTITIONER.yaml
-  id: ATM-ip_electronic_address-SCMS.SC_FIRM_LICENSED_PRACTITIONER
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_LICENSED_PRACTITIONER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.yaml
-  id: ATM-ip_electronic_address-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_MAJOR_SHAREHOLDER_RELATION
 - subfolder: Involved_Party
   file_name: dm_atm_ip_electronic_address-SCMS.SC_FIRM_RELATED_PERSON.yaml
   id: ATM-ip_electronic_address-SCMS.SC_FIRM_RELATED_PERSON
@@ -1706,266 +614,6 @@ entries:
   attribute_count: 10
   brd_ref: BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.AGENCIES.yaml
-  id: ATM-ip_postal_address-FMS.AGENCIES
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-AGENCIES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.AGENCIES_BRA.yaml
-  id: ATM-ip_postal_address-FMS.AGENCIES_BRA
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-AGENCIES_BRA
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.BANK_MONI.yaml
-  id: ATM-ip_postal_address-FMS.BANK_MONI
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-BANK_MONI
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.BRANCHS.yaml
-  id: ATM-ip_postal_address-FMS.BRANCHS
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-BRANCHS
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.DISTRIBUTOR_AGENT.yaml
-  id: ATM-ip_postal_address-FMS.DISTRIBUTOR_AGENT
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.DISTRIBUTOR_LOCATION.yaml
-  id: ATM-ip_postal_address-FMS.DISTRIBUTOR_LOCATION
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 11
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_LOCATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.FOR_BRCH.yaml
-  id: ATM-ip_postal_address-FMS.FOR_BRCH
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-FOR_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.INSDER_RELA.yaml
-  id: ATM-ip_postal_address-FMS.INSDER_RELA
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-INSDER_RELA
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.INSIDER.yaml
-  id: ATM-ip_postal_address-FMS.INSIDER
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-INSIDER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.INVES.yaml
-  id: ATM-ip_postal_address-FMS.INVES
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-INVES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.MB_FUND.yaml
-  id: ATM-ip_postal_address-FMS.MB_FUND
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-MB_FUND
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.OTHER_AGENT.yaml
-  id: ATM-ip_postal_address-FMS.OTHER_AGENT
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-OTHER_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.PENSION_AGENT.yaml
-  id: ATM-ip_postal_address-FMS.PENSION_AGENT
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-PENSION_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.PENSION_PROVIDER.yaml
-  id: ATM-ip_postal_address-FMS.PENSION_PROVIDER
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-PENSION_PROVIDER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.REPRESENT.yaml
-  id: ATM-ip_postal_address-FMS.REPRESENT
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-REPRESENT
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.SECURITIES.yaml
-  id: ATM-ip_postal_address-FMS.SECURITIES
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-SECURITIES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.STF_FG_BRCH.yaml
-  id: ATM-ip_postal_address-FMS.STF_FG_BRCH
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-STF_FG_BRCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.TL_PRO_RELA.yaml
-  id: ATM-ip_postal_address-FMS.TL_PRO_RELA
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-FMS-TL_PRO_RELA
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.TL_PROFILES.yaml
-  id: ATM-ip_postal_address-FMS.TL_PROFILES
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-FMS-TL_PROFILES
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-FMS.TRANSFER_AGENT.yaml
-  id: ATM-ip_postal_address-FMS.TRANSFER_AGENT
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-FMS-TRANSFER_AGENT
-- subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-NHNCK.ORGANIZATIONS.yaml
   id: ATM-ip_postal_address-NHNCK.ORGANIZATIONS
   physical_name: ip_postal_address
@@ -2005,45 +653,6 @@ entries:
   attribute_count: 13
   brd_ref: BRD-SRC-NHNCK-UNITS
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.AUDIT_FIRM.yaml
-  id: ATM-ip_postal_address-SCMS.AUDIT_FIRM
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-SCMS-AUDIT_FIRM
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.BANK.yaml
-  id: ATM-ip_postal_address-SCMS.BANK
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-SCMS-BANK
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.CUSTODIAN_BANK.yaml
-  id: ATM-ip_postal_address-SCMS.CUSTODIAN_BANK
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 13
-  brd_ref: BRD-SRC-SCMS-CUSTODIAN_BANK
-- subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_BRANCH.yaml
   id: ATM-ip_postal_address-SCMS.SC_FIRM_BRANCH
   physical_name: ip_postal_address
@@ -2056,84 +665,6 @@ entries:
   status: approved
   attribute_count: 13
   brd_ref: BRD-SRC-SCMS-SC_FIRM_BRANCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_DOMESTIC_REP_OFFICE
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 11
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_DOMESTIC_REP_OFFICE
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_FOREIGN_BRANCH.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_FOREIGN_BRANCH
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 16
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_PERSONNEL
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 11
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 10
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_VN
 - subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_INFO.yaml
   id: ATM-ip_postal_address-SCMS.SC_FIRM_INFO
@@ -2160,45 +691,6 @@ entries:
   status: approved
   attribute_count: 11
   brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_LICENSED_PRACTITIONER.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_LICENSED_PRACTITIONER
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 16
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_LICENSED_PRACTITIONER
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_MAJOR_SHAREHOLDER_RELATION
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_OWNERSHIP_RELATION.yaml
-  id: ATM-ip_postal_address-SCMS.SC_FIRM_OWNERSHIP_RELATION
-  physical_name: ip_postal_address
-  logical_name: Involved Party Postal Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 5
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_OWNERSHIP_RELATION
 - subfolder: Involved_Party
   file_name: dm_atm_ip_postal_address-SCMS.SC_FIRM_RELATED_PERSON.yaml
   id: ATM-ip_postal_address-SCMS.SC_FIRM_RELATED_PERSON
@@ -2265,58 +757,6 @@ entries:
   attribute_count: 11
   brd_ref: BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
 - subfolder: Involved_Party
-  file_name: dm_atm_other_intermediary_organization_unit-FMS.OTHER_AGENT.yaml
-  id: ATM-other_intermediary_organization_unit-FMS.OTHER_AGENT
-  physical_name: other_intermediary_organization_unit
-  logical_name: Other Intermediary Organization Unit
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 12
-  brd_ref: BRD-SRC-FMS-OTHER_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_pension_fund-FMS.PENSION_FUND.yaml
-  id: ATM-pension_fund-FMS.PENSION_FUND
-  physical_name: pension_fund
-  logical_name: Pension Fund
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Pension Fund"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-FMS-PENSION_FUND
-- subfolder: Involved_Party
-  file_name: dm_atm_pension_service_organization-FMS.PENSION_AGENT.yaml
-  id: ATM-pension_service_organization-FMS.PENSION_AGENT
-  physical_name: pension_service_organization
-  logical_name: Pension Service Organization
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 12
-  brd_ref: BRD-SRC-FMS-PENSION_AGENT
-- subfolder: Involved_Party
-  file_name: dm_atm_pension_service_organization-FMS.PENSION_PROVIDER.yaml
-  id: ATM-pension_service_organization-FMS.PENSION_PROVIDER
-  physical_name: pension_service_organization
-  logical_name: Pension Service Organization
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 12
-  brd_ref: BRD-SRC-FMS-PENSION_PROVIDER
-- subfolder: Involved_Party
   file_name: dm_atm_ra_organization_unit-NHNCK.DEPARTMENTS.yaml
   id: ATM-ra_organization_unit-NHNCK.DEPARTMENTS
   physical_name: ra_organization_unit
@@ -2343,31 +783,148 @@ entries:
   attribute_count: 10
   brd_ref: BRD-SRC-NHNCK-UNITS
 - subfolder: Involved_Party
-  file_name: dm_atm_securities_distribution_agent-FMS.DISTRIBUTOR_AGENT.yaml
-  id: ATM-securities_distribution_agent-FMS.DISTRIBUTOR_AGENT
-  physical_name: securities_distribution_agent
-  logical_name: Securities Distribution Agent
+  file_name: dm_atm_sc_depositary_bank-SCMS.BANK.yaml
+  id: ATM-sc_depositary_bank-SCMS.BANK
+  physical_name: sc_depositary_bank
+  logical_name: Securities Company Depositary Bank
   bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
+  bcv_concept: "[Involved Party] Depositary Bank"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: FMS
+  source: SCMS
   status: draft
-  attribute_count: 12
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_AGENT
+  attribute_count: 28
+  brd_ref: BRD-SRC-SCMS-BANK
 - subfolder: Involved_Party
-  file_name: dm_atm_securities_distribution_agent_personnel-FMS.DISTRIBUTOR_PERSONNEL.yaml
-  id: ATM-securities_distribution_agent_personnel-FMS.DISTRIBUTOR_PERSONNEL
-  physical_name: securities_distribution_agent_personnel
-  logical_name: Securities Distribution Agent Personnel
+  file_name: dm_atm_sc_insider_related_person-SCMS.SC_FIRM_INSIDER_RELATION.yaml
+  id: ATM-sc_insider_related_person-SCMS.SC_FIRM_INSIDER_RELATION
+  physical_name: sc_insider_related_person
+  logical_name: Securities Company Insider Related Person
   bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual Employment Status"
+  bcv_concept: "[Involved Party] Insider"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: FMS
+  source: SCMS
   status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-FMS-DISTRIBUTOR_PERSONNEL
+  attribute_count: 26
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_organization_unit-SCMS.SC_FIRM_BRANCH.yaml
+  id: ATM-sc_organization_unit-SCMS.SC_FIRM_BRANCH
+  physical_name: sc_organization_unit
+  logical_name: Securities Company Organization Unit
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Branch"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 42
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_BRANCH
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_organization_unit-SCMS.SC_FIRM_REP_OFFICE.yaml
+  id: ATM-sc_organization_unit-SCMS.SC_FIRM_REP_OFFICE
+  physical_name: sc_organization_unit
+  logical_name: Securities Company Organization Unit
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Branch"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 42
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_REP_OFFICE
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_organization_unit-SCMS.SC_FIRM_TRANSACTION_OFFICE.yaml
+  id: ATM-sc_organization_unit-SCMS.SC_FIRM_TRANSACTION_OFFICE
+  physical_name: sc_organization_unit
+  logical_name: Securities Company Organization Unit
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Branch"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 42
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_related_person-SCMS.SC_FIRM_RELATED_PERSON.yaml
+  id: ATM-sc_related_person-SCMS.SC_FIRM_RELATED_PERSON
+  physical_name: sc_related_person
+  logical_name: Securities Company Related Person
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Connected Person"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 28
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_RELATED_PERSON
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_senior_personnel-SCMS.SC_FIRM_SENIOR_PERSONNEL.yaml
+  id: ATM-sc_senior_personnel-SCMS.SC_FIRM_SENIOR_PERSONNEL
+  physical_name: sc_senior_personnel
+  logical_name: Securities Company Senior Personnel
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Senior Officer"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 47
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_shareholder_relation-SCMS.SC_FIRM_SHAREHOLDER_RELATION.yaml
+  id: ATM-sc_shareholder_relation-SCMS.SC_FIRM_SHAREHOLDER_RELATION
+  physical_name: sc_shareholder_relation
+  logical_name: Securities Company Shareholder Relation
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Connected Person"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 20
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
+- subfolder: Involved_Party
+  file_name: dm_atm_sc_shareholder_representative-SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.yaml
+  id: ATM-sc_shareholder_representative-SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+  physical_name: sc_shareholder_representative
+  logical_name: Securities Company Shareholder Representative
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Representative"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+- subfolder: Involved_Party
+  file_name: dm_atm_securities_company-SCMS.SC_FIRM_INFO.yaml
+  id: ATM-securities_company-SCMS.SC_FIRM_INFO
+  physical_name: securities_company
+  logical_name: Securities Company
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Broker Dealer"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 52
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_INFO
+- subfolder: Involved_Party
+  file_name: dm_atm_securities_company_shareholder-SCMS.SC_FIRM_SHAREHOLDER.yaml
+  id: ATM-securities_company_shareholder-SCMS.SC_FIRM_SHAREHOLDER
+  physical_name: securities_company_shareholder
+  logical_name: Securities Company Shareholder
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Shareholder"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  status: draft
+  attribute_count: 43
+  brd_ref: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
 - subfolder: Involved_Party
   file_name: dm_atm_securities_organization_reference-NHNCK.ORGANIZATIONS.yaml
   id: ATM-securities_organization_reference-NHNCK.ORGANIZATIONS
@@ -2392,21 +949,8 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 77
+  attribute_count: 24
   brd_ref: BRD-SRC-NHNCK-PROFESSIONALS
-- subfolder: Involved_Party
-  file_name: dm_atm_securities_practitioner-SCMS.SC_FIRM_LICENSED_PRACTITIONER.yaml
-  id: ATM-securities_practitioner-SCMS.SC_FIRM_LICENSED_PRACTITIONER
-  physical_name: securities_practitioner
-  logical_name: Securities Practitioner
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Individual"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: SCMS
-  status: approved
-  attribute_count: 77
-  brd_ref: BRD-SRC-SCMS-SC_FIRM_LICENSED_PRACTITIONER
 - subfolder: Involved_Party
   file_name: dm_atm_sp_employment_status-NHNCK.PROFESSIONAL_WORK_HISTORIES.yaml
   id: ATM-sp_employment_status-NHNCK.PROFESSIONAL_WORK_HISTORIES
@@ -2431,7 +975,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 19
+  attribute_count: 20
   brd_ref: BRD-SRC-NHNCK-APPLICATION_EXPERIENCES
 - subfolder: Involved_Party
   file_name: dm_atm_sp_license_application_snapshot-NHNCK.APPLICATION_PROFESSIONALS.yaml
@@ -2485,71 +1029,6 @@ entries:
   status: approved
   attribute_count: 15
   brd_ref: BRD-SRC-NHNCK-PROFESSIONAL_RELATIONSHIPS
-- subfolder: Involved_Party
-  file_name: dm_atm_transfer_agent-FMS.TRANSFER_AGENT.yaml
-  id: ATM-transfer_agent-FMS.TRANSFER_AGENT
-  physical_name: transfer_agent
-  logical_name: Transfer Agent
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Transfer Agent"
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: FMS
-  status: draft
-  attribute_count: 12
-  brd_ref: BRD-SRC-FMS-TRANSFER_AGENT
-- subfolder: Product
-  file_name: dm_atm_corporate_bond_trading_snapshot-MDDS.JAD_CORPBONDINFOR.yaml
-  id: ATM-corporate_bond_trading_snapshot-MDDS.JAD_CORPBONDINFOR
-  physical_name: corporate_bond_trading_snapshot
-  logical_name: Corporate Bond Trading Snapshot
-  bcv_core_object: Product
-  bcv_concept: "[Product] Financial Market Instrument"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 55
-  brd_ref: BRD-SRC-MDDS-JAD_CORPBONDINFOR
-- subfolder: Product
-  file_name: dm_atm_security_trading_snapshot-MDDS.JAD_STOCKINFOR.yaml
-  id: ATM-security_trading_snapshot-MDDS.JAD_STOCKINFOR
-  physical_name: security_trading_snapshot
-  logical_name: Security Trading Snapshot
-  bcv_core_object: Product
-  bcv_concept: "[Product] Financial Market Instrument"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
-  source: MDDS
-  status: draft
-  attribute_count: 75
-  brd_ref: BRD-SRC-MDDS-JAD_STOCKINFOR
-- subfolder: Transaction
-  file_name: dm_atm_fmc_share_transfer-FMS.TRS_FER_INDER.yaml
-  id: ATM-fmc_share_transfer-FMS.TRS_FER_INDER
-  physical_name: fmc_share_transfer
-  logical_name: Fund Management Company Share Transfer
-  bcv_core_object: Transaction
-  bcv_concept: "[Event] Transaction"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: FMS
-  status: draft
-  attribute_count: 28
-  brd_ref: BRD-SRC-FMS-TRS_FER_INDER
-- subfolder: Transaction
-  file_name: dm_atm_investment_fund_certificate_transfer-FMS.TRANSFER_MBF.yaml
-  id: ATM-investment_fund_certificate_transfer-FMS.TRANSFER_MBF
-  physical_name: investment_fund_certificate_transfer
-  logical_name: Investment Fund Certificate Transfer
-  bcv_core_object: Transaction
-  bcv_concept: "[Event] Transaction"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: FMS
-  status: draft
-  attribute_count: 26
-  brd_ref: BRD-SRC-FMS-TRANSFER_MBF
 - subfolder: Transaction
   file_name: dm_atm_securities_trade-ORDERTRADE.TRADE_BOOK_HNX.yaml
   id: ATM-securities_trade-ORDERTRADE.TRADE_BOOK_HNX
@@ -2576,19 +1055,6 @@ entries:
   status: approved
   attribute_count: 61
   brd_ref: BRD-SRC-ORDERTRADE-TRADE_BOOK_HOSE
-- subfolder: Transaction
-  file_name: dm_atm_security_match_log-MDDS.JAD_TRANSLOG.yaml
-  id: ATM-security_match_log-MDDS.JAD_TRANSLOG
-  physical_name: security_match_log
-  logical_name: Security Match Log
-  bcv_core_object: Transaction
-  bcv_concept: "[Transaction] Financial Market Transaction"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: MDDS
-  status: draft
-  attribute_count: 16
-  brd_ref: BRD-SRC-MDDS-JAD_TRANSLOG
 - subfolder: Transaction
   file_name: dm_atm_sp_license_application_fee-NHNCK.APPLICATION_FEES.yaml
   id: ATM-sp_license_application_fee-NHNCK.APPLICATION_FEES

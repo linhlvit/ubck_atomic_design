@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Common] Firm Status"
   table_type: "Classification"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -105,18 +105,18 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Applicable Entity Code"
-  physical_name: "applicable_entity_code"
+- attribute_name: "Applicable Entity"
+  physical_name: "applicable_entity"
   description: "Đối tượng áp dụng (CTCK/CN/VPDD/NH/Cả hai)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY"
-  comment: "Scheme: SCMS_FIRM_STATUS_APPLICABLE_ENTITY. Values chưa profile — candidate:\
-    \ CTCK/CN/VPDD/NH/Cả hai theo mô tả nguồn."
-  classification_context: "SCMS_FIRM_STATUS_APPLICABLE_ENTITY"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo chỉ đạo Data Modeler\
+    \ (2026-07-15). NVARCHAR2(100)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Report Submission Required Indicator"

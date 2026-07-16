@@ -1,0 +1,1199 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_disclosure_securities_offering-SCMS.DISCLOSURE_SECURITIES_OFFERING
+  logical_name: Securities Company Disclosure Securities Offering
+  physical_name: sc_disclosure_securities_offering
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Event
+  bcv_concept: "[Event] Communication"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Thông tin công bố về đợt chào bán chứng khoán của CTCK theo quy định minh bạch thông tin thị trường. Ghi nhận loại chào bán, giá trị, ngày công bố và trạng thái.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-DISCLOSURE_SECURITIES_OFFERING
+
+attributes:
+  - name: Securities Company Disclosure Securities Offering Id
+    physical_name: sc_disclosure_securities_offering_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: null
+    comment: PK surrogate.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Securities Company Disclosure Securities Offering Code
+    physical_name: sc_disclosure_securities_offering_code
+    business_meaning: Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ID
+    comment: BK. NUMBER(10) — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: SCMS.DISCLOSURE_SECURITIES_OFFERING
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán chào bán chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Classification Event Type Id
+    physical_name: cl_event_tp_id
+    business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
+    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Classification Event Type Code
+    physical_name: cl_event_tp_code
+    business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
+    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Admin Procedure Id
+    physical_name: admin_procedure_id
+    business_meaning: FK đến thủ tục hành chính liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ADMIN_PROC_ID
+    comment: Pending — FK target phân hệ TTHC nằm ngoài scope. NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offering Type Code
+    physical_name: offering_tp_code
+    business_meaning: "Loại chào bán: 1=Công chúng; 2=CP thường; 3=Trả cổ tức CP; 4=CTLC>100 NLĐ; 5=CTLC<100 NLĐ; 6=Đấu giá; 7=Riêng lẻ; 8=Khác; 9=CP hoán đổi; 10=CB cổ đông lớn."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_TYPE
+    comment: "Scheme: SCMS_OFFERING_TYPE. NUMBER(10) với values 1-10."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Securities Type Code
+    physical_name: securities_tp_code
+    business_meaning: "Loại chứng khoán: CP_THUONG=Cổ phiếu phổ thông; CP_UU_DAI=Cổ phiếu ưu đãi; TP=Trái phiếu; CW=Chứng quyền có bảo đảm."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SECURITIES_TYPE
+    comment: "Scheme: SCMS_SECURITIES_TYPE. VARCHAR2(50)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái bản ghi chào bán: 1=Đang hoạt động/còn hiệu lực; 0=Ngừng hoạt động/hết hiệu lực."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS
+    comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning: "Nguồn gốc dữ liệu: Đồng bộ tự động/Nhập tay/Cổng báo cáo."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DATA_SOURCE
+    comment: "Scheme: SCMS_DATA_SOURCE. VARCHAR2(50)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Assessment Code
+    physical_name: assessment_code
+    business_meaning: Đánh giá đợt chào bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ASSESSMENT
+    comment: "NVARCHAR2(50), mô tả gốc BRD trống. Cần xác nhận values."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Item Category Code
+    physical_name: item_category_code
+    business_meaning: Phân loại mục chào bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ITEM_CATEGORY
+    comment: "NVARCHAR2(10), mô tả gốc BRD trống. Cần xác nhận scheme."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: SU VU
+    physical_name: su_vu
+    business_meaning: "Tên sự vụ áp dụng (VD: Chào bán riêng lẻ; Chào bán ra công chúng)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SU_VU
+    comment: NUMBER — lưu dạng số nhưng mô tả cho thấy đây là ID sự vụ. Pending — cần xác nhận FK target.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số văn bản pháp lý (QĐ/GP/CV/Thông tư).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DOCUMENT_NUMBER
+    comment: VARCHAR2(200).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Document Date
+    physical_name: document_dt
+    business_meaning: Ngày ký/ban hành văn bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DOCUMENT_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Document File Path
+    physical_name: document_file_path
+    business_meaning: Đường dẫn file văn bản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DOCUMENT_FILE_PATH
+    comment: VARCHAR2(2000).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offering Method
+    physical_name: offering_method
+    business_meaning: Hình thức chào bán (Riêng lẻ/Công chúng/Đấu giá).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_METHOD
+    comment: NVARCHAR2(250).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Target Investors
+    physical_name: target_investors
+    business_meaning: Đối tượng nhà đầu tư mục tiêu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TARGET_INVESTORS
+    comment: NVARCHAR2(250). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offering Purpose
+    physical_name: offering_purpose
+    business_meaning: Mục đích chào bán/phát hành chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_PURPOSE
+    comment: NCLOB.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Underwriter
+    physical_name: underwriter
+    business_meaning: Tổ chức bảo lãnh phát hành.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERWRITER
+    comment: VARCHAR2(500). Denormalized — tên tổ chức dạng text.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Underwriting Company
+    physical_name: underwriting_company
+    business_meaning: Công ty bảo lãnh phát hành.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERWRITING_COMPANY
+    comment: NVARCHAR2(500). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Advisor
+    physical_name: advisor
+    business_meaning: Tổ chức tư vấn phát hành.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ADVISOR
+    comment: VARCHAR2(500). Denormalized.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Disclosure Person Name
+    physical_name: disclosure_person_nm
+    business_meaning: Tên người công bố thông tin (denormalized).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DISCLOSURE_PERSON_NAME
+    comment: NVARCHAR2(250). Denormalized snapshot.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Quantity
+    physical_name: quantity
+    business_meaning: Số lượng chứng khoán (nghĩa gốc trống).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.QUANTITY
+    comment: NUMBER(38). Mô tả gốc BRD trống. Giá trị lớn — Small Counter có thể không phù hợp nếu vượt 2B; ETL cần validate.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offered Quantity
+    physical_name: offered_quantity
+    business_meaning: Số lượng chứng khoán dự kiến chào bán.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERED_QUANTITY
+    comment: "NUMBER(19). [PROPOSE NEW DOMAIN] Quantity — số lượng chứng khoán, vượt Small Counter. Tạm dùng Small Counter với ETL note."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Total Offered Quantity
+    physical_name: total_offered_quantity
+    business_meaning: Tổng số lượng chứng khoán chào bán.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TOTAL_OFFERED_QUANTITY
+    comment: NUMBER(19).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Total Offered Completed
+    physical_name: total_offered_completed
+    business_meaning: Tổng số lượng chứng khoán đã chào bán hoàn thành.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TOTAL_OFFERED_COMPLETED
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Item Value Amount
+    physical_name: item_val_amt
+    business_meaning: Giá trị mặt hàng chào bán.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ITEM_VALUE
+    comment: NUMBER(38). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offering Price Amount
+    physical_name: offering_price_amt
+    business_meaning: Giá chào bán (đồng/cổ phiếu hoặc trái phiếu).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_PRICE
+    comment: "NUMBER(38,2)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Total Value Amount
+    physical_name: total_val_amt
+    business_meaning: Tổng giá trị đợt chào bán (đồng).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.TOTAL_VALUE
+    comment: "NUMBER(38,2)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Expected Total Amount
+    physical_name: expected_total_amt
+    business_meaning: Tổng giá trị dự kiến thu về.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXPECTED_TOTAL_AMOUNT
+    comment: "NUMBER(38,2). Mô tả gốc BRD trống."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Proceeds Collected Amount
+    physical_name: proceeds_collected_amt
+    business_meaning: Tổng tiền thực tế thu được.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.PROCEEDS_COLLECTED
+    comment: "NUMBER(38,2)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Valid Date
+    physical_name: valid_dt
+    business_meaning: Ngày có hiệu lực.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.VALID_DATE
+    comment: TIMESTAMP(6). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offering Date
+    physical_name: offering_dt
+    business_meaning: Ngày chào bán.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_DATE
+    comment: TIMESTAMP(6). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning: Ngày bắt đầu kỳ báo cáo hoặc hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.START_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: Ngày kết thúc kỳ báo cáo hoặc hết hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.END_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offering Start Date
+    physical_name: offering_start_dt
+    business_meaning: Ngày bắt đầu đợt chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_START_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Offering End Date
+    physical_name: offering_end_dt
+    business_meaning: Ngày kết thúc đợt chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.OFFERING_END_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Expected Start Date
+    physical_name: expected_start_dt
+    business_meaning: Ngày bắt đầu dự kiến đợt chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXPECTED_START_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Expected End Date
+    physical_name: expected_end_dt
+    business_meaning: Ngày kết thúc dự kiến đợt chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXPECTED_END_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Result Report Date
+    physical_name: result_rpt_dt
+    business_meaning: Ngày báo cáo kết quả đợt chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.RESULT_REPORT_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: First Dossier Submission Date
+    physical_name: first_dossier_submission_dt
+    business_meaning: Ngày nộp hồ sơ lần đầu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.FIRST_DOSSIER_SUBMISSION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Complete Dossier Submission Date
+    physical_name: complete_dossier_submission_dt
+    business_meaning: Ngày nộp hồ sơ đầy đủ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COMPLETE_DOSSIER_SUBMISSION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Extension To Date
+    physical_name: extension_to_dt
+    business_meaning: Ngày gia hạn đợt chào bán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EXTENSION_TO_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Disclosure Date
+    physical_name: disclosure_dt
+    business_meaning: Ngày công bố thông tin chào bán.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.DISCLOSURE_DATE
+    comment: TIMESTAMP(6).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Sent Timestamp
+    physical_name: sent_tms
+    business_meaning: Thời điểm gửi thông báo chào bán.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SENT_AT
+    comment: TIMESTAMP(6).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Collateral Required Indicator
+    physical_name: collateral_required_indicator
+    business_meaning: "Có tài sản bảo đảm: 1=Có; 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COLLATERAL_REQUIRED
+    comment: "NUMBER(1). Áp dụng khi SECURITIES_TYPE=TP."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Synced From Admin Procedure Indicator
+    physical_name: synced_from_admin_procedure_indicator
+    business_meaning: "Dữ liệu đồng bộ từ phân hệ TTHC: 1=Đồng bộ; 0=Nhập tay."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SYNCED_FROM_ADMIN_PROC
+    comment: NUMBER(1). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Bond Type Code
+    physical_name: bond_tp_code
+    business_meaning: "Loại trái phiếu: CO_BAO_DAM=Có bảo đảm; KHONG_BAO_DAM=Không bảo đảm; CHUYEN_DOI=Chuyển đổi."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_TYPE
+    comment: "Scheme: SCMS_BOND_TYPE. NVARCHAR2(80). Chỉ populate khi SECURITIES_TYPE=TP."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Bond Code
+    physical_name: bond_code
+    business_meaning: Mã trái phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_CODE
+    comment: NVARCHAR2(50).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Bond Face Value Amount
+    physical_name: bond_face_val_amt
+    business_meaning: Mệnh giá trái phiếu (đồng/trái phiếu).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_FACE_VALUE
+    comment: "NUMBER(20,2)."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Maturity Years
+    physical_name: maturity_years
+    business_meaning: Kỳ hạn trái phiếu (số năm).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.MATURITY_YEARS
+    comment: NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Interest Payment Period
+    physical_name: interest_payment_period
+    business_meaning: Kỳ trả lãi (Hàng tháng/Quý/6 tháng/Năm).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.INTEREST_PAYMENT_PERIOD
+    comment: NVARCHAR2(500).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Bond Holder Representative
+    physical_name: bond_holder_representative
+    business_meaning: Đại diện người nắm giữ trái phiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.BOND_HOLDER_REPRESENTATIVE
+    comment: NVARCHAR2(500). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Issuance Date
+    physical_name: issuance_dt
+    business_meaning: Ngày phát hành trái phiếu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ISSUANCE_DATE
+    comment: "Chỉ populate khi SECURITIES_TYPE=TP."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Covered Warrant Type Code
+    physical_name: covered_warrant_tp_code
+    business_meaning: "Loại chứng quyền có bảo đảm: CW_MUA=Chứng quyền mua; CW_BAN=Chứng quyền bán."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COVERED_WARRANT_TYPE
+    comment: "Scheme: SCMS_COVERED_WARRANT_TYPE. NVARCHAR2(30). Chỉ populate khi SECURITIES_TYPE=CW."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Covered Warrant Name
+    physical_name: covered_warrant_nm
+    business_meaning: Tên chứng quyền có bảo đảm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COVERED_WARRANT_NAME
+    comment: NVARCHAR2(500).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Listed CW Code
+    physical_name: listed_cw_code
+    business_meaning: Mã chứng quyền niêm yết trên sàn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LISTED_CW_CODE
+    comment: NVARCHAR2(50).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Underlying Securities Code
+    physical_name: underlying_securities_code
+    business_meaning: Mã chứng khoán cơ sở của chứng quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERLYING_SECURITIES_CODE
+    comment: NVARCHAR2(50).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Underlying Securities Issuer
+    physical_name: underlying_securities_issuer
+    business_meaning: Tổ chức phát hành chứng khoán cơ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.UNDERLYING_SECURITIES_ISSUER
+    comment: NVARCHAR2(500). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Term Months
+    physical_name: cw_term_months
+    business_meaning: Thời hạn chứng quyền (số tháng).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_TERM_MONTHS
+    comment: NUMBER(10).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Registered Quantity
+    physical_name: cw_registered_quantity
+    business_meaning: Số lượng chứng quyền đăng ký.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_REGISTERED_QUANTITY
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Permitted Quantity
+    physical_name: cw_permitted_quantity
+    business_meaning: Số lượng chứng quyền được phép phát hành.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_PERMITTED_QUANTITY
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Distributed Quantity
+    physical_name: cw_distributed_quantity
+    business_meaning: Số lượng chứng quyền đã phân phối.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_DISTRIBUTED_QUANTITY
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Shares Per Warrant
+    physical_name: cw_shares_per_warrant
+    business_meaning: Số cổ phiếu/1 chứng quyền.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_SHARES_PER_WARRANT
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Conversion Ratio
+    physical_name: conversion_ratio
+    business_meaning: Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERSION_RATIO
+    comment: NUMBER(19).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Converted Shares Quantity
+    physical_name: converted_shares_quantity
+    business_meaning: Số cổ phiếu chuyển đổi.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERTED_SHARES_QUANTITY
+    comment: NUMBER(19). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Registered Offering Price Amount
+    physical_name: registered_offering_price_amt
+    business_meaning: Giá chào bán đã đăng ký.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.REGISTERED_OFFERING_PRICE
+    comment: "NUMBER(20,2). Mô tả gốc BRD trống."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Actual Offering Price Amount
+    physical_name: cw_actual_offering_price_amt
+    business_meaning: Giá chào bán thực tế chứng quyền.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_ACTUAL_OFFERING_PRICE
+    comment: "NUMBER(20,2). Mô tả gốc BRD trống."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Offering Date
+    physical_name: cw_offering_dt
+    business_meaning: Ngày chào bán chứng quyền.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_OFFERING_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Maturity Date
+    physical_name: cw_maturity_dt
+    business_meaning: Ngày đáo hạn chứng quyền.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_MATURITY_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Collateral Settlement Value Amount
+    physical_name: collateral_settlement_val_amt
+    business_meaning: Giá trị thanh toán tài sản bảo đảm chứng quyền.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COLLATERAL_SETTLEMENT_VALUE
+    comment: "NUMBER(20,2). Mô tả gốc BRD trống."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Collateral Deposit Bank
+    physical_name: collateral_deposit_bank
+    business_meaning: Ngân hàng ký quỹ tài sản bảo đảm cho chứng quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.COLLATERAL_DEPOSIT_BANK
+    comment: NVARCHAR2(500). Denormalized — tên ngân hàng dạng text.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Deposit Amount
+    physical_name: cw_deposit_amt
+    business_meaning: Số tiền ký quỹ chứng quyền.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_DEPOSIT_AMOUNT
+    comment: "NUMBER(20,2). Mô tả gốc BRD trống."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: CW Proceeds Amount
+    physical_name: cw_proceeds_amt
+    business_meaning: Tiền thu được từ chứng quyền.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CW_PROCEEDS
+    comment: "NUMBER(20,2). Mô tả gốc BRD trống."
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ATTACHMENT_PATH
+    comment: NVARCHAR2(1000).
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Result Attachment Path
+    physical_name: result_attachment_path
+    business_meaning: Đường dẫn file báo cáo kết quả đợt chào bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.RESULT_ATTACHMENT_PATH
+    comment: VARCHAR2(2000). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Error Description
+    physical_name: error_description
+    business_meaning: Mô tả lỗi khi gửi CBTT chào bán.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.ERROR_DESCRIPTION
+    comment: NVARCHAR2(1000). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Legacy Filename
+    physical_name: legacy_filename
+    business_meaning: Tên file đính kèm từ hệ thống cũ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_FILENAME
+    comment: VARCHAR2(1000 BYTE). LEGACY_FILEDATA (BLOB) excluded. LEGACY_ROWTEXT (VARCHAR2 40) — reference legacy.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Legacy Row Text
+    physical_name: legacy_row_text
+    business_meaning: Chuỗi tham chiếu bản ghi từ hệ thống cũ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.LEGACY_ROWTEXT
+    comment: VARCHAR2(40 BYTE). Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Legacy Updated Date
+    physical_name: legacy_updated_dt
+    business_meaning: Ngày cập nhật từ hệ thống cũ (NGAY_SUA).
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.NGAY_SUA
+    comment: TIMESTAMP(6). Legacy audit duplicate của LAST_MODIFIED_AT. ETL dùng LAST_MODIFIED_AT làm canonical.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
+
+  - name: Legacy Updated By Id
+    physical_name: legacy_updated_by_id
+    business_meaning: ID người cập nhật từ hệ thống cũ (NGUOI_SUA_ID).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: DISCLOSURE_SECURITIES_OFFERING
+    source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.NGUOI_SUA_ID
+    comment: NUMBER(10) — ETL convert sang string. Legacy audit duplicate của LAST_MODIFIED_BY.
+    classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
+    etl_derived_value: null
