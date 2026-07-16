@@ -238,6 +238,31 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 
 ---
 
+### L12 — Thứ tự nhóm trong file không tăng dần theo số
+
+**Pattern:** Detail Mapping được sinh qua nhiều đợt (VD: đợt 1 xử lý các nhóm có bảng READY theo Phase 0 Plan, đợt 2 bổ sung nhóm PENDING toàn bộ bị bỏ sót) — mỗi đợt append vào cuối file mà không sắp xếp lại, dẫn đến cột `nhom` không theo thứ tự 1, 2, 3... tăng dần (VD: Nhóm 1..41 xong lại quay về Nhóm 7, 11, 13...).
+
+**Nguyên nhân gốc:** Phase 0 Plan chỉ liệt kê nhóm có bảng cần thiết kế mới — nhóm PENDING toàn bộ (không có bảng) bị xử lý riêng ở một đợt sau, append cuối file thay vì chèn đúng vị trí theo số nhóm.
+
+**Kiểm tra:** Duyệt cột `nhom` theo thứ tự dòng trong file, parse số nhóm bằng regex — thứ tự nhóm-xuất-hiện-lần-đầu phải là 1, 2, ..., N_max liên tục, không được giảm ở bất kỳ điểm nào.
+
+❌ Dòng thứ i có Nhóm 11, dòng thứ i+50 có Nhóm 2 → sai (11 xuất hiện trước 2).
+✅ Mọi nhóm xuất hiện theo đúng thứ tự số tăng dần từ 1 đến N_max.
+
+---
+
+### L13 — Thiếu cả một nhóm trong Detail Mapping (không chỉ thiếu vài dòng)
+
+**Pattern:** TC2 (KPI_ID hợp lệ) chỉ kiểm tra chiều Detail Mapping → HLD (không lọt ID lạ), không bắt được trường hợp NGƯỢC LẠI: một nhóm PENDING toàn bộ trong HLD không có bất kỳ dòng nào trong Detail Mapping vì nhóm đó không xuất hiện trong Phase 0 Plan (do không cần bảng Attributes) nên bị bỏ qua hoàn toàn khỏi loop Phase 2.
+
+**Nguyên nhân gốc:** Vòng lặp Phase 2 "làm Nhóm N+1 → hết Nhóm cuối" chỉ lặp theo danh sách nhóm trong Phase 0 Plan, không đối chiếu lại với tổng số nhóm thực tế trong HLD Section 2.
+
+**Kiểm tra:** Sau khi Phase 2 xử lý xong toàn bộ nhóm trong Plan, đối chiếu tập hợp số nhóm trong Detail Mapping với tập hợp số nhóm trong HLD Section 2 — báo danh sách nhóm bị thiếu hoàn toàn (0 dòng).
+
+❌ HLD có 41 nhóm, Detail Mapping chỉ có 21 nhóm (20 nhóm PENDING toàn bộ bị bỏ sót hoàn toàn) → sai, dù mỗi nhóm có mặt đều đúng logic.
+
+---
+
 ### Checklist bổ sung — kiểm tra trước khi giao file Phase 2
 
 ```
@@ -252,7 +277,11 @@ Ví dụ K_NHNCK_2_YOY (CCHN cấp mới YTD):
 □ L9: Cột nhom → tên đầy đủ theo HLD (không chỉ "Nhóm X" — phải có phần tên ngắn)
 □ L10: DERIVED _YOY → logic viết bằng physical column theo template rút gọn (không refer KPI_ID)
 □ L11: Mỗi Operational table (opr_*) có src_stm_code → có đúng 1 dòng FILTER logic="src_stm_code = '<VALUE>'" ngay sau JOIN_KEY đầu tiên; Dimension table → không thêm FILTER này
+□ L12: Cột nhom theo thứ tự dòng trong file → số nhóm xuất hiện lần đầu phải tăng dần 1, 2, ..., N_max (parse bằng regex, không so sánh string) — nếu phát hiện lệch, sắp xếp lại toàn file
+□ L13: Tổng số nhóm trong Detail Mapping (cột nhom, unique) = tổng số nhóm trong HLD Section 2 (kể cả nhóm PENDING toàn bộ không có bảng Attributes nào) — không dùng danh sách nhóm từ Phase 0 Plan để xác định "đã xong"
 ```
+
+> **L12 và L13 là 2 testcase module-level** (chạy 1 lần sau khi TOÀN BỘ nhóm đã xử lý, tương ứng TC6 và TC5 trong `SKILL.md`) — khác với L1–L11 vốn kiểm tra trong phạm vi từng nhóm/dòng riêng lẻ.
 
 ---
 

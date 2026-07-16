@@ -127,20 +127,61 @@ Với mỗi nhóm (STT), tổng hợp đầy đủ:
 Với mỗi nhóm trong BA, kiểm tra trong HLD:
 - Nhóm có section trong HLD không?
 - Trạng thái HLD: `READY` / `PENDING` / `Chưa có`
+- **Đếm số dòng KPI_ID trong bảng KPI của nhóm đó** (loại trừ dòng `_YOY`/derived thuần suy ra từ KPI khác trong cùng nhóm — chỉ đếm KPI có nguồn/công thức riêng)
 
-### 0b.3 — Xuất bảng danh sách nhóm theo thứ tự tăng dần
+**Kiểm tra cấu trúc tài liệu (1 lần duy nhất, cấp toàn HLD — không lặp lại mỗi nhóm):**
+
+Đối chiếu `DTM_{MODULE}_HLD.md` với 5 Section cố định theo `datamart-hld-design/reference/section_structure.md`:
+```
+Section 1 — Data Lineage
+Section 2 — Tổng quan báo cáo
+Section 3 — Mô hình tổng thể
+Section 4 — Reuse Analysis   (4 cột: Datamart Entity / datamart_table / reuse_status / Ghi chú)
+Section 5 — Vấn đề mở
+```
+- Thiếu hẳn Section 4 Reuse Analysis, hoặc "Vấn đề mở" đang chiếm nhầm vị trí Section 4 → 🔴 Critical cấp toàn module (không chỉ riêng 1 nhóm) — ghi nhận 1 lần trong bảng vấn đề tổng hợp, action đề xuất: bổ sung Section 4 đúng chuẩn (đẩy "Vấn đề mở" xuống Section 5), liệt kê `reuse_status` cho mọi bảng Fact/Dim đã có trong Section 3.
+- Section 4 tồn tại nhưng thiếu dòng cho 1 bảng Fact/Dim nào đó trong Section 3 → 🟡 Warning, bổ sung dòng thiếu.
+- Không tự suy ra `reuse_status` — nếu chưa rõ, hỏi user xác nhận (theo GATE RULE của `datamart-hld-design`), không tự gán "reuse" hay "new" khi chưa chắc chắn.
+
+### 0b.3 — Đối chiếu SỐ LƯỢNG dòng BA ↔ số dòng KPI HLD (bắt buộc, không chỉ kiểm tra tồn tại)
+
+> **Đây là bước riêng biệt với "KPI coverage" ở Bước 2 Lớp 1** — KPI coverage kiểm tra kiểu tồn tại
+> (KPI Done có ID chưa), còn bước này đối chiếu **số lượng tuyệt đối 1-1**, phát hiện các trường hợp
+> KPI coverage kiểu tồn tại bỏ lọt: BA đổi nội dung 1 dòng nhưng vẫn giữ tổng số dòng (VD: BA thay
+> "Tỷ lệ TP vi phạm nghĩa vụ thanh toán" bằng "Xếp hạng tín nhiệm", KPI coverage vẫn PASS vì mọi dòng
+> đều có ID, nhưng nội dung đã sai); hoặc BA bớt/thêm 1 dòng làm tổng số lệch mà không ai để ý vì
+> không có bước đếm-so-sánh tường minh.
+
+Với mỗi nhóm, tính:
+```
+Số dòng BA = COUNT(dòng BA trong nhóm, Phân loại ∈ {Chiều, Cơ sở}, Trạng thái mapping ∈ {Done, Doing})
+Số dòng KPI HLD = COUNT(KPI_ID trong bảng KPI của nhóm, loại trừ _YOY/derived thuần trong cùng bảng)
+```
+
+- **Số lượng khớp** → tiếp tục Bước 2 Lớp 1 bình thường (kiểm tra coverage/nội dung).
+- **Số lượng lệch (dù chỉ 1 dòng, theo cả 2 chiều thừa/thiếu)** → **bắt buộc dừng, đối chiếu TỪNG DÒNG** giữa BA và bảng KPI HLD theo tên/mô tả/điều kiện lọc (criterion_cd, row_code...) để xác định chính xác:
+  - KPI nào BA đã bỏ → đề xuất loại khỏi HLD (xác nhận với user trước khi xóa)
+  - KPI nào BA thêm mới → đề xuất cấp ID mới, đánh liền mạch theo max hiện có
+  - KPI nào BA đổi nội dung nhưng giữ nguyên vị trí/số lượng → đề xuất đổi tên/nguồn, giữ nguyên ID (ghi rõ lý do đổi trong HLD)
+- **Không được kết luận nhóm "OK" ở Lớp 1 chỉ vì mọi KPI Done đều tìm thấy ID** — số lượng phải khớp tuyệt đối trước khi coi Lớp 1 pass.
+
+Thêm 2 cột vào bảng danh sách nhóm ở 0b.4 để lộ diện lệch số lượng ngay từ bước lập kế hoạch.
+
+### 0b.4 — Xuất bảng danh sách nhóm theo thứ tự tăng dần
 
 Liệt kê **toàn bộ nhóm**, sắp xếp theo số nhóm từ nhỏ đến lớn (nhóm 1 → nhóm N):
 
-| Nhóm | Tên nhóm | Tổng KPI | Done | Doing | Pending | BA Status | HLD Status |
-|---|---|---|---|---|---|---|---|
-| 1 | Dashboard chấm điểm CTDC | 5 | 0 | 0 | 5 | ALL_PENDING | PENDING |
-| 2 | ... | ... | ... | ... | ... | ... | ... |
-| 6 | GSTT thống kê niêm yết | 8 | 8 | 0 | 0 | ALL_DONE | READY |
+| Nhóm | Tên nhóm | Tổng KPI BA | Done | Doing | Pending | Số dòng KPI HLD | Lệch số lượng? | BA Status | HLD Status |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Dashboard chấm điểm CTDC | 5 | 0 | 0 | 5 | 0 | Không | ALL_PENDING | PENDING |
+| 2 | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 3 | Top CTDC theo chỉ tiêu phát hành | 8 | 8 | 0 | 0 | 8 | **Có — cần đối chiếu từng dòng** | ALL_DONE | READY |
+| 6 | GSTT thống kê niêm yết | 8 | 8 | 0 | 0 | 8 | Không | ALL_DONE | READY |
 
 > Thứ tự review sẽ tuần tự từ nhóm 1 đến nhóm N — không sắp xếp lại theo ưu tiên.
+> Nhóm có cột "Lệch số lượng?" = Có → ưu tiên đối chiếu từng dòng ngay khi vào Bước 2 Lớp 1 của nhóm đó.
 
-### 0b.4 — ⛔ DỪNG, hỏi user
+### 0b.5 — ⛔ DỪNG, hỏi user
 
 Sau khi trình bày bảng danh sách, hỏi:
 
@@ -212,8 +253,10 @@ Thực hiện tuần tự cho từng nhóm trong scope. Với mỗi nhóm:
 | Kiểm tra | Chi tiết |
 |---|---|
 | **Trạng thái HLD vs BA** | HLD = PENDING nhưng BA = Done → Kịch bản A |
+| **Đối chiếu số lượng (0b.3)** | Số dòng BA (Chiều/Cơ sở, Done/Doing) khớp tuyệt đối với số dòng KPI HLD của nhóm? Lệch → bắt buộc đối chiếu từng dòng trước khi kết luận Lớp 1, xem 0b.3 |
 | **KPI coverage BA→HLD** | Mọi KPI Done/Doing trong BA phải có KPI_ID trong HLD; KPI Pending phải ghi nhận PENDING |
 | **KPI coverage HLD→BA (chiều ngược)** | Mọi KPI_ID trong HLD phải truy về được ít nhất 1 dòng trong BA analyst — nếu không tìm thấy → KPI dư, hỏi BA xác nhận trước khi xóa |
+| **Cột Công thức/Mô tả — đầy đủ cho mọi dòng, kể cả reuse** | Bảng KPI HLD phải có cột Công thức (hoặc tương đương: Atomic Entity/Table/Column + ghi chú tính toán) cho MỌI dòng. Dòng KPI mới → điền công thức/nguồn thật. Dòng KPI reuse → không được để trống hay chỉ ghi tên nhóm nguồn suông; phải ghi rõ "Reuse từ Nhóm X" NGAY TRONG cột Công thức/Atomic Entity theo đúng `section_structure.md`, kèm mô tả ngắn cách tính nếu nhóm hiện tại dùng khác điều kiện lọc so với nhóm gốc | 
 | **Grain** | Grain mô tả rõ ràng, đúng với logic BA |
 | **Bảng Fact/Dim** | Fact/Dim đủ để phản ánh dimension filter/slicer trong BA |
 | **Chiều (Slicer/Filter)** | Mọi dòng BA `Phân loại = Chiều` phải có KPI_ID trong HLD |

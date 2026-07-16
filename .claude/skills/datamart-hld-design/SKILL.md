@@ -442,7 +442,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 ```
 □ Đọc Section 3 HLD — không đọc Section 2 hay erDiagram từng nhóm
 □ Đọc Section 4 HLD — lấy reuse_status cho từng bảng
-□ Danh sách entity đầy đủ: tất cả fact + dim + operational trong Section 3
+□ Danh sách entity đầy đủ: tất cả fact + dim + operational trong Section 3 — TRỪ bảng PENDING toàn bộ (100% KPI/Nhóm dùng bảng đó PENDING, không có ngoại lệ) — loại khỏi CSV, liệt kê riêng trong Entities.md mục "Bảng PENDING"
 □ table_type khớp với phân loại trong Section 3 (fact/dim/operational)
 □ reuse_status lấy từ Section 4 — bắt buộc có cho mọi row
 □ description + Grain lấy từ cột Grain/Mô tả của Section 3 — không tự suy luận

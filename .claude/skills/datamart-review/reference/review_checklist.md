@@ -36,6 +36,16 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
 
 □ Bảng Fact/Dim đủ để phản ánh tất cả dimension trong BA?
   → Thiếu Dim → Critical nếu ảnh hưởng aggregate, Warning nếu chỉ là filter
+
+□ Block READY reuse toàn bộ từ Nhóm khác (VD nhóm Data Explorer reuse Fact/KPI
+  gốc) vẫn phải có **Bảng KPI** markdown đầy đủ 6 cột (KPI ID | Tên KPI | Đơn vị |
+  Tính chất | Atomic Entity/Table/Attribute/Column | Ghi chú "Reuse từ Nhóm X"),
+  không được thay bằng 1 dòng văn xuôi liệt kê ID.
+  → Chỉ Star Schema / Lineage / Bảng grain được phép rút gọn thành "giống Nhóm X"
+    khi Fact/Dim thực sự dùng chung 100% với Nhóm gốc — Bảng KPI thì KHÔNG được
+    rút gọn vì đây là căn cứ duy nhất để trace KPI Done trong BA → KPI_ID trong HLD.
+  → Thiếu Bảng KPI (chỉ có câu văn liệt kê) → Warning — yêu cầu bổ sung Bảng KPI
+    đầy đủ, giữ nguyên phần Star Schema/Lineage/Bảng grain dạng refer
 ```
 
 ---
