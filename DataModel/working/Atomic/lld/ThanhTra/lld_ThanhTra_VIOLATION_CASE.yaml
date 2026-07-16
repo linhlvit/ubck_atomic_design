@@ -171,8 +171,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Assigned Officer Code"
-  physical_name: "assigned_officer_code"
+- attribute_name: "Assigned Officer Name"
+  physical_name: "assigned_officer_nm"
   description: "Tên cán bộ phụ trách xử lý hồ sơ VPHC (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -180,8 +180,9 @@ attributes:
   status: "draft"
   source_columns:
   - "ThanhTra.VIOLATION_CASE.ASSIGNED_OFFICER_NAME"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Assigned Officer Id. Nguồn lưu ASSIGNED_OFFICER_NAME (text snapshot)."
+  comment: "Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải Code\
+    \ nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern Lookup\
+    \ pair Code. Pair with Assigned Officer Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -199,8 +200,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Supervising Leader Code"
-  physical_name: "supervising_leader_code"
+- attribute_name: "Supervising Leader Name"
+  physical_name: "supervising_leader_nm"
   description: "Tên lãnh đạo phụ trách hồ sơ VPHC (snapshot)."
   data_domain: "Text"
   nullable: true
@@ -208,9 +209,9 @@ attributes:
   status: "draft"
   source_columns:
   - "ThanhTra.VIOLATION_CASE.SUPERVISING_LEADER_NAME"
-  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
-    \ Code. Pair with Supervising Leader Id. Nguồn lưu SUPERVISING_LEADER_NAME (text\
-    \ snapshot)."
+  comment: "Denormalized snapshot tên lãnh đạo tại thời điểm phân công, không phải\
+    \ Code nghiệp vụ — nguồn lưu SUPERVISING_LEADER_NAME (text), không dùng pattern\
+    \ Lookup pair Code. Pair with Supervising Leader Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

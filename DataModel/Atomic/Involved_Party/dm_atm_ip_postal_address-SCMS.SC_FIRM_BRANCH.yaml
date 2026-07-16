@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-SCMS.SC_FIRM_BRANCH
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_BRANCH
+
+attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Company Organization Unit (chi nhánh CTCK).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.ID
+    comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_BRANCH', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Securities Company Organization Unit.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.ID
+    comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: SCMS.SC_FIRM_BRANCH
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: "Loại địa chỉ: BRANCH=Địa chỉ chi nhánh CTCK trong nước."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: null
+    comment: "Scheme: IP_ADDR_TYPE. ETL hardcode BRANCH — đây là địa chỉ chi nhánh, không phải trụ sở chính CTCK. SC_FIRM_BRANCH chỉ có 1 địa chỉ."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: BRANCH
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: "Địa chỉ chi tiết của chi nhánh (số nhà, tên đường, phường/xã)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.ADDRESS
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: province_id
+    business_meaning: FK đến Geographic Area cấp Tỉnh/Thành phố.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.PROVINCE_ID
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã Tỉnh/Thành phố.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.PROVINCE_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không còn CAT_PROVINCE). Pair with Province Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: District Id
+    physical_name: district_id
+    business_meaning: FK đến Geographic Area Old cấp Quận/Huyện (cũ).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.DISTRICT_ID
+    comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: District Code
+    physical_name: district_code
+    business_meaning: Mã Quận/Huyện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.DISTRICT_ID
+    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: District Name
+    physical_name: district_nm
+    business_meaning: "Tên Quận/Huyện (denormalized text, không có FK riêng)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.DISTRICT_NAME
+    comment: Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi District Id NULL.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Ward Id
+    physical_name: ward_id
+    business_meaning: FK đến Geographic Area cấp Phường/Xã.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.WARD_ID
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Ward Code
+    physical_name: ward_code
+    business_meaning: Mã Phường/Xã.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.WARD_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT — không còn CAT_WARD). Pair with Ward Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null
+
+  - name: Ward Name
+    physical_name: ward_nm
+    business_meaning: Tên Phường/Xã (denormalized text).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_BRANCH
+    source_column: SCMS.SC_FIRM_BRANCH.WARD_NAME
+    comment: Text gốc từ bảng nguồn (không phải ETL lookup). Dùng khi Ward Id NULL.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH' | Address Type Code = 'BRANCH'"
+    etl_derived_value: null

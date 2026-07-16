@@ -1,0 +1,751 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-securities_company-SCMS.SC_FIRM_INFO
+  logical_name: Securities Company
+  physical_name: securities_company
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Broker Dealer"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Công ty chứng khoán thành viên do UBCKNN quản lý. Ghi nhận thông tin pháp lý toàn diện: tên, địa chỉ, vốn điều lệ, số giấy phép UBCKNN, loại hình doanh nghiệp và trạng thái hoạt động.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_INFO
+
+attributes:
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('SCMS.SC_FIRM_INFO', CODE). BCV: \"[Involved Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: SCMS.SC_FIRM_INFO
+
+  - name: Parent Securities Company Id
+    physical_name: parent_sc_id
+    business_meaning: FK tự tham chiếu — CTCK cha trong cấu trúc phân cấp (nếu có).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Self-referencing. Resolve: join SC_FIRM_INFO_ID → SCMS.SC_FIRM_INFO.ID để lấy CODE, rồi hash_id('SCMS.SC_FIRM_INFO', code_cha)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Parent Securities Company Code
+    physical_name: parent_sc_code
+    business_meaning: Mã CTCK cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with Parent Securities Company Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: "Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK. BK duy nhất — Id hash từ trường này."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CODE
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Securities Company Short Name
+    physical_name: sc_short_nm
+    business_meaning: "Tên viết tắt (VD: SSI, VPS, MBS)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.SHORT_NAME
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Securities Company Name
+    physical_name: sc_nm
+    business_meaning: Tên đầy đủ bằng tiếng Việt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.NAME_VI
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Securities Company English Name
+    physical_name: sc_english_nm
+    business_meaning: Tên đầy đủ bằng tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.NAME_EN
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Company Type Code
+    physical_name: company_tp_code
+    business_meaning: Loại hình doanh nghiệp CTCK (FK đến CAT_COMPANY_TYPE).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.COMPANY_TYPE_ID
+    comment: "Scheme: SCMS_COMPANY_TYPE. Nguồn lưu NUMBER(10) — ETL map ID → code từ CAT_COMPANY_TYPE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Classification Firm Status Id
+    physical_name: cl_firm_status_id
+    business_meaning: "Trạng thái pháp lý CTCK — FK tới Classification Firm Status (Đang hoạt động, Tạm ngừng, Đình chỉ, Đóng cửa)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.RECORD_STATUS
+    comment: "FK target: cl_firm_status.cl_firm_status_id. Hash: hash_id('SCMS.CAT_SC_FIRM_STATUS', RECORD_STATUS)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Classification Firm Status Code
+    physical_name: cl_firm_status_code
+    business_meaning: Mã trạng thái pháp lý CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.RECORD_STATUS
+    comment: "Lookup pair: cl_firm_status.cl_firm_status_code. Pair with cl_firm_status_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Classification Event Type Id
+    physical_name: cl_event_tp_id
+    business_meaning: Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Event Type.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
+    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Classification Event Type Code
+    physical_name: cl_event_tp_code
+    business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
+    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Financial Report Type Code
+    physical_name: financial_rpt_tp_code
+    business_meaning: "Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất (nhiều giá trị phân cách bởi dấu phẩy)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.FINANCIAL_REPORT_TYPE
+    comment: "Scheme: SCMS_FINANCIAL_REPORT_TYPE. Nguồn lưu VARCHAR2(50), có thể multi-value phân cách bởi dấu phẩy — ETL cần xử lý."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Foundation License File Path
+    physical_name: foundation_license_file_path
+    business_meaning: Đường dẫn file giấy phép thành lập trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_FILE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Termination Decision Number
+    physical_name: termination_decision_nbr
+    business_meaning: Số quyết định chấm dứt hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.TERMINATION_DECISION_NUMBER
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_capital_amt
+    business_meaning: "Vốn điều lệ (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CHARTER_CAPITAL
+    comment: Nguồn lưu NUMBER(38) — lưu dạng số nguyên (không có phần thập phân).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Total Shares
+    physical_name: total_shares
+    business_meaning: "Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá 10.000đ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.TOTAL_SHARES
+    comment: "Tạm dùng Currency Amount (decimal(23,2)) dù không phải tiền tệ — 12 domain chuẩn chưa có domain số đếm lớn cho NUMBER(38) (Small Counter/int sẽ overflow). Data Modeler đã quyết định tạm thời (2026-07-16), chờ xác nhận domain 'Quantity' trước khi chính thức hóa."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Business Lines
+    physical_name: business_lines
+    business_meaning: Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép (denormalized từ LNK_SC_FIRM_BUSINESS_LINE).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.BUSINESS_LINES
+    comment: "Map 1:1 từ nguồn — giữ nguyên dạng string thô (không parse ARRAY). Sau này đánh giá có FK sang bảng danh mục nghiệp vụ hay không."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Additional Business Lines
+    physical_name: additional_business_lines
+    business_meaning: Danh sách nghiệp vụ kinh doanh bổ sung được cấp phép.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ADDITIONAL_BUSINESS_LINES
+    comment: "Map 1:1 từ nguồn — giữ nguyên dạng string thô (không parse ARRAY). Sau này đánh giá có FK sang bảng danh mục nghiệp vụ hay không."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Listed Indicator
+    physical_name: listed_indicator
+    business_meaning: "Cờ niêm yết: 1=Có niêm yết trên sàn; 0=Không niêm yết."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.LISTED
+    comment: NUMBER(1) — ETL cần convert sang boolean.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Listing Exchange Code
+    physical_name: listing_exchange_code
+    business_meaning: "Sàn niêm yết (HOSE, HNX, UPCOM)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.LISTING_EXCHANGE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Securities Code
+    physical_name: securities_code
+    business_meaning: Mã chứng khoán niêm yết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.SECURITIES_CODE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Listing Date
+    physical_name: listing_dt
+    business_meaning: Ngày niêm yết trên sàn giao dịch.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.LISTING_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Registration Date
+    physical_name: registration_dt
+    business_meaning: Ngày đăng ký thành lập CTCK.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.SC_FIRM_REGISTRATION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Official Operation Date
+    physical_name: official_operation_dt
+    business_meaning: Ngày bắt đầu hoạt động chính thức.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.OFFICIAL_OPERATION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Fiscal Year End Date
+    physical_name: fiscal_year_end_dt
+    business_meaning: "Ngày kết thúc năm tài chính (VD: 31/12)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.FISCAL_YEAR_END_DATE
+    comment: "Nguồn lưu VARCHAR2(5) — lưu dạng text (VD: 12-31). Mô tả gốc BRD trống."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Electronic Trading Status Code
+    physical_name: electronic_trading_status_code
+    business_meaning: "Trạng thái giao dịch điện tử: HOAT_DONG=Đang hoạt động; TAM_NGUNG=Tạm ngừng; DINH_CHI=Đình chỉ hoạt động."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_STATUS
+    comment: "Scheme: SCMS_ELECTRONIC_TRADING_STATUS. Nguồn lưu NVARCHAR2(20)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Electronic Trading Decision Number
+    physical_name: electronic_trading_decision_nbr
+    business_meaning: Số quyết định về giao dịch điện tử.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_DECISION_NUMBER
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Electronic Trading Decision Date
+    physical_name: electronic_trading_decision_dt
+    business_meaning: Ngày quyết định về giao dịch điện tử.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_DECISION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Electronic Trading Reason
+    physical_name: electronic_trading_reason
+    business_meaning: Lý do thay đổi trạng thái giao dịch điện tử.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_REASON
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Public Company Indicator
+    physical_name: pc_indicator
+    business_meaning: "Cờ công ty đại chúng: 1=Là công ty đại chúng; 0=Không phải."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.PUBLIC_COMPANY
+    comment: NUMBER(1) — ETL cần convert sang boolean.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Public Company Registration Date
+    physical_name: pc_registration_dt
+    business_meaning: Ngày đăng ký là công ty đại chúng với UBCKNN.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_REGISTRATION_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Public Company Decision Number
+    physical_name: pc_decision_nbr
+    business_meaning: Số quyết định công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_DECISION_NUMBER
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Public Company End Date
+    physical_name: pc_end_dt
+    business_meaning: Ngày chấm dứt tư cách công ty đại chúng.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_END_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Public Company End Decision Number
+    physical_name: pc_end_decision_nbr
+    business_meaning: Số quyết định chấm dứt tư cách công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_END_DECISION_NUMBER
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Custodian Member Code
+    physical_name: custodian_member_code
+    business_meaning: Mã thành viên lưu ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CODE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Custodian Membership Revocation Decision
+    physical_name: custodian_membership_revocation_decision
+    business_meaning: Quyết định thu hồi tư cách thành viên lưu ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBERSHIP_REVOCATION_DECISION
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Custodian Membership Revocation Date
+    physical_name: custodian_membership_revocation_dt
+    business_meaning: Ngày thu hồi tư cách thành viên lưu ký.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBERSHIP_REVOCATION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Ownership Limit Rate
+    physical_name: foreign_investor_ownership_limit_rate
+    business_meaning: Tỷ lệ sở hữu tối đa của nhà đầu tư nước ngoài.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.FOREIGN_INVESTOR_OWNERSHIP_LIMIT
+    comment: "NUMBER(9,4) — tỷ lệ phần trăm."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Ownership Limit From Date
+    physical_name: ownership_limit_from_dt
+    business_meaning: Ngày bắt đầu áp dụng giới hạn sở hữu nước ngoài.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.OWNERSHIP_LIMIT_FROM_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Ownership Limit To Date
+    physical_name: ownership_limit_to_dt
+    business_meaning: Ngày kết thúc áp dụng giới hạn sở hữu nước ngoài.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.OWNERSHIP_LIMIT_TO_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Amendment Declaration Indicator
+    physical_name: amendment_declaration_indicator
+    business_meaning: "Cờ có khai bổ sung/sửa đổi: 1=Có văn bản sửa đổi; 0=Không có."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.AMENDMENT_DECLARATION
+    comment: NUMBER(1) — ETL cần convert sang boolean.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Amendment Document Number
+    physical_name: amendment_document_nbr
+    business_meaning: Số văn bản sửa đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.AMENDMENT_DOCUMENT_NUMBER
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Amendment Document Date
+    physical_name: amendment_document_dt
+    business_meaning: Ngày văn bản sửa đổi.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.AMENDMENT_DOCUMENT_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Amendment Effective Date
+    physical_name: amendment_effective_dt
+    business_meaning: Ngày hiệu lực văn bản sửa đổi.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.AMENDMENT_EFFECTIVE_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Amendment Expiry Date
+    physical_name: amendment_expiry_dt
+    business_meaning: Ngày hết hạn văn bản sửa đổi.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.AMENDMENT_EXPIRY_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Amendment Document File Path
+    physical_name: amendment_document_file_path
+    business_meaning: Đường dẫn file văn bản sửa đổi.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.AMENDMENT_DOCUMENT_FILE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Provisional Status Code
+    physical_name: provisional_status_code
+    business_meaning: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.PROVISIONAL
+    comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: "1=Bản nháp;0=Chính thức"
+
+  - name: Synced From Admin Process Indicator
+    physical_name: synced_from_admin_process_indicator
+    business_meaning: "Cờ đã đồng bộ từ Thủ tục hành chính: 1=Đã đồng bộ; 0=Chưa đồng bộ."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.SYNCED_FROM_ADMIN_PROC
+    comment: NUMBER(1) — ETL cần convert sang boolean.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm trên hệ thống lưu trữ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ATTACHMENT_PATH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.NOTE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
+    etl_derived_value: null

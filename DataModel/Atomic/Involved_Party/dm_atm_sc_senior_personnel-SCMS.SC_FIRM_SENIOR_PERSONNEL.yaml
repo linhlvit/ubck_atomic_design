@@ -1,0 +1,681 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-sc_senior_personnel-SCMS.SC_FIRM_SENIOR_PERSONNEL
+  logical_name: Securities Company Senior Personnel
+  physical_name: sc_senior_personnel
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Senior Officer"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: SCMS
+  description: |
+    Nhân sự cấp cao của CTCK (GĐ, PGĐ, KTT, ...). Ghi nhận thông tin cá nhân, chức vụ, số CCHN, ngày bổ nhiệm và đơn vị công tác (hội sở/chi nhánh/PGD).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
+
+attributes:
+  - name: Securities Company Senior Personnel Id
+    physical_name: sc_senior_personnel_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Senior Officer\". Nhân sự cấp cao CTCK."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Securities Company Senior Personnel Code
+    physical_name: sc_senior_personnel_code
+    business_meaning: Khóa chính kỹ thuật (ID tự tăng). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
+    comment: BK chính. PK nguồn (NUMBER(10) — ETL convert sang string).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: SCMS.SC_FIRM_SENIOR_PERSONNEL
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: FK đến Công ty chứng khoán.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_INFO_ID
+    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã Công ty chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_INFO_ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Branch Organization Unit Id
+    physical_name: branch_ou_id
+    business_meaning: FK đến chi nhánh CTCK nơi nhân sự công tác (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_BRANCH_ID
+    comment: "FK target: sc_organization_unit.sc_organization_unit_id. Hash: hash_id('SCMS.SC_FIRM_BRANCH', SC_FIRM_BRANCH_ID). Chỉ có 1 trong 3 org unit FK được populate."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Branch Organization Unit Code
+    physical_name: branch_ou_code
+    business_meaning: Mã chi nhánh CTCK nơi nhân sự công tác.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_BRANCH_ID
+    comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair with Branch Organization Unit Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Transaction Office Organization Unit Id
+    physical_name: transaction_office_ou_id
+    business_meaning: FK đến phòng giao dịch CTCK nơi nhân sự công tác (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_TRANSACTION_OFFICE_ID
+    comment: "FK target: sc_organization_unit.sc_organization_unit_id. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE', SC_FIRM_TRANSACTION_OFFICE_ID). Chỉ có 1 trong 3 org unit FK được populate."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Transaction Office Organization Unit Code
+    physical_name: transaction_office_ou_code
+    business_meaning: Mã phòng giao dịch CTCK nơi nhân sự công tác.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_TRANSACTION_OFFICE_ID
+    comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair with Transaction Office Organization Unit Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Representative Office Organization Unit Id
+    physical_name: representative_office_ou_id
+    business_meaning: FK đến VPDD CTCK nơi nhân sự công tác (nullable).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_REP_OFFICE_ID
+    comment: "FK target: sc_organization_unit.sc_organization_unit_id. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE', SC_FIRM_REP_OFFICE_ID). Chỉ có 1 trong 3 org unit FK được populate."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Representative Office Organization Unit Code
+    physical_name: representative_office_ou_code
+    business_meaning: Mã VPDD CTCK nơi nhân sự công tác.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_REP_OFFICE_ID
+    comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair with Representative Office Organization Unit Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.FULL_NAME
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Entity Type Code
+    physical_name: entity_tp_code
+    business_meaning: "Loại đối tượng: CA_NHAN=Cá nhân; TO_CHUC=Tổ chức."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ENTITY_TYPE
+    comment: "Scheme: SCMS_ENTITY_TYPE. Values: CA_NHAN/TO_CHUC."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Gender Code
+    physical_name: gender_code
+    business_meaning: "Giới tính: 1=Nam; 2=Nữ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.GENDER
+    comment: "Scheme: SCMS_GENDER. Nguồn NUMBER(1): 1=Nam; 2=Nữ."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dt_of_birth
+    business_meaning: Ngày sinh (dd/mm/yyyy).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DATE_OF_BIRTH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Place Of Birth
+    physical_name: place_of_birth
+    business_meaning: Nơi sinh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.PLACE_OF_BIRTH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Classification Nationality Id
+    physical_name: cl_nationality_id
+    business_meaning: Quốc tịch (FK đến CAT_NATIONALITY).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONALITY_ID
+    comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Classification Nationality Code
+    physical_name: cl_nationality_code
+    business_meaning: Quốc tịch (FK đến CAT_NATIONALITY).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONALITY_ID
+    comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with cl_nationality_id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Personnel Status Code
+    physical_name: personnel_status_code
+    business_meaning: "Trạng thái nhân sự cấp cao: DUONG_NHIEM=Đương nhiệm; MIEN_NHIEM=Miễn nhiệm; NGHI_VIEC=Nghỉ việc."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.PERSONNEL_STATUS
+    comment: "Scheme: SCMS_PERSONNEL_STATUS. Nguồn NUMBER(1): 1=Đương nhiệm; 0=Miễn nhiệm; 2=Nghỉ việc."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái bản ghi kỹ thuật: 1=Đang hoạt động; 0=Ngừng hoạt động."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.RECORD_STATUS
+    comment: "Scheme: SCMS_USAGE_STATUS."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Provisional Status Code
+    physical_name: provisional_status_code
+    business_meaning: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.PROVISIONAL
+    comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: "1=Bản nháp;0=Chính thức"
+
+  - name: Legal Representative Indicator
+    physical_name: legal_representative_indicator
+    business_meaning: "Là người đại diện theo pháp luật: 1=Có; 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.LEGAL_REPRESENTATIVE
+    comment: NUMBER(1).
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Statutory Representative Indicator
+    physical_name: statutory_representative_indicator
+    business_meaning: Là người đại diện theo điều lệ.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.STATUTORY_REPRESENTATIVE
+    comment: NUMBER(1). Mô tả gốc BRD trống. Có thể trùng nghĩa với LEGAL_REPRESENTATIVE — cần xác nhận team.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Disclosure Person Indicator
+    physical_name: disclosure_person_indicator
+    business_meaning: "Là người công bố thông tin (NGUOI_CONG_BO_TT): 1=Có; 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.NGUOI_CONG_BO_TT
+    comment: NUMBER(1). Cột tên tiếng Việt — mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Disclosure Person Id
+    physical_name: disclosure_person_id
+    business_meaning: FK đến người dùng đại diện công bố thông tin (IAM.USERS).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (SCMS → IAM). Pending — SCMS lưu NUMBER(1) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Disclosure Person Code
+    physical_name: disclosure_person_code
+    business_meaning: Mã người dùng đại diện công bố thông tin.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Disclosure Person Id. Cross-source FK (SCMS → IAM), pending crosswalk (xem comment Id)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Department
+    physical_name: department
+    business_meaning: Phòng/Ban công tác của nhân sự.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DEPARTMENT
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Position Code
+    physical_name: position_code
+    business_meaning: Mã chức vụ trong danh mục (FK → CAT_POSITION).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_ID
+    comment: "Scheme: SCMS_POSITION_TYPE. Nguồn POSITION_ID lưu NVARCHAR2(500) — khả năng cao đây là code thay vì ID số. ETL map sang SCMS_POSITION_TYPE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Position Name
+    physical_name: position_nm
+    business_meaning: "Tên chức vụ (tên tự do, không chuẩn hóa theo danh mục)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION
+    comment: VARCHAR2(500). Bổ sung cho Position Code khi danh mục không đủ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Position Ids
+    physical_name: position_ids
+    business_meaning: Danh sách ID chức vụ kiêm nhiệm (CLOB — có thể là JSON array).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_IDS
+    comment: "Nguồn CLOB — lưu nguyên dạng text. Nếu là JSON array các position ID cần xác nhận format trước khi denormalize thành Array<Text>."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Appointment Date
+    physical_name: appointment_dt
+    business_meaning: Ngày bổ nhiệm vào chức vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.APPOINTMENT_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Work Start Date
+    physical_name: work_start_dt
+    business_meaning: Ngày bắt đầu làm việc tại CTCK.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.WORK_START_DATE
+    comment: START_DATE (DATE) có thể là duplicate — cần xác nhận team. ETL dùng WORK_START_DATE làm canonical.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Dismissal Date
+    physical_name: dismissal_dt
+    business_meaning: Ngày miễn nhiệm khỏi chức vụ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DISMISSAL_DATE
+    comment: END_DATE (DATE) có thể là duplicate — cần xác nhận team. ETL dùng DISMISSAL_DATE làm canonical.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Resignation Date
+    physical_name: resignation_dt
+    business_meaning: Ngày nghỉ việc (tự nguyện).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.RESIGNATION_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Securities License Indicator
+    physical_name: securities_license_indicator
+    business_meaning: "Có chứng chỉ hành nghề chứng khoán: 1=Có; 0=Không."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SECURITIES_LICENSE
+    comment: NUMBER(1). PRACTICE_CERTIFICATE là legacy duplicate (cùng nghĩa) — ETL dùng SECURITIES_LICENSE làm canonical.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Securities License Number
+    physical_name: securities_license_nbr
+    business_meaning: Số chứng chỉ hành nghề chứng khoán (CCHN).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SECURITIES_LICENSE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Securities License Date
+    physical_name: securities_license_dt
+    business_meaning: Ngày cấp chứng chỉ hành nghề chứng khoán.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SECURITIES_LICENSE_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Shareholder Type Code
+    physical_name: shareholder_tp_code
+    business_meaning: "Loại cổ đông: CO_DONG_LON=Cổ đông lớn (≥5%); CO_DONG_SANG_LAP=Cổ đông sáng lập; CO_DONG_PHO_THONG=Cổ đông phổ thông."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.SHAREHOLDER_TYPE
+    comment: "Scheme: SCMS_SHAREHOLDER_TYPE. NVARCHAR2(100) lưu code trực tiếp."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Contributed Capital Amount
+    physical_name: contributed_capital_amt
+    business_meaning: "Vốn góp của nhân sự này với tư cách cổ đông (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.CONTRIBUTED_CAPITAL
+    comment: "Nguồn NUMBER(22,4)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Ownership Ratio Date
+    physical_name: ownership_ratio_dt
+    business_meaning: Ngày tính tỷ lệ sở hữu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.OWNERSHIP_RATIO_DATE
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Legacy Practitioner Id
+    physical_name: legacy_practitioner_id
+    business_meaning: ID nhân sự từ hệ thống cũ (TLID).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.PRACTITIONER_LEGACY_ID
+    comment: NUMBER(5) từ hệ thống cũ — ETL convert sang string.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Business Division Id
+    physical_name: business_division_id
+    business_meaning: "ID phân khu kinh doanh (FK → không xác định, pending)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.BUSINESS_DIVISION_ID
+    comment: "Map 1:1 từ nguồn. Chưa có FK trong BRD hiện tại — sẽ bổ sung FK khi xác định target."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Responsible Service Id
+    physical_name: responsible_service_id
+    business_meaning: "ID dịch vụ phụ trách (FK → không xác định, pending)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.RESPONSIBLE_SERVICE_ID
+    comment: "Map 1:1 từ nguồn. Chưa có FK trong BRD hiện tại — sẽ bổ sung FK khi xác định target."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Report Content
+    physical_name: rpt_content
+    business_meaning: Nội dung báo cáo liên quan đến nhân sự.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.REPORT_CONTENT
+    comment: Mô tả gốc BRD trống.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DELETED
+    comment: "NUMBER(1). Soft delete flag — ETL filter DELETED=0 trước khi load Atomic."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Attachment Path
+    physical_name: attachment_path
+    business_meaning: Đường dẫn file đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ATTACHMENT_PATH
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.NOTE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL'"
+    etl_derived_value: null

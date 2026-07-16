@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_service-SCMS.CAT_SERVICE
+  logical_name: Classification Service
+  physical_name: cl_service
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Service"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  description: |
+    Danh mục dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK. Nâng cấp từ Classification Value (scheme SCMS_SERVICE_TYPE) lên entity thật. FK target cho Classification Service Id trên Securities Company Licensed Service. Xem 7e #11/#14.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-CAT_SERVICE
+
+attributes:
+  - name: Classification Service Id
+    physical_name: cl_service_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: CAT_SERVICE
+    source_column: SCMS.CAT_SERVICE.ID
+    comment: "PK surrogate. BCV: \"[Common] Service\". Danh mục dịch vụ chứng khoán được cấp phép. Hash: hash_id('SCMS.CAT_SERVICE', ID)."
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
+    etl_derived_value: null
+
+  - name: Classification Service Code
+    physical_name: cl_service_code
+    business_meaning: Mã dịch vụ chứng khoán. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE
+    source_column: SCMS.CAT_SERVICE.SERVICE_CODE
+    comment: BK chính. Dùng SERVICE_CODE (mã nghiệp vụ) thay vì ID kỹ thuật — xem pending_design.yaml.
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
+    etl_derived_value: SCMS.CAT_SERVICE
+
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic theo created_at (xem BRD/Source/brd_SCMS.yaml, đã sửa lỗi created_by→created_at 2026-07-15)."
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE
+    source_column: SCMS.CAT_SERVICE.CREATED_AT
+    comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at' sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo ngày."
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
+    etl_derived_value: null
+
+  - name: Classification Service Name
+    physical_name: cl_service_nm
+    business_meaning: Tên dịch vụ chứng khoán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE
+    source_column: SCMS.CAT_SERVICE.SERVICE_NAME
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
+    etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: "Trạng thái bản ghi dịch vụ chứng khoán: 1 = Đang sử dụng; 0 = Ngừng sử dụng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE
+    source_column: SCMS.CAT_SERVICE.RECORD_STATUS
+    comment: "Scheme: SCMS_CLASSIFICATION_SERVICE_RECORD_STATUS."
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: "Ghi chú bổ sung, không bắt buộc."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: CAT_SERVICE
+    source_column: SCMS.CAT_SERVICE.NOTE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_CAT_SERVICE'"
+    etl_derived_value: null
