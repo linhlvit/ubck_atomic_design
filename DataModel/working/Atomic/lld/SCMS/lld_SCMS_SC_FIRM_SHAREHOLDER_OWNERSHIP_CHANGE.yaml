@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Transaction"
   table_type: "Fact Append"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -157,17 +157,18 @@ attributes:
   classification_context: "SCMS_SHAREHOLDER_TXN_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Data Source Code"
-  physical_name: "data_src_code"
+- attribute_name: "Data Source"
+  physical_name: "data_src"
   description: "Nguồn gốc dữ liệu: Đồng bộ tự động, Nhập tay, Cổng báo cáo."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.DATA_SOURCE"
-  comment: "Scheme: SCMS_DATA_SOURCE. NVARCHAR2(50)."
-  classification_context: "SCMS_DATA_SOURCE"
+  comment: "Map 1:1 từ nguồn — không phải Classification Value theo chỉ đạo Data Modeler\
+    \ (2026-07-15). NVARCHAR2(50)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Capital Before"

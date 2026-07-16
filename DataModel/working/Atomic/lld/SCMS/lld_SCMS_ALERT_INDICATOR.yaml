@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Event] Alert Indicator"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -31,7 +31,7 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo tài\
-    \ chính/tuân thủ."
+    \ chính/tuân thủ. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -64,13 +64,13 @@ attributes:
   physical_name: "alert_code"
   description: "Mã chỉ tiêu cảnh báo (mã nghiệp vụ chính)."
   data_domain: "Text"
-  nullable: true
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.ALERT_INDICATOR.ALERT_CODE"
-  comment: "Mã nghiệp vụ chính — khác BK (ALERT_CODE khác ID nguồn). Ưu tiên so với\
-    \ INDICATOR_CODE."
+  comment: "BK của entity — Id hash từ trường này theo chỉ đạo Data Modeler (2026-07-15).\
+    \ Ưu tiên so với INDICATOR_CODE."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -202,20 +202,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Severity"
-  physical_name: "severity"
+- attribute_name: "Severity Code"
+  physical_name: "severity_code"
   description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
-  data_domain: "Small Counter"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.ALERT_INDICATOR.SEVERITY"
-  comment: "NUMBER(10). BRD có cả SEVERITY và SEVERITY_LEVEL — cần xác nhận sự khác\
-    \ biệt với team nguồn. Giữ cả 2."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
+  comment: "Scheme: SCMS_ALERT_INDICATOR_SEVERITY. NUMBER(10). BRD có cả SEVERITY\
+    \ và SEVERITY_LEVEL — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2."
+  classification_context: "SCMS_ALERT_INDICATOR_SEVERITY"
+  etl_derived_value: "1=Thấp;2=Trung bình;3=Cao"
+  data_type: "string"
 - attribute_name: "Lower Threshold"
   physical_name: "lower_threshold"
   description: "Ngưỡng cảnh báo dưới."

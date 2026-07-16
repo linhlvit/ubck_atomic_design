@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Broker Dealer"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -674,19 +674,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Provisional Indicator"
-  physical_name: "provisional_indicator"
+- attribute_name: "Provisional Status Code"
+  physical_name: "provisional_status_code"
   description: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
-  data_domain: "Boolean"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.PROVISIONAL"
-  comment: "NUMBER(1) — ETL cần convert sang boolean."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "boolean"
+  comment: "Scheme: SCMS_PROVISIONAL_STATUS. NUMBER(1)."
+  classification_context: "SCMS_PROVISIONAL_STATUS"
+  etl_derived_value: "1=Bản nháp;0=Chính thức"
+  data_type: "string"
 - attribute_name: "Synced From Admin Process Indicator"
   physical_name: "synced_from_admin_process_indicator"
   description: "Cờ đã đồng bộ từ Thủ tục hành chính: 1=Đã đồng bộ; 0=Chưa đồng bộ."

@@ -1732,6 +1732,23 @@ schemes:
       - "Securities Company Alert Indicator"
     values: []
 
+  - scheme_code: "SCMS_ALERT_INDICATOR_SEVERITY"
+    name: "Mức độ nghiêm trọng chỉ tiêu cảnh báo CTCK: 1=Thấp, 2=Trung bình, 3=Cao"
+    source_type: "source_table"
+    source_table: "SCMS.ALERT_INDICATOR.SEVERITY"
+    used_in_entities:
+      - "Securities Company Alert Indicator"
+    values:
+      - code: "1"
+        label: "Thấp"
+        source_value: "1"
+      - code: "2"
+        label: "Trung bình"
+        source_value: "2"
+      - code: "3"
+        label: "Cao"
+        source_value: "3"
+
   - scheme_code: "SCMS_RISK_CAMEL_GROUP"
     name: "Nhóm chỉ tiêu CAMEL (C/A/M/E/L)"
     source_type: "source_table"
@@ -1742,14 +1759,6 @@ schemes:
 
   # --- Tier 1 schemes — Classification Firm Status / Service / Nationality / Event Type,
   #     Securities Company Form Report (HLD bổ sung, xem SCMS_HLD_Tier1.md 6f T1-05/T1-06) ---
-
-  - scheme_code: "SCMS_FIRM_STATUS_APPLICABLE_ENTITY"
-    name: "Đối tượng áp dụng trạng thái pháp lý (CTCK/CN/VPDD/NH/Cả hai)"
-    source_type: "source_table"
-    source_table: "SCMS.CAT_SC_FIRM_STATUS.APPLICABLE_ENTITY"
-    used_in_entities:
-      - "Classification Firm Status"
-    values: []
 
   - scheme_code: "SCMS_FIRM_STATUS_RECORD_STATUS"
     name: "Trạng thái bản ghi danh mục Firm Status: 1=Đang sử dụng; 0=Ngừng sử dụng"
@@ -2128,6 +2137,22 @@ schemes:
       - "0"
       - "1"
 
+  - scheme_code: "SCMS_PROVISIONAL_STATUS"
+    name: "Cờ bản nháp hồ sơ CTCK: 1=Bản nháp, 0=Chính thức"
+    source_type: "source_table"
+    source_table: "SCMS.SC_FIRM_INFO.PROVISIONAL"
+    used_in_entities:
+      - "Securities Company"
+      - "Securities Company Senior Personnel"
+      - "Securities Company Organization Unit"
+    values:
+      - code: "1"
+        label: "Bản nháp"
+        source_value: "1"
+      - code: "0"
+        label: "Chính thức"
+        source_value: "0"
+
   - scheme_code: "SCMS_RISK_PERIOD_TYPE"
     name: "Loại kỳ báo cáo rủi ro: NAM=Năm, BN=Bán niên, Q1=Quý 1, Q2=Quý 2, Q3=Quý 3, Q4=Quý 4"
     source_type: "source_table"
@@ -2151,14 +2176,6 @@ schemes:
     values:
       - "1"
       - "2"
-
-  - scheme_code: "SCMS_BANK_CATEGORY"
-    name: "Loại ngân hàng trong hệ thống SCMS (values cần xác nhận từ tài liệu đặc tả SCMS)"
-    source_type: "source_table"
-    source_table: "SCMS.BANK"
-    used_in_entities:
-      - "Securities Company Depositary Bank"
-    values: []
 
   - scheme_code: "SCMS_FINANCIAL_REPORT_TYPE"
     name: "Loại báo cáo tài chính CTCK: RIENG_LE=Riêng lẻ, HOP_NHAT=Hợp nhất"
