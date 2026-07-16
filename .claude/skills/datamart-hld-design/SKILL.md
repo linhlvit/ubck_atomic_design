@@ -155,31 +155,31 @@ Một số Dimension được thiết kế dùng chung toàn hệ thống. **B�
 | Datamart table | Logical name | Khi nào reuse |
 |---|---|---|
 | `cdr_dt_dim` | Calendar Date Dimension | Mọi Fact có chiều thời gian |
-| `cls_dim` | Classification Dimension | Mọi chiều phân loại có nguồn từ Classification Value (CV) Atomic — xem Lớp 2 |
+| `cl_dim` | Classification Dimension | Mọi chiều phân loại có nguồn từ Classification Value (CV) Atomic — xem Lớp 2 |
 
 > ❌ **KHÔNG tạo `Calendar Date Dimension` mới** dù không tìm thấy trong source match. Luôn reuse `cdr_dt_dim`.
 
 ---
 
-### Lớp 2 — Classification Value → cls_dim (filter theo scheme)
+### Lớp 2 — Classification Value → cl_dim (filter theo scheme)
 
 **Áp dụng khi:** Nhóm thông tin cần một chiều phân loại dạng danh mục (ngành nghề, loại hình, trạng thái...) mà nguồn Atomic là `Classification Value` (bảng `cv`).
 
 **Quy trình:**
 1. Xác định scheme CV cần dùng (VD: `IDS_INDUSTRY_CATEGORY`, `CERTIFICATE_TYPE`...)
 2. **Kiểm tra `ldm.physical_name` trong YAML Atomic entity nguồn:**
-   - `physical_name = cv` → dữ liệu phân loại lưu trong bảng CV → **reuse `cls_dim`**
-   - `physical_name ≠ cv` (entity riêng) → Atomic thiết kế entity này độc lập → **tạo Dimension riêng**, KHÔNG reuse `cls_dim`
-3. Trong thiết kế reuse `cls_dim`: ghi rõ FK tên `Classification Dimension Id` + ghi chú scheme trong cột Ghi chú / Bảng grain
+   - `physical_name = cv` → dữ liệu phân loại lưu trong bảng CV → **reuse `cl_dim`**
+   - `physical_name ≠ cv` (entity riêng) → Atomic thiết kế entity này độc lập → **tạo Dimension riêng**, KHÔNG reuse `cl_dim`
+3. Trong thiết kế reuse `cl_dim`: ghi rõ FK tên `Classification Dimension Id` + ghi chú scheme trong cột Ghi chú / Bảng grain
 
-**Lý do quan trọng:** `cls_dim` chỉ là projection của bảng `cv` Atomic. Nếu Atomic không lưu thông tin đó trong `cv` thì `cls_dim` không có dữ liệu đó — không thể reuse.
+**Lý do quan trọng:** `cl_dim` chỉ là projection của bảng `cv` Atomic. Nếu Atomic không lưu thông tin đó trong `cv` thì `cl_dim` không có dữ liệu đó — không thể reuse.
 
-> ❌ **KHÔNG tạo Dimension mới** khi `cls_dim` đã tồn tại và Atomic lưu dữ liệu trong `cv`.
-> ❌ **KHÔNG reuse `cls_dim`** khi Atomic lưu dữ liệu trong entity riêng (`physical_name ≠ cv`) — dù tên scheme nghe có vẻ là "phân loại".
+> ❌ **KHÔNG tạo Dimension mới** khi `cl_dim` đã tồn tại và Atomic lưu dữ liệu trong `cv`.
+> ❌ **KHÔNG reuse `cl_dim`** khi Atomic lưu dữ liệu trong entity riêng (`physical_name ≠ cv`) — dù tên scheme nghe có vẻ là "phân loại".
 
 **Ví dụ đúng:**
-- BA cần chiều "Ngành nghề kinh tế cấp 1" từ `IDS.categories` → tra YAML → `physical_name = cv` (scheme `IDS_INDUSTRY_CATEGORY`) → reuse `cls_dim`
-- BA cần chiều "Loại CCHN" từ `NHNCK.CERTIFICATES` → tra YAML → `physical_name = sp_license_certificate_type` → tạo `sp_license_ctf_tp_dim` mới, KHÔNG reuse `cls_dim`
+- BA cần chiều "Ngành nghề kinh tế cấp 1" từ `IDS.categories` → tra YAML → `physical_name = cv` (scheme `IDS_INDUSTRY_CATEGORY`) → reuse `cl_dim`
+- BA cần chiều "Loại CCHN" từ `NHNCK.CERTIFICATES` → tra YAML → `physical_name = sp_license_certificate_type` → tạo `sp_license_ctf_tp_dim` mới, KHÔNG reuse `cl_dim`
 
 ---
 
@@ -247,7 +247,7 @@ Kết quả phân tích reuse (4 lớp):
 | Datamart Entity | datamart_table | Lớp phát hiện | reuse_status đề xuất | Lý do |
 |---|---|---|---|---|
 | Calendar Date Dimension | cdr_dt_dim | L1 — Whitelist | reuse | Conformed Dim toàn hệ thống |
-| Classification Dimension | cls_dim | L2 — CV scheme | reuse | scheme IDS_INDUSTRY_CATEGORY đã có trong cls_dim |
+| Classification Dimension | cl_dim | L2 — CV scheme | reuse | scheme IDS_INDUSTRY_CATEGORY đã có trong cl_dim |
 | Fact Listed Bond Snapshot | fct_lst_bnd_snpst | L3 — source match | partial | Cùng nguồn scr_trd, cần thêm cột OTC_Bond_Trading_Value |
 | Fact New Fact | fct_new | L3 — source match | new | Chưa có trong master |
 
@@ -267,12 +267,12 @@ Kết quả phân tích reuse (4 lớp):
 **Bước kiểm tra bắt buộc TRƯỚC KHI đề xuất bảng đích cho mỗi nhóm:**
 
 1. Chiều thời gian → Lớp 1: luôn là `cdr_dt_dim`
-2. Chiều phân loại/danh mục → Lớp 2: kiểm tra CV scheme → nếu có thì `cls_dim`
+2. Chiều phân loại/danh mục → Lớp 2: kiểm tra CV scheme → nếu có thì `cl_dim`
 3. Fact/Dim khác → Lớp 3: match source → Lớp 4: kiểm tra partial
 
 **Trong bảng KPI (cột Ghi chú) và Bảng grain:** ghi rõ reuse_status và scheme/filter khi áp dụng Lớp 1 hoặc Lớp 2. Ví dụ:
 - `Calendar Date Dimension — reuse (cdr_dt_dim)`
-- `Classification Dimension — reuse cls_dim, filter scheme = 'IDS_INDUSTRY_CATEGORY'`
+- `Classification Dimension — reuse cl_dim, filter scheme = 'IDS_INDUSTRY_CATEGORY'`
 
 ### Section 4 — Reuse Analysis trong HLD.md
 

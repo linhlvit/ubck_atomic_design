@@ -38,8 +38,8 @@ flowchart LR
         Public_Company_Evaluation_Period_c1["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_pc_risk_score_snpst["Fact Public Company Risk Score Snapshot"]
-        pblc_co_dim_c1["Public Company Dimension"]
+        fct_public_company_risk_score_snpst["Fact Public Company Risk Score Snapshot"]
+        public_company_dim_c1["Public Company Dimension"]
         cdr_dt_dim_c1["Calendar Date Dimension"]
     end
     IDS_company_profiles_c1 --> Public_Company_c1
@@ -47,13 +47,13 @@ flowchart LR
     IDS_EVALUATION_DETAILS_c1 --> Public_Company_Evaluation_Detail_c1
     IDS_EVALUATION_GROUPS_c1 --> Public_Company_Evaluation_Group_c1
     IDS_EVALUATION_PERIODS_c1 --> Public_Company_Evaluation_Period_c1
-    Public_Company_c1 --> pblc_co_dim_c1
+    Public_Company_c1 --> public_company_dim_c1
     Public_Company_Evaluation_Period_c1 --> cdr_dt_dim_c1
-    Public_Company_Evaluation_c1 --> fct_pc_risk_score_snpst
-    Public_Company_Evaluation_Detail_c1 --> fct_pc_risk_score_snpst
-    Public_Company_Evaluation_Group_c1 --> fct_pc_risk_score_snpst
-    pblc_co_dim_c1 --> fct_pc_risk_score_snpst
-    cdr_dt_dim_c1 --> fct_pc_risk_score_snpst
+    Public_Company_Evaluation_c1 --> fct_public_company_risk_score_snpst
+    Public_Company_Evaluation_Detail_c1 --> fct_public_company_risk_score_snpst
+    Public_Company_Evaluation_Group_c1 --> fct_public_company_risk_score_snpst
+    public_company_dim_c1 --> fct_public_company_risk_score_snpst
+    cdr_dt_dim_c1 --> fct_public_company_risk_score_snpst
 ```
 
 #### Cụm 1.2 — Fact Public Company Compliance Score Snapshot (Nhóm 2)
@@ -73,20 +73,20 @@ flowchart LR
         Public_Company_Evaluation_Period_c2["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_pc_compliance_score_snpst["Fact Public Company Compliance Score Snapshot"]
-        pblc_co_dim_c2["Public Company Dimension"]
+        fct_public_company_compliance_score_snpst["Fact Public Company Compliance Score Snapshot"]
+        public_company_dim_c2["Public Company Dimension"]
         cdr_dt_dim_c2["Calendar Date Dimension"]
     end
     IDS_company_profiles_c2 --> Public_Company_c2
     IDS_EVALUATION_DETAILS_c2 --> Public_Company_Evaluation_Detail_c2
     IDS_EVALUATION_CRITERIA_c2 --> Public_Company_Evaluation_Criterion_c2
     IDS_EVALUATION_PERIODS_c2 --> Public_Company_Evaluation_Period_c2
-    Public_Company_c2 --> pblc_co_dim_c2
+    Public_Company_c2 --> public_company_dim_c2
     Public_Company_Evaluation_Period_c2 --> cdr_dt_dim_c2
-    Public_Company_Evaluation_Detail_c2 --> fct_pc_compliance_score_snpst
-    Public_Company_Evaluation_Criterion_c2 --> fct_pc_compliance_score_snpst
-    pblc_co_dim_c2 --> fct_pc_compliance_score_snpst
-    cdr_dt_dim_c2 --> fct_pc_compliance_score_snpst
+    Public_Company_Evaluation_Detail_c2 --> fct_public_company_compliance_score_snpst
+    Public_Company_Evaluation_Criterion_c2 --> fct_public_company_compliance_score_snpst
+    public_company_dim_c2 --> fct_public_company_compliance_score_snpst
+    cdr_dt_dim_c2 --> fct_public_company_compliance_score_snpst
 ```
 
 #### Cụm 1.3 — Fact Public Company Issuance Score Snapshot (Nhóm 3)
@@ -106,20 +106,20 @@ flowchart LR
         Public_Company_Evaluation_Period_c3["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_pc_issuance_score_snpst["Fact Public Company Issuance Score Snapshot"]
-        pblc_co_dim_c3["Public Company Dimension"]
+        fct_public_company_issuance_score_snpst["Fact Public Company Issuance Score Snapshot"]
+        public_company_dim_c3["Public Company Dimension"]
         cdr_dt_dim_c3["Calendar Date Dimension"]
     end
     IDS_company_profiles_c3 --> Public_Company_c3
     IDS_EVALUATION_DETAILS_c3 --> Public_Company_Evaluation_Detail_c3
     IDS_EVALUATION_CRITERIA_c3 --> Public_Company_Evaluation_Criterion_c3
     IDS_EVALUATION_PERIODS_c3 --> Public_Company_Evaluation_Period_c3
-    Public_Company_c3 --> pblc_co_dim_c3
+    Public_Company_c3 --> public_company_dim_c3
     Public_Company_Evaluation_Period_c3 --> cdr_dt_dim_c3
-    Public_Company_Evaluation_Detail_c3 --> fct_pc_issuance_score_snpst
-    Public_Company_Evaluation_Criterion_c3 --> fct_pc_issuance_score_snpst
-    pblc_co_dim_c3 --> fct_pc_issuance_score_snpst
-    cdr_dt_dim_c3 --> fct_pc_issuance_score_snpst
+    Public_Company_Evaluation_Detail_c3 --> fct_public_company_issuance_score_snpst
+    Public_Company_Evaluation_Criterion_c3 --> fct_public_company_issuance_score_snpst
+    public_company_dim_c3 --> fct_public_company_issuance_score_snpst
+    cdr_dt_dim_c3 --> fct_public_company_issuance_score_snpst
 ```
 
 #### Cụm 1.4 — Fact Public Company Financial Score Snapshot (Nhóm 4)
@@ -139,20 +139,20 @@ flowchart LR
         Public_Company_Evaluation_Period_c4["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_pc_financial_score_snpst["Fact Public Company Financial Score Snapshot"]
-        pblc_co_dim_c4["Public Company Dimension"]
+        fct_public_company_financial_score_snpst["Fact Public Company Financial Score Snapshot"]
+        public_company_dim_c4["Public Company Dimension"]
         cdr_dt_dim_c4["Calendar Date Dimension"]
     end
     IDS_company_profiles_c4 --> Public_Company_c4
     IDS_EVALUATION_DETAILS_c4 --> Public_Company_Evaluation_Detail_c4
     IDS_EVALUATION_CRITERIA_c4 --> Public_Company_Evaluation_Criterion_c4
     IDS_EVALUATION_PERIODS_c4 --> Public_Company_Evaluation_Period_c4
-    Public_Company_c4 --> pblc_co_dim_c4
+    Public_Company_c4 --> public_company_dim_c4
     Public_Company_Evaluation_Period_c4 --> cdr_dt_dim_c4
-    Public_Company_Evaluation_Detail_c4 --> fct_pc_financial_score_snpst
-    Public_Company_Evaluation_Criterion_c4 --> fct_pc_financial_score_snpst
-    pblc_co_dim_c4 --> fct_pc_financial_score_snpst
-    cdr_dt_dim_c4 --> fct_pc_financial_score_snpst
+    Public_Company_Evaluation_Detail_c4 --> fct_public_company_financial_score_snpst
+    Public_Company_Evaluation_Criterion_c4 --> fct_public_company_financial_score_snpst
+    public_company_dim_c4 --> fct_public_company_financial_score_snpst
+    cdr_dt_dim_c4 --> fct_public_company_financial_score_snpst
 ```
 
 #### Cụm 1.5 — Fact Public Company Non-Financial Score Snapshot (Nhóm 5)
@@ -172,20 +172,20 @@ flowchart LR
         Public_Company_Evaluation_Period_c5["Public Company Evaluation Period"]
     end
     subgraph GOLD["Datamart"]
-        fct_pc_nonfinancial_score_snpst["Fact Public Company Non-Financial Score Snapshot"]
-        pblc_co_dim_c5["Public Company Dimension"]
+        fct_public_company_nonfinancial_score_snpst["Fact Public Company Non-Financial Score Snapshot"]
+        public_company_dim_c5["Public Company Dimension"]
         cdr_dt_dim_c5["Calendar Date Dimension"]
     end
     IDS_company_profiles_c5 --> Public_Company_c5
     IDS_EVALUATION_DETAILS_c5 --> Public_Company_Evaluation_Detail_c5
     IDS_EVALUATION_CRITERIA_c5 --> Public_Company_Evaluation_Criterion_c5
     IDS_EVALUATION_PERIODS_c5 --> Public_Company_Evaluation_Period_c5
-    Public_Company_c5 --> pblc_co_dim_c5
+    Public_Company_c5 --> public_company_dim_c5
     Public_Company_Evaluation_Period_c5 --> cdr_dt_dim_c5
-    Public_Company_Evaluation_Detail_c5 --> fct_pc_nonfinancial_score_snpst
-    Public_Company_Evaluation_Criterion_c5 --> fct_pc_nonfinancial_score_snpst
-    pblc_co_dim_c5 --> fct_pc_nonfinancial_score_snpst
-    cdr_dt_dim_c5 --> fct_pc_nonfinancial_score_snpst
+    Public_Company_Evaluation_Detail_c5 --> fct_public_company_nonfinancial_score_snpst
+    Public_Company_Evaluation_Criterion_c5 --> fct_public_company_nonfinancial_score_snpst
+    public_company_dim_c5 --> fct_public_company_nonfinancial_score_snpst
+    cdr_dt_dim_c5 --> fct_public_company_nonfinancial_score_snpst
 ```
 
 > **Ghi chú `Public Company Evaluation Period`:** Entity Atomic tương ứng `IDS.EVALUATION_PERIODS` (physical name `pc_evaluation_period`, `design_status: draft`) map trực tiếp vào `Calendar Date Dimension` (`cdr_dt_dim`) qua `evaluation_year`/`evaluation_month` — không tạo Dimension riêng, tái sử dụng `Calendar Date Dimension` đã có trong Reuse Analysis (Section 4).
@@ -204,11 +204,11 @@ flowchart LR
         Public_Company["Public Company"]
     end
     subgraph GOLD["Datamart"]
-        pblc_co_dim["Public Company Dimension"]
+        public_company_dim["Public Company Dimension"]
     end
     IDS_company_profiles --> Public_Company
     IDS_company_detail --> Public_Company
-    Public_Company --> pblc_co_dim
+    Public_Company --> public_company_dim
 ```
 
 ### Cụm 3 — Báo cáo tài chính & Nộp báo cáo
@@ -231,8 +231,8 @@ flowchart LR
         Calendar_Date["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"]
-        pblc_co_dim["Public Company Dimension"]
+        fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"]
+        public_company_dim["Public Company Dimension"]
         cdr_dt_dim["Calendar Date Dimension"]
     end
     IDS_company_profiles --> Public_Company
@@ -240,12 +240,12 @@ flowchart LR
     IDS_company_data --> Public_Company_Report_Submission
     IDS_data --> Public_Company_Financial_Report_Value
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
-    Public_Company --> pblc_co_dim
-    Public_Company_Report_Submission --> fct_pblc_co_fnc_sumry_snpst
-    Public_Company_Financial_Report_Value --> fct_pblc_co_fnc_sumry_snpst
+    Public_Company --> public_company_dim
+    Public_Company_Report_Submission --> fct_public_company_financial_summary_snpst
+    Public_Company_Financial_Report_Value --> fct_public_company_financial_summary_snpst
     Calendar_Date --> cdr_dt_dim
-    pblc_co_dim --> fct_pblc_co_fnc_sumry_snpst
-    cdr_dt_dim --> fct_pblc_co_fnc_sumry_snpst
+    public_company_dim --> fct_public_company_financial_summary_snpst
+    cdr_dt_dim --> fct_public_company_financial_summary_snpst
 ```
 
 ### Cụm 4 — Chi tiết BCTC từng CTDC & Danh mục template (DB21–32 + DB39)
@@ -274,9 +274,9 @@ flowchart LR
         Calendar_Date_b["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        fct_pblc_co_fnc_rpt_val["Fact Public Company Financial Report Value"]
+        fct_public_company_financial_report_val["Fact Public Company Financial Report Value"]
         fnc_rpt_ctlg_dim["Financial Report Catalog Dimension"]
-        pblc_co_dim_b["Public Company Dimension"]
+        public_company_dim_b["Public Company Dimension"]
         cdr_dt_dim_b["Calendar Date Dimension"]
     end
     IDS_company_profiles_b --> Public_Company_b
@@ -287,16 +287,16 @@ flowchart LR
     IDS_rrow_b --> Financial_Report_Row_Template_b
     IDS_rcol_b --> Financial_Report_Column_Template_b
     ECAT_ECAT_29_HolidayInfo_b --> Calendar_Date_b
-    Public_Company_b --> pblc_co_dim_b
-    Public_Company_Financial_Report_Value_b --> fct_pblc_co_fnc_rpt_val
-    Public_Company_Report_Submission_b --> fct_pblc_co_fnc_rpt_val
+    Public_Company_b --> public_company_dim_b
+    Public_Company_Financial_Report_Value_b --> fct_public_company_financial_report_val
+    Public_Company_Report_Submission_b --> fct_public_company_financial_report_val
     Financial_Report_Catalog_b --> fnc_rpt_ctlg_dim
     Financial_Report_Row_Template_b --> fnc_rpt_ctlg_dim
     Financial_Report_Column_Template_b --> fnc_rpt_ctlg_dim
     Calendar_Date_b --> cdr_dt_dim_b
-    pblc_co_dim_b --> fct_pblc_co_fnc_rpt_val
-    cdr_dt_dim_b --> fct_pblc_co_fnc_rpt_val
-    fnc_rpt_ctlg_dim --> fct_pblc_co_fnc_rpt_val
+    public_company_dim_b --> fct_public_company_financial_report_val
+    cdr_dt_dim_b --> fct_public_company_financial_report_val
+    fnc_rpt_ctlg_dim --> fct_public_company_financial_report_val
 ```
 
 ---
@@ -389,7 +389,7 @@ erDiagram
 ```mermaid
 flowchart LR
     pc_risk_fct["Fact Public Company Risk Score Snapshot"] --> R1["Bảng Xếp hạng — Tuân thủ/Phát hành/Tài chính/Phi TC/Xếp hạng TN/Điểm"]
-    pblc_co_dim["Public Company Dimension"] --> R1
+    public_company_dim["Public Company Dimension"] --> R1
 ```
 
 **Bảng grain:**
@@ -600,18 +600,18 @@ erDiagram
 
 > **Ghi chú thiết kế Fact Summary Snapshot:**
 > - `Submission_Date` / `Submission_Deadline_Date`: từ `Public Company Report Submission` (`pc_report_submission`).`submission_dt` / `submission_deadline_dt` — phục vụ K_GSDC_702/703 (Nhóm 38).
-> - `Equity_Listing_Exchange_Code` / `Industry_Category_Level1_Code` dùng để filter/GROUP BY (Sàn, Ngành) lấy trực tiếp từ `Public Company Dimension`, KHÔNG denormalize vào Fact — Fact này chỉ chứa cột thực sự có KPI trace tới (xem Attributes `DTM_GSDC_fct_pblc_co_fnc_sumry_snpst.csv`).
+> - `Equity_Listing_Exchange_Code` / `Industry_Category_Level1_Code` dùng để filter/GROUP BY (Sàn, Ngành) lấy trực tiếp từ `Public Company Dimension`, KHÔNG denormalize vào Fact — Fact này chỉ chứa cột thực sự có KPI trace tới (xem Attributes `DTM_GSDC_fct_public_company_financial_summary_snpst.csv`).
 > - Các cột đo lường tài chính (Tổng tài sản, VCSH, ROA/ROE...) thuộc `Fact Public Company Financial Report Value` (Nhóm 7/8/11/13/15/17), KHÔNG thuộc Fact này — xem O_GSDC_5.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R1["Thẻ Số doanh nghiệp"]
-    fct_pblc_co_fnc_sumry_snpst --> R2["Thẻ Tỷ lệ nộp BCTC"]
-    fct_pblc_co_fnc_sumry_snpst --> R3["Thẻ Công ty báo lãi"]
-    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"] --> R1["Thẻ Số doanh nghiệp"]
+    fct_public_company_financial_summary_snpst --> R2["Thẻ Tỷ lệ nộp BCTC"]
+    fct_public_company_financial_summary_snpst --> R3["Thẻ Công ty báo lãi"]
+    public_company_dim["Public Company Dimension"] --> fct_public_company_financial_summary_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_public_company_financial_summary_snpst
 ```
 
 **Bảng grain:**
@@ -632,7 +632,7 @@ flowchart LR
 > **Cập nhật 2026-07-15 — tách nhóm theo đúng STT BA:** Nhóm 7 trong HLD nay chỉ tương ứng STT 7 (CTTC tổng hợp toàn thị trường, không filter sàn). STT 11/13/15/17 (cùng bộ chỉ tiêu, filter theo sàn HNX/HOSE/UPCOM/OTC + thêm breakdown theo ngành) tách thành Nhóm 11/13/15/17 riêng — xem bên dưới.
 > **Cập nhật 2026-07-15 (BA renumber):** STT các nhóm sàn cũ 13/15/17/19 nay là 11/13/15/17 (BA đánh số lại toàn bộ STT 6-28, xem ghi chú ở Nhóm 6).
 > **Ghi chú gating (Loại dữ liệu):** BA đánh dấu **toàn bộ 26/26 dòng** (13 chỉ tiêu cơ sở + 13 dòng YoY) của STT 7 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ K_GSDC_50–62 (+ `_YOY`), dù `Trạng thái mapping = Done`. Không có dòng Chiều/Slicer nào trong STT 7 để giữ READY (khác Nhóm 6 có "Kỳ thống kê").
-> **Gap Atomic:** Nguồn BA `IDS.data`/`report_catalog`/`rrow`/`rcol`/`company_data` — entity `Public Company Financial Report Value` **chưa có Atomic LLD** trong `DataModel/working/Atomic/lld/IDS/` — xem O_GSDC_5. Do toàn bộ KPI PENDING, Atomic Table/Column trong bảng dưới để trống (không map tên bảng cũ `pblc_co_fnc_rpt_val` để tránh gợi ý sai một entity giả định).
+> **Gap Atomic:** Nguồn BA `IDS.data`/`report_catalog`/`rrow`/`rcol`/`company_data` — entity `Public Company Financial Report Value` **chưa có Atomic LLD** trong `DataModel/working/Atomic/lld/IDS/` — xem O_GSDC_5. Do toàn bộ KPI PENDING, Atomic Table/Column trong bảng dưới để trống (không map tên bảng cũ `public_company_financial_report_val` để tránh gợi ý sai một entity giả định).
 
 **Bảng KPI:**
 
@@ -665,7 +665,7 @@ flowchart LR
 | K_GSDC_62 | Nợ / Vốn CSH | Lần (x) | Phái sinh | — (Gap Atomic) | — | — | — | — | **PENDING** |
 | K_GSDC_62_YOY | Nợ/Vốn CSH — YoY | % | Phái sinh | — | — | — | — | — | **PENDING** |
 
-**Star Schema, Lineage, Bảng grain:** chờ Atomic `Public Company Financial Report Value` thiết kế xong (xem O_GSDC_5) — placeholder `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`, Section 4 Reuse Analysis) dự kiến tái sử dụng cho toàn bộ Nhóm 7/13/15/17/19 + MH3 Data Explorer.
+**Star Schema, Lineage, Bảng grain:** chờ Atomic `Public Company Financial Report Value` thiết kế xong (xem O_GSDC_5) — placeholder `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`, Section 4 Reuse Analysis) dự kiến tái sử dụng cho toàn bộ Nhóm 7/13/15/17/19 + MH3 Data Explorer.
 
 ---
 
@@ -723,9 +723,9 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R9["Thẻ CTDC chưa niêm yết"]
-    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"] --> R9["Thẻ CTDC chưa niêm yết"]
+    public_company_dim["Public Company Dimension"] --> fct_public_company_financial_summary_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_public_company_financial_summary_snpst
 ```
 
 **Bảng grain:**
@@ -979,7 +979,7 @@ flowchart LR
 Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo cáo và loại hình DN. Toàn bộ STT 19–28, 31–32 + STT 39 phục vụ bởi `Fact Public Company Financial Report Value` + `Financial Report Catalog Dimension`. *(Cập nhật 2026-07-15: BA renumber — cũ STT 21–32 nay là STT 19–28 + 31–32, không còn STT 29–30 trong BA)*
 
 **Ghi chú chung toàn bộ MH3:**
-- Tất cả chỉ tiêu lấy trực tiếp `Data Value` (`data_val`) từ `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`)
+- Tất cả chỉ tiêu lấy trực tiếp `Data Value` (`data_val`) từ `Public Company Financial Report Value` (`public_company_financial_report_val`)
 - `col_desc` trong BA SQL tương ứng `Column Code` (`clmn_code`) trong Atomic — xem O_GSDC_3
 - `row_desc` trong BA SQL tương ứng `Row Description Column Code` (`row_dsc_clmn_code`) trong Atomic `Financial Report Row Template` (`fnc_rpt_row_tpl`)
 - `col_desc='1'` = cuối kỳ / kỳ hiện tại; `col_desc='2'` = đầu kỳ (BCĐKT)
@@ -991,7 +991,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 19):** BA đánh dấu **toàn bộ 117/117 dòng** của STT 19 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_99–K_GSDC_215), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 19):** BA đánh dấu **toàn bộ 117/117 dòng** của STT 19 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_99–K_GSDC_215), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `Enterprise Type Code` (`entp_tp_code`) = 'dn', `Financial Report Catalog Business Code` LIKE 'BCDKT%'
 > **Lưu ý số lượng dòng BA:** BA thực tế có 118 dòng cho STT 19, nhưng 2 dòng liên tiếp "2. Nguồn kinh phí đã hình thành TSCĐ" trùng lặp hoàn toàn (cùng nguồn/SQL) — BA tự ghi chú "Chỉ có 1 chỉ tiêu này => bị trùng" / "Dòng trùng - cần xác minh lại với nghiệp vụ". HLD chỉ giữ 1 KPI (K_GSDC_214) cho chỉ tiêu này, do đó bảng KPI dưới đây có 117 dòng — khớp đúng số lượng KPI nghiệp vụ thực tế của BA (118 dòng thô − 1 dòng trùng).
 
@@ -1119,9 +1119,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 117 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 20 — STT 20: DN thông thường — Báo cáo KQKD
@@ -1129,7 +1129,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 20):** BA đánh dấu **toàn bộ 23/23 dòng** của STT 20 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_216–K_GSDC_238), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 20):** BA đánh dấu **toàn bộ 23/23 dòng** của STT 20 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_216–K_GSDC_238), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'dn'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCKQKD%'`, col_desc='1'
 
 **KPI liên quan:**
@@ -1162,9 +1162,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 23 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 21 — STT 21: DN thông thường — Báo cáo LCTT trực tiếp
@@ -1172,7 +1172,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 21):** BA đánh dấu **toàn bộ 27/27 dòng** của STT 21 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_239–K_GSDC_265), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 21):** BA đánh dấu **toàn bộ 27/27 dòng** của STT 21 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_239–K_GSDC_265), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'dn'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCLCTT%'` (trực tiếp), col_desc='1'
 > **Lưu ý số lượng dòng BA:** BA thực tế có 30 dòng cho STT 21, nhưng 3 dòng là tiêu đề section thuần túy ("I. Lưu chuyển tiền từ hoạt động kinh doanh", "II. ... hoạt động đầu tư", "III. ... hoạt động tài chính") — BA tự ghi chú "Dòng tiêu đề, không có dữ liệu số". 3 dòng này không mang giá trị đo lường nên không có KPI_ID riêng, do đó bảng KPI dưới đây có 27 dòng (30 dòng thô − 3 dòng tiêu đề).
 
@@ -1210,9 +1210,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 27 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 22 — STT 22: DN thông thường — Báo cáo LCTT gián tiếp
@@ -1220,7 +1220,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 22):** BA đánh dấu **toàn bộ 38/38 dòng** của STT 22 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_266–K_GSDC_303), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 22):** BA đánh dấu **toàn bộ 38/38 dòng** của STT 22 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_266–K_GSDC_303), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Trước đây HLD để READY do chỉ theo gating Atomic, chưa áp dụng gate rule "Loại dữ liệu" — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'dn'`, BCLCTT gián tiếp, col_desc='1'
 > **Lưu ý số lượng dòng BA:** BA thực tế có 42 dòng cho STT 22, nhưng 4 dòng là tiêu đề section thuần túy ("I. Lưu chuyển tiền từ HĐKD", "2. Điều chỉnh cho các khoản", "II. Lưu chuyển tiền từ HĐ đầu tư", "III. Lưu chuyển tiền từ HĐ tài chính") — BA tự ghi chú "Dòng tiêu đề, không có dữ liệu số". 4 dòng này không mang giá trị đo lường nên không có KPI_ID riêng, do đó bảng KPI dưới đây có 38 dòng (42 dòng thô − 4 dòng tiêu đề).
 
@@ -1269,9 +1269,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 38 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 23 — STT 23: DN bảo hiểm — Bảng cân đối kế toán
@@ -1279,7 +1279,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 23):** BA đánh dấu **toàn bộ 104/104 dòng** của STT 23 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_304–K_GSDC_407), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 23):** BA đánh dấu **toàn bộ 104/104 dòng** của STT 23 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_304–K_GSDC_407), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'bh'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCDKT%'`, `col_desc='1'`
 
 **KPI liên quan:**
@@ -1393,9 +1393,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 104 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 24 — STT 24: DN bảo hiểm — Báo cáo KQKD
@@ -1403,7 +1403,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 24):** BA đánh dấu **toàn bộ 16/16 dòng** của STT 24 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_408–K_GSDC_423), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 24):** BA đánh dấu **toàn bộ 16/16 dòng** của STT 24 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_408–K_GSDC_423), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'bh'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCKQKD%'`, `col_desc='1'`
 
 **KPI liên quan:**
@@ -1429,9 +1429,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 16 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 25 — STT 25: DN bảo hiểm — Báo cáo LCTT trực tiếp
@@ -1439,7 +1439,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 25):** BA đánh dấu **toàn bộ 28/28 dòng** của STT 25 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_424–K_GSDC_451), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 25):** BA đánh dấu **toàn bộ 28/28 dòng** của STT 25 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_424–K_GSDC_451), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'bh'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCLCTT%'`, `col_desc='1'`
 > **Lưu ý số lượng dòng BA:** BA thực tế có 31 dòng cho STT 25, nhưng 3 dòng là tiêu đề section thuần túy ("I. Lưu chuyển tiền từ HĐKD", "II. ... HĐ đầu tư", "III. ... HĐ tài chính") — BA tự ghi chú "Dòng tiêu đề, không có dữ liệu số". 3 dòng này không mang giá trị đo lường nên không có KPI_ID riêng, do đó bảng KPI dưới đây có 28 dòng (31 dòng thô − 3 dòng tiêu đề).
 
@@ -1478,9 +1478,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 28 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 26 — STT 26: DN bảo hiểm — Báo cáo LCTT gián tiếp
@@ -1488,7 +1488,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 26):** BA đánh dấu **toàn bộ 37/37 dòng** của STT 26 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_452–K_GSDC_488), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 26):** BA đánh dấu **toàn bộ 37/37 dòng** của STT 26 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_452–K_GSDC_488), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'bh'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCLCTTGT%'`, `col_desc='1'`
 > **Lưu ý số lượng dòng BA:** BA thực tế có 41 dòng cho STT 26, nhưng 4 dòng là tiêu đề section thuần túy ("I. Lưu chuyển tiền từ HĐKD", "2. Điều chỉnh cho các khoản", "II. ... HĐ đầu tư", "III. ... HĐ tài chính") — BA tự ghi chú "Dòng tiêu đề, không có dữ liệu số". 4 dòng này không mang giá trị đo lường nên không có KPI_ID riêng, do đó bảng KPI dưới đây có 37 dòng (41 dòng thô − 4 dòng tiêu đề).
 
@@ -1536,9 +1536,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 37 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 27 — STT 27: TCTD — Bảng cân đối kế toán
@@ -1546,7 +1546,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 27):** BA đánh dấu **toàn bộ 83/83 dòng** của STT 27 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_489–K_GSDC_571), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 27):** BA đánh dấu **toàn bộ 83/83 dòng** của STT 27 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_489–K_GSDC_571), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'td'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCDKT%'`, `col_desc='1'`
 > **Lưu ý số lượng dòng BA:** BA thực tế có 85 dòng cho STT 27, nhưng 2 dòng là tiêu đề section thuần túy ("A. TÀI SẢN", "CÁC CHỈ TIÊU NGOÀI BẢNG") — BA tự ghi chú "Dòng tiêu đề, không có dữ liệu số". 2 dòng này không mang giá trị đo lường nên không có KPI_ID riêng, do đó bảng KPI dưới đây có 83 dòng (85 dòng thô − 2 dòng tiêu đề).
 
@@ -1640,9 +1640,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 83 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 28 — STT 28: TCTD — Báo cáo KQKD
@@ -1650,7 +1650,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 28):** BA đánh dấu **toàn bộ 23/23 dòng** của STT 28 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_572–K_GSDC_594), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 28):** BA đánh dấu **toàn bộ 23/23 dòng** của STT 28 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_572–K_GSDC_594), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'td'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCKQKD%'`, `col_desc = '1'`
 
 **KPI liên quan:**
@@ -1683,9 +1683,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 23 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 29 — STT 29: TCTD — Báo cáo LCTT trực tiếp
@@ -1693,7 +1693,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 29, tên cũ Nhóm 31):** BA đánh dấu **toàn bộ 45/45 dòng** của STT 29 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_595–K_GSDC_639), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 29, tên cũ Nhóm 31):** BA đánh dấu **toàn bộ 45/45 dòng** của STT 29 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_595–K_GSDC_639), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'td'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCLCTT_TT%'`, `col_desc = '1'`
 > **Lưu ý số lượng dòng BA:** BA thực tế có 50 dòng cho STT 29, nhưng 5 dòng là tiêu đề section thuần túy ("A. Lưu chuyển tiền từ HĐKD", "Những thay đổi về tài sản hoạt động", "Những thay đổi về công nợ hoạt động", "Lưu chuyển tiền từ HĐ đầu tư", "Lưu chuyển tiền từ HĐ tài chính") — BA tự ghi chú "Dòng tiêu đề, không có dữ liệu số". 5 dòng này không mang giá trị đo lường nên không có KPI_ID riêng, do đó bảng KPI dưới đây có 45 dòng (50 dòng thô − 5 dòng tiêu đề).
 
@@ -1749,9 +1749,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 45 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 30 — STT 30: TCTD — Báo cáo LCTT gián tiếp
@@ -1759,7 +1759,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 ##### PENDING toàn bộ — do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> **Cập nhật 2026-07-15 (rà soát Nhóm 30, tên cũ Nhóm 32):** BA đánh dấu **toàn bộ 50/50 dòng** của STT 30 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_640–K_GSDC_689), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`pblc_co_fnc_rpt_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
+> **Cập nhật 2026-07-15 (rà soát Nhóm 30, tên cũ Nhóm 32):** BA đánh dấu **toàn bộ 50/50 dòng** của STT 30 là "Dữ liệu động" → theo gate rule bắt buộc PENDING toàn bộ (K_GSDC_640–K_GSDC_689), dù `Trạng thái mapping = Done` và Atomic `Public Company Financial Report Value` đã có LLD (`public_company_financial_report_val`). Cùng pattern áp dụng như Nhóm 19-22 — xem O_GSDC_5.
 > Filter gốc (giữ lại tham khảo khi thiết kế lại): `entp_tp_code = 'td'`, `fnc_rpt_ctlg_bsn_code LIKE 'BCLCTT_GT%'`, `col_desc = '1'`
 > **Lưu ý số lượng dòng BA:** BA thực tế có 57 dòng cho STT 30, nhưng 7 dòng là tiêu đề section thuần túy ("Lưu chuyển tiền từ HĐKD", "Điều chỉnh cho các khoản", "Những thay đổi về tài sản và công nợ hoạt động", "Những thay đổi về tài sản hoạt động", "Những thay đổi về công nợ hoạt động", "Lưu chuyển tiền từ HĐ đầu tư", "Lưu chuyển tiền từ HĐ tài chính") — BA tự ghi chú "Dòng tiêu đề, không có dữ liệu số". 7 dòng này không mang giá trị đo lường nên không có KPI_ID riêng, do đó bảng KPI dưới đây có 50 dòng (57 dòng thô − 7 dòng tiêu đề).
 
@@ -1820,9 +1820,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 50 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 #### Nhóm 31 — STT 31: Dữ liệu về thông tin niêm yết
@@ -2030,9 +2030,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** Toàn bộ 13 chỉ tiêu là "Dữ liệu động" theo BA — chưa thống nhất quy tắc khai thác cuối cùng dù đã có Atomic nguồn.
 
-**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
+**Atomic cần bổ sung (chưa có LLD):** `Public Company Financial Report Value` (`public_company_financial_report_val`) — chưa có Atomic LLD trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5. Không phải chỉ chờ gỡ gate rule — còn cần thiết kế Atomic mới trước.
 
-**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_pblc_co_fnc_rpt_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
+**Mart dự kiến:** `Fact Public Company Financial Report Value` (`fct_public_company_financial_report_val`) — grain: 1 row / CTDC / kỳ / Row_Code / Column_Code.
 
 ---
 
@@ -2067,7 +2067,7 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 **Lý do PENDING:** K_GSDC_705 nguồn `Public Company Financial Report Value` — Gap Atomic (không có LLD, xem O_GSDC_5). K_GSDC_706-708 phái sinh trực tiếp/gián tiếp từ K_GSDC_705.
 
-**Atomic cần bổ sung:** `Public Company Financial Report Value` (`pblc_co_fnc_rpt_val`) — xem O_GSDC_5.
+**Atomic cần bổ sung:** `Public Company Financial Report Value` (`public_company_financial_report_val`) — xem O_GSDC_5.
 
 **Mart dự kiến:** `Fact Public Company Financial Report Value` (reuse khi Atomic sẵn sàng).
 
@@ -2077,9 +2077,9 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 ```mermaid
 flowchart LR
-    fct_pblc_co_fnc_sumry_snpst["Fact Public Company Financial Summary Snapshot"] --> R40["K_GSDC_700-704: BC01.1 — Số DN, Tỷ lệ nộp BCTC theo sàn"]
-    pblc_co_dim["Public Company Dimension"] --> fct_pblc_co_fnc_sumry_snpst
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_pblc_co_fnc_sumry_snpst
+    fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"] --> R40["K_GSDC_700-704: BC01.1 — Số DN, Tỷ lệ nộp BCTC theo sàn"]
+    public_company_dim["Public Company Dimension"] --> fct_public_company_financial_summary_snpst
+    cdr_dt_dim["Calendar Date Dimension"] --> fct_public_company_financial_summary_snpst
 ```
 
 **Bảng grain:**
@@ -2293,15 +2293,15 @@ graph TB
 
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
-| Fact Public Company Financial Summary Snapshot | fct_pblc_co_fnc_sumry_snpst | new | Fact mới cho MH2/MH4 |
-| Fact Public Company Financial Report Value | fct_pblc_co_fnc_rpt_val | pending | Fact placeholder cho MH3 Data Explorer BCTC chi tiết + Nhóm 7/13/15/17/19 (MH2) — **PENDING**: Atomic nguồn (`Public Company Financial Report Value`) chưa có LLD, xem O_GSDC_5 |
-| Fact Public Company Risk Score Snapshot | fct_pc_risk_score_snpst | new | Fact mới cho Nhóm 1 (MH1 Tab Tổng hợp) — nguồn Atomic draft |
-| Fact Public Company Compliance Score Snapshot | fct_pc_compliance_score_snpst | new | Fact mới cho Nhóm 2 (MH1 Tab Tuân thủ) — nguồn Atomic draft |
-| Fact Public Company Issuance Score Snapshot | fct_pc_issuance_score_snpst | new | Fact mới cho Nhóm 3 (MH1 Tab Phát hành) — nguồn Atomic draft |
-| Fact Public Company Financial Score Snapshot | fct_pc_financial_score_snpst | new | Fact mới cho Nhóm 4 (MH1 Tab Tài chính) — nguồn Atomic draft |
-| Fact Public Company Non-Financial Score Snapshot | fct_pc_nonfinancial_score_snpst | new | Fact mới cho Nhóm 5 (MH1 Tab Phi TC & M-Score) — nguồn Atomic draft |
-| Fact Public Company Listing Info Snapshot | fct_pc_listing_info_snpst | pending | PENDING — nguồn MSS chưa có Atomic (MH5 DB33) |
-| Public Company Dimension | pblc_co_dim | reuse | Dùng chung toàn bộ Nhóm 1–7+ (MH1/MH2/MH3/MH4) — 1 Dimension duy nhất cho toàn module |
+| Fact Public Company Financial Summary Snapshot | fct_public_company_financial_summary_snpst | new | Fact mới cho MH2/MH4 |
+| Fact Public Company Financial Report Value | fct_public_company_financial_report_val | pending | Fact placeholder cho MH3 Data Explorer BCTC chi tiết + Nhóm 7/13/15/17/19 (MH2) — **PENDING**: Atomic nguồn (`Public Company Financial Report Value`) chưa có LLD, xem O_GSDC_5 |
+| Fact Public Company Risk Score Snapshot | fct_public_company_risk_score_snpst | new | Fact mới cho Nhóm 1 (MH1 Tab Tổng hợp) — nguồn Atomic draft |
+| Fact Public Company Compliance Score Snapshot | fct_public_company_compliance_score_snpst | new | Fact mới cho Nhóm 2 (MH1 Tab Tuân thủ) — nguồn Atomic draft |
+| Fact Public Company Issuance Score Snapshot | fct_public_company_issuance_score_snpst | new | Fact mới cho Nhóm 3 (MH1 Tab Phát hành) — nguồn Atomic draft |
+| Fact Public Company Financial Score Snapshot | fct_public_company_financial_score_snpst | new | Fact mới cho Nhóm 4 (MH1 Tab Tài chính) — nguồn Atomic draft |
+| Fact Public Company Non-Financial Score Snapshot | fct_public_company_nonfinancial_score_snpst | new | Fact mới cho Nhóm 5 (MH1 Tab Phi TC & M-Score) — nguồn Atomic draft |
+| Fact Public Company Listing Info Snapshot | fct_public_company_listing_info_snpst | pending | PENDING — nguồn MSS chưa có Atomic (MH5 DB33) |
+| Public Company Dimension | public_company_dim | reuse | Dùng chung toàn bộ Nhóm 1–7+ (MH1/MH2/MH3/MH4) — 1 Dimension duy nhất cho toàn module |
 | Calendar Date Dimension | cdr_dt_dim | reuse | Dimension Conformed dùng chung toàn hệ thống Lakehouse, không chỉ riêng GSDC |
 | Financial Report Catalog Dimension | fnc_rpt_ctlg_dim | pending | Dimension phụ trợ mới cho MH3 Data Explorer (Cụm 4) — **PENDING**: cả 3 nguồn Atomic (`Financial Report Catalog`, `Financial Report Form Row Template`, `Financial Report Form Column Template`) đều `design_status: draft`, chưa approved, xem O_GSDC_3 |
 

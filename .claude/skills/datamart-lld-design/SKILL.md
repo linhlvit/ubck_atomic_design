@@ -73,7 +73,7 @@ Loop mỗi nhóm N — Phase 1 (HOÀN THÀNH TOÀN BỘ NHÓM TRƯỚC KHI CHUY�
                → đủ cột → bỏ qua (reuse) | thiếu cột → báo delta, DỪNG chờ approve delta
              → bảng new/partial: đọc datamart_model.yaml lấy baseline (nếu partial)
              → xác định driving table + src_stm_code → sinh từng file
-             → SELF-REVIEW 5 TC → sửa nếu FAIL → trình bày SELF-REVIEW + file
+             → SELF-REVIEW 7 TC (TC6/TC7 quét lại TOÀN BỘ master + các nguồn khác, không chỉ file vừa sinh) → sửa nếu FAIL → trình bày SELF-REVIEW + file
              → DỪNG chờ human duyệt từng file
              → hỏi merge master → DỪNG chờ human xác nhận merge
              → ghi datamart_model.yaml (upsert new / append delta)
@@ -169,6 +169,25 @@ Tổng: N nhóm | M bảng new | P bảng partial | Q bảng reuse
 4. **Nhóm PENDING toàn bộ** (không có Atomic source hoặc Fact/Dim nào sẵn sàng): vẫn giữ trong Plan
    với cột "Bảng cần thiết kế" = "— (PENDING toàn bộ, không có bảng)" — KHÔNG loại khỏi Plan
 
+### Bước P2b — Chốt physical name chuẩn cho entity dùng chung nhiều bảng (bắt buộc)
+
+> **Lý do (bài học GSDC 2026-07-16):** Khi 1 entity/khái niệm nghiệp vụ (VD: "Public Company") xuất
+> hiện trong tên của ≥ 2 bảng Datamart cùng module (1 Dimension + nhiều Fact), rất dễ mỗi bảng tự
+> nghĩ ra 1 biến thể viết tắt khác nhau (`pblc_co` ở Dimension, `pc` ở các Fact) — cả hai đều không
+> có trong `rule_physical_name_exceptions_datamart.csv` và không nhất quán với nhau. Lỗi này không
+> bị TC nào bắt được cho tới khi đã sinh xong 13 file (Attributes + Detail Mapping + HLD + model +
+> SQL) vì mỗi bảng được review độc lập theo nhóm, không ai đối chiếu ngược các bảng với nhau.
+
+**Quy trình:**
+1. Từ danh sách bảng đã map ở Bước P2 (toàn bộ Nhóm), liệt kê mọi entity/khái niệm nghiệp vụ xuất
+   hiện trong tên ≥ 2 bảng khác nhau (kể cả 1 Dimension + N Fact, hoặc N Fact dùng chung 1 khái niệm)
+2. Với mỗi entity như vậy: áp dụng PHYSICAL NAMING RULE (mục bên dưới) để xác định **đúng 1 dạng
+   token duy nhất** — full word nếu không có trong exceptions, viết tắt nếu có
+3. `grep` `datamart_attributes.csv` xem entity đó đã từng dùng token nào ở module khác chưa (dim
+   conformed/shared) — nếu có, dùng lại nguyên token đó, không tự nghĩ ra token mới
+4. Ghi bảng "Physical name chuẩn" vào Plan tổng (Bước P3) — liệt kê entity | token chuẩn | áp dụng
+   cho bảng nào — để human duyệt 1 lần cho toàn module, tránh lệch nhau giữa các nhóm thiết kế sau
+
 ### Bước P3 — Trình bày plan và GATE
 
 Format plan tổng (bắt buộc dùng bảng):
@@ -186,13 +205,22 @@ Ghi chú dim dùng chung:
 - <Dim name>: thiết kế ở Nhóm X, các nhóm sau reuse (check datamart_model.yaml)
 - Calendar Date Dimension: conformed dim — reuse toàn module
 
+Physical name chuẩn (entity dùng chung ≥ 2 bảng — xem Bước P2b):
+
+| Entity/khái niệm | Token chuẩn | Áp dụng cho bảng |
+|---|---|---|
+| Public Company | `public_company` (full — không có trong exceptions) | public_company_dim, fct_public_company_risk_score_snpst, fct_public_company_*_score_snpst (5 bảng) |
+| ... | ... | ... |
+
 Tổng: [N] nhóm | [M] bảng new | [P] bảng partial | [Q] bảng reuse
 
-→ Xác nhận plan để bắt đầu Nhóm 1?
+→ Xác nhận plan (kể cả bảng Physical name chuẩn) để bắt đầu Nhóm 1?
 ```
 
 > **GATE — bắt buộc dừng:** Chờ human approve plan trước khi bắt đầu bất kỳ nhóm nào.
 > ❌ KHÔNG bắt đầu Phase 1 Nhóm 1 khi chưa có xác nhận plan.
+> ❌ Trong Phase 1, khi đặt tên bảng/cột cho entity đã có trong bảng "Physical name chuẩn" —
+> PHẢI dùng đúng token đã duyệt, không tự đổi hay nghĩ ra biến thể khác dù ngắn gọn hơn.
 
 ---
 
@@ -394,24 +422,32 @@ org_tp_nm       ❌  (org không phải exception)          →   organization_t
 examination_score  ❌  (logical là "Exam Score" — "exam" bị mở rộng thành "examination")  →   exam_score  ✅
 ```
 
+> **Lỗi tái diễn — 2 biến thể viết tắt song song cho CÙNG một tên bảng/entity (phát hiện ở GSDC 2026-07-16):**
+> Khi module có nhiều bảng Fact/Dim cùng gắn với 1 khái niệm nghiệp vụ (VD: "Public Company"), rất dễ đặt tên bảng đầu tiên theo 1 kiểu viết tắt tự nghĩ ra (`pblc_co_dim`) rồi bảng sau lại đặt theo kiểu khác (`fct_pc_risk_score_snpst`) — cả 2 đều KHÔNG có trong exceptions và KHÔNG nhất quán với nhau.
+> **Nguyên nhân sâu xa:** dễ nhầm lẫn giữa 2 ngữ cảnh — (a) `atomic_table`/`atomic_column` là tên **Atomic gốc** (read-only, VD: `pc_evaluation_detail`, `pc_report_submission`, `pc_id` — những tên này giữ nguyên, không đổi), và (b) `datamart_table`/`datamart_column` là tên **Datamart tự đặt**, phải tuân physical naming rule độc lập với cách Atomic đặt tên. Thấy Atomic dùng tiền tố `pc_` rồi bắt chước đặt tên Datamart cũng `pc_`/`pblc_co` là sai — hai tầng đặt tên độc lập nhau.
+> **Quy tắc phòng ngừa:** Trước khi đặt tên bảng/cột Datamart mới cho 1 entity xuất hiện ở nhiều bảng trong cùng module, `grep` toàn bộ tên hiện có của entity đó trong `datamart_attributes.csv` + các file Attributes detail đã duyệt trước — đảm bảo dùng lại đúng 1 biến thể duy nhất, không tự nghĩ ra biến thể mới giữa chừng.
+
 ### Khi đặt tên `datamart_column`
 
 - Mọi cột trong Attributes CSV phải tuân thủ rule này
 - Khi kế thừa từ `atomic_column`: nếu Atomic column dùng tên chuẩn (ví dụ `sp_code`, `practitioner_position_at_rpt`) → giữ nguyên; chỉ đổi nếu Atomic column đang dùng sai convention
 - Khi đặt tên mới (ETL-derived, computed): áp dụng rule từ đầu
+- **Không copy tiền tố viết tắt từ tên Atomic sang tên Datamart** — `atomic_table`/`atomic_column` (VD: `pc_evaluation_detail`) là namespace riêng của Atomic, không phải gợi ý cách viết tắt cho `datamart_table`/`datamart_column`
 
 ### Khi review/detect lỗi
 
-Nếu phát hiện `datamart_column` dùng từ viết tắt không có trong exceptions:
+Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết tắt không có trong exceptions, HOẶC dùng 2 biến thể viết tắt khác nhau cho cùng 1 entity/khái niệm trong cùng module:
 1. Tra `system/rules/rule_physical_name_exceptions_datamart.csv` xác nhận
-2. Đây là **Kịch bản C — Lỗi thiết kế** → sửa trực tiếp file Attributes detail + `datamart_attributes.csv` + `Detail_Mapping.csv` + `HLD.md`
+2. Đây là **Kịch bản C — Lỗi thiết kế** → sửa trực tiếp file Attributes detail + `datamart_attributes.csv` + `Detail_Mapping.csv` (cột `logic`) + `HLD.md` (tên bảng trong text/mermaid) + `datamart_model.yaml` (chỉ field `id`/`datamart_table`/`physical_name` — KHÔNG dùng `yaml.dump` để ghi lại toàn file vì sẽ phá format/comment gốc, chỉ sửa bằng text-replace theo dòng cụ thể) + tên file Attributes detail (nếu tên file chứa physical_name cũ) + 2 file SQL Phase 3 (nếu đã sinh)
 3. Dùng `grep -rn "tên_cũ" Datamart/` để tìm tất cả vị trí trước khi sửa
+4. **Tuyệt đối không sửa cột `source_entity`/`atomic_table`/`source_attribute`/`atomic_column`** trong Attributes, hay `source_atomic_table`/`source_atomic_column` trong `datamart_model.yaml` — đây là tên Atomic gốc (read-only), kể cả khi trùng chuỗi ký tự với tên Datamart bị đổi (VD: đổi `pc_code` Datamart-side nhưng KHÔNG đổi `pc_code` xuất hiện trong `source_atomic_column: "public_company.pc_code"`)
+5. Sau khi sửa: chạy lại SELF-REVIEW đầy đủ (Phase 1 5 TC + Phase 2 TC5/TC6 module-level) để xác nhận số dòng/cấu trúc không đổi trước và sau khi đổi tên
 
 ---
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
-**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 5 testcase sau và báo kết quả:
+**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 7 testcase sau và báo kết quả:
 
 **TC1 — Số cột khớp HLD:**
 - Đếm số attribute trong file CSV vừa sinh (theo `datamart_attribute` unique, không đếm multi-source row).
@@ -462,7 +498,157 @@ Nếu FAIL → sửa trước khi trình bày.
 - Báo: `✅ TC5 PASS: N rows × 15 cols` hoặc `❌ TC5 FAIL: row [i] có X cột — [nội dung row]`.
 - Nếu FAIL → sửa (thường do dấu `"` thiếu trong ô trống hoặc dấu phẩy trong etl_logic chưa được quote) → chạy lại TC5 → báo kết quả.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 5 TC đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+**TC6 — Physical name khớp tất định với logical name (bắt buộc dùng Bash tool):**
+
+- Mục đích: TC6 bản đầu (chỉ "tự nhìn bằng mắt") đã được kiểm chứng là **không phát hiện được gì** — khi áp dụng thử thuật toán tất định bên dưới lên `datamart_attributes.csv`/`datamart_model.yaml` hiện có (2026-07-16), phát hiện thực tế 2 lỗi cùng loại đã lọt từ trước: "Practitioner" → viết tắt `prac` (9 bảng NHNCK) và "Securities Company" → viết tắt `sc` (4 bảng NHNCK) — cả hai đều không có trong exceptions. TC6 phải **tính toán, không đoán**.
+- Thuật toán: với mỗi `datamart_entity` (logical name), tính **physical name kỳ vọng** bằng cách áp dụng đúng PHYSICAL NAMING RULE (tách từng từ theo khoảng trắng/gạch ngang, tra `rule_physical_name_exceptions_datamart.csv`, giữ full word nếu không có exception, nối bằng `_`) — rồi so với `datamart_table` thực tế trong **toàn bộ** `datamart_attributes.csv` (mọi module, không chỉ module đang thiết kế — bắt cả trường hợp entity conformed/shared bị đặt tên lệch giữa các module).
+- Chạy script sau **trên toàn bộ master sau khi merge** (không chỉ file vừa sinh — vì lỗi có thể đã tồn tại từ trước, TC6 phải quét lại toàn bộ mỗi lần có thay đổi):
+  ```bash
+  python3 -c "
+  import csv, re
+
+  # Whitelist ngoại lệ đã xác nhận là quy ước riêng, không phải lỗi — cập nhật khi có ca mới được human duyệt
+  # CẢNH BÁO: KHÔNG thêm entry vào đây chỉ vì "có vẻ là quy ước riêng" — phải xác minh bằng chứng cụ thể
+  # (VD: rule_physical_name_exceptions_datamart.csv, tài liệu quyết định, hoặc human xác nhận trực tiếp).
+  # Bài học 2026-07: 'cls_dim' từng bị thêm vào đây với lý do tự suy diễn "quy ước 3-ký-tự cho bảng conformed"
+  # — không có căn cứ nào cả, chỉ là lỗi gõ tay (thừa chữ 's') trong datamart_model.yaml. Việc thêm exception
+  # đã che giấu lỗi thật khỏi TC6/TC7 trong nhiều tháng dù cả 2 TC vẫn chạy đúng và báo đúng mismatch mỗi lần —
+  # vấn đề nằm ở người đọc kết quả tự nhận định "known exception" mà không truy nguyên gốc.
+  KNOWN_EXCEPTIONS = {
+      'fct_public_company_nonfinancial_score_snpst',  # "Non-Financial" viết liền không gạch dưới ở tên bảng (naive split coi "Non"/"Financial" là 2 từ riêng) — nhưng LƯU Ý: cột non_financial_m_score trong Fact Risk Score Snapshot lại giữ gạch dưới → không nhất quán thật giữa 2 bảng, cân nhắc thống nhất khi rà soát GSDC
+  }
+
+  exceptions = {}
+  with open('system/rules/rule_physical_name_exceptions_datamart.csv', encoding='utf-8-sig') as f:
+      reader = csv.reader(f)
+      next(reader)
+      for row in reader:
+          if len(row) >= 2:
+              exceptions[row[0].strip().lower()] = row[1].strip().lower()
+
+  def expected_physical(logical_name):
+      words = re.findall(r\"[A-Za-z0-9']+\", logical_name)  # tách cả từ ghép có gạch ngang (Non-Financial -> Non, Financial)
+      tokens = [exceptions.get(w.lower(), w.lower()) for w in words]
+      return '_'.join(tokens)
+
+  with open('Datamart/lld/datamart_attributes.csv', encoding='utf-8-sig') as f:
+      rows = list(csv.reader(f))
+  header = rows[0]
+  ent_idx, tbl_idx = header.index('datamart_entity'), header.index('datamart_table')
+
+  pairs = set((r[ent_idx], r[tbl_idx]) for r in rows[1:])
+  fails = []
+  for ent, tbl in sorted(pairs):
+      if tbl in KNOWN_EXCEPTIONS:
+          continue
+      exp = expected_physical(ent)
+      if exp != tbl:
+          fails.append((ent, tbl, exp))
+
+  print(f'Tổng entity: {len(pairs)} | Mismatch: {len(fails)}')
+  for ent, tbl, exp in fails:
+      print(f'  ❌ {ent!r} actual={tbl!r} expected={exp!r}')
+  "
+  ```
+- **Lưu ý xử lý kết quả — không phải mọi mismatch đều là lỗi:**
+  - Nếu `actual` là viết tắt tùy tiện không có trong exceptions (VD: `prac`, `sc`, `pc`, `pblc_co`) → **lỗi thật**, phải sửa theo Kịch bản C.
+  - Nếu `actual` giữ full word dù từ đó CÓ trong exceptions (VD: `history` thay vì `hist` dù "History" có exception) → **lỗi thật khác chiều** (thiếu áp dụng exception có sẵn), cũng phải sửa.
+  - Nếu mismatch chỉ do thuật toán tách từ ghép ngây thơ (VD: "Non-Financial" tách thành `non_financial` nhưng bảng dùng liền `nonfinancial`) → kiểm tra xem cách viết liền có nhất quán ở nơi khác cùng module không; nếu có tiền lệ nhất quán → thêm vào `KNOWN_EXCEPTIONS`, không phải lỗi.
+  - Nếu là bảng conformed/shared có vẻ theo "quy ước riêng" → **KHÔNG tự kết luận là hợp lệ**. Bắt buộc tìm bằng chứng cụ thể (exceptions CSV, tài liệu quyết định) trước khi thêm vào `KNOWN_EXCEPTIONS` — không suy diễn quy ước không có căn cứ. Nếu không tìm được bằng chứng → mismatch là lỗi thật, sửa theo Kịch bản C.
+- Báo: `✅ TC6 PASS: N entity, 0 mismatch` hoặc `❌ TC6 FAIL: [danh sách entity | actual | expected]` — với mỗi FAIL, phân loại rõ là lỗi thật hay cần thêm KNOWN_EXCEPTIONS trước khi kết luận.
+- Nếu là lỗi thật → sửa theo Kịch bản C (mục "Khi review/detect lỗi" bên dưới) → chạy lại TC6 trên toàn bộ master → báo kết quả.
+- **Áp dụng cho cả `datamart_column`** (không chỉ `datamart_table`): với mỗi `datamart_attribute` (logical) trong cùng 1 `datamart_entity`, tính expected tương tự và so với `datamart_column` thực tế.
+
+**TC7 — Tên bảng/cột đồng nhất xuyên suốt các nguồn output (bắt buộc dùng Bash tool):**
+
+- Mục đích: TC6 chỉ kiểm tra 1 file (`datamart_attributes.csv`) có tự nhất quán với chính nó không. TC7 kiểm tra **giữa các nguồn khác nhau** có cùng dùng 1 tên hay không — bài học NHNCK 2026-07-16: `datamart_model.yaml` và `datamart_attributes.csv` tồn tại song song 2 tên khác nhau cho cùng 13 entity (`scr_prac` vs `securities_practitioner`) trong nhiều tháng mà không ai phát hiện, vì mỗi file được review độc lập.
+- **Phạm vi tự động hóa — chỉ 4 nguồn có cấu trúc trường rõ ràng, đối chiếu tất định (không đoán):**
+  1. `datamart_attributes.csv` (master) — **anchor set**, nguồn sự thật duy nhất
+  2. `Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv` (Attributes detail) — cùng cấu trúc cột, so trực tiếp
+  3. `Datamart/datamart_model.yaml` — so `logical_name`↔`datamart_table` (entity), `columns[].logical_name`↔`columns[].physical_name` (cột)
+  4. `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv` — `mart_table`/`mart_column` (logical) phải resolve đúng `datamart_table`/`datamart_column` (physical) trong anchor, và cột `logic` phải chứa đúng chuỗi `<physical_table>.<physical_column>` tương ứng
+  5. `Datamart/hld/DTM_{MODULE}_Entities.csv` — `datamart_entity` (logical) phải tồn tại trong anchor set
+- **KHÔNG tự động hóa cho `HLD.md`** — free-text + mermaid, regex bắt token dễ false positive (node ID, alias biến, tên Atomic lẫn trong công thức). Khi TC7 FAIL ở bất kỳ nguồn nào trong 5 nguồn trên, bước sửa lỗi (Kịch bản C) đã yêu cầu `grep -rn "tên_cũ" Datamart/` — lệnh này tự nhiên quét luôn HLD.md, nên HLD vẫn được rà soát nhưng qua cơ chế sửa lỗi thủ công, không qua TC7 tự động.
+- Chạy script sau (xây anchor set 1 lần, đối chiếu cả 4 nguồn):
+  ```bash
+  python3 -c "
+  import csv, yaml, re, glob
+
+  with open('Datamart/lld/datamart_attributes.csv', encoding='utf-8-sig') as f:
+      rows = list(csv.reader(f))
+  header = rows[0]
+  idx = {h: i for i, h in enumerate(header)}
+
+  entity_map, column_map = {}, {}
+  for r in rows[1:]:
+      ent, tbl, attr, col = r[idx['datamart_entity']], r[idx['datamart_table']], r[idx['datamart_attribute']], r[idx['datamart_column']]
+      entity_map[ent] = tbl
+      column_map[(ent, attr)] = col
+
+  fails = []
+
+  # Nguồn 2: Attributes detail — thay '{MODULE}' bằng module đang xử lý
+  for fp in glob.glob('Datamart/lld/{MODULE}/DTM_{MODULE}_*.csv'):
+      with open(fp, encoding='utf-8-sig') as f:
+          rows2 = list(csv.reader(f))
+      h2 = rows2[0]; i2 = {h: i for i, h in enumerate(h2)}
+      for r in rows2[1:]:
+          ent, tbl, attr, col = r[i2['datamart_entity']], r[i2['datamart_table']], r[i2['datamart_attribute']], r[i2['datamart_column']]
+          if ent in entity_map and entity_map[ent] != tbl:
+              fails.append(('detail_csv:entity', fp, ent, tbl, entity_map[ent]))
+          if (ent, attr) in column_map and column_map[(ent, attr)] != col:
+              fails.append(('detail_csv:column', fp, f'{ent}.{attr}', col, column_map[(ent, attr)]))
+
+  # Nguồn 3: datamart_model.yaml
+  with open('Datamart/datamart_model.yaml', encoding='utf-8') as f:
+      model = yaml.safe_load(f)
+  for e in model['entities']:
+      logical, physical = e['logical_name'], e['datamart_table']
+      if logical in entity_map and entity_map[logical] != physical:
+          fails.append(('model:entity', 'datamart_model.yaml', logical, physical, entity_map[logical]))
+      for c in e.get('columns', []):
+          key = (logical, c['logical_name'])
+          if key in column_map and column_map[key] != c['physical_name']:
+              fails.append(('model:column', 'datamart_model.yaml', f\"{logical}.{c['logical_name']}\", c['physical_name'], column_map[key]))
+
+  # Nguồn 4: Detail Mapping — thay '{MODULE}' bằng module đang xử lý
+  dm_path = 'Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv'
+  with open(dm_path, encoding='utf-8-sig') as f:
+      dm_rows = list(csv.reader(f))
+  dh = dm_rows[0]; di = {h: i for i, h in enumerate(dh)}
+  for r in dm_rows[1:]:
+      mart_table, mart_col, logic, role = r[di['mart_table']], r[di['mart_column']], r[di['logic']], r[di['column_role']]
+      if role in ('DERIVED', 'PENDING') or not mart_table or not mart_col:
+          continue
+      if mart_table not in entity_map:
+          fails.append(('detail_mapping:entity_not_found', dm_path, r[di['kpi_id']], mart_table, None))
+          continue
+      exp_col = column_map.get((mart_table, mart_col))
+      if exp_col is None:
+          fails.append(('detail_mapping:column_not_found', dm_path, r[di['kpi_id']], f'{mart_table}.{mart_col}', None))
+          continue
+      expected_ref = f\"{entity_map[mart_table]}.{exp_col}\"
+      if expected_ref not in logic:
+          fails.append(('detail_mapping:logic_missing_ref', dm_path, r[di['kpi_id']], f'{mart_table}.{mart_col}', expected_ref))
+
+  # Nguồn 5: Entities.csv — thay '{MODULE}' bằng module đang xử lý
+  with open('Datamart/hld/DTM_{MODULE}_Entities.csv', encoding='utf-8-sig') as f:
+      ent_rows = list(csv.reader(f))
+  eh = ent_rows[0]; ei = eh.index('datamart_entity')
+  for r in ent_rows[1:]:
+      if r[ei] not in entity_map:
+          fails.append(('entities_csv:not_in_anchor', 'Entities.csv', r[ei], None, None))
+
+  print(f'Tổng issue: {len(fails)}')
+  for f_ in fails:
+      print(' ', f_)
+  "
+  ```
+- **Lưu ý khi đọc kết quả `detail_mapping:logic_missing_ref`:** Có thể là false positive hợp lệ khi cột dùng pattern đặc biệt không có prefix bảng (VD: `src_stm_code` filter viết dạng `"src_stm_code = 'VALUE'"` không kèm `<table>.`, theo rule L11) — xác nhận từng trường hợp trước khi kết luận lỗi, không tự động sửa hàng loạt.
+- Báo: `✅ TC7 PASS: 0 issue giữa 5 nguồn` hoặc `❌ TC7 FAIL: [danh sách issue theo nguồn]` — phân loại rõ nguồn nào lệch, giá trị nào đúng (anchor = `datamart_attributes.csv`).
+- Nếu FAIL → xác định nguồn đang sai (không phải anchor — anchor luôn đúng vì là nguồn sự thật) → sửa theo Kịch bản C → **đồng thời `grep -rn "tên_cũ" Datamart/hld/DTM_{MODULE}_HLD.md` để rà soát HLD thủ công** (không tự động qua TC7) → chạy lại TC7 → báo kết quả.
+
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 7 TC đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 
@@ -472,6 +658,7 @@ PRE-CHECK (trước khi sinh):
 □ Bảng reuse: ghi note bỏ qua, không sinh file
 □ Bảng partial: đọc master, báo cáo delta, chờ human approve trước khi sinh
 □ Xác định driving table + src_stm_code cho từng bảng new/partial (tra manifest → entity YAML → classification_context)
+□ Đối chiếu bảng "Physical name chuẩn" từ Phase 0 Bước P2b — mọi entity dùng chung ≥2 bảng phải dùng đúng token đã duyệt
 □ Trình bày bảng tóm tắt: tên file | table_type | Driving Table | src_stm_code → DỪNG chờ human xác nhận trước khi sinh bất kỳ file nào
 
 OUTPUT CHECK:

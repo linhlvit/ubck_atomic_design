@@ -434,30 +434,26 @@ flowchart LR
 
 ### Cụm 9: Nhân sự & Quản trị CTCK (Tác nghiệp)
 
-Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Nhân sự: HĐQT/HĐTV/BKS/BĐH cards + Cổ đông lớn table + Lịch sử thay đổi nhân sự. Tất cả là dạng lookup 1 CTCK — bảng Tác nghiệp.
+Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Nhân sự: HĐQT/HĐTV/BKS/BĐH cards. Dạng lookup 1 CTCK — bảng Tác nghiệp.
+
+> **Sửa 17/07/2026 (Datamart review):** Loại bỏ nhánh "Cổ đông lớn" (Atomic `Securities Company Shareholder` ← SCMS.CTCK_CO_DONG, Datamart `Securities Company Shareholder Profile`) khỏi Cụm này — đây là orphan lineage sót lại từ trước khi K_QLKD_160/161 cũ ("Cổ đông lớn nắm giữ >5% VĐL") bị xóa khỏi Nhóm 31 (xem ghi chú "Sửa 16/07/2026" tại Nhóm 31). Không còn KPI nào tham chiếu bảng `Securities Company Shareholder Profile` — đã xóa entity này khỏi Section 3/4 và `datamart_model.yaml`. Nếu BA bổ sung lại yêu cầu "Cổ đông lớn" ở Nhóm 31, thiết kế lại từ đầu theo nguồn hiện hành (`SSC_SCMS.SC_FIRM_SHAREHOLDER`, xem Atomic `Securities Company Shareholder` đang dùng cho K_QLKD_212 ở Nhóm 41b) — không revive lineage/entity cũ này.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         S1["SCMS.CTCK_NHAN_SU_CAO_CAP"]
-        S2["SCMS.CTCK_CO_DONG"]
     end
 
     subgraph SIL["Atomic"]
         SV1["Securities Company Senior Personnel"]
-        SV2["Securities Company Shareholder"]
     end
 
     subgraph Datamart["Datamart"]
         G1["Securities Company Personnel Profile"]
-        G2["Securities Company Shareholder Profile"]
     end
 
     S1 --> SV1
-    S2 --> SV2
-
     SV1 --> G1
-    SV2 --> G2
 ```
 
 ---
@@ -538,11 +534,11 @@ flowchart LR
 
 Phục vụ Tab HỒ SƠ CTCK 360 — Sub-tab Tuân thủ: danh sách BC tuân thủ (đúng hạn/trễ hạn) + số quyết định xử phạt + lịch sử thanh tra/xử phạt per CTCK. `Securities Company Periodic Report` phục vụ danh sách BC (Nhóm 38/39, K_QLKD_99/K_QLKD_101 PENDING — gating dữ liệu động); `Securities Company Administrative Penalty Decision` phục vụ đếm số quyết định xử phạt (Nhóm 38, K_QLKD_100 — READY); `Inspection Team`/`Examination Team` + `Penalty Decision`* phục vụ lịch sử thanh tra/xử phạt chi tiết (Nhóm 40, K_QLKD_102 và các attribute liên quan — READY).
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 38):** K_QLKD_100 (Số lượng quyết định xử phạt) đổi nguồn từ `Inspection Penalty Decision` (giả định INSPECT schema cũ) sang `SC_FIRM_ADMIN_PENALTY_DECISION` (SCMS) — Atomic entity mới `Securities Company Administrative Penalty Decision` đã map đúng, **READY**. Đây là nguồn khác `INSPECT.PENALTY_DECISION*` dùng ở Nhóm 41g (xử phạt cá nhân, Tab TRA CỨU CÁ NHÂN) — 2 khái niệm khác nhau: xử phạt hành chính CTCK (SCMS) vs xử phạt cá nhân (INSPECT).
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 38):** K_QLKD_100 (Số lượng quyết định xử phạt) đổi nguồn từ `Inspection Penalty Decision` (giả định INSPECT schema cũ) sang `SC_FIRM_ADMIN_PENALTY_DECISION` (SCMS) — Atomic entity mới `Securities Company Administrative Penalty Decision` đã map đúng, **READY**. Đây là nguồn khác `INSPECT.PENALTY_DECISION*` dùng ở Nhóm 41d (xử phạt cá nhân, Tab TRA CỨU CÁ NHÂN) — 2 khái niệm khác nhau: xử phạt hành chính CTCK (SCMS) vs xử phạt cá nhân (INSPECT).
 >
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 39):** Nguồn danh sách BC tuân thủ đổi tên bảng từ `SCMS.BC_THANH_VIEN` sang `SSC_SCMS.SC_FIRM_PERIODIC_REPORT` JOIN `SC_FIRM_INFO` — Atomic entity đổi tên tương ứng `Member Periodic Report` → `Securities Company Periodic Report` (LLD `lld_SCMS_SC_FIRM_PERIODIC_REPORT.yaml`), vẫn READY. K_QLKD_101 (Nhóm 39) hạ **PENDING** — cùng lý do gating dữ liệu động với K_QLKD_99 (Nhóm 38), không phải gap Atomic.
 >
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 40):** Nguồn lịch sử thanh tra/xử phạt đổi hẳn từ `ThanhTra.TT_HO_SO`/`TT_KET_LUAN` (`Inspection Case`/`Inspection Case Conclusion`) sang schema **INSPECT** — cùng schema với Nhóm 41g nhưng lọc `Subject_Type_Code = 'ORGANIZATION'` (khác Nhóm 41g dùng `'INDIVIDUAL'`). Atomic entity mới: `Inspection Team`/`Examination Team` (loại hình + ngày QĐ), `Inspection Team Target`/`Examination Team Target` (join key), `Penalty Decision Subject`, `Penalty Decision`, `Penalty Decision Subject Behavior`, `Violation Behavior`, `Penalty Type` — đều đã có LLD đầy đủ attribute cần dùng, **READY** cho K_QLKD_102 + 5 attribute liên quan (K_QLKD_2797-2801). Riêng "Chiều thời gian theo Ngày" (K_QLKD_2835) hạ PENDING do BA SQL dùng `SYSDATE` placeholder (Dữ liệu động).
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 40):** Nguồn lịch sử thanh tra/xử phạt đổi hẳn từ `ThanhTra.TT_HO_SO`/`TT_KET_LUAN` (`Inspection Case`/`Inspection Case Conclusion`) sang schema **INSPECT** — cùng schema với Nhóm 41d nhưng lọc `Subject_Type_Code = 'ORGANIZATION'` (khác Nhóm 41d dùng `'INDIVIDUAL'`). Atomic entity mới: `Inspection Team`/`Examination Team` (loại hình + ngày QĐ), `Inspection Team Target`/`Examination Team Target` (join key), `Penalty Decision Subject`, `Penalty Decision`, `Penalty Decision Subject Behavior`, `Violation Behavior`, `Penalty Type` — đều đã có LLD đầy đủ attribute cần dùng, **READY** cho K_QLKD_102 + 5 attribute liên quan (K_QLKD_2796-2800). Riêng "Chiều thời gian theo Ngày" (K_QLKD_2834) hạ PENDING do BA SQL dùng `SYSDATE` placeholder (Dữ liệu động).
 
 ```mermaid
 flowchart LR
@@ -581,7 +577,7 @@ flowchart LR
 
 Phục vụ Tab TRA CỨU CÁ NHÂN — Landing page (danh sách cá nhân) + Sub-tab Mạng lưới 360°. `Individual Profile` là bảng Tác nghiệp tổng hợp thông tin định danh cá nhân từ `Securities Company Senior Personnel` (SCMS) và `Securities Practitioner` (NHNCK). `Individual Related Party Network` lưu mạng lưới người liên quan.
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41b):** Sub-tab Mạng lưới 360° đổi hẳn nguồn — không còn `CTCK_CD_MOI_QUAN_HE`/NHNCK.ProfessionalRelationships/IDS.company_relationship, mà hợp nhất vào 1 bảng self-reference `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (Atomic entity mới `Securities Company Insider Related Person`) — 1 row vừa đại diện người nội bộ vừa có thể self-join ra người liên quan cùng `Securities Company Senior Personnel Id`. `Individual Profile` (Landing page — Nhóm 41a) không có BA v4.2 riêng, giữ nguyên thiết kế cũ. K_QLKD_111/207-210 (Nhóm 41b) vẫn READY qua nguồn mới; Chiều thời gian theo Ngày (K_QLKD_204) hạ PENDING — gating dữ liệu động.
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41a):** Sub-tab Mạng lưới 360° đổi hẳn nguồn — không còn `CTCK_CD_MOI_QUAN_HE`/NHNCK.ProfessionalRelationships/IDS.company_relationship, mà hợp nhất vào 1 bảng self-reference `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (Atomic entity mới `Securities Company Insider Related Person`) — 1 row vừa đại diện người nội bộ vừa có thể self-join ra người liên quan cùng `Securities Company Senior Personnel Id`. `Individual Profile` (landing page tìm kiếm cá nhân) không có BA v4.2 riêng, giữ nguyên thiết kế cũ — gộp làm phần mở đầu của Nhóm 41a (xem Section 2). K_QLKD_205-210 (Nhóm 41a) vẫn READY qua nguồn mới; Chiều thời gian theo Ngày (K_QLKD_203) hạ PENDING — gating dữ liệu động.
 
 ```mermaid
 flowchart LR
@@ -624,7 +620,7 @@ flowchart LR
 
 Phục vụ Tab TRA CỨU CÁ NHÂN — Sub-tab Hồ sơ: block Vai trò tại DN niêm yết + block Tài khoản. `Individual Listed Company Role` lưu vai trò + số CP tại từng tổ chức per cá nhân.
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41c/41e):** "Vai trò tại DN niêm yết" đổi nguồn từ IDS sang `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (cùng entity với Cụm 13) — IDS không còn dùng cho use case này. "Tài khoản" đổi tên bảng từ `CTCK_CO_DONG` sang `SSC_SCMS.SC_FIRM_SHAREHOLDER` (Atomic entity `Securities Company Shareholder`, không đổi cấu trúc) — cả 2 vẫn **READY**.
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41b):** "Vai trò tại DN niêm yết" đổi nguồn từ IDS sang `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (cùng entity với Cụm 13) — IDS không còn dùng cho use case này. "Tài khoản" đổi tên bảng từ `CTCK_CO_DONG` sang `SSC_SCMS.SC_FIRM_SHAREHOLDER` (Atomic entity `Securities Company Shareholder`, không đổi cấu trúc) — cả 2 vẫn **READY**.
 
 ```mermaid
 flowchart LR
@@ -656,7 +652,7 @@ flowchart LR
 
 Phục vụ Tab TRA CỨU CÁ NHÂN — Sub-tab Quá trình hành nghề (timeline công tác) + Sub-tab Lịch sử vi phạm. Lịch sử vi phạm từ schema `INSPECT` (`Penalty Decision` + liên quan) — xem O_QLKD_14 (đã Closed, xác nhận INSPECT thay vì ThanhTra.TT_HO_SO/TT_KET_LUAN).
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41f/41g):** Quá trình hành nghề — nguồn `Securities Company Senior Personnel` xác nhận lại đúng (POSITION/START_DATE/END_DATE = Work Start Date/Dismissal Date), vẫn READY (K_QLKD_215-218), thêm mint K_QLKD_214 (Chiều thời gian theo Ngày, PENDING gating). Lịch sử vi phạm — nguồn INSPECT xác nhận lại đúng thiết kế hiện tại (K_QLKD_220-224 READY), thêm mint K_QLKD_219 (Chiều thời gian theo Ngày, PENDING gating, cùng pattern SYSDATE placeholder như Nhóm 40).
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41c/41d):** Quá trình hành nghề — nguồn `Securities Company Senior Personnel` xác nhận lại đúng (POSITION/START_DATE/END_DATE = Work Start Date/Dismissal Date), vẫn READY (K_QLKD_214-217), thêm mint K_QLKD_213 (Chiều thời gian theo Ngày, PENDING gating). Lịch sử vi phạm — nguồn INSPECT xác nhận lại đúng thiết kế hiện tại (K_QLKD_219-223 READY), thêm mint K_QLKD_218 (Chiều thời gian theo Ngày, PENDING gating, cùng pattern SYSDATE placeholder như Nhóm 40).
 
 ```mermaid
 flowchart LR
@@ -738,8 +734,8 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Securities Company` ← SSC_SCMS.SC_FIRM_INFO — **READY** (track draft chưa approved)
 > Atomic: `Involved Party Alternative Identification` ← SSC_SCMS.SC_FIRM_INFO (BUSINESS_LICENSE_DATE, filter Identification Type Code = OPERATION_LICENSE) — **READY** (track draft chưa approved)
-> Atomic: `Classification SCMS Firm Status` ← SCMS.CAT_SC_FIRM_STATUS — **READY** (track draft chưa approved)
-> **Sửa 14/07/2026 (LLD review):** Ghi chú ETL filter `IS_BANG_TAM = 1 AND NGAY_CAP_GPKD IS NOT NULL` ở bản trước là văn bản sót lại từ SQL tham khảo v4.1 (bảng `SCMS.CTCK_THONG_TIN`, xem `BRD/BA/Old versions/BA_analyst_QLKD_20260713.csv`) — BA v4.2 hiện hành (`BA_analyst_QLKD.csv`, STT 1) đã đổi hẳn nguồn sang `SSC_SCMS.SC_FIRM_INFO` và điều kiện lọc chỉ còn `BUSINESS_LICENSE_DATE IS NOT NULL`, không còn `IS_BANG_TAM`/`NGAY_CAP_GPKD`. Snapshot condition tại ngày D: `License_Issue_Date <= D` — `License_Issue_Date` = `Involved Party Alternative Identification.Identification Issue Date` (filter `OPERATION_LICENSE`) — đã đủ trong Atomic, không cần bổ sung attribute nào khác. *(BA v4.2 không còn điều kiện `License_Revocation_Date` — trạng thái thu hồi lấy qua `Classification SCMS Firm Status`, xem K_QLKD_6.)*
+> Atomic: `Classification Firm Status` ← SCMS.CAT_SC_FIRM_STATUS — **READY** (track draft chưa approved)
+> **Sửa 14/07/2026 (LLD review):** Ghi chú ETL filter `IS_BANG_TAM = 1 AND NGAY_CAP_GPKD IS NOT NULL` ở bản trước là văn bản sót lại từ SQL tham khảo v4.1 (bảng `SCMS.CTCK_THONG_TIN`, xem `BRD/BA/Old versions/BA_analyst_QLKD_20260713.csv`) — BA v4.2 hiện hành (`BA_analyst_QLKD.csv`, STT 1) đã đổi hẳn nguồn sang `SSC_SCMS.SC_FIRM_INFO` và điều kiện lọc chỉ còn `BUSINESS_LICENSE_DATE IS NOT NULL`, không còn `IS_BANG_TAM`/`NGAY_CAP_GPKD`. Snapshot condition tại ngày D: `License_Issue_Date <= D` — `License_Issue_Date` = `Involved Party Alternative Identification.Identification Issue Date` (filter `OPERATION_LICENSE`) — đã đủ trong Atomic, không cần bổ sung attribute nào khác. *(BA v4.2 không còn điều kiện `License_Revocation_Date` — trạng thái thu hồi lấy qua `Classification Firm Status`, xem K_QLKD_6.)*
 > K_QLKD_12–13 (Số TK phát sinh GD, Số dư tiền gửi GD) — **PENDING**, xem lý do trong bảng KPI và **O_QLKD_1**.
 
 **Ghi chú UI:** Banner tổng số CTCK hiển thị K_QLKD_4 + K_QLKD_3 (YoY%). Có nút expand → hiển thị 7 thẻ trạng thái con (K_QLKD_5–11). K_QLKD_5–11 là **filter GROUP BY** trên `Company_Status_Code` của cùng 1 snapshot — không phải measure độc lập.
@@ -1077,7 +1073,7 @@ BIỂU ĐỒ DUY TRÌ ĐIỀU KIỆN CẤP PHÉP — GIẤY PHÉP HOẠT ĐỘNG
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
 | K_QLKD_30 | Chiều thời gian theo ngày | — | Chiều | `Calendar Date Dimension`, xác định từ `Securities Company Alert Violation.Processing Date` (SC_FIRM_ALERT_VIOLATION.PROCESSING_DATE) |
-| K_QLKD_31 | Các loại duy trì điều kiện cấp phép | — | Chiều | `Violation_Severity_Code`/`Severity_Level` (Atomic `Securities Company Alert Violation`) — 1=Đang duy trì tốt, 2=Gần đến giới hạn duy trì, 3=Không duy trì điều kiện cấp phép |
+| K_QLKD_31 | Các loại duy trì điều kiện cấp phép | — | Chiều | **Sửa 16/07/2026 (LLD review):** `Severity_Level` (Atomic `Securities Company Alert Indicator`, data_domain Small Counter) — 1=Đang duy trì tốt, 2=Gần đến giới hạn duy trì, 3=Không duy trì điều kiện cấp phép. Không lấy từ `Securities Company Alert Violation.Severity_Level` (data_domain Text, nhãn văn bản tự do — LLD draft ghi có thể trùng `Violation_Severity_Code`, chưa xác nhận) |
 | K_QLKD_32 | Số CTCK duy trì tốt — Giấy phép hoạt động | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 1 AND Indicator_Code = 'DUY_TRI_DKCP_GPKD' — Fact đã lọc bản ghi mới nhất per CTCK per ngày (ETL filter, xem ghi chú trên) |
 | K_QLKD_33 | Số CTCK gần giới hạn duy trì — Giấy phép hoạt động | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 2 AND Indicator_Code = 'DUY_TRI_DKCP_GPKD' |
 | K_QLKD_34 | Số CTCK không duy trì điều kiện — Giấy phép hoạt động | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 3 AND Indicator_Code = 'DUY_TRI_DKCP_GPKD' |
@@ -1170,7 +1166,7 @@ BIỂU ĐỒ DUY TRÌ ĐIỀU KIỆN CẤP PHÉP — PHÁI SINH: KINH DOANH CKPS
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
 | K_QLKD_30 | Chiều thời gian theo ngày | — | Chiều | Reuse từ Nhóm 5 — `Calendar Date Dimension`, xác định từ `Securities Company Alert Violation.Processing Date` |
-| K_QLKD_31 | Các loại duy trì điều kiện cấp phép | — | Chiều | Reuse từ Nhóm 5 — `Violation_Severity_Code`/`Severity_Level` (Atomic `Securities Company Alert Violation`) |
+| K_QLKD_31 | Các loại duy trì điều kiện cấp phép | — | Chiều | Reuse từ Nhóm 5 — `Severity_Level` (Atomic `Securities Company Alert Indicator`, data_domain Small Counter — sửa 16/07/2026, xem ghi chú Nhóm 5) |
 | K_QLKD_35 | Số CTCK duy trì tốt — Phái sinh KDCKPS | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 1 AND Indicator_Code = 'DUY_TRI_DKCP_CTCK_PHAI_SINH' — Fact đã lọc bản ghi mới nhất per CTCK per ngày (ETL filter, xem ghi chú Nhóm 5) |
 | K_QLKD_36 | Số CTCK gần giới hạn duy trì — Phái sinh KDCKPS | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 2 AND Indicator_Code = 'DUY_TRI_DKCP_CTCK_PHAI_SINH' |
 | K_QLKD_37 | Số CTCK không duy trì điều kiện — Phái sinh KDCKPS | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 3 AND Indicator_Code = 'DUY_TRI_DKCP_CTCK_PHAI_SINH' |
@@ -1229,7 +1225,7 @@ BIỂU ĐỒ DUY TRÌ ĐIỀU KIỆN CẤP PHÉP — PHÁI SINH: BÙ TRỪ THANH
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
 | K_QLKD_30 | Chiều thời gian theo ngày | — | Chiều | Reuse từ Nhóm 5 — `Calendar Date Dimension`, xác định từ `Securities Company Alert Violation.Processing Date` |
-| K_QLKD_31 | Các loại duy trì điều kiện cấp phép | — | Chiều | Reuse từ Nhóm 5 — `Violation_Severity_Code`/`Severity_Level` (Atomic `Securities Company Alert Violation`) |
+| K_QLKD_31 | Các loại duy trì điều kiện cấp phép | — | Chiều | Reuse từ Nhóm 5 — `Severity_Level` (Atomic `Securities Company Alert Indicator`, data_domain Small Counter — sửa 16/07/2026, xem ghi chú Nhóm 5) |
 | K_QLKD_38 | Số CTCK duy trì tốt — Phái sinh bù trừ thanh toán | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 1 AND Indicator_Code = 'DUY_TRI_DKCP_CTCKPS_BU_TRU' — Fact đã lọc bản ghi mới nhất per CTCK per ngày (ETL filter, xem ghi chú Nhóm 5) |
 | K_QLKD_39 | Số CTCK gần giới hạn duy trì — Phái sinh bù trừ thanh toán | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 2 AND Indicator_Code = 'DUY_TRI_DKCP_CTCKPS_BU_TRU' |
 | K_QLKD_40 | Số CTCK không duy trì điều kiện — Phái sinh bù trừ thanh toán | CTCK | Cơ sở | COUNT(DISTINCT Securities_Company_Dimension_Id) WHERE Severity_Level = 3 AND Indicator_Code = 'DUY_TRI_DKCP_CTCKPS_BU_TRU' |
@@ -1573,7 +1569,7 @@ flowchart LR
 
 **Atomic cần bổ sung (K_QLKD_86–87):** Entity Atomic cho `SSC_SCMS.REPORT_CELL_VALUE` (xem O_QLKD_23) — dùng `ROW_NAME` LIKE-matching (`REPORT_CODE = 'BCTHHDKD_TH'`, cùng loại pattern Nhóm 8/9/15).
 
-**Nguồn xác nhận K_QLKD_88–91:** `MDDS.JAD_MARKETINFOR` (Atomic entity `Market Index Snapshot`, đã approved). Fields: `market_index_val` (giá trị chỉ số), `trading_dt` (ngày giao dịch), `index_time` (timestamp), `market_code` (mã sàn). *(Sửa 14/07/2026 — LLD review: BA ghi tham khảo `FSSTRAINING.PUBLIC_MARKETINFOR`/`"marketIndex"`/`"tradingdate"`/`"indexTime"`/`"marketCode"` — cùng nguồn dữ liệu thị trường, đối chiếu Atomic xác nhận entity/tên field thực tế như trên.)*
+**Nguồn xác nhận K_QLKD_88–91:** `MDDS.JAD_MARKETINFOR` (Atomic entity `Market Index Snapshot`, **READY** — LLD draft `DataModel/working/Atomic/lld/MDDS/lld_MDDS_JAD_MARKETINFOR.yaml`, chưa có entry `dm_manifest.yaml` — coi như READY nhất quán với các entity draft khác trong module, sửa 16/07/2026). Fields: `market_index_val` (giá trị chỉ số), `trading_dt` (ngày giao dịch), `index_time` (timestamp), `market_code` (mã sàn). *(Sửa 14/07/2026 — LLD review: BA ghi tham khảo `FSSTRAINING.PUBLIC_MARKETINFOR`/`"marketIndex"`/`"tradingdate"`/`"indexTime"`/`"marketCode"` — cùng nguồn dữ liệu thị trường, đối chiếu Atomic xác nhận entity/tên field thực tế như trên.)*
 
 > **market_code values:**
 > - `HOSE` → VN-Index
@@ -1603,7 +1599,7 @@ flowchart LR
 | K_QLKD_90 | Chỉ số UPCOM Index | Cơ sở | `market_index_val` WHERE `market_code` = 'UPCOM' per month | READY |
 | K_QLKD_91 | Chỉ số VN30 | Cơ sở | `market_index_val` WHERE `market_code` = '30' per month | READY |
 
-**Atomic (K_QLKD_88–91):** Không có gap — `Market Index Snapshot` ← `MDDS.JAD_MARKETINFOR` đã approved.
+**Atomic (K_QLKD_88–91):** Không có gap — `Market Index Snapshot` ← `MDDS.JAD_MARKETINFOR` READY (track draft, chưa approved).
 - Grain Atomic: 1 market_code × 1 ngày × 1 index_time
 
 **Mart (K_QLKD_88–91):**
@@ -1755,7 +1751,9 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Toàn bộ dòng BA (STT 21: Chiều thời gian theo quý + 6 chỉ tiêu cơ cấu tài sản) đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='BCTCR'`, `COLUMN_NAME LIKE '%số cuối năm%'`), giá trị bằng `LOWER(ROW_NAME) LIKE '%...%'` — cùng pattern Nhóm 8/9/15/18 (khác Nhóm 14/17 dùng `INDICATOR_CODE`), **không phải** `Member Report Indicator Value` (BC_BAO_CAO_GT EAV) như thiết kế cũ. Khác Nhóm 8 (toàn thị trường), Nhóm 21 filter per CTCK cụ thể (`f.SHORT_NAME = :p_ctck` — param comment, join `SC_FIRM_INFO`). Chung gap **O_QLKD_23**.
 
-**KPI liên quan:** K_QLKD_108 (Chiều thời gian theo quý), K_QLKD_109 (Tiền và tương đương tiền), K_QLKD_110 (TSTC ghi nhận qua lãi/lỗ), K_QLKD_111 (Đầu tư nắm giữ đến đáo hạn), K_QLKD_112 (TSTC sẵn sàng để bán), K_QLKD_113 (Các khoản cho vay), K_QLKD_114 (Khác)
+**KPI liên quan:** K_QLKD_108 (Chiều thời gian theo quý), K_QLKD_109 (Tiền và tương đương tiền), K_QLKD_110 (TSTC ghi nhận qua lãi/lỗ), K_QLKD_111 (Đầu tư nắm giữ đến đáo hạn), K_QLKD_113 (TSTC sẵn sàng để bán), K_QLKD_114 (Các khoản cho vay), K_QLKD_115 (Khác)
+
+> **Sửa 16/07/2026 (Datamart review, renumbering toàn module):** "Các khoản đầu tư nắm giữ đến ngày đáo hạn" dùng `K_QLKD_111` — trước đây bị trùng với KPI khác hẳn ("Số người liên quan — per cá nhân", Nhóm 41a — KPI đã xóa khỏi scope, xem ghi chú Nhóm 41a), đã renumber lại toàn bộ dải bắt đầu từ vị trí đó trở đi (+1) để giải phóng đúng vị trí `K_QLKD_111` cho KPI Nhóm 21 này, không còn dùng ID vá tạm ngoài dải nữa.
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho toàn bộ STT 21 — gating độc lập với trạng thái Atomic.
@@ -1780,9 +1778,9 @@ flowchart LR
 | K_QLKD_109 | Tiền và tương đương tiền — per CTCK | Cơ sở | PENDING |
 | K_QLKD_110 | Tài sản tài chính ghi nhận thông qua lãi/lỗ — per CTCK | Cơ sở | PENDING |
 | K_QLKD_111 | Các khoản đầu tư nắm giữ đến ngày đáo hạn — per CTCK | Cơ sở | PENDING |
-| K_QLKD_112 | Tài sản tài chính sẵn sàng để bán — per CTCK | Cơ sở | PENDING |
-| K_QLKD_113 | Các khoản cho vay — per CTCK | Cơ sở | PENDING |
-| K_QLKD_114 | Khác — per CTCK | Cơ sở | PENDING |
+| K_QLKD_113 | Tài sản tài chính sẵn sàng để bán — per CTCK | Cơ sở | PENDING |
+| K_QLKD_114 | Các khoản cho vay — per CTCK | Cơ sở | PENDING |
+| K_QLKD_115 | Khác — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -1790,7 +1788,7 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Toàn bộ dòng BA (STT 22: Chiều thời gian theo quý + 4 chỉ tiêu cơ cấu nguồn vốn) đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (LIKE trên `ROW_NAME`: `'%Nợ phải trả ngắn hạn%'`, `'%Nợ phải trả dài hạn%'`, `'%D. Vốn chủ sở hữu%'`) — cùng pattern Nhóm 8/9/15/18/21. Chung gap **O_QLKD_23**.
 
-**KPI liên quan:** K_QLKD_108 (Chiều thời gian theo quý, reuse từ Nhóm 21 — cùng Fact, cùng ý nghĩa quý), K_QLKD_115 (Vay và nợ thuê tài chính ngắn hạn), K_QLKD_116 (Nợ phải trả dài hạn), K_QLKD_117 (Vốn chủ sở hữu), K_QLKD_118 (Khác)
+**KPI liên quan:** K_QLKD_108 (Chiều thời gian theo quý, reuse từ Nhóm 21 — cùng Fact, cùng ý nghĩa quý), K_QLKD_116 (Vay và nợ thuê tài chính ngắn hạn), K_QLKD_117 (Nợ phải trả dài hạn), K_QLKD_118 (Vốn chủ sở hữu), K_QLKD_119 (Khác)
 
 > **Ghi chú KPI_ID:** "Chiều thời gian theo quý" của Nhóm 22 cùng nguồn `MEMBER_REPORT.REPORT_PERIOD='Q'` như Nhóm 21, cùng Fact — reuse thẳng `K_QLKD_108` theo Rule 5 (`feedback_kpi_id_assignment`), không cấp ID mới/hậu tố.
 
@@ -1813,10 +1811,10 @@ flowchart LR
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
 | K_QLKD_108 | Chiều thời gian theo quý (reuse từ Nhóm 21) | Chiều | PENDING |
-| K_QLKD_115 | Vay và nợ thuê tài chính ngắn hạn — per CTCK | Cơ sở | PENDING |
-| K_QLKD_116 | Nợ phải trả dài hạn — per CTCK | Cơ sở | PENDING |
-| K_QLKD_117 | Vốn chủ sở hữu — per CTCK | Cơ sở | PENDING |
-| K_QLKD_118 | Khác — per CTCK | Cơ sở | PENDING |
+| K_QLKD_116 | Vay và nợ thuê tài chính ngắn hạn — per CTCK | Cơ sở | PENDING |
+| K_QLKD_117 | Nợ phải trả dài hạn — per CTCK | Cơ sở | PENDING |
+| K_QLKD_118 | Vốn chủ sở hữu — per CTCK | Cơ sở | PENDING |
+| K_QLKD_119 | Khác — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -1824,7 +1822,7 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Toàn bộ dòng BA (STT 23: Chiều thời gian theo quý, 4 cơ cấu DT theo nghiệp vụ, Doanh thu, LNST) đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='BCKQHDR'`, LIKE trên `ROW_NAME`: `'%1.6. Doanh thu nghiệp vụ môi giới%'`, `'%I. DOANH THU HOẠT ĐỘNG%'`, `'%XI. LỢI NHUẬN KẾ TOÁN SAU THUẾ TNDN%'` — cùng pattern Nhóm 15 (toàn thị trường) nhưng lọc thêm per CTCK. Chung gap **O_QLKD_23**.
 
-**KPI liên quan:** K_QLKD_119 (Chiều thời gian theo quý), K_QLKD_120 (Cơ cấu DT môi giới), K_QLKD_121 (Cơ cấu DT tự doanh), K_QLKD_122 (Cơ cấu DT tư vấn), K_QLKD_123 (Cơ cấu DT bảo lãnh), K_QLKD_124 (Doanh thu), K_QLKD_125 (Lợi nhuận sau thuế)
+**KPI liên quan:** K_QLKD_120 (Chiều thời gian theo quý), K_QLKD_121 (Cơ cấu DT môi giới), K_QLKD_122 (Cơ cấu DT tự doanh), K_QLKD_123 (Cơ cấu DT tư vấn), K_QLKD_124 (Cơ cấu DT bảo lãnh), K_QLKD_125 (Doanh thu), K_QLKD_126 (Lợi nhuận sau thuế)
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho toàn bộ STT 23 — gating độc lập với trạng thái Atomic.
@@ -1844,13 +1842,13 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_119 | Chiều thời gian theo quý | Chiều | PENDING |
-| K_QLKD_120 | Cơ cấu doanh thu theo nghiệp vụ môi giới — per CTCK | Cơ sở | PENDING |
-| K_QLKD_121 | Cơ cấu doanh thu theo nghiệp vụ tự doanh — per CTCK | Cơ sở | PENDING |
-| K_QLKD_122 | Cơ cấu doanh thu theo nghiệp vụ tư vấn — per CTCK | Cơ sở | PENDING |
-| K_QLKD_123 | Cơ cấu doanh thu theo nghiệp vụ bảo lãnh — per CTCK | Cơ sở | PENDING |
-| K_QLKD_124 | Doanh thu — per CTCK | Cơ sở | PENDING |
-| K_QLKD_125 | Lợi nhuận sau thuế — per CTCK | Cơ sở | PENDING |
+| K_QLKD_120 | Chiều thời gian theo quý | Chiều | PENDING |
+| K_QLKD_121 | Cơ cấu doanh thu theo nghiệp vụ môi giới — per CTCK | Cơ sở | PENDING |
+| K_QLKD_122 | Cơ cấu doanh thu theo nghiệp vụ tự doanh — per CTCK | Cơ sở | PENDING |
+| K_QLKD_123 | Cơ cấu doanh thu theo nghiệp vụ tư vấn — per CTCK | Cơ sở | PENDING |
+| K_QLKD_124 | Cơ cấu doanh thu theo nghiệp vụ bảo lãnh — per CTCK | Cơ sở | PENDING |
+| K_QLKD_125 | Doanh thu — per CTCK | Cơ sở | PENDING |
+| K_QLKD_126 | Lợi nhuận sau thuế — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -1858,9 +1856,9 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Cả 2 dòng BA (STT 24: Chiều thời gian theo tháng, "Margin/VCSH %") đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn phức tạp hơn Nhóm 8/9: Dư nợ margin lấy từ `MEMBER_REPORT` (report `BCTLAT`, sheet `06H01`, LIKE `'%giá trị chứng khoán ký quỹ%'`), VCSH lấy từ BCTC **quý chứa tháng hiện tại** (LEFT JOIN `MEMBER_REPORT` report `BCTCRLCTCK`, `REPORT_PERIOD='Q'`, map tháng→quý bằng `CEIL(PERIOD/3.0)`) — tỷ lệ % tính bằng `margin / vcsh × 100`. Đây là biến thể chéo-kỳ (tháng × quý) của gap **O_QLKD_23**.
 
-**KPI liên quan:** K_QLKD_126 (Chiều thời gian theo tháng), K_QLKD_127 (Tỷ lệ dư nợ Margin/VCSH)
+**KPI liên quan:** K_QLKD_127 (Chiều thời gian theo tháng), K_QLKD_128 (Tỷ lệ dư nợ Margin/VCSH)
 
-> **Ghi chú công thức:** K_QLKD_127 tính trực tiếp trong 1 query kết hợp `BCTLAT` (margin, theo tháng) và `BCTCRLCTCK` (VCSH, theo quý chứa tháng đó) — khác nguồn báo cáo với K_QLKD_103 (Nhóm 19, dùng `BCTHHDKD_TH` sheet `BCTHHD`). Cần đối chiếu lại 2 nguồn margin (STT 19 dùng `BCTHHDKD_TH`, STT 24 dùng `BCTLAT`) khi Atomic sẵn sàng — có thể là 2 chỉ tiêu margin khác nhau hoặc cùng 1 giá trị nhưng khác báo cáo nguồn, cần xác nhận thêm với BA.
+> **Ghi chú công thức:** K_QLKD_128 tính trực tiếp trong 1 query kết hợp `BCTLAT` (margin, theo tháng) và `BCTCRLCTCK` (VCSH, theo quý chứa tháng đó) — khác nguồn báo cáo với K_QLKD_103 (Nhóm 19, dùng `BCTHHDKD_TH` sheet `BCTHHD`). Cần đối chiếu lại 2 nguồn margin (STT 19 dùng `BCTHHDKD_TH`, STT 24 dùng `BCTLAT`) khi Atomic sẵn sàng — có thể là 2 chỉ tiêu margin khác nhau hoặc cùng 1 giá trị nhưng khác báo cáo nguồn, cần xác nhận thêm với BA.
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho cả 2 dòng BA — gating độc lập với trạng thái Atomic.
@@ -1880,8 +1878,8 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_126 | Chiều thời gian theo tháng | Chiều | PENDING |
-| K_QLKD_127 | Tỷ lệ dư nợ Margin/VCSH — per CTCK | Phái sinh | PENDING |
+| K_QLKD_127 | Chiều thời gian theo tháng | Chiều | PENDING |
+| K_QLKD_128 | Tỷ lệ dư nợ Margin/VCSH — per CTCK | Phái sinh | PENDING |
 
 ---
 
@@ -1889,7 +1887,7 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Cả 2 dòng BA (STT 25: Chiều thời gian theo tháng, "Tỷ lệ an toàn tài chính") đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTLAT'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='06H01'`, LIKE `'%Tỷ lệ vốn khả dụng%'`) — cùng report `BCTLAT`/sheet `06H01` như Nhóm 24, nhưng khác Nhóm 14 (Nhóm 14 dùng `INDICATOR_CODE='TY_LE_VON_KHA_DUNG'` cố định qua `CAT_INDICATOR`, đây dùng `ROW_NAME` LIKE trực tiếp). Chung gap **O_QLKD_23** — bổ sung thêm bằng chứng report `BCTLAT` cần entity Atomic cover.
 
-**KPI liên quan:** K_QLKD_126 (Chiều thời gian theo tháng, reuse từ Nhóm 24 — cùng Fact, cùng report BCTLAT), K_QLKD_128 (Tỷ lệ ATTC theo tháng)
+**KPI liên quan:** K_QLKD_127 (Chiều thời gian theo tháng, reuse từ Nhóm 24 — cùng Fact, cùng report BCTLAT), K_QLKD_129 (Tỷ lệ ATTC theo tháng)
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho cả 2 dòng BA — gating độc lập với trạng thái Atomic.
@@ -1909,8 +1907,8 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_126 | Chiều thời gian theo tháng (reuse từ Nhóm 24) | Chiều | PENDING |
-| K_QLKD_128 | Tỷ lệ ATTC theo tháng — per CTCK | Cơ sở | PENDING |
+| K_QLKD_127 | Chiều thời gian theo tháng (reuse từ Nhóm 24) | Chiều | PENDING |
+| K_QLKD_129 | Tỷ lệ ATTC theo tháng — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -1922,7 +1920,7 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Toàn bộ dòng BA (STT 26: Chiều thời gian theo quý, Doanh thu YTD, LNST YTD, ROA, ROE) đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (sheet `BCKQHDR` cho DT/LNST YTD, LIKE `'%I. DOANH THU HOẠT ĐỘNG%'`/`'%XI. LỢI NHUẬN KẾ TOÁN SAU THUẾ TNDN%'`; ROA/ROE tính bằng CTE kết hợp LNST (sheet `BCKQHDR`) / Tổng tài sản hoặc VCSH cuối kỳ (sheet `BCTCR`, `COLUMN_NAME LIKE '%số cuối năm%'`)) — cùng pattern Nhóm 8/9/15/18/21/23. Chung gap **O_QLKD_23**.
 
-**KPI liên quan:** K_QLKD_129 (Chiều thời gian theo quý), K_QLKD_130 (DT YTD), K_QLKD_131 (LNST YTD), K_QLKD_132 (ROA), K_QLKD_133 (ROE)
+**KPI liên quan:** K_QLKD_130 (Chiều thời gian theo quý), K_QLKD_131 (DT YTD), K_QLKD_132 (LNST YTD), K_QLKD_133 (ROA), K_QLKD_134 (ROE)
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho toàn bộ STT 26 — gating độc lập với trạng thái Atomic.
@@ -1943,11 +1941,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_129 | Chiều thời gian theo quý | Chiều | PENDING |
-| K_QLKD_130 | Doanh thu YTD — per CTCK | Cơ sở | PENDING |
-| K_QLKD_131 | Lợi nhuận sau thuế YTD — per CTCK | Cơ sở | PENDING |
-| K_QLKD_132 | ROA — per CTCK | Phái sinh | PENDING |
-| K_QLKD_133 | ROE — per CTCK | Phái sinh | PENDING |
+| K_QLKD_130 | Chiều thời gian theo quý | Chiều | PENDING |
+| K_QLKD_131 | Doanh thu YTD — per CTCK | Cơ sở | PENDING |
+| K_QLKD_132 | Lợi nhuận sau thuế YTD — per CTCK | Cơ sở | PENDING |
+| K_QLKD_133 | ROA — per CTCK | Phái sinh | PENDING |
+| K_QLKD_134 | ROE — per CTCK | Phái sinh | PENDING |
 
 ---
 
@@ -1955,7 +1953,7 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_23):** Toàn bộ dòng BA (STT 27: Chiều thời gian theo quý, Kỳ báo cáo, DT, LN, ROA, ROE, Ngày nộp, Trạng thái) đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (sheet `BCTCR`, LIKE trên `ROW_NAME`: `'%tổng cộng tài sản%'`, `'%I. Vốn chủ sở hữu%'`, cả 2 với `COLUMN_NAME LIKE '%số cuối năm%'`) JOIN `SC_FIRM_INFO` — cùng pattern Nhóm 26, mở rộng thêm Kỳ báo cáo/Ngày nộp/Trạng thái (dùng `Member Periodic Report`, đã READY nhưng không đủ tự thiết kế do thiếu giá trị chỉ tiêu). Chung gap **O_QLKD_23**.
 
-**KPI liên quan:** K_QLKD_129 (Chiều thời gian theo quý, reuse từ Nhóm 26), K_QLKD_134 (Kỳ báo cáo), K_QLKD_135 (Doanh thu), K_QLKD_136 (Lợi nhuận), K_QLKD_137 (ROA), K_QLKD_138 (ROE), K_QLKD_139 (Ngày nộp), K_QLKD_140 (Trạng thái)
+**KPI liên quan:** K_QLKD_130 (Chiều thời gian theo quý, reuse từ Nhóm 26), K_QLKD_135 (Kỳ báo cáo), K_QLKD_136 (Doanh thu), K_QLKD_137 (Lợi nhuận), K_QLKD_138 (ROA), K_QLKD_139 (ROE), K_QLKD_140 (Ngày nộp), K_QLKD_141 (Trạng thái)
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho toàn bộ STT 27 — gating độc lập với trạng thái Atomic.
@@ -1976,14 +1974,14 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_129 | Chiều thời gian theo quý (reuse từ Nhóm 26) | Chiều | PENDING |
-| K_QLKD_134 | Kỳ báo cáo — per CTCK | Cơ sở | PENDING |
-| K_QLKD_135 | Doanh thu (tỷ VNĐ) — theo từng kỳ | Cơ sở | PENDING |
-| K_QLKD_136 | Lợi nhuận (tỷ VNĐ) — theo từng kỳ | Cơ sở | PENDING |
-| K_QLKD_137 | ROA (%) — theo từng kỳ | Phái sinh | PENDING |
-| K_QLKD_138 | ROE (%) — theo từng kỳ | Phái sinh | PENDING |
-| K_QLKD_139 | Ngày nộp — theo từng kỳ | Cơ sở | PENDING |
-| K_QLKD_140 | Trạng thái — theo từng kỳ | Cơ sở | PENDING |
+| K_QLKD_130 | Chiều thời gian theo quý (reuse từ Nhóm 26) | Chiều | PENDING |
+| K_QLKD_135 | Kỳ báo cáo — per CTCK | Cơ sở | PENDING |
+| K_QLKD_136 | Doanh thu (tỷ VNĐ) — theo từng kỳ | Cơ sở | PENDING |
+| K_QLKD_137 | Lợi nhuận (tỷ VNĐ) — theo từng kỳ | Cơ sở | PENDING |
+| K_QLKD_138 | ROA (%) — theo từng kỳ | Phái sinh | PENDING |
+| K_QLKD_139 | ROE (%) — theo từng kỳ | Phái sinh | PENDING |
+| K_QLKD_140 | Ngày nộp — theo từng kỳ | Cơ sở | PENDING |
+| K_QLKD_141 | Trạng thái — theo từng kỳ | Cơ sở | PENDING |
 
 ---
 
@@ -1995,13 +1993,13 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_4/O_QLKD_10/O_QLKD_11/O_QLKD_23):** Toàn bộ dòng BA (STT 28: Chiều thời gian theo Ngày, Tổng số LĐ, Tổng LĐ có CCHN, Tổng LĐ chưa có CCHN) đều `Loại dữ liệu = Dữ liệu động`. BA SQL xác nhận nguồn **hoàn toàn khác** thiết kế trước — không dùng `Securities Practitioner`/`License Certificate Document` (NHNCK) mà dùng `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='TTC'`, `COLUMN_NAME LIKE '%Tổng số người lao động tại công ty%'`/`'%Tổng số người có chứng chỉ hành nghề%'`) — cùng pattern `REPORT_CELL_VALUE` như Nhóm 8/9/15/18/21-27, nhưng khác `COLUMN_NAME` LIKE-matching thay vì `ROW_NAME`. Chung gap **O_QLKD_23**. K_QLKD_92/93 (trước đây READY qua `Securities Practitioner`) nay đổi nguồn sang cùng report này — **không còn READY**.
 
-**KPI liên quan:** K_QLKD_141 (Chiều thời gian theo Ngày), K_QLKD_142 (Tổng số lao động), K_QLKD_143 (Có CCHN), K_QLKD_144 (Chưa có CCHN)
+**KPI liên quan:** K_QLKD_142 (Chiều thời gian theo Ngày), K_QLKD_143 (Tổng số lao động), K_QLKD_144 (Có CCHN), K_QLKD_145 (Chưa có CCHN)
 
-> **Ghi chú nguồn:** K_QLKD_143/144 đổi hẳn từ `Securities Practitioner`/`License Certificate Document` (NHNCK, đã READY) sang `REPORT_CELL_VALUE` (SCMS, cùng gap O_QLKD_23) — giống pattern phát hiện ở Nhóm 19 (Vốn điều lệ).
+> **Ghi chú nguồn:** K_QLKD_144/145 đổi hẳn từ `Securities Practitioner`/`License Certificate Document` (NHNCK, đã READY) sang `REPORT_CELL_VALUE` (SCMS, cùng gap O_QLKD_23) — giống pattern phát hiện ở Nhóm 19 (Vốn điều lệ).
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho toàn bộ STT 28 — gating độc lập với trạng thái Atomic.
-2. Atomic entity nguồn (`REPORT_CELL_VALUE`) không tồn tại trong track hiện hành — chung gap O_QLKD_23. K_QLKD_143/144 mất trạng thái READY do BA đổi nguồn sang cùng gap này (không còn dùng `Securities Practitioner`).
+2. Atomic entity nguồn (`REPORT_CELL_VALUE`) không tồn tại trong track hiện hành — chung gap O_QLKD_23. K_QLKD_144/145 mất trạng thái READY do BA đổi nguồn sang cùng gap này (không còn dùng `Securities Practitioner`).
 
 **Atomic cần bổ sung:** Entity Atomic cho `SSC_SCMS.REPORT_CELL_VALUE` (xem O_QLKD_23) — dùng `COLUMN_NAME` LIKE-matching (`REPORT_CODE='BCTHHDKD_TH'` sheet `TTC`, khác pattern `ROW_NAME` của các Nhóm khác).
 
@@ -2018,10 +2016,10 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_141 | Chiều thời gian theo Ngày | Chiều | PENDING |
-| K_QLKD_142 | Tổng số lao động — per CTCK | Cơ sở | PENDING |
-| K_QLKD_143 | Số lao động có CCHN — per CTCK | Cơ sở | PENDING |
-| K_QLKD_144 | Số lao động chưa có CCHN — per CTCK | Cơ sở | PENDING |
+| K_QLKD_142 | Chiều thời gian theo Ngày | Chiều | PENDING |
+| K_QLKD_143 | Tổng số lao động — per CTCK | Cơ sở | PENDING |
+| K_QLKD_144 | Số lao động có CCHN — per CTCK | Cơ sở | PENDING |
+| K_QLKD_145 | Số lao động chưa có CCHN — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -2029,7 +2027,7 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_10/O_QLKD_23):** BA STT 29 có 6 dòng: Chiều thời gian theo Ngày (động), Chiều nghiệp vụ kinh doanh chứng khoán (tĩnh — `CAT_BUSINESS_LINE`, CASE/LIKE trên `BUSINESS_LINE_NAME`), 4 chỉ tiêu cơ sở (NHN theo môi giới/bảo lãnh/tư vấn/tự doanh — động). BA SQL xác nhận nguồn **khác hẳn** phân tích trước (`Organization Employment Report`/`CERTIFICATE_TYPE` — O_QLKD_10 cũ): dùng `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='TTC'`, LIKE trên `ROW_NAME`: `'%Môi giới chứng khoán%'`, `'%Tự doanh%'`, `'%Tư vấn đầu tư%'`, `'%Bảo lãnh phát hành%'`) — cùng report/sheet với Nhóm 28, cùng gap **O_QLKD_23**. Vấn đề "thiếu field phân loại" ở O_QLKD_10 không còn áp dụng — nguồn nay dùng `ROW_NAME` LIKE-matching, không phải `CERTIFICATE_TYPE`.
 
-**KPI liên quan:** K_QLKD_141 (Chiều thời gian theo Ngày, reuse từ Nhóm 28), K_QLKD_145 (Chiều nghiệp vụ kinh doanh chứng khoán), K_QLKD_146 (NHN theo nghiệp vụ môi giới), K_QLKD_147 (NHN theo nghiệp vụ bảo lãnh phát hành), K_QLKD_148 (NHN theo nghiệp vụ tư vấn), K_QLKD_149 (NHN theo nghiệp vụ tự doanh)
+**KPI liên quan:** K_QLKD_142 (Chiều thời gian theo Ngày, reuse từ Nhóm 28), K_QLKD_146 (Chiều nghiệp vụ kinh doanh chứng khoán), K_QLKD_147 (NHN theo nghiệp vụ môi giới), K_QLKD_148 (NHN theo nghiệp vụ bảo lãnh phát hành), K_QLKD_149 (NHN theo nghiệp vụ tư vấn), K_QLKD_150 (NHN theo nghiệp vụ tự doanh)
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho Chiều thời gian + 4 chỉ tiêu cơ sở — gating độc lập với trạng thái Atomic.
@@ -2050,12 +2048,12 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_141 | Chiều thời gian theo Ngày (reuse từ Nhóm 28) | Chiều | PENDING |
-| K_QLKD_145 | Chiều nghiệp vụ kinh doanh chứng khoán | Chiều | PENDING |
-| K_QLKD_146 | Số lượng NHN theo nghiệp vụ môi giới — per CTCK | Cơ sở | PENDING |
-| K_QLKD_147 | Số lượng NHN theo nghiệp vụ bảo lãnh phát hành — per CTCK | Cơ sở | PENDING |
-| K_QLKD_148 | Số lượng NHN theo nghiệp vụ tư vấn — per CTCK | Cơ sở | PENDING |
-| K_QLKD_149 | Số lượng NHN theo nghiệp vụ tự doanh — per CTCK | Cơ sở | PENDING |
+| K_QLKD_142 | Chiều thời gian theo Ngày (reuse từ Nhóm 28) | Chiều | PENDING |
+| K_QLKD_146 | Chiều nghiệp vụ kinh doanh chứng khoán | Chiều | PENDING |
+| K_QLKD_147 | Số lượng NHN theo nghiệp vụ môi giới — per CTCK | Cơ sở | PENDING |
+| K_QLKD_148 | Số lượng NHN theo nghiệp vụ bảo lãnh phát hành — per CTCK | Cơ sở | PENDING |
+| K_QLKD_149 | Số lượng NHN theo nghiệp vụ tư vấn — per CTCK | Cơ sở | PENDING |
+| K_QLKD_150 | Số lượng NHN theo nghiệp vụ tự doanh — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -2063,7 +2061,7 @@ flowchart LR
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify theo O_QLKD_10/O_QLKD_23):** BA STT 30 có 5 dòng: Chiều thời gian theo Ngày (động, reuse từ Nhóm 28/29), Chiều Dịch vụ phái sinh (tĩnh — `SC_FIRM_SERVICE`/`CAT_SERVICE`, filter `SERVICE_NAME LIKE '%phái sinh%'`), 3 chỉ tiêu cơ sở (NHN theo môi giới/tư vấn/tự doanh phái sinh — động). BA SQL xác nhận nguồn: `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='TTC'`, LIKE trên `ROW_NAME`: `'%Chứng khoán phái sinh theo dịch vụ môi giới%'` v.v.) — cùng report/sheet với Nhóm 28/29, cùng gap **O_QLKD_23**. Thay thế lý do O_QLKD_10 cũ (thiếu field phân loại) — nguồn nay xác định rõ qua `ROW_NAME` LIKE.
 
-**KPI liên quan:** K_QLKD_141 (Chiều thời gian theo Ngày, reuse từ Nhóm 28/29), K_QLKD_150 (Chiều Dịch vụ phái sinh), K_QLKD_151 (NHN dịch vụ môi giới phái sinh), K_QLKD_152 (NHN dịch vụ tư vấn phái sinh), K_QLKD_153 (NHN dịch vụ tự doanh phái sinh)
+**KPI liên quan:** K_QLKD_142 (Chiều thời gian theo Ngày, reuse từ Nhóm 28/29), K_QLKD_151 (Chiều Dịch vụ phái sinh), K_QLKD_152 (NHN dịch vụ môi giới phái sinh), K_QLKD_153 (NHN dịch vụ tư vấn phái sinh), K_QLKD_154 (NHN dịch vụ tự doanh phái sinh)
 
 **Lý do pending:**
 1. `Loại dữ liệu = Dữ liệu động` cho Chiều thời gian + 3 chỉ tiêu cơ sở — gating độc lập với trạng thái Atomic.
@@ -2084,11 +2082,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_141 | Chiều thời gian theo Ngày (reuse từ Nhóm 28) | Chiều | PENDING |
-| K_QLKD_150 | Chiều Dịch vụ phái sinh | Chiều | PENDING |
-| K_QLKD_151 | Số lượng NHN liên quan CK phái sinh theo dịch vụ môi giới — per CTCK | Cơ sở | PENDING |
-| K_QLKD_152 | Số lượng NHN liên quan CK phái sinh theo dịch vụ tư vấn — per CTCK | Cơ sở | PENDING |
-| K_QLKD_153 | Số lượng NHN liên quan CK phái sinh theo dịch vụ tự doanh — per CTCK | Cơ sở | PENDING |
+| K_QLKD_142 | Chiều thời gian theo Ngày (reuse từ Nhóm 28) | Chiều | PENDING |
+| K_QLKD_151 | Chiều Dịch vụ phái sinh | Chiều | PENDING |
+| K_QLKD_152 | Số lượng NHN liên quan CK phái sinh theo dịch vụ môi giới — per CTCK | Cơ sở | PENDING |
+| K_QLKD_153 | Số lượng NHN liên quan CK phái sinh theo dịch vụ tư vấn — per CTCK | Cơ sở | PENDING |
+| K_QLKD_154 | Số lượng NHN liên quan CK phái sinh theo dịch vụ tự doanh — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -2104,9 +2102,9 @@ flowchart LR
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi nguồn bảng nhân sự từ `CTCK_NHAN_SU_CAO_CAP` sang `SC_FIRM_SENIOR_PERSONNEL` — Atomic entity `Securities Company Senior Personnel` đã có LLD map đúng bảng mới, **vẫn READY**. BA SQL (STT 31) xác nhận 3 điểm quan trọng khác thiết kế cũ:
 > 1. **Email/SĐT lấy trực tiếp** từ `p.EMAIL`/`p.PHONE` trên `SC_FIRM_SENIOR_PERSONNEL` — LLD hiện tại (`lld_SCMS_SC_FIRM_SENIOR_PERSONNEL.yaml`, note metadata) thiết kế các field này đi qua bảng phụ `Involved Party Electronic Address` (tách khỏi entity chính), không phải mâu thuẫn — chỉ là 2 cách join khác nhau tới cùng 1 nguồn `EMAIL`/`PHONE`, không ảnh hưởng tính READY.
 > 2. **Phân loại nhóm nhân sự** (HĐQT/HĐTV/BKS-UB Kiểm toán/BĐH) dùng CASE/LIKE trên `DEPARTMENT` (attribute `Department`, đã có trong entity) — không phải `Position Type Code` cố định như ghi trong thiết kế cũ.
-> 3. **`Work Start Date`** (nguồn `WORK_START_DATE`) đã có sẵn trong entity `Securities Company Senior Personnel` — **đóng dứt điểm O_QLKD_16** (trước đây phải tạm dùng `Created Timestamp` do tưởng thiếu field). Áp dụng cho cả K_QLKD_159 (Nhóm 31) và Nhóm 41f — Thời gian làm việc.
+> 3. **`Work Start Date`** (nguồn `WORK_START_DATE`) đã có sẵn trong entity `Securities Company Senior Personnel` — **đóng dứt điểm O_QLKD_16** (trước đây phải tạm dùng `Created Timestamp` do tưởng thiếu field). Áp dụng cho cả K_QLKD_160 (Nhóm 31) và Nhóm 41c — Thời gian làm việc.
 >
-> K_QLKD_97 (Cổ đông lớn) và K_QLKD_98 (Lịch sử thay đổi nhân sự) — BA v4.2 (STT 31) chỉ có 6 dòng, không đề cập 2 khối này; giữ nguyên thiết kế trước (chưa có BA để re-verify), không tự mở rộng scope. Đã đánh lại KPI_ID cho 6 dòng BA — mỗi attribute (Họ tên/Email/SĐT/Chức vụ/Ngày bắt đầu) nhận 1 KPI_ID riêng thay vì gộp thành 1 "Danh sách" như thiết kế cũ.
+> **Sửa 16/07/2026 (Datamart review):** Đã bỏ "Cổ đông lớn nắm giữ >5% VĐL" và "Lịch sử thay đổi nhân sự" khỏi bảng KPI chính thức — BA v4.2 (STT 31) chỉ có 6 dòng, không đề cập 2 khối này. Theo quy tắc scope discipline (`feedback_hld_scope_discipline`), không tự giữ lại KPI từ thiết kế trước khi BA hiện hành không còn đề cập — kể cả khi đã có LLD từ trước. Nếu BA bổ sung lại 2 khối này, cấp KPI_ID mới liền mạch theo max hiện có tại thời điểm đó (không revive K_QLKD_97/98/160/161 cũ). Đã đánh lại KPI_ID cho 6 dòng BA — mỗi attribute (Họ tên/Email/SĐT/Chức vụ/Ngày bắt đầu) nhận 1 KPI_ID riêng thay vì gộp thành 1 "Danh sách" như thiết kế cũ.
 
 **Mockup:**
 ```
@@ -2126,27 +2124,24 @@ LỊCH SỬ THAY ĐỔI NHÂN SỰ (timeline):
   15/01/2021 — Bổ nhiệm Phó TGĐ | 15/06/2021 — Bổ sung TV HĐQT | ...
 ```
 
-**Source:** `Securities Company Personnel Profile` (tác nghiệp) + `Securities Company Shareholder Profile` (tác nghiệp)
+**Source:** `Securities Company Personnel Profile` (tác nghiệp)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| K_QLKD_154 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension`, xác định từ `Securities Company Senior Personnel.Work Start Date` (`WORK_START_DATE`) |
-| K_QLKD_155 | Họ và tên — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Full_Name` WHERE `Personnel_Status_Code = 1` (đương nhiệm) AND `(End_Date IS NULL OR End_Date >= ngày chọn)` AND `Department` LIKE nhóm HĐQT/HĐTV/BKS/UB Kiểm toán/BĐH — nhóm hóa qua CASE/LIKE trên `Department` |
-| K_QLKD_156 | Email — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Email` (`SC_FIRM_SENIOR_PERSONNEL.EMAIL`) |
-| K_QLKD_157 | Số điện thoại — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Phone` (`SC_FIRM_SENIOR_PERSONNEL.PHONE`) |
-| K_QLKD_158 | Chức vụ — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Position_Name` |
-| K_QLKD_159 | Thời gian bắt đầu làm việc — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Work_Start_Date` (`WORK_START_DATE`) |
-| K_QLKD_160 | Cổ đông lớn nắm giữ >5% VĐL — per CTCK | Attribute | Cơ sở | `Securities Company Shareholder` WHERE Share_Ratio > 5% AND Securities Company Id = selected |
-| K_QLKD_161 | Lịch sử thay đổi nhân sự — per CTCK | Attribute | Cơ sở | Timeline sự kiện từ `Securities Company Senior Personnel` (Work Start Date, Department, Full Name) |
+| K_QLKD_155 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension`, xác định từ `Securities Company Senior Personnel.Work Start Date` (`WORK_START_DATE`) |
+| K_QLKD_156 | Họ và tên — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Full_Name` WHERE `Personnel_Status_Code = 1` (đương nhiệm) AND `(End_Date IS NULL OR End_Date >= ngày chọn)` AND `Department` LIKE nhóm HĐQT/HĐTV/BKS/UB Kiểm toán/BĐH — nhóm hóa qua CASE/LIKE trên `Department` |
+| K_QLKD_157 | Email — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Email` (`SC_FIRM_SENIOR_PERSONNEL.EMAIL`) |
+| K_QLKD_158 | Số điện thoại — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Phone` (`SC_FIRM_SENIOR_PERSONNEL.PHONE`) |
+| K_QLKD_159 | Chức vụ — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Position_Name` |
+| K_QLKD_160 | Thời gian bắt đầu làm việc — per nhân sự | Attribute | Cơ sở | `Securities Company Senior Personnel.Work_Start_Date` (`WORK_START_DATE`) |
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
 | Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK (latest state) |
-| Securities Company Shareholder Profile | 1 cổ đông × 1 CTCK (latest state) |
 
 ---
 
@@ -2174,10 +2169,10 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| K_QLKD_162 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension`, date-spine từ `MIN(Decision_Date)` đến hiện tại |
-| K_QLKD_163 | Số lượng CN — per CTCK | Đơn vị | Cơ sở | COUNT WHERE `Organization_Unit_Type_Code = 'BRANCH'`; filter `IS_BANG_TAM = 1 AND RECORD_STATUS = 1 AND Decision_Date <= ngày chọn` |
-| K_QLKD_164 | Số lượng PGD — per CTCK | Đơn vị | Cơ sở | COUNT WHERE `Organization_Unit_Type_Code = 'TRANSACTION_OFFICE'`; cùng điều kiện filter |
-| K_QLKD_165 | Số lượng VPĐD — per CTCK | Đơn vị | Cơ sở | COUNT WHERE `Organization_Unit_Type_Code = 'REP_OFFICE'`; cùng điều kiện filter |
+| K_QLKD_161 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension`, date-spine từ `MIN(Decision_Date)` đến hiện tại |
+| K_QLKD_162 | Số lượng CN — per CTCK | Đơn vị | Cơ sở | COUNT WHERE `Organization_Unit_Type_Code = 'BRANCH'`; filter `IS_BANG_TAM = 1 AND RECORD_STATUS = 1 AND Decision_Date <= ngày chọn` |
+| K_QLKD_163 | Số lượng PGD — per CTCK | Đơn vị | Cơ sở | COUNT WHERE `Organization_Unit_Type_Code = 'TRANSACTION_OFFICE'`; cùng điều kiện filter |
+| K_QLKD_164 | Số lượng VPĐD — per CTCK | Đơn vị | Cơ sở | COUNT WHERE `Organization_Unit_Type_Code = 'REP_OFFICE'`; cùng điều kiện filter |
 
 **Bảng grain:**
 
@@ -2193,7 +2188,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 >
 > `Chiều thời gian theo Ngày` ghi nguồn `MEMBER_REPORT` trên BA nhưng không có SQL riêng — cùng dạng dòng tham khảo lệch như Nhóm 3 (không phải nguồn thật, trục ngày thực tế là date-spine trên `DECISION_DATE` như Nhóm 32).
 
-**KPI liên quan:** K_QLKD_162 (Chiều thời gian theo Ngày, reuse từ Nhóm 32), K_QLKD_166 (Chiều nghiệp vụ kinh doanh chứng khoán), K_QLKD_167 (SL theo nghiệp vụ môi giới), K_QLKD_168 (SL theo nghiệp vụ bảo lãnh), K_QLKD_169 (SL theo nghiệp vụ tư vấn), K_QLKD_170 (SL theo nghiệp vụ tự doanh)
+**KPI liên quan:** K_QLKD_161 (Chiều thời gian theo Ngày, reuse từ Nhóm 32), K_QLKD_165 (Chiều nghiệp vụ kinh doanh chứng khoán), K_QLKD_166 (SL theo nghiệp vụ môi giới), K_QLKD_167 (SL theo nghiệp vụ bảo lãnh), K_QLKD_168 (SL theo nghiệp vụ tư vấn), K_QLKD_169 (SL theo nghiệp vụ tự doanh)
 
 **Lý do pending:** Atomic chưa có bảng con/entity cho `SSC_SCMS.LNK_SC_FIRM_BUSINESS_LINE` (quan hệ N:N đơn vị CN/PGD/VPĐD ↔ nghiệp vụ kinh doanh) — cùng loại gap với O_QLKD_20, khác bảng nguồn (`LNK_SC_FIRM_BUSINESS_LINE` thay vì `Securities Company.Business Lines` text thô).
 
@@ -2212,12 +2207,12 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_162 | Chiều thời gian theo Ngày (reuse từ Nhóm 32) | Chiều | PENDING |
-| K_QLKD_166 | Chiều nghiệp vụ kinh doanh chứng khoán | Chiều | PENDING |
-| K_QLKD_167 | SL CN, PGD, VPĐD theo nghiệp vụ môi giới — per CTCK | Cơ sở | PENDING |
-| K_QLKD_168 | SL CN, PGD, VPĐD theo nghiệp vụ bảo lãnh — per CTCK | Cơ sở | PENDING |
-| K_QLKD_169 | SL CN, PGD, VPĐD theo nghiệp vụ tư vấn — per CTCK | Cơ sở | PENDING |
-| K_QLKD_170 | SL CN, PGD, VPĐD theo nghiệp vụ tự doanh — per CTCK | Cơ sở | PENDING |
+| K_QLKD_161 | Chiều thời gian theo Ngày (reuse từ Nhóm 32) | Chiều | PENDING |
+| K_QLKD_165 | Chiều nghiệp vụ kinh doanh chứng khoán | Chiều | PENDING |
+| K_QLKD_166 | SL CN, PGD, VPĐD theo nghiệp vụ môi giới — per CTCK | Cơ sở | PENDING |
+| K_QLKD_167 | SL CN, PGD, VPĐD theo nghiệp vụ bảo lãnh — per CTCK | Cơ sở | PENDING |
+| K_QLKD_168 | SL CN, PGD, VPĐD theo nghiệp vụ tư vấn — per CTCK | Cơ sở | PENDING |
+| K_QLKD_169 | SL CN, PGD, VPĐD theo nghiệp vụ tự doanh — per CTCK | Cơ sở | PENDING |
 
 ---
 
@@ -2242,10 +2237,11 @@ Ký quỹ: 2 | Ứng trước: 1 | Lưu ký: 1
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| K_QLKD_171 | Chiều dịch vụ kinh doanh chứng khoán | — | Chiều | `Service Type Dimension` (Atomic `Classification Service`) |
-| K_QLKD_172 | SL CN, PGD, VPĐD theo dịch vụ giao dịch ký quỹ — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%giao dịch ký quỹ%'`). Pattern LIKE xem O_QLKD_12 | READY (ETL-derived LIKE) |
-| K_QLKD_173 | SL CN, PGD, VPĐD theo dịch vụ ứng trước tiền bán — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%ứng trước tiền bán%'`) | READY (ETL-derived LIKE) |
-| K_QLKD_174 | SL CN, PGD, VPĐD theo dịch vụ lưu ký — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%lưu ký%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_161 | Chiều thời gian theo Ngày | — | Chiều | Reuse từ Nhóm 32 — `Calendar Date Dimension`, date-spine từ `MIN(Decision_Date)` đến hiện tại |
+| K_QLKD_170 | Chiều dịch vụ kinh doanh chứng khoán | — | Chiều | `Service Type Dimension` (Atomic `Classification Service`) |
+| K_QLKD_171 | SL CN, PGD, VPĐD theo dịch vụ giao dịch ký quỹ — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%giao dịch ký quỹ%'`). Pattern LIKE xem O_QLKD_12 | READY (ETL-derived LIKE) |
+| K_QLKD_172 | SL CN, PGD, VPĐD theo dịch vụ ứng trước tiền bán — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%ứng trước tiền bán%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_173 | SL CN, PGD, VPĐD theo dịch vụ lưu ký — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%lưu ký%'`) | READY (ETL-derived LIKE) |
 
 **Bảng grain:**
 
@@ -2276,10 +2272,11 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| K_QLKD_175 | Chiều Dịch vụ phái sinh | — | Chiều | `Service Type Dimension` (Atomic `Classification Service`, filter `Classification_Service_Name LIKE '%phái sinh%'`) |
-| K_QLKD_176 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ môi giới — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%môi giới%'`) | READY (ETL-derived LIKE) |
-| K_QLKD_177 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%tư vấn%'`) | READY (ETL-derived LIKE) |
-| K_QLKD_178 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%tự doanh%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_161 | Chiều thời gian theo Ngày | — | Chiều | Reuse từ Nhóm 32 — `Calendar Date Dimension`, date-spine từ `MIN(Decision_Date)` đến hiện tại |
+| K_QLKD_174 | Chiều Dịch vụ phái sinh | — | Chiều | `Service Type Dimension` (Atomic `Classification Service`, filter `Classification_Service_Name LIKE '%phái sinh%'`) |
+| K_QLKD_175 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ môi giới — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%môi giới%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_176 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%tư vấn%'`) | READY (ETL-derived LIKE) |
+| K_QLKD_177 | SL CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh — per CTCK | Đơn vị | Cơ sở | COUNT (UNION CN+PGD+VPĐD) WHERE EXISTS (`CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%phái sinh%' AND LIKE '%tự doanh%'`) | READY (ETL-derived LIKE) |
 
 **Bảng grain:**
 
@@ -2293,7 +2290,7 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi hẳn nguồn — không còn `BC_CANH_BAO`/`DM_CANH_BAO`/`BM_BAO_CAO` (đã deprecated theo O_QLKD_7) mà dùng `SC_FIRM_ALERT_VIOLATION` JOIN `ALERT_INDICATOR` (`INDICATOR_CODE = 'DUY_TRI_DKCP'`), giống Nhóm 5/6/7 nhưng filter `ENTITY_TYPE IN ('BRANCH', 'TRANSACTION_OFFICE', 'REP_OFFICE')` thay vì cấp CTCK (`ENTITY_TYPE = 'CTCK'`). Atomic entity `Securities Company Alert Violation` (LLD `lld_SCMS_SC_FIRM_ALERT_VIOLATION.yaml`) đã có attribute polymorphic `Alert Entity Type Code` (scheme `SCMS_ALERT_ENTITY_TYPE`) nhưng attribute `Alert Entity Code` (FK polymorphic trỏ theo `ENTITY_TYPE`) comment rõ **"Pending — ETL cần resolve theo ENTITY_TYPE"** — mới chỉ resolve cho case CTCK (dùng ở Nhóm 5/6/7), **chưa resolve** cho case BRANCH/TRANSACTION_OFFICE/REP_OFFICE cần ở Nhóm 36. BA SQL cũng ghi chú "Xác nhận giá trị ENTITY_TYPE" — chưa chốt.
 
-**KPI liên quan:** K_QLKD_31 (Các loại duy trì điều kiện cấp phép, reuse từ Nhóm 5 — cùng Severity_Level), K_QLKD_179 (SL duy trì tốt), K_QLKD_180 (SL gần giới hạn duy trì), K_QLKD_181 (SL không duy trì điều kiện)
+**KPI liên quan:** K_QLKD_31 (Các loại duy trì điều kiện cấp phép, reuse từ Nhóm 5 — cùng Severity_Level), K_QLKD_178 (SL duy trì tốt), K_QLKD_179 (SL gần giới hạn duy trì), K_QLKD_180 (SL không duy trì điều kiện)
 
 > **Ghi chú KPI_ID:** "Các loại duy trì điều kiện cấp phép" cùng ý nghĩa/công thức với `Severity_Level` đã cấp ở Nhóm 5 (`K_QLKD_31`) — reuse thẳng theo Rule 5, không cấp mới dù khác cấp đối tượng (CTCK vs đơn vị con), vì cùng Atomic entity + cùng Chiều phân loại 3 mức.
 
@@ -2313,10 +2310,11 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
+| K_QLKD_161 | Chiều thời gian theo Ngày (reuse từ Nhóm 32) | Chiều | PENDING |
 | K_QLKD_31 | Các loại duy trì điều kiện cấp phép (reuse từ Nhóm 5) | Chiều | PENDING |
-| K_QLKD_179 | Số lượng CN, PGD, VPĐD đang duy trì tốt | Cơ sở | PENDING |
-| K_QLKD_180 | Số lượng CN, PGD, VPĐD gần đến giới hạn duy trì | Cơ sở | PENDING |
-| K_QLKD_181 | Số lượng CN, PGD, VPĐD không duy trì điều kiện cấp phép | Cơ sở | PENDING |
+| K_QLKD_178 | Số lượng CN, PGD, VPĐD đang duy trì tốt | Cơ sở | PENDING |
+| K_QLKD_179 | Số lượng CN, PGD, VPĐD gần đến giới hạn duy trì | Cơ sở | PENDING |
+| K_QLKD_180 | Số lượng CN, PGD, VPĐD không duy trì điều kiện cấp phép | Cơ sở | PENDING |
 
 ---
 
@@ -2324,9 +2322,9 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA SQL xác nhận nguồn đơn vị đổi sang `SC_FIRM_BRANCH`/`SC_FIRM_TRANSACTION_OFFICE`/`SC_FIRM_REP_OFFICE` (xem Nhóm 32, vẫn READY cho Tên/Địa chỉ/Ngày thành lập/Giám đốc). Tuy nhiên cột **Nghiệp vụ** nay lấy từ `LISTAGG(BUSINESS_LINE_NAME)` qua `SSC_SCMS.LNK_SC_FIRM_BUSINESS_LINE` JOIN `CAT_BUSINESS_LINE` (không còn `CTCK_DICH_VU`/`DM_DICH_VU` LIKE như thiết kế cũ) — cùng gap Business Line N:N đã ghi nhận ở Nhóm 33/O_QLKD_20. Vì attribute Nghiệp vụ cần bảng liên kết N:N chưa có, KPI Nghiệp vụ PENDING trong khi 4 attribute còn lại đã READY.
 
-**KPI liên quan:** K_QLKD_182 (Tên CN/PGD/VPĐD), K_QLKD_183 (Địa chỉ), K_QLKD_184 (Nghiệp vụ), K_QLKD_185 (Ngày thành lập), K_QLKD_186 (Giám đốc/Trưởng VPĐD)
+**KPI liên quan:** K_QLKD_181 (Tên CN/PGD/VPĐD), K_QLKD_182 (Địa chỉ), K_QLKD_183 (Nghiệp vụ), K_QLKD_184 (Ngày thành lập), K_QLKD_185 (Giám đốc/Trưởng VPĐD)
 
-**Lý do pending (K_QLKD_184):** Attribute "Nghiệp vụ" (LISTAGG business line per đơn vị) cần bảng liên kết N:N `SSC_SCMS.LNK_SC_FIRM_BUSINESS_LINE` — Atomic chưa có entity tương ứng (cùng gap Nhóm 33).
+**Lý do pending (K_QLKD_183):** Attribute "Nghiệp vụ" (LISTAGG business line per đơn vị) cần bảng liên kết N:N `SSC_SCMS.LNK_SC_FIRM_BUSINESS_LINE` — Atomic chưa có entity tương ứng (cùng gap Nhóm 33).
 
 **Atomic cần bổ sung:** Bảng con `Securities Company Organization Unit Business Line` (xem Nhóm 33) — dùng để LISTAGG nghiệp vụ per đơn vị trong danh sách.
 
@@ -2343,11 +2341,11 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_182 | Tên CN, PGD, VPĐD | Cơ sở | READY |
-| K_QLKD_183 | Địa chỉ CN, PGD, VPĐD | Cơ sở | READY |
-| K_QLKD_184 | Nghiệp vụ — per đơn vị | Cơ sở | PENDING |
-| K_QLKD_185 | Ngày thành lập | Cơ sở | READY |
-| K_QLKD_186 | Giám đốc chi nhánh/Trưởng VPĐD | Cơ sở | READY |
+| K_QLKD_181 | Tên CN, PGD, VPĐD | Cơ sở | READY |
+| K_QLKD_182 | Địa chỉ CN, PGD, VPĐD | Cơ sở | READY |
+| K_QLKD_183 | Nghiệp vụ — per đơn vị | Cơ sở | PENDING |
+| K_QLKD_184 | Ngày thành lập | Cơ sở | READY |
+| K_QLKD_185 | Giám đốc chi nhánh/Trưởng VPĐD | Cơ sở | READY |
 
 **Bảng grain:**
 
@@ -2363,13 +2361,13 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 #### Nhóm 38 - Các chỉ tiêu chung (STT 38)
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA STT 38 có 3 dòng: Chiều thời gian theo Ngày (động, `MEMBER_REPORT`), Báo cáo YTD (động, `MEMBER_REPORT.RECORD_STATUS`/`DATA_DATE`), Số lượng quyết định xử phạt (**tĩnh**, nguồn đổi sang `SC_FIRM_ADMIN_PENALTY_DECISION` JOIN `SC_FIRM_INFO` — khác thiết kế cũ dùng `Inspection Penalty Decision`/INSPECT schema). Atomic entity mới `Securities Company Administrative Penalty Decision` (LLD `lld_SCMS_SC_FIRM_ADMIN_PENALTY_DECISION.yaml`) đã map đúng bảng này, đủ attribute (`Decision Number`, `Issued Date`, `Securities Company Id`) — **READY**. Đây là nguồn khác hẳn `INSPECT.PENALTY_DECISION*` dùng ở Nhóm 41g (xử phạt cá nhân) — Nhóm 38 là xử phạt hành chính cấp CTCK.
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA STT 38 có 3 dòng: Chiều thời gian theo Ngày (động, `MEMBER_REPORT`), Báo cáo YTD (động, `MEMBER_REPORT.RECORD_STATUS`/`DATA_DATE`), Số lượng quyết định xử phạt (**tĩnh**, nguồn đổi sang `SC_FIRM_ADMIN_PENALTY_DECISION` JOIN `SC_FIRM_INFO` — khác thiết kế cũ dùng `Inspection Penalty Decision`/INSPECT schema). Atomic entity mới `Securities Company Administrative Penalty Decision` (LLD `lld_SCMS_SC_FIRM_ADMIN_PENALTY_DECISION.yaml`) đã map đúng bảng này, đủ attribute (`Decision Number`, `Issued Date`, `Securities Company Id`) — **READY**. Đây là nguồn khác hẳn `INSPECT.PENALTY_DECISION*` dùng ở Nhóm 41d (xử phạt cá nhân) — Nhóm 38 là xử phạt hành chính cấp CTCK.
 
-**KPI liên quan:** K_QLKD_187 (Chiều thời gian theo Ngày), K_QLKD_188 (Báo cáo YTD), K_QLKD_189 (Số lượng quyết định xử phạt)
+**KPI liên quan:** K_QLKD_186 (Chiều thời gian theo Ngày), K_QLKD_187 (Báo cáo YTD), K_QLKD_188 (Số lượng quyết định xử phạt)
 
-**Lý do pending (K_QLKD_187, K_QLKD_188):** `Loại dữ liệu = Dữ liệu động` cho Chiều thời gian + Báo cáo YTD — gating độc lập với trạng thái Atomic. Atomic entity nguồn (`Member Periodic Report`) đã READY, không có gap. Chỉ chờ gỡ gating dữ liệu động (giống Nhóm 10).
+**Lý do pending (K_QLKD_186, K_QLKD_187):** `Loại dữ liệu = Dữ liệu động` cho Chiều thời gian + Báo cáo YTD — gating độc lập với trạng thái Atomic. Atomic entity nguồn (`Member Periodic Report`) đã READY, không có gap. Chỉ chờ gỡ gating dữ liệu động (giống Nhóm 10).
 
-**Mart:** `Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 39/40. Date-spine `K_QLKD_189` sinh dãy ngày từ `MIN(ISSUED_DATE)` đến SYSDATE, COUNT lũy kế `Issued Date <= ngày` per CTCK.
+**Mart:** `Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 39/40. Date-spine `K_QLKD_188` sinh dãy ngày từ `MIN(ISSUED_DATE)` đến SYSDATE, COUNT lũy kế `Issued Date <= ngày` per CTCK.
 
 **Mockup:**
 ```
@@ -2384,9 +2382,9 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_187 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension` | PENDING |
-| K_QLKD_188 | Báo cáo YTD đã nộp / tổng nghĩa vụ | — | Phái sinh | — | PENDING |
-| K_QLKD_189 | Số quyết định xử phạt — per CTCK | QĐ | Cơ sở | COUNT(DISTINCT `Securities Company Administrative Penalty Decision Id`) WHERE `Issued Date` <= ngày chọn AND `Securities Company Id` = selected AND `Decision Number IS NOT NULL` | READY |
+| K_QLKD_186 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension` | PENDING |
+| K_QLKD_187 | Báo cáo YTD đã nộp / tổng nghĩa vụ | — | Phái sinh | — | PENDING |
+| K_QLKD_188 | Số quyết định xử phạt — per CTCK | QĐ | Cơ sở | COUNT(DISTINCT `Securities Company Administrative Penalty Decision Id`) WHERE `Issued Date` <= ngày chọn AND `Securities Company Id` = selected AND `Decision Number IS NOT NULL` | READY |
 
 **Bảng grain:**
 
@@ -2404,7 +2402,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 > Atomic: `Securities Company Periodic Report` ← SSC_SCMS.SC_FIRM_PERIODIC_REPORT — **READY**
 > Ghi chú: Danh sách BC tuân thủ từ SCMS, hiển thị cùng Sub-tab Tuân thủ với Nhóm 38/40 — xem [Nhóm 38](#nhóm-38---các-chỉ-tiêu-chung-stt-38).
 
-**KPI liên quan:** K_QLKD_190 (Chiều thời gian theo Ngày), K_QLKD_191 (Loại báo cáo), K_QLKD_192 (Kỳ kê khai), K_QLKD_193 (Hạn nộp), K_QLKD_194 (Ngày nộp), K_QLKD_195 (Trạng thái)
+**KPI liên quan:** K_QLKD_189 (Chiều thời gian theo Ngày), K_QLKD_190 (Loại báo cáo), K_QLKD_191 (Kỳ kê khai), K_QLKD_192 (Hạn nộp), K_QLKD_193 (Ngày nộp), K_QLKD_194 (Trạng thái)
 
 **Lý do pending:** `Loại dữ liệu = Dữ liệu động` cho toàn bộ 6 dòng BA (STT 39) — gating độc lập với trạng thái Atomic. Atomic entity nguồn (`Securities Company Periodic Report`) đã READY, không có gap cấu trúc.
 
@@ -2423,12 +2421,12 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
-| K_QLKD_190 | Chiều thời gian theo Ngày | Chiều | PENDING |
-| K_QLKD_191 | Loại báo cáo — per CTCK | Cơ sở | PENDING |
-| K_QLKD_192 | Kỳ kê khai — per CTCK | Cơ sở | PENDING |
-| K_QLKD_193 | Hạn nộp — per CTCK | Cơ sở | PENDING |
-| K_QLKD_194 | Ngày nộp — per CTCK | Cơ sở | PENDING |
-| K_QLKD_195 | Trạng thái — per CTCK | Cơ sở | PENDING |
+| K_QLKD_189 | Chiều thời gian theo Ngày | Chiều | PENDING |
+| K_QLKD_190 | Loại báo cáo — per CTCK | Cơ sở | PENDING |
+| K_QLKD_191 | Kỳ kê khai — per CTCK | Cơ sở | PENDING |
+| K_QLKD_192 | Hạn nộp — per CTCK | Cơ sở | PENDING |
+| K_QLKD_193 | Ngày nộp — per CTCK | Cơ sở | PENDING |
+| K_QLKD_194 | Trạng thái — per CTCK | Cơ sở | PENDING |
 
 **Bảng grain:**
 
@@ -2440,7 +2438,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 #### Nhóm 40 - Lịch sử xử phạt, thanh tra, kiểm tra đối với CTCK (STT 40)
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi hẳn nguồn — không còn `ThanhTra.TT_HO_SO`/`TT_KET_LUAN` mà dùng schema **INSPECT** (cùng schema với Nhóm 41g — xử phạt cá nhân — nhưng filter `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE = 'ORGANIZATION'` thay vì `'INDIVIDUAL'`). Join path: `INSPECTION_TEAM_TARGET`/`EXAMINATION_TEAM_TARGET` (qua `TARGET_NAME`) → `INSPECTION_TEAM`/`EXAMINATION_TEAM` (loại hình + ngày QĐ thanh/kiểm tra) → `PENALTY_DECISION_SUBJECT` (lọc `SUBJECT_TYPE='ORGANIZATION'`) → `PENALTY_DECISION` (số QĐ, ngày ban hành) → `PENALTY_DECISION_SUBJECT_BEHAVIOR` → `VIOLATION_BEHAVIOR` (hành vi vi phạm) + `PENALTY_TYPE` (hình thức xử phạt bổ sung/biện pháp khắc phục, phân biệt qua `CATEGORY`). Atomic entity tương ứng (`Inspection Team`/`Examination Team`, `Inspection Team Target`/`Examination Team Target`, `Penalty Decision Subject`, `Penalty Decision`, `Penalty Decision Subject Behavior`, `Violation Behavior`, `Penalty Type`) đã có đủ LLD với các attribute cần dùng (`Form Type Code`, `Decision Date`, `Target Name`, `Subject Type Code`, `Decision Number`, `Issued Date`, `Violation Behavior Name`, `Penalty Type Name`, `Penalty Category Code`) — **READY** cho 7/8 dòng BA (thuộc diện Dữ liệu tĩnh). Riêng "Chiều thời gian theo Ngày" — BA SQL dùng `SYSDATE` làm placeholder tạm ("Điều kiện lọc, tạm để current date"), đánh dấu `Loại dữ liệu = Dữ liệu động` — hạ **PENDING** theo rule gating, độc lập với Atomic (đã READY).
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi hẳn nguồn — không còn `ThanhTra.TT_HO_SO`/`TT_KET_LUAN` mà dùng schema **INSPECT** (cùng schema với Nhóm 41d — xử phạt cá nhân — nhưng filter `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE = 'ORGANIZATION'` thay vì `'INDIVIDUAL'`). Join path: `INSPECTION_TEAM_TARGET`/`EXAMINATION_TEAM_TARGET` (qua `TARGET_NAME`) → `INSPECTION_TEAM`/`EXAMINATION_TEAM` (loại hình + ngày QĐ thanh/kiểm tra) → `PENALTY_DECISION_SUBJECT` (lọc `SUBJECT_TYPE='ORGANIZATION'`) → `PENALTY_DECISION` (số QĐ, ngày ban hành) → `PENALTY_DECISION_SUBJECT_BEHAVIOR` → `VIOLATION_BEHAVIOR` (hành vi vi phạm) + `PENALTY_TYPE` (hình thức xử phạt bổ sung/biện pháp khắc phục, phân biệt qua `CATEGORY`). Atomic entity tương ứng (`Inspection Team`/`Examination Team`, `Inspection Team Target`/`Examination Team Target`, `Penalty Decision Subject`, `Penalty Decision`, `Penalty Decision Subject Behavior`, `Violation Behavior`, `Penalty Type`) đã có đủ LLD với các attribute cần dùng (`Form Type Code`, `Decision Date`, `Target Name`, `Subject Type Code`, `Decision Number`, `Issued Date`, `Violation Behavior Name`, `Penalty Type Name`, `Penalty Category Code`) — **READY** cho 7/8 dòng BA (thuộc diện Dữ liệu tĩnh). Riêng "Chiều thời gian theo Ngày" — BA SQL dùng `SYSDATE` làm placeholder tạm ("Điều kiện lọc, tạm để current date"), đánh dấu `Loại dữ liệu = Dữ liệu động` — hạ **PENDING** theo rule gating, độc lập với Atomic (đã READY).
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Inspection Team` ← ThanhTra.INSPECTION_TEAM — **READY**
@@ -2452,11 +2450,11 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 > Atomic: `Penalty Decision Subject Behavior` ← ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR — **READY**
 > Atomic: `Violation Behavior` ← ThanhTra.VIOLATION_BEHAVIOR — **READY**
 > Atomic: `Penalty Type` ← ThanhTra.PENALTY_TYPE — **READY**
-> Ghi chú: UNION 2 nhánh — thanh tra (`INSPECTION_TEAM`/`INSPECTION_TEAM_TARGET`, `Form_Type_Code` = PERIODIC/UNSCHEDULED → "Thanh tra định kỳ"/"Thanh tra đột xuất") và kiểm tra (`EXAMINATION_TEAM`/`EXAMINATION_TEAM_TARGET`, cùng logic → "Kiểm tra định kỳ"/"Kiểm tra đột xuất"). Lọc `Subject Type Code = 'ORGANIZATION'` (khác Nhóm 41g dùng `'INDIVIDUAL'`) — đây là 2 khái niệm khác nhau dùng chung schema INSPECT: xử phạt/thanh tra cấp CTCK (Nhóm 40) vs cấp cá nhân (Nhóm 41g). Hình thức xử phạt bổ sung/biện pháp khắc phục derive từ `Penalty Type.Penalty Category Code` (`SUPPLEMENTARY_PENALTY` / `REMEDIAL_MEASURE`). Hiển thị cùng Sub-tab Tuân thủ với Nhóm 38/39 — xem [Nhóm 38](#nhóm-38---các-chỉ-tiêu-chung-stt-38).
+> Ghi chú: UNION 2 nhánh — thanh tra (`INSPECTION_TEAM`/`INSPECTION_TEAM_TARGET`, `Form_Type_Code` = PERIODIC/UNSCHEDULED → "Thanh tra định kỳ"/"Thanh tra đột xuất") và kiểm tra (`EXAMINATION_TEAM`/`EXAMINATION_TEAM_TARGET`, cùng logic → "Kiểm tra định kỳ"/"Kiểm tra đột xuất"). Lọc `Subject Type Code = 'ORGANIZATION'` (khác Nhóm 41d dùng `'INDIVIDUAL'`) — đây là 2 khái niệm khác nhau dùng chung schema INSPECT: xử phạt/thanh tra cấp CTCK (Nhóm 40) vs cấp cá nhân (Nhóm 41d). Hình thức xử phạt bổ sung/biện pháp khắc phục derive từ `Penalty Type.Penalty Category Code` (`SUPPLEMENTARY_PENALTY` / `REMEDIAL_MEASURE`). Hiển thị cùng Sub-tab Tuân thủ với Nhóm 38/39 — xem [Nhóm 38](#nhóm-38---các-chỉ-tiêu-chung-stt-38).
 
-**KPI liên quan:** K_QLKD_196 (Chiều thời gian theo Ngày), K_QLKD_197 (Loại thanh tra/kiểm tra), K_QLKD_198 (Ngày ban hành QĐ thanh tra/kiểm tra), K_QLKD_199 (Số quyết định xử phạt), K_QLKD_200 (Ngày ban hành QĐ xử phạt), K_QLKD_201 (Hành vi vi phạm), K_QLKD_202 (Hình thức xử phạt bổ sung), K_QLKD_203 (Biện pháp khắc phục)
+**KPI liên quan:** K_QLKD_195 (Chiều thời gian theo Ngày), K_QLKD_196 (Loại thanh tra/kiểm tra), K_QLKD_197 (Ngày ban hành QĐ thanh tra/kiểm tra), K_QLKD_198 (Số quyết định xử phạt), K_QLKD_199 (Ngày ban hành QĐ xử phạt), K_QLKD_200 (Hành vi vi phạm), K_QLKD_201 (Hình thức xử phạt bổ sung), K_QLKD_202 (Biện pháp khắc phục)
 
-**Lý do pending (K_QLKD_196):** `Loại dữ liệu = Dữ liệu động` — BA SQL dùng `SYSDATE` làm điều kiện lọc tạm thời, chưa có logic date-spine/snapshot chính thức theo ngày lựa chọn. Atomic entity nguồn không có gap — chỉ chờ gỡ gating dữ liệu động (giống Nhóm 10/38/39).
+**Lý do pending (K_QLKD_195):** `Loại dữ liệu = Dữ liệu động` — BA SQL dùng `SYSDATE` làm điều kiện lọc tạm thời, chưa có logic date-spine/snapshot chính thức theo ngày lựa chọn. Atomic entity nguồn không có gap — chỉ chờ gỡ gating dữ liệu động (giống Nhóm 10/38/39).
 
 **Mart:** `Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 38/39.
 
@@ -2472,14 +2470,14 @@ Thanh tra định kỳ | 15/05/2023 | QĐ 145/QĐ-XPHC | 20/06/2023 | Vi phạm 
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_196 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension` — BA SQL dùng `SYSDATE` placeholder | PENDING |
-| K_QLKD_197 | Loại thanh tra, kiểm tra | Attribute | Cơ sở | CASE trên `Form_Type_Code` (`Inspection Team`/`Examination Team`): PERIODIC → "Thanh tra/Kiểm tra định kỳ", UNSCHEDULED → "Thanh tra/Kiểm tra đột xuất" — theo nhánh UNION | READY |
-| K_QLKD_198 | Ngày ban hành quyết định thanh tra, kiểm tra | Attribute | Cơ sở | `Inspection Team.Decision_Date` / `Examination Team.Decision_Date` | READY |
-| K_QLKD_199 | Số quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.Decision_Number` WHERE `Penalty Decision Subject.Subject_Type_Code = 'ORGANIZATION'`, join qua `Target_Name = Subject_Name` | READY |
-| K_QLKD_200 | Ngày ban hành quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.Issued_Date` | READY |
-| K_QLKD_201 | Hành vi vi phạm | Attribute | Cơ sở | `Violation Behavior.Name` (join qua `Penalty Decision Subject Behavior`) | READY |
-| K_QLKD_202 | Hình thức xử phạt bổ sung (nếu có) | Attribute | Cơ sở | `Penalty Type.Name` WHERE `Penalty_Category_Code = 'SUPPLEMENTARY_PENALTY'`, else NULL | READY |
-| K_QLKD_203 | Biện pháp khắc phục (nếu có) | Attribute | Cơ sở | `Penalty Type.Name` WHERE `Penalty_Category_Code = 'REMEDIAL_MEASURE'`, else NULL | READY |
+| K_QLKD_195 | Chiều thời gian theo Ngày | — | Chiều | `Calendar Date Dimension` — BA SQL dùng `SYSDATE` placeholder | PENDING |
+| K_QLKD_196 | Loại thanh tra, kiểm tra | Attribute | Cơ sở | CASE trên `Form_Type_Code` (`Inspection Team`/`Examination Team`): PERIODIC → "Thanh tra/Kiểm tra định kỳ", UNSCHEDULED → "Thanh tra/Kiểm tra đột xuất" — theo nhánh UNION | READY |
+| K_QLKD_197 | Ngày ban hành quyết định thanh tra, kiểm tra | Attribute | Cơ sở | `Inspection Team.Decision_Date` / `Examination Team.Decision_Date` | READY |
+| K_QLKD_198 | Số quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.Decision_Number` WHERE `Penalty Decision Subject.Subject_Type_Code = 'ORGANIZATION'`, join qua `Target_Name = Subject_Name` | READY |
+| K_QLKD_199 | Ngày ban hành quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.Issued_Date` | READY |
+| K_QLKD_200 | Hành vi vi phạm | Attribute | Cơ sở | `Violation Behavior.Name` (join qua `Penalty Decision Subject Behavior`) | READY |
+| K_QLKD_201 | Hình thức xử phạt bổ sung (nếu có) | Attribute | Cơ sở | `Penalty Type.Name` WHERE `Penalty_Category_Code = 'SUPPLEMENTARY_PENALTY'`, else NULL | READY |
+| K_QLKD_202 | Biện pháp khắc phục (nếu có) | Attribute | Cơ sở | `Penalty Type.Name` WHERE `Penalty_Category_Code = 'REMEDIAL_MEASURE'`, else NULL | READY |
 
 **Bảng grain:**
 
@@ -2495,16 +2493,19 @@ Thanh tra định kỳ | 15/05/2023 | QĐ 145/QĐ-XPHC | 20/06/2023 | Vi phạm 
 
 ---
 
-#### Nhóm 41a - Landing page: Danh sách cá nhân (STT 41)
+#### Nhóm 41a - Mạng lưới quan hệ 360° (STT 41)
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY**
 > Atomic: `Involved Party Alternative Identification` ← SCMS.CTCK_NHAN_SU_CAO_CAP (SO_CMND) — **READY**
 > Atomic: `Securities Practitioner` ← NHNCK.Professionals — **READY**
 > Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
-> Ghi chú: `Individual Profile` là bảng Tác nghiệp gộp `Securities Company Senior Personnel` (SCMS — người nội bộ) và `Securities Practitioner` (NHNCK — người hành nghề). ETL merge key = `Involved Party Alternative Identification.Identification Number` (SCMS.SO_CMND) khớp với `Securities Practitioner.Identity Reference Code` (NHNCK.IdentityId) — cùng CMND/CCCD = cùng 1 người → dedup thành 1 row. CCCD hiển thị trên card từ `Involved Party Alternative Identification`. Số GCN hành nghề từ `Securities Practitioner License Certificate Document`.
+> Atomic: `Securities Company Insider Related Person` ← SSC_SCMS.SC_FIRM_INSIDER_RELATION — **READY**
+> Ghi chú: `Individual Profile` là bảng Tác nghiệp gộp `Securities Company Senior Personnel` (SCMS — người nội bộ) và `Securities Practitioner` (NHNCK — người hành nghề), phục vụ landing page tìm kiếm/chọn 1 cá nhân (entry point trước khi vào Mạng lưới — BA không có dòng riêng cho bước này, gộp làm phần mở đầu của cùng 1 dashboard). ETL merge key = `Involved Party Alternative Identification.Identification Number` (SCMS.SO_CMND) khớp với `Securities Practitioner.Identity Reference Code` (NHNCK.IdentityId) — cùng CMND/CCCD = cùng 1 người → dedup thành 1 row. CCCD hiển thị trên card từ `Involved Party Alternative Identification`. Số GCN hành nghề từ `Securities Practitioner License Certificate Document`.
 >
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41b-41g):** BA v4.2 STT 41 không có dòng riêng cho Landing page — không tự mở rộng scope, giữ nguyên thiết kế Nhóm 41a. Tuy nhiên phát hiện quan trọng liên quan: BA đã hợp nhất mô hình nguồn cho các sub-tab Mạng lưới/Hồ sơ (Nhóm 41b-41e) vào 1 bảng self-reference duy nhất `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (Atomic entity mới `Securities Company Insider Related Person`) — xem chi tiết từng Nhóm bên dưới.
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi hẳn nguồn cho phần Mạng lưới — không còn `CTCK_CO_DONG`/`CTCK_CD_MOI_QUAN_HE`/NHNCK.ProfessionalRelationships/IDS.company_relationship, mà hợp nhất toàn bộ vào **1 bảng self-reference duy nhất**: `SSC_SCMS.SC_FIRM_INSIDER_RELATION` — mỗi dòng vừa có thể là "người nội bộ" (gắn `SENIOR_PERSONNEL_ID`) vừa có thể là "người liên quan" của người nội bộ khác (self-join qua `SENIOR_PERSONNEL_ID`, loại trừ chính nó bằng `ID != ID`). Atomic entity tương ứng `Securities Company Insider Related Person` (LLD `lld_SCMS_SC_FIRM_INSIDER_RELATION.yaml`) đã có đủ attribute: `Full Name`, `Date Of Birth`, `Classification Nationality Code` (join `Involved Party Alternative Identification` cho CCCD — `Identification Type Code = 'NATIONAL_ID'`), `Entity Type Code`, `Representative Position`, `Relationship`, `Ownership Ratio`, `Relation Start Date`, `Securities Company Senior Personnel Id` (self-join FK) — **READY** cho toàn bộ 6/7 dòng BA (Tên cá nhân, Vai trò/chức vụ, Người liên quan × 3 attribute, Tỷ lệ sở hữu). Riêng "Chiều thời gian theo Ngày" — BA SQL dùng date-spine từ `MIN(RELATION_START_DATE)` (không phải `SYSDATE` placeholder như Nhóm 40, nhưng vẫn đánh dấu `Loại dữ liệu = Dữ liệu động`) — hạ **PENDING** theo rule gating, độc lập với Atomic (đã READY). IDS không còn dùng cho node DN niêm yết trong sub-tab này — xem Nhóm 41b cho phần vai trò tại tổ chức khác.
+>
+> **Sửa 16/07/2026 (Datamart review):** Gộp landing page (tìm kiếm cá nhân) và Mạng lưới quan hệ 360° thành 1 nhóm duy nhất — trước đây tách thành Nhóm 41a/41b riêng, nhưng đối chiếu cột "Dashboard/báo cáo" trong BA (`BA_analyst_QLKD.csv`, STT 41) xác nhận cả 2 phần cùng thuộc 1 dashboard BA "Dashboard Mạng lưới của cá nhân ban quản trị, điều hành, cổ đông tại CTCK" — landing page chỉ là bước chọn cá nhân trước khi xem mạng lưới, không phải 1 dashboard độc lập. Đồng thời xóa `K_QLKD_112` ("Số người liên quan — per cá nhân") khỏi bảng KPI chính thức — KPI này không nằm trong 7 dòng gốc BA STT 41 (dashboard Mạng lưới), tự thêm ngoài scope để phục vụ mockup, vi phạm quy tắc scope discipline (`feedback_hld_scope_discipline`) cùng bản chất với K_QLKD_160/161 đã xóa trước đó ở Nhóm 31. Nếu cần hiển thị số lượng người liên quan trên UI, tính COUNT tại tầng presentation từ kết quả K_QLKD_206, không cấp KPI_ID riêng.
 
 **Mockup:**
 ```
@@ -2520,37 +2521,6 @@ Chủ tịch HĐQT                  Tổng Giám đốc
 [XEM HỒ SƠ CÁ NHÂN →]         [XEM HỒ SƠ CÁ NHÂN →]
 ```
 
-**Source:** `Individual Profile` (tác nghiệp)
-
-> **Ghi chú KPI_ID:** BA STT 41 liệt kê riêng từng trường hiển thị trên card (Tên cá nhân, Vai trò/chức vụ, Tỷ lệ sở hữu) — tách từ gộp K_QLKD_109 cũ thành K_QLKD_205-206 + K_QLKD_210 (tỷ lệ sở hữu, xem Nhóm 41b — cùng nguồn `Individual Related Party Network`).
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
-|---|---|---|---|---|
-| K_QLKD_205 | Tên cá nhân — per CTCK | Attribute | Cơ sở | Lookup `Individual Profile` WHERE Securities Company Code = filter AND (Full Name LIKE search OR Identification Number = search OR License Certificate Number = search OR Position Name LIKE search): `Full Name` |
-| K_QLKD_206 | Vai trò, chức vụ — per CTCK | Attribute | Cơ sở | `Individual Profile.Position Type Code` (chức vụ). Kèm attribute bổ trợ hiển thị card: `Securities Company Code` (CTCK), `Identification Number` (CCCD), `License Certificate Number` (GCN), `Practice Type Tag` (nghiệp vụ — từ `License Certificate Document.Certificate Type Code`), `INSIDER VERIFIED` flag (ETL-derived: merge thành công SCMS+NHNCK) |
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Individual Profile | 1 cá nhân × 1 CTCK (latest state) |
-
----
-
-#### Nhóm 41b - Mạng lưới quan hệ 360° (STT 41)
-
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi hẳn nguồn — không còn `CTCK_CO_DONG`/`CTCK_CD_MOI_QUAN_HE`/NHNCK.ProfessionalRelationships/IDS.company_relationship, mà hợp nhất toàn bộ vào **1 bảng self-reference duy nhất**: `SSC_SCMS.SC_FIRM_INSIDER_RELATION` — mỗi dòng vừa có thể là "người nội bộ" (gắn `SENIOR_PERSONNEL_ID`) vừa có thể là "người liên quan" của người nội bộ khác (self-join qua `SENIOR_PERSONNEL_ID`, loại trừ chính nó bằng `ID != ID`). Atomic entity tương ứng `Securities Company Insider Related Person` (LLD `lld_SCMS_SC_FIRM_INSIDER_RELATION.yaml`) đã có đủ attribute: `Full Name`, `Date Of Birth`, `Classification Nationality Code` (join `Involved Party Alternative Identification` cho CCCD — `Identification Type Code = 'NATIONAL_ID'`), `Entity Type Code`, `Representative Position`, `Relationship`, `Ownership Ratio`, `Relation Start Date`, `Securities Company Senior Personnel Id` (self-join FK) — **READY** cho toàn bộ 6/7 dòng BA (Tên cá nhân, Vai trò/chức vụ, Người liên quan × 3 attribute, Tỷ lệ sở hữu). Riêng "Chiều thời gian theo Ngày" — BA SQL dùng date-spine từ `MIN(RELATION_START_DATE)` (không phải `SYSDATE` placeholder như Nhóm 40, nhưng vẫn đánh dấu `Loại dữ liệu = Dữ liệu động`) — hạ **PENDING** theo rule gating, độc lập với Atomic (đã READY). IDS không còn dùng cho node DN niêm yết trong sub-tab này — xem Nhóm 41c/41d cho phần vai trò tại tổ chức khác.
-
-> **Ghi chú KPI_ID:** Cấp mới **K_QLKD_204** (Chiều thời gian theo Ngày — dùng chung 41a/41b, date-spine từ `MIN(RELATION_START_DATE)`, `Loại dữ liệu = Dữ liệu động` → PENDING theo rule gating, độc lập Atomic đã READY). K_QLKD_207-209 tách từ gộp K_QLKD_111 cũ (3 attribute "Người có liên quan": tên, mối quan hệ, vai trò/chức vụ).
-
-> Phân loại: **Tác nghiệp**
-> Atomic: `Securities Company Insider Related Person` ← SSC_SCMS.SC_FIRM_INSIDER_RELATION — **READY**
-> Atomic: `Involved Party Alternative Identification` ← SSC_SCMS.SC_FIRM_INSIDER_RELATION (NATIONAL_ID) — **READY**
-> Ghi chú: Entry point tìm kiếm là chính `Securities Company Insider Related Person` — người dùng tìm theo `Full Name` hoặc `Identification Number` (CCCD, qua `Involved Party Alternative Identification`). Self-join: 1 row "người nội bộ" (`i`, filter `Record_Status = 1`) LEFT JOIN chính bảng đó (`r`, cùng `Securities Company Senior Personnel Id`, khác `Id`) để lấy danh sách người liên quan. `INSIDER VERIFIED` = ETL-derived flag khi `Securities Company Senior Personnel Id IS NOT NULL` (là chính người nội bộ, không phải người liên quan của người nội bộ). `Individual Related Party Network` tổng hợp người liên quan trực tiếp từ self-join này — không cần merge nhiều nguồn như thiết kế cũ.
-
-**Mockup:**
 ```
 INSIDER VERIFIED  Since 15/03/2015
 Nguyễn Thế Anh — Chủ tịch HĐQT   [3 Người liên quan]
@@ -2565,32 +2535,39 @@ PHÁT HIỆN DỰA TRÊN CMND/CCCD & DỮ LIỆU QUẢN TRỊ
 ● NHÂN SỰ CHÍNH  ● NGƯỜI LIÊN QUAN
 ```
 
-**Source:** `Individual Related Party Network` (tác nghiệp)
+**Source:** `Individual Profile` (tác nghiệp) + `Individual Related Party Network` (tác nghiệp)
+
+> **Ghi chú KPI_ID:** BA STT 41 liệt kê riêng từng trường hiển thị trên card (Tên cá nhân, Vai trò/chức vụ, Tỷ lệ sở hữu) — tách từ gộp K_QLKD_109 cũ thành K_QLKD_204-205 + K_QLKD_209 (tỷ lệ sở hữu, cùng nguồn `Individual Related Party Network`). Cấp mới **K_QLKD_203** (Chiều thời gian theo Ngày, date-spine từ `MIN(RELATION_START_DATE)`, `Loại dữ liệu = Dữ liệu động` → PENDING theo rule gating, độc lập Atomic đã READY). K_QLKD_206-208 tách từ gộp K_QLKD_112 cũ (3 attribute "Người có liên quan": tên, mối quan hệ, vai trò/chức vụ) — K_QLKD_112 (đếm số người liên quan) đã xóa, xem ghi chú "Sửa 16/07/2026" trên.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_204 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine từ `MIN(RELATION_START_DATE)` đến `SYSDATE` | PENDING |
-| K_QLKD_207 | Người có liên quan >> Tên người có liên quan | Attribute | Cơ sở | Self-join `Securities Company Insider Related Person` (r) WHERE `r.Securities Company Senior Personnel Id = i.Securities Company Senior Personnel Id` AND `r.Id != i.Id`: `Full Name` | READY |
-| K_QLKD_208 | Người có liên quan >> Mối quan hệ của người có liên quan | Attribute | Cơ sở | Self-join: `Relationship` | READY |
-| K_QLKD_209 | Người có liên quan >> Vai trò, chức vụ của người có liên quan | Attribute | Cơ sở | Self-join: `Representative Position` | READY |
-| K_QLKD_210 | Tỷ lệ sở hữu cổ phần | % | Cơ sở | Self-join: `Ownership Ratio` — xem O_QLKD_15 (nguồn SCMS tự khai báo, không phải VSDC chính thức) | READY |
-| K_QLKD_111 | Số người liên quan — per cá nhân | Người | Cơ sở | COUNT `Securities Company Insider Related Person` (r) WHERE `r.Securities Company Senior Personnel Id = i.Securities Company Senior Personnel Id` AND `r.Id != i.Id` | READY |
-
-> **Ghi chú KPI_ID:** K_QLKD_111 (đếm số người liên quan, KPI phái sinh không nằm trong 22 dòng gốc BA STT 41 nhưng vẫn cần cho mockup — giữ lại) đổi nguồn/công thức sang self-join `Securities Company Insider Related Person`. K_QLKD_207-210 tách từ gộp K_QLKD_111 cũ (danh sách mạng lưới quan hệ) thành 4 attribute riêng theo đúng dòng BA STT 41 (`Identification Number` hiển thị kèm K_QLKD_207 như thuộc tính bổ trợ, không cấp ID riêng vì không phải dòng độc lập trong BA).
+| K_QLKD_204 | Tên cá nhân — per CTCK | Attribute | Cơ sở | Lookup `Individual Profile` WHERE Securities Company Code = filter AND (Full Name LIKE search OR Identification Number = search OR License Certificate Number = search OR Position Name LIKE search): `Full Name` | READY |
+| K_QLKD_205 | Vai trò, chức vụ — per CTCK | Attribute | Cơ sở | `Individual Profile.Position Type Code` (chức vụ). Kèm attribute bổ trợ hiển thị card: `Securities Company Code` (CTCK), `Identification Number` (CCCD), `License Certificate Number` (GCN), `Practice Type Tag` (nghiệp vụ — từ `License Certificate Document.Certificate Type Code`), `INSIDER VERIFIED` flag (ETL-derived: merge thành công SCMS+NHNCK) | READY |
+| K_QLKD_203 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine từ `MIN(RELATION_START_DATE)` đến `SYSDATE` | PENDING |
+| K_QLKD_206 | Người có liên quan >> Tên người có liên quan | Attribute | Cơ sở | Self-join `Securities Company Insider Related Person` (r) WHERE `r.Securities Company Senior Personnel Id = i.Securities Company Senior Personnel Id` AND `r.Id != i.Id`: `Full Name` | READY |
+| K_QLKD_207 | Người có liên quan >> Mối quan hệ của người có liên quan | Attribute | Cơ sở | Self-join: `Relationship` | READY |
+| K_QLKD_208 | Người có liên quan >> Vai trò, chức vụ của người có liên quan | Attribute | Cơ sở | Self-join: `Representative Position` | READY |
+| K_QLKD_209 | Tỷ lệ sở hữu cổ phần | % | Cơ sở | Self-join: `Ownership Ratio` — xem O_QLKD_15 (nguồn SCMS tự khai báo, không phải VSDC chính thức) | READY |
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
+| Individual Profile | 1 cá nhân × 1 CTCK (latest state) |
 | Individual Related Party Network | 1 người liên quan × 1 cá nhân chính |
 
 ---
 
-#### Nhóm 41c - Hồ sơ: Vai trò tại DN niêm yết (STT 41)
+#### Nhóm 41b - Hồ sơ và danh mục (STT 41)
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi nguồn sang cùng bảng self-reference `SSC_SCMS.SC_FIRM_INSIDER_RELATION` — không còn `CTCK_CO_DONG`/`CTCK_THONG_TIN` như thiết kế cũ. Attribute cần dùng: `Representative Position` (vai trò), `Shares Count` (số CP nắm giữ), `Record Status Code` derive ACTIVE/INACTIVE, tên tổ chức join qua `Securities Company Code`/`Securities Company.Securities_Company_Name`. Atomic entity `Securities Company Insider Related Person` đã có đủ attribute — **READY**. Date-spine trên `Relation_Start_Date` (Dữ liệu tĩnh, cùng nguồn với Nhóm 41b nhưng dòng này BA đánh dấu tĩnh — không cần Chiều riêng, dùng chung Calendar Date snapshot module).
+> Phân loại: **Tác nghiệp**
+> Atomic: `Securities Company Insider Related Person` ← SSC_SCMS.SC_FIRM_INSIDER_RELATION — **READY**
+> Atomic: `Securities Company Shareholder` ← SSC_SCMS.SC_FIRM_SHAREHOLDER — **READY**
+> Ghi chú: Gộp 3 block UI (Vai trò tại DN niêm yết, Mạng lưới người liên quan chi tiết, Tài khoản giao dịch) — cùng thuộc 1 dashboard BA duy nhất "Dashboard Hồ sơ và danh mục của cá nhân ban quản trị, điều hành, cổ đông tại CTCK" (BA STT 41, 4 dòng: Chiều thời gian theo Ngày, Vai trò tại DN niêm yết, Mạng lưới người liên quan, Tài khoản). **Sửa 16/07/2026 (Datamart review):** trước đây tách thành Nhóm 41c/41d/41e riêng theo từng Datamart entity — gộp lại đúng theo cấu trúc dashboard BA, giữ nguyên toàn bộ KPI_ID/entity/công thức, chỉ đổi tổ chức section.
+>
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify, tên nhóm cũ 41c/41e trước khi gộp):** "Vai trò tại DN niêm yết" đổi nguồn từ IDS sang `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (cùng entity với Cụm 13) — IDS không còn dùng cho use case này. "Tài khoản" đổi tên bảng từ `CTCK_CO_DONG` sang `SSC_SCMS.SC_FIRM_SHAREHOLDER` (Atomic entity `Securities Company Shareholder`, không đổi cấu trúc) — cả 2 vẫn **READY**.
 
 **Mockup:**
 ```
@@ -2607,69 +2584,14 @@ VAI TRÒ TẠI CÁC DN NIÊM YẾT   3
 │ Cổ đông lớn                       │
 │ SỞ HỮU: 2,500,000 CP              │
 └────────────────────────────────────┘
-```
 
-**Source:** `Individual Listed Company Role` (tác nghiệp)
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
-|---|---|---|---|---|
-| K_QLKD_211 | Số tổ chức cá nhân tham gia — per cá nhân | Tổ chức | Cơ sở | COUNT DISTINCT `Securities Company Id` từ `Securities Company Insider Related Person` WHERE `Identification Number` (qua `Involved Party Alternative Identification`) = cá nhân được chọn |
-| K_QLKD_212 | Danh sách vai trò tại tổ chức — per cá nhân | Attribute | Cơ sở | Lookup `Securities Company Insider Related Person` WHERE `Identification Number` = cá nhân được chọn: `Securities Company Code` (tên tổ chức), `Representative Position` (vai trò), `Shares Count` (số CP nắm giữ) |
-
-> **Ghi chú KPI_ID:** K_QLKD_211/212 đổi từ K_QLKD_112/113 cũ — đổi nguồn/công thức sang `Securities Company Insider Related Person`.
-> **Sửa 14/07/2026 (LLD review):** Bỏ điều kiện `Record Status Code = 1` và cột `Life Cycle Status Code` — entity `Securities Company Insider Related Person` không có attribute `Record Status Code`. Theo xác nhận Data Modeler: pipeline ETL Atomic đã lọc `RECORD_STATUS = 1` (bản ghi active) ngay khi populate lên Atomic — mọi row trong entity mặc định đã là bản ghi hiện hành, không cần filter/derive trạng thái lại ở tầng Datamart.
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân (latest per Identification Number × Securities Company Id) |
-
----
-
-#### Nhóm 41d - Hồ sơ: Mạng lưới người liên quan chi tiết (STT 41)
-
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi nguồn sang cùng bảng self-reference `SSC_SCMS.SC_FIRM_INSIDER_RELATION` như Nhóm 41b (self-join qua `Securities Company Senior Personnel Id`). Attribute cần dùng: `Full Name`, `Identification Number` (qua `Involved Party Alternative Identification`), `Representative Position` (vai trò/nghề nghiệp), `Shares Count`, `Relationship`, `Ownership Ratio`. Atomic entity `Securities Company Insider Related Person` — **READY**, đủ attribute, cùng entity với Nhóm 41b (tái sử dụng self-join, không phải nguồn riêng).
-
-**Mockup:**
-```
 MẠNG LƯỚI NGƯỜI LIÊN QUAN   3
 ┌─────────────────────────────────────────────────────┐
 │ [L] Lê Thị Hồng F                          VỢ      │
 │     CCCD: 123xxxxxx012   Kinh doanh tự do           │
 │     250,000 CP                            0.12%     │
 └─────────────────────────────────────────────────────┘
-```
 
-**Source:** `Individual Related Party Network` (tác nghiệp)
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
-|---|---|---|---|---|
-| K_QLKD_207 | Người có liên quan >> Tên người có liên quan | Attribute | Cơ sở | Self-join `Securities Company Insider Related Person` (r) WHERE `r.Securities Company Senior Personnel Id = i.Securities Company Senior Personnel Id` AND `r.Id != i.Id`: `Full Name` |
-| K_QLKD_208 | Người có liên quan >> Mối quan hệ của người có liên quan | Attribute | Cơ sở | Self-join: `Relationship` |
-| K_QLKD_209 | Người có liên quan >> Vai trò, chức vụ của người có liên quan | Attribute | Cơ sở | Self-join: `Representative Position` (nghề nghiệp/vai trò). Kèm attribute bổ trợ hiển thị card: `Identification Number` (CCCD người liên quan, qua `Involved Party Alternative Identification`), `Shares Count` |
-| K_QLKD_210 | Tỷ lệ sở hữu cổ phần | % | Cơ sở | `Securities Company Insider Related Person.Ownership Ratio` — xem O_QLKD_15 (nguồn SCMS tự khai báo, không phải VSDC chính thức) |
-
-> **Ghi chú KPI_ID:** K_QLKD_207-210 reuse thẳng từ Nhóm 41b — cùng entity `Securities Company Insider Related Person`, cùng self-join, cùng field (Full Name/Relationship/Representative Position/Ownership Ratio) → 1 KPI_ID, 1 câu query, phục vụ cả 2 màn hình (Mạng lưới quan hệ 360° và Mạng lưới người liên quan chi tiết). Không cấp ID mới cho Nhóm 41d.
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính |
-
----
-
-#### Nhóm 41e - Hồ sơ: Tài khoản giao dịch (STT 41)
-
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA xác nhận nguồn đổi tên bảng từ `SCMS.CTCK_CO_DONG` sang `SSC_SCMS.SC_FIRM_SHAREHOLDER` — Atomic entity `Securities Company Shareholder` đã có LLD map đúng bảng mới (`Trading Account`, `Shareholder Name`, `Shareholder Type Code`, CCCD qua `Involved Party Alternative Identification`), vẫn **READY**. BA SQL mở rộng UNION ALL 2 nhánh: (1) tài khoản của chính cá nhân (`ID_NUMBER = cá nhân`), (2) tài khoản của người liên quan (`ID_NUMBER` = CCCD người liên quan, lấy qua self-join `SC_FIRM_INSIDER_RELATION` như Nhóm 41b/41d) — cả 2 nhánh đều dùng `Securities Company Shareholder`, không có gap Atomic mới.
-
-**Mockup:**
-```
 TÀI KHOẢN   3
 ┌──────────────────────────────────────────┐
 │ SSI                                      │
@@ -2681,25 +2603,34 @@ TÀI KHOẢN   3
 └──────────────────────────────────────────┘
 ```
 
-**Source:** `Individual Trading Account` (tác nghiệp)
+**Source:** `Individual Listed Company Role` (tác nghiệp) + `Individual Related Party Network` (tác nghiệp, reuse từ Nhóm 41a) + `Individual Trading Account` (tác nghiệp)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| K_QLKD_213 | Danh sách tài khoản giao dịch — per cá nhân | Attribute | Cơ sở | Lookup `Individual Trading Account` WHERE Individual Profile Id = selected: Securities Company Code (CTCK), Trading Account Number (số TK), Shareholder Name (chủ TK). Bao gồm cả tài khoản của người liên quan (self-join `Securities Company Insider Related Person` để lấy CCCD, xem Nhóm 41b/41d) |
+| K_QLKD_210 | Số tổ chức cá nhân tham gia — per cá nhân | Tổ chức | Cơ sở | COUNT DISTINCT `Securities Company Id` từ `Securities Company Insider Related Person` WHERE `Identification Number` (qua `Involved Party Alternative Identification`) = cá nhân được chọn |
+| K_QLKD_211 | Danh sách vai trò tại tổ chức — per cá nhân | Attribute | Cơ sở | Lookup `Securities Company Insider Related Person` WHERE `Identification Number` = cá nhân được chọn: `Securities Company Code` (tên tổ chức), `Representative Position` (vai trò), `Shares Count` (số CP nắm giữ) |
+| K_QLKD_206 | Người có liên quan >> Tên người có liên quan | Attribute | Cơ sở | Reuse từ Nhóm 41a — Self-join `Securities Company Insider Related Person` (r) WHERE `r.Securities Company Senior Personnel Id = i.Securities Company Senior Personnel Id` AND `r.Id != i.Id`: `Full Name` |
+| K_QLKD_207 | Người có liên quan >> Mối quan hệ của người có liên quan | Attribute | Cơ sở | Reuse từ Nhóm 41a — Self-join: `Relationship` |
+| K_QLKD_208 | Người có liên quan >> Vai trò, chức vụ của người có liên quan | Attribute | Cơ sở | Reuse từ Nhóm 41a — Self-join: `Representative Position` (nghề nghiệp/vai trò). Kèm attribute bổ trợ hiển thị card: `Identification Number` (CCCD người liên quan, qua `Involved Party Alternative Identification`), `Shares Count` |
+| K_QLKD_209 | Tỷ lệ sở hữu cổ phần | % | Cơ sở | Reuse từ Nhóm 41a — `Securities Company Insider Related Person.Ownership Ratio` — xem O_QLKD_15 (nguồn SCMS tự khai báo, không phải VSDC chính thức) |
+| K_QLKD_212 | Danh sách tài khoản giao dịch — per cá nhân | Attribute | Cơ sở | Lookup `Individual Trading Account` WHERE Individual Profile Id = selected: Securities Company Code (CTCK), Trading Account Number (số TK), Shareholder Name (chủ TK). Bao gồm cả tài khoản của người liên quan (self-join `Securities Company Insider Related Person` để lấy CCCD, xem Nhóm 41a — Mạng lưới quan hệ 360°) |
 
-> **Ghi chú KPI_ID:** K_QLKD_213 đổi từ K_QLKD_118 cũ — đổi tên bảng nguồn `Securities Company Shareholder` (SC_FIRM_SHAREHOLDER thay vì CTCK_CO_DONG), mở rộng công thức bao gồm nhánh người liên quan.
+> **Ghi chú KPI_ID:** K_QLKD_210/211 đổi từ K_QLKD_113/114 cũ — đổi nguồn/công thức sang `Securities Company Insider Related Person`. K_QLKD_206-209 reuse thẳng từ Nhóm 41a — cùng entity `Securities Company Insider Related Person`, cùng self-join, cùng field (Full Name/Relationship/Representative Position/Ownership Ratio) → 1 KPI_ID, 1 câu query, phục vụ cả 2 màn hình (Mạng lưới quan hệ 360° và Mạng lưới người liên quan chi tiết). K_QLKD_212 đổi từ K_QLKD_119 cũ — đổi tên bảng nguồn `Securities Company Shareholder` (SC_FIRM_SHAREHOLDER thay vì CTCK_CO_DONG), mở rộng công thức bao gồm nhánh người liên quan.
+> **Sửa 14/07/2026 (LLD review):** Bỏ điều kiện `Record Status Code = 1` và cột `Life Cycle Status Code` (K_QLKD_211) — entity `Securities Company Insider Related Person` không có attribute `Record Status Code`. Theo xác nhận Data Modeler: pipeline ETL Atomic đã lọc `RECORD_STATUS = 1` (bản ghi active) ngay khi populate lên Atomic — mọi row trong entity mặc định đã là bản ghi hiện hành, không cần filter/derive trạng thái lại ở tầng Datamart.
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
+| Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân (latest per Identification Number × Securities Company Id) |
+| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính — dùng chung với Nhóm 41a |
 | Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân |
 
 ---
 
-#### Nhóm 41f - Quá trình hành nghề: Lịch sử công tác (STT 41)
+#### Nhóm 41c - Quá trình hành nghề: Lịch sử công tác (STT 41)
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Securities Company Senior Personnel` ← SCMS.CTCK_NHAN_SU_CAO_CAP — **READY**
@@ -2721,7 +2652,7 @@ LỊCH SỬ CÔNG TÁC
   2018 – 2023  ⏱ 5 NĂM CÔNG TÁC
 ```
 
-> **Ghi chú KPI_ID:** BA STT 41 (dòng "Chiều thời gian theo Ngày") có date-spine `Loại dữ liệu = Dữ liệu động` chưa từng cấp ID — cấp mới **K_QLKD_214** (nguồn `WORK_START_DATE` — khác nguồn Chiều ngày K_QLKD_204 của Nhóm 41a/41b, nên KHÔNG reuse) — hạ **PENDING** theo rule gating, độc lập với K_QLKD_215-218 (đã READY, không có gap Atomic).
+> **Ghi chú KPI_ID:** BA STT 41 (dòng "Chiều thời gian theo Ngày") có date-spine `Loại dữ liệu = Dữ liệu động` chưa từng cấp ID — cấp mới **K_QLKD_213** (nguồn `WORK_START_DATE` — khác nguồn Chiều ngày K_QLKD_203 của Nhóm 41a, nên KHÔNG reuse) — hạ **PENDING** theo rule gating, độc lập với K_QLKD_214-217 (đã READY, không có gap Atomic).
 
 **Source:** `Individual Work History` (tác nghiệp)
 
@@ -2729,11 +2660,11 @@ LỊCH SỬ CÔNG TÁC
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_214 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine từ `MIN(WORK_START_DATE)` đến `SYSDATE` | PENDING |
-| K_QLKD_215 | Tên công ty công tác | Attribute | Cơ sở | `Individual Work History.Securities Company Code` → lookup tên CTCK | READY |
-| K_QLKD_216 | Chức vụ tại công ty | Attribute | Cơ sở | `Individual Work History.Position Type Code` → `DM_CHUC_VU.TEN_CHUC_VU` (JOIN via `CHUC_VU_ID`) | READY |
-| K_QLKD_217 | Thời gian làm việc (Từ ngày – Đến ngày) | Attribute | Cơ sở | `Work Start Date` (WORK_START_DATE, xác nhận từ BA v4.2 STT 31 — không còn cần tạm dùng Created Timestamp) → `Resignation Date` (NULL = HIỆN TẠI) — O_QLKD_16 Closed | READY |
-| K_QLKD_218 | Trạng thái công tác | Attribute | Cơ sở | Derive: `Resignation Date IS NULL` → HIỆN TẠI; có `Resignation Date` → QUÁ KHỨ | READY |
+| K_QLKD_213 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine từ `MIN(WORK_START_DATE)` đến `SYSDATE` | PENDING |
+| K_QLKD_214 | Tên công ty công tác | Attribute | Cơ sở | `Individual Work History.Securities Company Code` → lookup tên CTCK | READY |
+| K_QLKD_215 | Chức vụ tại công ty | Attribute | Cơ sở | **Sửa 16/07/2026 (LLD review):** `Securities Company Senior Personnel.Position Name` (`position_nm`) — lấy trực tiếp, không cần JOIN `DM_CHUC_VU` (attribute đã có sẵn tên chức vụ trên entity) | READY |
+| K_QLKD_216 | Thời gian làm việc (Từ ngày – Đến ngày) | Attribute | Cơ sở | `Work Start Date` (WORK_START_DATE, xác nhận từ BA v4.2 STT 31 — không còn cần tạm dùng Created Timestamp) → `Resignation Date` (NULL = HIỆN TẠI) — O_QLKD_16 Closed | READY |
+| K_QLKD_217 | Trạng thái công tác | Attribute | Cơ sở | Derive: `Resignation Date IS NULL` → HIỆN TẠI; có `Resignation Date` → QUÁ KHỨ | READY |
 
 **Bảng grain:**
 
@@ -2743,7 +2674,7 @@ LỊCH SỬ CÔNG TÁC
 
 ---
 
-#### Nhóm 41g - Lịch sử vi phạm & xử phạt cá nhân (STT 41)
+#### Nhóm 41d - Lịch sử vi phạm & xử phạt cá nhân (STT 41)
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Penalty Decision` ← INSPECT.PENALTY_DECISION — **READY**
@@ -2753,7 +2684,7 @@ LỊCH SỬ CÔNG TÁC
 > Atomic: `Violation Case` ← INSPECT.VIOLATION_CASE — **READY**
 > Ghi chú: **Xác nhận từ BA (STT 41 SQL):** nguồn là schema `INSPECT` (không phải ThanhTra.TT_HO_SO/TT_KET_LUAN như phân tích trước). Filter cá nhân: `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE = 'INDIVIDUAL'`. Lấy hình thức phạt chính: `PENALTY_TYPE.CATEGORY = 'PRIMARY_PENALTY'`. Join path: `PENALTY_DECISION_SUBJECT` → `PENALTY_DECISION` (quyết định) → `PENALTY_DECISION_SUBJECT_BEHAVIOR` (hành vi vi phạm) → `PENALTY_TYPE` (hình thức phạt) → LEFT JOIN `VIOLATION_CASE` (trạng thái). **O_QLKD_14 cập nhật:** entity đúng là `INSPECT.PENALTY_DECISION*` — không phải `ThanhTra.TT_HO_SO/TT_KET_LUAN`.
 >
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA STT 41 xác nhận lại đúng thiết kế hiện tại — đổi K_QLKD_123-127 cũ thành K_QLKD_220-224. Riêng dòng "Chiều thời gian theo Ngày" dùng `SYSDATE` placeholder (cùng pattern Nhóm 40), `Loại dữ liệu = Dữ liệu động` — chưa từng cấp ID, cấp mới **K_QLKD_219** (nguồn `ISSUED_DATE` — khác nguồn Chiều ngày K_QLKD_204/K_QLKD_214, nên KHÔNG reuse), hạ **PENDING** theo rule gating.
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA STT 41 xác nhận lại đúng thiết kế hiện tại — đổi K_QLKD_124-128 cũ thành K_QLKD_219-223. Riêng dòng "Chiều thời gian theo Ngày" dùng `SYSDATE` placeholder (cùng pattern Nhóm 40), `Loại dữ liệu = Dữ liệu động` — chưa từng cấp ID, cấp mới **K_QLKD_218** (nguồn `ISSUED_DATE` — khác nguồn Chiều ngày K_QLKD_203/K_QLKD_213, nên KHÔNG reuse), hạ **PENDING** theo rule gating.
 
 **Mockup:**
 ```
@@ -2772,12 +2703,12 @@ NGÀY QĐ      SỐ QĐ             NỘI DUNG VI PHẠM             HÌNH THỨ
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_219 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine — `SYSDATE` placeholder | PENDING |
-| K_QLKD_220 | Ngày ban hành quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.ISSUED_DATE` WHERE `Penalty Decision Subject.SUBJECT_TYPE = 'INDIVIDUAL'` AND filter theo cá nhân được chọn | READY |
-| K_QLKD_221 | Số quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.DECISION_NUMBER` | READY |
-| K_QLKD_222 | Nội dung vi phạm | Attribute | Cơ sở | `Penalty Decision Subject Behavior.DESCRIPTION` (hành vi vi phạm cụ thể) | READY |
-| K_QLKD_223 | Hình thức xử phạt | Attribute | Cơ sở | `Penalty Type.NAME` WHERE `Penalty Type.CATEGORY = 'PRIMARY_PENALTY'` | READY |
-| K_QLKD_224 | Trạng thái quyết định | Attribute | Cơ sở | `Violation Case.STATUS` (LEFT JOIN — NULL nếu chưa có VIOLATION_CASE) | READY |
+| K_QLKD_218 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine — `SYSDATE` placeholder | PENDING |
+| K_QLKD_219 | Ngày ban hành quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.ISSUED_DATE` WHERE `Penalty Decision Subject.SUBJECT_TYPE = 'INDIVIDUAL'` AND filter theo cá nhân được chọn | READY |
+| K_QLKD_220 | Số quyết định xử phạt | Attribute | Cơ sở | `Penalty Decision.DECISION_NUMBER` | READY |
+| K_QLKD_221 | Nội dung vi phạm | Attribute | Cơ sở | `Penalty Decision Subject Behavior.DESCRIPTION` (hành vi vi phạm cụ thể) | READY |
+| K_QLKD_222 | Hình thức xử phạt | Attribute | Cơ sở | `Penalty Type.NAME` WHERE `Penalty Type.CATEGORY = 'PRIMARY_PENALTY'` | READY |
+| K_QLKD_223 | Trạng thái quyết định | Attribute | Cơ sở | `Violation Case.STATUS` (LEFT JOIN — NULL nếu chưa có VIOLATION_CASE) | READY |
 
 **Bảng grain:**
 
@@ -2803,7 +2734,7 @@ NGÀY QĐ      SỐ QĐ             NỘI DUNG VI PHẠM             HÌNH THỨ
 > Atomic: `Report Template` ← SCMS — READY
 > Atomic: `Report Submission Schedule` ← SCMS — READY
 > Ghi chú: Data Explorer phục vụ 102 biểu mẫu báo cáo định kỳ CTCK nộp cho UBCKNN, nhóm thành 17 nhóm báo cáo (STT 42–145). Toàn bộ 3263 chỉ tiêu trong BA đều dùng chung 1 pattern: **EAV (Entity-Attribute-Value)** — 1 row per chỉ tiêu per kỳ per CTCK. Thiết kế dự kiến vẫn dùng 1 bảng Datamart duy nhất `Securities Company Report Data` với grain đủ nhỏ để cover tất cả, khi Atomic đã có entity thay thế `Member Report Indicator Value`. 6 Chiều đồng nhất trên 98/102 tab: Loại báo cáo / Kỳ báo cáo / Mã báo cáo / Tên báo cáo / Mã chỉ tiêu / Tên chỉ tiêu — đây chính là slicer filter dự kiến của Data Explorer. 5 tab ngoại lệ (STT 141–145 Ngân hàng lưu ký/thanh toán) có Chiều khác nhưng vẫn dùng cùng bảng Datamart dự kiến.
-> **Trạng thái BA theo dải STT (tham khảo, không quyết định READY vì còn gap Atomic + gating dữ liệu động):** STT 49–56, 62–84, 89–90, 92–93, 96–110, 122–139 = BA đánh giá Done hoàn toàn. STT 42–48, 57–61, 117, 120, 140, 144–145 = BA đánh giá Pending ("DB cũ không thấy biểu mẫu"). STT 64–66, 85–88, 91, 94–95, 111–116, 118–119, 121 = BA đánh giá Chiều Pending (BA chưa xác định Loại báo cáo/Mã báo cáo trong DB cũ) + chỉ tiêu cơ sở Done.
+> **Trạng thái BA theo dải STT (tham khảo, cập nhật 16/07/2026, không quyết định READY vì còn gap Atomic + gating dữ liệu động):** STT 42–84, 89–117, 119–139, 141–145 = BA đánh giá **Done hoàn toàn** (cả Chiều và Chỉ tiêu cơ sở) — tiến triển đáng kể so với ghi nhận trước đây (khi nhiều dải còn Pending/Chiều Pending). STT 85–88 = Done gần hết, còn đúng 1 dòng Chỉ tiêu cơ sở Pending mỗi STT ("Tên tổ chức"). STT 118 = **100% Pending** (Chiều + Chỉ tiêu cơ sở, "DB cũ không thấy biểu mẫu") — dải Pending thật duy nhất trong toàn khối. STT 140 = 34 Done / 24 Pending (nhóm "Nhân sự của văn phòng đại diện") / 2 trống.
 
 **Mockup:**
 ```
@@ -2848,37 +2779,37 @@ DATA EXPLORER — Tra cứu báo cáo biểu mẫu định kỳ
 
 **Bảng KPI:**
 
-> **Ghi chú:** K_QLKD_4261 là KPI đại diện EAV cho toàn Nhóm 42-145. Từ K_QLKD_225 đến K_QLKD_4260 là dải liên tục cấp cho từng dòng chỉ tiêu BA (STT 42–145), khai sinh theo từng nhóm loại báo cáo (xem bảng dưới). Toàn bộ đều dự kiến dùng chung bảng `Securities Company Report Data` — không thiết kế mart riêng per biểu mẫu. **Toàn bộ PENDING** — xem O_QLKD_23 (gap Atomic `Member Report Indicator Value`) và gating dữ liệu động.
+> **Ghi chú:** K_QLKD_4260 là KPI đại diện EAV cho toàn Nhóm 42-145. Từ K_QLKD_224 đến K_QLKD_4259 là dải liên tục cấp cho từng dòng chỉ tiêu BA (STT 42–145), khai sinh theo từng nhóm loại báo cáo (xem bảng dưới). Toàn bộ đều dự kiến dùng chung bảng `Securities Company Report Data` — không thiết kế mart riêng per biểu mẫu. **Toàn bộ PENDING** — xem O_QLKD_23 (gap Atomic `Member Report Indicator Value`) và gating dữ liệu động.
 >
-> **Lưu ý renumbering 13/07/2026:** Dải KPI_ID của Nhóm 42-145 đã đánh lại thành **liên tục thật**, bắt đầu từ K_QLKD_225 (tránh trùng K_QLKD_128/129 đã dùng cho Nhóm 25/26/27 sau khi renumber Nhóm 1-41 thành dải K_1-224). Số chỉ tiêu mỗi dòng đã đếm lại trực tiếp từ số dòng thật trong `BRD/BA/BA_analyst_QLKD.csv` (STT 42–145) — **4036 dòng**, không phải 3263 (số cũ trong ghi chú thiết kế trước) hay 5108 (số tổng đã cộng sai từ cột "Số chỉ tiêu" cũ ở bản nháp trước đó, chưa đối chiếu BA). Mỗi dòng dưới đây là 1 khối ID liên tục thật (điểm bắt đầu của dòng sau = điểm kết thúc dòng trước + 1), không còn là mốc neo rời rạc. KPI đại diện EAV dời sang K_QLKD_4261 (ngay sau điểm kết thúc dải).
+> **Lưu ý renumbering 13/07/2026:** Dải KPI_ID của Nhóm 42-145 đã đánh lại thành **liên tục thật**, bắt đầu từ K_QLKD_224 (tránh trùng K_QLKD_129/130 đã dùng cho Nhóm 25/26/27 sau khi renumber Nhóm 1-41 thành dải K_1-224). Số chỉ tiêu mỗi dòng đã đếm lại trực tiếp từ số dòng thật trong `BRD/BA/BA_analyst_QLKD.csv` (STT 42–145) — **4036 dòng**, không phải 3263 (số cũ trong ghi chú thiết kế trước) hay 5108 (số tổng đã cộng sai từ cột "Số chỉ tiêu" cũ ở bản nháp trước đó, chưa đối chiếu BA). Mỗi dòng dưới đây là 1 khối ID liên tục thật (điểm bắt đầu của dòng sau = điểm kết thúc dòng trước + 1), không còn là mốc neo rời rạc. KPI đại diện EAV dời sang K_QLKD_4260 (ngay sau điểm kết thúc dải).
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_4261 | Giá trị chỉ tiêu báo cáo biểu mẫu định kỳ | Text/Number | Cơ sở | `SELECT Indicator_Value FROM Securities_Company_Report_Data WHERE Report_Type_Code = {LOAI_BAO_CAO} AND Report_Period = {KY_BAO_CAO} AND Report_Template_Code = {MA_BAO_CAO} AND Securities_Company_Code = {CTCK} AND Report_Indicator_Code = {MA_CHI_TIEU}`. Áp dụng cho toàn bộ 4036 dòng chỉ tiêu thuộc 104 STT (STT 42–145). | PENDING |
+| K_QLKD_4260 | Giá trị chỉ tiêu báo cáo biểu mẫu định kỳ | Text/Number | Cơ sở | `SELECT Indicator_Value FROM Securities_Company_Report_Data WHERE Report_Type_Code = {LOAI_BAO_CAO} AND Report_Period = {KY_BAO_CAO} AND Report_Template_Code = {MA_BAO_CAO} AND Securities_Company_Code = {CTCK} AND Report_Indicator_Code = {MA_CHI_TIEU}`. Áp dụng cho toàn bộ 4036 dòng chỉ tiêu thuộc 104 STT (STT 42–145). | PENDING |
 
 **Bảng KPI theo nhóm loại báo cáo (dải ID liên tục) — toàn bộ PENDING:**
 
 > **Lưu ý đọc bảng:** Mỗi dòng dưới đây là 1 khối ID liên tục thật — số lượng ID trong khối (cuối − đầu + 1) khớp chính xác với cột "Số chỉ tiêu" (đếm trực tiếp từ số dòng BA trong khoảng STT tương ứng). KPI_ID cụ thể của từng chỉ tiêu riêng lẻ (tên, công thức) chưa được thiết kế chi tiết — sẽ hoàn thiện khi Atomic entity `REPORT_CELL_VALUE`/`Member Report Indicator Value` sẵn sàng (gỡ O_QLKD_23); các khối ID dưới đây giữ chỗ (reserve) đúng số lượng để tránh renumbering lại toàn bộ dải khi thiết kế chi tiết.
 
-| Nhóm loại báo cáo | STT BA | Dải KPI ID (liên tục) | Số chỉ tiêu | Tính chất | Trạng thái Datamart | Ghi chú trạng thái BA (tham khảo) |
+| Nhóm loại báo cáo | STT BA | Dải KPI ID (liên tục) | Số chỉ tiêu | Tính chất | Trạng thái Datamart | Ghi chú trạng thái BA (tham khảo, cập nhật 16/07/2026) |
 |---|---|---|---|---|---|---|
-| Chào bán phát hành | 42–43 | K_QLKD_225 – K_QLKD_408 | 184 | Cơ sở / Chiều | **PENDING** | BA: Pending ("DB cũ không thấy biểu mẫu") |
-| Báo cáo giám sát | 44–48 | K_QLKD_409 – K_QLKD_901 | 493 | Cơ sở / Chiều | **PENDING** | BA: Pending |
-| Báo cáo chứng quyền có đảm bảo | 49–56 | K_QLKD_902 – K_QLKD_1079 | 178 | Cơ sở / Chiều | **PENDING** | BA: Done (nhưng gap Atomic O_QLKD_23 + dữ liệu động) |
-| Hoạt động phái sinh | 57–61 | K_QLKD_1080 – K_QLKD_1204 | 125 | Cơ sở / Chiều | **PENDING** | BA: Pending |
-| Báo cáo theo Thông tư 121/2020/TT-BTC | 62–110 | K_QLKD_1205 – K_QLKD_2821 | 1.617 | Cơ sở / Chiều | **PENDING** | BA: Phần lớn Done (64–66 Chiều Pending; 85–88/91 thiếu "Tên tổ chức"; 94–95 thiếu vài chỉ tiêu) — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
-| Báo cáo giám sát quản trị công ty | 111–116 | K_QLKD_2822 – K_QLKD_3010 | 189 | Cơ sở / Chiều | **PENDING** | BA: Chiều Pending (chỉ tiêu Done) |
-| Báo cáo NPF | 117 | K_QLKD_3011 – K_QLKD_3045 | 35 | Cơ sở / Chiều | **PENDING** | BA: Pending |
-| Báo cáo thường niên | 118 | K_QLKD_3046 – K_QLKD_3114 | 69 | Cơ sở / Chiều | **PENDING** | BA: Chiều Pending (chỉ tiêu Done) |
-| Báo cáo TPDN riêng lẻ | 119 | K_QLKD_3115 – K_QLKD_3138 | 24 | Cơ sở / Chiều | **PENDING** | BA: Chiều Pending (chỉ tiêu Done) |
-| Báo cáo hoạt động CN CTCK nước ngoài tại VN | 120–130 | K_QLKD_3139 – K_QLKD_3797 | 659 | Cơ sở / Chiều | **PENDING** | BA: STT 120 Pending; STT 121 Chiều Pending; STT 122–130 Done |
-| Báo cáo TLATTC CN CTCK nước ngoài tại VN | 131–139 | K_QLKD_3798 – K_QLKD_4077 | 280 | Cơ sở / Chiều | **PENDING** | BA: Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
-| Báo cáo hoạt động VPĐD CTCK nước ngoài tại VN | 140 | K_QLKD_4078 – K_QLKD_4137 | 60 | Cơ sở / Chiều | **PENDING** | BA: Pending |
-| Ngân hàng lưu ký — Báo cáo tài sản bảo đảm thanh toán | 141 | K_QLKD_4138 – K_QLKD_4163 | 26 | Cơ sở / Chiều | **PENDING** | BA: Done (src: SCMS.BM_BAO_CAO + BC_THANH_VIEN) — nhưng dữ liệu động |
-| Ngân hàng thanh toán — Đáp ứng điều kiện | 142 | K_QLKD_4164 – K_QLKD_4180 | 17 | Cơ sở / Chiều | **PENDING** | BA: Pending |
-| Ngân hàng thanh toán — Hoạt động thanh toán | 143 | K_QLKD_4181 – K_QLKD_4194 | 14 | Cơ sở / Chiều | **PENDING** | BA: Done (src: SCMS.BM_BAO_CAO + BC_THANH_VIEN) — nhưng dữ liệu động |
-| Ngân hàng thanh toán — Đáp ứng điều kiện (NH thanh toán) | 144 | K_QLKD_4195 – K_QLKD_4216 | 22 | Cơ sở / Chiều | **PENDING** | BA: Pending |
-| Ngân hàng thanh toán — Hoạt động thanh toán (NH thanh toán) | 145 | K_QLKD_4217 – K_QLKD_4260 | 44 | Cơ sở / Chiều | **PENDING** | BA: Pending |
+| Chào bán phát hành | 42–43 | K_QLKD_224 – K_QLKD_407 | 184 | Cơ sở / Chiều | **PENDING** | BA: 100% Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo giám sát | 44–48 | K_QLKD_408 – K_QLKD_900 | 493 | Cơ sở / Chiều | **PENDING** | BA: 100% Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo chứng quyền có đảm bảo | 49–56 | K_QLKD_901 – K_QLKD_1078 | 178 | Cơ sở / Chiều | **PENDING** | BA: Done (nhưng gap Atomic O_QLKD_23 + dữ liệu động) |
+| Hoạt động phái sinh | 57–61 | K_QLKD_1079 – K_QLKD_1203 | 125 | Cơ sở / Chiều | **PENDING** | BA: 100% Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo theo Thông tư 121/2020/TT-BTC | 62–110 | K_QLKD_1204 – K_QLKD_2820 | 1.617 | Cơ sở / Chiều | **PENDING** | BA: 1.613/1.617 Done (85–88/91 còn 1 dòng Pending/STT — "Tên tổ chức"; 64–66/94–95/111–116 nay 100% Done, không còn Chiều Pending như ghi nhận trước) — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo giám sát quản trị công ty | 111–116 | K_QLKD_2821 – K_QLKD_3009 | 189 | Cơ sở / Chiều | **PENDING** | BA: 100% Done (Chiều + Cơ sở) — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo NPF | 117 | K_QLKD_3010 – K_QLKD_3044 | 35 | Cơ sở / Chiều | **PENDING** | BA: 100% Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo thường niên | 118 | K_QLKD_3045 – K_QLKD_3113 | 69 | Cơ sở / Chiều | **PENDING** | BA: 100% Pending (Chiều + Cơ sở, "DB cũ không thấy biểu mẫu") |
+| Báo cáo TPDN riêng lẻ | 119 | K_QLKD_3114 – K_QLKD_3137 | 24 | Cơ sở / Chiều | **PENDING** | BA: 100% Done (Chiều + Cơ sở) — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo hoạt động CN CTCK nước ngoài tại VN | 120–130 | K_QLKD_3138 – K_QLKD_3796 | 659 | Cơ sở / Chiều | **PENDING** | BA: 100% Done, STT 120–130 (không còn Pending như ghi nhận trước) — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo TLATTC CN CTCK nước ngoài tại VN | 131–139 | K_QLKD_3797 – K_QLKD_4076 | 280 | Cơ sở / Chiều | **PENDING** | BA: Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Báo cáo hoạt động VPĐD CTCK nước ngoài tại VN | 140 | K_QLKD_4077 – K_QLKD_4136 | 60 | Cơ sở / Chiều | **PENDING** | BA: 34 Done / 24 Pending (nhân sự VPĐD) / 2 trống — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Ngân hàng lưu ký — Báo cáo tài sản bảo đảm thanh toán | 141 | K_QLKD_4137 – K_QLKD_4162 | 26 | Cơ sở / Chiều | **PENDING** | BA: Done (src: SCMS.BM_BAO_CAO + BC_THANH_VIEN) — nhưng dữ liệu động |
+| Ngân hàng thanh toán — Đáp ứng điều kiện | 142 | K_QLKD_4163 – K_QLKD_4179 | 17 | Cơ sở / Chiều | **PENDING** | BA: 100% Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Ngân hàng thanh toán — Hoạt động thanh toán | 143 | K_QLKD_4180 – K_QLKD_4193 | 14 | Cơ sở / Chiều | **PENDING** | BA: Done (src: SCMS.BM_BAO_CAO + BC_THANH_VIEN) — nhưng dữ liệu động |
+| Ngân hàng thanh toán — Đáp ứng điều kiện (NH thanh toán) | 144 | K_QLKD_4194 – K_QLKD_4215 | 22 | Cơ sở / Chiều | **PENDING** | BA: 100% Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
+| Ngân hàng thanh toán — Hoạt động thanh toán (NH thanh toán) | 145 | K_QLKD_4216 – K_QLKD_4259 | 44 | Cơ sở / Chiều | **PENDING** | BA: 100% Done — nhưng gap Atomic O_QLKD_23 + dữ liệu động |
 
 **Bảng grain:**
 
@@ -2913,7 +2844,6 @@ graph TB
 
     OPR_FRH["Securities Company Financial Report History"]:::oper
     OPR_PRS["Securities Company Personnel Profile"]:::oper
-    OPR_SHR["Securities Company Shareholder Profile"]:::oper
     OPR_PRC["Securities Company Practitioner Profile"]:::oper
     OPR_CPL["Securities Company Compliance History"]:::oper
     OPR_OU["Securities Company Organization Unit Profile"]:::oper
@@ -2954,7 +2884,7 @@ graph TB
 | Fact Securities Company Business Line Registration | Event | 1 CTCK × 1 nghiệp vụ | K_QLKD_14–19 (Nhóm 2) | **PENDING** |
 | Fact Securities Company Service Registration | Event | 1 CTCK × 1 dịch vụ × 1 lần đăng ký | K_QLKD_20–29 (Nhóm 3/4) | READY |
 | Fact Securities Company License Condition Snapshot | Periodic Snapshot | 1 CTCK × 1 loại giấy phép × 1 ngày | K_QLKD_30–40 (Nhóm 5/6/7) | READY |
-| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_41–52 (Nhóm 8/9), K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–130 (Nhóm 14/15/16/17/18/19/20/21/22/23/24/25) — trừ K_QLKD_88–91 (Cụm 6b, nguồn MDDS.JAD_MARKETINFOR — khác Fact, READY) | **PENDING** — toàn bộ Fact chờ Atomic entity `REPORT_CELL_VALUE` (O_QLKD_23), trừ K_QLKD_88–91 (Fact khác) |
+| Fact Securities Company Financial Structure Snapshot | Periodic Snapshot | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_41–52 (Nhóm 8/9), K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–131 (Nhóm 14/15/16/17/18/19/20/21/22/23/24/25) — trừ K_QLKD_88–91 (Cụm 6b, nguồn MDDS.JAD_MARKETINFOR — khác Fact, READY) | **PENDING** — toàn bộ Fact chờ Atomic entity `REPORT_CELL_VALUE` (O_QLKD_23), trừ K_QLKD_88–91 (Fact khác) |
 | Fact Securities Company Capital Raising Event | Event | 1 đợt chào bán/phát hành hợp lệ (aggregated theo tháng × hình thức tăng vốn, toàn thị trường) | K_QLKD_66–72 (Nhóm 13) | READY |
 | Market Index Snapshot | Periodic Snapshot | 1 chỉ số (marketCode) × 1 tháng | K_QLKD_88–91 (Nhóm 16) | **READY** (O_QLKD_8 Closed) |
 | Fact Securities Company Report Compliance Snapshot | Periodic Snapshot | 1 CTCK × 1 biểu mẫu × 1 kỳ nghĩa vụ | K_QLKD_53–58 (Nhóm 10) | **PENDING** (Nhóm 10/STT 10 — gating dữ liệu động, Atomic vẫn READY) |
@@ -2963,18 +2893,17 @@ graph TB
 
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| Securities Company Financial Report History | 1 CTCK × 1 kỳ BC BCTC | K_QLKD_129–140 (Nhóm 26/27) | **PENDING** (xem O_QLKD_23) |
-| Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK | K_QLKD_154–159, 161 (Nhóm 31) | READY |
-| Securities Company Shareholder Profile | 1 cổ đông × 1 CTCK | K_QLKD_160 (Nhóm 31) | READY |
-| Securities Company Practitioner Profile | 1 người HN × 1 CTCK | K_QLKD_141–153 (Nhóm 28/29/30) | **PENDING** (xem O_QLKD_23 — đổi nguồn từ Securities Practitioner/NHNCK sang REPORT_CELL_VALUE) |
-| Securities Company Compliance History | 1 CTCK × 1 sự kiện | K_QLKD_189, 197–203 READY; K_QLKD_187–188, 190–196 **PENDING** (Nhóm 38/39/40 — gating dữ liệu động) | **Partial READY** |
-| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK | K_QLKD_162–165, 171–178, 182–183, 185–186 READY; K_QLKD_166–170, 179–181, 184 **PENDING** (Nhóm 33/36/37 — xem O_QLKD_20/O_QLKD_7) | **Partial READY** — Nhóm 33/36/37 PENDING |
-| Individual Profile | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_205–206 (Nhóm 41a) | READY |
-| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính | K_QLKD_111, 204, 207–210 (Nhóm 41b/41d) | READY, trừ K_QLKD_204 (Chiều ngày) **PENDING** |
-| Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_211–212 (Nhóm 41c) | READY |
-| Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_213 (Nhóm 41e) | READY |
-| Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_215–218 (Nhóm 41f) | READY, trừ K_QLKD_214 (Chiều ngày) **PENDING** |
-| Individual Violation History | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_220–224 (Nhóm 41g) | READY, trừ K_QLKD_219 (Chiều ngày) **PENDING** |
+| Securities Company Financial Report History | 1 CTCK × 1 kỳ BC BCTC | K_QLKD_130–141 (Nhóm 26/27) | **PENDING** (xem O_QLKD_23) |
+| Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK | K_QLKD_155–160 (Nhóm 31) | READY |
+| Securities Company Practitioner Profile | 1 người HN × 1 CTCK | K_QLKD_142–154 (Nhóm 28/29/30) | **PENDING** (xem O_QLKD_23 — đổi nguồn từ Securities Practitioner/NHNCK sang REPORT_CELL_VALUE) |
+| Securities Company Compliance History | 1 CTCK × 1 sự kiện | K_QLKD_188, 197–203 READY; K_QLKD_186–187, 190–196 **PENDING** (Nhóm 38/39/40 — gating dữ liệu động) | **Partial READY** |
+| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK | K_QLKD_161–164, 171–178, 182–183, 185–186 READY; K_QLKD_165–169, 179–181, 184 **PENDING** (Nhóm 33/36/37 — xem O_QLKD_20/O_QLKD_7) | **Partial READY** — Nhóm 33/36/37 PENDING |
+| Individual Profile | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_204–205 (Nhóm 41a) | READY |
+| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính | K_QLKD_203, 206–210 (Nhóm 41a), reuse ở Nhóm 41b | READY, trừ K_QLKD_203 (Chiều ngày) **PENDING** |
+| Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_210–211 (Nhóm 41b) | READY |
+| Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_212 (Nhóm 41b) | READY |
+| Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_214–217 (Nhóm 41c) | READY, trừ K_QLKD_213 (Chiều ngày) **PENDING** |
+| Individual Violation History | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_219–223 (Nhóm 41d) | READY, trừ K_QLKD_218 (Chiều ngày) **PENDING** |
 | Securities Company Report Data | 1 chỉ tiêu × 1 kỳ báo cáo × 1 CTCK × 1 biểu mẫu | STT 42–145 (Nhóm 42-145, dải KPI_ID riêng — xem lưu ý phạm vi ở Nhóm 42-145) | **PENDING** (xem O_QLKD_23) |
 
 **Bảng Dimension:**
@@ -2994,14 +2923,14 @@ graph TB
 
 ## Section 4 — Reuse Analysis
 
-> **Bối cảnh:** `Datamart/datamart_model.yaml` (registry cross-module) tại thời điểm thiết kế chỉ chứa entity của module NHNCK — module QLKD là module thứ 2 kiểm tra reuse qua registry này, chưa có entity nào của QLKD hoặc module khác (TT/NDTNN/GSDC/GSTT/PTTT/QLCB) trùng nguồn Atomic với QLKD. Do đó toàn bộ Fact/Operational là `new`; chỉ 2 Dimension áp dụng reuse theo Lớp 1 (Conformed Dimension whitelist) và Lớp 2 (Classification Value → `cls_dim`).
+> **Bối cảnh:** `Datamart/datamart_model.yaml` (registry cross-module) tại thời điểm thiết kế chỉ chứa entity của module NHNCK — module QLKD là module thứ 2 kiểm tra reuse qua registry này, chưa có entity nào của QLKD hoặc module khác (TT/NDTNN/GSDC/GSTT/PTTT/QLCB) trùng nguồn Atomic với QLKD. Do đó toàn bộ Fact/Operational là `new`; chỉ 2 Dimension áp dụng reuse theo Lớp 1 (Conformed Dimension whitelist) và Lớp 2 (Classification Value → `cl_dim`).
 
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
 | Calendar Date Dimension | cdr_dt_dim | reuse | Lớp 1 — Conformed Dimension whitelist, dùng chung toàn hệ thống |
-| Business Line Dimension | cls_dim | reuse | Lớp 2 — nguồn Atomic là Classification Value (scheme `SCMS_BUSINESS_LINE`, xác nhận trong `classification_schemes.yaml`), không tạo Dimension riêng. KPI liên quan (Nhóm 2/33/37) đang PENDING — xem O_QLKD_20 |
+| Business Line Dimension | cl_dim | reuse | Lớp 2 — nguồn Atomic là Classification Value (scheme `SCMS_BUSINESS_LINE`, xác nhận trong `classification_schemes.yaml`), không tạo Dimension riêng. KPI liên quan (Nhóm 2/33/37) đang PENDING — xem O_QLKD_20 |
 | Securities Company Dimension | sc_dim (mới) | new | Chưa có trong master |
-| Service Type Dimension | sv_tp_dim (mới) | new | Nguồn Atomic `Classification Service` (physical_name `cl_service`) là entity riêng — không phải `cv` — nên KHÔNG reuse `cls_dim` (đúng Lớp 2, điều kiện `physical_name ≠ cv`) |
+| Service Type Dimension | sv_tp_dim (mới) | new | Nguồn Atomic `Classification Service` (physical_name `cl_service`) là entity riêng — không phải `cv` — nên KHÔNG reuse `cl_dim` (đúng Lớp 2, điều kiện `physical_name ≠ cv`) |
 | Offering Form Dimension | ofr_form_dim (mới) | new | ETL-derived, chưa có trong master |
 | Report Indicator Dimension | rpt_ind_dim (mới) | new | Chưa có trong master |
 | Fact Securities Company Status Snapshot | fct_sc_status_snpst (mới) | new | Chưa có trong master |
@@ -3013,7 +2942,6 @@ graph TB
 | Fact Securities Company Report Compliance Snapshot | fct_sc_rpt_compl_snpst (mới) | new | PENDING (gating dữ liệu động) — thiết kế placeholder |
 | Securities Company Financial Report History | opr_sc_fin_rpt_hist (mới) | new | PENDING (O_QLKD_23) — thiết kế placeholder |
 | Securities Company Personnel Profile | opr_sc_personnel_profile (mới) | new | Chưa có trong master |
-| Securities Company Shareholder Profile | opr_sc_shareholder_profile (mới) | new | Chưa có trong master |
 | Securities Company Practitioner Profile | opr_sc_prac_profile (mới) | new | Partial READY/PENDING theo Nhóm — thiết kế đầy đủ, đánh dấu PENDING ở cột KPI |
 | Securities Company Compliance History | opr_sc_compl_hist (mới) | new | Partial READY/PENDING theo Nhóm |
 | Securities Company Organization Unit Profile | opr_sc_org_unit_profile (mới) | new | Partial READY/PENDING theo Nhóm |
@@ -3037,20 +2965,20 @@ graph TB
 | O_QLKD_4 | Nhiều biểu đồ Tab GIÁM SÁT cần xác nhận indicator_code ATTTC, dư nợ margin, doanh thu, CFO, thị phần môi giới... trong `SCMS.DM_CHI_TIEU`. BA ghi grain theo ngày nhưng UI hiển thị theo quý/tháng — cần xác nhận `Member Report Indicator Value.Report Date` là ngày cuối kỳ hay ngày báo cáo | **Cập nhật 13/07/2026:** Nhóm 8 (K_QLKD_41–47), Nhóm 11 (`VON_DAU_TU_CSH` v.v.), Nhóm 12 (`VON_GOP_CUA_CSH`) đã hạ **PENDING** — không chỉ vì code chưa xác nhận, mà vì gap Atomic nghiêm trọng hơn (entity `Member Report Indicator Value` không tồn tại trong track hiện hành, nguồn thực tế BA dùng `REPORT_CELL_VALUE`/LIKE matching chứ không phải EAV theo `MA_CHI_TIEU`) và gating dữ liệu động — xem **O_QLKD_23**. **Nhóm 14 re-verify (13/07/2026):** `TY_LE_VON_KHA_DUNG` confirmed đúng qua `CAT_INDICATOR.INDICATOR_CODE` — nhưng cùng gap Atomic `REPORT_CELL_VALUE` với Nhóm 8/9/11/12 (không phải chỉ vấn đề xác nhận code) → đã hạ **PENDING**, xem **O_QLKD_23**. **Nhóm 15 re-verify (13/07/2026):** Ban đầu tưởng chỉ cần xác nhận `TONG_DOANH_THU`/`LOI_NHUAN_SAU_THUE` — nhưng BA SQL thực tế xác nhận nguồn hoàn toàn khác (`MEMBER_REPORT`/`FORM_REPORT`/`REPORT_CELL_VALUE`, LIKE matching trên `ROW_NAME`, không phải EAV `MA_CHI_TIEU`) → cùng gap O_QLKD_23, đã hạ **PENDING**. **Nhóm 16 re-verify (13/07/2026):** K_QLKD_87 (Dư nợ margin) tương tự — BA đổi nguồn sang `MEMBER_REPORT`/`FORM_REPORT`/`REPORT_CELL_VALUE` (LIKE `'%Giá trị chứng khoán ký quỹ%'`), không còn EAV `MA_CHI_TIEU` → hạ PENDING. K_QLKD_88–91 (chỉ số thị trường, nguồn `MDDS.JAD_MARKETINFOR`, Dữ liệu tĩnh) không bị ảnh hưởng — vẫn READY (O_QLKD_8 Closed). **Nhóm 17 re-verify (13/07/2026):** `THI_PHAN_MOI_GIOI` confirmed đúng qua `CAT_INDICATOR.INDICATOR_CODE` — nhưng cùng gap Atomic `REPORT_CELL_VALUE` (nguồn `MEMBER_REPORT`/`SC_FIRM_INFO`/`REPORT_CELL_VALUE`/`CAT_INDICATOR`, không phải EAV `MA_CHI_TIEU`) → đã hạ **PENDING**, xem **O_QLKD_23**. **Nhóm 18 re-verify (13/07/2026):** `LOI_NHUAN_SAU_THUE`/`CFO` confirmed đúng ý nghĩa nhưng nguồn thực tế khác hẳn — BA SQL dùng `MEMBER_REPORT`/`FORM_REPORT`/`REPORT_CELL_VALUE` LIKE-matching trên `ROW_NAME` (sheet `BCKQHDR`/`BCLCTTRTT`), không phải EAV `MA_CHI_TIEU` → cùng gap O_QLKD_23, đã hạ **PENDING**. Toàn bộ Sub-tab GIÁM SÁT HOẠT ĐỘNG (Nhóm 11–18) đã re-verify xong. | K_QLKD_41–99 | **Partial — Nhóm 8/11/12/14/15/16/17/18 chuyển sang O_QLKD_23** |
 | O_QLKD_5 | K_QLKD_12–13 — cần xác nhận nguồn báo cáo (ATTTC hay báo cáo khác) và grain theo ngày hay theo kỳ | **Trùng nội dung với O_QLKD_1** — xem O_QLKD_1 cho trạng thái PENDING mới nhất (13/07/2026) | K_QLKD_12–13 | **Merged vào O_QLKD_1** |
 | O_QLKD_6 | Nguồn dịch vụ CTCK (K_QLKD_20–29) đã xác nhận từ `SCMS.SC_FIRM_SERVICE + CAT_SERVICE` theo BA mapping SQL — Atomic entity `Securities Company Licensed Service` + `Classification Service` (đã nâng cấp từ scheme `SCMS_SERVICE_TYPE` cũ, nay deprecated). Mã `Classification Service Code` cụ thể cho từng dịch vụ (ký quỹ/ứng trước/lưu ký/phái sinh) cần xác nhận qua data profiling `SCMS.CAT_SERVICE`. **K_QLKD_14–19 (Nhóm 2 — Biểu đồ Nghiệp vụ) tách sang O_QLKD_20** — nguồn khác (`SC_FIRM_INFO.BUSINESS_LINES + CAT_BUSINESS_LINE`). | Đã chuyển sang `SC_FIRM_SERVICE + CAT_SERVICE` — chờ data profiling xác nhận mã Classification Service Code | K_QLKD_20–29 | Open |
-| O_QLKD_7 | **Nhóm 5/6/7 Tab TỔNG QUAN — READY.** Ghi nhận ban đầu (BA v4.1): logic nguồn `BC_CANH_BAO` JOIN `DM_CANH_BAO` (CAP_DO=1/2/3) JOIN `BC_THANH_VIEN` JOIN `BM_BAO_CAO`, MA_BAO_CAO per nhóm: Nhóm 5=`DUY_TRI_DKCP_GPKD`, Nhóm 6=`DUY_TRI_DKCP_CKPS_KD` (ước lượng cũ), Nhóm 7=`DUY_TRI_DKCP_CKPS_BU_TRU` (ước lượng cũ). **Cập nhật 13/07/2026 (BA v4.2):** Cả 3 nhóm đổi nguồn sang `SC_FIRM_ALERT_VIOLATION` JOIN `ALERT_INDICATOR`, phân loại qua `Severity_Level` (1/2/3) — Atomic entity `Securities Company Alert Violation`/`Securities Company Alert Indicator` đã có LLD, cả 3 nhóm nâng lên **READY**. Filter đúng theo BA SQL: Nhóm 5 = `Indicator_Code = 'DUY_TRI_DKCP_GPKD'`, Nhóm 6 = `Indicator_Code = 'DUY_TRI_DKCP_CTCK_PHAI_SINH'` (khác candidate cũ `DUY_TRI_DKCP_CKPS_KD`), Nhóm 7 = `Indicator_Code = 'DUY_TRI_DKCP_CTCKPS_BU_TRU'` (khác candidate cũ `DUY_TRI_DKCP_CKPS_BU_TRU`). **Cập nhật — Nhóm 36 (STT 36) re-verify (13/07/2026):** Ghi nhận trước đây "Tab HỒ SƠ 360 (K_QLKD_181) dùng `BC_CANH_BAO`, không đổi, vẫn READY" — **sai**, BA v4.2 SQL thực tế của Nhóm 36 cũng đã đổi sang `SC_FIRM_ALERT_VIOLATION`/`ALERT_INDICATOR` (`INDICATOR_CODE='DUY_TRI_DKCP'`) giống Nhóm 5/6/7, nhưng filter `ENTITY_TYPE IN ('BRANCH','TRANSACTION_OFFICE','REP_OFFICE')` (cấp đơn vị con) thay vì cấp CTCK. Atomic `Securities Company Alert Violation` mới chỉ resolve polymorphic FK (`Alert Entity Code`) cho case CTCK — **chưa resolve** cho case đơn vị con → K_QLKD_179–181 hạ **PENDING**, xem chi tiết Section 2 Nhóm 36. | **Closed (Nhóm 5/6/7)** — K_QLKD_30–40 READY. **Nhóm 36 (K_QLKD_179–181) hạ PENDING** — xem gap ETL resolve ENTITY_TYPE ở ghi chú Nhóm 36 | K_QLKD_30–40, K_QLKD_179–181 | **Partial — Nhóm 5/6/7 Closed; Nhóm 36 (K_QLKD_179–181) PENDING** |
+| O_QLKD_7 | **Nhóm 5/6/7 Tab TỔNG QUAN — READY.** Ghi nhận ban đầu (BA v4.1): logic nguồn `BC_CANH_BAO` JOIN `DM_CANH_BAO` (CAP_DO=1/2/3) JOIN `BC_THANH_VIEN` JOIN `BM_BAO_CAO`, MA_BAO_CAO per nhóm: Nhóm 5=`DUY_TRI_DKCP_GPKD`, Nhóm 6=`DUY_TRI_DKCP_CKPS_KD` (ước lượng cũ), Nhóm 7=`DUY_TRI_DKCP_CKPS_BU_TRU` (ước lượng cũ). **Cập nhật 13/07/2026 (BA v4.2):** Cả 3 nhóm đổi nguồn sang `SC_FIRM_ALERT_VIOLATION` JOIN `ALERT_INDICATOR`, phân loại qua `Severity_Level` (1/2/3) — Atomic entity `Securities Company Alert Violation`/`Securities Company Alert Indicator` đã có LLD, cả 3 nhóm nâng lên **READY**. Filter đúng theo BA SQL: Nhóm 5 = `Indicator_Code = 'DUY_TRI_DKCP_GPKD'`, Nhóm 6 = `Indicator_Code = 'DUY_TRI_DKCP_CTCK_PHAI_SINH'` (khác candidate cũ `DUY_TRI_DKCP_CKPS_KD`), Nhóm 7 = `Indicator_Code = 'DUY_TRI_DKCP_CTCKPS_BU_TRU'` (khác candidate cũ `DUY_TRI_DKCP_CKPS_BU_TRU`). **Cập nhật — Nhóm 36 (STT 36) re-verify (13/07/2026):** Ghi nhận trước đây "Tab HỒ SƠ 360 (K_QLKD_180) dùng `BC_CANH_BAO`, không đổi, vẫn READY" — **sai**, BA v4.2 SQL thực tế của Nhóm 36 cũng đã đổi sang `SC_FIRM_ALERT_VIOLATION`/`ALERT_INDICATOR` (`INDICATOR_CODE='DUY_TRI_DKCP'`) giống Nhóm 5/6/7, nhưng filter `ENTITY_TYPE IN ('BRANCH','TRANSACTION_OFFICE','REP_OFFICE')` (cấp đơn vị con) thay vì cấp CTCK. Atomic `Securities Company Alert Violation` mới chỉ resolve polymorphic FK (`Alert Entity Code`) cho case CTCK — **chưa resolve** cho case đơn vị con → K_QLKD_178–180 hạ **PENDING**, xem chi tiết Section 2 Nhóm 36. | **Closed (Nhóm 5/6/7)** — K_QLKD_30–40 READY. **Nhóm 36 (K_QLKD_178–180) hạ PENDING** — xem gap ETL resolve ENTITY_TYPE ở ghi chú Nhóm 36 | K_QLKD_30–40, K_QLKD_178–180 | **Partial — Nhóm 5/6/7 Closed; Nhóm 36 (K_QLKD_178–180) PENDING** |
 | O_QLKD_8 | **Nhóm 16 — Chỉ số thị trường (K_QLKD_88–91):** Nguồn xác nhận từ BA: `MDDS.JAD_MARKETINFOR` (Atomic entity `Market Index Snapshot`, đã approved 2026-07-03). market_code values: HOSE=VN-Index, HNX=HNX Index, UPCOM=UPCOM Index, 30=VN30. **Sửa 14/07/2026 (LLD review):** BA ghi tham khảo tên `FSSTRAINING.PUBLIC_MARKETINFOR` — xác nhận đây là cùng nguồn dữ liệu thị trường với Atomic entity `Market Index Snapshot` (field marketCode/marketIndex/tradingdate/indexTime khớp market_code/market_index_val/trading_dt/index_time). Mart `Market Index Snapshot` — grain: 1 market_code × 1 tháng. | **Closed** — nguồn xác nhận, K_QLKD_88–91 READY | K_QLKD_88–91 | **Closed** |
 | O_QLKD_18 | **Nhóm 13 — Nguồn vốn tăng thêm (K_QLKD_66–72):** Ghi nhận ban đầu (BA v4.1): nguồn `SCMS.CBTT_CHAO_BAN_CHUNG_KHOAN`, phân loại qua `Offering Form Code` (scheme SCMS_OFFERING_FORM). **Cập nhật 13/07/2026 (BA v4.2):** đổi nguồn sang `SSC_SCMS.DISCLOSURE_SECURITIES_OFFERING` — Atomic entity `Securities Company Disclosure Securities Offering` (LLD draft, 76 attributes). Phân loại hình thức tăng vốn **không phải 1 code field sẵn có** — ETL-derived từ CASE WHEN `Item_Category_Code` (CP/TP) + `Offering_Method` LIKE text matching ('%công chúng%'/'%riêng lẻ%'), ra đúng 5 nhóm theo BA SQL (khác thứ tự/tên cũ). Biểu đồ toàn thị trường theo tháng — không phân theo CTCK, nên bỏ FK `Securities Company Dimension` khỏi Fact so với thiết kế cũ. **Bổ sung 13/07/2026:** BA STT 13 có 7 dòng (không phải 6) — thiếu KPI "Chiều thời gian theo Tháng" (`Result_Report_Date`), đã cấp ID mới **K_QLKD_66** (Chiều thời gian theo tháng, liền mạch trong dải renumber) thay vì reuse ID trùng lặp cũ (trùng ý nghĩa với measure khác). | **Closed** — Nhóm 13 READY theo nguồn BA v4.2 mới, đủ 7/7 KPI. `Item_Category_Code` Atomic đang `status: pending` (chưa gán scheme) nhưng không ảnh hưởng vì dùng giá trị chuỗi thô trực tiếp | K_QLKD_66–72 | **Closed** |
-| O_QLKD_9 | **Tab HỒ SƠ 360 — Nhóm 40 (Thanh tra):** STT 40 (lịch sử thanh tra, kiểm tra, xử phạt) có `src=Thanh tra`. Đã cross-check ThanhTra_Source_Analysis.md — Atomic entity đã xác định: `Inspection Case` ← `ThanhTra.TT_HO_SO` (loại hình + ngày ban hành QĐ thanh tra/kiểm tra) và `Inspection Case Conclusion` ← `ThanhTra.TT_KET_LUAN` (kết luận, số QĐ xử phạt, hành vi vi phạm, hình thức xử phạt bổ sung, biện pháp khắc phục). Cả hai entity đều 🟢 READY trong Atomic | **Closed** — đã xác định rõ source | K_QLKD_198 | Closed |
-| O_QLKD_10 | **Tab HỒ SƠ 360 — Nhóm 28-30 (NHNCK) — Phân loại NHN theo nghiệp vụ:** Ghi nhận ban đầu (BA v4.1): K_QLKD_141–143 READY qua `Securities Practitioner` (SCMS) + `License Certificate Document` (NHNCK); K_QLKD_144–145 PENDING vì thiếu field phân loại nghiệp vụ mã hóa trên `Organization Employment Report`. **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA SQL xác nhận nguồn hoàn toàn khác — cả K_QLKD_141–153 đều dùng `MEMBER_REPORT`/`SC_FIRM_INFO`/`FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`)/`REPORT_CELL_VALUE` (`SHEET_NAME='TTC'`), không còn dùng `Securities Practitioner`/`Organization Employment Report`. Vấn đề "thiếu field phân loại"/"chưa có data dictionary CERTIFICATE_TYPE" không còn áp dụng — nguồn nay dùng `ROW_NAME`/`COLUMN_NAME` LIKE-matching trực tiếp trên `REPORT_CELL_VALUE`, cùng gap Atomic entity với O_QLKD_23. Toàn bộ Nhóm 28/29/30 đã hạ PENDING. | **Closed — chuyển toàn bộ sang O_QLKD_23** | K_QLKD_141–153 | **Closed — merged vào O_QLKD_23** |
-| O_QLKD_11 | **Tab HỒ SƠ 360 — K_QLKD_105/141 (Số nhân viên):** Ghi nhận ban đầu: "Số nhân viên" giả định là 1 chỉ tiêu trong `BC_BAO_CAO_GT` (SCMS) EAV, cần data profiling xác định `MA_CHI_TIEU`. **Cập nhật 13/07/2026 (BA v4.2):** BA SQL xác nhận rõ nguồn — K_QLKD_105 (Nhóm 19, toàn CTCK) dùng `REPORT_CELL_VALUE` sheet `BCTHHD` LIKE trên số nhân viên; K_QLKD_141 (Nhóm 28, cùng ý nghĩa) dùng `REPORT_CELL_VALUE` sheet `TTC` `COLUMN_NAME LIKE '%Tổng số người lao động tại công ty%'`. Không còn cần data profiling MA_CHI_TIEU EAV — vấn đề còn lại là gap Atomic entity chung với O_QLKD_23 (2 sheet khác nhau cho cùng khái niệm "số nhân viên", cần đối chiếu khi Atomic sẵn sàng). | **Closed — chuyển sang O_QLKD_23** | K_QLKD_105, K_QLKD_141 | **Closed — merged vào O_QLKD_23** |
-| O_QLKD_12 | **Tab HỒ SƠ 360 — K_QLKD_167–170 (CN/PGD/VPĐD theo nghiệp vụ/dịch vụ):** BA SQL (STT 33–35) xác nhận: join key là `CTCK_THONG_TIN_ID` — tức là nghiệp vụ/dịch vụ gán tại cấp **CTCK** (không phải từng CN/PGD/VPĐD riêng lẻ). Logic COUNT = số CN+PGD+VPĐD của CTCK đó WHERE CTCK có dịch vụ tương ứng (EXISTS subquery `CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%..%'`). Không cần FK từ `Organization Unit` đến service — join qua `CTCK_THONG_TIN_ID`. Phân loại dùng LIKE text matching: môi giới cơ sở (`LIKE '%môi giới%' NOT LIKE '%phái sinh%'`), bảo lãnh, tư vấn, tự doanh; dịch vụ: ký quỹ (`LIKE '%giao dịch ký quỹ%'`), ứng trước tiền bán, lưu ký; phái sinh: `LIKE '%phái sinh%' AND LIKE '%môi giới%'` v.v. Cần data profiling `TEN_DICH_VU` tất cả giá trị (xem O_QLKD_19 — cùng loại ETL-derived). | **Closed** — K_QLKD_167–170 đã READY (ETL-derived LIKE); join key = CTCK_THONG_TIN_ID (không cần FK từng đơn vị) | K_QLKD_167–170 | **Closed** |
-| O_QLKD_13 | **Tab HỒ SƠ 360 — K_QLKD_198 (Lịch sử thanh tra):** Ghi nhận ban đầu: `Inspection Case.Subject Organization Short Name` (`TT_HO_SO.TEN_VIET_TAT`) là text tự do do cán bộ nhập tay — lo ngại không đồng nhất tên CTCK giữa các hồ sơ. **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 40):** BA SQL xác nhận nguồn đổi hẳn sang schema INSPECT — join key nay là `Inspection Team Target`/`Examination Team Target.Target_Name` = `Penalty Decision Subject.Subject_Name` (không còn qua `TEN_VIET_TAT` tự do) + `Penalty Decision Subject.Subject_Type_Code = 'ORGANIZATION'`. Vẫn là text match (`TARGET_NAME = SUBJECT_NAME`), nhưng đây là 2 trường thuộc cùng hệ thống INSPECT (không phải cross-system với SCMS như lo ngại ban đầu) — rủi ro lệch tên thấp hơn. Chưa có bằng chứng vấn đề data-quality cụ thể, nhưng giữ theo dõi. | `Target_Name = Subject_Name` (cùng schema INSPECT) — chưa phát hiện vấn đề cụ thể, giữ theo dõi | K_QLKD_198 | Open — theo dõi, giảm mức độ nghiêm trọng so với ghi nhận ban đầu |
-| O_QLKD_17 | **Tab TRA CỨU CÁ NHÂN — Nhóm 41c (Vai trò tại DN niêm yết):** Phân tích ban đầu cho rằng không có entity SCMS phù hợp nên đề xuất dùng IDS. **BA SQL xác nhận (v4.1):** nguồn thực là `SCMS.CTCK_CO_DONG` JOIN `SCMS.CTCK_THONG_TIN` — "Vai trò tại tổ chức" = `CTCK_CO_DONG.LOAI_CO_DONG`; tên tổ chức = `CTCK_THONG_TIN.TEN_VIET_TAT`. Tên sub-tab "DN niêm yết" là hiển thị tổng quát — thực tế data là tất cả CTCK mà cá nhân là cổ đông/ban điều hành. IDS không được sử dụng cho use case này. **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi nguồn thêm 1 lần nữa — nay dùng `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (Atomic entity `Securities Company Insider Related Person`, cùng nguồn với Nhóm 41b/41d) thay cho `CTCK_CO_DONG`. Kết luận IDS không dùng vẫn đúng, chỉ đổi bảng SCMS cụ thể. | **Closed** — K_QLKD_211–212 READY; nguồn nay = `SC_FIRM_INSIDER_RELATION` (Atomic `Securities Company Insider Related Person`); IDS không dùng | K_QLKD_211–212 | **Closed** |
-| O_QLKD_14 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_220–224 (Lịch sử vi phạm cá nhân):** Phân tích ban đầu xác định source là ThanhTra.TT_HO_SO/TT_KET_LUAN. **BA SQL (STT 41) xác nhận:** source thực là schema `INSPECT` với các tables: `PENALTY_DECISION`, `PENALTY_DECISION_SUBJECT`, `PENALTY_DECISION_SUBJECT_BEHAVIOR`, `PENALTY_TYPE`, `VIOLATION_CASE`. Filter cá nhân: `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE = 'INDIVIDUAL'`. Lấy hình thức phạt chính: `PENALTY_TYPE.CATEGORY = 'PRIMARY_PENALTY'`. Trạng thái: `VIOLATION_CASE.STATUS` (LEFT JOIN). K_QLKD_220–224 mapping đã được cập nhật theo INSPECT schema. | **Closed** — K_QLKD_220–224 READY; entity đúng = INSPECT.PENALTY_DECISION* (không phải ThanhTra.TT_HO_SO/TT_KET_LUAN) | K_QLKD_220–224 | **Closed** |
-| O_QLKD_15 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_210 (Tỷ lệ sở hữu cổ phần người liên quan):** BA ghi `src=VSDC` (v4.1). Atomic LLD không có entity từ VSDC trong SCMS_Source_Analysis. `Securities Company Shareholder Related Party.Share Ratio` (SCMS.CTCK_CD_MOI_QUAN_HE.TY_LE_NAM_GIU) là giá trị CTCK tự khai báo — có thể không khớp với dữ liệu sở hữu chính thức từ VSDC. Cần xác nhận BA muốn dùng nguồn nào. **Cập nhật 13/07/2026 (BA v4.2, re-verify):** Nguồn đổi sang `SSC_SCMS.SC_FIRM_INSIDER_RELATION.OWNERSHIP_RATIO` (Atomic `Securities Company Insider Related Person.Ownership Ratio`) — cùng bản chất tự khai báo qua SCMS, câu hỏi VSDC vs SCMS chưa được giải đáp trong BA v4.2 (không có dòng nào đề cập VSDC lần này) — giữ nguyên trạng thái Confirmed, dùng SCMS tạm thời. | Tạm dùng `Ownership Ratio` từ SCMS (khai báo tự nguyện, nay qua `Securities Company Insider Related Person`) — chờ xác nhận với BA về nguồn VSDC | K_QLKD_210 | Confirmed |
-| O_QLKD_16 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_217 (Thời gian làm việc) + Tab HỒ SƠ 360 — K_QLKD_159/161 (Nhóm 31, Dashboard nhân sự):** Ghi nhận ban đầu: `Securities Company Senior Personnel` không có field `Employment Start Date` riêng — tạm dùng `Created Timestamp` làm ngày bắt đầu công tác. **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 31):** BA SQL (STT 31) xác nhận entity đã có attribute `Work Start Date` (nguồn `SC_FIRM_SENIOR_PERSONNEL.WORK_START_DATE`) — LLD `lld_SCMS_SC_FIRM_SENIOR_PERSONNEL.yaml` xác nhận attribute này tồn tại (dù có note cần xác nhận trùng lặp với `START_DATE`). Không còn cần tạm dùng `Created Timestamp` — dùng thẳng `Work Start Date` cho cả K_QLKD_159/161 (Nhóm 31) và K_QLKD_217 (Nhóm 41f). | **Closed** — `Work Start Date` (WORK_START_DATE) đã có sẵn trong entity, dùng thay cho `Created Timestamp` | K_QLKD_159, K_QLKD_161, K_QLKD_217 | **Closed** |
-| O_QLKD_19 | **ETL classification logic cho các ETL-derived codes:** (1) **`Service_Type_Code` (K_QLKD_20–29):** `SCMS.CAT_SERVICE` không có clean code sẵn dùng trực tiếp cho phân loại ký quỹ/ứng trước/lưu ký/phái sinh — ETL LIKE matching trên tên dịch vụ. (2) **`Capital_Raising_Form_Code` (K_QLKD_66–72):** `SSC_SCMS.DISCLOSURE_SECURITIES_OFFERING` không có clean code cho hình thức tăng vốn — ETL CASE WHEN kết hợp `Item_Category_Code` (CP/TP) + `Offering_Method` LIKE matching (BA SQL đã cho công thức cụ thể, không cần data profiling thêm — khác với (1) và (3) là chưa rõ giá trị). (3) CN/PGD/VPĐD theo nghiệp vụ/dịch vụ (K_QLKD_167–170, xem O_QLKD_12) — cùng loại LIKE matching trên `TEN_DICH_VU`. Cần: (1)+(3) data profiling toàn bộ giá trị tên dịch vụ; (2) đã có công thức rõ từ BA, chỉ cần build ETL. Fallback = OTHER cho trường hợp không match ở (1)/(3). ETL concern — không ảnh hưởng schema. | (2) Capital_Raising_Form_Code đã rõ công thức — sẵn sàng build ETL. (1)+(3) chờ data profiling | K_QLKD_20–29, K_QLKD_66–72, K_QLKD_167–170 | **Open** (1)/(3); **Ready to build** (2) |
-| O_QLKD_20 | **Nhóm 2 — Biểu đồ Nghiệp vụ (K_QLKD_14–19):** BA v4.2 (13/07/2026) đổi nguồn sang `SC_FIRM_INFO.BUSINESS_LINES` (Text thô, danh sách ID nghiệp vụ phân cách dấu phẩy) JOIN `CAT_BUSINESS_LINE` (danh mục nghiệp vụ) bằng `INSTR` kiểm tra membership. Atomic hiện tại: `Securities Company.Business Lines` chưa parse thành quan hệ N:N; `CAT_BUSINESS_LINE` mới đăng ký scheme `SCMS_BUSINESS_LINE` (`values: []`, chưa populate) — không phải Classification Value hoàn chỉnh. Cần: (1) Atomic team thiết kế lại `Business Lines` thành bảng con/quan hệ N:N CTCK↔nghiệp vụ (hoặc hướng khác phù hợp hơn); (2) populate `SCMS_BUSINESS_LINE` từ `SCMS.CAT_BUSINESS_LINE`. Xem Cụm 2b (Section 1). **Cập nhật — Nhóm 33/37 (STT 33/37) re-verify (13/07/2026):** Phát hiện gap tương tự nhưng ở cấp đơn vị CN/PGD/VPĐD — BA đã có sẵn bảng liên kết N:N thực sự `SSC_SCMS.LNK_SC_FIRM_BUSINESS_LINE` (khác Nhóm 2, nơi Business Lines chỉ là Text thô chưa parse), nhưng Atomic chưa có entity/bảng con nào cover bảng liên kết này (không có entry `dm_manifest.yaml`). Nhóm 33 (SL CN/PGD/VPĐD theo nghiệp vụ) và Nhóm 37 (Danh sách CN/PGD/VPĐD, cột Nghiệp vụ LISTAGG) đã hạ **PENDING** vì gap này. **Cập nhật 14/07/2026 (Atomic tiến độ, chưa đủ để nâng READY):** Atomic team đã thiết kế draft `Classification SCMS Business Line` (`cl_scms_business_line`, `lld_SCMS_CAT_BUSINESS_LINE.yaml`, nâng cấp từ scheme `SCMS_BUSINESS_LINE` lên entity thật — giải quyết phần (2) ở trên) nhưng **`design_status: draft`, chưa có entry trong `dm_manifest.yaml`** (chưa approved) — vẫn PENDING theo gating rule. Notes trong file LLD xác nhận 2 bảng junction N:N cần cho Nhóm 2 (`LNK_SC_FIRM_BUSINESS_LINE` cấp CTCK) và Nhóm 33/37 (cùng bảng, cấp đơn vị CN/PGD/VPĐD) **"chưa có LLD"** — phần N:N (gap chính, mục (1) ở trên) vẫn chưa được thiết kế. Riêng entity `ECAT.BUSINESS_LINE_LEVEL_1/2` (Classification ECAT Business Line — danh mục ngành nghề kinh tế) không liên quan gap này — khác nguồn/domain, không cover nghiệp vụ kinh doanh chứng khoán. **Ví dụ minh họa gap (data mẫu thực tế):** `SC_FIRM_INFO.business_lines` của 1 CTCK có giá trị `"1,2,3,4"` (1 cột Text chứa 4 ID nghiệp vụ gộp chung — quyết định thiết kế 2026-07-10 tại `lld_SCMS_SC_FIRM_INFO.yaml` chủ động không parse từ `Array<Text>`/`LNK_SC_FIRM_BUSINESS_LINE` gốc). Muốn ra KPI "đếm số CTCK có nghiệp vụ Môi giới (`ID=1`)" cần **tách chuỗi này thành 4 dòng riêng** (1 CTCK × 1 nghiệp vụ) rồi mới `JOIN` sang `Classification SCMS Business Line` lấy Name — bước tách (parse) này là phần chưa có, không phải bước join lấy Name (đã sẵn sàng khi Classification approved). Do đó chỉ approve `Classification SCMS Business Line` (danh mục) mà không parse `business_lines` thì vẫn không đủ — cần đảo/xem lại quyết định 2026-07-10 theo hướng tách bảng con N:N. **Lưu ý PK/BK (data mẫu CAT_BUSINESS_LINE):** `ID` kỹ thuật (1,2,3,4...) và `BUSINESS_LINE_CODE` (VD: `16`,`19`,`15`,`01`,`NHLK`) là 2 giá trị khác nhau hoàn toàn — `SC_FIRM_INFO.business_lines` lưu **ID kỹ thuật**, không phải `BUSINESS_LINE_CODE`. LLD `lld_SCMS_CAT_BUSINESS_LINE.yaml` đã lường trước việc này: tuy loại `ID` khỏi attribute list công khai (BK chính thức = `BUSINESS_LINE_CODE`), notes vẫn giữ `ID` cho ETL resolve FK phía consumer đang lưu ID kỹ thuật (`LNK_SC_FIRM_BUSINESS_LINE`/`LNK_PRACTITIONER_BUSINESS_LINE` — chưa có LLD; `SC_FIRM_LICENSED_PRACTITIONER` đã đổi sang FK Id+Code) — không có mâu thuẫn thiết kế. **Khuyến nghị ETL:** một khi `Classification SCMS Business Line` approved và có `BUSINESS_LINE_CODE` sẵn sàng, nên đổi logic phân loại môi giới/tự doanh/bảo lãnh/tư vấn (O_QLKD_19) từ `BUSINESS_LINE_NAME LIKE` sang lọc theo `BUSINESS_LINE_CODE` (tra qua ID → Code) để tránh rủi ro sai lệch text matching. | PENDING — chờ Atomic (1) approve `Classification SCMS Business Line` (draft, đã thiết kế) + (2) thiết kế LLD cho `LNK_SC_FIRM_BUSINESS_LINE` (N:N, dùng chung cho Nhóm 2 cấp CTCK và Nhóm 33/37 cấp đơn vị) | K_QLKD_14–19, K_QLKD_166, K_QLKD_184 | **Open — Classification draft chưa approved; N:N junction chưa có LLD** |
+| O_QLKD_9 | **Tab HỒ SƠ 360 — Nhóm 40 (Thanh tra):** STT 40 (lịch sử thanh tra, kiểm tra, xử phạt) có `src=Thanh tra`. Đã cross-check ThanhTra_Source_Analysis.md — Atomic entity đã xác định: `Inspection Case` ← `ThanhTra.TT_HO_SO` (loại hình + ngày ban hành QĐ thanh tra/kiểm tra) và `Inspection Case Conclusion` ← `ThanhTra.TT_KET_LUAN` (kết luận, số QĐ xử phạt, hành vi vi phạm, hình thức xử phạt bổ sung, biện pháp khắc phục). Cả hai entity đều 🟢 READY trong Atomic | **Closed** — đã xác định rõ source | K_QLKD_197 | Closed |
+| O_QLKD_10 | **Tab HỒ SƠ 360 — Nhóm 28-30 (NHNCK) — Phân loại NHN theo nghiệp vụ:** Ghi nhận ban đầu (BA v4.1): K_QLKD_142–144 READY qua `Securities Practitioner` (SCMS) + `License Certificate Document` (NHNCK); K_QLKD_145–146 PENDING vì thiếu field phân loại nghiệp vụ mã hóa trên `Organization Employment Report`. **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA SQL xác nhận nguồn hoàn toàn khác — cả K_QLKD_142–154 đều dùng `MEMBER_REPORT`/`SC_FIRM_INFO`/`FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`)/`REPORT_CELL_VALUE` (`SHEET_NAME='TTC'`), không còn dùng `Securities Practitioner`/`Organization Employment Report`. Vấn đề "thiếu field phân loại"/"chưa có data dictionary CERTIFICATE_TYPE" không còn áp dụng — nguồn nay dùng `ROW_NAME`/`COLUMN_NAME` LIKE-matching trực tiếp trên `REPORT_CELL_VALUE`, cùng gap Atomic entity với O_QLKD_23. Toàn bộ Nhóm 28/29/30 đã hạ PENDING. | **Closed — chuyển toàn bộ sang O_QLKD_23** | K_QLKD_142–154 | **Closed — merged vào O_QLKD_23** |
+| O_QLKD_11 | **Tab HỒ SƠ 360 — K_QLKD_105/142 (Số nhân viên):** Ghi nhận ban đầu: "Số nhân viên" giả định là 1 chỉ tiêu trong `BC_BAO_CAO_GT` (SCMS) EAV, cần data profiling xác định `MA_CHI_TIEU`. **Cập nhật 13/07/2026 (BA v4.2):** BA SQL xác nhận rõ nguồn — K_QLKD_105 (Nhóm 19, toàn CTCK) dùng `REPORT_CELL_VALUE` sheet `BCTHHD` LIKE trên số nhân viên; K_QLKD_142 (Nhóm 28, cùng ý nghĩa) dùng `REPORT_CELL_VALUE` sheet `TTC` `COLUMN_NAME LIKE '%Tổng số người lao động tại công ty%'`. Không còn cần data profiling MA_CHI_TIEU EAV — vấn đề còn lại là gap Atomic entity chung với O_QLKD_23 (2 sheet khác nhau cho cùng khái niệm "số nhân viên", cần đối chiếu khi Atomic sẵn sàng). | **Closed — chuyển sang O_QLKD_23** | K_QLKD_105, K_QLKD_142 | **Closed — merged vào O_QLKD_23** |
+| O_QLKD_12 | **Tab HỒ SƠ 360 — K_QLKD_166–169 (CN/PGD/VPĐD theo nghiệp vụ/dịch vụ):** BA SQL (STT 33–35) xác nhận: join key là `CTCK_THONG_TIN_ID` — tức là nghiệp vụ/dịch vụ gán tại cấp **CTCK** (không phải từng CN/PGD/VPĐD riêng lẻ). Logic COUNT = số CN+PGD+VPĐD của CTCK đó WHERE CTCK có dịch vụ tương ứng (EXISTS subquery `CTCK_DICH_VU` JOIN `DM_DICH_VU` filter `LOWER(TEN_DICH_VU) LIKE '%..%'`). Không cần FK từ `Organization Unit` đến service — join qua `CTCK_THONG_TIN_ID`. Phân loại dùng LIKE text matching: môi giới cơ sở (`LIKE '%môi giới%' NOT LIKE '%phái sinh%'`), bảo lãnh, tư vấn, tự doanh; dịch vụ: ký quỹ (`LIKE '%giao dịch ký quỹ%'`), ứng trước tiền bán, lưu ký; phái sinh: `LIKE '%phái sinh%' AND LIKE '%môi giới%'` v.v. Cần data profiling `TEN_DICH_VU` tất cả giá trị (xem O_QLKD_19 — cùng loại ETL-derived). | **Closed** — K_QLKD_166–169 đã READY (ETL-derived LIKE); join key = CTCK_THONG_TIN_ID (không cần FK từng đơn vị) | K_QLKD_166–169 | **Closed** |
+| O_QLKD_13 | **Tab HỒ SƠ 360 — K_QLKD_197 (Lịch sử thanh tra):** Ghi nhận ban đầu: `Inspection Case.Subject Organization Short Name` (`TT_HO_SO.TEN_VIET_TAT`) là text tự do do cán bộ nhập tay — lo ngại không đồng nhất tên CTCK giữa các hồ sơ. **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 40):** BA SQL xác nhận nguồn đổi hẳn sang schema INSPECT — join key nay là `Inspection Team Target`/`Examination Team Target.Target_Name` = `Penalty Decision Subject.Subject_Name` (không còn qua `TEN_VIET_TAT` tự do) + `Penalty Decision Subject.Subject_Type_Code = 'ORGANIZATION'`. Vẫn là text match (`TARGET_NAME = SUBJECT_NAME`), nhưng đây là 2 trường thuộc cùng hệ thống INSPECT (không phải cross-system với SCMS như lo ngại ban đầu) — rủi ro lệch tên thấp hơn. Chưa có bằng chứng vấn đề data-quality cụ thể, nhưng giữ theo dõi. | `Target_Name = Subject_Name` (cùng schema INSPECT) — chưa phát hiện vấn đề cụ thể, giữ theo dõi | K_QLKD_197 | Open — theo dõi, giảm mức độ nghiêm trọng so với ghi nhận ban đầu |
+| O_QLKD_17 | **Tab TRA CỨU CÁ NHÂN — Nhóm 41b (Vai trò tại DN niêm yết):** Phân tích ban đầu cho rằng không có entity SCMS phù hợp nên đề xuất dùng IDS. **BA SQL xác nhận (v4.1):** nguồn thực là `SCMS.CTCK_CO_DONG` JOIN `SCMS.CTCK_THONG_TIN` — "Vai trò tại tổ chức" = `CTCK_CO_DONG.LOAI_CO_DONG`; tên tổ chức = `CTCK_THONG_TIN.TEN_VIET_TAT`. Tên sub-tab "DN niêm yết" là hiển thị tổng quát — thực tế data là tất cả CTCK mà cá nhân là cổ đông/ban điều hành. IDS không được sử dụng cho use case này. **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi nguồn thêm 1 lần nữa — nay dùng `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (Atomic entity `Securities Company Insider Related Person`, cùng nguồn với Nhóm 41a) thay cho `CTCK_CO_DONG`. Kết luận IDS không dùng vẫn đúng, chỉ đổi bảng SCMS cụ thể. | **Closed** — K_QLKD_210–211 READY; nguồn nay = `SC_FIRM_INSIDER_RELATION` (Atomic `Securities Company Insider Related Person`); IDS không dùng | K_QLKD_210–211 | **Closed** |
+| O_QLKD_14 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_219–223 (Lịch sử vi phạm cá nhân):** Phân tích ban đầu xác định source là ThanhTra.TT_HO_SO/TT_KET_LUAN. **BA SQL (STT 41) xác nhận:** source thực là schema `INSPECT` với các tables: `PENALTY_DECISION`, `PENALTY_DECISION_SUBJECT`, `PENALTY_DECISION_SUBJECT_BEHAVIOR`, `PENALTY_TYPE`, `VIOLATION_CASE`. Filter cá nhân: `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE = 'INDIVIDUAL'`. Lấy hình thức phạt chính: `PENALTY_TYPE.CATEGORY = 'PRIMARY_PENALTY'`. Trạng thái: `VIOLATION_CASE.STATUS` (LEFT JOIN). K_QLKD_219–223 mapping đã được cập nhật theo INSPECT schema. | **Closed** — K_QLKD_219–223 READY; entity đúng = INSPECT.PENALTY_DECISION* (không phải ThanhTra.TT_HO_SO/TT_KET_LUAN) | K_QLKD_219–223 | **Closed** |
+| O_QLKD_15 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_209 (Tỷ lệ sở hữu cổ phần người liên quan):** BA ghi `src=VSDC` (v4.1). Atomic LLD không có entity từ VSDC trong SCMS_Source_Analysis. `Securities Company Shareholder Related Party.Share Ratio` (SCMS.CTCK_CD_MOI_QUAN_HE.TY_LE_NAM_GIU) là giá trị CTCK tự khai báo — có thể không khớp với dữ liệu sở hữu chính thức từ VSDC. Cần xác nhận BA muốn dùng nguồn nào. **Cập nhật 13/07/2026 (BA v4.2, re-verify):** Nguồn đổi sang `SSC_SCMS.SC_FIRM_INSIDER_RELATION.OWNERSHIP_RATIO` (Atomic `Securities Company Insider Related Person.Ownership Ratio`) — cùng bản chất tự khai báo qua SCMS, câu hỏi VSDC vs SCMS chưa được giải đáp trong BA v4.2 (không có dòng nào đề cập VSDC lần này) — giữ nguyên trạng thái Confirmed, dùng SCMS tạm thời. | Tạm dùng `Ownership Ratio` từ SCMS (khai báo tự nguyện, nay qua `Securities Company Insider Related Person`) — chờ xác nhận với BA về nguồn VSDC | K_QLKD_209 | Confirmed |
+| O_QLKD_16 | **Tab TRA CỨU CÁ NHÂN — K_QLKD_216 (Thời gian làm việc) + Tab HỒ SƠ 360 — K_QLKD_160 (Nhóm 31, Dashboard nhân sự):** Ghi nhận ban đầu: `Securities Company Senior Personnel` không có field `Employment Start Date` riêng — tạm dùng `Created Timestamp` làm ngày bắt đầu công tác. **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 31):** BA SQL (STT 31) xác nhận entity đã có attribute `Work Start Date` (nguồn `SC_FIRM_SENIOR_PERSONNEL.WORK_START_DATE`) — LLD `lld_SCMS_SC_FIRM_SENIOR_PERSONNEL.yaml` xác nhận attribute này tồn tại (dù có note cần xác nhận trùng lặp với `START_DATE`). Không còn cần tạm dùng `Created Timestamp` — dùng thẳng `Work Start Date` cho cả K_QLKD_160 (Nhóm 31) và K_QLKD_216 (Nhóm 41c). | **Closed** — `Work Start Date` (WORK_START_DATE) đã có sẵn trong entity, dùng thay cho `Created Timestamp` | K_QLKD_160, K_QLKD_216 | **Closed** |
+| O_QLKD_19 | **ETL classification logic cho các ETL-derived codes:** (1) **`Service_Type_Code` (K_QLKD_20–29):** `SCMS.CAT_SERVICE` không có clean code sẵn dùng trực tiếp cho phân loại ký quỹ/ứng trước/lưu ký/phái sinh — ETL LIKE matching trên tên dịch vụ. (2) **`Capital_Raising_Form_Code` (K_QLKD_66–72):** `SSC_SCMS.DISCLOSURE_SECURITIES_OFFERING` không có clean code cho hình thức tăng vốn — ETL CASE WHEN kết hợp `Item_Category_Code` (CP/TP) + `Offering_Method` LIKE matching (BA SQL đã cho công thức cụ thể, không cần data profiling thêm — khác với (1) và (3) là chưa rõ giá trị). (3) CN/PGD/VPĐD theo nghiệp vụ/dịch vụ (K_QLKD_166–169, xem O_QLKD_12) — cùng loại LIKE matching trên `TEN_DICH_VU`. Cần: (1)+(3) data profiling toàn bộ giá trị tên dịch vụ; (2) đã có công thức rõ từ BA, chỉ cần build ETL. Fallback = OTHER cho trường hợp không match ở (1)/(3). ETL concern — không ảnh hưởng schema. | (2) Capital_Raising_Form_Code đã rõ công thức — sẵn sàng build ETL. (1)+(3) chờ data profiling | K_QLKD_20–29, K_QLKD_66–72, K_QLKD_166–169 | **Open** (1)/(3); **Ready to build** (2) |
+| O_QLKD_20 | **Nhóm 2 — Biểu đồ Nghiệp vụ (K_QLKD_14–19):** BA v4.2 (13/07/2026) đổi nguồn sang `SC_FIRM_INFO.BUSINESS_LINES` (Text thô, danh sách ID nghiệp vụ phân cách dấu phẩy) JOIN `CAT_BUSINESS_LINE` (danh mục nghiệp vụ) bằng `INSTR` kiểm tra membership. Atomic hiện tại: `Securities Company.Business Lines` chưa parse thành quan hệ N:N; `CAT_BUSINESS_LINE` mới đăng ký scheme `SCMS_BUSINESS_LINE` (`values: []`, chưa populate) — không phải Classification Value hoàn chỉnh. Cần: (1) Atomic team thiết kế lại `Business Lines` thành bảng con/quan hệ N:N CTCK↔nghiệp vụ (hoặc hướng khác phù hợp hơn); (2) populate `SCMS_BUSINESS_LINE` từ `SCMS.CAT_BUSINESS_LINE`. Xem Cụm 2b (Section 1). **Cập nhật — Nhóm 33/37 (STT 33/37) re-verify (13/07/2026):** Phát hiện gap tương tự nhưng ở cấp đơn vị CN/PGD/VPĐD — BA đã có sẵn bảng liên kết N:N thực sự `SSC_SCMS.LNK_SC_FIRM_BUSINESS_LINE` (khác Nhóm 2, nơi Business Lines chỉ là Text thô chưa parse), nhưng Atomic chưa có entity/bảng con nào cover bảng liên kết này (không có entry `dm_manifest.yaml`). Nhóm 33 (SL CN/PGD/VPĐD theo nghiệp vụ) và Nhóm 37 (Danh sách CN/PGD/VPĐD, cột Nghiệp vụ LISTAGG) đã hạ **PENDING** vì gap này. **Cập nhật 14/07/2026 (Atomic tiến độ, chưa đủ để nâng READY):** Atomic team đã thiết kế draft `Classification SCMS Business Line` (`cl_scms_business_line`, `lld_SCMS_CAT_BUSINESS_LINE.yaml`, nâng cấp từ scheme `SCMS_BUSINESS_LINE` lên entity thật — giải quyết phần (2) ở trên) nhưng **`design_status: draft`, chưa có entry trong `dm_manifest.yaml`** (chưa approved) — vẫn PENDING theo gating rule. Notes trong file LLD xác nhận 2 bảng junction N:N cần cho Nhóm 2 (`LNK_SC_FIRM_BUSINESS_LINE` cấp CTCK) và Nhóm 33/37 (cùng bảng, cấp đơn vị CN/PGD/VPĐD) **"chưa có LLD"** — phần N:N (gap chính, mục (1) ở trên) vẫn chưa được thiết kế. Riêng entity `ECAT.BUSINESS_LINE_LEVEL_1/2` (Classification ECAT Business Line — danh mục ngành nghề kinh tế) không liên quan gap này — khác nguồn/domain, không cover nghiệp vụ kinh doanh chứng khoán. **Ví dụ minh họa gap (data mẫu thực tế):** `SC_FIRM_INFO.business_lines` của 1 CTCK có giá trị `"1,2,3,4"` (1 cột Text chứa 4 ID nghiệp vụ gộp chung — quyết định thiết kế 2026-07-10 tại `lld_SCMS_SC_FIRM_INFO.yaml` chủ động không parse từ `Array<Text>`/`LNK_SC_FIRM_BUSINESS_LINE` gốc). Muốn ra KPI "đếm số CTCK có nghiệp vụ Môi giới (`ID=1`)" cần **tách chuỗi này thành 4 dòng riêng** (1 CTCK × 1 nghiệp vụ) rồi mới `JOIN` sang `Classification SCMS Business Line` lấy Name — bước tách (parse) này là phần chưa có, không phải bước join lấy Name (đã sẵn sàng khi Classification approved). Do đó chỉ approve `Classification SCMS Business Line` (danh mục) mà không parse `business_lines` thì vẫn không đủ — cần đảo/xem lại quyết định 2026-07-10 theo hướng tách bảng con N:N. **Lưu ý PK/BK (data mẫu CAT_BUSINESS_LINE):** `ID` kỹ thuật (1,2,3,4...) và `BUSINESS_LINE_CODE` (VD: `16`,`19`,`15`,`01`,`NHLK`) là 2 giá trị khác nhau hoàn toàn — `SC_FIRM_INFO.business_lines` lưu **ID kỹ thuật**, không phải `BUSINESS_LINE_CODE`. LLD `lld_SCMS_CAT_BUSINESS_LINE.yaml` đã lường trước việc này: tuy loại `ID` khỏi attribute list công khai (BK chính thức = `BUSINESS_LINE_CODE`), notes vẫn giữ `ID` cho ETL resolve FK phía consumer đang lưu ID kỹ thuật (`LNK_SC_FIRM_BUSINESS_LINE`/`LNK_PRACTITIONER_BUSINESS_LINE` — chưa có LLD; `SC_FIRM_LICENSED_PRACTITIONER` đã đổi sang FK Id+Code) — không có mâu thuẫn thiết kế. **Khuyến nghị ETL:** một khi `Classification SCMS Business Line` approved và có `BUSINESS_LINE_CODE` sẵn sàng, nên đổi logic phân loại môi giới/tự doanh/bảo lãnh/tư vấn (O_QLKD_19) từ `BUSINESS_LINE_NAME LIKE` sang lọc theo `BUSINESS_LINE_CODE` (tra qua ID → Code) để tránh rủi ro sai lệch text matching. | PENDING — chờ Atomic (1) approve `Classification SCMS Business Line` (draft, đã thiết kế) + (2) thiết kế LLD cho `LNK_SC_FIRM_BUSINESS_LINE` (N:N, dùng chung cho Nhóm 2 cấp CTCK và Nhóm 33/37 cấp đơn vị) | K_QLKD_14–19, K_QLKD_165, K_QLKD_183 | **Open — Classification draft chưa approved; N:N junction chưa có LLD** |
 | O_QLKD_21 | **Nhóm 3 — Biểu đồ Dịch vụ (K_QLKD_22–23):** BA ghi chú trực tiếp trên SQL (STT 3): "Bảng DM dịch vụ đang không có dịch vụ ứng trước tiền bán, lưu ký" — `SCMS.CAT_SERVICE` hiện chỉ có record cho "giao dịch ký quỹ", **thiếu** record danh mục cho "ứng trước tiền bán" và "lưu ký". Đây là vấn đề data-completeness ở nguồn, không phải gap Atomic — entity `Classification Service` đã READY, cấu trúc đủ để cover cả 3 dịch vụ khi nguồn bổ sung. K_QLKD_22, K_QLKD_23 sẽ COUNT ra 0 cho đến khi phân hệ nguồn (SCMS) bổ sung 2 record danh mục còn thiếu. | Thiết kế READY (không phải gap Atomic) — chờ SCMS bổ sung danh mục `CAT_SERVICE` cho 2 dịch vụ còn thiếu | K_QLKD_22, K_QLKD_23 | **Open — chờ nguồn bổ sung danh mục** |
 | O_QLKD_22 | **Nhóm 5 — Duy trì điều kiện cấp phép GPHL (K_QLKD_30, "Chiều thời gian theo ngày"):** BA SQL ban đầu dẫn chiếu `SC_FIRM_ALERT_VIOLATION.CREATED_AT` làm trục ngày date-spine — nhưng Atomic entity `Securities Company Alert Violation` (LLD `lld_SCMS_SC_FIRM_ALERT_VIOLATION.yaml`) chỉ ghi `CREATED_AT` trong metadata notes ("Audit: CREATED_AT + CREATED_BY"), không có attribute riêng. **Cập nhật 14/07/2026 (LLD review, thống nhất với BA):** Đổi trục ngày sang **`Processing Date`** (`PROCESSING_DATE`, đã có sẵn attribute đầy đủ trên entity) — dùng cho cả date-spine và `ROW_NUMBER() OVER (PARTITION BY Securities_Company_Id ORDER BY Processing_Date DESC)` lấy bản ghi mới nhất. Không cần bổ sung attribute nào trên Atomic. | Đã xử lý — dùng `Processing Date` thay `Created Date`, không cần chờ Atomic bổ sung | K_QLKD_30 | **Closed** |
-| O_QLKD_23 | **Nhóm 8/9/11/12 (K_QLKD_41–65) — Atomic entity `Member Report Indicator Value` không tồn tại trong track hiện hành + nguồn thực tế khác EAV giả định:** Thiết kế cũ dùng `Member Report Indicator Value` (SCMS.BC_BAO_CAO_GT, EAV theo `MA_CHI_TIEU` cố định) làm nguồn cho `Fact Securities Company Financial Structure Snapshot`. Rà soát 13/07/2026 phát hiện: (1) entity này **không có** trong `DataModel/working/Atomic/lld/` (track hiện hành) và không có entry trong `dm_manifest.yaml` — chỉ tồn tại trong track cũ đã bị revert `DataModel/working/Atomic_LinhLV/Documentation/dm_atm_mbr_rpt_ind_val-SCMS.BC_BAO_CAO_GT.yaml`, chưa migrate; (2) BA SQL thực tế của STT 8 xác nhận nguồn khác hẳn: `SSC_SCMS.MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE = 'BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME = 'BCTCR'`, `COLUMN_NAME LIKE '%số cuối năm%'`), lấy giá trị bằng `LOWER(ROW_NAME) LIKE '%...%'` text matching trên tên dòng báo cáo — không phải mã chỉ tiêu cố định. Toàn bộ 4 nhóm dùng chung Fact này (Nhóm 8, 9, 11, 12 — STT 8/9/11/12) đều PENDING vì gap này, cộng với gating dữ liệu động (tất cả đều `Loại dữ liệu = Dữ liệu động`). **Cập nhật — Nhóm 14 (STT 14) re-verify:** cùng gap xác nhận — nguồn `MEMBER_REPORT`/`REPORT_CELL_VALUE`/`CAT_INDICATOR` (filter `INDICATOR_CODE = 'TY_LE_VON_KHA_DUNG'`), toàn bộ 5 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. **Cập nhật — Nhóm 15 (STT 15) re-verify:** cùng gap xác nhận — BA SQL dùng đúng pattern `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='BCKQHDR'`, LIKE matching trên `ROW_NAME`) như Nhóm 8/9, toàn bộ 7 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. **Cập nhật — Nhóm 16 (STT 16) re-verify:** K_QLKD_87 (Dư nợ margin) + Chiều thời gian theo Tháng cùng gap — `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`) JOIN `REPORT_CELL_VALUE` (LIKE `'%Giá trị chứng khoán ký quỹ%'`), cả 2 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. K_QLKD_88–91 (Cụm 6b, nguồn `MDDS.JAD_MARKETINFOR` khác hẳn) không thuộc gap này, vẫn READY. **Cập nhật — Nhóm 17 (STT 17) re-verify:** K_QLKD_95/96 (Thị phần môi giới, Xếp hạng) cùng gap — nguồn `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `REPORT_CELL_VALUE` JOIN `CAT_INDICATOR` (`INDICATOR_CODE = 'THI_PHAN_MOI_GIOI'`, cùng pattern `INDICATOR_CODE` cố định như Nhóm 14), Chiều thời gian theo quý + 2 chỉ tiêu cơ sở `Loại dữ liệu = Dữ liệu động` → hạ PENDING. Chiều sàn giao dịch + Chiều top CTCK (Dữ liệu tĩnh, ETL-derived/danh sách cố định) không phụ thuộc gap Atomic nhưng vẫn gộp PENDING cùng block vì đo lường chính (K_QLKD_95/96) chưa sẵn sàng. **Cập nhật — Nhóm 18 (STT 18) re-verify:** K_QLKD_98/99 (LNST, CFO per CTCK) cùng gap — `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (LIKE matching trên `ROW_NAME`, sheet `BCKQHDR`/`BCLCTTRTT`), cả 2 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. Toàn bộ Sub-tab GIÁM SÁT HOẠT ĐỘNG (Nhóm 11–18) đã re-verify xong đợt này. **Cập nhật — Nhóm 19 (STT 19) re-verify:** K_QLKD_100–106 (Banner tổng quan CTCK) cùng gap — kể cả K_QLKD_106 (Vốn điều lệ), trước đây dùng field tĩnh `Charter_Capital_Amt`, nay BA v4.2 xác nhận cũng dùng `REPORT_CELL_VALUE` (sheet `BCTHHD`) → hạ PENDING. **Cập nhật — Nhóm 20/21/22/23 (STT 20-23) re-verify:** Biến động vốn CSH, Cơ cấu tổng tài sản, Cơ cấu nguồn vốn, Doanh thu & Lợi nhuận per CTCK (K_QLKD_107–125) — cùng gap, nguồn `MEMBER_REPORT`/`SC_FIRM_INFO`/`FORM_REPORT` (`BCTCRLCTCK`, sheet `BCTCR`/`BCKQHDR`)/`REPORT_CELL_VALUE`, filter per CTCK qua `SC_FIRM_INFO` (khác Nhóm 8/9 toàn thị trường) → hạ PENDING. **Cập nhật — Nhóm 24/25 (STT 24-25) re-verify:** Chỉ số dư nợ margin/VCSH, Tỷ lệ ATTC (K_QLKD_126–128) — nguồn `MEMBER_REPORT` report `BCTLAT` sheet `06H01` (khác `BCTCRLCTCK`/`BCTHHDKD_TH` đã ghi nhận — thêm 1 report code mới cần entity cover), kết hợp cross-kỳ tháng×quý cho K_QLKD_127 → hạ PENDING. **Cập nhật — Nhóm 26/27 (STT 26-27) re-verify:** Các chỉ tiêu chung + Lịch sử báo cáo tài chính (K_QLKD_129–140) — cùng nguồn `BCTCRLCTCK`/`BCKQHDR`/`BCTCR`, ROA/ROE tính qua CTE kết hợp LNST + Tổng tài sản/VCSH cuối kỳ → hạ PENDING. **Cập nhật — Nhóm 28/29/30 (STT 28-30) re-verify:** NHNCK — Các chỉ tiêu chung, NHN theo nghiệp vụ, NHN theo dịch vụ CKPS (K_QLKD_141–153) — phát hiện đổi nguồn hoàn toàn so với thiết kế trước (không còn `Securities Practitioner`/`License Certificate Document`/`Organization Employment Report`), mà dùng `MEMBER_REPORT`/`SC_FIRM_INFO`/`FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`, sheet `TTC`)/`REPORT_CELL_VALUE` — thêm report code `BCTHHDKD_TH`/sheet `TTC` mới cần entity cover (dùng cả `ROW_NAME` lẫn `COLUMN_NAME` LIKE tùy KPI). Đã merge O_QLKD_10/O_QLKD_11 vào đây (Closed) vì gap thực chất là Atomic entity, không phải thiếu field phân loại/data dictionary như ghi nhận ban đầu. Toàn bộ 360-1→6 + NHNCK (Nhóm 19–30) đã re-verify xong đợt này. | Cần thiết kế entity Atomic mới cho `SSC_SCMS.REPORT_CELL_VALUE` (grain 1 giá trị cell × 1 submission báo cáo, field `MEMBER_REPORT_ID`/`SHEET_NAME`/`COLUMN_NAME`/`ROW_NAME`/`NUMERIC_VALUE`) — phải cover đủ các report code đã phát hiện: `BCTCRLCTCK` (sheet `BCTCR`/`BCKQHDR`/`BCLCTTRTT`), `BCTHHDKD_TH` (sheet `BCTHHD`/`TTC`), `BCTLAT` (sheet `06H01`). Có thể tham khảo `Atomic_LinhLV` nhưng phải đối chiếu lại pattern LIKE-matching thực tế, không copy nguyên trạng EAV cũ | K_QLKD_41–52 (Nhóm 8/9), K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–77 (Nhóm 14), K_QLKD_78–85 (Nhóm 15), K_QLKD_86–87 (Nhóm 16), K_QLKD_92–96 (Nhóm 17), K_QLKD_97–99 (Nhóm 18), K_QLKD_100–106 (Nhóm 19), K_QLKD_107–128 (Nhóm 20-25), K_QLKD_129–140 (Nhóm 26-27), K_QLKD_141–153 (Nhóm 28-30) | **Open — Atomic entity thiếu, cần thiết kế mới** |
+| O_QLKD_23 | **Nhóm 8/9/11/12 (K_QLKD_41–65) — Atomic entity `Member Report Indicator Value` không tồn tại trong track hiện hành + nguồn thực tế khác EAV giả định:** Thiết kế cũ dùng `Member Report Indicator Value` (SCMS.BC_BAO_CAO_GT, EAV theo `MA_CHI_TIEU` cố định) làm nguồn cho `Fact Securities Company Financial Structure Snapshot`. Rà soát 13/07/2026 phát hiện: (1) entity này **không có** trong `DataModel/working/Atomic/lld/` (track hiện hành) và không có entry trong `dm_manifest.yaml` — chỉ tồn tại trong track cũ đã bị revert `DataModel/working/Atomic_LinhLV/Documentation/dm_atm_mbr_rpt_ind_val-SCMS.BC_BAO_CAO_GT.yaml`, chưa migrate; (2) BA SQL thực tế của STT 8 xác nhận nguồn khác hẳn: `SSC_SCMS.MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE = 'BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME = 'BCTCR'`, `COLUMN_NAME LIKE '%số cuối năm%'`), lấy giá trị bằng `LOWER(ROW_NAME) LIKE '%...%'` text matching trên tên dòng báo cáo — không phải mã chỉ tiêu cố định. Toàn bộ 4 nhóm dùng chung Fact này (Nhóm 8, 9, 11, 12 — STT 8/9/11/12) đều PENDING vì gap này, cộng với gating dữ liệu động (tất cả đều `Loại dữ liệu = Dữ liệu động`). **Cập nhật — Nhóm 14 (STT 14) re-verify:** cùng gap xác nhận — nguồn `MEMBER_REPORT`/`REPORT_CELL_VALUE`/`CAT_INDICATOR` (filter `INDICATOR_CODE = 'TY_LE_VON_KHA_DUNG'`), toàn bộ 5 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. **Cập nhật — Nhóm 15 (STT 15) re-verify:** cùng gap xác nhận — BA SQL dùng đúng pattern `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (`SHEET_NAME='BCKQHDR'`, LIKE matching trên `ROW_NAME`) như Nhóm 8/9, toàn bộ 7 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. **Cập nhật — Nhóm 16 (STT 16) re-verify:** K_QLKD_87 (Dư nợ margin) + Chiều thời gian theo Tháng cùng gap — `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`) JOIN `REPORT_CELL_VALUE` (LIKE `'%Giá trị chứng khoán ký quỹ%'`), cả 2 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. K_QLKD_88–91 (Cụm 6b, nguồn `MDDS.JAD_MARKETINFOR` khác hẳn) không thuộc gap này, vẫn READY. **Cập nhật — Nhóm 17 (STT 17) re-verify:** K_QLKD_95/96 (Thị phần môi giới, Xếp hạng) cùng gap — nguồn `MEMBER_REPORT` JOIN `SC_FIRM_INFO` JOIN `REPORT_CELL_VALUE` JOIN `CAT_INDICATOR` (`INDICATOR_CODE = 'THI_PHAN_MOI_GIOI'`, cùng pattern `INDICATOR_CODE` cố định như Nhóm 14), Chiều thời gian theo quý + 2 chỉ tiêu cơ sở `Loại dữ liệu = Dữ liệu động` → hạ PENDING. Chiều sàn giao dịch + Chiều top CTCK (Dữ liệu tĩnh, ETL-derived/danh sách cố định) không phụ thuộc gap Atomic nhưng vẫn gộp PENDING cùng block vì đo lường chính (K_QLKD_95/96) chưa sẵn sàng. **Cập nhật — Nhóm 18 (STT 18) re-verify:** K_QLKD_98/99 (LNST, CFO per CTCK) cùng gap — `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTCRLCTCK'`) JOIN `REPORT_CELL_VALUE` (LIKE matching trên `ROW_NAME`, sheet `BCKQHDR`/`BCLCTTRTT`), cả 2 dòng BA `Loại dữ liệu = Dữ liệu động` → hạ PENDING. Toàn bộ Sub-tab GIÁM SÁT HOẠT ĐỘNG (Nhóm 11–18) đã re-verify xong đợt này. **Cập nhật — Nhóm 19 (STT 19) re-verify:** K_QLKD_100–106 (Banner tổng quan CTCK) cùng gap — kể cả K_QLKD_106 (Vốn điều lệ), trước đây dùng field tĩnh `Charter_Capital_Amt`, nay BA v4.2 xác nhận cũng dùng `REPORT_CELL_VALUE` (sheet `BCTHHD`) → hạ PENDING. **Cập nhật — Nhóm 20/21/22/23 (STT 20-23) re-verify:** Biến động vốn CSH, Cơ cấu tổng tài sản, Cơ cấu nguồn vốn, Doanh thu & Lợi nhuận per CTCK (K_QLKD_107–126) — cùng gap, nguồn `MEMBER_REPORT`/`SC_FIRM_INFO`/`FORM_REPORT` (`BCTCRLCTCK`, sheet `BCTCR`/`BCKQHDR`)/`REPORT_CELL_VALUE`, filter per CTCK qua `SC_FIRM_INFO` (khác Nhóm 8/9 toàn thị trường) → hạ PENDING. **Cập nhật — Nhóm 24/25 (STT 24-25) re-verify:** Chỉ số dư nợ margin/VCSH, Tỷ lệ ATTC (K_QLKD_127–129) — nguồn `MEMBER_REPORT` report `BCTLAT` sheet `06H01` (khác `BCTCRLCTCK`/`BCTHHDKD_TH` đã ghi nhận — thêm 1 report code mới cần entity cover), kết hợp cross-kỳ tháng×quý cho K_QLKD_128 → hạ PENDING. **Cập nhật — Nhóm 26/27 (STT 26-27) re-verify:** Các chỉ tiêu chung + Lịch sử báo cáo tài chính (K_QLKD_130–141) — cùng nguồn `BCTCRLCTCK`/`BCKQHDR`/`BCTCR`, ROA/ROE tính qua CTE kết hợp LNST + Tổng tài sản/VCSH cuối kỳ → hạ PENDING. **Cập nhật — Nhóm 28/29/30 (STT 28-30) re-verify:** NHNCK — Các chỉ tiêu chung, NHN theo nghiệp vụ, NHN theo dịch vụ CKPS (K_QLKD_142–154) — phát hiện đổi nguồn hoàn toàn so với thiết kế trước (không còn `Securities Practitioner`/`License Certificate Document`/`Organization Employment Report`), mà dùng `MEMBER_REPORT`/`SC_FIRM_INFO`/`FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`, sheet `TTC`)/`REPORT_CELL_VALUE` — thêm report code `BCTHHDKD_TH`/sheet `TTC` mới cần entity cover (dùng cả `ROW_NAME` lẫn `COLUMN_NAME` LIKE tùy KPI). Đã merge O_QLKD_10/O_QLKD_11 vào đây (Closed) vì gap thực chất là Atomic entity, không phải thiếu field phân loại/data dictionary như ghi nhận ban đầu. Toàn bộ 360-1→6 + NHNCK (Nhóm 19–30) đã re-verify xong đợt này. | Cần thiết kế entity Atomic mới cho `SSC_SCMS.REPORT_CELL_VALUE` (grain 1 giá trị cell × 1 submission báo cáo, field `MEMBER_REPORT_ID`/`SHEET_NAME`/`COLUMN_NAME`/`ROW_NAME`/`NUMERIC_VALUE`) — phải cover đủ các report code đã phát hiện: `BCTCRLCTCK` (sheet `BCTCR`/`BCKQHDR`/`BCLCTTRTT`), `BCTHHDKD_TH` (sheet `BCTHHD`/`TTC`), `BCTLAT` (sheet `06H01`). Có thể tham khảo `Atomic_LinhLV` nhưng phải đối chiếu lại pattern LIKE-matching thực tế, không copy nguyên trạng EAV cũ | K_QLKD_41–52 (Nhóm 8/9), K_QLKD_59–65 (Nhóm 11/12), K_QLKD_73–77 (Nhóm 14), K_QLKD_78–85 (Nhóm 15), K_QLKD_86–87 (Nhóm 16), K_QLKD_92–96 (Nhóm 17), K_QLKD_97–99 (Nhóm 18), K_QLKD_100–106 (Nhóm 19), K_QLKD_107–129 (Nhóm 20-25), K_QLKD_130–141 (Nhóm 26-27), K_QLKD_142–154 (Nhóm 28-30) | **Open — Atomic entity thiếu, cần thiết kế mới** |

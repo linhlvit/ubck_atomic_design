@@ -27,7 +27,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Company Business Line Registration (dự kiến) | Fact Event | new | Đăng ký nghiệp vụ kinh doanh chứng khoán per CTCK | 1 CTCK × 1 nghiệp vụ | K_QLKD_14–19 (PENDING) |
-| Business Line Dimension | Dimension | reuse (cls_dim) | Nghiệp vụ kinh doanh chứng khoán — Classification Value scheme SCMS_BUSINESS_LINE | 1 nghiệp vụ (SCD4A) | — |
+| Business Line Dimension | Dimension | reuse (cl_dim) | Nghiệp vụ kinh doanh chứng khoán — Classification Value scheme SCMS_BUSINESS_LINE | 1 nghiệp vụ (SCD4A) | — |
 
 ### Nhóm 3/4 — Biểu đồ Dịch vụ & Dịch vụ phái sinh (K_QLKD_20–29)
 
@@ -126,87 +126,78 @@ erDiagram
 
 ## Tab HỒ SƠ CTCK 360
 
-### Nhóm 19–27 — Banner tổng quan & Biểu đồ tài chính per CTCK (K_QLKD_100–140) — PENDING
+### Nhóm 19–27 — Banner tổng quan & Biểu đồ tài chính per CTCK (K_QLKD_100–141) — PENDING
 
 > Toàn bộ tái sử dụng `Fact Securities Company Financial Structure Snapshot` — PENDING theo O_QLKD_23. Nhóm 26/27 (Lịch sử BCTC) dùng thêm `Securities Company Financial Report History` (Tác nghiệp).
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Reuse từ Nhóm 8/9 — banner + cơ cấu tài sản/nguồn vốn/doanh thu per CTCK | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_100–128 (Nhóm 19–25) — PENDING |
-| Securities Company Financial Report History | Tác nghiệp | new | Lịch sử BCTC — DT/LN/ROA/ROE theo từng kỳ | 1 CTCK × 1 kỳ báo cáo BCTC | K_QLKD_129–140 (Nhóm 26/27) — PENDING |
+| Fact Securities Company Financial Structure Snapshot (dự kiến) | Fact Snapshot | new | Reuse từ Nhóm 8/9 — banner + cơ cấu tài sản/nguồn vốn/doanh thu per CTCK | 1 CTCK × 1 chỉ tiêu BCTC × 1 kỳ | K_QLKD_100–129 (Nhóm 19–25) — PENDING |
+| Securities Company Financial Report History | Tác nghiệp | new | Lịch sử BCTC — DT/LN/ROA/ROE theo từng kỳ | 1 CTCK × 1 kỳ báo cáo BCTC | K_QLKD_130–141 (Nhóm 26/27) — PENDING |
 
-### Sub-tab Nhân sự — Nhóm 31 (K_QLKD_154–161)
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Securities Company Personnel Profile | Tác nghiệp | new | HĐQT/HĐTV/BKS/BĐH, cổ đông lớn, lịch sử thay đổi nhân sự | 1 nhân sự cao cấp × 1 CTCK (latest state) | K_QLKD_154–159, 161 |
-| Securities Company Shareholder Profile | Tác nghiệp | new | Cổ đông lớn nắm giữ >5% VĐL | 1 cổ đông × 1 CTCK (latest state) | K_QLKD_160 |
-
-### Sub-tab Tuân thủ — Nhóm 38/39/40 (K_QLKD_187–203) — Partial READY
+### Sub-tab Nhân sự — Nhóm 31 (K_QLKD_155–160)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Securities Company Compliance History | Tác nghiệp | new | BC nộp + quyết định xử phạt hành chính (READY) + thanh tra/kiểm tra (READY, trừ Chiều ngày PENDING) | 1 CTCK × 1 sự kiện | K_QLKD_189, 197–203 READY; K_QLKD_187–188, 190–196 PENDING |
+| Securities Company Personnel Profile | Tác nghiệp | new | HĐQT/HĐTV/BKS/BĐH | 1 nhân sự cao cấp × 1 CTCK (latest state) | K_QLKD_155–160 |
 
-### Sub-tab CN, PGD, VPĐD — Nhóm 32/33/34/35/36/37 (K_QLKD_162–186) — Partial READY
+### Sub-tab Tuân thủ — Nhóm 38/39/40 (K_QLKD_186–202) — Partial READY
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Securities Company Organization Unit Profile | Tác nghiệp | new | CN/PGD/VPĐD — số lượng, dịch vụ chấp thuận (READY); nghiệp vụ N:N, duy trì điều kiện cấp phép (PENDING) | 1 đơn vị × 1 CTCK | K_QLKD_162–165, 171–178, 182–183, 185–186 READY; K_QLKD_166–170, 179–181, 184 PENDING |
+| Securities Company Compliance History | Tác nghiệp | new | BC nộp + quyết định xử phạt hành chính (READY) + thanh tra/kiểm tra (READY, trừ Chiều ngày PENDING) | 1 CTCK × 1 sự kiện | K_QLKD_188, 197–203 READY; K_QLKD_186–187, 190–196 PENDING |
+
+### Sub-tab CN, PGD, VPĐD — Nhóm 32/33/34/35/36/37 (K_QLKD_161–185) — Partial READY
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Securities Company Organization Unit Profile | Tác nghiệp | new | CN/PGD/VPĐD — số lượng, dịch vụ chấp thuận (READY); nghiệp vụ N:N, duy trì điều kiện cấp phép (PENDING) | 1 đơn vị × 1 CTCK | K_QLKD_161–164, 171–178, 182–183, 185–186 READY; K_QLKD_165–169, 179–181, 184 PENDING |
 
 ---
 
 ## Tab TRA CỨU CÁ NHÂN
 
-### Nhóm 41a — Landing page: Danh sách cá nhân (K_QLKD_205–206)
+### Nhóm 41a — Mạng lưới quan hệ 360° (K_QLKD_203–210)
 
 ```mermaid
 erDiagram
     Individual_Profile
+    Individual_Related_Party_Network
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Individual Profile | Tác nghiệp | new | Merge Securities Company Senior Personnel (SCMS) + Securities Practitioner (NHNCK) theo CCCD | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_205–206 |
+| Individual Profile | Tác nghiệp | new | Merge Securities Company Senior Personnel (SCMS) + Securities Practitioner (NHNCK) theo CCCD — landing page tìm kiếm/chọn cá nhân | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_204–205 |
+| Individual Related Party Network | Tác nghiệp | new | Self-reference Securities Company Insider Related Person | 1 người liên quan × 1 cá nhân chính | K_QLKD_206–210 READY; K_QLKD_203 (Chiều ngày) PENDING |
 
-### Nhóm 41b/41d — Mạng lưới quan hệ 360° & Mạng lưới người liên quan chi tiết (K_QLKD_111, 204, 207–210)
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Individual Related Party Network | Tác nghiệp | new | Self-reference Securities Company Insider Related Person | 1 người liên quan × 1 cá nhân chính | K_QLKD_111, 207–210 READY; K_QLKD_204 (Chiều ngày) PENDING |
-
-### Nhóm 41c — Hồ sơ: Vai trò tại DN niêm yết (K_QLKD_211–212)
+### Nhóm 41b — Hồ sơ và danh mục (K_QLKD_210–212)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Individual Listed Company Role | Tác nghiệp | new | Vai trò + số CP nắm giữ tại tổ chức khác | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_211–212 |
+| Individual Listed Company Role | Tác nghiệp | new | Vai trò + số CP nắm giữ tại tổ chức khác | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_210–211 |
+| Individual Related Party Network | Tác nghiệp | reuse (Nhóm 41a) | Mạng lưới người liên quan chi tiết — dùng chung entity với Nhóm 41a | 1 người liên quan × 1 cá nhân chính | K_QLKD_206–209 (reuse) |
+| Individual Trading Account | Tác nghiệp | new | Tài khoản giao dịch — bao gồm cả tài khoản người liên quan | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_212 |
 
-### Nhóm 41e — Hồ sơ: Tài khoản giao dịch (K_QLKD_213)
-
-| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
-|---|---|---|---|---|---|
-| Individual Trading Account | Tác nghiệp | new | Tài khoản giao dịch — bao gồm cả tài khoản người liên quan | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_213 |
-
-### Nhóm 41f — Quá trình hành nghề: Lịch sử công tác (K_QLKD_214–218)
+### Nhóm 41c — Quá trình hành nghề: Lịch sử công tác (K_QLKD_213–217)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Individual Work History | Tác nghiệp | new | Lịch sử bổ nhiệm — tên công ty, chức vụ, thời gian, trạng thái | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_215–218 READY; K_QLKD_214 (Chiều ngày) PENDING |
+| Individual Work History | Tác nghiệp | new | Lịch sử bổ nhiệm — tên công ty, chức vụ, thời gian, trạng thái | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_214–217 READY; K_QLKD_213 (Chiều ngày) PENDING |
 
-### Nhóm 41g — Lịch sử vi phạm & xử phạt cá nhân (K_QLKD_219–224)
+### Nhóm 41d — Lịch sử vi phạm & xử phạt cá nhân (K_QLKD_218–223)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Individual Violation History | Tác nghiệp | new | Quyết định xử phạt hành chính cá nhân — schema INSPECT | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_220–224 READY; K_QLKD_219 (Chiều ngày) PENDING |
+| Individual Violation History | Tác nghiệp | new | Quyết định xử phạt hành chính cá nhân — schema INSPECT | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_219–223 READY; K_QLKD_218 (Chiều ngày) PENDING |
 
 ---
 
 ## Tab DATA EXPLORER
 
-### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_225–4261) — PENDING
+### Nhóm 42-145 — Tra cứu báo cáo biểu mẫu định kỳ (K_QLKD_224–4260) — PENDING
 
 > Toàn bộ PENDING — gating dữ liệu động + gap Atomic entity `REPORT_CELL_VALUE` (O_QLKD_23). Không vẽ Star Schema chi tiết.
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Securities Company Report Data (dự kiến) | Tác nghiệp | new | EAV — 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu, 104 STT / 4036 chỉ tiêu | 1 chỉ tiêu × 1 kỳ báo cáo × 1 CTCK × 1 biểu mẫu | K_QLKD_225–4261 (PENDING) |
+| Securities Company Report Data (dự kiến) | Tác nghiệp | new | EAV — 1 chỉ tiêu × 1 kỳ × 1 CTCK × 1 biểu mẫu, 104 STT / 4036 chỉ tiêu | 1 chỉ tiêu × 1 kỳ báo cáo × 1 CTCK × 1 biểu mẫu | K_QLKD_224–4260 (PENDING) |
