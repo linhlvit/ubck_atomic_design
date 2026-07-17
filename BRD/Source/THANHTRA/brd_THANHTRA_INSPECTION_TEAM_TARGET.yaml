@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: INSPECTION_TEAM_TARGET
+brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM_TARGET
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: INSPECTION_TEAM_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> inspection_team"
+    key: FK
+    fk_note: "FK → INSPECTION_TEAM.id"
+  - name: TARGET_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Loại đối tượng thanh tra: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION"
+    key: null
+    fk_note: null
+  - name: TARGET_REFERENCE_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID tham chiếu đối tượng thanh tra trong hệ thống nguồn (SCMS/FMS/IDS)"
+    key: null
+    fk_note: null
+  - name: TARGET_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên đối tượng thanh tra"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: CONTENT
+    data_type: CLOB
+    description: "Nội dung thanh tra đối với đối tượng này"
+    key: null
+    fk_note: null
+  - name: INSPECTION_PERIOD_FROM
+    data_type: DATE
+    description: "Thời kỳ thanh tra từ (per-target)"
+    key: null
+    fk_note: null
+  - name: INSPECTION_PERIOD_TO
+    data_type: DATE
+    description: "Thời kỳ thanh tra đến (per-target)"
+    key: null
+    fk_note: null
+  - name: ANTI_MONEY_LAUNDERING
+    data_type: NUMBER(1,0)
+    description: "Có/không thanh tra về PCRT: 1=Có, 0=Không"
+    key: null
+    fk_note: null
+  - name: ABNORMAL_TRANSACTION_CHECK
+    data_type: NUMBER(1,0)
+    description: "Kiểm tra giao dịch bất thường: 1=Có, 0=Không. Nếu =1 thì không tạo thông báo kết quả kiểm tra"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú (per-target)"
+    key: null
+    fk_note: null

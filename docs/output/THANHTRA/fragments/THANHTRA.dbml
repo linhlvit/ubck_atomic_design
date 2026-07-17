@@ -1,0 +1,286 @@
+// Atomic Lakehouse — THANHTRA
+
+Project THANHTRA {
+  database_type: "Delta Lake"
+  Note: "Atomic Lakehouse — THANHTRA"
+}
+
+Table "aml_nfrc_case" [note: "Hồ sơ xử lý vi phạm phòng chống rửa tiền. Ghi nhận đối tượng vi phạm và trạng thái xử lý."] {
+  "aml_nfrc_case_id" varchar [pk]
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
+}
+
+Table "aml_nfrc_dcsn" [note: "Văn bản xử lý vi phạm rửa tiền. FK → AML Enforcement Case."] {
+  "aml_nfrc_dcsn_id" varchar [pk]
+  "aml_nfrc_case_id" varchar
+}
+
+Table "aml_prd_rpt" [note: "Báo cáo định kỳ về hoạt động phòng chống rửa tiền. Mỗi dòng = 1 lần lập báo cáo."] {
+  "aml_prd_rpt_id" varchar [pk]
+}
+
+Table "anti-corruption_rpt" [note: "Báo cáo tổng hợp định kỳ về hoạt động phòng chống tham nhũng. Mỗi dòng = 1 lần lập báo cáo."] {
+  "anti-corruption_rpt_id" varchar [pk]
+}
+
+Table "cpln_nfrc_dcsn" [note: "Văn bản xử lý / quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Processing Case."] {
+  "cpln_nfrc_dcsn_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
+}
+
+Table "cpln_pny_ancm" [note: "Công bố quyết định xử phạt từ hồ sơ đơn thư. FK → Complaint Enforcement Decision."] {
+  "cpln_pny_ancm_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
+  "cpln_nfrc_dcsn_id" varchar
+}
+
+Table "cpln_petition" [note: "Đơn thư khiếu nại/tố cáo/phản ánh/kiến nghị nhận từ công dân hoặc tổ chức. Khởi đầu quy trình giải quyết đơn thư."] {
+  "cpln_petition_id" varchar [pk]
+}
+
+Table "cpln_pcs_case" [note: "Hồ sơ giải quyết đơn thư khiếu nại/tố cáo. FK → Complaint Petition."] {
+  "cpln_pcs_case_id" varchar [pk]
+  "cpln_petition_id" varchar
+}
+
+Table "cpln_pcs_conclusion" [note: "Kết luận giải quyết đơn thư. FK → Complaint Processing Case."] {
+  "cpln_pcs_conclusion_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
+}
+
+Table "insp_anul_pln" [note: "Kế hoạch thanh tra kiểm tra cấp năm được phê duyệt. Khởi đầu quy trình thanh tra trong năm."] {
+  "insp_anul_pln_id" varchar [pk]
+}
+
+Table "insp_anul_pln_sbj" [note: "Đối tượng thanh tra được đưa vào kế hoạch năm. Grain: 1 đối tượng × 1 kế hoạch."] {
+  "insp_anul_pln_sbj_id" varchar [pk]
+  "insp_anul_pln_id" varchar
+}
+
+Table "insp_case" [note: "Hồ sơ thanh tra cụ thể — tập hợp tài liệu và kết quả 1 cuộc thanh tra. FK → Inspection Decision. Thông tin đối tượng denormalized (snapshot tại thời điểm thanh tra)."] {
+  "insp_case_id" varchar [pk]
+  "insp_dcsn_id" varchar
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
+}
+
+Table "insp_case_conclusion" [note: "Kết luận thanh tra kèm thông tin xử lý vi phạm. FK → Inspection Case."] {
+  "insp_case_conclusion_id" varchar [pk]
+  "insp_case_id" varchar
+}
+
+Table "insp_case_ofcr_asgnm" [note: "Phân công cán bộ phụ trách hồ sơ thanh tra. FK → Inspection Case + FK → Inspection Officer."] {
+  "insp_case_ofcr_asgnm_id" varchar [pk]
+  "insp_case_id" varchar
+  "insp_ofcr_id" varchar
+}
+
+Table "insp_dcsn" [note: "Quyết định thanh tra/kiểm tra cụ thể. FK → Inspection Annual Plan (nullable — thanh tra đột xuất không có kế hoạch)."] {
+  "insp_dcsn_id" varchar [pk]
+  "insp_anul_pln_id" varchar
+}
+
+Table "insp_dcsn_sbj" [note: "Đối tượng cụ thể được thanh tra theo một quyết định. FK → Inspection Decision."] {
+  "insp_dcsn_sbj_id" varchar [pk]
+  "insp_dcsn_id" varchar
+}
+
+Table "insp_dcsn_team_mbr" [note: "Thành viên đoàn thanh tra chỉ định theo quyết định. FK → Inspection Decision + FK → Inspection Officer."] {
+  "insp_dcsn_team_mbr_id" varchar [pk]
+  "insp_dcsn_id" varchar
+  "insp_ofcr_id" varchar
+}
+
+Table "insp_pny_ancm" [note: "Công bố quyết định xử phạt từ kết luận thanh tra. FK → Inspection Case Conclusion."] {
+  "insp_pny_ancm_id" varchar [pk]
+  "insp_case_id" varchar
+  "insp_case_conclusion_id" varchar
+}
+
+Table "surveil_nfrc_case" [note: "Hồ sơ xử lý vi phạm từ kết quả giám sát thị trường. Ghi nhận đối tượng và trạng thái xử lý."] {
+  "surveil_nfrc_case_id" varchar [pk]
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
+}
+
+Table "surveil_nfrc_dcsn" [note: "Văn bản xử lý vi phạm từ giám sát. FK → Surveillance Enforcement Case."] {
+  "surveil_nfrc_dcsn_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
+}
+
+Table "surveil_pny_ancm" [note: "Công bố quyết định xử phạt từ giám sát. FK → Surveillance Enforcement Decision."] {
+  "surveil_pny_ancm_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
+  "surveil_nfrc_dcsn_id" varchar
+}
+
+Table "aml_case_doc_attch" [note: "Văn bản đính kèm hồ sơ PCRT. FK → AML Enforcement Case."] {
+  "aml_case_doc_attch_id" varchar [pk]
+  "aml_nfrc_case_id" varchar
+}
+
+Table "cpln_pcs_case_doc_attch" [note: "Văn bản đính kèm hồ sơ giải quyết đơn thư. FK → Complaint Processing Case."] {
+  "cpln_pcs_case_doc_attch_id" varchar [pk]
+  "cpln_pcs_case_id" varchar
+}
+
+Table "insp_anul_pln_doc_attch" [note: "Văn bản đính kèm kế hoạch thanh tra năm. FK → Inspection Annual Plan."] {
+  "insp_anul_pln_doc_attch_id" varchar [pk]
+  "insp_anul_pln_id" varchar
+}
+
+Table "insp_case_doc_attch" [note: "Văn bản đính kèm hồ sơ thanh tra (biên bản làm việc v.v.). FK → Inspection Case."] {
+  "insp_case_doc_attch_id" varchar [pk]
+  "insp_case_id" varchar
+}
+
+Table "insp_dcsn_doc_attch" [note: "Văn bản đính kèm quyết định thanh tra. FK → Inspection Decision."] {
+  "insp_dcsn_doc_attch_id" varchar [pk]
+  "insp_dcsn_id" varchar
+}
+
+Table "surveil_case_doc_attch" [note: "Văn bản đính kèm hồ sơ giám sát. FK → Surveillance Enforcement Case."] {
+  "surveil_case_doc_attch_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
+}
+
+Table "surveil_nfrc_dcsn_file_attch" [note: "File đính kèm văn bản xử lý giám sát. FK → Surveillance Enforcement Decision."] {
+  "surveil_nfrc_dcsn_file_attch_id" varchar [pk]
+  "surveil_nfrc_dcsn_id" varchar
+}
+
+Table "fnd_mgt_co" [note: "Công ty quản lý quỹ đầu tư chứng khoán trong nước được UBCKNN cấp phép hoạt động. Lưu thông tin pháp lý và hoạt động của công ty."] {
+  "fnd_mgt_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
+}
+
+Table "insp_ofcr" [note: "Cán bộ thanh tra viên thuộc UBCKNN. Ghi nhận thông tin cá nhân và trạng thái công tác."] {
+  "insp_ofcr_id" varchar [pk]
+}
+
+Table "insp_sbj_othr_p" [note: "Đối tượng thanh tra khác (cá nhân hoặc tổ chức) không thuộc danh mục CK/QLQ/ĐC. Phân biệt qua party_type_code."] {
+  "insp_sbj_othr_p_id" varchar [pk]
+  "cty_of_rgst_id" varchar
+}
+
+Table "pblc_co" [note: "Công ty đại chúng được UBCKNN quản lý. Lưu thông tin pháp lý và trạng thái hoạt động."] {
+  "pblc_co_id" varchar [pk]
+}
+
+Table "scr_co" [note: "Công ty chứng khoán - thành viên thị trường trong hệ thống FIMS. Quản lý tài khoản và danh mục NĐT nước ngoài."] {
+  "scr_co_id" varchar [pk]
+  "cty_of_rgst_id" varchar
+}
+
+Table "ip_elc_adr" [note: "Lưu trữ các địa chỉ liên lạc điện tử của Involved Party (điện thoại/fax/email). Mỗi dòng = 1 kênh liên lạc từ 1 nguồn."] {
+  "ip_id" varchar
+}
+
+Table "ip_pst_adr" [note: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."] {
+  "ip_id" varchar
+}
+
+TableGroup "UID01 — Hoạt động thanh tra - kiểm tra" {
+  "insp_anul_pln"
+  "insp_anul_pln_sbj"
+  "insp_case"
+  "insp_case_conclusion"
+  "insp_case_ofcr_asgnm"
+  "insp_dcsn"
+  "insp_dcsn_sbj"
+  "insp_dcsn_team_mbr"
+  "insp_pny_ancm"
+  "insp_anul_pln_doc_attch"
+  "insp_case_doc_attch"
+  "insp_dcsn_doc_attch"
+  "fnd_mgt_co"
+  "insp_sbj_othr_p"
+  "pblc_co"
+  "scr_co"
+}
+
+TableGroup "UID02 — Xử lý vi phạm hành chính" {
+  "surveil_nfrc_case"
+  "surveil_nfrc_dcsn"
+  "surveil_pny_ancm"
+  "surveil_case_doc_attch"
+  "surveil_nfrc_dcsn_file_attch"
+}
+
+TableGroup "UID03 — Tiếp công dân, xử lý đơn thư" {
+  "cpln_nfrc_dcsn"
+  "cpln_pny_ancm"
+  "cpln_petition"
+  "cpln_pcs_case"
+  "cpln_pcs_conclusion"
+  "cpln_pcs_case_doc_attch"
+}
+
+TableGroup "UID04 — Phòng chống tham nhũng, tiêu cực" {
+  "anti-corruption_rpt"
+}
+
+TableGroup "UID05 — Phòng chống rửa tiền, tài trợ khủng bố" {
+  "aml_nfrc_case"
+  "aml_nfrc_dcsn"
+  "aml_prd_rpt"
+  "aml_case_doc_attch"
+}
+
+TableGroup "UID08 — Quản trị phân hệ" {
+  "fnd_mgt_co"
+  "insp_ofcr"
+  "insp_sbj_othr_p"
+  "pblc_co"
+  "scr_co"
+}
+
+Ref: "aml_nfrc_case"."rspl_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "aml_nfrc_case"."pcs_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "aml_nfrc_dcsn"."aml_nfrc_case_id" > "aml_nfrc_case"."aml_nfrc_case_id"
+Ref: "cpln_nfrc_dcsn"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"
+Ref: "cpln_pny_ancm"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"
+Ref: "cpln_pny_ancm"."cpln_nfrc_dcsn_id" > "cpln_nfrc_dcsn"."cpln_nfrc_dcsn_id"
+Ref: "cpln_pcs_case"."cpln_petition_id" > "cpln_petition"."cpln_petition_id"
+Ref: "cpln_pcs_conclusion"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"
+Ref: "insp_anul_pln_sbj"."insp_anul_pln_id" > "insp_anul_pln"."insp_anul_pln_id"
+Ref: "insp_case"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+Ref: "insp_case"."rspl_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "insp_case"."pcs_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "insp_case_conclusion"."insp_case_id" > "insp_case"."insp_case_id"
+Ref: "insp_case_ofcr_asgnm"."insp_case_id" > "insp_case"."insp_case_id"
+Ref: "insp_case_ofcr_asgnm"."insp_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "insp_dcsn"."insp_anul_pln_id" > "insp_anul_pln"."insp_anul_pln_id"
+Ref: "insp_dcsn_sbj"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+Ref: "insp_dcsn_team_mbr"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+Ref: "insp_dcsn_team_mbr"."insp_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "insp_pny_ancm"."insp_case_id" > "insp_case"."insp_case_id"
+Ref: "insp_pny_ancm"."insp_case_conclusion_id" > "insp_case_conclusion"."insp_case_conclusion_id"
+Ref: "surveil_nfrc_case"."rspl_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "surveil_nfrc_case"."pcs_ofcr_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "surveil_nfrc_dcsn"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_pny_ancm"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_pny_ancm"."surveil_nfrc_dcsn_id" > "surveil_nfrc_dcsn"."surveil_nfrc_dcsn_id"
+Ref: "aml_case_doc_attch"."aml_nfrc_case_id" > "aml_nfrc_case"."aml_nfrc_case_id"
+Ref: "cpln_pcs_case_doc_attch"."cpln_pcs_case_id" > "cpln_pcs_case"."cpln_pcs_case_id"
+Ref: "insp_anul_pln_doc_attch"."insp_anul_pln_id" > "insp_anul_pln"."insp_anul_pln_id"
+Ref: "insp_case_doc_attch"."insp_case_id" > "insp_case"."insp_case_id"
+Ref: "insp_dcsn_doc_attch"."insp_dcsn_id" > "insp_dcsn"."insp_dcsn_id"
+Ref: "surveil_case_doc_attch"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_nfrc_dcsn_file_attch"."surveil_nfrc_dcsn_id" > "surveil_nfrc_dcsn"."surveil_nfrc_dcsn_id"
+// Ref: "fnd_mgt_co"."cty_of_rgst_id" > ""."" // out-of-source
+// Ref: "insp_sbj_othr_p"."cty_of_rgst_id" > ""."" // out-of-source
+// Ref: "scr_co"."cty_of_rgst_id" > ""."" // out-of-source
+Ref: "ip_elc_adr"."ip_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "ip_elc_adr"."ip_id" > "pblc_co"."pblc_co_id"
+Ref: "ip_elc_adr"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_elc_adr"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ip_elc_adr"."ip_id" > "insp_sbj_othr_p"."insp_sbj_othr_p_id"
+Ref: "ip_pst_adr"."ip_id" > "insp_ofcr"."insp_ofcr_id"
+Ref: "ip_pst_adr"."ip_id" > "pblc_co"."pblc_co_id"
+// Ref: "ip_pst_adr"."prov_id" > ""."" // out-of-source
+// Ref: "ip_pst_adr"."geo_id" > ""."" // out-of-source
+Ref: "ip_pst_adr"."ip_id" > "scr_co"."scr_co_id"
+Ref: "ip_pst_adr"."ip_id" > "fnd_mgt_co"."fnd_mgt_co_id"
+Ref: "ip_pst_adr"."ip_id" > "insp_sbj_othr_p"."insp_sbj_othr_p_id"

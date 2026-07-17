@@ -141,9 +141,9 @@ Phục vụ Tab NĐTNN 360 — Sub-tab C Lịch sử tuân thủ. Atomic từ ph
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["ThanhTra.GS_HO_SO"]
-        S2["ThanhTra.GS_VAN_BAN_XU_LY"]
-        S3["ThanhTra.DM_TRANG_THAI_HO_SO"]
+        S1["THANHTRA.GS_HO_SO"]
+        S2["THANHTRA.GS_VAN_BAN_XU_LY"]
+        S3["THANHTRA.DM_TRANG_THAI_HO_SO"]
     end
 
     subgraph SIL["Atomic"]

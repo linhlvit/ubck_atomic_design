@@ -320,7 +320,7 @@ Dùng **danh sách gạch đầu dòng**, KHÔNG dùng bảng. Toàn bộ text *
 - Thư mục lưu trữ dữ liệu trên kho dữ liệu:
 ```
 
-- **Nguồn dữ liệu:** Liệt kê tên hệ thống nguồn (chỉ tên hệ thống, không tới mức bảng), lấy từ prefix tên bảng Bronze trong toàn bộ diagram của module. VD: `ThanhTra`, `IDS`, `FIMS`
+- **Nguồn dữ liệu:** Liệt kê tên hệ thống nguồn (chỉ tên hệ thống, không tới mức bảng), lấy từ prefix tên bảng Bronze trong toàn bộ diagram của module. VD: `THANHTRA`, `IDS`, `FIMS`
 - **Tất cả mục còn lại:** Để trống hoàn toàn (chỉ ghi tên label, không có giá trị)
 
 #### B.3 Mục 3.2.X.2 — Luồng nghiệp vụ
@@ -340,9 +340,9 @@ Ví dụ:
 - 3 tầng: Staging → Atomic → Datamart
 - Tên subgraph: `Staging`, `Atomic`, `Datamart` — KHÔNG ghi tên hệ thống hay `Datamart Mart`
 - Tên bảng Staging: **dùng `ID["label"]` syntax** — node ID không dấu chấm, label hiển thị `source.table`
-  - Đúng: `ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]`
-  - Sai: `ThanhTra.TT_HO_SO` (dấu chấm trong node ID gây lỗi mermaid — parsed như CSS class)
-  - Edge dùng node ID: `ThanhTra_TT_HO_SO --> inspection_case`
+  - Đúng: `THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]`
+  - Sai: `THANHTRA.TT_HO_SO` (dấu chấm trong node ID gây lỗi mermaid — parsed như CSS class)
+  - Edge dùng node ID: `THANHTRA_TT_HO_SO --> inspection_case`
 - Tên bảng **Atomic**: **dùng `ID["label"]` syntax** — node ID dùng `_` thay space, label bỏ dấu `_`
   - Đúng: `Fund_Management_Company["Fund Management Company"]`
   - Sai: `Fund_Management_Company` (mermaid render có dấu `_`, xấu)
@@ -365,7 +365,7 @@ Ví dụ:
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]
+    THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]
     ...
   end
   subgraph Atomic
@@ -376,7 +376,7 @@ flowchart LR
     fct_inspection_case_avy["Fact Inspection Case Activity"]
     cdr_dt_dim["Calendar Date Dimension"]
   end
-  ThanhTra_TT_HO_SO --> inspection_case
+  THANHTRA_TT_HO_SO --> inspection_case
   inspection_case --> fct_inspection_case_avy
   cdr_dt_dim --> fct_inspection_case_avy
 ```
@@ -479,7 +479,7 @@ Mô tả phải **thuần tiếng Việt, ngắn gọn, chỉ giữ ý nghĩa ng
 
 | Loại nội dung cần bỏ | Pattern ví dụ |
 |---|---|
-| Tham chiếu nguồn | `— IDS.company_profiles.id`, `— FIMS.INVESTOR.name`, `ThanhTra.TT_HO_SO.NGAY_NHAN_HO_SO` |
+| Tham chiếu nguồn | `— IDS.company_profiles.id`, `— FIMS.INVESTOR.name`, `THANHTRA.TT_HO_SO.NGAY_NHAN_HO_SO` |
 | Open issue | `Xem O_QLCB_1`, `(Closed)`, `Xem O_NDTNN_3`, `xem O_TT_4` |
 | Ghi chú kỹ thuật | `(PK Silver)`, `(BK nguồn)`, `(PK bảng tác nghiệp)` |
 | PENDING | `PENDING (nguồn TTHC chưa có Silver)` → giữ tên trường, bỏ chú thích |
@@ -489,13 +489,13 @@ Mô tả phải **thuần tiếng Việt, ngắn gọn, chỉ giữ ý nghĩa ng
 
 Ví dụ clean:
 ```
-Trước: "FK lịch — ETL lookup từ Inspection Case.Received Date. ThanhTra.TT_HO_SO.NGAY_NHAN_HO_SO"
+Trước: "FK lịch — ETL lookup từ Inspection Case.Received Date. THANHTRA.TT_HO_SO.NGAY_NHAN_HO_SO"
 Sau:   "FK lịch ngày nhận hồ sơ"
 
 Trước: "FK phân loại đối tượng — ETL-derived từ Inspection Decision Subject. 6 giá trị tạm thời — xem O_TT_4"
 Sau:   "FK phân loại đối tượng"
 
-Trước: "PK nguồn dùng làm degenerate key hồ sơ trên Fact. COUNT(DISTINCT) để đếm hồ sơ. ThanhTra.TT_HO_SO.ID"
+Trước: "PK nguồn dùng làm degenerate key hồ sơ trên Fact. COUNT(DISTINCT) để đếm hồ sơ. THANHTRA.TT_HO_SO.ID"
 Sau:   "Mã hồ sơ (degenerate key)"
 ```
 

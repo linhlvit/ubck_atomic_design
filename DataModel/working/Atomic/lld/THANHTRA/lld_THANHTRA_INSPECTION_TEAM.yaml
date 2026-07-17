@@ -1,0 +1,298 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "INSPECTION_TEAM"
+  atomic_entity: "Inspection Team"
+  entity_physical_name: "inspection_team"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Inspection Team Id"
+  physical_name: "inspection_team_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('THANHTRA.INSPECTION_TEAM', CODE). BCV: [Business\
+    \ Activity] Business Review."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Team Code"
+  physical_name: "inspection_team_code"
+  description: "Mã hồ sơ đoàn thanh tra tự sinh UNIQUE (HSTT-YYYY-XXX). BK duy nhất\
+    \ — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.CODE"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.INSPECTION_TEAM"
+  etl_derived_value: "THANHTRA.INSPECTION_TEAM"
+  data_type: "string"
+- attribute_name: "Inspection Annual Plan Id"
+  physical_name: "inspection_annual_plan_id"
+  description: "FK đến kế hoạch thanh tra năm (chỉ có khi form_type=PERIODIC)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.INSPECTION_ANNUAL_PLAN_ID"
+  comment: "FK target: Inspection Annual Plan.Inspection Annual Plan Id. Hash: hash_id('THANHTRA.INSPECTION_ANNUAL_PLAN',\
+    \ INSPECTION_ANNUAL_PLAN_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Annual Plan Code"
+  physical_name: "inspection_annual_plan_code"
+  description: "Mã kế hoạch thanh tra năm liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.INSPECTION_ANNUAL_PLAN_ID"
+  comment: "Lookup pair: Inspection Annual Plan.Inspection Annual Plan Code. Pair\
+    \ with Inspection Annual Plan Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Plan Year"
+  physical_name: "plan_year"
+  description: "Năm thanh tra."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.PLAN_YEAR"
+  comment: "Nguồn NUMBER(4,0) — ETL cast sang integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Form Type Code"
+  physical_name: "form_tp_code"
+  description: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.FORM_TYPE"
+  comment: "Scheme: INSPECTION_TYPE."
+  classification_context: "INSPECTION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Start Date"
+  physical_name: "start_dt"
+  description: "Ngày bắt đầu đoàn thanh tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.START_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "End Date"
+  physical_name: "end_dt"
+  description: "Ngày kết thúc đoàn thanh tra (phải >= start_date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.END_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Duration Days"
+  physical_name: "duration_days"
+  description: "Thời hạn thanh tra (số ngày, chỉ nhập số nguyên > 0)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.DURATION_DAYS"
+  comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Decision Number"
+  physical_name: "decision_nbr"
+  description: "Số quyết định thanh tra (UNIQUE trên phân hệ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.DECISION_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Date"
+  physical_name: "decision_dt"
+  description: "Ngày ban hành quyết định thanh tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.DECISION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Decision Name"
+  physical_name: "decision_nm"
+  description: "Tên quyết định thanh tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.DECISION_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Announcement Date"
+  physical_name: "announcement_dt"
+  description: "Ngày công bố quyết định thanh tra."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.ANNOUNCEMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Content"
+  physical_name: "content"
+  description: "Nội dung tổng quát cuộc thanh tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.CONTENT"
+  comment: "Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Period From Date"
+  physical_name: "inspection_period_from_dt"
+  description: "Thời kỳ thanh tra - Từ ngày."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.INSPECTION_PERIOD_FROM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Inspection Period To Date"
+  physical_name: "inspection_period_to_dt"
+  description: "Thời kỳ thanh tra - Đến ngày."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.INSPECTION_PERIOD_TO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Anti Money Laundering Indicator"
+  physical_name: "anti_money_laundering_indicator"
+  description: "Có thanh tra PCRT: 0=Không, 1=Có."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.ANTI_MONEY_LAUNDERING"
+  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Abnormal Transaction Check Indicator"
+  physical_name: "abnormal_transaction_check_indicator"
+  description: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.ABNORMAL_TRANSACTION_CHECK"
+  comment: "Nguồn NUMBER(1,0) — map sang indicator."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Verification Minutes Sign Date"
+  physical_name: "verification_minutes_sign_dt"
+  description: "Ngày ký biên bản xác minh — mốc tính thời hạn lập kết luận thanh tra;\
+    \ phải nhập trước khi hệ thống gửi nhắc nhở kết luận."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.VERIFICATION_MINUTES_SIGN_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_TEAM.NOTE"
+  comment: "Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

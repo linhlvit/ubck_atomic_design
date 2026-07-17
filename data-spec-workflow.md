@@ -81,12 +81,12 @@ File này mô tả **toàn bộ luồng quy trình** từ yêu cầu nghiệp v�
 **Cấu trúc:**
 
 ```yaml
-source: ThanhTra
+source: THANHTRA
 description: "Phân hệ Thanh tra — Quản lý hoạt động thanh tra, kiểm tra, xử lý vi phạm..."
 
 brd_entries:
-  - brd_id: BRD-SRC-ThanhTra-TT_KE_HOACH
-    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_KE_HOACH"
+  - brd_id: BRD-SRC-THANHTRA-TT_KE_HOACH
+    brd_name: "Design Atomic từ nguồn THANHTRA bảng TT_KE_HOACH"
     type: Theo Source
     ba_email: username@fssc.com.vn
     steward_email: username@ubck.com.vn
@@ -133,7 +133,7 @@ brd_entries:
 
 ```bash
 # Validate một file
-ajv validate -s schemas/brd_source.schema.json -d "BRD/Source/brd_ThanhTra.yaml"
+ajv validate -s schemas/brd_source.schema.json -d "BRD/Source/brd_THANHTRA.yaml"
 
 # Validate tất cả
 for file in BRD/Source/brd_*.yaml; do
@@ -1197,7 +1197,7 @@ df.groupby("source")[["dm_status", "mapping_status"]].value_counts()
 
 ```bash
 # Validate BRD YAML
-ajv validate -s schemas/brd_source.schema.json -d "BRD/Source/brd_ThanhTra.yaml"
+ajv validate -s schemas/brd_source.schema.json -d "BRD/Source/brd_THANHTRA.yaml"
 
 # Validate tất cả BRD files
 for file in BRD/Source/brd_*.yaml; do

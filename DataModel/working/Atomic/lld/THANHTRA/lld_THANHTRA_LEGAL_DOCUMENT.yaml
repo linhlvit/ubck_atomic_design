@@ -1,0 +1,100 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "LEGAL_DOCUMENT"
+  atomic_entity: "Legal Document"
+  entity_physical_name: "legal_document"
+  bcv_core_object: "Business Direction"
+  bcv_concept: "[Business Direction] Law"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Legal Document Id"
+  physical_name: "legal_document_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('THANHTRA.LEGAL_DOCUMENT', CODE). BCV: [Business\
+    \ Direction] Law."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Legal Document Code"
+  physical_name: "legal_document_code"
+  description: "Mã văn bản pháp luật tự sinh UNIQUE (VD: VBPL-XXXX). BK duy nhất —\
+    \ Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.LEGAL_DOCUMENT.CODE"
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key\
+    \ cũ — gộp còn 1 trường Code duy nhất."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.LEGAL_DOCUMENT"
+  etl_derived_value: "THANHTRA.LEGAL_DOCUMENT"
+  data_type: "string"
+- attribute_name: "Legal Document Name"
+  physical_name: "legal_document_nm"
+  description: "Tên văn bản pháp luật (nghị định, thông tư, quyết định...)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.LEGAL_DOCUMENT.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issued Date"
+  physical_name: "issued_dt"
+  description: "Ngày ban hành văn bản pháp luật."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.LEGAL_DOCUMENT.ISSUED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Life Cycle Status Code"
+  physical_name: "life_cycle_status_code"
+  description: "Trạng thái hiệu lực: ACTIVE (Đang hiệu lực), INACTIVE (Hết hiệu lực)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.LEGAL_DOCUMENT.STATUS"
+  comment: "Scheme: ENTITY_STATUS."
+  classification_context: "ENTITY_STATUS"
+  etl_derived_value: null
+  data_type: "string"

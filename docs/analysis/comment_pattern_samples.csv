@@ -17,11 +17,11 @@ Denormalized,GSGD,Investor Trading Account,Authorized Person Name,Lưu ý: tách
 BK\. ,FIMS,Disclosure Authorization,Source System Code,Scheme: SOURCE_SYSTEM. BK. Hardcode.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
 BK\. ,FMS,Discretionary Investment Account,Source System Code,Scheme: SOURCE_SYSTEM. BK. Hardcode.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
 BK\. ,IDS,Public Company State Capital,Source System Code,Scheme: SOURCE_SYSTEM. BK. Hardcode.,dm_atm_pblc_co_ste_cptl-IDS.state_capital.yaml
-ETL derived,ThanhTra,Inspection Case Conclusion,Conclusion Sequence Number,ETL-derived: tính tự động theo thứ tự NGAY_TAO trong cùng HO_SO_ID.,dm_atm_insp_case_conclusion-ThanhTra.TT_KET_LUAN.yaml
+ETL derived,THANHTRA,Inspection Case Conclusion,Conclusion Sequence Number,ETL-derived: tính tự động theo thứ tự NGAY_TAO trong cùng HO_SO_ID.,dm_atm_insp_case_conclusion-THANHTRA.TT_KET_LUAN.yaml
 ETL derived,QLRR,Risk Indicator,Indicator Type Code,ETL-derived. Scheme: RISK_INDICATOR_TYPE.,dm_atm_rsk_ind-QLRR.risk_indicator.yaml
 ETL derived,ORDERTRADE,Securities Order,Trade Date,Nguồn Character(8) — ETL parse sang date.,dm_atm_scr_ordr-ORDERTRADE.ORDER_BOOK_HNX.yaml
 Other,FMS,Discretionary Investment Account,Account Place,Cần xác nhận: có phải FK đến Custodian Bank không? Tạm giữ dạng Text.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
-Other,ThanhTra,AML Periodic Report,Source Record Id,Internal source PK — dùng để cross-reference khi MA_BAO_CAO chưa có.,dm_atm_aml_prd_rpt-ThanhTra.PCRT_BAO_CAO.yaml
+Other,THANHTRA,AML Periodic Report,Source Record Id,Internal source PK — dùng để cross-reference khi MA_BAO_CAO chưa có.,dm_atm_aml_prd_rpt-THANHTRA.PCRT_BAO_CAO.yaml
 Other,SCMS,Disclosure Report Submission,Reporting Period Code,Text tự do — kỳ báo cáo (VD: Q1/2024).,dm_atm_dscl_rpt_subm-SCMS.CBTT_BAO_CAO.yaml
 BK chính,FIMS,Disclosure Authorization,Disclosure Authorization Code,BK chính.,dm_atm_dscl_ahr-FIMS.AUTHOANNOUNCE.yaml
 BK chính,FMS,Discretionary Investment Account,Discretionary Investment Account Code,BK chính.,dm_atm_dscr_ivsm_ac-FMS.INVESACC.yaml
@@ -39,6 +39,6 @@ Snapshot,ORDERTRADE,Securities Order,Execution Price,Snapshot giá khớp tại 
 Snapshot,QLRR,Risk Alert,Threshold Value,Lưu dạng Text. Snapshot ngưỡng.,dm_atm_rsk_alert-QLRR.risk_alert.yaml
 Audit note,ORDERTRADE,Securities Order,Reference Sequence Number,Metadata luồng dữ liệu — dùng để audit/trace event order.,dm_atm_scr_ordr-ORDERTRADE.ORDER_BOOK_HNX.yaml
 Audit note,IDS,Public Company,Created Timestamp,Audit từ company_detail là 1-1 với company_profiles.,dm_atm_pblc_co-IDS.company_detail.yaml
-Audit note,ThanhTra,Public Company,Created Timestamp,Audit từ company_detail là 1-1 với company_profiles.,dm_atm_pblc_co-ThanhTra.DM_CONG_TY_DC.yaml
+Audit note,THANHTRA,Public Company,Created Timestamp,Audit từ company_detail là 1-1 với company_profiles.,dm_atm_pblc_co-THANHTRA.DM_CONG_TY_DC.yaml
 BCV Term (exact),ECAT,Calendar Date,Holiday Flag,"BCV Term: Public Holiday Flag. ETL merge: nếu calendar_date match ngày trong ECAT_29 → true, ngược lại → false.",dm_atm_cdr_dt-ECAT.ECAT_29_HolidayInfo.yaml
 BCV Term (exact),MDDS,Corporate Bond Trading Snapshot,Debt Interest Type Code,BCV Term: Debt Interest Type (id=12002) — distinguishes Debt Instrument by how interest rate is applied (fixed/floating). Scheme: MDDS_INTEREST_RATE_TYPE. Nguồn string — khớp tự nhiên với Classification Value. Giữ nguyên giá trị số làm code.,dm_atm_corp_bond_tdg_snpst-MDDS.CorpBondInfor.yaml

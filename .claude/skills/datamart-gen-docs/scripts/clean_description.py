@@ -1,7 +1,7 @@
 """Helper: strip nội dung kỹ thuật khỏi mô tả trường (Phần C.5).
 
 Usage:
-    python clean_description.py "FK lịch — ETL lookup từ Inspection Case.Received Date. ThanhTra.TT_HO_SO.X"
+    python clean_description.py "FK lịch — ETL lookup từ Inspection Case.Received Date. THANHTRA.TT_HO_SO.X"
     # → "FK lịch"
 
     python clean_description.py --file DTM_TT_Attributes.csv
@@ -19,9 +19,9 @@ from pathlib import Path
 # ─── Patterns cần bỏ ─────────────────────────────────────────────────────────
 
 _PATTERNS = [
-    # Tham chiếu nguồn: "— IDS.table.col", "ThanhTra.TABLE.COL" (prefix UPPERCASE.TABLE.col)
+    # Tham chiếu nguồn: "— IDS.table.col", "THANHTRA.TABLE.COL" (prefix UPPERCASE.TABLE.col)
     re.compile(r"\s*[—-]\s*[A-Z][A-Za-z]+\.[A-Z_]+\.[A-Za-z_.]+"),
-    re.compile(r"\s*\bThanhTra\.[A-Z_]+\.[A-Z_a-z_.]+"),
+    re.compile(r"\s*\bTHANHTRA\.[A-Z_]+\.[A-Z_a-z_.]+"),
     re.compile(r"\s*\b[A-Z]{2,10}\.[A-Z_]{3,}\.[A-Za-z_]+"),   # SOURCE.TABLE.col
     # Open issue: "Xem O_XX_N", "(Closed)", "xem O_TT_4"
     re.compile(r"\s*[—-]?\s*[Xx]em\s+O_[A-Z]+_\d+"),
@@ -46,7 +46,7 @@ _TRAILING_DASH = re.compile(r"\s*[—]\s*(?:ETL|[A-Z][A-Za-z]+\.[A-Z_]+).*$")
 
 # Bỏ phần sau dấu ". " nếu phần sau bắt đầu bằng tên hệ thống nguồn
 _TRAILING_DOT_SOURCE = re.compile(
-    r"\.\s+(?:ThanhTra|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|QLRR|ThanhTra|DCST|[A-Z]{2,10})\.[A-Z_].*$"
+    r"\.\s+(?:THANHTRA|IDS|FIMS|FMS|GSGD|NHNCK|SCMS|QLRR|THANHTRA|DCST|[A-Z]{2,10})\.[A-Z_].*$"
 )
 
 # Số đếm/COUNT note

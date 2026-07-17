@@ -3,7 +3,7 @@
 ### 3.2.4.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): FIMS, IDS, ThanhTra
+- Nguồn dữ liệu (hệ thống nguồn): FIMS, IDS, THANHTRA
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
@@ -166,9 +166,9 @@ Atomic → Datamart:
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_GS_HO_SO["ThanhTra.GS_HO_SO"]
-    ThanhTra_GS_VAN_BAN_XU_LY["ThanhTra.GS_VAN_BAN_XU_LY"]
-    ThanhTra_DM_TRANG_THAI_HO_SO["ThanhTra.DM_TRANG_THAI_HO_SO"]
+    THANHTRA_GS_HO_SO["THANHTRA.GS_HO_SO"]
+    THANHTRA_GS_VAN_BAN_XU_LY["THANHTRA.GS_VAN_BAN_XU_LY"]
+    THANHTRA_DM_TRANG_THAI_HO_SO["THANHTRA.DM_TRANG_THAI_HO_SO"]
   end
   subgraph Atomic
     Surveillance_Enforcement_Case["Surveillance Enforcement Case"]
@@ -178,23 +178,23 @@ flowchart LR
   subgraph Datamart
     ivsr_cmpln_hist["Investor Compliance History"]
   end
-  ThanhTra_GS_HO_SO --> Surveillance_Enforcement_Case
-  ThanhTra_GS_VAN_BAN_XU_LY --> Surveillance_Enforcement_Decision
-  ThanhTra_DM_TRANG_THAI_HO_SO --> Classification_Value_TT_CASE_STATUS
+  THANHTRA_GS_HO_SO --> Surveillance_Enforcement_Case
+  THANHTRA_GS_VAN_BAN_XU_LY --> Surveillance_Enforcement_Decision
+  THANHTRA_DM_TRANG_THAI_HO_SO --> Classification_Value_TT_CASE_STATUS
   Surveillance_Enforcement_Case --> ivsr_cmpln_hist
   Surveillance_Enforcement_Decision --> ivsr_cmpln_hist
   Classification_Value_TT_CASE_STATUS --> ivsr_cmpln_hist
 ```
 
-**Mục đích:** Phục vụ Tab NĐTNN 360 — Sub-tab C Lịch sử tuân thủ, cung cấp bảng `Investor Compliance History` lưu lịch sử quyết định xử lý và xử phạt hành chính của từng NĐT nước ngoài từ phân hệ Giám sát (ThanhTra).
+**Mục đích:** Phục vụ Tab NĐTNN 360 — Sub-tab C Lịch sử tuân thủ, cung cấp bảng `Investor Compliance History` lưu lịch sử quyết định xử lý và xử phạt hành chính của từng NĐT nước ngoài từ phân hệ Giám sát (THANHTRA).
 
 **Mô tả luồng:**
 
 Staging → Atomic:
 
-- **Surveillance Enforcement Case:** Bảng lưu thông tin hồ sơ giám sát NĐT lấy thông tin từ bảng ThanhTra.GS_HO_SO
-- **Surveillance Enforcement Decision:** Bảng lưu thông tin văn bản xử lý / quyết định xử phạt lấy thông tin từ bảng ThanhTra.GS_VAN_BAN_XU_LY
-- **Classification Value (TT_CASE_STATUS):** Bảng code value lưu danh mục trạng thái hồ sơ giám sát lấy thông tin từ bảng ThanhTra.DM_TRANG_THAI_HO_SO
+- **Surveillance Enforcement Case:** Bảng lưu thông tin hồ sơ giám sát NĐT lấy thông tin từ bảng THANHTRA.GS_HO_SO
+- **Surveillance Enforcement Decision:** Bảng lưu thông tin văn bản xử lý / quyết định xử phạt lấy thông tin từ bảng THANHTRA.GS_VAN_BAN_XU_LY
+- **Classification Value (TT_CASE_STATUS):** Bảng code value lưu danh mục trạng thái hồ sơ giám sát lấy thông tin từ bảng THANHTRA.DM_TRANG_THAI_HO_SO
 
 Atomic → Datamart:
 

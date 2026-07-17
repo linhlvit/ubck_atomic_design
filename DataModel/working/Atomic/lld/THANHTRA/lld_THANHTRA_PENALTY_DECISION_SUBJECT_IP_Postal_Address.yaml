@@ -1,0 +1,87 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "PENALTY_DECISION_SUBJECT"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T5"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Penalty Decision Subject."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.ID"
+  comment: "FK target: Penalty Decision Subject.Penalty Decision Subject Id. Shared\
+    \ entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã đối tượng bị xử phạt."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.ID"
+  comment: "Lookup pair: Penalty Decision Subject.Penalty Decision Subject Code. Pair\
+    \ with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=THANHTRA.PENALTY_DECISION_SUBJECT"
+  etl_derived_value: "THANHTRA.PENALTY_DECISION_SUBJECT"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — địa chỉ chung, nguồn không phân loại."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: "ADDRESS"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ cư trú/trụ sở đối tượng bị xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_ADDRESS"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: null
+  data_type: "string"

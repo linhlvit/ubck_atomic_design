@@ -1,0 +1,41 @@
+// THANHTRA — UID02 Xử lý vi phạm hành chính
+
+Project THANHTRA_UID02 {
+  database_type: "Delta Lake"
+  Note: "THANHTRA — UID02 Xử lý vi phạm hành chính"
+}
+
+Table "surveil_nfrc_case" [note: "Hồ sơ xử lý vi phạm từ kết quả giám sát thị trường. Ghi nhận đối tượng và trạng thái xử lý."] {
+  "surveil_nfrc_case_id" varchar [pk]
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
+}
+
+Table "surveil_nfrc_dcsn" [note: "Văn bản xử lý vi phạm từ giám sát. FK → Surveillance Enforcement Case."] {
+  "surveil_nfrc_dcsn_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
+}
+
+Table "surveil_pny_ancm" [note: "Công bố quyết định xử phạt từ giám sát. FK → Surveillance Enforcement Decision."] {
+  "surveil_pny_ancm_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
+  "surveil_nfrc_dcsn_id" varchar
+}
+
+Table "surveil_case_doc_attch" [note: "Văn bản đính kèm hồ sơ giám sát. FK → Surveillance Enforcement Case."] {
+  "surveil_case_doc_attch_id" varchar [pk]
+  "surveil_nfrc_case_id" varchar
+}
+
+Table "surveil_nfrc_dcsn_file_attch" [note: "File đính kèm văn bản xử lý giám sát. FK → Surveillance Enforcement Decision."] {
+  "surveil_nfrc_dcsn_file_attch_id" varchar [pk]
+  "surveil_nfrc_dcsn_id" varchar
+}
+
+// Ref: "surveil_nfrc_case"."rspl_ofcr_id" > ""."" // out-of-source
+// Ref: "surveil_nfrc_case"."pcs_ofcr_id" > ""."" // out-of-source
+Ref: "surveil_nfrc_dcsn"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_pny_ancm"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_pny_ancm"."surveil_nfrc_dcsn_id" > "surveil_nfrc_dcsn"."surveil_nfrc_dcsn_id"
+Ref: "surveil_case_doc_attch"."surveil_nfrc_case_id" > "surveil_nfrc_case"."surveil_nfrc_case_id"
+Ref: "surveil_nfrc_dcsn_file_attch"."surveil_nfrc_dcsn_id" > "surveil_nfrc_dcsn"."surveil_nfrc_dcsn_id"

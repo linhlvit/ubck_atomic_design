@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Oracle MCP Server — ThanhTra source system (schema: INSPECT, login: viewssc).
+"""Oracle MCP Server — THANHTRA source system (schema: INSPECT, login: viewssc).
 
 user_* views are auto-translated to all_* WHERE owner='INSPECT' so SKILL
 queries work without modification.
@@ -55,7 +55,7 @@ def _serialize_value(val):
 
 @mcp.tool()
 def list_tables() -> str:
-    """List all tables in the ThanhTra Oracle schema (INSPECT) with their comments."""
+    """List all tables in the THANHTRA Oracle schema (INSPECT) with their comments."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -75,7 +75,7 @@ def list_tables() -> str:
 
 @mcp.tool()
 def query_oracle(sql: str) -> str:
-    """Execute a SELECT query against the ThanhTra Oracle database (schema: INSPECT).
+    """Execute a SELECT query against the THANHTRA Oracle database (schema: INSPECT).
 
     user_* views (user_tables, user_tab_columns, user_constraints, etc.) are
     automatically translated to the equivalent all_* views filtered by the

@@ -27,7 +27,7 @@ Mỗi CSDL nguồn có 1 MCP server riêng, cấu hình trong `.claude/settings.
 
 | SOURCE | MCP Server | Script |
 |---|---|---|
-| `ThanhTra` | `oracle-thanhtra` | `~/.claude/oracle_mcp_server.py` |
+| `THANHTRA` | `oracle-thanhtra` | `~/.claude/oracle_mcp_server.py` |
 | `NHNCK` | `oracle-nhnck` | `~/.claude/oracle_mcp_nhnck.py` |
 
 Khi thêm source mới: tạo script MCP mới (copy từ script hiện có, đổi connection info + tên server),
@@ -45,7 +45,7 @@ bằng cách gọi thử `list_tables` qua tool `mcp__{MCP_SERVER}__list_tables`
 
 | Tham số | Mô tả | Ví dụ |
 |---|---|---|
-| `SOURCE` | Tên source system viết HOA | `ThanhTra`, `NHNCK`, `FIMS` |
+| `SOURCE` | Tên source system viết HOA | `THANHTRA`, `NHNCK`, `FIMS` |
 | `MCP_SERVER` | Tên MCP server tương ứng | `oracle-thanhtra`, `oracle-nhnck` |
 | `MODE` | Chế độ chạy (tuỳ chọn, mặc định `full`) | `full` / `reconcile` |
 

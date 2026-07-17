@@ -405,7 +405,7 @@ So sánh `tier_expected` với `tier_current` từ mục 7a:
 
 #### Bước 2b — Kiểm tra FK suy luận trong BRD (chỉ chạy khi Bước 2 ra `dependencies[] = []` nhưng Tier > 1)
 
-BRD ThanhTra (và một số source khác) dùng 2 convention FK:
+BRD THANHTRA (và một số source khác) dùng 2 convention FK:
 - `key: FK` → FK chính thức → được vẽ vào diagram 7b
 - `key: null` + `fk_note: "FK suy luận → X.id"` → FK thực tế trong DB nhưng nullable/soft → **không vẽ vào diagram 7b**
 

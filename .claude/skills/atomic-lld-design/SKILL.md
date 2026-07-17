@@ -177,7 +177,7 @@ Mục đích của Bước 2 là **không thay đổi domain đã chọn** mà l
 - `{Entity} Id` (surrogate) hash **từ chính `{Entity} Code`**: `hash_id('SRC.TABLE', CODE_COLUMN)` — không hash từ ID kỹ thuật.
 - **Bảng nguồn có cả `ID` và `CODE`**: chỉ map `CODE` → `{Entity} Code`; bỏ qua `ID` hoàn toàn (không tạo cặp Code kỹ thuật + Unique Key như trước đây).
 - Không còn pattern `{Entity} Unique Key` — đã gộp vào `{Entity} Code` duy nhất (quyết định 2026-07-13, thay thế pattern Id+Code+Unique Key cũ).
-- Pattern tham khảo (`lld_ThanhTra_VIOLATION_CASE.yaml`): `Violation Case Id` (surrogate, hash từ CODE) + `Violation Case Code` (từ `CODE` nguồn — mã hồ sơ VPHC tự sinh, BK duy nhất).
+- Pattern tham khảo (`lld_THANHTRA_VIOLATION_CASE.yaml`): `Violation Case Id` (surrogate, hash từ CODE) + `Violation Case Code` (từ `CODE` nguồn — mã hồ sơ VPHC tự sinh, BK duy nhất).
 - FK trỏ đến entity khác trong 15 core objects cũng phải hash theo Code của entity đích: nếu cột FK nguồn lưu ID kỹ thuật của bảng cha, phải `join FK_COL → TARGET_TABLE.ID` để lấy `CODE` rồi mới `hash_id('TARGET_TABLE', code)` — không hash trực tiếp theo FK ID.
 - Nếu mã nghiệp vụ nguồn hiện đang nullable, cần ghi chú yêu cầu profile dữ liệu xác nhận NOT NULL/unique trước go-live (Code nay đóng vai trò BK).
 

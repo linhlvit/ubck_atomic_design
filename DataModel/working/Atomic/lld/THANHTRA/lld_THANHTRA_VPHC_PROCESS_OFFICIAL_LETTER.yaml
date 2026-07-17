@@ -1,0 +1,202 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "VPHC_PROCESS_OFFICIAL_LETTER"
+  atomic_entity: "VPHC Process Official Letter"
+  entity_physical_name: "vphc_process_official_letter"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Fundamental"
+  group: "T5"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Công văn trong quy trình xử lý VPHC. Tất cả 3 FK đều nullable. 3 CLOB form\
+    \ rendering (FIELD_HTML_JSON, FIELD_SOURCE_JSON, MANUAL_MERGE_DATA_JSON) không\
+    \ map lên Atomic theo T5-03. Ghi nhận T5-02: xem xét thêm constraint ít nhất 1\
+    \ FK phải có giá trị."
+attributes:
+- attribute_name: "VPHC Process Official Letter Id"
+  physical_name: "vphc_process_official_letter_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Documentation] Form Document."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "VPHC Process Official Letter Code"
+  physical_name: "vphc_process_official_letter_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER"
+  etl_derived_value: "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER"
+  data_type: "string"
+- attribute_name: "Official Letter Subtype Code"
+  physical_name: "official_letter_subtype_code"
+  description: "Loại công văn: PRE_VIOLATION_NOTICE_1, REMINDER, PRE_VIOLATION_NOTICE_N,\
+    \ INFO_REQUEST, PRE_DECISION_NOTICE, PAYMENT_GUIDE, PAYMENT_REMINDER, REMEDIAL_REMINDER."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.OFFICIAL_LETTER_SUBTYPE"
+  comment: "Scheme: OFFICIAL_LETTER_SUBTYPE."
+  classification_context: "OFFICIAL_LETTER_SUBTYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Case Id"
+  physical_name: "violation_case_id"
+  description: "FK đến hồ sơ VPHC (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_CASE_ID"
+  comment: "FK target: Violation Case.Violation Case Id. Hash: hash_id('THANHTRA.VIOLATION_CASE',\
+    \ VIOLATION_CASE_ID). Nullable."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Case Code"
+  physical_name: "violation_case_code"
+  description: "Mã hồ sơ VPHC liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_CASE_ID"
+  comment: "Lookup pair: Violation Case.Violation Case Code. Pair with Violation Case\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Id"
+  physical_name: "violation_record_id"
+  description: "FK đến biên bản VPHC (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_RECORD_ID"
+  comment: "FK target: Violation Record.Violation Record Id. Hash: hash_id('THANHTRA.VIOLATION_RECORD',\
+    \ VIOLATION_RECORD_ID). Nullable."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Code"
+  physical_name: "violation_record_code"
+  description: "Mã biên bản VPHC liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_RECORD_ID"
+  comment: "Lookup pair: Violation Record.Violation Record Code. Pair with Violation\
+    \ Record Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Id"
+  physical_name: "pd_id"
+  description: "FK đến quyết định xử phạt (nullable)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.PENALTY_DECISION_ID"
+  comment: "FK target: Penalty Decision.Penalty Decision Id. Hash: hash_id('THANHTRA.PENALTY_DECISION',\
+    \ PENALTY_DECISION_ID). Nullable."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Code"
+  physical_name: "pd_code"
+  description: "Mã quyết định xử phạt liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.PENALTY_DECISION_ID"
+  comment: "Lookup pair: Penalty Decision.Penalty Decision Code. Pair with Penalty\
+    \ Decision Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Template Name"
+  physical_name: "document_template_nm"
+  description: "Snapshot tên biểu mẫu tại thời điểm tạo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.DOCUMENT_TEMPLATE_NAME"
+  comment: "Snapshot tên biểu mẫu tại thời điểm tạo. DOCUMENT_TEMPLATE_ID (FK→DOCUMENT_TEMPLATE)\
+    \ không map — bảng nguồn out_of_scope."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Case Output Document Id"
+  physical_name: "violation_case_output_document_id"
+  description: "FK đến văn bản đầu ra VPHC (FK suy luận)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.OUTPUT_DOCUMENT_ID"
+  comment: "FK target: Violation Case Output Document.Violation Case Output Document\
+    \ Id. Hash: hash_id('THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT', OUTPUT_DOCUMENT_ID).\
+    \ FK suy luận — liên kết sau khi công văn được đồng bộ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Case Output Document Code"
+  physical_name: "violation_case_output_document_code"
+  description: "Mã văn bản đầu ra VPHC liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.OUTPUT_DOCUMENT_ID"
+  comment: "Lookup pair: Violation Case Output Document.Violation Case Output Document\
+    \ Code. Pair with Violation Case Output Document Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

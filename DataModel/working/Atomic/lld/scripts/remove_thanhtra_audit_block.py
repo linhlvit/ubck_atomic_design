@@ -2,7 +2,7 @@
 remove_thanhtra_audit_block.py
 ================================
 Loai bo audit block Created/Updated Timestamp + Created/Updated By Officer Id/Code
-khoi toan bo lld_ThanhTra_*.yaml (quyet dinh thiet ke cua Data Modeler, mirror dung
+khoi toan bo lld_THANHTRA_*.yaml (quyet dinh thiet ke cua Data Modeler, mirror dung
 quyet dinh da ap dung cho SCMS/IDS — xem remove_scms_audit_block.py,
 remove_ids_audit_block.py).
 
@@ -69,7 +69,7 @@ TARGET_ATTR_NAMES = [
 ]
 
 REASON = (
-    "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he ThanhTra, "
+    "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he THANHTRA, "
     "mirror quyet dinh da ap dung cho SCMS/IDS. Created By/Updated By Officer Id/Code "
     "la FK cross-source den NHNCK.USERS (Regulatory Authority Officer) — loai bo theo "
     "yeu cau Data Modeler de don gian hoa, khong phu thuoc FK cross-source chua duoc "
@@ -88,7 +88,7 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    files = sorted(THANHTRA_DIR.glob("lld_ThanhTra_*.yaml"))
+    files = sorted(THANHTRA_DIR.glob("lld_THANHTRA_*.yaml"))
     total_removed = 0
     pending_entries_text = []
 
@@ -125,13 +125,13 @@ def main() -> None:
         )
 
         pending_entries_text.append(
-            "  - source_system: \"ThanhTra\"\n"
+            "  - source_system: \"THANHTRA\"\n"
             f"    source_table: \"{table}\"\n"
             f"    source_column: \"{', '.join(removed_columns)}\"\n"
             "    description: \"Audit block created/updated by-at\"\n"
             f"    reason: \"{REASON}\"\n"
             "    action: \"Excluded — da xoa Created/Updated Timestamp va Created/Updated By Officer "
-            f"Id/Code khoi lld_ThanhTra_{table}.yaml.\"\n"
+            f"Id/Code khoi lld_THANHTRA_{table}.yaml.\"\n"
         )
 
         if not args.dry_run:

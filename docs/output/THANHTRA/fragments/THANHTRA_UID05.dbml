@@ -1,0 +1,31 @@
+// THANHTRA — UID05 Phòng chống rửa tiền, tài trợ khủng bố
+
+Project THANHTRA_UID05 {
+  database_type: "Delta Lake"
+  Note: "THANHTRA — UID05 Phòng chống rửa tiền, tài trợ khủng bố"
+}
+
+Table "aml_nfrc_case" [note: "Hồ sơ xử lý vi phạm phòng chống rửa tiền. Ghi nhận đối tượng vi phạm và trạng thái xử lý."] {
+  "aml_nfrc_case_id" varchar [pk]
+  "rspl_ofcr_id" varchar
+  "pcs_ofcr_id" varchar
+}
+
+Table "aml_nfrc_dcsn" [note: "Văn bản xử lý vi phạm rửa tiền. FK → AML Enforcement Case."] {
+  "aml_nfrc_dcsn_id" varchar [pk]
+  "aml_nfrc_case_id" varchar
+}
+
+Table "aml_prd_rpt" [note: "Báo cáo định kỳ về hoạt động phòng chống rửa tiền. Mỗi dòng = 1 lần lập báo cáo."] {
+  "aml_prd_rpt_id" varchar [pk]
+}
+
+Table "aml_case_doc_attch" [note: "Văn bản đính kèm hồ sơ PCRT. FK → AML Enforcement Case."] {
+  "aml_case_doc_attch_id" varchar [pk]
+  "aml_nfrc_case_id" varchar
+}
+
+// Ref: "aml_nfrc_case"."rspl_ofcr_id" > ""."" // out-of-source
+// Ref: "aml_nfrc_case"."pcs_ofcr_id" > ""."" // out-of-source
+Ref: "aml_nfrc_dcsn"."aml_nfrc_case_id" > "aml_nfrc_case"."aml_nfrc_case_id"
+Ref: "aml_case_doc_attch"."aml_nfrc_case_id" > "aml_nfrc_case"."aml_nfrc_case_id"

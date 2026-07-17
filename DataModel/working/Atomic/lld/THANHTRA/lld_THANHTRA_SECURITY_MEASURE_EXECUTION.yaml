@@ -1,0 +1,155 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "SECURITY_MEASURE_EXECUTION"
+  atomic_entity: "Security Measure Execution"
+  entity_physical_name: "sm_execution"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Security Measure Execution Id"
+  physical_name: "sm_execution_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Business Activity] Business Review (Status Review\
+    \ — báo cáo kết quả thực thi biện pháp ngăn chặn)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Security Measure Execution Code"
+  physical_name: "sm_execution_code"
+  description: "Khóa chính UUID của bảng nguồn. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.SECURITY_MEASURE_EXECUTION"
+  etl_derived_value: "THANHTRA.SECURITY_MEASURE_EXECUTION"
+  data_type: "string"
+- attribute_name: "Security Measure Decision Id"
+  physical_name: "sm_decision_id"
+  description: "FK đến Security Measure Decision (quyết định biện pháp ngăn chặn được\
+    \ báo cáo kết quả thực thi)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.SECURITY_MEASURE_DECISION_ID"
+  comment: "FK target: Security Measure Decision.Security Measure Decision Id. Hash:\
+    \ hash_id('THANHTRA.SECURITY_MEASURE_DECISION', SECURITY_MEASURE_DECISION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Security Measure Decision Code"
+  physical_name: "sm_decision_code"
+  description: "Mã Security Measure Decision (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.SECURITY_MEASURE_DECISION_ID"
+  comment: "Lookup pair: Security Measure Decision.Security Measure Decision Code.\
+    \ Pair with Security Measure Decision Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Reporter Name"
+  physical_name: "reporter_nm"
+  description: "Tên tổ chức hoặc cá nhân báo cáo tình hình thực hiện biện pháp ngăn\
+    \ chặn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.REPORTER_NAME"
+  comment: "Denormalized text — không FK formal đến tổ chức."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Date"
+  physical_name: "rpt_dt"
+  description: "Ngày báo cáo kết quả thực thi."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.REPORT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Content"
+  physical_name: "content"
+  description: "Nội dung tóm tắt báo cáo kết quả thực thi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.CONTENT"
+  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Execution Result Code"
+  physical_name: "execution_result_code"
+  description: "Kết quả thực thi biện pháp ngăn chặn: FULLY_EXECUTED, IN_PROGRESS,\
+    \ NOT_EXECUTED."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.EXECUTION_RESULT"
+  comment: "Scheme: SECURITY_MEASURE_EXECUTION_RESULT."
+  classification_context: "SECURITY_MEASURE_EXECUTION_RESULT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung về kết quả thực thi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.SECURITY_MEASURE_EXECUTION.NOTE"
+  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

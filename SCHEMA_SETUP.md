@@ -49,7 +49,7 @@ Tại gốc repo, tạo hoặc edit `.vscode/settings.json`:
 
 ### Kiểm tra cấu hình
 
-1. Mở một file `BRD/Source/brd_ThanhTra.yaml`
+1. Mở một file `BRD/Source/brd_THANHTRA.yaml`
 2. Nếu cấu hình đúng, bạn sẽ thấy:
    - **Autocomplete** khi gõ field names (ví dụ: `scope_status`, `related_tables`)
    - **Error squiggly** (đường sóng đỏ) nếu giá trị không match schema (ví dụ: `scope_status: invalid_value`)
@@ -59,8 +59,8 @@ Tại gốc repo, tạo hoặc edit `.vscode/settings.json`:
 
 ```yaml
 brd_entries:
-  - brd_id: BRD-SRC-ThanhTra-TT_KE_HOACH
-    brd_name: "Design Atomic từ nguồn ThanhTra bảng TT_KE_HOACH"
+  - brd_id: BRD-SRC-THANHTRA-TT_KE_HOACH
+    brd_name: "Design Atomic từ nguồn THANHTRA bảng TT_KE_HOACH"
     type: Theo Source
     ba_email: invalid-email      # ❌ VS Code báo lỗi: not a valid email
     steward_email: username@ubck.com.vn
@@ -90,7 +90,7 @@ npm install -g ajv-cli
 ### Validate một file
 
 ```bash
-ajv validate -s schemas/brd_source.schema.json -d "BRD/Source/brd_ThanhTra.yaml" --data-type yaml
+ajv validate -s schemas/brd_source.schema.json -d "BRD/Source/brd_THANHTRA.yaml" --data-type yaml
 ```
 
 ### Validate tất cả file BRD

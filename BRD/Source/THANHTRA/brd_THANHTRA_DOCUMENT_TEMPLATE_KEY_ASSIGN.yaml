@@ -1,0 +1,56 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: DOCUMENT_TEMPLATE_KEY_ASSIGN
+brd_ref: BRD-SRC-THANHTRA-DOCUMENT_TEMPLATE_KEY_ASSIGN
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: TEMPLATE_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> document_template"
+    key: FK
+    fk_note: "FK → DOCUMENT_TEMPLATE.id"
+  - name: KEY_DEFINITION_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> document_template_key_definition"
+    key: FK
+    fk_note: "FK → DOCUMENT_TEMPLATE_KEY_DEFINITION.id"
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(200 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(50 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: TEMPLATE_VERSION_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> document_template_version: phiên bản file mẫu áp dụng key này"
+    key: FK
+    fk_note: "FK → DOCUMENT_TEMPLATE_VERSION.id"

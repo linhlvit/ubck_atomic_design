@@ -1,0 +1,112 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "EXAMINATION_RESULT_NOTICE_REMEDIAL"
+  atomic_entity: "Examination Result Notice Remedial"
+  entity_physical_name: "examination_result_notice_remedial"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Examination Result Notice Remedial Id"
+  physical_name: "examination_result_notice_remedial_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Documentation] Form Document."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Result Notice Remedial Code"
+  physical_name: "examination_result_notice_remedial_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL"
+  etl_derived_value: "THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL"
+  data_type: "string"
+- attribute_name: "Examination Result Notice Id"
+  physical_name: "examination_result_notice_id"
+  description: "FK đến thông báo kết quả kiểm tra."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.EXAMINATION_RESULT_NOTICE_ID"
+  comment: "FK target: Examination Result Notice.Examination Result Notice Id. Hash:\
+    \ hash_id('THANHTRA.EXAMINATION_RESULT_NOTICE', EXAMINATION_RESULT_NOTICE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Result Notice Code"
+  physical_name: "examination_result_notice_code"
+  description: "Mã thông báo kết quả kiểm tra liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.EXAMINATION_RESULT_NOTICE_ID"
+  comment: "Lookup pair: Examination Result Notice.Examination Result Notice Code.\
+    \ Pair with Examination Result Notice Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Nội dung biện pháp khắc phục sau kiểm tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.DESCRIPTION"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sort Order"
+  physical_name: "sort_order"
+  description: "Thứ tự hiển thị biện pháp khắc phục."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL.SORT_ORDER"
+  comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

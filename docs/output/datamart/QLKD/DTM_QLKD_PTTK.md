@@ -3,7 +3,7 @@
 ### 3.2.7.1 Thông tin chung luồng đồng bộ
 
 - Tên job:
-- Nguồn dữ liệu (hệ thống nguồn): SCMS, FIMS, NHNCK, ThanhTra, IDS
+- Nguồn dữ liệu (hệ thống nguồn): SCMS, FIMS, NHNCK, THANHTRA, IDS
 - Cách thức truy xuất đồng bộ dữ liệu:
 - Tần suất đồng bộ dữ liệu:
 - Dung lượng dữ liệu sẽ thực hiện đồng bộ:
@@ -445,8 +445,8 @@ Atomic → Datamart:
 flowchart LR
   subgraph Staging
     SCMS_BC_THANH_VIEN["SCMS.BC_THANH_VIEN"]
-    ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]
-    ThanhTra_TT_KET_LUAN["ThanhTra.TT_KET_LUAN"]
+    THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]
+    THANHTRA_TT_KET_LUAN["THANHTRA.TT_KET_LUAN"]
   end
 
   subgraph Atomic
@@ -460,8 +460,8 @@ flowchart LR
   end
 
   SCMS_BC_THANH_VIEN --> Member_Periodic_Report
-  ThanhTra_TT_HO_SO --> Inspection_Case
-  ThanhTra_TT_KET_LUAN --> Inspection_Case_Conclusion
+  THANHTRA_TT_HO_SO --> Inspection_Case
+  THANHTRA_TT_KET_LUAN --> Inspection_Case_Conclusion
 
   Member_Periodic_Report --> scr_co_cmpln_hist
   Inspection_Case --> scr_co_cmpln_hist
@@ -474,8 +474,8 @@ flowchart LR
 
 Staging → Atomic:
 - **Member Periodic Report:** Bảng lưu thông tin báo cáo định kỳ thành viên (trạng thái nộp, ngày nộp, hạn nộp) lấy thông tin từ bảng SCMS.BC_THANH_VIEN
-- **Inspection Case:** Bảng lưu hồ sơ thanh tra/kiểm tra CTCK (loại hình, tên hồ sơ, tên tổ chức bị kiểm tra) lấy thông tin từ bảng ThanhTra.TT_HO_SO
-- **Inspection Case Conclusion:** Bảng lưu kết luận xử phạt thanh tra (số QĐ, ngày ký, hình thức phạt, số tiền phạt) lấy thông tin từ bảng ThanhTra.TT_KET_LUAN
+- **Inspection Case:** Bảng lưu hồ sơ thanh tra/kiểm tra CTCK (loại hình, tên hồ sơ, tên tổ chức bị kiểm tra) lấy thông tin từ bảng THANHTRA.TT_HO_SO
+- **Inspection Case Conclusion:** Bảng lưu kết luận xử phạt thanh tra (số QĐ, ngày ký, hình thức phạt, số tiền phạt) lấy thông tin từ bảng THANHTRA.TT_KET_LUAN
 
 Atomic → Datamart:
 - **Securities Company Compliance History:** Bảng tác nghiệp lưu lịch sử tuân thủ và vi phạm CTCK ở trạng thái mới nhất, kết hợp dữ liệu báo cáo định kỳ và thanh tra/xử phạt
@@ -673,8 +673,8 @@ Atomic → Datamart:
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]
-    ThanhTra_TT_KET_LUAN["ThanhTra.TT_KET_LUAN"]
+    THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]
+    THANHTRA_TT_KET_LUAN["THANHTRA.TT_KET_LUAN"]
   end
 
   subgraph Atomic
@@ -686,8 +686,8 @@ flowchart LR
     idv_vln_hist["Individual Violation History"]
   end
 
-  ThanhTra_TT_HO_SO --> Inspection_Case
-  ThanhTra_TT_KET_LUAN --> Inspection_Case_Conclusion
+  THANHTRA_TT_HO_SO --> Inspection_Case
+  THANHTRA_TT_KET_LUAN --> Inspection_Case_Conclusion
 
   Inspection_Case --> idv_vln_hist
   Inspection_Case_Conclusion --> idv_vln_hist
@@ -698,8 +698,8 @@ flowchart LR
 **Mô tả luồng:**
 
 Staging → Atomic:
-- **Inspection Case:** Bảng lưu hồ sơ thanh tra/kiểm tra cá nhân (CMND/CCCD đối tượng, loại hình thanh tra) lấy thông tin từ bảng ThanhTra.TT_HO_SO
-- **Inspection Case Conclusion:** Bảng lưu kết luận xử phạt (số QĐ, ngày ký, hành vi vi phạm, hình thức phạt, số tiền phạt) lấy thông tin từ bảng ThanhTra.TT_KET_LUAN
+- **Inspection Case:** Bảng lưu hồ sơ thanh tra/kiểm tra cá nhân (CMND/CCCD đối tượng, loại hình thanh tra) lấy thông tin từ bảng THANHTRA.TT_HO_SO
+- **Inspection Case Conclusion:** Bảng lưu kết luận xử phạt (số QĐ, ngày ký, hành vi vi phạm, hình thức phạt, số tiền phạt) lấy thông tin từ bảng THANHTRA.TT_KET_LUAN
 
 Atomic → Datamart:
 - **Individual Violation History:** Bảng tác nghiệp lưu lịch sử vi phạm và xử phạt cá nhân theo hồ sơ thanh tra/kiểm tra

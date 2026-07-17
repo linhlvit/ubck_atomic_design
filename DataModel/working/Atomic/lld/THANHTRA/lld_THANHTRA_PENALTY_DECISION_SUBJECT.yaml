@@ -1,0 +1,282 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "PENALTY_DECISION_SUBJECT"
+  atomic_entity: "Penalty Decision Subject"
+  entity_physical_name: "penalty_decision_subject"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Event"
+  table_type: "Fundamental"
+  group: "T5"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Penalty Decision Subject Id"
+  physical_name: "pd_subject_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Event] Event — Involved Party in context of administrative\
+    \ penalty."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Subject Code"
+  physical_name: "pd_subject_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.PENALTY_DECISION_SUBJECT"
+  etl_derived_value: "THANHTRA.PENALTY_DECISION_SUBJECT"
+  data_type: "string"
+- attribute_name: "Penalty Decision Id"
+  physical_name: "pd_id"
+  description: "FK đến quyết định xử phạt."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.PENALTY_DECISION_ID"
+  comment: "FK target: Penalty Decision.Penalty Decision Id. Hash: hash_id('THANHTRA.PENALTY_DECISION',\
+    \ PENALTY_DECISION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Penalty Decision Code"
+  physical_name: "pd_code"
+  description: "Mã quyết định xử phạt liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.PENALTY_DECISION_ID"
+  comment: "Lookup pair: Penalty Decision.Penalty Decision Code. Pair with Penalty\
+    \ Decision Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Type Code"
+  physical_name: "subject_tp_code"
+  description: "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_TYPE"
+  comment: "Scheme: PENALTY_SUBJECT_TYPE."
+  classification_context: "PENALTY_SUBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Name"
+  physical_name: "subject_nm"
+  description: "Tên đối tượng bị xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Id Number"
+  physical_name: "subject_id_nbr"
+  description: "Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_ID_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Date Of Birth"
+  physical_name: "subject_dt_of_birth"
+  description: "Ngày sinh đối tượng bị xử phạt (cá nhân)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_DOB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Subject Legal Rep"
+  physical_name: "subject_legal_rep"
+  description: "Tên người đại diện pháp luật."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_LEGAL_REP"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Legal Rep Title"
+  physical_name: "subject_legal_rep_title"
+  description: "Chức danh người đại diện pháp luật."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_LEGAL_REP_TITLE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Total Fine Amount"
+  physical_name: "total_fine_amt"
+  description: "Tổng mức phạt tiền đối với đối tượng này (VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.TOTAL_FINE_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Paid Amount"
+  physical_name: "paid_amt"
+  description: "Số tiền đã nộp phạt (VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.PAID_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Coerced Amount"
+  physical_name: "coerced_amt"
+  description: "Số tiền đã cưỡng chế tài khoản (VNĐ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.COERCED_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Payment Received Date"
+  physical_name: "payment_received_dt"
+  description: "Ngày xác nhận đã nhận tiền phạt."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.PAYMENT_RECEIVED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Compliance Status Code"
+  physical_name: "compliance_status_code"
+  description: "Trạng thái thi hành: NOT_PAID, PAID, PARTIAL, COMPLAINING."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.COMPLIANCE_STATUS"
+  comment: "Scheme: COMPLIANCE_STATUS."
+  classification_context: "COMPLIANCE_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enforcement Progress"
+  physical_name: "enforcement_progress"
+  description: "Diễn tiến cưỡng chế thi hành quyết định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.ENFORCEMENT_PROGRESS"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung về đối tượng bị xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.NOTE"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Payment Proof URL"
+  physical_name: "payment_proof_url"
+  description: "URL file chứng từ nộp tiền phạt do người vi phạm upload."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.PAYMENT_PROOF_URL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Payment Proof Uploaded Timestamp"
+  physical_name: "payment_proof_uploaded_tms"
+  description: "Thời điểm upload chứng từ nộp tiền phạt."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.PAYMENT_PROOF_UPLOADED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"

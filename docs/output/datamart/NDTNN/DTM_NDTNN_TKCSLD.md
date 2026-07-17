@@ -717,17 +717,17 @@ erDiagram
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | surveil_nfrc_dcsn_id | string | | X | P | | Surrogate key ETL generated | | | | ETL sinh tự động |
 | 2 | ivsr_code | string | X | | | | Mã NĐT NN | | | | ETL sinh tự động |
-| 3 | dcsn_code | string | | | | | Mã quyết định xử lý | ThanhTra | ATM.surveil_nfrc_dcsn | surveil_nfrc_dcsn_code | surveil_nfrc_dcsn.surveil_nfrc_dcsn_code |
-| 4 | surveil_nfrc_case_code | string | X | | | | Mã hồ sơ giám sát cha | ThanhTra | ATM.surveil_nfrc_dcsn | surveil_nfrc_case_code | surveil_nfrc_dcsn.surveil_nfrc_case_code |
-| 5 | sbj_nm | string | X | | | | Tên đối tượng vi phạm | ThanhTra | ATM.surveil_nfrc_case | sbj_nm | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.sbj_nm |
-| 6 | pny_dcsn_nbr | string | X | | | | Số quyết định xử phạt | ThanhTra | ATM.surveil_nfrc_dcsn | pny_dcsn_nbr | surveil_nfrc_dcsn.pny_dcsn_nbr |
-| 7 | dcsn_dt | date | X | | | | Ngày lập biên bản vi phạm hành chính | ThanhTra | ATM.surveil_nfrc_dcsn | vln_rpt_dt | surveil_nfrc_dcsn.vln_rpt_dt |
-| 8 | dcsn_st_code | string | X | | | | Trạng thái quyết định xử lý | ThanhTra | ATM.surveil_nfrc_dcsn | dcsn_st_code | surveil_nfrc_dcsn.dcsn_st_code |
-| 9 | pny_cntnt | string | X | | | | Nội dung xử phạt | ThanhTra | ATM.surveil_nfrc_dcsn | pny_cntnt | surveil_nfrc_dcsn.pny_cntnt |
-| 10 | tot_pny_amt | decimal(23,2) | X | | | | Tổng số tiền phạt (VNĐ) | ThanhTra | ATM.surveil_nfrc_dcsn | tot_pny_amt | surveil_nfrc_dcsn.tot_pny_amt |
-| 11 | case_st_code | string | | | | | Trạng thái hồ sơ giám sát | ThanhTra | ATM.surveil_nfrc_case | case_st_code | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.case_st_code |
-| 12 | case_cntnt | string | X | | | | Nội dung mô tả hồ sơ | ThanhTra | ATM.surveil_nfrc_case | case_cntnt | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.case_cntnt |
-| 13 | bsn_sctr_code | string | | | | | Mảng nghiệp vụ vi phạm | ThanhTra | ATM.surveil_nfrc_case | bsn_sctr_code | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.bsn_sctr_code |
+| 3 | dcsn_code | string | | | | | Mã quyết định xử lý | THANHTRA | ATM.surveil_nfrc_dcsn | surveil_nfrc_dcsn_code | surveil_nfrc_dcsn.surveil_nfrc_dcsn_code |
+| 4 | surveil_nfrc_case_code | string | X | | | | Mã hồ sơ giám sát cha | THANHTRA | ATM.surveil_nfrc_dcsn | surveil_nfrc_case_code | surveil_nfrc_dcsn.surveil_nfrc_case_code |
+| 5 | sbj_nm | string | X | | | | Tên đối tượng vi phạm | THANHTRA | ATM.surveil_nfrc_case | sbj_nm | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.sbj_nm |
+| 6 | pny_dcsn_nbr | string | X | | | | Số quyết định xử phạt | THANHTRA | ATM.surveil_nfrc_dcsn | pny_dcsn_nbr | surveil_nfrc_dcsn.pny_dcsn_nbr |
+| 7 | dcsn_dt | date | X | | | | Ngày lập biên bản vi phạm hành chính | THANHTRA | ATM.surveil_nfrc_dcsn | vln_rpt_dt | surveil_nfrc_dcsn.vln_rpt_dt |
+| 8 | dcsn_st_code | string | X | | | | Trạng thái quyết định xử lý | THANHTRA | ATM.surveil_nfrc_dcsn | dcsn_st_code | surveil_nfrc_dcsn.dcsn_st_code |
+| 9 | pny_cntnt | string | X | | | | Nội dung xử phạt | THANHTRA | ATM.surveil_nfrc_dcsn | pny_cntnt | surveil_nfrc_dcsn.pny_cntnt |
+| 10 | tot_pny_amt | decimal(23,2) | X | | | | Tổng số tiền phạt (VNĐ) | THANHTRA | ATM.surveil_nfrc_dcsn | tot_pny_amt | surveil_nfrc_dcsn.tot_pny_amt |
+| 11 | case_st_code | string | | | | | Trạng thái hồ sơ giám sát | THANHTRA | ATM.surveil_nfrc_case | case_st_code | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.case_st_code |
+| 12 | case_cntnt | string | X | | | | Nội dung mô tả hồ sơ | THANHTRA | ATM.surveil_nfrc_case | case_cntnt | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.case_cntnt |
+| 13 | bsn_sctr_code | string | | | | | Mảng nghiệp vụ vi phạm | THANHTRA | ATM.surveil_nfrc_case | bsn_sctr_code | INNER JOIN surveil_nfrc_case ON surveil_nfrc_case.surveil_nfrc_case_id = surveil_nfrc_dcsn.surveil_nfrc_case_id → surveil_nfrc_case.bsn_sctr_code |
 
 #### 3.3.4.3 Bảng NDTNN Regulatory Report Store (ndtnn_reg_rpt_store)
 

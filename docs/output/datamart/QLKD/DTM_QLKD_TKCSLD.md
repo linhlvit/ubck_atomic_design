@@ -967,14 +967,14 @@ erDiagram
 | 5 | submission_dt | date | X | | | | Ngày nộp thực tế | SCMS | ATM.mbr_prd_rpt | subm_dt | Ngày nộp thực tế |
 | 6 | submission_ddln_dt | date | X | | | | Hạn nộp | SCMS | ATM.mbr_prd_rpt | subm_ddln_dt | Hạn nộp |
 | 7 | submission_st_code | string | X | | | | Trạng thái nộp | SCMS | ATM.mbr_prd_rpt | subm_st_code | Trạng thái nộp |
-| 8 | sbj_org_shrt_nm | string | X | | | | Tên viết tắt CTCK từ Inspection Case | ThanhTra | ATM.insp_case | sbj_org_shrt_nm | Tên viết tắt CTCK từ Inspection Case |
-| 9 | inspection_tp_code | string | X | | | | Loại hình thanh/kiểm tra | ThanhTra | ATM.insp_case | insp_tp_code | Loại hình thanh/kiểm tra |
-| 10 | case_nm | string | X | | | | Tên hồ sơ thanh tra/kiểm tra | ThanhTra | ATM.insp_case | case_nm | Tên hồ sơ thanh tra/kiểm tra |
-| 11 | conclusion_doc_nbr | string | X | | | | Số QĐ kết luận xử phạt | ThanhTra | ATM.insp_case_conclusion | conclusion_doc_nbr | Số QĐ kết luận xử phạt |
-| 12 | signing_dt | date | X | | | | Ngày ký kết luận | ThanhTra | ATM.insp_case_conclusion | signing_dt | Ngày ký kết luận |
-| 13 | pny_tp_code | string | X | | | | Hình thức xử phạt | ThanhTra | ATM.insp_case_conclusion | pny_tp_code | Hình thức xử phạt |
-| 14 | pny_amt | decimal(23,2) | X | | | | Số tiền phạt | ThanhTra | ATM.insp_case_conclusion | pny_amt | Số tiền phạt |
-| 15 | conclusion_st_code | string | X | | | | Trạng thái kết luận | ThanhTra | ATM.insp_case_conclusion | conclusion_st_code | Trạng thái kết luận |
+| 8 | sbj_org_shrt_nm | string | X | | | | Tên viết tắt CTCK từ Inspection Case | THANHTRA | ATM.insp_case | sbj_org_shrt_nm | Tên viết tắt CTCK từ Inspection Case |
+| 9 | inspection_tp_code | string | X | | | | Loại hình thanh/kiểm tra | THANHTRA | ATM.insp_case | insp_tp_code | Loại hình thanh/kiểm tra |
+| 10 | case_nm | string | X | | | | Tên hồ sơ thanh tra/kiểm tra | THANHTRA | ATM.insp_case | case_nm | Tên hồ sơ thanh tra/kiểm tra |
+| 11 | conclusion_doc_nbr | string | X | | | | Số QĐ kết luận xử phạt | THANHTRA | ATM.insp_case_conclusion | conclusion_doc_nbr | Số QĐ kết luận xử phạt |
+| 12 | signing_dt | date | X | | | | Ngày ký kết luận | THANHTRA | ATM.insp_case_conclusion | signing_dt | Ngày ký kết luận |
+| 13 | pny_tp_code | string | X | | | | Hình thức xử phạt | THANHTRA | ATM.insp_case_conclusion | pny_tp_code | Hình thức xử phạt |
+| 14 | pny_amt | decimal(23,2) | X | | | | Số tiền phạt | THANHTRA | ATM.insp_case_conclusion | pny_amt | Số tiền phạt |
+| 15 | conclusion_st_code | string | X | | | | Trạng thái kết luận | THANHTRA | ATM.insp_case_conclusion | conclusion_st_code | Trạng thái kết luận |
 | 16 | ppn_dt | timestamp | X | | | | Thời điểm ETL nạp dữ liệu | | | | ETL sinh tự động |
 
 #### 3.3.4.6 Bảng Securities Company Organization Unit Profile (scr_co_ou_prfl)
@@ -1117,18 +1117,18 @@ erDiagram
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | vln_hist_id | string | | X | P | | Khóa đại diện | | | | ETL sinh tự động |
 | 2 | idv_prfl_id | string | | | | | FK đến Individual Profile | | | | ETL sinh tự động |
-| 3 | inspection_case_code | string | | | | | Mã hồ sơ thanh tra/kiểm tra | ThanhTra | ATM.insp_case | insp_case_code | Mã hồ sơ thanh tra/kiểm tra |
-| 4 | sbj_id_nbr | string | X | | | | CMND/CCCD đối tượng vi phạm | ThanhTra | ATM.insp_case | sbj_id_nbr | CMND/CCCD đối tượng vi phạm |
-| 5 | sbj_full_nm | string | X | | | | Họ tên đối tượng vi phạm | ThanhTra | ATM.insp_case | sbj_full_nm | Họ tên đối tượng vi phạm |
-| 6 | inspection_tp_code | string | X | | | | Loại hình thanh/kiểm tra | ThanhTra | ATM.insp_case | insp_tp_code | Loại hình thanh/kiểm tra |
-| 7 | case_nm | string | X | | | | Tên hồ sơ | ThanhTra | ATM.insp_case | case_nm | Tên hồ sơ |
-| 8 | signing_dt | date | X | | | | Ngày ký kết luận xử phạt | ThanhTra | ATM.insp_case_conclusion | signing_dt | Ngày ký kết luận xử phạt |
-| 9 | conclusion_doc_nbr | string | X | | | | Số QĐ xử phạt | ThanhTra | ATM.insp_case_conclusion | conclusion_doc_nbr | Số QĐ xử phạt |
-| 10 | conclusion_smy | string | X | | | | Nội dung kết luận vi phạm | ThanhTra | ATM.insp_case_conclusion | conclusion_smy | Nội dung kết luận vi phạm |
-| 11 | vln_tp_code | string | X | | | | Hành vi vi phạm | ThanhTra | ATM.insp_case_conclusion | vln_tp_code | Hành vi vi phạm |
-| 12 | pny_tp_code | string | X | | | | Hình thức xử phạt | ThanhTra | ATM.insp_case_conclusion | pny_tp_code | Hình thức xử phạt |
-| 13 | pny_amt | decimal(23,2) | X | | | | Số tiền phạt | ThanhTra | ATM.insp_case_conclusion | pny_amt | Số tiền phạt |
-| 14 | conclusion_st_code | string | X | | | | Trạng thái kết luận | ThanhTra | ATM.insp_case_conclusion | conclusion_st_code | Trạng thái kết luận |
+| 3 | inspection_case_code | string | | | | | Mã hồ sơ thanh tra/kiểm tra | THANHTRA | ATM.insp_case | insp_case_code | Mã hồ sơ thanh tra/kiểm tra |
+| 4 | sbj_id_nbr | string | X | | | | CMND/CCCD đối tượng vi phạm | THANHTRA | ATM.insp_case | sbj_id_nbr | CMND/CCCD đối tượng vi phạm |
+| 5 | sbj_full_nm | string | X | | | | Họ tên đối tượng vi phạm | THANHTRA | ATM.insp_case | sbj_full_nm | Họ tên đối tượng vi phạm |
+| 6 | inspection_tp_code | string | X | | | | Loại hình thanh/kiểm tra | THANHTRA | ATM.insp_case | insp_tp_code | Loại hình thanh/kiểm tra |
+| 7 | case_nm | string | X | | | | Tên hồ sơ | THANHTRA | ATM.insp_case | case_nm | Tên hồ sơ |
+| 8 | signing_dt | date | X | | | | Ngày ký kết luận xử phạt | THANHTRA | ATM.insp_case_conclusion | signing_dt | Ngày ký kết luận xử phạt |
+| 9 | conclusion_doc_nbr | string | X | | | | Số QĐ xử phạt | THANHTRA | ATM.insp_case_conclusion | conclusion_doc_nbr | Số QĐ xử phạt |
+| 10 | conclusion_smy | string | X | | | | Nội dung kết luận vi phạm | THANHTRA | ATM.insp_case_conclusion | conclusion_smy | Nội dung kết luận vi phạm |
+| 11 | vln_tp_code | string | X | | | | Hành vi vi phạm | THANHTRA | ATM.insp_case_conclusion | vln_tp_code | Hành vi vi phạm |
+| 12 | pny_tp_code | string | X | | | | Hình thức xử phạt | THANHTRA | ATM.insp_case_conclusion | pny_tp_code | Hình thức xử phạt |
+| 13 | pny_amt | decimal(23,2) | X | | | | Số tiền phạt | THANHTRA | ATM.insp_case_conclusion | pny_amt | Số tiền phạt |
+| 14 | conclusion_st_code | string | X | | | | Trạng thái kết luận | THANHTRA | ATM.insp_case_conclusion | conclusion_st_code | Trạng thái kết luận |
 | 15 | ppn_dt | timestamp | X | | | | Thời điểm ETL nạp dữ liệu | | | | ETL sinh tự động |
 
 #### 3.3.4.13 Bảng Securities Company Report Data (scr_co_rpt_data)

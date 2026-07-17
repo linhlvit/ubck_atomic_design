@@ -3,7 +3,7 @@
 ### 3.2.1.1 Thông tin chung luồng đồng bộ
 
 - tên job:
-- nguồn dữ liệu (hệ thống nguồn): ThanhTra
+- nguồn dữ liệu (hệ thống nguồn): THANHTRA
 - cách thức truy xuất đồng bộ dữ liệu:
 - tần suất đồng bộ dữ liệu:
 - dung lượng dữ liệu sẽ thực hiện đồng bộ:
@@ -17,14 +17,14 @@
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]
-    ThanhTra_TT_KET_LUAN["ThanhTra.TT_KET_LUAN"]
-    ThanhTra_TT_QUYET_DINH["ThanhTra.TT_QUYET_DINH"]
-    ThanhTra_TT_QUYET_DINH_DOI_TUONG["ThanhTra.TT_QUYET_DINH_DOI_TUONG"]
-    ThanhTra_DM_CONG_TY_CK["ThanhTra.DM_CONG_TY_CK"]
-    ThanhTra_DM_CONG_TY_QLQ["ThanhTra.DM_CONG_TY_QLQ"]
-    ThanhTra_DM_CONG_TY_DC["ThanhTra.DM_CONG_TY_DC"]
-    ThanhTra_DM_DOI_TUONG_KHAC["ThanhTra.DM_DOI_TUONG_KHAC"]
+    THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]
+    THANHTRA_TT_KET_LUAN["THANHTRA.TT_KET_LUAN"]
+    THANHTRA_TT_QUYET_DINH["THANHTRA.TT_QUYET_DINH"]
+    THANHTRA_TT_QUYET_DINH_DOI_TUONG["THANHTRA.TT_QUYET_DINH_DOI_TUONG"]
+    THANHTRA_DM_CONG_TY_CK["THANHTRA.DM_CONG_TY_CK"]
+    THANHTRA_DM_CONG_TY_QLQ["THANHTRA.DM_CONG_TY_QLQ"]
+    THANHTRA_DM_CONG_TY_DC["THANHTRA.DM_CONG_TY_DC"]
+    THANHTRA_DM_DOI_TUONG_KHAC["THANHTRA.DM_DOI_TUONG_KHAC"]
   end
   subgraph Atomic
     inspection_case["Inspection Case"]
@@ -37,14 +37,14 @@ flowchart LR
     cdr_dt_dim["Calendar Date Dimension"]
     cl_dim["Classification Dimension"]
   end
-  ThanhTra_TT_HO_SO --> inspection_case
-  ThanhTra_TT_KET_LUAN --> inspection_case_conclusion
-  ThanhTra_TT_QUYET_DINH --> inspection_decision
-  ThanhTra_TT_QUYET_DINH_DOI_TUONG --> inspection_dcsn_sbj
-  ThanhTra_DM_CONG_TY_CK --> inspection_dcsn_sbj
-  ThanhTra_DM_CONG_TY_QLQ --> inspection_dcsn_sbj
-  ThanhTra_DM_CONG_TY_DC --> inspection_dcsn_sbj
-  ThanhTra_DM_DOI_TUONG_KHAC --> inspection_dcsn_sbj
+  THANHTRA_TT_HO_SO --> inspection_case
+  THANHTRA_TT_KET_LUAN --> inspection_case_conclusion
+  THANHTRA_TT_QUYET_DINH --> inspection_decision
+  THANHTRA_TT_QUYET_DINH_DOI_TUONG --> inspection_dcsn_sbj
+  THANHTRA_DM_CONG_TY_CK --> inspection_dcsn_sbj
+  THANHTRA_DM_CONG_TY_QLQ --> inspection_dcsn_sbj
+  THANHTRA_DM_CONG_TY_DC --> inspection_dcsn_sbj
+  THANHTRA_DM_DOI_TUONG_KHAC --> inspection_dcsn_sbj
   inspection_case --> fct_inspection_case_avy
   inspection_case_conclusion --> fct_inspection_case_avy
   inspection_decision --> fct_inspection_case_avy
@@ -58,10 +58,10 @@ flowchart LR
 **Mô tả luồng:**
 
 Staging → Atomic:
-- **Inspection Case:** Bảng lưu thông tin hồ sơ thanh tra/kiểm tra lấy thông tin từ bảng ThanhTra.TT_HO_SO
-- **Inspection Case Conclusion:** Bảng lưu thông tin kết luận thanh tra/kiểm tra lấy thông tin từ bảng ThanhTra.TT_KET_LUAN
-- **Inspection Decision:** Bảng lưu thông tin quyết định thanh tra/kiểm tra lấy thông tin từ bảng ThanhTra.TT_QUYET_DINH
-- **Inspection Decision Subject:** Bảng lưu thông tin đối tượng trong quyết định thanh tra/kiểm tra lấy thông tin từ bảng ThanhTra.TT_QUYET_DINH_DOI_TUONG, kết hợp thông tin danh mục đối tượng từ các bảng ThanhTra.DM_CONG_TY_CK, ThanhTra.DM_CONG_TY_QLQ, ThanhTra.DM_CONG_TY_DC, ThanhTra.DM_DOI_TUONG_KHAC
+- **Inspection Case:** Bảng lưu thông tin hồ sơ thanh tra/kiểm tra lấy thông tin từ bảng THANHTRA.TT_HO_SO
+- **Inspection Case Conclusion:** Bảng lưu thông tin kết luận thanh tra/kiểm tra lấy thông tin từ bảng THANHTRA.TT_KET_LUAN
+- **Inspection Decision:** Bảng lưu thông tin quyết định thanh tra/kiểm tra lấy thông tin từ bảng THANHTRA.TT_QUYET_DINH
+- **Inspection Decision Subject:** Bảng lưu thông tin đối tượng trong quyết định thanh tra/kiểm tra lấy thông tin từ bảng THANHTRA.TT_QUYET_DINH_DOI_TUONG, kết hợp thông tin danh mục đối tượng từ các bảng THANHTRA.DM_CONG_TY_CK, THANHTRA.DM_CONG_TY_QLQ, THANHTRA.DM_CONG_TY_DC, THANHTRA.DM_DOI_TUONG_KHAC
 
 Atomic → Datamart:
 - **Fact Inspection Case Activity:** Bảng sự kiện tổng hợp thông tin vụ việc thanh tra/kiểm tra theo grain 1 hồ sơ × 1 đối tượng, phục vụ phân tích KPI đếm hồ sơ và cơ cấu theo hành vi vi phạm, loại đối tượng
@@ -73,8 +73,8 @@ Atomic → Datamart:
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_TT_HO_SO["ThanhTra.TT_HO_SO"]
-    ThanhTra_TT_QUYET_DINH["ThanhTra.TT_QUYET_DINH"]
+    THANHTRA_TT_HO_SO["THANHTRA.TT_HO_SO"]
+    THANHTRA_TT_QUYET_DINH["THANHTRA.TT_QUYET_DINH"]
   end
   subgraph Atomic
     inspection_case["Inspection Case"]
@@ -83,8 +83,8 @@ flowchart LR
   subgraph Datamart
     inspection_case_list["Inspection Case List"]
   end
-  ThanhTra_TT_HO_SO --> inspection_case
-  ThanhTra_TT_QUYET_DINH --> inspection_decision
+  THANHTRA_TT_HO_SO --> inspection_case
+  THANHTRA_TT_QUYET_DINH --> inspection_decision
   inspection_case --> inspection_case_list
   inspection_decision --> inspection_case_list
 ```
@@ -94,8 +94,8 @@ flowchart LR
 **Mô tả luồng:**
 
 Staging → Atomic:
-- **Inspection Case:** Bảng lưu thông tin hồ sơ thanh tra/kiểm tra lấy thông tin từ bảng ThanhTra.TT_HO_SO
-- **Inspection Decision:** Bảng lưu thông tin quyết định thanh tra/kiểm tra lấy thông tin từ bảng ThanhTra.TT_QUYET_DINH
+- **Inspection Case:** Bảng lưu thông tin hồ sơ thanh tra/kiểm tra lấy thông tin từ bảng THANHTRA.TT_HO_SO
+- **Inspection Decision:** Bảng lưu thông tin quyết định thanh tra/kiểm tra lấy thông tin từ bảng THANHTRA.TT_QUYET_DINH
 
 Atomic → Datamart:
 - **Inspection Case List:** Bảng tác nghiệp lưu danh sách hồ sơ thanh tra/kiểm tra ở trạng thái mới nhất, phục vụ tra cứu và lọc theo loại hình (Định kỳ/Đột xuất), trạng thái hồ sơ
@@ -105,8 +105,8 @@ Atomic → Datamart:
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_GS_VAN_BAN_XU_LY["ThanhTra.GS_VAN_BAN_XU_LY"]
-    ThanhTra_GS_HO_SO["ThanhTra.GS_HO_SO"]
+    THANHTRA_GS_VAN_BAN_XU_LY["THANHTRA.GS_VAN_BAN_XU_LY"]
+    THANHTRA_GS_HO_SO["THANHTRA.GS_HO_SO"]
   end
   subgraph Atomic
     surveillance_enforcement_dcsn["Surveillance Enforcement Decision"]
@@ -117,8 +117,8 @@ flowchart LR
     cdr_dt_dim["Calendar Date Dimension"]
     cl_dim["Classification Dimension"]
   end
-  ThanhTra_GS_VAN_BAN_XU_LY --> surveillance_enforcement_dcsn
-  ThanhTra_GS_HO_SO --> surveillance_enforcement_case
+  THANHTRA_GS_VAN_BAN_XU_LY --> surveillance_enforcement_dcsn
+  THANHTRA_GS_HO_SO --> surveillance_enforcement_case
   surveillance_enforcement_dcsn --> fct_pny_dcsn
   surveillance_enforcement_case --> fct_pny_dcsn
   cdr_dt_dim --> fct_pny_dcsn
@@ -130,8 +130,8 @@ flowchart LR
 **Mô tả luồng:**
 
 Staging → Atomic:
-- **Surveillance Enforcement Decision:** Bảng lưu thông tin quyết định xử phạt vi phạm lấy thông tin từ bảng ThanhTra.GS_VAN_BAN_XU_LY
-- **Surveillance Enforcement Case:** Bảng lưu thông tin hồ sơ giám sát vi phạm lấy thông tin từ bảng ThanhTra.GS_HO_SO
+- **Surveillance Enforcement Decision:** Bảng lưu thông tin quyết định xử phạt vi phạm lấy thông tin từ bảng THANHTRA.GS_VAN_BAN_XU_LY
+- **Surveillance Enforcement Case:** Bảng lưu thông tin hồ sơ giám sát vi phạm lấy thông tin từ bảng THANHTRA.GS_HO_SO
 
 Atomic → Datamart:
 - **Fact Penalty Decision:** Bảng sự kiện tổng hợp thông tin quyết định xử phạt theo grain 1 quyết định xử phạt, phục vụ phân tích số lượng và tổng tiền phạt theo thời gian, loại hành vi, đối tượng
@@ -143,8 +143,8 @@ Atomic → Datamart:
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_GS_VAN_BAN_XU_LY["ThanhTra.GS_VAN_BAN_XU_LY"]
-    ThanhTra_GS_HO_SO["ThanhTra.GS_HO_SO"]
+    THANHTRA_GS_VAN_BAN_XU_LY["THANHTRA.GS_VAN_BAN_XU_LY"]
+    THANHTRA_GS_HO_SO["THANHTRA.GS_HO_SO"]
   end
   subgraph Atomic
     surveillance_enforcement_dcsn["Surveillance Enforcement Decision"]
@@ -153,8 +153,8 @@ flowchart LR
   subgraph Datamart
     pny_dcsn_list["Penalty Decision List"]
   end
-  ThanhTra_GS_VAN_BAN_XU_LY --> surveillance_enforcement_dcsn
-  ThanhTra_GS_HO_SO --> surveillance_enforcement_case
+  THANHTRA_GS_VAN_BAN_XU_LY --> surveillance_enforcement_dcsn
+  THANHTRA_GS_HO_SO --> surveillance_enforcement_case
   surveillance_enforcement_dcsn --> pny_dcsn_list
   surveillance_enforcement_case --> pny_dcsn_list
 ```
@@ -164,8 +164,8 @@ flowchart LR
 **Mô tả luồng:**
 
 Staging → Atomic:
-- **Surveillance Enforcement Decision:** Bảng lưu thông tin quyết định xử phạt vi phạm lấy thông tin từ bảng ThanhTra.GS_VAN_BAN_XU_LY
-- **Surveillance Enforcement Case:** Bảng lưu thông tin hồ sơ giám sát vi phạm lấy thông tin từ bảng ThanhTra.GS_HO_SO
+- **Surveillance Enforcement Decision:** Bảng lưu thông tin quyết định xử phạt vi phạm lấy thông tin từ bảng THANHTRA.GS_VAN_BAN_XU_LY
+- **Surveillance Enforcement Case:** Bảng lưu thông tin hồ sơ giám sát vi phạm lấy thông tin từ bảng THANHTRA.GS_HO_SO
 
 Atomic → Datamart:
 - **Penalty Decision List:** Bảng tác nghiệp lưu danh sách quyết định xử phạt ở trạng thái mới nhất, phục vụ tra cứu theo đối tượng, loại hành vi, trạng thái quyết định
@@ -175,7 +175,7 @@ Atomic → Datamart:
 ```mermaid
 flowchart LR
   subgraph Staging
-    ThanhTra_DT_DON_THU["ThanhTra.DT_DON_THU"]
+    THANHTRA_DT_DON_THU["THANHTRA.DT_DON_THU"]
   end
   subgraph Atomic
     cpln_petition["Complaint Petition"]
@@ -183,7 +183,7 @@ flowchart LR
   subgraph Datamart
     cpln_petition_list["Complaint Petition List"]
   end
-  ThanhTra_DT_DON_THU --> cpln_petition
+  THANHTRA_DT_DON_THU --> cpln_petition
   cpln_petition --> cpln_petition_list
 ```
 
@@ -192,7 +192,7 @@ flowchart LR
 **Mô tả luồng:**
 
 Staging → Atomic:
-- **Complaint Petition:** Bảng lưu thông tin đơn thư khiếu nại tố cáo lấy thông tin từ bảng ThanhTra.DT_DON_THU
+- **Complaint Petition:** Bảng lưu thông tin đơn thư khiếu nại tố cáo lấy thông tin từ bảng THANHTRA.DT_DON_THU
 
 Atomic → Datamart:
 - **Complaint Petition List:** Bảng tác nghiệp lưu danh sách đơn thư khiếu nại tố cáo ở trạng thái mới nhất, phục vụ cả KPI aggregate lẫn danh sách chi tiết theo loại đơn và trạng thái xử lý
