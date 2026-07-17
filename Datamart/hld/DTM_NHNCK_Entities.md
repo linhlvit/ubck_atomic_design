@@ -185,7 +185,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Practitioner Exam History | Operational | new | Lịch sử thi sát hạch — toàn bộ lần thi: đợt thi, ngày thi, điểm, kết quả, số quyết định công bố | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_93–95, K_NHNCK_103 |
+| Practitioner Exam History | Operational | new | Lịch sử thi sát hạch — toàn bộ lần thi: đợt thi, ngày thi, điểm, kết quả, số quyết định công bố | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_93–95, K_NHNCK_102 |
 
 ---
 
@@ -195,7 +195,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Practitioner Training History | Operational | new | Lịch sử cập nhật kiến thức — 1 enrollment per NHN; GROUP BY năm học khi hiển thị. DRAFT — thiếu Training Hours (O_NHNCK_9) | 1 enrollment per NHN | K_NHNCK_66, K_NHNCK_96–100 (READY); K_NHNCK_67, K_NHNCK_101 (PENDING) |
+| Practitioner Training History | Operational | new | Lịch sử cập nhật kiến thức — 1 enrollment per NHN; GROUP BY năm học khi hiển thị. DRAFT — thiếu Training Hours (O_NHNCK_9) | 1 enrollment per NHN | K_NHNCK_66, K_NHNCK_96–100 (READY); K_NHNCK_67 (PENDING) |
 
 ---
 
@@ -217,7 +217,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường — slicer Loại hình và Trạng thái filter tại query time. Dùng cho Tab DATA EXPLORER | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_102 |
+| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường — slicer Loại hình và Trạng thái filter tại query time. Dùng cho Tab DATA EXPLORER | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_101 |
 
 ---
 
@@ -237,5 +237,5 @@ erDiagram
 | Practitioner Employment History | Operational | new | Quá trình hành nghề per NHN | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90, K_NHNCK_91 |
 | Practitioner Violation History | Operational | new | Lịch sử vi phạm & xử phạt per NHN | 1 vi phạm per NHN | K_NHNCK_54–58 |
 | Practitioner Exam History | Operational | new | Lịch sử thi sát hạch per NHN | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_93–95 |
-| Practitioner Training History | Operational | new | Lịch sử cập nhật kiến thức per NHN (DRAFT) | 1 enrollment per NHN | K_NHNCK_66, K_NHNCK_67, K_NHNCK_96–101 |
-| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường (Data Explorer) | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_102 |
+| Practitioner Training History | Operational | new | Lịch sử cập nhật kiến thức per NHN (DRAFT) | 1 enrollment per NHN | K_NHNCK_66, K_NHNCK_67, K_NHNCK_96–100 |
+| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường (Data Explorer) | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_101 |
