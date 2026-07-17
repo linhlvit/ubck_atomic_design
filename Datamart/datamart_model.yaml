@@ -65,7 +65,7 @@ entities:
         source_atomic_table: "cdr_dt"
         source_atomic_column: "cdr_dt.cdr_dt"
       - logical_name: "Year"
-        physical_name: "yr"
+        physical_name: "year"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: false
@@ -74,7 +74,7 @@ entities:
         source_atomic_table: "cdr_dt"
         source_atomic_column: "cdr_dt.cdr_dt"
       - logical_name: "Quarter"
-        physical_name: "qtr"
+        physical_name: "quarter"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: false
@@ -83,7 +83,7 @@ entities:
         source_atomic_table: "cdr_dt"
         source_atomic_column: "cdr_dt.cdr_dt"
       - logical_name: "Month"
-        physical_name: "mth"
+        physical_name: "month"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: false
@@ -92,7 +92,7 @@ entities:
         source_atomic_table: "cdr_dt"
         source_atomic_column: "cdr_dt.cdr_dt"
       - logical_name: "Day Of Week"
-        physical_name: "day_of_wk"
+        physical_name: "day_of_week"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: false
@@ -102,31 +102,31 @@ entities:
         source_atomic_column: "cdr_dt.cdr_dt"
       - logical_name: "Is Weekend"
         physical_name: "is_weekend"
-        data_domain: "Boolean"
-        data_type: "boolean"
+        data_domain: "Indicator"
+        data_type: "string"
         nullable: false
         key: ""
-        description: "TRUE nếu là ngày cuối tuần (thứ 7 hoặc CN)"
+        description: "(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không"
         source_atomic_table: "cdr_dt"
         source_atomic_column: "cdr_dt.cdr_dt"
       - logical_name: "Holiday Flag"
-        physical_name: "hol_f"
-        data_domain: "Boolean"
-        data_type: "boolean"
+        physical_name: "holiday_flag"
+        data_domain: "Indicator"
+        data_type: "string"
         nullable: true
         key: ""
-        description: "Cờ ngày lễ — TRUE nếu là ngày nghỉ lễ"
+        description: "(Sửa 2026-07-17) Cờ ngày lễ — Y nếu là ngày nghỉ lễ, N nếu không"
         source_atomic_table: "cdr_dt"
-        source_atomic_column: "cdr_dt.hol_f"
+        source_atomic_column: "cdr_dt.holiday_flag"
       - logical_name: "Holiday Name"
-        physical_name: "hol_nm"
+        physical_name: "holiday_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
         description: "Tên ngày lễ — NULL nếu không phải ngày lễ"
         source_atomic_table: "cdr_dt"
-        source_atomic_column: "cdr_dt.hol_nm"
+        source_atomic_column: "cdr_dt.holiday_nm"
 
   - id: "DTM-securities_practitioner_dim"
     logical_name: "Securities Practitioner Dimension"
@@ -350,15 +350,6 @@ entities:
         description: "Mã loại CCHN — dư thừa để filter/display nhanh không cần join (= CERTIFICATES.CERTIFICATE_CODE)"
         source_atomic_table: "sp_license_certificate_document"
         source_atomic_column: "sp_license_certificate_document.sp_license_certificate_type_code"
-      - logical_name: "Allow Reissue Indicator"
-        physical_name: "allow_reissue_indicator"
-        data_domain: "Indicator"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Cho phép cấp lại CCHN (Y/N)"
-        source_atomic_table: "sp_license_certificate_document"
-        source_atomic_column: "sp_license_certificate_document.reissuance_allowed_count"
       - logical_name: "Is Reissue Indicator"
         physical_name: "is_reissue_indicator"
         data_domain: "Indicator"
@@ -578,16 +569,16 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Tuổi NHN tại ngày snapshot — ETL-derived: YEAR(snapshot) − birth_year"
+        description: "(Sửa 2026-07-17) Tuổi NHN tại ngày snapshot — ETL-derived: YEAR(snapshot) − COALESCE(YEAR(birth_dt), CAST(birth_year AS INT)); fallback birth_year khi birth_dt NULL"
         source_atomic_table: "securities_practitioner"
-        source_atomic_column: "securities_practitioner.birth_year"
+        source_atomic_column: "securities_practitioner.birth_dt / securities_practitioner.birth_year"
       - logical_name: "Has Active Violation"
         physical_name: "has_active_violation"
-        data_domain: "Boolean"
-        data_type: "boolean"
+        data_domain: "Indicator"
+        data_type: "string"
         nullable: false
         key: ""
-        description: "TRUE nếu NHN có ít nhất 1 vi phạm tại ngày snapshot (Atomic chỉ chứa bản ghi active)"
+        description: "(Sửa 2026-07-17) Y nếu NHN có ít nhất 1 vi phạm tại ngày snapshot (Atomic chỉ chứa bản ghi active); N nếu không có"
         source_atomic_table: "sp_conduct_violation"
         source_atomic_column: "sp_conduct_violation.sp_conduct_violation_code"
 
@@ -726,6 +717,9 @@ entities:
     source_atomic:
       - "sp_organization_employment_report"
       - "securities_organization_reference"
+      - "ip_alternative_identification"
+      - "sc_insider_related_person"
+      - "securities_company_shareholder"
     modules_using:
       - "NHNCK"
     columns:
@@ -810,6 +804,15 @@ entities:
         description: "Ngày chấm dứt hợp đồng — NULL nếu đang làm việc"
         source_atomic_table: "sp_organization_employment_report"
         source_atomic_column: "sp_organization_employment_report.termination_dt"
+      - logical_name: "Shares Held"
+        physical_name: "shares_held"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "(Bổ sung 2026-07-17) Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu NHN không phải cổ đông/người nội bộ của DN niêm yết đang xét. Join qua ip_alternative_identification (NHNCK CCCD = SCMS NATIONAL_ID) → sc_insider_related_person → securities_company_shareholder"
+        source_atomic_table: "securities_company_shareholder"
+        source_atomic_column: "securities_company_shareholder.shares_held"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -1374,18 +1377,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Hình thức xử phạt (scheme: RECORD_TYPE: 1=Hành chính, 2=Pháp luật)"
-        source_atomic_table: "sp_conduct_violation"
-        source_atomic_column: "sp_conduct_violation.record_tp_code"
+        description: "PENDING (Sửa 2026-07-17) — Atomic sp_conduct_violation không có field này; BA yêu cầu nguồn VIOLATIONS.TYPE (scheme: 1=Hành chính, 2=Pháp luật). Xem O_NHNCK_17"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Type Name"
         physical_name: "record_tp_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên hình thức xử phạt — ETL-derived: denormalize từ Classification (scheme: RECORD_TYPE) tại thời điểm populate"
-        source_atomic_table: "cv"
-        source_atomic_column: "cv.cl_nm"
+        description: "PENDING — xem ghi chú Record Type Code"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Note"
         physical_name: "note"
         data_domain: "Text"
@@ -1399,20 +1402,20 @@ entities:
         physical_name: "record_status_code"
         data_domain: "Classification Value"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: ""
-        description: "Trạng thái vi phạm (scheme: RECORD_STATUS: 1=ACTIVE, 0=INACTIVE)"
-        source_atomic_table: "sp_conduct_violation"
-        source_atomic_column: "sp_conduct_violation.record_status_code"
+        description: "PENDING — Atomic sp_conduct_violation không có field này; BA yêu cầu nguồn VIOLATIONS.STATUS chỉ có 2 giá trị kỹ thuật (không đủ 6 trạng thái nghiệp vụ). Xem O_NHNCK_15"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Record Status Name"
         physical_name: "record_status_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên trạng thái vi phạm — ETL-derived: denormalize từ Classification (scheme: RECORD_STATUS) tại thời điểm populate"
-        source_atomic_table: "cv"
-        source_atomic_column: "cv.cl_nm"
+        description: "PENDING — xem ghi chú Record Status Code"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Decision Number"
         physical_name: "decision_nbr"
         data_domain: "Text"

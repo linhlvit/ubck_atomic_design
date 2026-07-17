@@ -11,6 +11,7 @@ description: |
   Input bắt buộc: BA_analyst_{MODULE}.csv + DTM_{MODULE}_HLD.md +
                   Datamart/lld/datamart_attributes.csv (summary) hoặc Datamart/lld/{MODULE}/*.csv (detail) +
                   DTM_{MODULE}_Detail_Mapping.csv +
+                  Datamart/datamart_model.yaml (registry schema cross-module — review Lớp 4) +
                   DataModel/Atomic/**/*.yaml (nguồn approved Atomic — tra cứu khi review Lớp 2)
 ---
 
@@ -38,16 +39,19 @@ BA analyst (logic nghiệp vụ)
     ↓
 Source (bảng nguồn IDS/T24/MSS...)
     ↓  [1:1 thông tin]
-Atomic (chuẩn hoá, entity Atomic)
+Atomic (chuẩn hoá, entity Atomic — nguồn sự thật duy nhất, xem YAML approved)
     ↓  [Attributes.csv mô tả mapping này]
 Datamart (Fact/Dim/Operational)
-    ↓  [Detail_Mapping.csv mô tả mapping này]
+    ↓  [Detail_Mapping.csv mô tả mapping này — logic khai thác cho báo cáo]
+    ↓  [datamart_model.yaml mô tả registry schema cross-module — PHẢI khớp Attributes]
 Báo cáo / Dashboard / DataExplorer
 ```
 
 **Quy tắc then chốt:** BA mô tả trực tiếp từ bảng nguồn (VD: `IDS.data.field_x`).
 Khi review, cần tìm trường tương ứng trên Atomic vì Source → Atomic là 1:1 thông tin.
 Không so sánh BA trực tiếp với Datamart mà bỏ qua lớp Atomic.
+
+**Quy tắc bổ sung — không tin theo Attributes ghi gì, phải verify Atomic YAML thật:** Attributes ghi `atomic_table.atomic_column` không có nghĩa là field đó thực sự tồn tại trong Atomic approved. Một KPI có thể bị đánh dấu READY suốt nhiều tuần dù field tham chiếu chưa từng có trong YAML — vì không ai đối chiếu ngược lại approved YAML mà chỉ tin theo những gì Attributes/Detail Mapping đã ghi. Khi review Lớp 2, **luôn mở YAML approved và đếm số attribute thật** trước khi chấp nhận 1 cột Done/READY là đúng — không suy luận từ tên cột "nghe hợp lý" (VD: `record_tp_code`, `record_status_code` nghe rất hợp lý cho 1 entity Violation nhưng có thể chưa từng được thiết kế).
 
 ### Phân biệt 3 kịch bản phát hiện vấn đề
 
@@ -99,6 +103,7 @@ Bước 2:  Tổng hợp cuối — sau khi review xong toàn scope
    - Attributes (summary): `Datamart/lld/datamart_attributes.csv` — lọc theo `datamart_table` của module
    - Attributes (detail): `Datamart/lld/{MODULE}/DTM_{MODULE}_{table}_{source}.csv` — 1 file per bảng mart
    - Detail Mapping: `Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv`
+   - Model registry: `Datamart/datamart_model.yaml` — lọc entity theo `module: "{MODULE}"` hoặc `module: "SHARED"` (Dim dùng chung); nếu thiếu file này, ghi nhận Critical cấp toàn module (không dừng nếu chỉ 1-2 nhóm dùng SHARED Dim chưa có trong review scope)
 3. Kiểm tra file tồn tại — báo cáo file nào thiếu, không dừng nếu chỉ thiếu 1 lớp LLD
 4. Thông báo scope và danh sách file sẽ review
 
@@ -331,6 +336,16 @@ Attributes | [OK / GAP / WARN] | Mô tả vấn đề nếu có (kèm: BA ghi g�
 
 **Quy trình trace BA → Detail Mapping (bắt buộc với mọi KPI Done):**
 
+> **Bắt buộc đọc FULL SQL tham khảo, không chỉ cột "Điều kiện" tóm tắt.** Cột "Điều kiện" trong BA CSV
+> thường chỉ tóm tắt 1 điều kiện chính, trong khi cột SQL tham khảo (Câu lệnh tham khảo) chứa đầy đủ
+> mọi JOIN + WHERE kết hợp — kể cả điều kiện AND giữa 2-3 bảng khác nhau. Case thực tế: BA ghi "Điều
+> kiện" chỉ là `DECISION_TYPE_ID='2'`, nhưng SQL đầy đủ có thêm `AND a.STATUS_WORK='3'` (join bảng
+> Professionals) — nếu chỉ đọc cột tóm tắt, Detail Mapping sẽ thiếu hẳn điều kiện thứ 2, kết quả đếm
+> sai mà không ai phát hiện vì KPI vẫn có công thức, vẫn trace được, vẫn "trông đúng".
+> Với MỌI KPI Done — đọc cả cột Điều kiện, Câu lệnh tham khảo, VÀ Note trước khi kết luận Detail
+> Mapping đã đủ điều kiện lọc. Nếu SQL tham khảo có JOIN thêm bảng nào ngoài bảng chính — kiểm tra
+> WHERE của bảng đó có được đưa vào `logic` không.
+
 ```
 Bước A: Đọc BA — xác định công thức KPI: aggregation (COUNT/SUM/AVG), filter condition, derived formula
 Bước B: Đọc Detail Mapping — logic của KPI_ID tương ứng
@@ -348,6 +363,57 @@ Bước D: Kiểm tra mart_table.mart_column → trace ngược lên Attributes 
 Output lớp 3:
 ```
 Detail Mapping | [OK / GAP / WARN] | Mô tả vấn đề nếu có (kèm: BA ghi gì → Detail Mapping dùng gì → delta nếu có)
+```
+
+### Lớp 4: Review datamart_model.yaml (Registry cross-module)
+
+> **BẮT BUỘC — dễ bị bỏ quên vì không nằm trong luồng BA→Atomic→Datamart→Báo cáo trực tiếp.**
+> `datamart_model.yaml` là **registry schema riêng**, tự nhận là "nguồn sự thật duy nhất về schema"
+> cross-module. Nó KHÔNG tự động đồng bộ khi Attributes/Detail Mapping/HLD được sửa — mọi thay đổi
+> cột (thêm/xóa/đổi kiểu/đổi logic) phải được tay động cập nhật riêng vào file này.
+> Bỏ qua Lớp 4 đồng nghĩa: sửa xong 3 lớp kia nhưng registry vẫn giữ dữ liệu cũ — lần review sau
+> (hoặc module khác dùng chung SHARED Dim) sẽ đọc registry lỗi thời mà không biết.
+
+Đọc entity tương ứng trong `Datamart/datamart_model.yaml` (lọc theo `datamart_table`, `module: "{MODULE}"` hoặc `"SHARED"`).
+
+| Kiểm tra | Chi tiết |
+|---|---|
+| **Cột tồn tại 1-1 với Attributes** | Mọi `logical_name`/`physical_name` trong Attributes detail phải có mặt trong `columns` của entity tương ứng trong registry, và ngược lại — không thừa, không thiếu |
+| **data_domain/data_type khớp Attributes** | So từng cột: registry ghi `Boolean/boolean` trong khi Attributes đã đổi `Indicator/string` (hoặc ngược lại) → 🔴 Critical, type mismatch sẽ gây lỗi ETL hoặc sai kết quả khi code-gen từ registry |
+| **source_atomic_table/source_atomic_column khớp Atomic YAML thật** | Cũng phải verify lại approved YAML — registry có thể ghi sai/lỗi thời giống hệt Attributes; đừng chỉ đối chiếu Attributes↔Registry mà bỏ qua bước xác nhận với Atomic gốc |
+| **Cột đã xóa khỏi Attributes có còn sót trong registry không** | Khi 1 cột bị loại khỏi Attributes/HLD (đổi logic, gộp field...), kiểm tra registry đã xóa cột đó chưa — đây là lỗi hay gặp nhất vì registry dễ bị quên khi dọn dẹp cột thừa |
+| **Cột PENDING (gap Atomic) có phản ánh đúng trong registry** | Khi Attributes chuyển 1 cột sang `pending` (gap Atomic), registry phải đồng bộ: `source_atomic_table`/`source_atomic_column` = `null`, mô tả ghi rõ PENDING + lý do — không được để registry vẫn trỏ tới Atomic column không tồn tại |
+| **modules_using / source_atomic list đầy đủ** | Khi bổ sung cột mới cần JOIN thêm Atomic entity (VD: cross-module NHNCK↔SCMS), entity's `source_atomic` list ở đầu block phải liệt kê đủ mọi Atomic entity dùng trong `columns`, không chỉ driving table |
+| **Physical name nhất quán với Attributes** | Registry có thể giữ physical name cũ/viết tắt khác Attributes hiện tại (VD: `yr` vs `year`, `hol_f` vs `holiday_flag`) — áp dụng cùng quy tắc Physical Naming ở cuối skill này |
+
+**Quy tắc phân biệt Boolean hợp lệ vs Boolean cần đổi Y/N (Indicator):** không phải mọi cột `data_domain: Boolean` đều là lỗi cần sửa sang `Indicator` (Y/N). Phân biệt theo NGUỒN GỐC giá trị, không theo tên cột:
+
+- **Boolean hợp lệ, KHÔNG sửa:** cột `direct` copy nguyên 1-1 từ 1 Atomic column đã là `data_domain: Boolean` thật sự (kiểm tra YAML approved — nếu Atomic đã tự convert nguồn thô sang boolean, VD comment "NUMBER(1) — ETL cần convert sang boolean", thì Datamart kế thừa boolean là đúng, không phải lỗi).
+- **Boolean cần đổi Indicator (Y/N), PHẢI sửa:** cột **tự tính bằng biểu thức tại tầng Datamart** — so sánh (`IN (1,7)`, `IS NOT NULL`), CASE ngầm định, hay bất kỳ công thức nào KHÔNG phải lấy trực tiếp 1 cột Atomic có sẵn kiểu Boolean. Các công thức này trả về kết quả so sánh (TRUE/FALSE của ngôn ngữ truy vấn), không phải giá trị đã lưu sẵn trong database — khi ETL ghi xuống bảng vật lý phải quy về `Y`/`N` string để nhất quán với các Indicator khác trong cùng bảng, tránh mỗi ETL engine biểu diễn TRUE/FALSE khác nhau (1/0, 't'/'f', true/false...).
+
+Case thực tế (module NHNCK): `Is_Weekend`/`Holiday_Flag`/`Has_Active_Violation` đều tự tính bằng biểu thức tại Datamart → phải Y/N. `Is_Listed_Indicator` (module khác) là `direct` copy từ Atomic đã là Boolean thật → giữ nguyên Boolean, không sửa. Khi gặp field domain Boolean, luôn tra `etl_logic_type` (`direct` vs `computed`) trước khi kết luận có cần đổi hay không — không suy luận từ tên cột.
+
+**Quy trình đối chiếu (bắt buộc cho MỌI cột đã sửa ở Lớp 2/3 trong lượt review này hoặc lượt trước):**
+
+```
+Bước A: Tìm entity trong datamart_model.yaml theo datamart_table
+Bước B: Với mỗi cột đã sửa (thêm/xóa/đổi type/đổi logic) ở Lớp 2/3 — tìm cột cùng logical_name trong registry
+Bước C: Đối chiếu: physical_name, data_domain, data_type, source_atomic_table/column, description
+         → Registry KHÔNG khớp Attributes hiện tại → 🔴 Critical: registry lỗi thời, cần đồng bộ ngay
+Bước D: Sửa registry theo Attributes (nguồn hiện tại luôn là Attributes detail — registry chỉ tổng hợp)
+```
+
+Output lớp 4:
+```
+datamart_model.yaml | [OK / GAP / WARN] | Mô tả vấn đề nếu có (kèm: Attributes ghi gì → registry đang ghi gì)
+```
+
+**Sau khi sửa registry — verify YAML còn hợp lệ:**
+```python
+import yaml
+with open('Datamart/datamart_model.yaml', encoding='utf-8') as f:
+    data = yaml.safe_load(f)
+print(len(data['entities']), 'entities')  # phải parse thành công, không lỗi cú pháp
 ```
 
 ---
@@ -542,6 +608,35 @@ missing = atomic_tables - join_atomic_tables
 
 Nếu nhóm BA = Done nhưng Detail Mapping hoàn toàn trống → đây là Gap lớn (Critical).
 Cần thiết kế LLD từ đầu — gọi `datamart-lld-design`.
+
+### Verify Atomic YAML thật trước khi chấp nhận 1 cột là READY — không suy luận từ tên
+
+Một cột Datamart có thể tồn tại đầy đủ trong Attributes + Detail Mapping + HLD (đều báo READY, đều có `etl_logic`, đều trace được về KPI) mà **field Atomic nó tham chiếu chưa từng được thiết kế** — vì không có bước nào trong review buộc phải mở YAML approved và đếm số attribute thật.
+
+Dấu hiệu để nghi ngờ (không phải để bỏ qua, mà để soi kỹ hơn):
+- Tên cột "nghe rất hợp lý" cho 1 entity nhưng bạn chưa từng thấy nó trong YAML khi review case khác cùng entity (VD: entity Violation "chắc phải có" Type/Status, nhưng thực tế YAML chỉ ghi nhận field khi source thật có)
+- `etl_logic` chỉ có 1 dòng `direct` từ `atomic_table.column`, không có JOIN nào khác để verify chéo
+
+**Bước bắt buộc:** với mỗi Fact/Operational table đang review lần đầu (hoặc đã lâu chưa review), mở YAML approved của **driving entity** và **đếm số attribute thật**:
+```bash
+grep -c "^  - name:" DataModel/Atomic/**/dm_atm_{entity}-*.yaml
+```
+Rồi liệt kê toàn bộ `physical_name` trong YAML, đối chiếu 1-1 với `atomic_column` mà Attributes đang tham chiếu cho entity đó. Bất kỳ `atomic_column` nào trong Attributes không xuất hiện trong danh sách physical_name thật → 🔴 Critical, dù cột đó đang báo READY — chuyển ngay về PENDING, không chờ báo cáo chạy sai mới phát hiện.
+
+### Verify toàn vẹn CSV sau MỌI lần sửa hàng loạt (sed / Edit trên nhiều dòng)
+
+Khi sửa Detail Mapping hoặc Attributes bằng `sed`/`replace_all` để cập nhật nội dung text (ghi chú, mô tả, công thức) hàng loạt trên nhiều dòng, dấu phẩy trong nội dung mới thêm **sẽ phá vỡ cấu trúc CSV** nếu không được bọc trong dấu ngoặc kép — vì các công cụ này không tự escape như CSV writer. Hậu quả: dòng bị tách quá số cột header, dữ liệu ở các cột sau bị lệch/mất mà không có lỗi hiển thị ngay lập tức (Python `csv.reader` vẫn đọc được, chỉ dữ liệu sai vị trí).
+
+**Bắt buộc chạy sau MỌI lần sửa CSV bằng sed/Edit hàng loạt** (không chỉ 1 lần cuối review — chạy ngay sau từng thao tác sửa):
+```python
+import csv
+with open('path/to/file.csv', encoding='utf-8-sig') as f:
+    rows = list(csv.reader(f, delimiter=','))
+header_len = len(rows[0])
+bad = [i for i,r in enumerate(rows) if len(r) != header_len]
+print('so dong loi:', len(bad), bad)  # phải rỗng
+```
+Nếu phát hiện dòng lệch — sửa lại bằng cách bọc phần text có dấu phẩy trong `"..."`, không chỉ sửa nội dung mà bỏ qua việc escape.
 
 ---
 
