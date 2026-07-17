@@ -100,7 +100,7 @@ attributes:
   - "IDS.VIOLATION_REPORT.VIOLATION_TEMPLATE_ID"
   comment: "FK target: Disclosure Form Definition Violation Template.Disclosure Form\
     \ Definition Violation Template Id. Resolve: join VIOLATION_TEMPLATE_ID → IDS.VIOLATION_TEMPLATES.ID\
-    \ để lấy VIOLATION_CD, rồi hash_id('IDS.VIOLATION_TEMPLATES', violation_cd)."
+    \ để lấy VIOLATION_CD, rồi hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -129,7 +129,7 @@ attributes:
   source_columns:
   - "IDS.VIOLATION_REPORT.FORM_ID"
   comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Resolve:\
-    \ join FORM_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', form_cd)."
+    \ join FORM_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

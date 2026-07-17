@@ -1,0 +1,191 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_state_capital-IDS.STATE_CAPITAL
+  logical_name: Public Company State Capital
+  physical_name: pc_state_capital
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Tỷ lệ vốn nhà nước tại CTĐC và cơ quan đại diện phần vốn nhà nước: tỷ lệ sở hữu, ngày hiệu lực.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-STATE_CAPITAL
+
+attributes:
+  - name: Public Company State Capital Id
+    physical_name: pc_state_capital_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: Public Company State Capital Code
+    physical_name: pc_state_capital_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.ID
+    comment: BK chính. PK nguồn NUMBER(19) tự tăng.
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: IDS.STATE_CAPITAL
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.COMPANY_PROFILE_ID
+    comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.COMPANY_PROFILE_ID
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: State Representative Name
+    physical_name: state_representative_nm
+    business_meaning: Tên đại diện nhà nước (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.STATE_REP_NAME_VI
+    comment: null
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: State Representative English Name
+    physical_name: state_representative_english_nm
+    business_meaning: Tên đại diện nhà nước (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.STATE_REP_NAME_EN
+    comment: null
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: State Owner Organization Name
+    physical_name: state_owner_organization_nm
+    business_meaning: Tên cơ quan chủ sở hữu vốn nhà nước (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.STATE_OWNER_ORG_VI
+    comment: "Denormalized — không phải FK đến Regulatory Authority Organization Unit (chưa xác nhận cross-source)."
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: State Owner Organization English Name
+    physical_name: state_owner_organization_english_nm
+    business_meaning: Tên cơ quan chủ sở hữu vốn nhà nước (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.STATE_OWNER_ORG_EN
+    comment: null
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: Owned Share Quantity
+    physical_name: owned_share_quantity
+    business_meaning: Số cổ phiếu sở hữu.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.OWNED_SHARE_QTY
+    comment: null
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: Ownership Ratio Percentage
+    physical_name: ownership_ratio_percentage
+    business_meaning: Phần trăm sở hữu.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.OWNERSHIP_RATIO
+    comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1 hay 0-100)."
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: STATE_CAPITAL
+    source_column: IDS.STATE_CAPITAL.DELETE_FLG
+    comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
+    classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
+    etl_derived_value: null

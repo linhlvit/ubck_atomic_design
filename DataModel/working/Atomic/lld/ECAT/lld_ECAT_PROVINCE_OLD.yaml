@@ -143,7 +143,7 @@ attributes:
   - "ECAT.PROVINCE_OLD.REGION_ID"
   comment: "FK target: Geographic Area.Geographic Area Id (KHÁC entity — cross-entity\
     \ anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID để lấy\
-    \ CODE, rồi hash_id('ECAT.REGION', code). COUNTRY_ID trên bảng nguồn denormalized\
+    \ CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn denormalized\
     \ qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
   classification_context: null
   etl_derived_value: null
@@ -175,7 +175,7 @@ attributes:
   comment: "FK target: Geographic Area.Geographic Area Id (KHÁC entity — successor\
     \ mapping sau sáp nhập hành chính, không phải hierarchy cha-con). Resolve: join\
     \ PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW',\
-    \ code)."
+    \ CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

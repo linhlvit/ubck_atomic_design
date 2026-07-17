@@ -1,0 +1,541 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_shareholding-IDS.COMPANY_SHAREHOLDING
+  logical_name: Public Company Shareholding
+  physical_name: pc_shareholding
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Cổ đông của CTĐC và thông tin sở hữu: số lượng cổ phần, tỷ lệ sở hữu, phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-COMPANY_SHAREHOLDING
+
+attributes:
+  - name: Public Company Shareholding Id
+    physical_name: pc_shareholding_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Ownership\"."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Public Company Shareholding Code
+    physical_name: pc_shareholding_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.ID
+    comment: "BK chính. PK nguồn NUMBER(10,0) tự tăng."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: IDS.COMPANY_SHAREHOLDING
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Id công ty đại chúng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.COMPANY_PROFILE_ID
+    comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.COMPANY_PROFILE_ID
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Legal Entity Id
+    physical_name: legal_entity_id
+    business_meaning: Id cổ đông.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.LEGAL_ENTITY_ID
+    comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Legal Entity Code
+    physical_name: legal_entity_code
+    business_meaning: Mã thực thể pháp lý (cổ đông).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.LEGAL_ENTITY_ID
+    comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Founder Shareholder Indicator
+    physical_name: founder_shareholder_indicator
+    business_meaning: Là cổ đông sáng lập.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.FOUNDER_HLD_FLG
+    comment: "Encoding nguồn: 1 = Có, 0 = Không."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Founder Shareholder Active Date
+    physical_name: founder_shareholder_active_dt
+    business_meaning: Ngày hoạt động của cổ đông sáng lập.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.FOUNDER_HLD_ACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Founder Shareholder Inactive Date
+    physical_name: founder_shareholder_inactive_dt
+    business_meaning: Ngày kết thúc hoạt động của cổ đông sáng lập.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.FOUNDER_HLD_INACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Major Shareholder Indicator
+    physical_name: major_shareholder_indicator
+    business_meaning: Là cổ đông lớn.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.MAJOR_HLD_FLG
+    comment: "Encoding nguồn: 1 = Có, 0 = Không."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Major Shareholder Active Date
+    physical_name: major_shareholder_active_dt
+    business_meaning: Ngày hoạt động của cổ đông lớn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.MAJOR_HLD_ACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Major Shareholder Inactive Date
+    physical_name: major_shareholder_inactive_dt
+    business_meaning: Ngày kết thúc hoạt động của cổ đông lớn.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.MAJOR_HLD_INACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Strategic Shareholder Indicator
+    physical_name: strategic_shareholder_indicator
+    business_meaning: Là cổ đông chiến lược.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.STRATEGIC_HLD_FLG
+    comment: "Encoding nguồn: 1 = CDCL (cổ đông chiến lược), 0 = Không."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Strategic Shareholder Active Date
+    physical_name: strategic_shareholder_active_dt
+    business_meaning: Ngày bắt đầu là cổ đông chiến lược.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.STRATEGIC_HLD_ACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Strategic Shareholder Inactive Date
+    physical_name: strategic_shareholder_inactive_dt
+    business_meaning: Ngày kết thúc là cổ đông chiến lược.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.STRATEGIC_HLD_INACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Insider Shareholder Indicator
+    physical_name: insider_shareholder_indicator
+    business_meaning: Là cổ đông nội bộ.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.INSIDER_HLD_FLG
+    comment: "Encoding nguồn: 1 = Có, 0 = Không."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Insider Shareholder Active Date
+    physical_name: insider_shareholder_active_dt
+    business_meaning: Ngày hoạt động của cổ đông nội bộ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.INSIDER_HLD_ACTIVE_DATE
+    comment: "Mô tả nguồn ghi nhầm là \"cổ đông nước ngoài\" — theo tên cột INSIDER_HLD_ACTIVE_DATE và nhóm cột liên quan, đây là ngày hoạt động của cổ đông nội bộ."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Insider Shareholder Inactive Date
+    physical_name: insider_shareholder_inactive_dt
+    business_meaning: Ngày kết thúc hoạt động của cổ đông nội bộ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.INSIDER_HLD_INACTIVE_DATE
+    comment: "Mô tả nguồn ghi nhầm là \"cổ đông nước ngoài\" — xem ghi chú ở Insider Shareholder Active Date."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Government Shareholder Indicator
+    physical_name: government_shareholder_indicator
+    business_meaning: Là cổ đông nhà nước.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.GOVERNMENT_HLD_FLG
+    comment: "Encoding nguồn: 1 = CDNN (cổ đông nhà nước), 0 = Không."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Government Shareholder Active Date
+    physical_name: government_shareholder_active_dt
+    business_meaning: Ngày hoạt động của cổ đông nhà nước.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.GOVERNMENT_HLD_ACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Government Shareholder Inactive Date
+    physical_name: government_shareholder_inactive_dt
+    business_meaning: Ngày kết thúc hoạt động của cổ đông nhà nước.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.GOVERNMENT_HLD_INACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Related Shareholder Indicator
+    physical_name: related_shareholder_indicator
+    business_meaning: Là cổ đông liên quan.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.RELATED_HLD_FLG
+    comment: "Encoding nguồn: 1 = Có, 0 = Không."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Related Shareholder Active Date
+    physical_name: related_shareholder_active_dt
+    business_meaning: Ngày hoạt động của cổ đông liên quan.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.RELATED_HLD_ACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Related Shareholder Inactive Date
+    physical_name: related_shareholder_inactive_dt
+    business_meaning: Ngày kết thúc hoạt động của cổ đông liên quan.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.RELATED_HLD_INACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Other Shareholder Indicator
+    physical_name: other_shareholder_indicator
+    business_meaning: Cổ đông khác (không thuộc các nhóm phân loại chuẩn).
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.OTHER_HLD_FLG
+    comment: "Encoding nguồn: 1 = Có, 0 = Không."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Other Shareholder Active Date
+    physical_name: other_shareholder_active_dt
+    business_meaning: Ngày bắt đầu là cổ đông khác.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.OTHER_HLD_ACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Other Shareholder Inactive Date
+    physical_name: other_shareholder_inactive_dt
+    business_meaning: Ngày kết thúc là cổ đông khác.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.OTHER_HLD_INACTIVE_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Shareholder Type Code
+    physical_name: shareholder_tp_code
+    business_meaning: Loại cổ đông (có thể thuộc nhiều loại cùng lúc).
+    data_domain: "Array<Text>"
+    data_type: array<string>
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.SHAREHOLDER_TYPE
+    comment: "Scheme: IDS_SHAREHOLDER_TYPE (source_table, LOOKUP_GROUP = 'SHAREHOLDER_TYPE'). Nguồn lưu dạng chuỗi các mã cách nhau dấu phẩy — parse thành Array<Text> khi lên Atomic. Chưa có trong HLD 6d, bổ sung scheme mới."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Ownership Quantity
+    physical_name: ownership_quantity
+    business_meaning: Số lượng cổ phiếu nắm giữ.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.OWNERSHIP_QTY
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Ownership Ratio Percentage
+    physical_name: ownership_ratio_percentage
+    business_meaning: Phần trăm nắm giữ.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.OWNERSHIP_RATIO
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Ownership Date
+    physical_name: ownership_dt
+    business_meaning: Ngày đạt tỷ lệ sở hữu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.OWNERSHIP_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Approval Indicator
+    physical_name: approval_indicator
+    business_meaning: Trạng thái phê duyệt thông tin cổ đông.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.APPROVAL_FLG
+    comment: "Encoding nguồn: 0 = Chưa duyệt, 1 = Đã duyệt."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Data Source Code
+    physical_name: data_src_code
+    business_meaning: Nguồn cập nhật dữ liệu cổ đông (trung tâm lưu ký hay thủ công).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.DATA_SOURCE_CD
+    comment: "Scheme: IDS_LE_DATA_SOURCE (source_table, LOOKUP_GROUP = 'LE_DATA_SOURCE') — chưa có trong HLD 6d, bổ sung scheme mới."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Data Updated Date
+    physical_name: data_updated_dt
+    business_meaning: Ngày cập nhật dữ liệu từ trung tâm lưu ký và các sổ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.DATA_UPDATED_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning: Đánh dấu xóa mềm.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: COMPANY_SHAREHOLDING
+    source_column: IDS.COMPANY_SHAREHOLDING.DELETE_FLG
+    comment: "Encoding nguồn: 1 = Xóa, 0 = Không xóa."
+    classification_context: "Source System Code = 'IDS_COMPANY_SHAREHOLDING'"
+    etl_derived_value: null

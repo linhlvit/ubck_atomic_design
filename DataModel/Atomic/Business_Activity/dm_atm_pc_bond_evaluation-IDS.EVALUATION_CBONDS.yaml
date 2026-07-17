@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_bond_evaluation-IDS.EVALUATION_CBONDS
+  logical_name: Public Company Bond Evaluation
+  physical_name: pc_bond_evaluation
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Evaluation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Chỉ số trái phiếu của công ty đại chúng theo kỳ (năm/tháng): xếp hạng, tỷ lệ trái phiếu đảm bảo/giá trị trái phiếu, tỷ lệ trái phiếu lưu hành/vốn chủ sở hữu. Không FK đến Public Company Evaluation — grain 1 CTĐC × 1 kỳ.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-EVALUATION_CBONDS
+
+attributes:
+  - name: Public Company Bond Evaluation Id
+    physical_name: pc_bond_evaluation_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Business Activity] Evaluation\"."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Public Company Bond Evaluation Code
+    physical_name: pc_bond_evaluation_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: IDS.EVALUATION_CBONDS
+
+  - name: Public Company Id
+    physical_name: pc_id
+    business_meaning: Khóa link đến bảng COMPANY_PROFILES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.COMPANY_ID
+    comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Cột nguồn COMPANY_ID (khác tên chuẩn COMPANY_PROFILE_ID ở các bảng khác) — chưa có ràng buộc NOT NULL rõ ràng nên để nullable."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Public Company Code
+    physical_name: pc_code
+    business_meaning: Mã công ty đại chúng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.COMPANY_ID
+    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Business Registration Number Snapshot
+    physical_name: business_registration_nbr_snpst
+    business_meaning: Mã số doanh nghiệp (snapshot tại thời điểm đánh giá).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.BUSINESS_REG_NO
+    comment: "Denormalized snapshot — trùng lặp với Involved Party Alternative Identification (Identification Number, type TAX_ID) của Public Company này tại thời điểm ghi nhận, giữ lại để đối chiếu."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Equity Ticker Symbol Snapshot
+    physical_name: equity_ticker_symbol_snpst
+    business_meaning: "Mã cổ phiếu (mã chứng khoán, snapshot tại thời điểm đánh giá)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.EQUITY_TICKER
+    comment: Denormalized snapshot — trùng lặp với Public Company.Equity Ticker Symbol.
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Public Company Name Snapshot
+    physical_name: pc_nm_snpst
+    business_meaning: Tên công ty (snapshot tại thời điểm đánh giá).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.NAME
+    comment: Denormalized snapshot — trùng lặp với Public Company.Public Company Name.
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Ranking Code
+    physical_name: ranking_code
+    business_meaning: "Xếp hạng doanh nghiệp (A, B, C, E)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.RANKING
+    comment: "Map 1:1 từ nguồn — không phải Classification Value theo yêu cầu Data Modeler (2026-07-15)."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Evaluation Year
+    physical_name: evaluation_year
+    business_meaning: Năm đánh giá.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.YEAR
+    comment: null
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Evaluation Month
+    physical_name: evaluation_month
+    business_meaning: Tháng đánh giá.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.MONTH
+    comment: null
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Bond Collateral Ratio Percentage
+    physical_name: bond_collateral_ratio_percentage
+    business_meaning: Tỉ lệ trái phiếu đảm bảo/giá trị trái phiếu.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.PER_TP_DB
+    comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1 hay 0-100)."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null
+
+  - name: Bond Outstanding To Equity Ratio Percentage
+    physical_name: bond_outstanding_to_equity_ratio_percentage
+    business_meaning: Giá trị trái phiếu đang lưu hành/tổng vốn chủ sở hữu.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_CBONDS
+    source_column: IDS.EVALUATION_CBONDS.PRICE_TP_LH
+    comment: "Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang đo (0-1 hay 0-100)."
+    classification_context: "Source System Code = 'IDS_EVALUATION_CBONDS'"
+    etl_derived_value: null

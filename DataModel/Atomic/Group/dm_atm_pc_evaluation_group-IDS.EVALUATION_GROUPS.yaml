@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-pc_evaluation_group-IDS.EVALUATION_GROUPS
+  logical_name: Public Company Evaluation Group
+  physical_name: pc_evaluation_group
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Group
+  bcv_concept: "[Group] Group"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: IDS
+  description: |
+    Nhóm phân loại chỉ tiêu dùng trong hệ thống đánh giá/xếp hạng công ty đại chúng: tên nhóm, thứ tự, tổng điểm tối đa. Table Type = Classification theo xác nhận Tier1 6f (T1-03).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-EVALUATION_GROUPS
+
+attributes:
+  - name: Public Company Evaluation Group Id
+    physical_name: pc_evaluation_group_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: EVALUATION_GROUPS
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS.EVALUATION_GROUPS', GROUP_CD). BCV: \"[Group] Group\"."
+    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    etl_derived_value: null
+
+  - name: Public Company Evaluation Group Code
+    physical_name: pc_evaluation_group_code
+    business_meaning: Mã nhóm. BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_GROUPS
+    source_column: IDS.EVALUATION_GROUPS.GROUP_CD
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_GROUPS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    etl_derived_value: IDS.EVALUATION_GROUPS
+
+  - name: Public Company Evaluation Group Name
+    physical_name: pc_evaluation_group_nm
+    business_meaning: Tên của nhóm đánh giá.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_GROUPS
+    source_column: IDS.EVALUATION_GROUPS.GROUP_NAME
+    comment: null
+    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết về nhóm đánh giá.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_GROUPS
+    source_column: IDS.EVALUATION_GROUPS.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    etl_derived_value: null
+
+  - name: Weight Percentage
+    physical_name: weight_percentage
+    business_meaning: Trọng số (giá trị từ 0 đến 1) áp dụng cho nhóm đánh giá.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_GROUPS
+    source_column: IDS.EVALUATION_GROUPS.WEIGHT
+    comment: "Nguồn NUMBER(5,2) lưu theo thang 0-1 (không phải 0-100) — giữ nguyên giá trị gốc, không nhân 100 khi ETL."
+    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    etl_derived_value: null
+
+  - name: Display Order
+    physical_name: display_order
+    business_meaning: Số thứ tự hiển thị.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: EVALUATION_GROUPS
+    source_column: IDS.EVALUATION_GROUPS.DISPLAY_ORDER
+    comment: null
+    classification_context: "Source System Code = 'IDS_EVALUATION_GROUPS'"
+    etl_derived_value: null

@@ -1,0 +1,289 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_business_line-IDS.CATEGORIES
+  logical_name: Classification Business Line
+  physical_name: cl_business_line
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Industry Classification"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  description: |
+    Danh mục ngành nghề kinh doanh 2 cấp (cấp 1 + cấp 2), self-referencing qua Parent Business Line. Gộp từ ECAT.BUSINESS_LINE_LEVEL_1 + BUSINESS_LINE_LEVEL_2 theo quy tắc "Gộp entity khi hợp lý" (CLAUDE.md #10). Table Type = Relative theo quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification Value) — xem ECAT_HLD_Tier1.md T1-07. Tên bỏ tiền tố nguồn (ECAT) theo rule đặt tên Classification mới (CLAUDE.md #7). Bổ sung nguồn IDS.CATEGORIES (shared entity) theo quyết định tường minh Data Modeler (2026-07-17) — IDS.CATEGORIES và ECAT.BUSINESS_LINE_LEVEL_1/2 xác nhận cùng 1 concept nghiệp vụ, xem IDS_HLD_Tier1.md T1-13 / IDS_HLD_Overview.md mục 7e #12.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-CATEGORIES
+
+attributes:
+  - name: Classification Business Line Id
+    physical_name: cl_business_line_id
+    business_meaning: Id tự sinh (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS.CATEGORIES', INDUSTRY_CD). BCV Term: \"Industry Classification\" (Common). Shared entity với ECAT.BUSINESS_LINE_LEVEL_1/2."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: IDS.CATEGORIES
+
+  - name: Classification Business Line Level Code
+    physical_name: cl_business_line_level_code
+    business_meaning: Phân biệt cấp ngành nghề — Cấp 1 hoặc Cấp 2.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.PARENT_ID
+    comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL (dùng chung với ECAT — shared entity). IDS.CATEGORIES không tách 2 bảng theo cấp như ECAT — level suy ra động từ PARENT_ID IS NULL (Cấp 1) / PARENT_ID IS NOT NULL (Cấp 2), khác cơ chế derive-từ-tên-bảng của ECAT. Xem IDS_HLD_Tier1.md T1-13."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: "PARENT_ID IS NULL=LEVEL_1;PARENT_ID IS NOT NULL=LEVEL_2"
+
+  - name: Classification Business Line Code
+    physical_name: cl_business_line_code
+    business_meaning: Mã ngành nghề. BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.INDUSTRY_CD
+    comment: "BK chính (mã nghiệp vụ), nhất quán pattern Classification Business Line Code trên ECAT (dùng CODE nguồn, không dùng ID kỹ thuật). Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Classification Business Line Name
+    physical_name: cl_business_line_nm
+    business_meaning: Tên ngành nghề.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.INDUSTRY_NAME
+    comment: null
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Parent Classification Business Line Id
+    physical_name: parent_cl_business_line_id
+    business_meaning: "FK đến ngành nghề cấp 1 cha (self-ref, Mã cha). NULL cho cấp 1 — cấp cao nhất."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.PARENT_ID
+    comment: "FK target: cl_business_line.cl_business_line_id. PARENT_ID lưu ID kỹ thuật của bản ghi cha (không phải INDUSTRY_CD) — PHẢI join: PARENT_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD của cha, rồi hash_id('IDS.CATEGORIES', INDUSTRY_CD_CHA). NULL khi PARENT_ID nguồn NULL (bản ghi cấp 1)."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Parent Classification Business Line Code
+    physical_name: parent_cl_business_line_code
+    business_meaning: Mã ngành nghề cấp 1 cha.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.PARENT_ID
+    comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Parent Classification Business Line Id. Giá trị lấy qua join (xem Parent Classification Business Line Id). NULL cho cấp 1."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Display Label
+    physical_name: display_label
+    business_meaning: Nhãn hiển thị
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "Đẩy 1:1 theo yêu cầu."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Effective Indicator
+    physical_name: effective_indicator
+    business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Active Indicator
+    physical_name: active_indicator
+    business_meaning: "Trạng thái hiệu lực: true = Active (Hiệu lực); false = Inactive (Hết hiệu lực)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.STATUS_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Effective Start Date
+    physical_name: effective_start_dt
+    business_meaning: Ngày bắt đầu hiệu lực
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Effective End Date
+    physical_name: effective_end_dt
+    business_meaning: Ngày kết thúc hiệu lực
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning: Số phiên bản bản ghi tại nguồn
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật versioning của nguồn."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Active Reason
+    physical_name: active_reason
+    business_meaning: Lý do thay đổi trạng thái sử dụng
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "Đẩy 1:1 theo yêu cầu."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Deleted Reason
+    physical_name: deleted_reason
+    business_meaning: Lý do xóa
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: null
+    comment: "Đẩy 1:1 theo yêu cầu."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.DESCRIPTION
+    comment: "IDS.CATEGORIES có trường mô tả riêng, không có tương ứng trên ECAT.BUSINESS_LINE_LEVEL_1/2 (chỉ có DISPLAY_LABEL). Khi Entity Consolidation (Level 2) — cần nullable/để trống cho source ECAT."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: Selected Indicator
+    physical_name: selected_indicator
+    business_meaning: Chọn.
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.ACTIVE_FLG
+    comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1). Tên cột ACTIVE_FLG gợi ý cờ hiệu lực nhưng mô tả nguồn (BRD) chỉ ghi \"Chọn\" (gợi ý cờ UI checked/selected) — map 1:1 theo mô tả gốc, không suy diễn ý nghĩa khác. Không gộp với Active Indicator (STATUS_FLG) dù tên cột gần giống — mô tả nguồn khác nhau rõ ràng."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null
+
+  - name: System Code
+    physical_name: stm_code
+    business_meaning: Hệ thống con trong IDS.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: CATEGORIES
+    source_column: IDS.CATEGORIES.SYSTEM_CD
+    comment: "Denormalized — nguồn không có mô tả/FK annotation trong BRD (brd_IDS_CATEGORIES.yaml). Giữ nguyên dạng Text theo DDL nguồn, nhất quán với System Code trên Financial Report Catalog/Periodic Report Form (REPORT_CATALOG/REP_FORMS)."
+    classification_context: "Source System Code = 'IDS_CATEGORIES'"
+    etl_derived_value: null

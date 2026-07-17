@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-legal_entity_position-IDS.POSITIONS
+  logical_name: Legal Entity Position
+  physical_name: legal_entity_position
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  description: |
+    Chức vụ của người nội bộ/cổ đông tại công ty: mã chức vụ, ngày bổ nhiệm, ngày miễn nhiệm, trạng thái.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-POSITIONS
+
+attributes:
+  - name: Legal Entity Position Id
+    physical_name: legal_entity_position_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\"."
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Legal Entity Position Code
+    physical_name: legal_entity_position_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng.
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: IDS.POSITIONS
+
+  - name: Legal Entity Id
+    physical_name: legal_entity_id
+    business_meaning: Khóa link đến bảng LEGAL_ENTITIES.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.LEGAL_ENTITY_ID
+    comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Legal Entity Code
+    physical_name: legal_entity_code
+    business_meaning: Mã cổ đông liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.LEGAL_ENTITY_ID
+    comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Position Code
+    physical_name: position_code
+    business_meaning: Loại chức vụ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.POSITION_CD
+    comment: "Scheme: IDS_POSITION. Values load từ LOOKUP_VALUES (LOOKUP_GROUP = POSITION). Dùng chung scheme với Public Company Penalty/Public Company Legal Representative."
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Appointment Date
+    physical_name: appointment_dt
+    business_meaning: Ngày bổ nhiệm.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.APPOINTMENT_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Dismissal Date
+    physical_name: dismissal_dt
+    business_meaning: Ngày miễn nhiệm.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.DISMISSAL_DATE
+    comment: null
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Active Indicator
+    physical_name: active_indicator
+    business_meaning: "Có trạng thái chức vụ hiện tại (0-Không, 1-Có)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.ACTIVE_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
+    data_domain: Boolean
+    data_type: boolean
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: POSITIONS
+    source_column: IDS.POSITIONS.DELETE_FLG
+    comment: Giá trị 1 → true (đã xóa); 0 → false. Nguồn NUMBER(1).
+    classification_context: "Source System Code = 'IDS_POSITIONS'"
+    etl_derived_value: null

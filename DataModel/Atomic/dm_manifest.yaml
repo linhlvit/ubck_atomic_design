@@ -1,6 +1,32 @@
 schema_type: dm_manifest
 schema_version: "1.0"
 entries:
+- subfolder: Arrangement
+  file_name: dm_atm_pc_shareholding-IDS.COMPANY_SHAREHOLDING.yaml
+  id: ATM-pc_shareholding-IDS.COMPANY_SHAREHOLDING
+  physical_name: pc_shareholding
+  logical_name: Public Company Shareholding
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 37
+  brd_ref: BRD-SRC-IDS-COMPANY_SHAREHOLDING
+- subfolder: Arrangement
+  file_name: dm_atm_pc_state_capital-IDS.STATE_CAPITAL.yaml
+  id: ATM-pc_state_capital-IDS.STATE_CAPITAL
+  physical_name: pc_state_capital
+  logical_name: Public Company State Capital
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 12
+  brd_ref: BRD-SRC-IDS-STATE_CAPITAL
 - subfolder: Business_Activity
   file_name: dm_atm_examination_team-ThanhTra.EXAMINATION_TEAM.yaml
   id: ATM-examination_team-ThanhTra.EXAMINATION_TEAM
@@ -53,6 +79,84 @@ entries:
   status: draft
   attribute_count: 14
   brd_ref: BRD-SRC-ThanhTra-INSPECTION_TEAM_TARGET
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_bond_evaluation-IDS.EVALUATION_CBONDS.yaml
+  id: ATM-pc_bond_evaluation-IDS.EVALUATION_CBONDS
+  physical_name: pc_bond_evaluation
+  logical_name: Public Company Bond Evaluation
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Evaluation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 13
+  brd_ref: BRD-SRC-IDS-EVALUATION_CBONDS
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_evaluation_detail-IDS.EVALUATION_DETAILS.yaml
+  id: ATM-pc_evaluation_detail-IDS.EVALUATION_DETAILS
+  physical_name: pc_evaluation_detail
+  logical_name: Public Company Evaluation Detail
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Evaluation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-IDS-EVALUATION_DETAILS
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_securities_offering-IDS.SECURITIES_OFFERING.yaml
+  id: ATM-pc_securities_offering-IDS.SECURITIES_OFFERING
+  physical_name: pc_securities_offering
+  logical_name: Public Company Securities Offering
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 39
+  brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_securities_offering_plan-IDS.SECURITIES_OFFERING_PLAN.yaml
+  id: ATM-pc_securities_offering_plan-IDS.SECURITIES_OFFERING_PLAN
+  physical_name: pc_securities_offering_plan
+  logical_name: Public Company Securities Offering Plan
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 57
+  brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_PLAN
+- subfolder: Business_Activity
+  file_name: dm_atm_pc_securities_offering_result-IDS.SECURITIES_OFFERING_RESULT.yaml
+  id: ATM-pc_securities_offering_result-IDS.SECURITIES_OFFERING_RESULT
+  physical_name: pc_securities_offering_result
+  logical_name: Public Company Securities Offering Result
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 66
+  brd_ref: BRD-SRC-IDS-SECURITIES_OFFERING_RESULT
+- subfolder: Business_Activity
+  file_name: dm_atm_public_company_evaluation-IDS.EVALUATIONS.yaml
+  id: ATM-public_company_evaluation-IDS.EVALUATIONS
+  physical_name: public_company_evaluation
+  logical_name: Public Company Evaluation
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Evaluation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-IDS-EVALUATIONS
 - subfolder: Business_Activity
   file_name: dm_atm_sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT.yaml
   id: ATM-sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT
@@ -171,6 +275,19 @@ entries:
   attribute_count: 9
   brd_ref: BRD-SRC-ThanhTra-PENALTY_TYPE
 - subfolder: Common
+  file_name: dm_atm_cl_business_line-IDS.CATEGORIES.yaml
+  id: ATM-cl_business_line-IDS.CATEGORIES
+  physical_name: cl_business_line
+  logical_name: Classification Business Line
+  bcv_core_object: Common
+  bcv_concept: "[Common] Industry Classification"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  status: draft
+  attribute_count: 19
+  brd_ref: BRD-SRC-IDS-CATEGORIES
+- subfolder: Common
   file_name: dm_atm_cl_business_transaction-SCMS.CAT_BUSINESS_LINE.yaml
   id: ATM-cl_business_transaction-SCMS.CAT_BUSINESS_LINE
   physical_name: cl_business_transaction
@@ -288,6 +405,19 @@ entries:
   attribute_count: 19
   brd_ref: BRD-SRC-NHNCK-EXAM_DETAILS
 - subfolder: Condition
+  file_name: dm_atm_pc_evaluation_criterion-IDS.EVALUATION_CRITERIA.yaml
+  id: ATM-pc_evaluation_criterion-IDS.EVALUATION_CRITERIA
+  physical_name: pc_evaluation_criterion
+  logical_name: Public Company Evaluation Criterion
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Evaluation Criteria"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 11
+  brd_ref: BRD-SRC-IDS-EVALUATION_CRITERIA
+- subfolder: Condition
   file_name: dm_atm_sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES.yaml
   id: ATM-sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES
   physical_name: sp_qualification_examination_assessment_fee
@@ -300,6 +430,19 @@ entries:
   status: approved
   attribute_count: 9
   brd_ref: BRD-SRC-NHNCK-EXAM_SESSION_FEES
+- subfolder: Documentation
+  file_name: dm_atm_pc_report_submission-IDS.COMPANY_DATA.yaml
+  id: ATM-pc_report_submission-IDS.COMPANY_DATA
+  physical_name: pc_report_submission
+  logical_name: Public Company Report Submission
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Filing"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: IDS
+  status: draft
+  attribute_count: 33
+  brd_ref: BRD-SRC-IDS-COMPANY_DATA
 - subfolder: Documentation
   file_name: dm_atm_sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION.yaml
   id: ATM-sc_administrative_penalty_decision-SCMS.SC_FIRM_ADMIN_PENALTY_DECISION
@@ -419,6 +562,19 @@ entries:
   attribute_count: 35
   brd_ref: BRD-SRC-NHNCK-ORGANIZATION_REPORTS
 - subfolder: Event
+  file_name: dm_atm_pc_evaluation_period-IDS.EVALUATION_PERIODS.yaml
+  id: ATM-pc_evaluation_period-IDS.EVALUATION_PERIODS
+  physical_name: pc_evaluation_period
+  logical_name: Public Company Evaluation Period
+  bcv_core_object: Event
+  bcv_concept: "[Event] Period"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-IDS-EVALUATION_PERIODS
+- subfolder: Event
   file_name: dm_atm_pd_subject_behavior-ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.yaml
   id: ATM-pd_subject_behavior-ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR
   physical_name: pd_subject_behavior
@@ -522,6 +678,19 @@ entries:
   status: approved
   attribute_count: 11
   brd_ref: BRD-SRC-NHNCK-SPECIALIZATION_COURSES
+- subfolder: Group
+  file_name: dm_atm_pc_evaluation_group-IDS.EVALUATION_GROUPS.yaml
+  id: ATM-pc_evaluation_group-IDS.EVALUATION_GROUPS
+  physical_name: pc_evaluation_group
+  logical_name: Public Company Evaluation Group
+  bcv_core_object: Group
+  bcv_concept: "[Group] Group"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: IDS
+  status: draft
+  attribute_count: 7
+  brd_ref: BRD-SRC-IDS-EVALUATION_GROUPS
 - subfolder: Involved_Party
   file_name: dm_atm_ip_alternative_identification-NHNCK.PROFESSIONALS.yaml
   id: ATM-ip_alternative_identification-NHNCK.PROFESSIONALS
@@ -964,6 +1133,19 @@ entries:
   status: approved
   attribute_count: 5
   brd_ref: BRD-SRC-ThanhTra-PENALTY_DECISION_SUBJECT
+- subfolder: Involved_Party
+  file_name: dm_atm_legal_entity_position-IDS.POSITIONS.yaml
+  id: ATM-legal_entity_position-IDS.POSITIONS
+  physical_name: legal_entity_position
+  logical_name: Legal Entity Position
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IDS
+  status: draft
+  attribute_count: 10
+  brd_ref: BRD-SRC-IDS-POSITIONS
 - subfolder: Involved_Party
   file_name: dm_atm_ra_organization_unit-NHNCK.DEPARTMENTS.yaml
   id: ATM-ra_organization_unit-NHNCK.DEPARTMENTS

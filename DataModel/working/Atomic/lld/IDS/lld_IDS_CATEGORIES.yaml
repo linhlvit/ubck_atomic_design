@@ -10,7 +10,7 @@ metadata:
   bcv_concept: "[Common] Industry Classification"
   table_type: "Relative"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -44,34 +44,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - attribute_name: "Source System Code"
-    physical_name: "src_stm_code"
-    description: "Mã nguồn dữ liệu."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-    classification_context: "SOURCE_SYSTEM=IDS.CATEGORIES"
-    etl_derived_value: "IDS.CATEGORIES"
-
-  - attribute_name: "Classification Business Line Level Code"
-    physical_name: "cl_business_line_level_code"
-    description: "Phân biệt cấp ngành nghề — Cấp 1 hoặc Cấp 2."
-    data_domain: "Classification Value"
-    nullable: false
-    is_primary_key: false
-    status: "draft"
-    source_columns:
-      - "IDS.CATEGORIES.PARENT_ID"
-    comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL (dùng chung với ECAT — shared entity).\
-      \ IDS.CATEGORIES không tách 2 bảng theo cấp như ECAT — level suy ra động từ\
-      \ PARENT_ID IS NULL (Cấp 1) / PARENT_ID IS NOT NULL (Cấp 2), khác cơ chế derive-từ-tên-bảng\
-      \ của ECAT. Xem IDS_HLD_Tier1.md T1-13."
-    classification_context: "ECAT_BUSINESS_LINE_LEVEL"
-    etl_derived_value: "PARENT_ID IS NULL=LEVEL_1;PARENT_ID IS NOT NULL=LEVEL_2"
-
   - attribute_name: "Classification Business Line Code"
     physical_name: "cl_business_line_code"
     description: "Mã ngành nghề. BK duy nhất — Id hash từ trường này."
@@ -100,20 +72,33 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - attribute_name: "Description"
-    physical_name: "description"
-    description: "Mô tả."
-    data_domain: "Text"
-    nullable: true
+  - attribute_name: "Source System Code"
+    physical_name: "src_stm_code"
+    description: "Mã nguồn dữ liệu."
+    data_domain: "Classification Value"
+    nullable: false
+    is_primary_key: false
+    status: "draft"
+    source_columns: []
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "SOURCE_SYSTEM=IDS.CATEGORIES"
+    etl_derived_value: "IDS.CATEGORIES"
+
+  - attribute_name: "Classification Business Line Level Code"
+    physical_name: "cl_business_line_level_code"
+    description: "Phân biệt cấp ngành nghề — Cấp 1 hoặc Cấp 2."
+    data_domain: "Classification Value"
+    nullable: false
     is_primary_key: false
     status: "draft"
     source_columns:
-      - "IDS.CATEGORIES.DESCRIPTION"
-    comment: "IDS.CATEGORIES có trường mô tả riêng, không có tương ứng trên ECAT.BUSINESS_LINE_LEVEL_1/2\
-      \ (chỉ có DISPLAY_LABEL). Khi Entity Consolidation (Level 2) — cần nullable/để\
-      \ trống cho source ECAT."
-    classification_context: null
-    etl_derived_value: null
+      - "IDS.CATEGORIES.PARENT_ID"
+    comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL (dùng chung với ECAT — shared entity).\
+      \ IDS.CATEGORIES không tách 2 bảng theo cấp như ECAT — level suy ra động từ\
+      \ PARENT_ID IS NULL (Cấp 1) / PARENT_ID IS NOT NULL (Cấp 2), khác cơ chế derive-từ-tên-bảng\
+      \ của ECAT. Xem IDS_HLD_Tier1.md T1-13."
+    classification_context: "ECAT_BUSINESS_LINE_LEVEL"
+    etl_derived_value: "PARENT_ID IS NULL=LEVEL_1;PARENT_ID IS NOT NULL=LEVEL_2"
 
   - attribute_name: "Parent Classification Business Line Id"
     physical_name: "parent_cl_business_line_id"
@@ -128,7 +113,7 @@ attributes:
     comment: "FK target: Classification Business Line.Classification Business Line\
       \ Id. PARENT_ID lưu ID kỹ thuật của bản ghi cha (không phải INDUSTRY_CD) —\
       \ PHẢI join: PARENT_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD của cha, rồi\
-      \ hash_id('IDS.CATEGORIES', industry_cd_cha). NULL khi PARENT_ID nguồn NULL\
+      \ hash_id('IDS.CATEGORIES', INDUSTRY_CD_CHA). NULL khi PARENT_ID nguồn NULL\
       \ (bản ghi cấp 1)."
     classification_context: null
     etl_derived_value: null
@@ -145,6 +130,21 @@ attributes:
     comment: "Lookup pair: Classification Business Line.Classification Business Line\
       \ Code. Pair with Parent Classification Business Line Id. Giá trị lấy qua join\
       \ (xem Parent Classification Business Line Id). NULL cho cấp 1."
+    classification_context: null
+    etl_derived_value: null
+
+  - attribute_name: "Description"
+    physical_name: "description"
+    description: "Mô tả."
+    data_domain: "Text"
+    nullable: true
+    is_primary_key: false
+    status: "draft"
+    source_columns:
+      - "IDS.CATEGORIES.DESCRIPTION"
+    comment: "IDS.CATEGORIES có trường mô tả riêng, không có tương ứng trên ECAT.BUSINESS_LINE_LEVEL_1/2\
+      \ (chỉ có DISPLAY_LABEL). Khi Entity Consolidation (Level 2) — cần nullable/để\
+      \ trống cho source ECAT."
     classification_context: null
     etl_derived_value: null
 
