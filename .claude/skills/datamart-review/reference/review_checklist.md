@@ -1,4 +1,4 @@
-# Review Checklist — 3 Lớp
+# Review Checklist — 4 Lớp
 
 Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
 
@@ -142,6 +142,50 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
 
 □ Không có KPI_ID chưa được khai sinh trong HLD?
   → Có → Critical (vi phạm gate rule)
+```
+
+---
+
+## Lớp 4: datamart_model.yaml (Registry cross-module)
+
+```
+□ Entity của bảng đang review có tồn tại trong datamart_model.yaml?
+  → Không có → Critical (registry thiếu entity — cần bổ sung, không chỉ ghi nhận rồi bỏ qua)
+
+□ Mọi cột trong Attributes detail có mặt 1-1 trong registry (columns của entity)?
+  → Thiếu cột trong registry (Attributes có, registry không) → Critical
+  → Thừa cột trong registry (đã xóa khỏi Attributes nhưng registry còn) → Critical
+    (dấu hiệu hay gặp nhất: cột bị loại bỏ do đổi logic KPI nhưng quên dọn registry)
+
+□ data_domain + data_type của từng cột khớp Attributes?
+  → Registry ghi Boolean/boolean trong khi Attributes đã đổi Indicator/string (hoặc ngược lại)
+    → Critical — type mismatch ảnh hưởng code-gen/ETL từ registry
+
+□ Cột data_domain = Boolean — có thực sự hợp lệ hay cần đổi Indicator (Y/N)?
+  → Tra etl_logic_type: "direct" copy 1-1 từ Atomic column đã là Boolean thật (verify YAML approved,
+    thường có comment kiểu "NUMBER(1) — ETL cần convert sang boolean") → Boolean hợp lệ, KHÔNG sửa
+  → "computed" bằng biểu thức so sánh/CASE tại tầng Datamart (IN (...), IS NOT NULL, điều kiện...)
+    → PHẢI đổi Indicator (Y/N) — biểu thức trả kết quả so sánh runtime, không phải giá trị đã lưu sẵn
+  → Không suy luận từ tên cột ("Is X", "Has Y") — luôn tra etl_logic_type trước khi kết luận
+
+□ source_atomic_table/source_atomic_column khớp Attributes VÀ khớp Atomic YAML thật?
+  → Không khớp Attributes → Critical (registry lỗi thời)
+  → Khớp Attributes nhưng field đó không có thật trong Atomic YAML approved → Critical
+    (registry kế thừa lỗi từ Attributes — vẫn phải verify độc lập, không tin theo Attributes)
+
+□ Cột PENDING (gap Atomic) trong Attributes có phản ánh đúng trong registry?
+  → source_atomic_table/column phải = null, description ghi rõ PENDING + lý do
+  → Registry vẫn trỏ tới Atomic column không tồn tại dù Attributes đã chuyển pending → Critical
+
+□ source_atomic list (đầu entity block) liệt kê đủ mọi Atomic entity dùng trong columns?
+  → Thiếu entity phụ (VD: cross-module JOIN) → Warning
+
+□ Physical name nhất quán với Attributes (không viết tắt lỗi thời, không lệch full-word)?
+  → Áp dụng quy tắc Physical Naming — registry giữ tên cũ khác Attributes hiện tại → Warning
+
+□ Sau khi sửa registry — YAML còn parse hợp lệ?
+  → python3 -c "import yaml; yaml.safe_load(open('Datamart/datamart_model.yaml'))"
+  → Lỗi cú pháp → phải sửa ngay, không được để lại
 ```
 
 ---

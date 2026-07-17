@@ -5,7 +5,7 @@ Calendar Date Dimension,cdr_dt_dim,Year,year,false,Small Counter,int,,Năm (YYYY
 Calendar Date Dimension,cdr_dt_dim,Quarter,quarter,false,Small Counter,int,,Quý (1–4),QUARTER(cdr_dt.cdr_dt),computed,Calendar Date,cdr_dt,Calendar Date,cdr_dt
 Calendar Date Dimension,cdr_dt_dim,Month,month,false,Small Counter,int,,Tháng (1–12),MONTH(cdr_dt.cdr_dt),computed,Calendar Date,cdr_dt,Calendar Date,cdr_dt
 Calendar Date Dimension,cdr_dt_dim,Day Of Week,day_of_week,false,Small Counter,int,,"Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy)",DAYOFWEEK(cdr_dt.cdr_dt),computed,Calendar Date,cdr_dt,Calendar Date,cdr_dt
-Calendar Date Dimension,cdr_dt_dim,Is Weekend,is_weekend,false,Boolean,boolean,,TRUE nếu là ngày cuối tuần (thứ 7 hoặc CN),"DAYOFWEEK(cdr_dt.cdr_dt) IN (1,7)",computed,Calendar Date,cdr_dt,Calendar Date,cdr_dt
+Calendar Date Dimension,cdr_dt_dim,Is Weekend,is_weekend,false,Indicator,string,,"(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không","CASE WHEN DAYOFWEEK(cdr_dt.cdr_dt) IN (1,7) THEN 'Y' ELSE 'N' END",computed,Calendar Date,cdr_dt,Calendar Date,cdr_dt
 Calendar Date Dimension,cdr_dt_dim,Holiday Flag,holiday_flag,true,Indicator,string,,"(Sửa 2026-07-17) Cờ ngày lễ — Y nếu là ngày nghỉ lễ, N nếu không",CASE WHEN cdr_dt.holiday_flag THEN 'Y' ELSE 'N' END,computed,Calendar Date,cdr_dt,Holiday Flag,holiday_flag
 Calendar Date Dimension,cdr_dt_dim,Holiday Name,holiday_nm,true,Text,string,,Tên ngày lễ — NULL nếu không phải ngày lễ,cdr_dt.holiday_nm,direct,Calendar Date,cdr_dt,Holiday Name,holiday_nm
 Classification Dimension,cl_dim,Classification Dimension Id,cl_dim_id,false,Surrogate Key,string,PK,PK — Driving: cv (toàn bộ Classification Value),,,Generated,,,
