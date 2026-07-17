@@ -1,5 +1,26 @@
 # Flowchart Rules — Data Lineage (Section 1)
 
+## Mỗi Cụm chỉ 1 bảng Datamart (1 Fact hoặc 1 bảng Tác nghiệp)
+
+**Rule cứng — bắt buộc tuyệt đối:** Mỗi Cụm trong Section 1 chỉ được vẽ **đúng 1 bảng ở subgraph Datamart** — 1 Fact duy nhất, hoặc 1 bảng Tác nghiệp duy nhất. Không được gộp nhiều Fact vào chung 1 Cụm/flowchart dù chúng dùng chung Atomic entity nguồn.
+
+**Vì sao:** Khi nhiều Fact bắt nguồn từ cùng 1 entity Atomic cha (qua nhiều đường JOIN khác nhau), gộp chung 1 flowchart tạo ra nhiều node + nhiều edge chồng chéo — người đọc phải tự tách các luồng độc lập trong đầu thay vì đọc thẳng "bảng X đến từ đâu". Mỗi flowchart phải trả lời đúng 1 câu hỏi duy nhất.
+
+**Cách xử lý khi 1 nhóm nghiệp vụ sinh nhiều Fact dùng chung Atomic entity cha:** Tách thành nhiều Cụm riêng biệt (VD: Cụm 1a, 1b, 1c), mỗi Cụm có flowchart độc lập chỉ chứa 1 Fact. Atomic entity cha được phép **lặp lại node** ở nhiều flowchart khác nhau — không dùng chung 1 flowchart để tránh lặp.
+
+> ❌ **Sai (đã xảy ra thực tế — QLCB Cụm 1):** 1 flowchart chứa cả `Fact Securities Offering`, `Fact Securities Offering Plan`, `Fact Securities Offering Result` — 6 node Atomic, 6 node Datamart, ~20 edge trong cùng 1 sơ đồ vì cả 3 Fact đều bắt nguồn từ `Public Company Securities Offering` (entity cha) qua các đường khác nhau (trực tiếp / qua Plan / qua Result).
+>
+> ✅ **Đúng:** Tách thành 3 Cụm riêng:
+> - Cụm 1a — Fact Securities Offering (grain: 1 hồ sơ)
+> - Cụm 1b — Fact Securities Offering Plan (grain: 1 đợt × 1 loại hình kế hoạch)
+> - Cụm 1c — Fact Securities Offering Result (grain: 1 đợt × 1 loại hình kết quả)
+>
+> Mỗi Cụm vẽ riêng node `Public Company Securities Offering` (lặp lại ở cả 3 flowchart) — chấp nhận trùng lặp node để đổi lấy flowchart đơn giản, dễ đọc.
+
+**Ngoại lệ duy nhất:** Dimension không tính vào giới hạn "1 bảng/Cụm" — 1 Cụm/Fact vẫn được vẽ đầy đủ các Dimension liên quan (Calendar Date Dimension, Public Company Dimension...) trong cùng flowchart, vì Dimension luôn xuất hiện dưới dạng `Dim --> Fact`, không tạo thêm luồng độc lập cần tách.
+
+---
+
 ## Cấu trúc bắt buộc
 
 ```mermaid

@@ -310,7 +310,23 @@ Thêm section này vào cuối file HLD, sau Section 3:
 
 Tạo thư mục nếu chưa có. Thông báo đường dẫn file.
 
-> **GATE — bắt buộc dừng:** Sau khi xuất file, đặt câu hỏi: "HLD.md đã được tạo tại [đường dẫn]. Bạn xác nhận để chuyển sang Phase 2?"
+## BƯỚC 5B — REVIEW CUỐI TOÀN FILE (bắt buộc, sau khi viết xong toàn bộ HLD, TRƯỚC GATE Phase 1)
+
+> **Vì sao cần bước riêng:** Checklist "TRƯỚC KHI BÀN GIAO" ở dưới được áp dụng per-Nhóm trong lúc thiết kế — nhưng một số lỗi chỉ lộ ra khi nhìn **toàn file cùng lúc** (VD: 1 entity được định nghĩa đầy đủ ở Nhóm 1 nhưng bị tham chiếu rỗng ở Nhóm 2/3/6 vì mỗi khối `erDiagram`/`flowchart` là 1 render độc lập, không tự nhớ nội dung khối khác). Bước này quét lại toàn bộ file sau khi đã viết xong, dùng script thay vì đọc mắt để không bỏ sót.
+
+Chạy các kiểm tra sau (Python/grep) trên toàn file `DTM_{MODULE}_HLD.md` vừa xuất:
+
+1. **erDiagram — entity trong quan hệ phải có block định nghĩa cùng khối:** Với mỗi khối ` ```mermaid\nerDiagram `, liệt kê entity xuất hiện trong quan hệ (`A ||--o{ B`, `A }o--|| B`...) và entity có block `{ ... }` — báo lỗi nếu có entity ở quan hệ mà không có block. Đây là lỗi thực tế đã xảy ra (QLCB Nhóm 2/3/6 — xem `reference/erdiagram_rules.md`).
+2. **Section 1 flowchart — subgraph label đúng chuẩn:** mọi khối flowchart trong Section 1 phải có đúng 3 subgraph `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`.
+3. **Section 1 flowchart — mỗi Cụm đúng 1 bảng Datamart:** đếm entry trong subgraph GOLD trừ Dimension — phải bằng 1 (xem `reference/flowchart_rules.md`).
+4. **Node ID Staging không chứa dấu chấm** (`\w+\.\w+\[` trong node ID là lỗi parse mermaid).
+5. **Code fence cân bằng:** đếm số dòng ` ``` ` trong toàn file — phải là số chẵn.
+6. **KPI_ID liên tục, không trùng lặp:** trích toàn bộ `K_{MODULE}_\d+`, kiểm tra dải số liên tục từ 1 đến max, không có ID nào xuất hiện ở ≥2 dòng bảng KPI khác nhau (trừ dòng ghi chú "Reuse từ Nhóm X" — đó là tham chiếu, không phải khai sinh trùng).
+7. **Mọi node Atomic dùng làm nguồn Dimension/Fact có tồn tại thật trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/`** — không suy diễn theo tên nghe hợp lý (VD: "Classification Value" — nếu module không có entity Atomic nào tên này, không được vẽ node đó dù nghe đúng khái niệm nghiệp vụ; xem case thực tế QLCB `Offering Method Dimension` — code nằm trực tiếp trên `Public Company Securities Offering Plan.offering_method_code`, không có bảng CV riêng).
+
+Nếu phát hiện lỗi ở bất kỳ mục nào trên — sửa ngay trong file, chạy lại kiểm tra đến khi sạch, rồi mới tiếp tục tới GATE bên dưới.
+
+> **GATE — bắt buộc dừng:** Sau khi xuất file và hoàn tất Bước 5B, đặt câu hỏi: "HLD.md đã được tạo tại [đường dẫn], đã chạy review cuối (Bước 5B). Bạn xác nhận để chuyển sang Phase 2?"
 > ❌ **KHÔNG được tự chuyển sang Phase 2** khi chưa có xác nhận của human.
 
 ---
@@ -360,7 +376,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 ## CHECKLIST TRƯỚC KHI BÀN GIAO
 
 ### Section 1 — Data Lineage
-- [ ] Mỗi Cụm tổ chức theo 1 Fact (hoặc 1 nhóm Tác nghiệp)
+- [ ] **Mỗi Cụm chỉ 1 bảng Datamart duy nhất** — 1 Fact hoặc 1 bảng Tác nghiệp, không gộp nhiều Fact chung 1 Cụm dù cùng Atomic entity cha. Tách thành nhiều Cụm riêng (1a, 1b, 1c...), chấp nhận lặp lại node Atomic entity cha ở nhiều flowchart. Xem `reference/flowchart_rules.md` mục "Mỗi Cụm chỉ 1 bảng Datamart"
 - [ ] Mỗi flowchart có đủ 3 subgraph: `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`
 - [ ] Staging: 1 subgraph duy nhất, prefix table name thể hiện nguồn (VD: `FMS.RPTVALUES`)
 - [ ] Mọi Cụm có Fact: `ECAT.ECAT_29_HolidayInfo` trong Staging + `Calendar Date` trong Atomic + `Calendar Date Dimension` trong Datamart
@@ -379,6 +395,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
   - Ví dụ đúng: BA ghi `Dashboard Giám sát rủi ro/ Chỉ số rủi ro hệ thống`, STT=1 → Tab: `### Tab Dashboard Giám sát rủi ro`, Nhóm: `#### Nhóm 1 - Chỉ số rủi ro hệ thống`
   - Ví dụ đúng: BA ghi `Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro`, STT=2 → Nhóm: `#### Nhóm 2 - Phân tích đóng góp rủi ro`
   - Sai: `#### Nhóm Thanh khoản thị trường` (thiếu số STT); sai: `#### Nhóm 1` (thiếu tên)
+- [ ] **Cấm tự chẻ 1 STT BA thành nhiều Nhóm HLD** — dù mockup/screenshot của cùng 1 STT có nhiều khối UI trực quan khác nhau (VD: 4 KPI Card + 1 biểu đồ donut trên cùng màn hình), vẫn phải gộp vào **đúng 1 Nhóm** theo đúng STT gốc — không tự quyết định tách thành "Nhóm N" và "Nhóm N+1" theo cảm nhận trình bày. Nếu 1 STT có nhiều dạng mockup, liệt kê nhiều mockup con (a), (b)... trong cùng 1 Nhóm, dùng chung 1 bảng KPI. Vi phạm rule này còn kéo theo lệch số toàn bộ các Nhóm STT phía sau (dồn +1 tính từ điểm bị chẻ) — lỗi thực tế đã xảy ra ở QLCB Nhóm 5 (BA STT=5 duy nhất, 4 dòng, bị tách thành "Nhóm 5 KPI Cards" + "Nhóm 6 donut", đẩy lệch toàn bộ BA STT 6-10 thành "Nhóm 7"-"Nhóm 11" trong HLD).
 - [ ] Block READY có đủ: Phân loại / Atomic / Mockup / Source / Bảng KPI / Star Schema / Lineage Mart → Báo cáo / Bảng grain
 - [ ] **Mỗi cột trong Fact phải trace được về KPI/mockup của Nhóm đó** — sau khi viết xong bảng KPI, rà lại từng cột trong Fact block: cột nào không xuất hiện trong bất kỳ công thức KPI nào → loại khỏi Star Schema, trừ khi là FK trục thời gian/dimension chính hoặc là điều kiện ETL filter SCD4A đã ghi chú riêng bằng text (xem `reference/erdiagram_rules.md`). Không đưa nguyên attribute còn lại của Atomic entity nguồn vào Fact "cho đủ"
 - [ ] **Bảng KPI READY chỉ có 1 bảng duy nhất** — KHÔNG tách thành `*KPI mới:*` và `*KPI reuse:*` thành 2 bảng riêng. Reuse được liệt kê cùng bảng với KPI mới; thêm cột "Ghi chú" để đánh dấu nguồn gốc reuse
@@ -403,6 +420,8 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] **Dòng Done là sub-component của KPI phức tạp → vẫn cấp KPI_ID riêng:** Không gộp im lặng sub-component vào KPI cha. Ngoại lệ duy nhất: cột Đánh giá ghi "Trùng" → reuse ID đã có
 - [ ] **Cấm thêm KPI không có dòng BA tương ứng:** Bảng KPI READY chỉ chứa KPI có dòng BA trong nhóm đó (mới hoặc reuse). Không thêm KPI từ suy luận nghiệp vụ dù hợp lý
 - [ ] **Dedup KPI giữa các Nhóm trong cùng Tab:** Trước khi cấp ID mới cho Nhóm N, kiểm tra toàn bộ KPI đã khai sinh ở Nhóm 1→(N-1). Nếu trùng nội dung → reuse ID cũ, KHÔNG cấp ID mới. Liệt kê reuse **trong cùng bảng KPI 6 cột duy nhất** — điền cột Ghi chú = "Reuse từ Nhóm X". KHÔNG tạo bảng reuse riêng.
+- [ ] **Đối chiếu SỐ LƯỢNG tuyệt đối BA ↔ KPI, không chỉ kiểm tra tồn tại (bắt buộc cho mỗi Nhóm ngay khi viết xong bảng KPI):** Đếm `Số dòng BA = COUNT(dòng BA của Nhóm/STT này, Phân loại ∈ {Chiều, Cơ sở, Phái sinh}, Trạng thái mapping ∈ {Done, Doing})` và so với `Số dòng KPI HLD = COUNT(KPI_ID trong bảng KPI của Nhóm, loại trừ KPI Derived thuần suy ra từ các KPI khác CÙNG bảng — VD `_YOY`, tổng/hiệu 2 KPI cơ sở)`. Hai số này phải khớp tuyệt đối — không chỉ kiểm tra "mọi dòng Chiều có ID chưa" (rule 398) hay "KPI có dòng BA chưa" (rule 405), vì 2 rule đó vẫn PASS ngay cả khi N dòng BA độc lập bị gộp nhầm vào 1 KPI_ID (tỷ lệ ánh xạ sai N:1 thay vì N:N). Nếu lệch — dừng lại, đối chiếu từng dòng BA với từng KPI theo tên/mô tả/nguồn để tìm dòng bị gộp nhầm hoặc bỏ sót, tách lại đúng 1 KPI_ID cho mỗi dòng BA độc lập trước khi coi Nhóm là hoàn tất.
+  - Ví dụ lỗi thực tế (QLCB Nhóm 4): 2 dòng BA độc lập "Thông tin doanh nghiệp" (nguồn `COMPANY_NAME_VN`) và "Mã chứng khoán" (nguồn `equity_ticker`) bị viết gộp thành 1 dòng KPI "Thông tin doanh nghiệp (Mã CK, Tên DN)" — BA 12 dòng nhưng HLD chỉ có 11 KPI, không bị rule cũ nào bắt được vì dòng KPI đó "vẫn có ID, vẫn có dòng BA tương ứng".
 - [ ] **Đồng bộ "KPI liên quan" trong PENDING header:** Sau khi hoàn thiện bảng KPI PENDING, kiểm tra lại dòng `**KPI liên quan:**` — phải khớp chính xác với tất cả ID xuất hiện trong bảng (cả mới lẫn reuse). Nếu bảng KPI thay đổi → cập nhật dòng này ngay
 - [ ] **Gating theo "Loại dữ liệu":** Với mọi dòng BA (mọi Nhóm yêu cầu), kiểm tra cột `Loại dữ liệu` — `Dữ liệu động` → PENDING dù Atomic đã READY/Trạng thái mapping = Done (lý do: "chưa thống nhất quy tắc khai thác"); `Dữ liệu tĩnh` → theo gating Atomic bình thường. KHÔNG suy đoán tĩnh/động theo `Phân loại` (Chiều/Cơ sở/Phái sinh) — đọc đúng giá trị cột này
 - [ ] **Block có cả tĩnh lẫn động:** Tách thành 2 block riêng (READY cho phần tĩnh, PENDING cho phần động) — không gộp chung 1 bảng KPI 5 cột
@@ -431,6 +450,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Toàn file HLD: mỗi bảng có số trường và tên trường giống hệt nhau ở mọi erDiagram
 - [ ] **Tên trường trong erDiagram entity block phải khớp với `attribute.name` trong YAML Atomic entity tương ứng** — đọc YAML trước khi viết. Ví dụ sai: `Date_Of_Birth` khi YAML ghi `Birth_Date`; `Certificate_Type_Code` khi entity thực ra là FK surrogate + unique_key pair
 - [ ] **Fact entity block trong erDiagram không chứa trường nào phản ánh trạng thái kỹ thuật nguồn** (VD: `Record_Status`, `Certificate_Status_Code` từ `record_status`) nếu staging đã lọc bản ghi hiệu lực — các trường này không có giá trị phân tích ở Datamart layer
+- [ ] **Mọi entity xuất hiện trong quan hệ (`||--o{`, `}o--||`...) phải có block `{ ... }` định nghĩa field NGAY TRONG CÙNG khối `erDiagram`** — kể cả khi ghi chú "reuse/kế thừa từ Nhóm khác, không định nghĩa lại". Mỗi khối `erDiagram` là 1 render độc lập, không tự nhớ block đã vẽ ở khối khác. Xem `reference/erdiagram_rules.md` mục "Mọi entity xuất hiện trong quan hệ phải có block định nghĩa"
 
 ### Quy ước chung
 - [ ] Chỉ dùng tên logical — không có physical name (snake_case) ở bất kỳ vị trí nào

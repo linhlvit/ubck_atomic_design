@@ -76,6 +76,26 @@ Label quan hệ: `" "` (space) — không để trống, không viết text.
 
 ---
 
+## Mọi entity xuất hiện trong quan hệ phải có block định nghĩa — kể cả khi ghi chú "kế thừa/reuse từ Nhóm khác"
+
+**Rule cứng:** Trong **cùng 1 khối `erDiagram`**, mọi entity xuất hiện ở vế trái/phải của một quan hệ (`||--o{`, `}o--||`...) **bắt buộc phải có block `{ ... }` định nghĩa field** ngay trong khối đó — kể cả khi phần ghi chú bên dưới nói "kế thừa Fact từ Nhóm N", "cùng schema với Nhóm M", "không định nghĩa lại". Mermaid không tự nhớ block đã vẽ ở khối `erDiagram` khác (mỗi ```` ```mermaid ```` là 1 render độc lập) — thiếu block sẽ khiến entity đó hiển thị thành 1 node trống không có field nào, dù văn bản HLD mô tả đúng.
+
+**Vì sao dễ xảy ra:** Khi 1 Nhóm sau reuse Dimension hoặc kế thừa Fact đã thiết kế ở Nhóm trước, việc "không định nghĩa lại" nghe hợp lý để tránh trùng lặp nội dung — nhưng erDiagram không phải văn xuôi, nó cần block field cho MỌI entity được vẽ quan hệ, bất kể mới hay cũ.
+
+> ❌ **Sai (đã xảy ra thực tế — QLCB Nhóm 2/3/6):**
+> - Nhóm 2 (`Fact Securities Offering Plan`): có quan hệ `Fact_Securities_Offering_Plan }o--|| Public_Company_Dimension` nhưng erDiagram không có block `Public_Company_Dimension { ... }` → render ra node rỗng.
+> - Nhóm 3 (`Fact Securities Offering Result`): ghi chú "Cùng `Calendar_Date_Dimension`, `Offering_Method_Dimension`, `Public_Company_Dimension` với Nhóm 2 — không định nghĩa lại schema" nhưng cả 3 Dimension đều thiếu block, chỉ có block Fact → 3 node rỗng.
+> - Nhóm 6 (`Fact Securities Offering Application`): ghi "Kế thừa Fact từ Nhóm 5, bổ sung FK mới" nhưng erDiagram chỉ có block `Offering_Method_Dimension`, không có block Fact → node Fact rỗng dù đây là entity chính của Star Schema.
+
+> ✅ **Đúng:** Mỗi khối `erDiagram` tự đứng độc lập — lặp lại đầy đủ block field của MỌI entity xuất hiện trong quan hệ (Dimension reuse lẫn Fact kế thừa), dù nội dung field trùng 100% với khối đã vẽ ở Nhóm khác. Ghi chú "reuse/kế thừa từ Nhóm X" vẫn giữ để giải thích nguồn gốc logic, nhưng không thay thế cho việc lặp lại block.
+
+**Self-check bắt buộc trước khi xuất file — với MỌI khối `erDiagram`:**
+1. Liệt kê toàn bộ entity xuất hiện ở vế trái/phải các dòng quan hệ (`A ||--o{ B`, `A }o--|| B`...)
+2. Liệt kê toàn bộ entity có block `{ ... }` trong cùng khối
+3. Danh sách (1) phải là tập con của danh sách (2) — nếu có entity nào ở (1) mà không có ở (2) → bổ sung block trước khi xuất file
+
+---
+
 ## Không thiết kế trong erDiagram
 
 Các trường sau do ETL tự quản lý — không đưa vào schema Datamart:
