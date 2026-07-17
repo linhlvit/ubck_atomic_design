@@ -4,15 +4,15 @@
 **Mô tả:** IDS là hệ thống quản lý và giám sát công bố thông tin chứng khoán của UBCKNN. Bao gồm 2 phân hệ: (1) Quản lý, giám sát công ty đại chúng (CTĐC) — hồ sơ, corporate actions, cổ đông giao dịch, BCTC, thanh tra/xử phạt, công bố thông tin; (2) Quản lý tổ chức kiểm toán được chấp thuận và kiểm toán viên.
 
 **File chi tiết theo tầng:**
-- [IDS_HLD_Tier1.md](IDS_HLD_Tier1.md) — Public Company, Legal Entity, Audit Firm, Disclosure Form Definition, Financial Report Catalog, Periodic Report Form, Public Company Evaluation Group, Public Company Evaluation Period
+- [IDS_HLD_Tier1.md](IDS_HLD_Tier1.md) — Public Company, Legal Entity, Audit Firm, Disclosure Form Definition, Financial Report Catalog, Periodic Report Form, Public Company Evaluation Group, Public Company Evaluation Period, Classification Business Line (shared với ECAT)
 - [IDS_HLD_Tier2.md](IDS_HLD_Tier2.md) — Con của Public Company (Legal Representative, State Capital, FOL, Inspection, Penalty, Capital actions, Share Statistics, Listing History, Registration, Report Extension, Report Submission, Evaluation, Bond Evaluation), con của Legal Entity (Alt ID, Position, Trading Account, Relationship, Stock Control), Company Shareholding, Company Entity Role, Securities Offering, con của Audit Firm (Approval, Legal Rep, Auditor Profile, Status History, Inspection, Sanction), con của Form templates (RROW/RCOL/REP_ROW/REP_COLUMN), Violation Template, Evaluation Criterion, Disclosure Notification; Shared Entities (IP Postal/Electronic Address, IP Alt Identification)
 - [IDS_HLD_Tier3.md](IDS_HLD_Tier3.md) — Audit Firm enforcement (Warning, Suspension, Technical Audit), Auditor Status History, Violation Reports, Disclosure Notification Recipient, Violation Penalty Config
 - [IDS_HLD_Tier4.md](IDS_HLD_Tier4.md) — Securities Offering Plan, Securities Offering Result, Public Company Evaluation Detail
 
 ---
 
-**Tổng: 60 Atomic entities** (8 Tier 1, 32 Tier 2, 17 Tier 3, 3 Tier 4)
-*(Trong đó: 3 shared entities (Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification) extend source_table IDS — không tạo mới; Involved Party Alternative Identification mở rộng thêm nguồn IDENTITY sau khi gộp entity Legal Entity Alternative Identification)*
+**Tổng: 61 Atomic entities** (9 Tier 1, 32 Tier 2, 17 Tier 3, 3 Tier 4)
+*(Trong đó: 4 shared entities (Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification, Classification Business Line) extend source_table IDS — không tạo mới; Involved Party Alternative Identification mở rộng thêm nguồn IDENTITY sau khi gộp entity Legal Entity Alternative Identification; Classification Business Line extend nguồn ECAT)*
 
 ---
 
@@ -28,6 +28,7 @@
 | T1 | Condition | [Condition] Form Definition | Condition | `REP_FORMS` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên): tên form, kỳ báo cáo, loại. | Periodic Report Form | Fundamental | (1) [Condition] Form Definition — template báo cáo định kỳ là quy định về cấu trúc báo cáo. (2) Cấu trúc trường: FORM_CODE, FORM_NAME, PERIOD_TYPE_CD, STATUS_CD. (3) Chọn [Condition] Form Definition. |
 | T1 | Group | [Group] Group | Group | `EVALUATION_GROUPS` | Update | Nhóm chỉ tiêu đánh giá xếp hạng CTĐC: tên nhóm, thứ tự, tổng điểm tối đa nhóm. | Public Company Evaluation Group | Fundamental | (1) [Group] Group — nhóm phân loại chỉ tiêu đánh giá. (2) Cấu trúc trường: GROUP_NAME, ORDER_NO, MAX_SCORE. Không có instance data → Classification. (3) Chọn [Group] Group. |
 | T1 | Event | [Event] Period | Event | `EVALUATION_PERIODS` | Update | Kỳ đánh giá xếp hạng CTĐC: năm đánh giá, tháng, trạng thái kỳ. | Public Company Evaluation Period | Fundamental | (1) [Event] Period — kỳ thời gian có lifecycle riêng (open/close). (2) Cấu trúc trường: PERIOD_YEAR, PERIOD_MONTH, STATUS_CD, OPEN_DATE, CLOSE_DATE. (3) Chọn [Event] Period. |
+| T1 | Common | [Common] Industry Classification | Common | `CATEGORIES` | Update | Danh mục ngành nghề kinh doanh 2 cấp của CTĐC, self-referencing qua PARENT_ID. | **Classification Business Line** (shared với ECAT) | Relative | (1) [Common] Industry Classification — cùng BCV Concept với entity gốc từ ECAT. (2) Cấu trúc trường gần như đồng nhất với ECAT.BUSINESS_LINE_LEVEL_1/2 (self-ref 2 cấp, Code+Name). (3) Gộp shared entity với `Classification Business Line` (ECAT) theo quyết định tường minh Data Modeler (2026-07-17) — xem 7e #12 / IDS_HLD_Tier1.md T1-13. |
 | T2 | Involved Party | [Involved Party] Individual Employment Status | Involved Party | `LEGAL_REPRESENTATIVE` | Update | Người đại diện pháp luật và người CBTT của CTĐC: chức vụ, thời gian đảm nhiệm. | Public Company Legal Representative | Fundamental | (1) [Involved Party] Individual Employment Status — vai trò/chức vụ của cá nhân tại CTĐC. (2) FK → COMPANY_PROFILES. Cấu trúc: PERSON_NAME, POSITION_CD, EFFECTIVE_FROM/TO_DATE. (3) Chọn [Involved Party] Individual Employment Status. |
 | T2 | Arrangement | [Arrangement] Ownership | Arrangement | `STATE_CAPITAL` | Update | Tỷ lệ và cơ quan đại diện phần vốn nhà nước tại CTĐC. | Public Company State Capital | Fundamental | (1) [Arrangement] Ownership — sở hữu vốn nhà nước. (2) FK → COMPANY_PROFILES. Cấu trúc: AGENCY_NAME, OWNERSHIP_RATIO, EFFECTIVE_DATE. (3) Chọn [Arrangement] Ownership. |
 | T2 | Condition | [Condition] Ownership Constraint | Condition | `FOREIGN_OWNER_LIMIT` | Update | Lịch sử quyết định quy định tỷ lệ giới hạn sở hữu nước ngoài tại CTĐC. | Public Company Foreign Ownership Limit | Fundamental | (1) [Condition] Ownership Constraint — quy định ràng buộc tỷ lệ sở hữu. (2) FK → COMPANY_PROFILES. Cấu trúc: LIMIT_RATIO, DECISION_NO/DATE, EFFECTIVE_FROM/TO_DATE. (3) Chọn [Condition] Ownership Constraint. |
@@ -93,7 +94,7 @@ erDiagram
     Periodic_Report_Form { string prd_rpt_form_id PK }
     Public_Company_Evaluation_Group { string pblc_co_eval_grp_id PK }
     Public_Company_Evaluation_Period { string pblc_co_eval_prd_id PK }
-    Classification_IDS_Business_Line { string cl_ids_business_line_id PK }
+    Classification_Business_Line { string biz_line_id PK }
 
     Public_Company_Legal_Representative { string pblc_co_lgl_rep_id PK }
     Public_Company_State_Capital { string pblc_co_st_cap_id PK }
@@ -165,8 +166,9 @@ erDiagram
     Public_Company ||--o{ Public_Company_Cancellation : ""
     Public_Company ||--o{ Public_Company_Report_Extension : ""
     Public_Company ||--o{ Public_Company_Financial_Report_Value : ""
-    Classification_IDS_Business_Line ||--o{ Classification_IDS_Business_Line : "parent_cl_ids_business_line_id"
-    Public_Company }o--|| Classification_IDS_Business_Line : ""
+    Classification_Business_Line ||--o{ Classification_Business_Line : "prn_biz_line_id (self-join)"
+    Classification_Business_Line ||--o{ Public_Company : "biz_line_lv1_id"
+    Classification_Business_Line ||--o{ Public_Company : "biz_line_lv2_id"
     Financial_Report_Catalog ||--o{ Financial_Report_Row_Template : ""
     Financial_Report_Catalog ||--o{ Financial_Report_Column_Template : ""
     Financial_Report_Catalog ||--o{ Public_Company_Financial_Report_Value : ""
@@ -220,7 +222,6 @@ erDiagram
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
 | `LOOKUP_VALUES` | Master bảng reference data của toàn hệ thống IDS: mọi Classification Value đều load từ đây theo LOOKUP_GROUP | [Classification] Reference Data | Master source cho tất cả Classification Value schemes IDS. Không tạo Atomic entity — mỗi LOOKUP_GROUP đăng ký thành 1 scheme riêng trong `classification_schemes.yaml`. |
-| `CATEGORIES` | Danh mục ngành nghề kinh doanh 2 cấp của CTĐC, self-referencing qua `PARENT_ID` — dùng cho `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` | [Common] Industry Classification | Không tạo Atomic entity (đảo ngược quyết định promote trước đó, xem 7e #11 / IDS_HLD_Tier1.md T1-11) — giữ Classification Value scheme `IDS_INDUSTRY_CATEGORY`. |
 
 #### 7d. Junction Tables
 
@@ -241,7 +242,8 @@ erDiagram
 | 8 | T2 | `IDENTITY` đã được gộp vào shared entity `Involved Party Alternative Identification` (thêm `IDENTITY` vào source_table), thay vì giữ là entity riêng `Legal Entity Alternative Identification` như trước đây. | Đã xử lý — đã gộp trong mục 7a. |
 | 9 | T2/T3 | `AF_APPROVAL` đổi Tier T3→T2; `POSITIONS`, `ACCOUNT_NUMBERS`, `HOLDER_RELATIONSHIP`, `STOCK_CONTROLS`, `COMPANY_SHAREHOLDING`, `COMPANY_ENTITY_ROLE`, `AF_SANCTIONS`, `COMPANY_DATA`, `SECURITIES_OFFERING`, `EVALUATIONS` đổi Tier T2→T3 — khớp với Tier đã có sẵn trong section Entities (source of truth) và với file review `IDS_7a_Atomic_Entities.xlsx`, 2 nguồn độc lập đồng thuận. | Đã xử lý — mục 7a đã cập nhật khớp Entities section. |
 | 10 | T1 | `CATEGORIES` đảo ngược quyết định T1-06 cũ (Classification Value `IDS_INDUSTRY_CATEGORY`) → promote thành Atomic entity `Classification IDS Business Line`, Table Type = Relative, theo yêu cầu tường minh của Data Modeler — tương tự pattern `Classification ECAT Business Line` (self-referencing 2 cấp qua `PARENT_ID`, Common→Relative thay vì Common→Classification mặc định). Đã xóa dòng `CATEGORIES` khỏi mục 7c. | **Superseded bởi #11 (2026-07-14)** — xem #11. |
-| 11 | T1 | Đảo ngược quyết định #10: `CATEGORIES` KHÔNG thiết kế thành Atomic entity nữa, theo quyết định tường minh của Data Modeler (2026-07-14). IDS không dùng chung entity `Classification Business Line` (ECAT) vì khác nguồn dữ liệu, cũng không giữ entity riêng. `IDS.CATEGORIES` quay lại là Classification Value scheme `IDS_INDUSTRY_CATEGORY` (un-deprecated) — thêm lại dòng vào mục 7c. `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` quay lại 1 trường Code mỗi cấp, không còn cặp FK Id+Code. | Đã xử lý — xem IDS_HLD_Tier1.md T1-11, `lld_IDS_CATEGORIES.yaml` đã xóa, `lld_IDS_COMPANY_PROFILES.yaml` đã cập nhật. |
+| 11 | T1 | Đảo ngược quyết định #10: `CATEGORIES` KHÔNG thiết kế thành Atomic entity nữa, theo quyết định tường minh của Data Modeler (2026-07-14). IDS không dùng chung entity `Classification Business Line` (ECAT) vì khác nguồn dữ liệu, cũng không giữ entity riêng. `IDS.CATEGORIES` quay lại là Classification Value scheme `IDS_INDUSTRY_CATEGORY` (un-deprecated) — thêm lại dòng vào mục 7c. `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` quay lại 1 trường Code mỗi cấp, không còn cặp FK Id+Code. | **Superseded bởi #12 (2026-07-17)** — xem #12. |
+| 12 | T1 | Đảo ngược quyết định #11: `CATEGORIES` promote lại thành Atomic entity — lần này là **shared entity** với `Classification Business Line` đã có từ ECAT, không tạo entity riêng như #10 từng làm. Theo yêu cầu tường minh của Data Modeler (2026-07-17): `IDS.CATEGORIES` và `ECAT.BUSINESS_LINE_LEVEL_1/2` là cùng 1 concept nghiệp vụ (danh mục ngành nghề 2 cấp, self-referencing) → gộp vào cùng dòng `atomic_entities.yaml`, bổ sung `source_table: IDS.CATEGORIES`. Scheme `IDS_INDUSTRY_CATEGORY` deprecated lại; `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` chuyển sang cặp FK Id+Code đến `Classification Business Line` (thực hiện ở LLD). | Đã xử lý ở mục 7a/7b/7c Overview này + `IDS_HLD_Tier1.md` T1-13 + `atomic_entities.yaml`. LLD (`lld_IDS_CATEGORIES.yaml`, cập nhật `lld_IDS_COMPANY_PROFILES.yaml`, `manifest.yaml`) — chưa thực hiện, thuộc phạm vi `atomic-lld-design`. |
 
 #### 7f. Bảng ngoài scope
 
@@ -290,6 +292,11 @@ erDiagram
 **Tier:** 1 | **Source:** `AF_PROFILES` | **BCV Concept:** [Involved Party] Organization | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** Audit Firm
 **Description:** Công ty kiểm toán được BTC hoặc UBCKNN chấp thuận kiểm toán báo cáo tài chính của CTĐC và tổ chức phát hành.
+
+### 2. Classification Business Line
+**Tier:** 1 | **Source:** `CATEGORIES` | **BCV Concept:** [Common] Industry Classification | **BCO:** Common | **Table Type:** Relative
+**Domain Prefix:** Classification
+**Description:** Danh mục ngành nghề kinh doanh 2 cấp của công ty đại chúng, self-referencing qua PARENT_ID. Shared entity — extend source_table IDS vào entity đã có từ ECAT (BUSINESS_LINE_LEVEL_1/2), cùng BCV Concept và cấu trúc self-referencing 2 cấp.
 
 ### 3. Disclosure Form Definition
 **Tier:** 1 | **Source:** `FORMS` | **BCV Concept:** [Condition] Form Definition | **BCO:** Condition | **Table Type:** Fundamental

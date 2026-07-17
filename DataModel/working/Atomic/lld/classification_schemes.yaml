@@ -3203,6 +3203,8 @@ schemes:
     used_in_entities:
       - "Public Company"
     values: []
+    deprecated: true
+    deprecated_reason: "IDS.CATEGORIES đã promote thành Atomic entity thật, gộp shared entity với 'Classification Business Line' (đã có từ ECAT) — không còn dùng scheme này (2026-07-17). Entity tiêu thụ (Public Company) đổi CATEGORY_L1_ID/CATEGORY_L2_ID sang cặp FK Classification Business Line Id + Classification Business Line Code. Xem IDS_HLD_Tier1.md T1-13 / IDS_HLD_Overview.md mục 7e #12."
 
   - scheme_code: "IDS_REPORT_CATALOG_TYPE"
     name: "Loại danh mục báo cáo tài chính (rc_type_cd từ report_catalog)"
@@ -4178,11 +4180,11 @@ schemes:
       - "Classification Business Line"
     values:
       - code: "LEVEL_1"
-        name: "Ngành nghề cấp 1 — từ ECAT.BUSINESS_LINE_LEVEL_1"
-        source_table: "ECAT.BUSINESS_LINE_LEVEL_1"
+        name: "Ngành nghề cấp 1 — từ ECAT.BUSINESS_LINE_LEVEL_1 / IDS.CATEGORIES (PARENT_ID IS NULL)"
+        source_table: "ECAT.BUSINESS_LINE_LEVEL_1, IDS.CATEGORIES"
       - code: "LEVEL_2"
-        name: "Ngành nghề cấp 2 — từ ECAT.BUSINESS_LINE_LEVEL_2"
-        source_table: "ECAT.BUSINESS_LINE_LEVEL_2"
+        name: "Ngành nghề cấp 2 — từ ECAT.BUSINESS_LINE_LEVEL_2 / IDS.CATEGORIES (PARENT_ID IS NOT NULL)"
+        source_table: "ECAT.BUSINESS_LINE_LEVEL_2, IDS.CATEGORIES"
 
   - scheme_code: "GEOGRAPHIC_AREA_OLD_TYPE"
     name: null
@@ -5149,7 +5151,7 @@ schemes:
     values: []
 
   - scheme_code: "IDS_SO_DISTRIBUTION_METHOD"
-    name: "Phương thức phân phối chứng khoán (multi-value, cách nhau dấu phẩy) — IDS"
+    name: "Phương thức phân phối chứng khoán — IDS"
     source_type: "source_table"
     source_table: "IDS.SECURITIES_OFFERING_PLAN.DISTRIBUTION_METHOD_CD"
     used_in_entities:

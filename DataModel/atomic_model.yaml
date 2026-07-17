@@ -2,6 +2,1334 @@ schema_type: atomic_model
 schema_version: "1.0"
 entities:
 - ldm:
+    id: ATM-examination_team
+    logical_name_1st: Examination Team
+    physical_name_1st: examination_team
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Hồ sơ đoàn kiểm tra cụ thể (mã HSKT-YYYY-XXX), ghi nhận thông
+      tin thành lập đoàn, quyết định kiểm tra, đơn vị chủ trì và hình thức kiểm tra
+      (định kỳ/đột xuất).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Business Review"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-EXAMINATION_TEAM
+  attributes:
+  - name: Examination Team Id
+    physical_name: examination_team_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('ThanhTra.EXAMINATION_TEAM', CODE).\
+      \ BCV: [Business Activity] Business Review."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('ThanhTra.EXAMINATION_TEAM', CODE).\
+          \ BCV: [Business Activity] Business Review."
+  - name: Examination Team Code
+    physical_name: examination_team_code
+    business_meaning_1st: Mã hồ sơ đoàn kiểm tra tự sinh UNIQUE (HSKT-YYYY-XXX). BK
+      duy nhất — Id hash từ trường này.
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+      Key cũ — gộp còn 1 trường Code duy nhất.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.CODE
+        business_meaning: Mã hồ sơ đoàn kiểm tra tự sinh UNIQUE (HSKT-YYYY-XXX). BK
+          duy nhất — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+          Key cũ — gộp còn 1 trường Code duy nhất.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.EXAMINATION_TEAM
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Examination Annual Plan Id
+    physical_name: examination_annual_plan_id
+    business_meaning_1st: FK đến kế hoạch kiểm tra năm (chỉ có khi form_type=PERIODIC).
+    comment_1st: "FK target: examination_annual_plan.examination_annual_plan_id. Hash:\
+      \ hash_id('ThanhTra.EXAMINATION_ANNUAL_PLAN', EXAMINATION_ANNUAL_PLAN_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_ANNUAL_PLAN_ID
+        business_meaning: FK đến kế hoạch kiểm tra năm (chỉ có khi form_type=PERIODIC).
+        comment: "FK target: examination_annual_plan.examination_annual_plan_id. Hash:\
+          \ hash_id('ThanhTra.EXAMINATION_ANNUAL_PLAN', EXAMINATION_ANNUAL_PLAN_ID)."
+  - name: Examination Annual Plan Code
+    physical_name: examination_annual_plan_code
+    business_meaning_1st: Mã kế hoạch kiểm tra năm liên kết (snapshot).
+    comment_1st: "Lookup pair: examination_annual_plan.examination_annual_plan_code.\
+      \ Pair with examination_annual_plan_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_ANNUAL_PLAN_ID
+        business_meaning: Mã kế hoạch kiểm tra năm liên kết (snapshot).
+        comment: "Lookup pair: examination_annual_plan.examination_annual_plan_code.\
+          \ Pair with examination_annual_plan_id."
+  - name: Unit Name
+    physical_name: unit_nm
+    business_meaning_1st: Tên đơn vị chủ trì kiểm tra (tự động gán theo Ban của người
+      dùng đăng nhập).
+    comment_1st: Denormalized text — nguồn có UNIT_ID (FK suy luận → UNITS.ID) nhưng
+      không formal FK.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.UNIT_NAME
+        business_meaning: Tên đơn vị chủ trì kiểm tra (tự động gán theo Ban của người
+          dùng đăng nhập).
+        comment: Denormalized text — nguồn có UNIT_ID (FK suy luận → UNITS.ID) nhưng
+          không formal FK.
+  - name: Plan Year
+    physical_name: plan_year
+    business_meaning_1st: Năm kiểm tra.
+    comment_1st: Nguồn NUMBER(4,0) — ETL cast sang integer.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.PLAN_YEAR
+        business_meaning: Năm kiểm tra.
+        comment: Nguồn NUMBER(4,0) — ETL cast sang integer.
+  - name: Form Type Code
+    physical_name: form_tp_code
+    business_meaning_1st: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)."
+    comment_1st: "Scheme: INSPECTION_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.FORM_TYPE
+        business_meaning: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)."
+        comment: "Scheme: INSPECTION_TYPE."
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning_1st: Ngày bắt đầu đoàn kiểm tra.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.START_DATE
+        business_meaning: Ngày bắt đầu đoàn kiểm tra.
+        comment: null
+  - name: End Date
+    physical_name: end_dt
+    business_meaning_1st: Ngày kết thúc đoàn kiểm tra (phải >= start_date).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.END_DATE
+        business_meaning: Ngày kết thúc đoàn kiểm tra (phải >= start_date).
+        comment: null
+  - name: Duration Days
+    physical_name: duration_days
+    business_meaning_1st: Thời hạn kiểm tra (số ngày, chỉ nhập số nguyên > 0).
+    comment_1st: Nguồn NUMBER(5,0) — ETL cast sang integer.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.DURATION_DAYS
+        business_meaning: Thời hạn kiểm tra (số ngày, chỉ nhập số nguyên > 0).
+        comment: Nguồn NUMBER(5,0) — ETL cast sang integer.
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning_1st: Số quyết định kiểm tra (UNIQUE trên phân hệ).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.DECISION_NUMBER
+        business_meaning: Số quyết định kiểm tra (UNIQUE trên phân hệ).
+        comment: null
+  - name: Decision Date
+    physical_name: decision_dt
+    business_meaning_1st: Ngày ban hành quyết định kiểm tra.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.DECISION_DATE
+        business_meaning: Ngày ban hành quyết định kiểm tra.
+        comment: null
+  - name: Decision Name
+    physical_name: decision_nm
+    business_meaning_1st: Tên quyết định kiểm tra.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.DECISION_NAME
+        business_meaning: Tên quyết định kiểm tra.
+        comment: null
+  - name: Announcement Date
+    physical_name: announcement_dt
+    business_meaning_1st: Ngày công bố quyết định kiểm tra.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.ANNOUNCEMENT_DATE
+        business_meaning: Ngày công bố quyết định kiểm tra.
+        comment: null
+  - name: Content
+    physical_name: content
+    business_meaning_1st: Nội dung kiểm tra tổng quát.
+    comment_1st: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.CONTENT
+        business_meaning: Nội dung kiểm tra tổng quát.
+        comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Examination Period From Date
+    physical_name: examination_period_from_dt
+    business_meaning_1st: Thời kỳ kiểm tra - Từ ngày.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_PERIOD_FROM
+        business_meaning: Thời kỳ kiểm tra - Từ ngày.
+        comment: null
+  - name: Examination Period To Date
+    physical_name: examination_period_to_dt
+    business_meaning_1st: Thời kỳ kiểm tra - Đến ngày.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_PERIOD_TO
+        business_meaning: Thời kỳ kiểm tra - Đến ngày.
+        comment: null
+  - name: Anti Money Laundering Indicator
+    physical_name: anti_money_laundering_indicator
+    business_meaning_1st: "Có kiểm tra nội dung PCRT: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.ANTI_MONEY_LAUNDERING
+        business_meaning: "Có kiểm tra nội dung PCRT: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Abnormal Transaction Check Indicator
+    physical_name: abnormal_transaction_check_indicator
+    business_meaning_1st: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có. Nếu=1 thì\
+      \ không tạo thông báo kết quả."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.ABNORMAL_TRANSACTION_CHECK
+        business_meaning: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có. Nếu=1 thì\
+          \ không tạo thông báo kết quả."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM
+        source_column: ThanhTra.EXAMINATION_TEAM.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+- ldm:
+    id: ATM-examination_team_target
+    logical_name_1st: Examination Team Target
+    physical_name_1st: examination_team_target
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại\
+      \ đơn vị/cá nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Business Review"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-EXAMINATION_TEAM_TARGET
+  attributes:
+  - name: Examination Team Target Id
+    physical_name: examination_team_target_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Business Activity] Business Review."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Business Activity] Business Review."
+  - name: Examination Team Target Code
+    physical_name: examination_team_target_code
+    business_meaning_1st: PK nguồn (VARCHAR2 UUID). BK của entity.
+    comment_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.ID
+        business_meaning: PK nguồn (VARCHAR2 UUID). BK của entity.
+        comment: BK chính. PK nguồn (VARCHAR2 UUID).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.EXAMINATION_TEAM_TARGET
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Examination Team Id
+    physical_name: examination_team_id
+    business_meaning_1st: FK đến đoàn kiểm tra thực hiện kiểm tra đối tượng này.
+    comment_1st: "FK target: examination_team.examination_team_id. Hash: hash_id('ThanhTra.EXAMINATION_TEAM',\
+      \ EXAMINATION_TEAM_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID
+        business_meaning: FK đến đoàn kiểm tra thực hiện kiểm tra đối tượng này.
+        comment: "FK target: examination_team.examination_team_id. Hash: hash_id('ThanhTra.EXAMINATION_TEAM',\
+          \ EXAMINATION_TEAM_ID)."
+  - name: Examination Team Code
+    physical_name: examination_team_code
+    business_meaning_1st: Mã đoàn kiểm tra liên kết (snapshot).
+    comment_1st: "Lookup pair: examination_team.examination_team_code. Pair with examination_team_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID
+        business_meaning: Mã đoàn kiểm tra liên kết (snapshot).
+        comment: "Lookup pair: examination_team.examination_team_code. Pair with examination_team_id."
+  - name: Target Type Code
+    physical_name: target_tp_code
+    business_meaning_1st: "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY,\
+      \ PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION."
+    comment_1st: Map 1:1 từ nguồn — không phải Classification Value. Giá trị tham
+      chiếu chéo loại đối tượng qua Target Reference Id đến nhiều source system khác
+      nhau (SCMS/FMS/IDS), không phải reference data set cố định trong ThanhTra.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.TARGET_TYPE
+        business_meaning: "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY,\
+          \ PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION."
+        comment: Map 1:1 từ nguồn — không phải Classification Value. Giá trị tham
+          chiếu chéo loại đối tượng qua Target Reference Id đến nhiều source system
+          khác nhau (SCMS/FMS/IDS), không phải reference data set cố định trong ThanhTra.
+  - name: Target Reference Id
+    physical_name: target_reference_id
+    business_meaning_1st: ID tham chiếu đối tượng trong hệ thống nguồn (SCMS/FMS/IDS).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.TARGET_REFERENCE_ID
+        business_meaning: ID tham chiếu đối tượng trong hệ thống nguồn (SCMS/FMS/IDS).
+        comment: null
+  - name: Target Name
+    physical_name: target_nm
+    business_meaning_1st: Tên đối tượng được kiểm tra.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.TARGET_NAME
+        business_meaning: Tên đối tượng được kiểm tra.
+        comment: null
+  - name: Account Number
+    physical_name: account_nbr
+    business_meaning_1st: Số tài khoản chứng khoán (cá nhân và tổ chức).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.ACCOUNT_NUMBER
+        business_meaning: Số tài khoản chứng khoán (cá nhân và tổ chức).
+        comment: null
+  - name: Securities Company Name
+    physical_name: sc_nm
+    business_meaning_1st: CTCK nơi mở tài khoản (snapshot).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.SECURITIES_COMPANY_NAME
+        business_meaning: CTCK nơi mở tài khoản (snapshot).
+        comment: null
+  - name: Citizen Id
+    physical_name: citizen_id
+    business_meaning_1st: Số CCCD/CMND — chỉ dùng cho cá nhân (targetType=INDIVIDUAL).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.CITIZEN_ID
+        business_meaning: Số CCCD/CMND — chỉ dùng cho cá nhân (targetType=INDIVIDUAL).
+        comment: null
+  - name: Business Registration Number
+    physical_name: business_registration_nbr
+    business_meaning_1st: Số đăng ký kinh doanh — chỉ dùng cho tổ chức.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.BUSINESS_REGISTRATION_NUMBER
+        business_meaning: Số đăng ký kinh doanh — chỉ dùng cho tổ chức.
+        comment: null
+  - name: Legal Rep Name
+    physical_name: legal_rep_nm
+    business_meaning_1st: Tên người đại diện theo pháp luật (tổ chức).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.LEGAL_REP_NAME
+        business_meaning: Tên người đại diện theo pháp luật (tổ chức).
+        comment: null
+  - name: Legal Rep Citizen Id
+    physical_name: legal_rep_citizen_id
+    business_meaning_1st: CCCD người đại diện theo pháp luật.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.LEGAL_REP_CITIZEN_ID
+        business_meaning: CCCD người đại diện theo pháp luật.
+        comment: null
+- ldm:
+    id: ATM-inspection_team
+    logical_name_1st: Inspection Team
+    physical_name_1st: inspection_team
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Hồ sơ đoàn thanh tra cụ thể (mã HSTT-YYYY-XXX), ghi nhận thông
+      tin thành lập đoàn, quyết định thanh tra, hình thức thanh tra (định kỳ/đột xuất)
+      và ngày ký biên bản xác minh.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Business Review"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-INSPECTION_TEAM
+  attributes:
+  - name: Inspection Team Id
+    physical_name: inspection_team_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('ThanhTra.INSPECTION_TEAM', CODE). BCV:\
+      \ [Business Activity] Business Review."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('ThanhTra.INSPECTION_TEAM', CODE). BCV:\
+          \ [Business Activity] Business Review."
+  - name: Inspection Team Code
+    physical_name: inspection_team_code
+    business_meaning_1st: Mã hồ sơ đoàn thanh tra tự sinh UNIQUE (HSTT-YYYY-XXX).
+      BK duy nhất — Id hash từ trường này.
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+      Key cũ — gộp còn 1 trường Code duy nhất.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.CODE
+        business_meaning: Mã hồ sơ đoàn thanh tra tự sinh UNIQUE (HSTT-YYYY-XXX).
+          BK duy nhất — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+          Key cũ — gộp còn 1 trường Code duy nhất.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.INSPECTION_TEAM
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Inspection Annual Plan Id
+    physical_name: inspection_annual_plan_id
+    business_meaning_1st: FK đến kế hoạch thanh tra năm (chỉ có khi form_type=PERIODIC).
+    comment_1st: "FK target: inspection_annual_plan.inspection_annual_plan_id. Hash:\
+      \ hash_id('ThanhTra.INSPECTION_ANNUAL_PLAN', INSPECTION_ANNUAL_PLAN_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.INSPECTION_ANNUAL_PLAN_ID
+        business_meaning: FK đến kế hoạch thanh tra năm (chỉ có khi form_type=PERIODIC).
+        comment: "FK target: inspection_annual_plan.inspection_annual_plan_id. Hash:\
+          \ hash_id('ThanhTra.INSPECTION_ANNUAL_PLAN', INSPECTION_ANNUAL_PLAN_ID)."
+  - name: Inspection Annual Plan Code
+    physical_name: inspection_annual_plan_code
+    business_meaning_1st: Mã kế hoạch thanh tra năm liên kết (snapshot).
+    comment_1st: "Lookup pair: inspection_annual_plan.inspection_annual_plan_code.\
+      \ Pair with inspection_annual_plan_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.INSPECTION_ANNUAL_PLAN_ID
+        business_meaning: Mã kế hoạch thanh tra năm liên kết (snapshot).
+        comment: "Lookup pair: inspection_annual_plan.inspection_annual_plan_code.\
+          \ Pair with inspection_annual_plan_id."
+  - name: Plan Year
+    physical_name: plan_year
+    business_meaning_1st: Năm thanh tra.
+    comment_1st: Nguồn NUMBER(4,0) — ETL cast sang integer.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.PLAN_YEAR
+        business_meaning: Năm thanh tra.
+        comment: Nguồn NUMBER(4,0) — ETL cast sang integer.
+  - name: Form Type Code
+    physical_name: form_tp_code
+    business_meaning_1st: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)."
+    comment_1st: "Scheme: INSPECTION_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.FORM_TYPE
+        business_meaning: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)."
+        comment: "Scheme: INSPECTION_TYPE."
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning_1st: Ngày bắt đầu đoàn thanh tra.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.START_DATE
+        business_meaning: Ngày bắt đầu đoàn thanh tra.
+        comment: null
+  - name: End Date
+    physical_name: end_dt
+    business_meaning_1st: Ngày kết thúc đoàn thanh tra (phải >= start_date).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.END_DATE
+        business_meaning: Ngày kết thúc đoàn thanh tra (phải >= start_date).
+        comment: null
+  - name: Duration Days
+    physical_name: duration_days
+    business_meaning_1st: Thời hạn thanh tra (số ngày, chỉ nhập số nguyên > 0).
+    comment_1st: Nguồn NUMBER(5,0) — ETL cast sang integer.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.DURATION_DAYS
+        business_meaning: Thời hạn thanh tra (số ngày, chỉ nhập số nguyên > 0).
+        comment: Nguồn NUMBER(5,0) — ETL cast sang integer.
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning_1st: Số quyết định thanh tra (UNIQUE trên phân hệ).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.DECISION_NUMBER
+        business_meaning: Số quyết định thanh tra (UNIQUE trên phân hệ).
+        comment: null
+  - name: Decision Date
+    physical_name: decision_dt
+    business_meaning_1st: Ngày ban hành quyết định thanh tra.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.DECISION_DATE
+        business_meaning: Ngày ban hành quyết định thanh tra.
+        comment: null
+  - name: Decision Name
+    physical_name: decision_nm
+    business_meaning_1st: Tên quyết định thanh tra.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.DECISION_NAME
+        business_meaning: Tên quyết định thanh tra.
+        comment: null
+  - name: Announcement Date
+    physical_name: announcement_dt
+    business_meaning_1st: Ngày công bố quyết định thanh tra.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.ANNOUNCEMENT_DATE
+        business_meaning: Ngày công bố quyết định thanh tra.
+        comment: null
+  - name: Content
+    physical_name: content
+    business_meaning_1st: Nội dung tổng quát cuộc thanh tra.
+    comment_1st: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.CONTENT
+        business_meaning: Nội dung tổng quát cuộc thanh tra.
+        comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Inspection Period From Date
+    physical_name: inspection_period_from_dt
+    business_meaning_1st: Thời kỳ thanh tra - Từ ngày.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.INSPECTION_PERIOD_FROM
+        business_meaning: Thời kỳ thanh tra - Từ ngày.
+        comment: null
+  - name: Inspection Period To Date
+    physical_name: inspection_period_to_dt
+    business_meaning_1st: Thời kỳ thanh tra - Đến ngày.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.INSPECTION_PERIOD_TO
+        business_meaning: Thời kỳ thanh tra - Đến ngày.
+        comment: null
+  - name: Anti Money Laundering Indicator
+    physical_name: anti_money_laundering_indicator
+    business_meaning_1st: "Có thanh tra PCRT: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.ANTI_MONEY_LAUNDERING
+        business_meaning: "Có thanh tra PCRT: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Abnormal Transaction Check Indicator
+    physical_name: abnormal_transaction_check_indicator
+    business_meaning_1st: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.ABNORMAL_TRANSACTION_CHECK
+        business_meaning: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Verification Minutes Sign Date
+    physical_name: verification_minutes_sign_dt
+    business_meaning_1st: Ngày ký biên bản xác minh — mốc tính thời hạn lập kết luận
+      thanh tra; phải nhập trước khi hệ thống gửi nhắc nhở kết luận.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.VERIFICATION_MINUTES_SIGN_DATE
+        business_meaning: Ngày ký biên bản xác minh — mốc tính thời hạn lập kết luận
+          thanh tra; phải nhập trước khi hệ thống gửi nhắc nhở kết luận.
+        comment: null
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM
+        source_column: ThanhTra.INSPECTION_TEAM.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+- ldm:
+    id: ATM-inspection_team_target
+    logical_name_1st: Inspection Team Target
+    physical_name_1st: inspection_team_target
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Danh sách đối tượng được thanh tra trong đoàn cụ thể: 7 loại\
+      \ đơn vị/cá nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Business Review"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-INSPECTION_TEAM_TARGET
+  attributes:
+  - name: Inspection Team Target Id
+    physical_name: inspection_team_target_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Business Activity] Business Review."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Business Activity] Business Review."
+  - name: Inspection Team Target Code
+    physical_name: inspection_team_target_code
+    business_meaning_1st: PK nguồn (VARCHAR2 UUID). BK của entity.
+    comment_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.ID
+        business_meaning: PK nguồn (VARCHAR2 UUID). BK của entity.
+        comment: BK chính. PK nguồn (VARCHAR2 UUID).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.INSPECTION_TEAM_TARGET
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Inspection Team Id
+    physical_name: inspection_team_id
+    business_meaning_1st: FK đến đoàn thanh tra thực hiện thanh tra đối tượng này.
+    comment_1st: "FK target: inspection_team.inspection_team_id. Hash: hash_id('ThanhTra.INSPECTION_TEAM',\
+      \ INSPECTION_TEAM_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID
+        business_meaning: FK đến đoàn thanh tra thực hiện thanh tra đối tượng này.
+        comment: "FK target: inspection_team.inspection_team_id. Hash: hash_id('ThanhTra.INSPECTION_TEAM',\
+          \ INSPECTION_TEAM_ID)."
+  - name: Inspection Team Code
+    physical_name: inspection_team_code
+    business_meaning_1st: Mã đoàn thanh tra liên kết (snapshot).
+    comment_1st: "Lookup pair: inspection_team.inspection_team_code. Pair with inspection_team_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID
+        business_meaning: Mã đoàn thanh tra liên kết (snapshot).
+        comment: "Lookup pair: inspection_team.inspection_team_code. Pair with inspection_team_id."
+  - name: Target Type Code
+    physical_name: target_tp_code
+    business_meaning_1st: "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY,\
+      \ PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION."
+    comment_1st: Map 1:1 từ nguồn — không phải Classification Value. Giá trị tham
+      chiếu chéo loại đối tượng qua Target Reference Id đến nhiều source system khác
+      nhau (SCMS/FMS/IDS), không phải reference data set cố định trong ThanhTra.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.TARGET_TYPE
+        business_meaning: "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY,\
+          \ PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION."
+        comment: Map 1:1 từ nguồn — không phải Classification Value. Giá trị tham
+          chiếu chéo loại đối tượng qua Target Reference Id đến nhiều source system
+          khác nhau (SCMS/FMS/IDS), không phải reference data set cố định trong ThanhTra.
+  - name: Target Reference Id
+    physical_name: target_reference_id
+    business_meaning_1st: ID tham chiếu đối tượng trong hệ thống nguồn (SCMS/FMS/IDS).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.TARGET_REFERENCE_ID
+        business_meaning: ID tham chiếu đối tượng trong hệ thống nguồn (SCMS/FMS/IDS).
+        comment: null
+  - name: Target Name
+    physical_name: target_nm
+    business_meaning_1st: Tên đối tượng được thanh tra.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.TARGET_NAME
+        business_meaning: Tên đối tượng được thanh tra.
+        comment: null
+  - name: Inspection Period From Date
+    physical_name: inspection_period_from_dt
+    business_meaning_1st: Thời kỳ thanh tra từ (per-target, có thể khác plan-level).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.INSPECTION_PERIOD_FROM
+        business_meaning: Thời kỳ thanh tra từ (per-target, có thể khác plan-level).
+        comment: null
+  - name: Inspection Period To Date
+    physical_name: inspection_period_to_dt
+    business_meaning_1st: Thời kỳ thanh tra đến.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.INSPECTION_PERIOD_TO
+        business_meaning: Thời kỳ thanh tra đến.
+        comment: null
+  - name: Anti Money Laundering Indicator
+    physical_name: anti_money_laundering_indicator
+    business_meaning_1st: "Có/không thanh tra về PCRT: 1=Có, 0=Không."
+    comment_1st: Nguồn NUMBER(1,0).
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.ANTI_MONEY_LAUNDERING
+        business_meaning: "Có/không thanh tra về PCRT: 1=Có, 0=Không."
+        comment: Nguồn NUMBER(1,0).
+  - name: Abnormal Transaction Check Indicator
+    physical_name: abnormal_transaction_check_indicator
+    business_meaning_1st: "Kiểm tra giao dịch bất thường: 1=Có, 0=Không."
+    comment_1st: Nguồn NUMBER(1,0).
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.ABNORMAL_TRANSACTION_CHECK
+        business_meaning: "Kiểm tra giao dịch bất thường: 1=Có, 0=Không."
+        comment: Nguồn NUMBER(1,0).
+  - name: Content
+    physical_name: content
+    business_meaning_1st: Nội dung thanh tra đối với đối tượng này.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.CONTENT
+        business_meaning: Nội dung thanh tra đối với đối tượng này.
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_TEAM_TARGET
+        source_column: ThanhTra.INSPECTION_TEAM_TARGET.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: Nguồn CLOB — ETL truncate.
+- ldm:
     id: ATM-sc_adhoc_report
     logical_name_1st: Securities Company Adhoc Report
     physical_name_1st: sc_adhoc_report
@@ -2278,6 +3606,1237 @@ entities:
         comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
           \ Pending — xem ghi chú ở Assignee Officer Id."
 - ldm:
+    id: ATM-violation_behavior
+    logical_name_1st: Violation Behavior
+    physical_name_1st: violation_behavior
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Danh mục hành vi vi phạm hành chính được pháp luật quy định:\
+      \ loại hành vi, hình thức xử phạt chính, khung tiền phạt min/max, biện pháp\
+      \ khắc phục."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Conduct Violation"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-VIOLATION_BEHAVIOR
+  attributes:
+  - name: Violation Behavior Id
+    physical_name: violation_behavior_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR', CODE).\
+      \ BCV: [Business Activity] Conduct Violation."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR', CODE).\
+          \ BCV: [Business Activity] Conduct Violation."
+  - name: Violation Behavior Code
+    physical_name: violation_behavior_code
+    business_meaning_1st: Mã hành vi vi phạm tự sinh UNIQUE. BK duy nhất — Id hash
+      từ trường này.
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+      Key cũ — gộp còn 1 trường Code duy nhất.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.CODE
+        business_meaning: Mã hành vi vi phạm tự sinh UNIQUE. BK duy nhất — Id hash
+          từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+          Key cũ — gộp còn 1 trường Code duy nhất.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.VIOLATION_BEHAVIOR
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Violation Behavior Name
+    physical_name: violation_behavior_nm
+    business_meaning_1st: Tên hành vi vi phạm hành chính.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.NAME
+        business_meaning: Tên hành vi vi phạm hành chính.
+        comment: null
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết hành vi vi phạm hành chính.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.DESCRIPTION
+        business_meaning: Mô tả chi tiết hành vi vi phạm hành chính.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Penalty Type Id
+    physical_name: penalty_tp_id
+    business_meaning_1st: FK đến Penalty Type (hình thức xử phạt chính áp dụng cho
+      hành vi vi phạm này).
+    comment_1st: "FK target: penalty_type.penalty_type_id. Hash: hash_id('ThanhTra.PENALTY_TYPE',\
+      \ PRIMARY_PENALTY_TYPE_ID). Capture từ junction PENALTY_TYPE_VIOLATION_BEHAVIOR\
+      \ (out_of_scope) qua trường trực tiếp."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID
+        business_meaning: FK đến Penalty Type (hình thức xử phạt chính áp dụng cho
+          hành vi vi phạm này).
+        comment: "FK target: penalty_type.penalty_type_id. Hash: hash_id('ThanhTra.PENALTY_TYPE',\
+          \ PRIMARY_PENALTY_TYPE_ID). Capture từ junction PENALTY_TYPE_VIOLATION_BEHAVIOR\
+          \ (out_of_scope) qua trường trực tiếp."
+  - name: Penalty Type Code
+    physical_name: penalty_tp_code
+    business_meaning_1st: Mã Penalty Type chính (denormalized lookup).
+    comment_1st: "Lookup pair: penalty_type.penalty_type_code. Pair with penalty_type_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID
+        business_meaning: Mã Penalty Type chính (denormalized lookup).
+        comment: "Lookup pair: penalty_type.penalty_type_code. Pair with penalty_type_id."
+  - name: Min Fine Amount
+    physical_name: min_fine_amt
+    business_meaning_1st: Mức phạt tiền tối thiểu (VNĐ) theo quy định pháp luật.
+    comment_1st: Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.MIN_FINE_AMOUNT
+        business_meaning: Mức phạt tiền tối thiểu (VNĐ) theo quy định pháp luật.
+        comment: Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ.
+  - name: Max Fine Amount
+    physical_name: max_fine_amt
+    business_meaning_1st: Mức phạt tiền tối đa (VNĐ) theo quy định pháp luật.
+    comment_1st: Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.MAX_FINE_AMOUNT
+        business_meaning: Mức phạt tiền tối đa (VNĐ) theo quy định pháp luật.
+        comment: Nguồn NUMBER(19,4) — ETL cast sang decimal. Đơn vị VNĐ.
+  - name: Remedial Measure
+    physical_name: remedial_measure
+    business_meaning_1st: Biện pháp khắc phục hậu quả bắt buộc thực hiện sau khi bị
+      xử phạt.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.REMEDIAL_MEASURE
+        business_meaning: Biện pháp khắc phục hậu quả bắt buộc thực hiện sau khi bị
+          xử phạt.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning_1st: Trạng thái hiệu lực của danh mục hành vi vi phạm (ACTIVE/INACTIVE).
+    comment_1st: "Scheme: ENTITY_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.STATUS
+        business_meaning: Trạng thái hiệu lực của danh mục hành vi vi phạm (ACTIVE/INACTIVE).
+        comment: "Scheme: ENTITY_STATUS."
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung về hành vi vi phạm.
+    comment_1st: Nguồn VARCHAR2(2000).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.NOTE
+        business_meaning: Ghi chú bổ sung về hành vi vi phạm.
+        comment: Nguồn VARCHAR2(2000).
+  - name: Legal Document
+    physical_name: legal_document
+    business_meaning_1st: Văn bản pháp luật tham chiếu (text tự do).
+    comment_1st: Nguồn VARCHAR2(2000). Denormalized free-text — không có FK formal
+      đến LEGAL_DOCUMENT entity.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.LEGAL_DOCUMENT
+        business_meaning: Văn bản pháp luật tham chiếu (text tự do).
+        comment: Nguồn VARCHAR2(2000). Denormalized free-text — không có FK formal
+          đến LEGAL_DOCUMENT entity.
+  - name: Violation Clause
+    physical_name: violation_clause
+    business_meaning_1st: Điều khoản pháp lý vi phạm tương ứng với hành vi này.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR.VIOLATION_CLAUSE
+        business_meaning: Điều khoản pháp lý vi phạm tương ứng với hành vi này.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Legal Document Codes
+    physical_name: legal_document_codes
+    business_meaning_1st: Danh sách mã văn bản pháp luật liên kết với hành vi vi phạm
+      (denormalize từ junction).
+    comment_1st: "Pure junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT → denormalize thành\
+      \ ARRAY. Struct: legal_document_code: Text. HLD decision: ThanhTra_HLD_Overview.md\
+      \ section 7d."
+    data_domain_most: Array<Text>
+    data_type_most: array<string>
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_BEHAVIOR
+        source_column: ThanhTra.VIOLATION_BEHAVIOR_LEGAL_DOCUMENT.LEGAL_DOCUMENT_ID
+        business_meaning: Danh sách mã văn bản pháp luật liên kết với hành vi vi phạm
+          (denormalize từ junction).
+        comment: "Pure junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT → denormalize thành\
+          \ ARRAY. Struct: legal_document_code: Text. HLD decision: ThanhTra_HLD_Overview.md\
+          \ section 7d."
+- ldm:
+    id: ATM-violation_case
+    logical_name_1st: Violation Case
+    physical_name_1st: violation_case
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Hồ sơ xử lý vi phạm hành chính (VPHC): ghi nhận nguồn phát hiện,\
+      \ liên kết đoàn thanh tra/kiểm tra, cán bộ phụ trách, vòng đời hồ sơ (5 trạng\
+      \ thái), theo dõi tiền bảo đảm."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Activity
+    bcv_concept_most: "[Business Activity] Conduct Violation"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-VIOLATION_CASE
+  attributes:
+  - name: Violation Case Id
+    physical_name: violation_case_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_CASE', CODE). BCV:\
+      \ [Business Activity] Conduct Violation."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('ThanhTra.VIOLATION_CASE', CODE). BCV:\
+          \ [Business Activity] Conduct Violation."
+  - name: Violation Case Code
+    physical_name: violation_case_code
+    business_meaning_1st: Mã hồ sơ VPHC tự sinh UNIQUE. BK duy nhất — Id hash từ trường
+      này.
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+      Key cũ — gộp còn 1 trường Code duy nhất.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.CODE
+        business_meaning: Mã hồ sơ VPHC tự sinh UNIQUE. BK duy nhất — Id hash từ trường
+          này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+          Key cũ — gộp còn 1 trường Code duy nhất.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.VIOLATION_CASE
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Violation Case Name
+    physical_name: violation_case_nm
+    business_meaning_1st: Tên hồ sơ/vụ việc vi phạm hành chính.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.NAME
+        business_meaning: Tên hồ sơ/vụ việc vi phạm hành chính.
+        comment: null
+  - name: Inspection Team Id
+    physical_name: inspection_team_id
+    business_meaning_1st: FK đến đoàn thanh tra phát sinh hồ sơ VPHC.
+    comment_1st: "FK target: inspection_team.inspection_team_id. Resolve: join INSPECTION_TEAM_ID\
+      \ → ThanhTra.INSPECTION_TEAM.ID để lấy CODE, rồi hash_id('ThanhTra.INSPECTION_TEAM',\
+      \ code). Nullable — case có thể không từ thanh tra."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.INSPECTION_TEAM_ID
+        business_meaning: FK đến đoàn thanh tra phát sinh hồ sơ VPHC.
+        comment: "FK target: inspection_team.inspection_team_id. Resolve: join INSPECTION_TEAM_ID\
+          \ → ThanhTra.INSPECTION_TEAM.ID để lấy CODE, rồi hash_id('ThanhTra.INSPECTION_TEAM',\
+          \ code). Nullable — case có thể không từ thanh tra."
+  - name: Inspection Team Code
+    physical_name: inspection_team_code
+    business_meaning_1st: Mã đoàn thanh tra liên kết (snapshot).
+    comment_1st: "Lookup pair: inspection_team.inspection_team_code. Pair with inspection_team_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.INSPECTION_TEAM_ID
+        business_meaning: Mã đoàn thanh tra liên kết (snapshot).
+        comment: "Lookup pair: inspection_team.inspection_team_code. Pair with inspection_team_id."
+  - name: Examination Team Id
+    physical_name: examination_team_id
+    business_meaning_1st: FK đến đoàn kiểm tra phát sinh hồ sơ VPHC.
+    comment_1st: "FK target: examination_team.examination_team_id. Resolve: join EXAMINATION_TEAM_ID\
+      \ → ThanhTra.EXAMINATION_TEAM.ID để lấy CODE, rồi hash_id('ThanhTra.EXAMINATION_TEAM',\
+      \ code). Nullable — case có thể không từ kiểm tra."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.EXAMINATION_TEAM_ID
+        business_meaning: FK đến đoàn kiểm tra phát sinh hồ sơ VPHC.
+        comment: "FK target: examination_team.examination_team_id. Resolve: join EXAMINATION_TEAM_ID\
+          \ → ThanhTra.EXAMINATION_TEAM.ID để lấy CODE, rồi hash_id('ThanhTra.EXAMINATION_TEAM',\
+          \ code). Nullable — case có thể không từ kiểm tra."
+  - name: Examination Team Code
+    physical_name: examination_team_code
+    business_meaning_1st: Mã đoàn kiểm tra liên kết (snapshot).
+    comment_1st: "Lookup pair: examination_team.examination_team_code. Pair with examination_team_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.EXAMINATION_TEAM_ID
+        business_meaning: Mã đoàn kiểm tra liên kết (snapshot).
+        comment: "Lookup pair: examination_team.examination_team_code. Pair with examination_team_id."
+  - name: Source Category Code
+    physical_name: src_category_code
+    business_meaning_1st: "Nguồn phát sinh: INSPECTION_RESULT, INTERNAL_UNIT, STOCK_EXCHANGE,\
+      \ VSDC, OTHER_SUPERVISION."
+    comment_1st: "Scheme: VIOLATION_CASE_SOURCE_CATEGORY."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.SOURCE_CATEGORY
+        business_meaning: "Nguồn phát sinh: INSPECTION_RESULT, INTERNAL_UNIT, STOCK_EXCHANGE,\
+          \ VSDC, OTHER_SUPERVISION."
+        comment: "Scheme: VIOLATION_CASE_SOURCE_CATEGORY."
+  - name: Source Unit Name
+    physical_name: src_unit_nm
+    business_meaning_1st: Tên đơn vị gửi kết quả giám sát/vi phạm (snapshot).
+    comment_1st: Denormalized — SOURCE_UNIT_ID là FK suy luận không formal.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.SOURCE_UNIT_NAME
+        business_meaning: Tên đơn vị gửi kết quả giám sát/vi phạm (snapshot).
+        comment: Denormalized — SOURCE_UNIT_ID là FK suy luận không formal.
+  - name: Assigned Officer Id
+    physical_name: assigned_officer_id
+    business_meaning_1st: FK đến cán bộ được phân công xử lý hồ sơ VPHC.
+    comment_1st: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.ASSIGNED_OFFICER_ID
+        business_meaning: FK đến cán bộ được phân công xử lý hồ sơ VPHC.
+        comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+  - name: Assigned Officer Name
+    physical_name: assigned_officer_nm
+    business_meaning_1st: Tên cán bộ phụ trách xử lý hồ sơ VPHC (snapshot).
+    comment_1st: Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải
+      Code nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern
+      Lookup pair Code. Pair with Assigned Officer Id.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.ASSIGNED_OFFICER_NAME
+        business_meaning: Tên cán bộ phụ trách xử lý hồ sơ VPHC (snapshot).
+        comment: Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải
+          Code nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern
+          Lookup pair Code. Pair with Assigned Officer Id.
+  - name: Supervising Leader Id
+    physical_name: supervising_leader_id
+    business_meaning_1st: FK đến lãnh đạo phụ trách hồ sơ VPHC.
+    comment_1st: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Id. Hash: hash_id('NHNCK.USERS', SUPERVISING_LEADER_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.SUPERVISING_LEADER_ID
+        business_meaning: FK đến lãnh đạo phụ trách hồ sơ VPHC.
+        comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Id. Hash: hash_id('NHNCK.USERS', SUPERVISING_LEADER_ID)."
+  - name: Supervising Leader Name
+    physical_name: supervising_leader_nm
+    business_meaning_1st: Tên lãnh đạo phụ trách hồ sơ VPHC (snapshot).
+    comment_1st: Denormalized snapshot tên lãnh đạo tại thời điểm phân công, không
+      phải Code nghiệp vụ — nguồn lưu SUPERVISING_LEADER_NAME (text), không dùng pattern
+      Lookup pair Code. Pair with Supervising Leader Id.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.SUPERVISING_LEADER_NAME
+        business_meaning: Tên lãnh đạo phụ trách hồ sơ VPHC (snapshot).
+        comment: Denormalized snapshot tên lãnh đạo tại thời điểm phân công, không
+          phải Code nghiệp vụ — nguồn lưu SUPERVISING_LEADER_NAME (text), không dùng
+          pattern Lookup pair Code. Pair with Supervising Leader Id.
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning_1st: "Trạng thái: NEW, PROCESSING, DECISION_ISSUED, ENFORCED,\
+      \ CLOSED."
+    comment_1st: "Scheme: VIOLATION_CASE_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.STATUS
+        business_meaning: "Trạng thái: NEW, PROCESSING, DECISION_ISSUED, ENFORCED,\
+          \ CLOSED."
+        comment: "Scheme: VIOLATION_CASE_STATUS."
+  - name: Market Type Code
+    physical_name: market_tp_code
+    business_meaning_1st: "Thị trường: DOMESTIC, INTERNATIONAL."
+    comment_1st: "Scheme: MARKET_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.MARKET_TYPE
+        business_meaning: "Thị trường: DOMESTIC, INTERNATIONAL."
+        comment: "Scheme: MARKET_TYPE."
+  - name: Bond Issuer Code
+    physical_name: bond_issuer_code
+    business_meaning_1st: Mã tổ chức phát hành trái phiếu (nếu hồ sơ liên quan TPDN).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.BOND_ISSUER_CODE
+        business_meaning: Mã tổ chức phát hành trái phiếu (nếu hồ sơ liên quan TPDN).
+        comment: null
+  - name: Bond Code
+    physical_name: bond_code
+    business_meaning_1st: Mã trái phiếu (nếu hồ sơ liên quan vi phạm về TPDN).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.BOND_CODE
+        business_meaning: Mã trái phiếu (nếu hồ sơ liên quan vi phạm về TPDN).
+        comment: null
+  - name: Processing Progress
+    physical_name: processing_progress
+    business_meaning_1st: Mô tả tiến trình xử lý hồ sơ VPHC.
+    comment_1st: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.PROCESSING_PROGRESS
+        business_meaning: Mô tả tiến trình xử lý hồ sơ VPHC.
+        comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: VIOLATION_CASE
+        source_column: ThanhTra.VIOLATION_CASE.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+- ldm:
+    id: ATM-examination_annual_plan
+    logical_name_1st: Examination Annual Plan
+    physical_name_1st: examination_annual_plan
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Kế hoạch kiểm tra hàng năm của UBCKNN, cấu trúc đồng nhất với
+      kế hoạch thanh tra nhưng dành riêng cho hoạt động kiểm tra (khác thẩm quyền).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Direction
+    bcv_concept_most: "[Business Direction] Business Plan"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-EXAMINATION_ANNUAL_PLAN
+  attributes:
+  - name: Examination Annual Plan Id
+    physical_name: examination_annual_plan_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Business Direction] Business Plan."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Business Direction] Business Plan."
+  - name: Examination Annual Plan Code
+    physical_name: examination_annual_plan_code
+    business_meaning_1st: Khóa chính UUID của bảng nguồn. BK của entity.
+    comment_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN.ID
+        business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+        comment: BK chính. PK nguồn (VARCHAR2 UUID).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.EXAMINATION_ANNUAL_PLAN
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Examination Annual Plan Name
+    physical_name: examination_annual_plan_nm
+    business_meaning_1st: Tên kế hoạch kiểm tra chuyên đề hàng năm.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN.NAME
+        business_meaning: Tên kế hoạch kiểm tra chuyên đề hàng năm.
+        comment: null
+  - name: Plan Year
+    physical_name: plan_year
+    business_meaning_1st: Năm kiểm tra, UNIQUE (mỗi năm chỉ 1 kế hoạch).
+    comment_1st: Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN.PLAN_YEAR
+        business_meaning: Năm kiểm tra, UNIQUE (mỗi năm chỉ 1 kế hoạch).
+        comment: Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer.
+  - name: Approval Decision Number
+    physical_name: approval_decision_nbr
+    business_meaning_1st: Số quyết định phê duyệt kế hoạch (bắt buộc khi status=APPROVED).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN.DECISION_NUMBER
+        business_meaning: Số quyết định phê duyệt kế hoạch (bắt buộc khi status=APPROVED).
+        comment: null
+  - name: Approval Decision Date
+    physical_name: approval_decision_dt
+    business_meaning_1st: Ngày quyết định phê duyệt (bắt buộc khi status=APPROVED).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN.DECISION_DATE
+        business_meaning: Ngày quyết định phê duyệt (bắt buộc khi status=APPROVED).
+        comment: null
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning_1st: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)."
+    comment_1st: "Scheme: PLAN_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN.STATUS
+        business_meaning: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)."
+        comment: "Scheme: PLAN_STATUS."
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_ANNUAL_PLAN
+        source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+- ldm:
+    id: ATM-inspection_annual_plan
+    logical_name_1st: Inspection Annual Plan
+    physical_name_1st: inspection_annual_plan
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Kế hoạch thanh tra hàng năm của UBCKNN, được phê duyệt bằng quyết
+      định hành chính. Mỗi năm có 1 kế hoạch (PLAN_YEAR unique), bao gồm thông tin
+      quyết định phê duyệt, trạng thái DRAFT/APPROVED.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Direction
+    bcv_concept_most: "[Business Direction] Business Plan"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-INSPECTION_ANNUAL_PLAN
+  attributes:
+  - name: Inspection Annual Plan Id
+    physical_name: inspection_annual_plan_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Business Direction] Business Plan."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Business Direction] Business Plan."
+  - name: Inspection Annual Plan Code
+    physical_name: inspection_annual_plan_code
+    business_meaning_1st: Khóa chính UUID của bảng nguồn. BK của entity.
+    comment_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: ThanhTra.INSPECTION_ANNUAL_PLAN.ID
+        business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+        comment: BK chính. PK nguồn (VARCHAR2 UUID).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.INSPECTION_ANNUAL_PLAN
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Inspection Annual Plan Name
+    physical_name: inspection_annual_plan_nm
+    business_meaning_1st: Tên kế hoạch thanh tra hàng năm.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: ThanhTra.INSPECTION_ANNUAL_PLAN.NAME
+        business_meaning: Tên kế hoạch thanh tra hàng năm.
+        comment: null
+  - name: Plan Year
+    physical_name: plan_year
+    business_meaning_1st: Năm thanh tra, UNIQUE (mỗi năm chỉ 1 kế hoạch).
+    comment_1st: Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer. Năm dương lịch
+      4 chữ số.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: ThanhTra.INSPECTION_ANNUAL_PLAN.PLAN_YEAR
+        business_meaning: Năm thanh tra, UNIQUE (mỗi năm chỉ 1 kế hoạch).
+        comment: Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer. Năm dương lịch
+          4 chữ số.
+  - name: Approval Decision Number
+    physical_name: approval_decision_nbr
+    business_meaning_1st: Số quyết định ban hành (bắt buộc khi status=APPROVED).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: ThanhTra.INSPECTION_ANNUAL_PLAN.DECISION_NUMBER
+        business_meaning: Số quyết định ban hành (bắt buộc khi status=APPROVED).
+        comment: null
+  - name: Approval Decision Date
+    physical_name: approval_decision_dt
+    business_meaning_1st: Ngày quyết định (bắt buộc khi status=APPROVED).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: ThanhTra.INSPECTION_ANNUAL_PLAN.DECISION_DATE
+        business_meaning: Ngày quyết định (bắt buộc khi status=APPROVED).
+        comment: null
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning_1st: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)."
+    comment_1st: "Scheme: PLAN_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: ThanhTra.INSPECTION_ANNUAL_PLAN.STATUS
+        business_meaning: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)."
+        comment: "Scheme: PLAN_STATUS."
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: INSPECTION_ANNUAL_PLAN
+        source_column: ThanhTra.INSPECTION_ANNUAL_PLAN.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+- ldm:
+    id: ATM-penalty_type
+    logical_name_1st: Penalty Type
+    physical_name_1st: penalty_type
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Danh mục hình thức xử phạt hành chính được pháp luật quy định,
+      phân loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có
+      trạng thái hiệu lực.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Business Direction
+    bcv_concept_most: "[Business Direction] Law"
+    table_type_most: Classification
+    etl_pattern_most: Upsert
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-PENALTY_TYPE
+  attributes:
+  - name: Penalty Type Id
+    physical_name: penalty_tp_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Business Direction] Law — danh mục hình thức\
+      \ xử phạt được pháp luật quy định."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Business Direction] Law — danh mục hình thức\
+          \ xử phạt được pháp luật quy định."
+  - name: Penalty Type Code
+    physical_name: penalty_tp_code
+    business_meaning_1st: Mã hình thức xử phạt, tự động sinh, UNIQUE. BK của entity.
+    comment_1st: BK chính. Mã nghiệp vụ tự sinh (không phải UUID PK).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: ThanhTra.PENALTY_TYPE.CODE
+        business_meaning: Mã hình thức xử phạt, tự động sinh, UNIQUE. BK của entity.
+        comment: BK chính. Mã nghiệp vụ tự sinh (không phải UUID PK).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.PENALTY_TYPE
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Penalty Type Name
+    physical_name: penalty_tp_nm
+    business_meaning_1st: Tên hình thức xử phạt hành chính.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: ThanhTra.PENALTY_TYPE.NAME
+        business_meaning: Tên hình thức xử phạt hành chính.
+        comment: null
+  - name: Penalty Category Code
+    physical_name: penalty_category_code
+    business_meaning_1st: "Phân loại: PRIMARY_PENALTY (Xử phạt chính), SUPPLEMENTARY_PENALTY\
+      \ (Xử phạt bổ sung), REMEDIAL_MEASURE (Biện pháp khắc phục hậu quả)."
+    comment_1st: "Scheme: PENALTY_CATEGORY."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: ThanhTra.PENALTY_TYPE.CATEGORY
+        business_meaning: "Phân loại: PRIMARY_PENALTY (Xử phạt chính), SUPPLEMENTARY_PENALTY\
+          \ (Xử phạt bổ sung), REMEDIAL_MEASURE (Biện pháp khắc phục hậu quả)."
+        comment: "Scheme: PENALTY_CATEGORY."
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết hình thức xử phạt.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: ThanhTra.PENALTY_TYPE.DESCRIPTION
+        business_meaning: Mô tả chi tiết hình thức xử phạt.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning_1st: "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)."
+    comment_1st: "Scheme: ENTITY_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: ThanhTra.PENALTY_TYPE.STATUS
+        business_meaning: "Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)."
+        comment: "Scheme: ENTITY_STATUS."
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning_1st: Căn cứ pháp luật cho hình thức xử phạt này.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: ThanhTra.PENALTY_TYPE.LEGAL_BASIS
+        business_meaning: Căn cứ pháp luật cho hình thức xử phạt này.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_TYPE
+        source_column: ThanhTra.PENALTY_TYPE.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: null
+- ldm:
     id: ATM-cl_business_transaction
     logical_name_1st: Classification Business Transaction
     physical_name_1st: cl_business_transaction
@@ -3113,6 +5672,493 @@ entities:
         source_column: SCMS.CAT_SERVICE.NOTE
         business_meaning: Ghi chú bổ sung, không bắt buộc.
         comment: null
+- ldm:
+    id: ATM-petition
+    logical_name_1st: Petition
+    physical_name_1st: petition
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Hồ sơ đơn thư gửi đến UBCKNN từ công dân hoặc tổ chức, gồm phản
+      ánh kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Communication
+    bcv_concept_most: "[Communication] Feedback"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-PETITION
+  attributes:
+  - name: Petition Id
+    physical_name: petition_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. Hash: hash_id('ThanhTra.PETITION', CODE). BCV: [Communication]\
+      \ Feedback."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. Hash: hash_id('ThanhTra.PETITION', CODE). BCV: [Communication]\
+          \ Feedback."
+  - name: Petition Code
+    physical_name: petition_code
+    business_meaning_1st: "Mã vụ việc tự sinh UNIQUE (VD: DA2540). BK duy nhất — Id\
+      \ hash từ trường này."
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+      Key cũ — gộp còn 1 trường Code duy nhất.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.CODE
+        business_meaning: "Mã vụ việc tự sinh UNIQUE (VD: DA2540). BK duy nhất — Id\
+          \ hash từ trường này."
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique
+          Key cũ — gộp còn 1 trường Code duy nhất.
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.PETITION
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Received Date
+    physical_name: received_dt
+    business_meaning_1st: Ngày tiếp nhận đơn thư.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.RECEIVED_DATE
+        business_meaning: Ngày tiếp nhận đơn thư.
+        comment: null
+  - name: Forwarding Unit
+    physical_name: forwarding_unit
+    business_meaning_1st: Đơn vị/cơ quan chuyển đơn thư đến Thanh tra.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.FORWARDING_UNIT
+        business_meaning: Đơn vị/cơ quan chuyển đơn thư đến Thanh tra.
+        comment: null
+  - name: Sender Name
+    physical_name: sender_nm
+    business_meaning_1st: Họ tên người gửi đơn thư.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.SENDER_NAME
+        business_meaning: Họ tên người gửi đơn thư.
+        comment: null
+  - name: Sender Address
+    physical_name: sender_adr
+    business_meaning_1st: Địa chỉ người gửi đơn thư.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.SENDER_ADDRESS
+        business_meaning: Địa chỉ người gửi đơn thư.
+        comment: null
+  - name: Content
+    physical_name: content
+    business_meaning_1st: Nội dung tóm tắt đơn thư.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.CONTENT
+        business_meaning: Nội dung tóm tắt đơn thư.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+  - name: Petition Category Code
+    physical_name: petition_category_code
+    business_meaning_1st: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT\
+      \ (Khiếu nại), DENUNCIATION (Tố cáo)."
+    comment_1st: "Scheme: PETITION_CATEGORY."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.PETITION_CATEGORY
+        business_meaning: "Loại đơn: FEEDBACK_SUGGESTION (Phản ánh kiến nghị), COMPLAINT\
+          \ (Khiếu nại), DENUNCIATION (Tố cáo)."
+        comment: "Scheme: PETITION_CATEGORY."
+  - name: Related To Corporate Bond Indicator
+    physical_name: related_to_corporate_bond_indicator
+    business_meaning_1st: "Liên quan TPDN: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.RELATED_TO_CORPORATE_BOND
+        business_meaning: "Liên quan TPDN: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Eligible For Processing Indicator
+    physical_name: eligible_for_processing_indicator
+    business_meaning_1st: "Đủ điều kiện xử lý: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.ELIGIBLE_FOR_PROCESSING
+        business_meaning: "Đủ điều kiện xử lý: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Within Jurisdiction Indicator
+    physical_name: within_jurisdiction_indicator
+    business_meaning_1st: "Thuộc thẩm quyền: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.WITHIN_JURISDICTION
+        business_meaning: "Thuộc thẩm quyền: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Assigned Officer Id
+    physical_name: assigned_officer_id
+    business_meaning_1st: ID chuyên viên được phân công xử lý đơn thư.
+    comment_1st: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.ASSIGNED_OFFICER_ID
+        business_meaning: ID chuyên viên được phân công xử lý đơn thư.
+        comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+  - name: Assigned Officer Name
+    physical_name: assigned_officer_nm
+    business_meaning_1st: Tên chuyên viên được phân công xử lý đơn thư (snapshot).
+    comment_1st: Denormalized snapshot tên chuyên viên tại thời điểm phân công, không
+      phải Code nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern
+      Lookup pair Code. Pair with Assigned Officer Id.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.ASSIGNED_OFFICER_NAME
+        business_meaning: Tên chuyên viên được phân công xử lý đơn thư (snapshot).
+        comment: Denormalized snapshot tên chuyên viên tại thời điểm phân công, không
+          phải Code nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng
+          pattern Lookup pair Code. Pair with Assigned Officer Id.
+  - name: Duplicate Type Code
+    physical_name: duplicate_tp_code
+    business_meaning_1st: "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)."
+    comment_1st: "Scheme: PETITION_DUPLICATE_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.DUPLICATE_TYPE
+        business_meaning: "Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)."
+        comment: "Scheme: PETITION_DUPLICATE_TYPE."
+  - name: Original Petition Id
+    physical_name: original_petition_id
+    business_meaning_1st: FK tự tham chiếu đến đơn gốc. Bắt buộc khi duplicate_type=DUPLICATE.
+    comment_1st: "FK target: petition.petition_id. Self-reference. Resolve: join ORIGINAL_PETITION_ID\
+      \ → ThanhTra.PETITION.ID để lấy CODE, rồi hash_id('ThanhTra.PETITION', code_cha)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.ORIGINAL_PETITION_ID
+        business_meaning: FK tự tham chiếu đến đơn gốc. Bắt buộc khi duplicate_type=DUPLICATE.
+        comment: "FK target: petition.petition_id. Self-reference. Resolve: join ORIGINAL_PETITION_ID\
+          \ → ThanhTra.PETITION.ID để lấy CODE, rồi hash_id('ThanhTra.PETITION', code_cha)."
+  - name: Original Petition Code
+    physical_name: original_petition_code
+    business_meaning_1st: Mã đơn gốc (snapshot denormalized).
+    comment_1st: "Lookup pair: petition.petition_code. Pair with Original Petition\
+      \ Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.ORIGINAL_PETITION_ID
+        business_meaning: Mã đơn gốc (snapshot denormalized).
+        comment: "Lookup pair: petition.petition_code. Pair with Original Petition\
+          \ Id."
+  - name: Submission Number
+    physical_name: submission_nbr
+    business_meaning_1st: Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.SUBMISSION_NUMBER
+        business_meaning: Số tờ trình Thanh tra trình lãnh đạo (lấy từ eDoc).
+        comment: null
+  - name: Transferred Authority
+    physical_name: transferred_authority
+    business_meaning_1st: Tên cơ quan có thẩm quyền nhận chuyển đơn.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.TRANSFERRED_AUTHORITY
+        business_meaning: Tên cơ quan có thẩm quyền nhận chuyển đơn.
+        comment: null
+  - name: Internal Transfer Unit Name
+    physical_name: internal_transfer_unit_nm
+    business_meaning_1st: Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn.
+    comment_1st: Denormalized — không có link FK sang đơn vị nội bộ trên Atomic. Nguồn
+      có INTERNAL_TRANSFER_UNIT_ID nhưng thiếu FK formal.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.INTERNAL_TRANSFER_UNIT_NAME
+        business_meaning: Tên ban/đơn vị nội bộ UBCKNN nhận chuyển đơn.
+        comment: Denormalized — không có link FK sang đơn vị nội bộ trên Atomic. Nguồn
+          có INTERNAL_TRANSFER_UNIT_ID nhưng thiếu FK formal.
+  - name: Archived Indicator
+    physical_name: archived_indicator
+    business_meaning_1st: "Lưu đơn: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0) — map sang indicator.
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.ARCHIVED
+        business_meaning: "Lưu đơn: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0) — map sang indicator.
+  - name: Guidance Document Number
+    physical_name: guidance_document_nbr
+    business_meaning_1st: Số văn bản hướng dẫn nhà đầu tư (văn bản đi).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.GUIDANCE_DOCUMENT_NUMBER
+        business_meaning: Số văn bản hướng dẫn nhà đầu tư (văn bản đi).
+        comment: null
+  - name: Guidance Document Date
+    physical_name: guidance_document_dt
+    business_meaning_1st: Ngày văn bản hướng dẫn nhà đầu tư.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.GUIDANCE_DOCUMENT_DATE
+        business_meaning: Ngày văn bản hướng dẫn nhà đầu tư.
+        comment: null
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning_1st: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý\
+      \ xong)."
+    comment_1st: "Scheme: PETITION_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.STATUS
+        business_meaning: "Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý\
+          \ xong)."
+        comment: "Scheme: PETITION_STATUS."
+  - name: End Date
+    physical_name: end_dt
+    business_meaning_1st: Ngày kết thúc xử lý đơn thư.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.END_DATE
+        business_meaning: Ngày kết thúc xử lý đơn thư.
+        comment: null
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung.
+    comment_1st: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PETITION
+        source_column: ThanhTra.PETITION.NOTE
+        business_meaning: Ghi chú bổ sung.
+        comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
 - ldm:
     id: ATM-securities_order
     logical_name_1st: Securities Order
@@ -8905,6 +11951,1246 @@ entities:
         business_meaning: Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn.
         comment: null
 - ldm:
+    id: ATM-pd_subject_behavior
+    logical_name_1st: Penalty Decision Subject Behavior
+    physical_name_1st: pd_subject_behavior
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Chi tiết từng hành vi vi phạm của một đối tượng trong quyết\
+      \ định xử phạt: liên kết hành vi vi phạm, hình thức xử phạt được áp dụng, mức\
+      \ phạt thực tế."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Event
+    bcv_concept_most: "[Event] Event"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-PENALTY_DECISION_SUBJECT_BEHAVIOR
+  attributes:
+  - name: Penalty Decision Subject Behavior Id
+    physical_name: pd_subject_behavior_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Event] Event — Conduct Violation detail per\
+      \ subject."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Event] Event — Conduct Violation detail per\
+          \ subject."
+  - name: Penalty Decision Subject Behavior Code
+    physical_name: pd_subject_behavior_code
+    business_meaning_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    comment_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.ID
+        business_meaning: BK chính. PK nguồn (VARCHAR2 UUID).
+        comment: BK chính. PK nguồn (VARCHAR2 UUID).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Penalty Decision Subject Id
+    physical_name: pd_subject_id
+    business_meaning_1st: FK đến đối tượng bị xử phạt trong quyết định.
+    comment_1st: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
+      \ Hash: hash_id('ThanhTra.PENALTY_DECISION_SUBJECT', PENALTY_DECISION_SUBJECT_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_DECISION_SUBJECT_ID
+        business_meaning: FK đến đối tượng bị xử phạt trong quyết định.
+        comment: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
+          \ Hash: hash_id('ThanhTra.PENALTY_DECISION_SUBJECT', PENALTY_DECISION_SUBJECT_ID)."
+  - name: Penalty Decision Subject Code
+    physical_name: pd_subject_code
+    business_meaning_1st: Mã đối tượng bị xử phạt liên kết (snapshot).
+    comment_1st: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
+      \ Pair with penalty_decision_subject_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_DECISION_SUBJECT_ID
+        business_meaning: Mã đối tượng bị xử phạt liên kết (snapshot).
+        comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
+          \ Pair with penalty_decision_subject_id."
+  - name: Violation Behavior Id
+    physical_name: violation_behavior_id
+    business_meaning_1st: FK đến danh mục hành vi vi phạm.
+    comment_1st: "FK target: violation_behavior.violation_behavior_id. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR',\
+      \ VIOLATION_BEHAVIOR_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID
+        business_meaning: FK đến danh mục hành vi vi phạm.
+        comment: "FK target: violation_behavior.violation_behavior_id. Hash: hash_id('ThanhTra.VIOLATION_BEHAVIOR',\
+          \ VIOLATION_BEHAVIOR_ID)."
+  - name: Violation Behavior Code
+    physical_name: violation_behavior_code
+    business_meaning_1st: Mã hành vi vi phạm liên kết (snapshot).
+    comment_1st: "Lookup pair: violation_behavior.violation_behavior_code. Pair with\
+      \ violation_behavior_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID
+        business_meaning: Mã hành vi vi phạm liên kết (snapshot).
+        comment: "Lookup pair: violation_behavior.violation_behavior_code. Pair with\
+          \ violation_behavior_id."
+  - name: Penalty Type Id
+    physical_name: penalty_tp_id
+    business_meaning_1st: FK đến loại hình phạt áp dụng.
+    comment_1st: "FK target: penalty_type.penalty_type_id. Hash: hash_id('ThanhTra.PENALTY_TYPE',\
+      \ PENALTY_TYPE_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID
+        business_meaning: FK đến loại hình phạt áp dụng.
+        comment: "FK target: penalty_type.penalty_type_id. Hash: hash_id('ThanhTra.PENALTY_TYPE',\
+          \ PENALTY_TYPE_ID)."
+  - name: Penalty Type Code
+    physical_name: penalty_tp_code
+    business_meaning_1st: Mã loại hình phạt liên kết (snapshot).
+    comment_1st: "Lookup pair: penalty_type.penalty_type_code. Pair with penalty_type_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID
+        business_meaning: Mã loại hình phạt liên kết (snapshot).
+        comment: "Lookup pair: penalty_type.penalty_type_code. Pair with penalty_type_id."
+  - name: Description
+    physical_name: description
+    business_meaning_1st: Mô tả chi tiết hành vi vi phạm (thời gian, địa điểm vi phạm).
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.DESCRIPTION
+        business_meaning: Mô tả chi tiết hành vi vi phạm (thời gian, địa điểm vi phạm).
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Min Fine Amount
+    physical_name: min_fine_amt
+    business_meaning_1st: Mức phạt tiền tối thiểu của khung xử phạt (A), VNĐ.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.MIN_FINE_AMOUNT
+        business_meaning: Mức phạt tiền tối thiểu của khung xử phạt (A), VNĐ.
+        comment: null
+  - name: Max Fine Amount
+    physical_name: max_fine_amt
+    business_meaning_1st: Mức phạt tiền tối đa của khung xử phạt (B), VNĐ.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.MAX_FINE_AMOUNT
+        business_meaning: Mức phạt tiền tối đa của khung xử phạt (B), VNĐ.
+        comment: null
+  - name: Applied Fine Amount
+    physical_name: applied_fine_amt
+    business_meaning_1st: Mức phạt tiền áp dụng thực tế, VNĐ.
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.APPLIED_FINE_AMOUNT
+        business_meaning: Mức phạt tiền áp dụng thực tế, VNĐ.
+        comment: null
+  - name: Remedial Measure
+    physical_name: remedial_measure
+    business_meaning_1st: Biện pháp khắc phục hậu quả áp dụng cho hành vi vi phạm
+      này.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.REMEDIAL_MEASURE
+        business_meaning: Biện pháp khắc phục hậu quả áp dụng cho hành vi vi phạm
+          này.
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Remedial Deadline
+    physical_name: remedial_deadline
+    business_meaning_1st: Hạn thực hiện biện pháp khắc phục.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.REMEDIAL_DEADLINE
+        business_meaning: Hạn thực hiện biện pháp khắc phục.
+        comment: null
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning_1st: Căn cứ pháp luật để xử phạt hành vi vi phạm này.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR.LEGAL_BASIS
+        business_meaning: Căn cứ pháp luật để xử phạt hành vi vi phạm này.
+        comment: Nguồn CLOB — ETL truncate.
+- ldm:
+    id: ATM-penalty_decision
+    logical_name_1st: Penalty Decision
+    physical_name_1st: penalty_decision
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Quyết định xử phạt vi phạm hành chính: ghi nhận số quyết định,\
+      \ ngày ban hành, tổng số tiền phạt, trạng thái (7 bước), thông tin khiếu nại\
+      \ và khởi kiện liên quan."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Event
+    bcv_concept_most: "[Event] Event"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-PENALTY_DECISION
+  attributes:
+  - name: Penalty Decision Id
+    physical_name: pd_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Event] Event."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Event] Event."
+  - name: Penalty Decision Code
+    physical_name: pd_code
+    business_meaning_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    comment_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.ID
+        business_meaning: BK chính. PK nguồn (VARCHAR2 UUID).
+        comment: BK chính. PK nguồn (VARCHAR2 UUID).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.PENALTY_DECISION
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Violation Case Id
+    physical_name: violation_case_id
+    business_meaning_1st: FK đến hồ sơ VPHC.
+    comment_1st: "FK target: violation_case.violation_case_id. Hash: hash_id('ThanhTra.VIOLATION_CASE',\
+      \ VIOLATION_CASE_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.VIOLATION_CASE_ID
+        business_meaning: FK đến hồ sơ VPHC.
+        comment: "FK target: violation_case.violation_case_id. Hash: hash_id('ThanhTra.VIOLATION_CASE',\
+          \ VIOLATION_CASE_ID)."
+  - name: Violation Case Code
+    physical_name: violation_case_code
+    business_meaning_1st: Mã hồ sơ VPHC liên kết (snapshot).
+    comment_1st: "Lookup pair: violation_case.violation_case_code. Pair with violation_case_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.VIOLATION_CASE_ID
+        business_meaning: Mã hồ sơ VPHC liên kết (snapshot).
+        comment: "Lookup pair: violation_case.violation_case_code. Pair with violation_case_id."
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning_1st: Số quyết định xử phạt VPHC (cập nhật sau khi ký, cấp số
+      từ VBĐH).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.DECISION_NUMBER
+        business_meaning: Số quyết định xử phạt VPHC (cập nhật sau khi ký, cấp số
+          từ VBĐH).
+        comment: null
+  - name: Issued Date
+    physical_name: issued_dt
+    business_meaning_1st: Ngày ban hành quyết định xử phạt.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.ISSUED_DATE
+        business_meaning: Ngày ban hành quyết định xử phạt.
+        comment: null
+  - name: Decision Category Code
+    physical_name: decision_category_code
+    business_meaning_1st: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED\
+      \ (LĐ UBCKNN ký)."
+    comment_1st: "Scheme: PENALTY_DECISION_CATEGORY."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.DECISION_CATEGORY
+        business_meaning: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED\
+          \ (LĐ UBCKNN ký)."
+        comment: "Scheme: PENALTY_DECISION_CATEGORY."
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning_1st: "Trạng thái: DRAFT, SUBMITTED, APPROVED, REJECTED, ISSUED,\
+      \ SENT_TO_SUBJECT, ENFORCED."
+    comment_1st: "Scheme: PENALTY_DECISION_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.STATUS
+        business_meaning: "Trạng thái: DRAFT, SUBMITTED, APPROVED, REJECTED, ISSUED,\
+          \ SENT_TO_SUBJECT, ENFORCED."
+        comment: "Scheme: PENALTY_DECISION_STATUS."
+  - name: Signer Officer Id
+    physical_name: signer_officer_id
+    business_meaning_1st: FK đến cán bộ ký quyết định xử phạt.
+    comment_1st: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Id. Hash: hash_id('NHNCK.USERS', SIGNER_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.SIGNER_ID
+        business_meaning: FK đến cán bộ ký quyết định xử phạt.
+        comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Id. Hash: hash_id('NHNCK.USERS', SIGNER_ID)."
+  - name: Signer Officer Code
+    physical_name: signer_officer_code
+    business_meaning_1st: Tên cán bộ ký quyết định (snapshot).
+    comment_1st: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Code. Pair with Signer Officer Id. Nguồn lưu SIGNER_NAME (text snapshot)."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.SIGNER_NAME
+        business_meaning: Tên cán bộ ký quyết định (snapshot).
+        comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Code. Pair with Signer Officer Id. Nguồn lưu SIGNER_NAME (text snapshot)."
+  - name: Assigned Officer Id
+    physical_name: assigned_officer_id
+    business_meaning_1st: FK đến cán bộ được phân công xử lý quyết định.
+    comment_1st: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.ASSIGNED_OFFICER_ID
+        business_meaning: FK đến cán bộ được phân công xử lý quyết định.
+        comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Id. Hash: hash_id('NHNCK.USERS', ASSIGNED_OFFICER_ID)."
+  - name: Assigned Officer Name
+    physical_name: assigned_officer_nm
+    business_meaning_1st: Tên cán bộ được phân công (snapshot).
+    comment_1st: Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải
+      Code nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern
+      Lookup pair Code. Pair with Assigned Officer Id.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.ASSIGNED_OFFICER_NAME
+        business_meaning: Tên cán bộ được phân công (snapshot).
+        comment: Denormalized snapshot tên cán bộ tại thời điểm phân công, không phải
+          Code nghiệp vụ — nguồn lưu ASSIGNED_OFFICER_NAME (text), không dùng pattern
+          Lookup pair Code. Pair with Assigned Officer Id.
+  - name: Submitted By Officer Id
+    physical_name: submitted_by_officer_id
+    business_meaning_1st: FK đến cán bộ trình ký quyết định.
+    comment_1st: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Id. Hash: hash_id('NHNCK.USERS', SUBMITTED_BY_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.SUBMITTED_BY_ID
+        business_meaning: FK đến cán bộ trình ký quyết định.
+        comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Id. Hash: hash_id('NHNCK.USERS', SUBMITTED_BY_ID)."
+  - name: Submitted By Officer Code
+    physical_name: submitted_by_officer_code
+    business_meaning_1st: Mã cán bộ trình ký (snapshot).
+    comment_1st: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Code. Pair with Submitted By Officer Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.SUBMITTED_BY_ID
+        business_meaning: Mã cán bộ trình ký (snapshot).
+        comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Code. Pair with Submitted By Officer Id."
+  - name: Approver Officer Id
+    physical_name: approver_officer_id
+    business_meaning_1st: FK đến người phê duyệt quyết định.
+    comment_1st: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Id. Hash: hash_id('NHNCK.USERS', APPROVER_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.APPROVER_ID
+        business_meaning: FK đến người phê duyệt quyết định.
+        comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Id. Hash: hash_id('NHNCK.USERS', APPROVER_ID)."
+  - name: Approver Officer Code
+    physical_name: approver_officer_code
+    business_meaning_1st: Mã người phê duyệt (snapshot).
+    comment_1st: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+      \ Code. Pair with Approver Officer Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.APPROVER_ID
+        business_meaning: Mã người phê duyệt (snapshot).
+        comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+          \ Code. Pair with Approver Officer Id."
+  - name: Anti Money Laundering Indicator
+    physical_name: anti_money_laundering_indicator
+    business_meaning_1st: "Quyết định có nội dung PCRT: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0).
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.ANTI_MONEY_LAUNDERING
+        business_meaning: "Quyết định có nội dung PCRT: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0).
+  - name: Total Fine Amount
+    physical_name: total_fine_amt
+    business_meaning_1st: Tổng mức phạt tiền của quyết định (VNĐ).
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.TOTAL_FINE_AMOUNT
+        business_meaning: Tổng mức phạt tiền của quyết định (VNĐ).
+        comment: null
+  - name: Payment Deadline
+    physical_name: payment_deadline
+    business_meaning_1st: Hạn nộp tiền phạt.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.PAYMENT_DEADLINE
+        business_meaning: Hạn nộp tiền phạt.
+        comment: null
+  - name: Submitted Timestamp
+    physical_name: submitted_tms
+    business_meaning_1st: Thời điểm trình ký quyết định.
+    comment_1st: Nguồn TIMESTAMP(6).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.SUBMITTED_AT
+        business_meaning: Thời điểm trình ký quyết định.
+        comment: Nguồn TIMESTAMP(6).
+  - name: Complaint Exists Indicator
+    physical_name: complaint_exists_indicator
+    business_meaning_1st: "Có khiếu nại: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0).
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.COMPLAINT_EXISTS
+        business_meaning: "Có khiếu nại: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0).
+  - name: Complaint Content
+    physical_name: complaint_content
+    business_meaning_1st: Nội dung khiếu nại quyết định xử phạt.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.COMPLAINT_CONTENT
+        business_meaning: Nội dung khiếu nại quyết định xử phạt.
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Complaint Received Date
+    physical_name: complaint_received_dt
+    business_meaning_1st: Ngày tiếp nhận khiếu nại.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.COMPLAINT_RECEIVED_DATE
+        business_meaning: Ngày tiếp nhận khiếu nại.
+        comment: null
+  - name: Complaint Status Code
+    physical_name: complaint_status_code
+    business_meaning_1st: "Trạng thái khiếu nại: PROCESSING, RESOLVED."
+    comment_1st: "Scheme: COMPLAINT_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.COMPLAINT_STATUS
+        business_meaning: "Trạng thái khiếu nại: PROCESSING, RESOLVED."
+        comment: "Scheme: COMPLAINT_STATUS."
+  - name: Complaint Result
+    physical_name: complaint_result
+    business_meaning_1st: Kết quả giải quyết khiếu nại.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.COMPLAINT_RESULT
+        business_meaning: Kết quả giải quyết khiếu nại.
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Lawsuit Exists Indicator
+    physical_name: lawsuit_exists_indicator
+    business_meaning_1st: "Có khởi kiện: 0=Không, 1=Có."
+    comment_1st: Nguồn NUMBER(1,0).
+    data_domain_most: Indicator
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.LAWSUIT_EXISTS
+        business_meaning: "Có khởi kiện: 0=Không, 1=Có."
+        comment: Nguồn NUMBER(1,0).
+  - name: Lawsuit Content
+    physical_name: lawsuit_content
+    business_meaning_1st: Nội dung khởi kiện quyết định xử phạt.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.LAWSUIT_CONTENT
+        business_meaning: Nội dung khởi kiện quyết định xử phạt.
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Signed Document URL
+    physical_name: signed_document_url
+    business_meaning_1st: URL file PDF đã ký số.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.SIGNED_DOCUMENT_URL
+        business_meaning: URL file PDF đã ký số.
+        comment: null
+  - name: Summary
+    physical_name: summary
+    business_meaning_1st: Tóm tắt nội dung quyết định xử phạt.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION
+        source_column: ThanhTra.PENALTY_DECISION.SUMMARY
+        business_meaning: Tóm tắt nội dung quyết định xử phạt.
+        comment: Nguồn CLOB — ETL truncate.
+- ldm:
+    id: ATM-penalty_decision_subject
+    logical_name_1st: Penalty Decision Subject
+    physical_name_1st: penalty_decision_subject
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: "Đối tượng bị xử phạt trong quyết định: thông tin định danh,\
+      \ tổng số tiền phạt, số tiền đã nộp, số tiền cưỡng chế, trạng thái tuân thủ\
+      \ thanh toán."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Event
+    bcv_concept_most: "[Event] Event"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ThanhTra
+    references:
+      brd:
+      - BRD-SRC-ThanhTra-PENALTY_DECISION_SUBJECT
+  attributes:
+  - name: Penalty Decision Subject Id
+    physical_name: pd_subject_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: [Event] Event — Involved Party in context of\
+      \ administrative penalty."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: [Event] Event — Involved Party in context of\
+          \ administrative penalty."
+  - name: Penalty Decision Subject Code
+    physical_name: pd_subject_code
+    business_meaning_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    comment_1st: BK chính. PK nguồn (VARCHAR2 UUID).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: BK chính. PK nguồn (VARCHAR2 UUID).
+        comment: BK chính. PK nguồn (VARCHAR2 UUID).
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: ThanhTra.PENALTY_DECISION_SUBJECT
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM."
+  - name: Penalty Decision Id
+    physical_name: pd_id
+    business_meaning_1st: FK đến quyết định xử phạt.
+    comment_1st: "FK target: penalty_decision.penalty_decision_id. Hash: hash_id('ThanhTra.PENALTY_DECISION',\
+      \ PENALTY_DECISION_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.PENALTY_DECISION_ID
+        business_meaning: FK đến quyết định xử phạt.
+        comment: "FK target: penalty_decision.penalty_decision_id. Hash: hash_id('ThanhTra.PENALTY_DECISION',\
+          \ PENALTY_DECISION_ID)."
+  - name: Penalty Decision Code
+    physical_name: pd_code
+    business_meaning_1st: Mã quyết định xử phạt liên kết (snapshot).
+    comment_1st: "Lookup pair: penalty_decision.penalty_decision_code. Pair with penalty_decision_id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.PENALTY_DECISION_ID
+        business_meaning: Mã quyết định xử phạt liên kết (snapshot).
+        comment: "Lookup pair: penalty_decision.penalty_decision_code. Pair with penalty_decision_id."
+  - name: Subject Type Code
+    physical_name: subject_tp_code
+    business_meaning_1st: "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ\
+      \ chức)."
+    comment_1st: "Scheme: PENALTY_SUBJECT_TYPE."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_TYPE
+        business_meaning: "Loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ\
+          \ chức)."
+        comment: "Scheme: PENALTY_SUBJECT_TYPE."
+  - name: Subject Name
+    physical_name: subject_nm
+    business_meaning_1st: Tên đối tượng bị xử phạt.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_NAME
+        business_meaning: Tên đối tượng bị xử phạt.
+        comment: null
+  - name: Subject Id Number
+    physical_name: subject_id_nbr
+    business_meaning_1st: Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức).
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_ID_NUMBER
+        business_meaning: Số CCCD/CMND (cá nhân) hoặc Mã số thuế/GPKD (tổ chức).
+        comment: null
+  - name: Subject Date Of Birth
+    physical_name: subject_dt_of_birth
+    business_meaning_1st: Ngày sinh đối tượng bị xử phạt (cá nhân).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_DOB
+        business_meaning: Ngày sinh đối tượng bị xử phạt (cá nhân).
+        comment: null
+  - name: Subject Legal Rep
+    physical_name: subject_legal_rep
+    business_meaning_1st: Tên người đại diện pháp luật.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_LEGAL_REP
+        business_meaning: Tên người đại diện pháp luật.
+        comment: null
+  - name: Subject Legal Rep Title
+    physical_name: subject_legal_rep_title
+    business_meaning_1st: Chức danh người đại diện pháp luật.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_LEGAL_REP_TITLE
+        business_meaning: Chức danh người đại diện pháp luật.
+        comment: null
+  - name: Total Fine Amount
+    physical_name: total_fine_amt
+    business_meaning_1st: Tổng mức phạt tiền đối với đối tượng này (VNĐ).
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.TOTAL_FINE_AMOUNT
+        business_meaning: Tổng mức phạt tiền đối với đối tượng này (VNĐ).
+        comment: null
+  - name: Paid Amount
+    physical_name: paid_amt
+    business_meaning_1st: Số tiền đã nộp phạt (VNĐ).
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.PAID_AMOUNT
+        business_meaning: Số tiền đã nộp phạt (VNĐ).
+        comment: null
+  - name: Coerced Amount
+    physical_name: coerced_amt
+    business_meaning_1st: Số tiền đã cưỡng chế tài khoản (VNĐ).
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.COERCED_AMOUNT
+        business_meaning: Số tiền đã cưỡng chế tài khoản (VNĐ).
+        comment: null
+  - name: Payment Received Date
+    physical_name: payment_received_dt
+    business_meaning_1st: Ngày xác nhận đã nhận tiền phạt.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.PAYMENT_RECEIVED_DATE
+        business_meaning: Ngày xác nhận đã nhận tiền phạt.
+        comment: null
+  - name: Compliance Status Code
+    physical_name: compliance_status_code
+    business_meaning_1st: "Trạng thái thi hành: NOT_PAID, PAID, PARTIAL, COMPLAINING."
+    comment_1st: "Scheme: COMPLIANCE_STATUS."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.COMPLIANCE_STATUS
+        business_meaning: "Trạng thái thi hành: NOT_PAID, PAID, PARTIAL, COMPLAINING."
+        comment: "Scheme: COMPLIANCE_STATUS."
+  - name: Enforcement Progress
+    physical_name: enforcement_progress
+    business_meaning_1st: Diễn tiến cưỡng chế thi hành quyết định.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.ENFORCEMENT_PROGRESS
+        business_meaning: Diễn tiến cưỡng chế thi hành quyết định.
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Note
+    physical_name: note
+    business_meaning_1st: Ghi chú bổ sung về đối tượng bị xử phạt.
+    comment_1st: Nguồn CLOB — ETL truncate.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.NOTE
+        business_meaning: Ghi chú bổ sung về đối tượng bị xử phạt.
+        comment: Nguồn CLOB — ETL truncate.
+  - name: Payment Proof URL
+    physical_name: payment_proof_url
+    business_meaning_1st: URL file chứng từ nộp tiền phạt do người vi phạm upload.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.PAYMENT_PROOF_URL
+        business_meaning: URL file chứng từ nộp tiền phạt do người vi phạm upload.
+        comment: null
+  - name: Payment Proof Uploaded Timestamp
+    physical_name: payment_proof_uploaded_tms
+    business_meaning_1st: Thời điểm upload chứng từ nộp tiền phạt.
+    comment_1st: Nguồn TIMESTAMP(6).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.PAYMENT_PROOF_UPLOADED_AT
+        business_meaning: Thời điểm upload chứng từ nộp tiền phạt.
+        comment: Nguồn TIMESTAMP(6).
+- ldm:
     id: ATM-sc_alert_violation
     logical_name_1st: Securities Company Alert Violation
     physical_name_1st: sc_alert_violation
@@ -12170,6 +16456,7 @@ entities:
     sources:
     - NHNCK
     - SCMS
+    - ThanhTra
     references:
       brd:
       - BRD-SRC-NHNCK-PROFESSIONALS
@@ -12181,6 +16468,7 @@ entities:
       - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
       - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
       - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+      - BRD-SRC-ThanhTra-PENALTY_DECISION_SUBJECT
   attributes:
   - name: Involved Party Id
     physical_name: ip_id
@@ -12250,6 +16538,14 @@ entities:
         comment: "FK target: sc_shareholder_representative.sc_shareholder_representative_id.\
           \ Shared entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE',\
           \ ID)."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: FK đến Penalty Decision Subject.
+        comment: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('ThanhTra.PENALTY_DECISION_SUBJECT',\
+          \ ID)."
   - name: Involved Party Code
     physical_name: ip_code
     business_meaning_1st: Mã người hành nghề.
@@ -12311,6 +16607,13 @@ entities:
         business_meaning: Mã Securities Company Shareholder Representative.
         comment: "Lookup pair: sc_shareholder_representative.sc_shareholder_representative_code.\
           \ Pair with Involved Party Id."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: Mã đối tượng bị xử phạt.
+        comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
+          \ Pair with Involved Party Id."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn.
@@ -12329,6 +16632,7 @@ entities:
     - SCMS.SC_FIRM_SHAREHOLDER
     - SCMS.SC_FIRM_SHAREHOLDER_RELATION
     - SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+    - ThanhTra.PENALTY_DECISION_SUBJECT
     conflict_review: null
     source_mappings:
     - source_system: NHNCK
@@ -12371,6 +16675,12 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn.
+        comment: null
   - name: Identification Type Code
     physical_name: identification_tp_code
     business_meaning_1st: Loại giấy tờ định danh.
@@ -12385,6 +16695,7 @@ entities:
     - OPERATION_LICENSE
     - NATIONAL_ID
     - LEGACY_CMND
+    - TAX_ID
     conflict_review: null
     source_mappings:
     - source_system: NHNCK
@@ -12449,6 +16760,12 @@ entities:
         business_meaning: "Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ (ID_NUMBER)."
         comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode LEGACY_CMND — chỉ có 1 cột\
           \ ID_NUMBER (CMND legacy, không phân biệt CCCD mới)."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: null
+        business_meaning: Loại giấy tờ — mã số thuế.
+        comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
   - name: Previous Identification Number
     physical_name: previous_identification_nbr
     business_meaning_1st: Số CMND cũ (trước khi đổi sang CCCD).
@@ -12497,6 +16814,12 @@ entities:
         business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
         comment: Lưu lại để tra cứu lịch sử giấy tờ.
       - source_table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+        source_column: null
+        business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+        comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
         source_column: null
         business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
         comment: Lưu lại để tra cứu lịch sử giấy tờ.
@@ -12556,6 +16879,12 @@ entities:
         source_column: SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ID_NUMBER
         business_meaning: Số CMND của người đại diện cổ đông.
         comment: NVARCHAR2(30) — số CMND legacy.
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_TAX_CODE
+        business_meaning: Mã số thuế của đối tượng bị xử phạt.
+        comment: null
   - name: Identification Issue Date
     physical_name: identification_issue_dt
     business_meaning_1st: Ngày cấp giấy tờ định danh.
@@ -13320,6 +17649,7 @@ entities:
     sources:
     - NHNCK
     - SCMS
+    - ThanhTra
     references:
       brd:
       - BRD-SRC-NHNCK-ORGANIZATIONS
@@ -13333,6 +17663,8 @@ entities:
       - BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
       - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
       - BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
+      - BRD-SRC-ThanhTra-EXAMINATION_TEAM_TARGET
+      - BRD-SRC-ThanhTra-PENALTY_DECISION_SUBJECT
   attributes:
   - name: Involved Party Id
     physical_name: ip_id
@@ -13417,6 +17749,20 @@ entities:
         comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
           \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE',\
           \ ID)."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.ID
+        business_meaning: FK đến Examination Team Target.
+        comment: "FK target: examination_team_target.examination_team_target_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('ThanhTra.EXAMINATION_TEAM_TARGET',\
+          \ ID)."
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: FK đến Penalty Decision Subject.
+        comment: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('ThanhTra.PENALTY_DECISION_SUBJECT',\
+          \ ID)."
   - name: Involved Party Code
     physical_name: ip_code
     business_meaning_1st: Mã tổ chức.
@@ -13488,6 +17834,18 @@ entities:
         business_meaning: Mã Securities Company Organization Unit.
         comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
           \ with Involved Party Id."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.ID
+        business_meaning: Mã đối tượng được kiểm tra.
+        comment: "Lookup pair: examination_team_target.examination_team_target_code.\
+          \ Pair with Involved Party Id."
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: Mã đối tượng bị xử phạt.
+        comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
+          \ Pair with Involved Party Id."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn.
@@ -13508,6 +17866,8 @@ entities:
     - SCMS.SC_FIRM_SENIOR_PERSONNEL
     - SCMS.SC_FIRM_SHAREHOLDER
     - SCMS.SC_FIRM_TRANSACTION_OFFICE
+    - ThanhTra.EXAMINATION_TEAM_TARGET
+    - ThanhTra.PENALTY_DECISION_SUBJECT
     conflict_review: null
     source_mappings:
     - source_system: NHNCK
@@ -13558,6 +17918,16 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: null
+        business_meaning: Mã hệ thống nguồn.
+        comment: null
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: null
+        business_meaning: Mã hệ thống nguồn.
+        comment: null
   - name: Address Type Code
     physical_name: adr_tp_code
     business_meaning_1st: Loại địa chỉ — trụ sở chính.
@@ -13575,6 +17945,7 @@ entities:
     - CURRENT
     - HOUSEHOLD_REGISTRY
     - TRANSACTION_OFFICE
+    - ADDRESS
     conflict_review: null
     source_mappings:
     - source_system: NHNCK
@@ -13637,6 +18008,16 @@ entities:
         comment: "Scheme: IP_ADDR_TYPE. ETL hardcode TRANSACTION_OFFICE — đây là địa\
           \ chỉ phòng giao dịch, không phải trụ sở chính CTCK. SC_FIRM_TRANSACTION_OFFICE\
           \ chỉ có 1 địa chỉ."
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: null
+        business_meaning: Loại địa chỉ — địa chỉ chung, nguồn không phân loại.
+        comment: null
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: null
+        business_meaning: Loại địa chỉ — địa chỉ chung, nguồn không phân loại.
+        comment: null
   - name: Address Value
     physical_name: adr_val
     business_meaning_1st: Địa chỉ trụ sở chính của tổ chức.
@@ -13700,6 +18081,16 @@ entities:
       - source_table: SC_FIRM_TRANSACTION_OFFICE
         source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.ADDRESS
         business_meaning: Địa chỉ chi tiết của phòng giao dịch.
+        comment: null
+    - source_system: ThanhTra
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: ThanhTra.EXAMINATION_TEAM_TARGET.ADDRESS
+        business_meaning: Địa chỉ đối tượng được kiểm tra (cá nhân và tổ chức).
+        comment: null
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: ThanhTra.PENALTY_DECISION_SUBJECT.SUBJECT_ADDRESS
+        business_meaning: Địa chỉ cư trú/trụ sở đối tượng bị xử phạt.
         comment: null
   - name: Province Id
     physical_name: province_id

@@ -156,35 +156,68 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Business Line Level 1 Code"
-  physical_name: "business_line_level_1_code"
-  description: "Mã ngành cấp 1."
-  data_domain: "Classification Value"
+- attribute_name: "Business Line Level 1 Id"
+  physical_name: "business_line_level_1_id"
+  description: "Ngành cấp 1 (FK)."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
-  comment: "Scheme: IDS_INDUSTRY_CATEGORY (source_table IDS.categories). IDS.CATEGORIES\
-    \ không thiết kế thành Atomic entity — theo quyết định tường minh của Data Modeler\
-    \ (2026-07-14), IDS không dùng chung entity 'Classification Business Line' (ECAT)\
-    \ vì khác nguồn dữ liệu. Giữ nguyên dạng Classification Value, không tạo cặp FK\
-    \ Id+Code (CLAUDE.md #4)."
-  classification_context: "IDS_INDUSTRY_CATEGORY"
+  comment: "FK target: Classification Business Line.Classification Business Line\
+    \ Id. CATEGORY_L1_ID lưu ID kỹ thuật của IDS.CATEGORIES (không phải INDUSTRY_CD)\
+    \ — PHẢI join: CATEGORY_L1_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('IDS.CATEGORIES',\
+    \ industry_cd). IDS.CATEGORIES đã promote thành Atomic entity shared với ECAT\
+    \ (2026-07-17) — thay thế Classification Value scheme IDS_INDUSTRY_CATEGORY cũ\
+    \ bằng cặp FK Id+Code (CLAUDE.md #3). Xem IDS_HLD_Tier1.md T1-13."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Business Line Level 2 Code"
-  physical_name: "business_line_level_2_code"
-  description: "Mã ngành cấp 2."
-  data_domain: "Classification Value"
+- attribute_name: "Business Line Level 1 Code"
+  physical_name: "business_line_level_1_code"
+  description: "Mã ngành cấp 1."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
+  comment: "Lookup pair: Classification Business Line.Classification Business Line\
+    \ Code. Pair with Business Line Level 1 Id. Giá trị lấy qua join (xem Business\
+    \ Line Level 1 Id)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Line Level 2 Id"
+  physical_name: "business_line_level_2_id"
+  description: "Ngành cấp 2 (FK)."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
-  comment: "Scheme: IDS_INDUSTRY_CATEGORY (source_table IDS.categories). Xem ghi chú\
-    \ tại Business Line Level 1 Code."
-  classification_context: "IDS_INDUSTRY_CATEGORY"
+  comment: "FK target: Classification Business Line.Classification Business Line\
+    \ Id. CATEGORY_L2_ID lưu ID kỹ thuật của IDS.CATEGORIES — PHẢI join: CATEGORY_L2_ID\
+    \ = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('IDS.CATEGORIES', industry_cd).\
+    \ Xem ghi chú tại Business Line Level 1 Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Line Level 2 Code"
+  physical_name: "business_line_level_2_code"
+  description: "Mã ngành cấp 2."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
+  comment: "Lookup pair: Classification Business Line.Classification Business Line\
+    \ Code. Pair with Business Line Level 2 Id. Giá trị lấy qua join (xem Business\
+    \ Line Level 2 Id)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Enterprise Type Code"

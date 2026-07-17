@@ -1,0 +1,317 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-examination_team-ThanhTra.EXAMINATION_TEAM
+  logical_name: Examination Team
+  physical_name: examination_team
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Hồ sơ đoàn kiểm tra cụ thể (mã HSKT-YYYY-XXX), ghi nhận thông tin thành lập đoàn, quyết định kiểm tra, đơn vị chủ trì và hình thức kiểm tra (định kỳ/đột xuất).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-EXAMINATION_TEAM
+
+attributes:
+  - name: Examination Team Id
+    physical_name: examination_team_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('ThanhTra.EXAMINATION_TEAM', CODE). BCV: [Business Activity] Business Review."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Examination Team Code
+    physical_name: examination_team_code
+    business_meaning: "Mã hồ sơ đoàn kiểm tra tự sinh UNIQUE (HSKT-YYYY-XXX). BK duy nhất — Id hash từ trường này."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.CODE
+    comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID UUID) + Unique Key cũ — gộp còn 1 trường Code duy nhất.
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: ThanhTra.EXAMINATION_TEAM
+
+  - name: Examination Annual Plan Id
+    physical_name: examination_annual_plan_id
+    business_meaning: "FK đến kế hoạch kiểm tra năm (chỉ có khi form_type=PERIODIC)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_ANNUAL_PLAN_ID
+    comment: "FK target: examination_annual_plan.examination_annual_plan_id. Hash: hash_id('ThanhTra.EXAMINATION_ANNUAL_PLAN', EXAMINATION_ANNUAL_PLAN_ID)."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Examination Annual Plan Code
+    physical_name: examination_annual_plan_code
+    business_meaning: Mã kế hoạch kiểm tra năm liên kết (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_ANNUAL_PLAN_ID
+    comment: "Lookup pair: examination_annual_plan.examination_annual_plan_code. Pair with examination_annual_plan_id."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Unit Name
+    physical_name: unit_nm
+    business_meaning: Tên đơn vị chủ trì kiểm tra (tự động gán theo Ban của người dùng đăng nhập).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.UNIT_NAME
+    comment: Denormalized text — nguồn có UNIT_ID (FK suy luận → UNITS.ID) nhưng không formal FK.
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Plan Year
+    physical_name: plan_year
+    business_meaning: Năm kiểm tra.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.PLAN_YEAR
+    comment: "Nguồn NUMBER(4,0) — ETL cast sang integer."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Form Type Code
+    physical_name: form_tp_code
+    business_meaning: "Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.FORM_TYPE
+    comment: "Scheme: INSPECTION_TYPE."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Start Date
+    physical_name: start_dt
+    business_meaning: Ngày bắt đầu đoàn kiểm tra.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.START_DATE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: End Date
+    physical_name: end_dt
+    business_meaning: "Ngày kết thúc đoàn kiểm tra (phải >= start_date)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.END_DATE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Duration Days
+    physical_name: duration_days
+    business_meaning: "Thời hạn kiểm tra (số ngày, chỉ nhập số nguyên > 0)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.DURATION_DAYS
+    comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning: Số quyết định kiểm tra (UNIQUE trên phân hệ).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.DECISION_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Decision Date
+    physical_name: decision_dt
+    business_meaning: Ngày ban hành quyết định kiểm tra.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.DECISION_DATE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Decision Name
+    physical_name: decision_nm
+    business_meaning: Tên quyết định kiểm tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.DECISION_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Announcement Date
+    physical_name: announcement_dt
+    business_meaning: Ngày công bố quyết định kiểm tra.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.ANNOUNCEMENT_DATE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Content
+    physical_name: content
+    business_meaning: Nội dung kiểm tra tổng quát.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.CONTENT
+    comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Examination Period From Date
+    physical_name: examination_period_from_dt
+    business_meaning: "Thời kỳ kiểm tra - Từ ngày."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_PERIOD_FROM
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Examination Period To Date
+    physical_name: examination_period_to_dt
+    business_meaning: "Thời kỳ kiểm tra - Đến ngày."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.EXAMINATION_PERIOD_TO
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Anti Money Laundering Indicator
+    physical_name: anti_money_laundering_indicator
+    business_meaning: "Có kiểm tra nội dung PCRT: 0=Không, 1=Có."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.ANTI_MONEY_LAUNDERING
+    comment: "Nguồn NUMBER(1,0) — map sang indicator."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Abnormal Transaction Check Indicator
+    physical_name: abnormal_transaction_check_indicator
+    business_meaning: "Kiểm tra giao dịch bất thường: 0=Không, 1=Có. Nếu=1 thì không tạo thông báo kết quả."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.ABNORMAL_TRANSACTION_CHECK
+    comment: "Nguồn NUMBER(1,0) — map sang indicator."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM
+    source_column: ThanhTra.EXAMINATION_TEAM.NOTE
+    comment: Nguồn CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM'"
+    etl_derived_value: null

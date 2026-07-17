@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-examination_annual_plan_target-ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET
+  logical_name: Examination Annual Plan Target
+  physical_name: examination_annual_plan_target
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Danh sách đối tượng được đưa vào kế hoạch kiểm tra hàng năm, phân loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-EXAMINATION_ANNUAL_PLAN_TARGET
+
+attributes:
+  - name: Examination Annual Plan Target Id
+    physical_name: examination_annual_plan_target_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: null
+    comment: "PK surrogate. BCV: [Business Activity] Business Review."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Examination Annual Plan Target Code
+    physical_name: examination_annual_plan_target_code
+    business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET
+
+  - name: Examination Annual Plan Id
+    physical_name: examination_annual_plan_id
+    business_meaning: FK đến Examination Annual Plan (kế hoạch kiểm tra năm chứa mục tiêu này).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.EXAMINATION_ANNUAL_PLAN_ID
+    comment: "FK target: examination_annual_plan.examination_annual_plan_id. Hash: hash_id('ThanhTra.EXAMINATION_ANNUAL_PLAN', EXAMINATION_ANNUAL_PLAN_ID)."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Examination Annual Plan Code
+    physical_name: examination_annual_plan_code
+    business_meaning: Mã Examination Annual Plan (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.EXAMINATION_ANNUAL_PLAN_ID
+    comment: "Lookup pair: examination_annual_plan.examination_annual_plan_code. Pair with examination_annual_plan_id."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Target Type Code
+    physical_name: target_tp_code
+    business_meaning: Loại đối tượng trong kế hoạch kiểm tra.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.TARGET_TYPE
+    comment: "Scheme: EXAMINATION_TARGET_TYPE."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Target Reference Id
+    physical_name: target_reference_id
+    business_meaning: ID tham chiếu đối tượng trong hệ thống nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.TARGET_REFERENCE_ID
+    comment: Denormalized reference — không FK formal sang hệ thống nguồn.
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Target Name
+    physical_name: target_nm
+    business_meaning: Tên đối tượng kiểm tra trong kế hoạch (snapshot tại thời điểm lập kế hoạch).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.TARGET_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Leading Unit Name
+    physical_name: leading_unit_nm
+    business_meaning: Tên đơn vị chủ trì kiểm tra (snapshot tại thời điểm lập kế hoạch).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_NAME
+    comment: LEADING_UNIT_ID không map — không có FK formal đến UNITS. Lưu snapshot text thay thế.
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Planned Content
+    physical_name: planned_content
+    business_meaning: Nội dung kiểm tra dự kiến đối với đối tượng này.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.PLANNED_CONTENT
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null
+
+  - name: Planned Quarter
+    physical_name: planned_quarter
+    business_meaning: "Quý dự kiến thực hiện kiểm tra (1, 2, 3 hoặc 4)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
+    source_column: ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET.PLANNED_QUARTER
+    comment: "Nguồn NUMBER(1,0) — ETL cast sang integer. Giá trị hợp lệ: 1–4."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_ANNUAL_PLAN_TARGET'"
+    etl_derived_value: null

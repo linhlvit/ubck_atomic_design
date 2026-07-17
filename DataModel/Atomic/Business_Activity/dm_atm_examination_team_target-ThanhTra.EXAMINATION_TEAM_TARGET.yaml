@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-examination_team_target-ThanhTra.EXAMINATION_TEAM_TARGET
+  logical_name: Examination Team Target
+  physical_name: examination_team_target
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại đơn vị/cá nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-EXAMINATION_TEAM_TARGET
+
+attributes:
+  - name: Examination Team Target Id
+    physical_name: examination_team_target_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: null
+    comment: "PK surrogate. BCV: [Business Activity] Business Review."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Examination Team Target Code
+    physical_name: examination_team_target_code
+    business_meaning: PK nguồn (VARCHAR2 UUID). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: ThanhTra.EXAMINATION_TEAM_TARGET
+
+  - name: Examination Team Id
+    physical_name: examination_team_id
+    business_meaning: FK đến đoàn kiểm tra thực hiện kiểm tra đối tượng này.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID
+    comment: "FK target: examination_team.examination_team_id. Hash: hash_id('ThanhTra.EXAMINATION_TEAM', EXAMINATION_TEAM_ID)."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Examination Team Code
+    physical_name: examination_team_code
+    business_meaning: Mã đoàn kiểm tra liên kết (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID
+    comment: "Lookup pair: examination_team.examination_team_code. Pair with examination_team_id."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Target Type Code
+    physical_name: target_tp_code
+    business_meaning: "Loại đối tượng: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.TARGET_TYPE
+    comment: "Map 1:1 từ nguồn — không phải Classification Value. Giá trị tham chiếu chéo loại đối tượng qua Target Reference Id đến nhiều source system khác nhau (SCMS/FMS/IDS), không phải reference data set cố định trong ThanhTra."
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Target Reference Id
+    physical_name: target_reference_id
+    business_meaning: ID tham chiếu đối tượng trong hệ thống nguồn (SCMS/FMS/IDS).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.TARGET_REFERENCE_ID
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Target Name
+    physical_name: target_nm
+    business_meaning: Tên đối tượng được kiểm tra.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.TARGET_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Account Number
+    physical_name: account_nbr
+    business_meaning: Số tài khoản chứng khoán (cá nhân và tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.ACCOUNT_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Securities Company Name
+    physical_name: sc_nm
+    business_meaning: CTCK nơi mở tài khoản (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.SECURITIES_COMPANY_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Citizen Id
+    physical_name: citizen_id
+    business_meaning: "Số CCCD/CMND — chỉ dùng cho cá nhân (targetType=INDIVIDUAL)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.CITIZEN_ID
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Business Registration Number
+    physical_name: business_registration_nbr
+    business_meaning: Số đăng ký kinh doanh — chỉ dùng cho tổ chức.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.BUSINESS_REGISTRATION_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Legal Rep Name
+    physical_name: legal_rep_nm
+    business_meaning: Tên người đại diện theo pháp luật (tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.LEGAL_REP_NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Legal Rep Citizen Id
+    physical_name: legal_rep_citizen_id
+    business_meaning: CCCD người đại diện theo pháp luật.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: ThanhTra.EXAMINATION_TEAM_TARGET.LEGAL_REP_CITIZEN_ID
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null

@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-proactive_notice-ThanhTra.PROACTIVE_NOTICE
+  logical_name: Proactive Notice
+  physical_name: proactive_notice
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: null
+  bcv_concept: null
+  table_type: null
+  etl_pattern: SCD4A
+  source: ThanhTra
+  description: |
+    Thông báo chủ động phát đi từ thanh tra UBCKNN (không gắn với hồ sơ cụ thể), dùng để cảnh báo, nhắc nhở hoặc hướng dẫn các đơn vị được giám sát.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ThanhTra-PROACTIVE_NOTICE
+
+attributes:
+  - name: Proactive Notice Id
+    physical_name: proactive_notice_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: null
+    comment: "PK surrogate. BCV: [Event] Event — Notification sub-type."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Proactive Notice Code
+    physical_name: proactive_notice_code
+    business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: ThanhTra.PROACTIVE_NOTICE
+
+  - name: Proactive Notice Title
+    physical_name: proactive_notice_title
+    business_meaning: Tiêu đề thông báo chủ động gửi đến công ty.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.TITLE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Content
+    physical_name: content
+    business_meaning: Nội dung thông báo chủ động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.CONTENT
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Notice Type Code
+    physical_name: notice_tp_code
+    business_meaning: "Loại thông báo: PENALTY_DECISION (Quyết định xử phạt VPHC), MARKET_SECURITY_MEASURE (Quyết định BPBĐ an ninh thị trường), GUIDANCE_DOCUMENT (Công văn hướng dẫn), OTHER (Thông báo khác)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.NOTICE_TYPE
+    comment: "Scheme: PROACTIVE_NOTICE_TYPE."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Priority Code
+    physical_name: priority_code
+    business_meaning: "Mức độ ưu tiên: NORMAL (Bình thường), URGENT (Khẩn)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.PRIORITY
+    comment: "Scheme: NOTICE_PRIORITY."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Sender Officer Id
+    physical_name: sender_officer_id
+    business_meaning: ID cán bộ Thanh tra gửi thông báo.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.SENDER_ID
+    comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id. Hash: hash_id('NHNCK.USERS', SENDER_ID)."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Sender Officer Code
+    physical_name: sender_officer_code
+    business_meaning: Tên cán bộ Thanh tra gửi thông báo (snapshot).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.SENDER_NAME
+    comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer Code. Pair with Sender Officer Id. Nguồn lưu SENDER_NAME (text) — ETL map sang code từ USERS."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Sent Timestamp
+    physical_name: sent_tms
+    business_meaning: Thời điểm gửi thông báo.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.SENT_AT
+    comment: Nguồn TIMESTAMP(6).
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning: "Trạng thái: DRAFT (Nháp), SENT (Đã gửi) — sau khi SENT không thể sửa hoặc thu hồi."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ThanhTra
+    source_table: PROACTIVE_NOTICE
+    source_column: ThanhTra.PROACTIVE_NOTICE.STATUS
+    comment: "Scheme: NOTICE_STATUS."
+    classification_context: "Source System Code = 'THANHTRA_PROACTIVE_NOTICE'"
+    etl_derived_value: null
