@@ -97,7 +97,7 @@ flowchart LR
 
 ---
 
-### Cụm 3: Tra cứu NHN 360° — Danh sách & Header (`Practitioner 360 Profile`)
+### Cụm 3: Tra cứu NHN 360° — Danh sách & Header (`Operational Practitioner 360 Profile`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 5 (màn hình danh sách tra cứu và header thông tin tổng quát của từng NHN).
 
@@ -115,7 +115,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner 360 Profile"]
+        G1["Operational Practitioner 360 Profile"]
     end
 
     S1 --> SV1
@@ -128,7 +128,7 @@ flowchart LR
 
 ---
 
-### Cụm 4: Mạng lưới người liên quan (`Practitioner Related Party Profile`)
+### Cụm 4: Mạng lưới người liên quan (`Operational Practitioner Related Party Profile`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 6 (Mạng lưới người liên quan).
 
@@ -143,7 +143,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Related Party Profile"]
+        G1["Operational Practitioner Related Party Profile"]
     end
 
     S1 --> SV1
@@ -152,7 +152,7 @@ flowchart LR
 
 ---
 
-### Cụm 5: Vai trò tại DN niêm yết (`Practitioner Listed Company Role`)
+### Cụm 5: Vai trò tại DN niêm yết (`Operational Practitioner Listed Company Role`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 7 (Vai trò tại DN niêm yết/UPCOM, Tài khoản cross-broker PENDING).
 
@@ -169,7 +169,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Listed Company Role"]
+        G1["Operational Practitioner Listed Company Role"]
     end
 
     S1 --> SV1
@@ -181,7 +181,7 @@ flowchart LR
 
 ---
 
-### Cụm 6: Lịch sử cấp CCHN (`Practitioner Certificate History`)
+### Cụm 6: Lịch sử cấp CCHN (`Operational Practitioner Certificate History`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 9 (sub-tab Lịch sử cấp chứng chỉ hành nghề).
 
@@ -198,7 +198,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Certificate History"]
+        G1["Operational Practitioner Certificate History"]
     end
 
     S1 --> SV1
@@ -210,7 +210,7 @@ flowchart LR
 
 ---
 
-### Cụm 7: Quá trình hành nghề (`Practitioner Employment History`)
+### Cụm 7: Quá trình hành nghề (`Operational Practitioner Employment History`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 8 (sub-tab Quá trình hành nghề).
 
@@ -227,7 +227,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Employment History"]
+        G1["Operational Practitioner Employment History"]
     end
 
     S1 --> SV1
@@ -241,7 +241,7 @@ flowchart LR
 
 ---
 
-### Cụm 8: Lịch sử vi phạm & xử phạt (`Practitioner Violation History`)
+### Cụm 8: Lịch sử vi phạm & xử phạt (`Operational Practitioner Violation History`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 12 (sub-tab Lịch sử vi phạm & xử phạt hành chính).
 
@@ -258,7 +258,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Violation History"]
+        G1["Operational Practitioner Violation History"]
     end
 
     S1 --> SV1
@@ -270,7 +270,7 @@ flowchart LR
 
 ---
 
-### Cụm 9: Đợt thi sát hạch (`Practitioner Exam History`)
+### Cụm 9: Đợt thi sát hạch (`Operational Practitioner Exam History`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 10 (sub-tab Đợt thi sát hạch).
 
@@ -289,7 +289,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Exam History"]
+        G1["Operational Practitioner Exam History"]
     end
 
     S1 --> SV1
@@ -303,7 +303,7 @@ flowchart LR
 
 ---
 
-### Cụm 10: Cập nhật kiến thức hành nghề (`Practitioner Training History`)
+### Cụm 10: Cập nhật kiến thức hành nghề (`Operational Practitioner Training History`)
 
 Phục vụ **Tab TRA CỨU HỒ SƠ 360°** — Nhóm 11 (sub-tab Cập nhật kiến thức hành nghề).
 
@@ -320,7 +320,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Training History"]
+        G1["Operational Practitioner Training History"]
     end
 
     S1 --> SV1
@@ -332,7 +332,7 @@ flowchart LR
 
 ---
 
-### Cụm 11: Data Explorer — Tra cứu danh sách CCHN (`Practitioner Data Explorer`)
+### Cụm 11: Data Explorer — Tra cứu danh sách CCHN (`Operational Practitioner Data Explorer`)
 
 Phục vụ **Tab DATA EXPLORER** — Nhóm 13 (bảng tra cứu flat toàn bộ CCHN theo filter Loại chứng chỉ và Trạng thái). Lấy trực tiếp từ Atomic, không khai thác qua Fact/Dim.
 
@@ -352,7 +352,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Practitioner Data Explorer"]
+        G1["Operational Practitioner Data Explorer"]
     end
 
     S1 --> SV1
@@ -411,12 +411,12 @@ flowchart LR
 | K_NHNCK_5_YOY | So sánh cùng kỳ — CCHN đang hoạt động | % | Phái sinh | (K_NHNCK_5[Y] − K_NHNCK_5[Y−1]) / K_NHNCK_5[Y−1] × 100% | |
 | K_NHNCK_6 | CCHN Thu hồi 3 năm (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) WHERE Decision Type = '2' AND Reissuance Allowed Count > 0 AND Revocation Date ≤ 31/12/Y (quá khứ) hoặc ≤ MAX(Snapshot Date) trong Y (hiện tại) | |
 | K_NHNCK_6_YOY | So sánh cùng kỳ — Thu hồi 3 năm | % | Phái sinh | (K_NHNCK_6[Y] − K_NHNCK_6[Y−1]) / K_NHNCK_6[Y−1] × 100% | |
-| K_NHNCK_7 | CCHN Thu hồi vĩnh viễn (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) của các NHN có Practice Status Code = '3' (STATUS_WORK=3) AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot Date) trong Y (hiện tại) | ETL: join scr_prac (Practice_Status_Code='3') → lấy CCHN của NHN đó |
+| K_NHNCK_7 | CCHN Thu hồi vĩnh viễn (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) của các NHN có Practice Status Code = '3' (STATUS_WORK=3) AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot Date) trong Y (hiện tại) | ETL: join securities_practitioner (Practice_Status_Code='3') → lấy CCHN của NHN đó |
 | K_NHNCK_7_YOY | So sánh cùng kỳ — Thu hồi vĩnh viễn | % | Phái sinh | (K_NHNCK_7[Y] − K_NHNCK_7[Y−1]) / K_NHNCK_7[Y−1] × 100% | |
 | K_NHNCK_8 | CCHN Đã bị hủy (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) WHERE Decision Type = '6' (Hủy CCHN) AND Revocation Date ≤ 31/12/Y (quá khứ) hoặc ≤ MAX(Snapshot Date) trong Y (hiện tại) | Nguồn: Certificate_Records JOIN DECISIONS |
 | K_NHNCK_8_YOY | So sánh cùng kỳ — Đã bị hủy | % | Phái sinh | (K_NHNCK_8[Y] − K_NHNCK_8[Y−1]) / K_NHNCK_8[Y−1] × 100% | |
 
-> **Ghi chú KPI:** K_NHNCK_7 đếm **CCHN** (không phải NHN) — nguồn `Professionals.STATUS_WORK='3'` nhưng đếm Certificate_Number. ETL join `scr_prac (Practice_Status_Code='3') → scr_prac_license_ctf_doc` để lấy danh sách CCHN của các NHN bị thu hồi vĩnh viễn. K_NHNCK_15 và K_NHNCK_16 không sử dụng — gap do điều chỉnh phân loại, không re-number.
+> **Ghi chú KPI:** K_NHNCK_7 đếm **CCHN** (không phải NHN) — nguồn `Professionals.STATUS_WORK='3'` nhưng đếm Certificate_Number. ETL join `securities_practitioner (Practice_Status_Code='3') → sp_license_certificate_document` để lấy danh sách CCHN của các NHN bị thu hồi vĩnh viễn. K_NHNCK_15 và K_NHNCK_16 không sử dụng — gap do điều chỉnh phân loại, không re-number.
 
 **Star Schema — Nhóm 1a (Fact Practitioner License Certificate Snapshot):**
 
@@ -932,7 +932,7 @@ flowchart LR
 15/03/1991 (34y) | Việt Nam | 001091003456 | TESLA | ĐANG HOẠT ĐỘNG
 ```
 
-**Source:** `Practitioner 360 Profile` (Tác nghiệp — trực tiếp từ Atomic)
+**Source:** `Operational Practitioner 360 Profile` (Tác nghiệp — trực tiếp từ Atomic)
 
 **Bảng KPI:**
 
@@ -942,7 +942,7 @@ flowchart LR
 | K_NHNCK_34 | Ngày sinh | Date | Base | `Securities Practitioner`.Birth Date — dùng `brth_dt`; nếu null thì fallback `Birth Year` (`brth_yr`) |
 | K_NHNCK_35 | Tuổi | Int | Derived | ETL-derived: `COALESCE(YEAR(brth_dt), CAST(brth_yr AS INT))` → tính `YEAR(CURRENT_DATE) − giá_trị_đó` khi populate bảng |
 | K_NHNCK_36 | Quốc tịch | Text | Base | `Securities Practitioner`.Nationality Code — ETL denormalize Nationality Name từ `Geographic Area` khi populate bảng |
-| K_NHNCK_37 | Số định danh / Hộ chiếu | Text | Base | `Involved Party Alternative Identification`.Identification Number — join qua `ip_id = scr_prac_id`, lấy bản ghi `Identification Type Code` = CCCD hoặc PASSPORT |
+| K_NHNCK_37 | Số định danh / Hộ chiếu | Text | Base | `Involved Party Alternative Identification`.Identification Number — join qua `ip_id = securities_practitioner_id`, lấy bản ghi `Identification Type Code` = CCCD hoặc PASSPORT |
 | K_NHNCK_38 | Nơi công tác hiện tại | Text | Base | `Securities Practitioner`.Workplace — text tự do từ `Professionals.WORKPLACE` |
 | K_NHNCK_39 | Loại CCHN hiện tại | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Type Code + Name — CCHN trạng thái ACTIVE |
 | K_NHNCK_40 | Số CCHN hiện tại | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Number — CCHN trạng thái ACTIVE |
@@ -952,7 +952,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_360_Profile {
+    Operational_Practitioner_360_Profile {
         varchar Practitioner_Code PK
         varchar Full_Name
         date Birth_Date
@@ -971,14 +971,14 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema:** `Nationality_Name`, `Practice_Status_Name`, `Active_Certificate_Type_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng, không join ở query time. `Workplace` lấy trực tiếp từ `Professionals.WORKPLACE` (text tự do) — để tra nơi công tác theo báo cáo tổ chức chính thức, dùng `Practitioner Employment History` (Nhóm 8).
+> **Ghi chú schema:** `Nationality_Name`, `Practice_Status_Name`, `Active_Certificate_Type_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng, không join ở query time. `Workplace` lấy trực tiếp từ `Professionals.WORKPLACE` (text tự do) — để tra nơi công tác theo báo cáo tổ chức chính thức, dùng `Operational Practitioner Employment History` (Nhóm 8). `Active_Certificate_Type_Code/Name`, `Active_Certificate_Number` (K_NHNCK_39, K_NHNCK_40): CCHN "ACTIVE" xác định qua `revocation_dt IS NULL` — Atomic không có cột status riêng cho hiệu lực CCHN (chỉ có `Process Status Code` là trạng thái workflow cấp phát, khác nghĩa).
 
 **Lineage Mart → Báo cáo — Nhóm 5:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner 360 Profile"]
+        G1["Operational Practitioner 360 Profile"]
     end
     subgraph RPT["Bao cao - Nhom 5"]
         R1["K_NHNCK_33-41: Thong tin chung NHN 360"]
@@ -990,7 +990,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner 360 Profile` | 1 NHN (latest state) |
+| `Operational Practitioner 360 Profile` | 1 NHN (latest state) |
 
 ---
 
@@ -1009,7 +1009,7 @@ flowchart LR
 | Nguyễn Thế B | Con trai | Du học sinh | — |
 | Trần Văn C | Em rể | Giám đốc DN tư nhân | — |
 
-**Source:** `Practitioner Related Party Profile` (Tác nghiệp — trực tiếp từ Atomic)
+**Source:** `Operational Practitioner Related Party Profile` (Tác nghiệp — trực tiếp từ Atomic)
 
 **Bảng KPI:**
 
@@ -1019,7 +1019,7 @@ flowchart LR
 | K_NHNCK_76 | Mối quan hệ | Text | Base | `Securities Practitioner Related Party`.Relationship Type Code — ETL denormalize Relationship Type Name (scheme: RELATIONSHIP_TYPE) khi populate bảng | |
 | K_NHNCK_77 | Nghề nghiệp người liên quan | Text | Base | `Securities Practitioner Related Party`.Related Individual Occupation | |
 | K_NHNCK_78 | Nơi làm việc người liên quan | Text | Base | `Securities Practitioner Related Party`.Related Individual Workplace | |
-| K_NHNCK_79 | CCCD/CMND người liên quan | Text | Base | `Securities Practitioner Related Party`.Related Individual Identity Number — ETL lấy từ `ProfessionalRelationships.IDENTITY_ID` | |
+| K_NHNCK_79 | CCCD/CMND người liên quan | Text | PENDING | — | Nguồn thật `IDENTITY_INFO_C06S.IDENTITY_NUMBER` — bảng này đang out-of-scope Atomic (xem `NHNCK_HLD_Human_Review.txt`). `PROFESSIONAL_RELATIONSHIPS.IDENTITY_ID` chỉ là FK, không phải số CMND/CCCD — không dùng trực tiếp. Atomic cần bổ sung entity cho `IDENTITY_INFO_C06S` |
 | K_NHNCK_80 | Quốc tịch người liên quan | Text | Base | `Securities Practitioner Related Party`.Country Code — ETL denormalize Country Name từ Geographic Area khi populate bảng | |
 | K_NHNCK_86 | Địa chỉ người liên quan | Text | Base | `Securities Practitioner Related Party`.Related Individual Address | |
 | K_NHNCK_81 | Tên DN niêm yết/UPCOM (NHN tham gia) | Text | Base | `Securities Practitioner Organization Employment Report`.Practitioner Workplace At Report | Reuse từ Nhóm 7 |
@@ -1029,7 +1029,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_Related_Party_Profile {
+    Operational_Practitioner_Related_Party_Profile {
         varchar Practitioner_Code PK
         varchar Securities_Practitioner_Related_Party_Code PK
         varchar Related_Individual_Full_Name
@@ -1045,15 +1045,15 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema Nhóm 6:** `Relationship_Type_Name` ETL-derived — denormalize từ Classification (scheme: RELATIONSHIP_TYPE). `Country_Name` ETL-derived — denormalize từ Geographic Area. K_NHNCK_81, K_NHNCK_82 phục vụ hiển thị bổ sung trong màn hình mạng lưới — đọc trực tiếp từ `Practitioner Listed Company Role` (Nhóm 7), không gộp vào `Practitioner Related Party Profile`.
+> **Ghi chú schema Nhóm 6:** `Relationship_Type_Name` ETL-derived — denormalize từ Classification (scheme: RELATIONSHIP_TYPE). `Country_Name` ETL-derived — denormalize từ Geographic Area. K_NHNCK_81, K_NHNCK_82 phục vụ hiển thị bổ sung trong màn hình mạng lưới — đọc trực tiếp từ `Operational Practitioner Listed Company Role` (Nhóm 7), không gộp vào `Operational Practitioner Related Party Profile`.
 
 **Lineage Mart → Báo cáo — Nhóm 6:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Related Party Profile"]
-        G2["Practitioner Listed Company Role"]
+        G1["Operational Practitioner Related Party Profile"]
+        G2["Operational Practitioner Listed Company Role"]
     end
     subgraph RPT["Bao cao - Nhom 6"]
         R1["K_NHNCK_75-82,86: Mang luoi nguoi lien quan"]
@@ -1066,17 +1066,18 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner Related Party Profile` | 1 người liên quan per NHN (toàn bộ) |
-| `Practitioner Listed Company Role` | Reuse từ Nhóm 7 — 1 vai trò per NHN per DN niêm yết |
+| `Operational Practitioner Related Party Profile` | 1 người liên quan per NHN (toàn bộ) |
+| `Operational Practitioner Listed Company Role` | Reuse từ Nhóm 7 — 1 vai trò per NHN per DN niêm yết |
 
 ---
 
 #### Nhóm 7 — Dashboard Hồ sơ & Danh mục của NHNCK
 
 > Phân loại: **Tác nghiệp** (2 bảng tác nghiệp riêng biệt)
-> Atomic chính: `Securities Practitioner Organization Employment Report` (`scr_prac_org_emp_rpt`) ← NHNCK.ORGANIZATION_REPORTS — **READY**
-> Atomic phụ: `Securities Organization Reference` (`scr_org_refr`) ← NHNCK.ORGANIZATIONS — join để lấy tên tổ chức và lọc loại hình CTCK
-> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. Panel "Tài khoản & Số dư" (VSDC/MSS) PENDING toàn bộ — không thiết kế bảng riêng, gom PENDING KPI vào bảng `Practitioner Listed Company Role`. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `scr_prac_org_emp_rpt`).
+> Atomic chính: `Securities Practitioner Organization Employment Report` (`sp_organization_employment_report`) ← NHNCK.ORGANIZATION_REPORTS — **READY**
+> Atomic phụ: `Securities Organization Reference` (`securities_organization_reference`) ← NHNCK.ORGANIZATIONS — join để lấy tên tổ chức và lọc loại hình CTCK
+> Atomic phụ (K_NHNCK_85): `Securities Company Shareholder` (`securities_company_shareholder`) ← SCMS.SC_FIRM_SHAREHOLDER — **READY**; `Sc Insider Related Person` (`sc_insider_related_person`) ← SCMS.SC_FIRM_INSIDER_RELATION — **READY**; `Involved Party Alternative Identification` (`ip_alternative_identification`, cả nguồn NHNCK và SCMS) — **READY**, dùng làm cầu nối xác định đúng NHN theo CCCD giữa 2 hệ nguồn
+> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. Panel "Tài khoản & Số dư" (VSDC/MSS) PENDING — không thiết kế bảng riêng, gom PENDING KPI vào bảng `Operational Practitioner Listed Company Role` (còn lại K_NHNCK_87/88/89). K_NHNCK_85 "Số lượng cổ phiếu sở hữu" đã xác nhận nguồn thật là SCMS (không phải VSDC) — chuyển READY, xem O_NHNCK_6. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `sp_organization_employment_report`).
 
 **Bảng KPI:**
 
@@ -1086,11 +1087,11 @@ flowchart LR
 | K_NHNCK_82 | Vai trò tại DN | Base | READY | `Securities Practitioner Organization Employment Report`.Practitioner Position At Report | Khai sinh tại Nhóm 7 |
 | K_NHNCK_83 | Trạng thái vai trò | Derived | READY | Derived: `Termination Date IS NULL → "Hiện tại"`, có giá trị → "Đã kết thúc" | |
 | K_NHNCK_84 | Mã CTCK | Base | READY | `Securities Practitioner Organization Employment Report`.Securities Organization Reference Code — join `Securities Organization Reference` filter `Organization Type Code = 'CTCK'` | |
-| K_NHNCK_85 | Số lượng cổ phiếu sở hữu | Derived | PENDING — nguồn VSDC chưa có Atomic | — | |
+| K_NHNCK_85 | Số lượng cổ phiếu sở hữu | Base | READY | `Securities Company Shareholder`.Shares Held — join `Sc Insider Related Person` cùng `sc_id` (CTCK) với `Securities Company Shareholder`; xác định đúng NHN qua `Involved Party Alternative Identification` (NHNCK, `identification_nbr`=CCCD NHN) = `Involved Party Alternative Identification` (SCMS, `identification_nbr`=NATIONAL_ID trên `Sc Insider Related Person`) | Nguồn thật là SCMS (`SC_FIRM_SHAREHOLDER` join `SC_FIRM_INSIDER_RELATION` theo `sc_id`), không phải VSDC như thiết kế trước — xem O_NHNCK_6 |
 | K_NHNCK_75 | Họ và tên người liên quan | Base | READY | `Securities Practitioner Related Party`.Related Individual Full Name | Reuse từ Nhóm 6 |
 | K_NHNCK_76 | Mối quan hệ | Base | READY | `Securities Practitioner Related Party`.Relationship Type Code — ETL denormalize Relationship Type Name (scheme: RELATIONSHIP_TYPE) khi populate bảng | Reuse từ Nhóm 6 |
 | K_NHNCK_77 | Nghề nghiệp người liên quan | Base | READY | `Securities Practitioner Related Party`.Related Individual Occupation | Reuse từ Nhóm 6 |
-| K_NHNCK_79 | CCCD/CMND người liên quan | Base | READY | `Securities Practitioner Related Party`.Related Individual Identity Number — ETL lấy từ `ProfessionalRelationships.IDENTITY_ID` | Reuse từ Nhóm 6 |
+| K_NHNCK_79 | CCCD/CMND người liên quan | Base | PENDING — nguồn `IDENTITY_INFO_C06S` chưa có Atomic (out-of-scope) | — | Xem ghi chú Nhóm 6 |
 | K_NHNCK_87 | Số tài khoản | Base | PENDING — nguồn VSDC/MSS chưa có Atomic | — | |
 | K_NHNCK_88 | Tên chủ tài khoản | Base | PENDING — nguồn VSDC/MSS chưa có Atomic | — | |
 | K_NHNCK_89 | Mã CK nắm giữ chính | Base | PENDING — nguồn VSDC chưa có Atomic | — | |
@@ -1099,7 +1100,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_Listed_Company_Role {
+    Operational_Practitioner_Listed_Company_Role {
         varchar Practitioner_Code PK
         varchar Organization_Employment_Report_Code PK
         varchar Practitioner_Workplace_At_Report
@@ -1109,22 +1110,25 @@ erDiagram
         varchar Employment_Status
         date Hire_Date
         date Termination_Date
+        int Shares_Held
 
     }
 
-    Practitioner_Related_Party_Profile {
+    Operational_Practitioner_Related_Party_Profile {
         varchar Practitioner_Code PK
         varchar Securities_Practitioner_Related_Party_Code PK
     }
 ```
+
+> **Ghi chú schema Nhóm 7:** `Shares_Held` (K_NHNCK_85) ETL-populate từ `Securities Company Shareholder.Shares Held` (SCMS) — không phải từ `Securities Practitioner Organization Employment Report` như các cột còn lại. ETL xác định đúng NHN bằng cách đối chiếu CCCD: `Involved Party Alternative Identification` (nguồn NHNCK, `identification_nbr`) so khớp với `Involved Party Alternative Identification` (nguồn SCMS, `identification_nbr` ← `SC_FIRM_INSIDER_RELATION.NATIONAL_ID`), sau đó join `Sc Insider Related Person.sc_id` = `Securities Company Shareholder.sc_id` (cùng CTCK) để lấy `Shares_Held`. NULL nếu NHN không phải cổ đông/người nội bộ của DN niêm yết đang xét.
 
 **Lineage Mart → Báo cáo — Nhóm 7:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Listed Company Role"]
-        G2["Practitioner Related Party Profile (Reuse Nhóm 6)"]
+        G1["Operational Practitioner Listed Company Role"]
+        G2["Operational Practitioner Related Party Profile (Reuse Nhóm 6)"]
     end
     subgraph RPT["Bao cao - Nhom 7"]
         R1["K_NHNCK_75-89: Ho so va Danh muc NHNCK"]
@@ -1137,17 +1141,17 @@ flowchart LR
 
 | Tên bảng | Grain | Trạng thái |
 |---|---|---|
-| `Practitioner Listed Company Role` | 1 lần báo cáo tổ chức per NHN (tất cả lịch sử, filter type=CTCK/DN niêm yết) | new |
-| `Practitioner Related Party Profile` | Reuse từ Nhóm 6 | reuse |
+| `Operational Practitioner Listed Company Role` | 1 lần báo cáo tổ chức per NHN (tất cả lịch sử, filter type=CTCK/DN niêm yết) | new |
+| `Operational Practitioner Related Party Profile` | Reuse từ Nhóm 6 | reuse |
 
 ---
 
 #### Nhóm 8 — Sub-tab Quá trình hành nghề
 
 > Phân loại: **Tác nghiệp**
-> Atomic chính: `Securities Practitioner Organization Employment Report` (`scr_prac_org_emp_rpt`) ← NHNCK.OrganizationReports — **READY**
-> Atomic phụ: `Securities Organization Reference` (`scr_org_refr`) ← NHNCK.Organizations — join để lấy tên tổ chức và phân loại tổ chức
-> Ghi chú: Nguồn là `NHNCK.OrganizationReports` — không phải `ProfessionalWorkHistories`. Tên tổ chức và phân loại ETL-derived qua join `scr_org_refr` theo `scr_org_refr_code`.
+> Atomic chính: `Securities Practitioner Organization Employment Report` (`sp_organization_employment_report`) ← NHNCK.OrganizationReports — **READY**
+> Atomic phụ: `Securities Organization Reference` (`securities_organization_reference`) ← NHNCK.Organizations — join để lấy tên tổ chức và phân loại tổ chức
+> Ghi chú: Nguồn là `NHNCK.OrganizationReports` — không phải `ProfessionalWorkHistories`. Tên tổ chức và phân loại ETL-derived qua join `securities_organization_reference` theo `securities_organization_reference_code`.
 
 **Mockup:**
 
@@ -1157,14 +1161,14 @@ flowchart LR
 | Công ty CP Chứng khoán AAA | CTCK | Trưởng phòng Môi giới | Phòng Môi giới | 12/01/2018 | 11/05/2023 | Quá khứ |
 | Vụ Giám sát TTCK - UBCKNN | Khác | Chuyên viên chính | — | 30/10/2012 | 11/01/2018 | Quá khứ |
 
-**Source:** `Practitioner Employment History` (Tác nghiệp)
+**Source:** `Operational Practitioner Employment History` (Tác nghiệp)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Nguồn | Ghi chú |
 |---|---|---|---|---|---|
-| K_NHNCK_49 | Tên tổ chức | Text | Base | `Securities Practitioner Organization Employment Report`.Securities Organization Reference Code — ETL join `Securities Organization Reference`.Securities Organization Reference Name theo `scr_org_refr_code` khi populate bảng | Khai sinh tại Nhóm 8 |
-| K_NHNCK_90 | Phân loại tổ chức | Text | Base | `Securities Organization Reference`.Organization Type Code — ETL join `scr_org_refr` theo `scr_org_refr_code`, denormalize Organization Type Name (scheme: ORGANIZATION_TYPE) khi populate bảng | Khai sinh tại Nhóm 8 |
+| K_NHNCK_49 | Tên tổ chức | Text | Base | `Securities Practitioner Organization Employment Report`.Securities Organization Reference Code — ETL join `Securities Organization Reference`.Securities Organization Reference Name theo `securities_organization_reference_code` khi populate bảng | Khai sinh tại Nhóm 8 |
+| K_NHNCK_90 | Phân loại tổ chức | Text | Base | `Securities Organization Reference`.Organization Type Code — ETL join `securities_organization_reference` theo `securities_organization_reference_code`, denormalize Organization Type Name (scheme: ORGANIZATION_TYPE) khi populate bảng | Khai sinh tại Nhóm 8 |
 | K_NHNCK_50 | Vị trí công tác | Text | Base | `Securities Practitioner Organization Employment Report`.Practitioner Position At Report | Khai sinh tại Nhóm 8 |
 | K_NHNCK_91 | Phòng ban | Text | Base | `Securities Practitioner Organization Employment Report`.Practitioner Department At Report | Khai sinh tại Nhóm 8 |
 | K_NHNCK_51 | Từ tháng | Date | Base | `Securities Practitioner Organization Employment Report`.Hire Date | Khai sinh tại Nhóm 8 |
@@ -1175,7 +1179,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_Employment_History {
+    Operational_Practitioner_Employment_History {
         varchar Practitioner_Code PK
         varchar Organization_Employment_Report_Code PK
         varchar Securities_Organization_Reference_Code
@@ -1190,14 +1194,14 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema Nhóm 8:** `Securities_Organization_Name` ETL-derived — join `scr_org_refr.scr_org_refr_nm` theo `scr_org_refr_code`. `Organization_Type_Name` ETL-derived — denormalize từ Classification (scheme: ORGANIZATION_TYPE) tại thời điểm populate. Presentation layer đọc trực tiếp, không join Atomic ở query time.
+> **Ghi chú schema Nhóm 8:** `Securities_Organization_Name` ETL-derived — join `securities_organization_reference.securities_organization_reference_nm` theo `securities_organization_reference_code`. `Organization_Type_Name` ETL-derived — denormalize từ Classification (scheme: ORGANIZATION_TYPE) tại thời điểm populate. Presentation layer đọc trực tiếp, không join Atomic ở query time.
 
 **Lineage Mart → Báo cáo — Nhóm 8:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Employment History"]
+        G1["Operational Practitioner Employment History"]
     end
     subgraph RPT["Bao cao - Nhom 8"]
         R1["K_NHNCK_49,50,51,52,53,90,91: Qua trinh hanh nghe"]
@@ -1209,15 +1213,16 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner Employment History` | 1 lần công tác per NHN (toàn bộ lịch sử) |
+| `Operational Practitioner Employment History` | 1 lần công tác per NHN (toàn bộ lịch sử) |
 
 ---
 
 #### Nhóm 9 — Sub-tab Lịch sử cấp chứng chỉ hành nghề
 
 > Phân loại: **Tác nghiệp**
-> Atomic chính: `Securities Practitioner License Certificate Document` (`scr_prac_license_ctf_doc`) ← NHNCK.CertificateRecords — **READY**
-> Atomic phụ: `Securities Practitioner License Decision Document` (`scr_prac_license_dcsn_doc`) ← NHNCK.Decisions — join để lấy số quyết định cấp và thu hồi
+> Atomic chính: `Securities Practitioner License Certificate Document` (`sp_license_certificate_document`) ← NHNCK.CertificateRecords — **READY**
+> Atomic phụ: `Securities Practitioner License Decision Document` (`sp_license_decision_document`) ← NHNCK.Decisions — join để lấy số quyết định cấp và thu hồi
+> Ghi chú: Cột "Trạng thái" trong Mockup (K_NHNCK_48) — **PENDING**, xem O_NHNCK_16.
 
 **Mockup:**
 
@@ -1227,7 +1232,7 @@ flowchart LR
 | CCHN-2020-045 | Phân tích chứng khoán | 20/10/2020 | 20/10/2023 | 89/QĐ-UBCK | 91/QĐ-UBCK | Thu hồi trong 3 năm |
 | CCHN-2017-012 | Môi giới chứng khoán | 15/01/2017 | 15/01/2020 | 12/QĐ-UBCK | 15/QĐ-UBCK | Thu hồi vĩnh viễn |
 
-**Source:** `Practitioner Certificate History` (Tác nghiệp)
+**Source:** `Operational Practitioner Certificate History` (Tác nghiệp)
 
 **Bảng KPI:**
 
@@ -1239,13 +1244,13 @@ flowchart LR
 | K_NHNCK_46 | Ngày thu hồi | Date | Base | `Securities Practitioner License Certificate Document`.Revocation Date — NULL nếu chưa thu hồi | Khai sinh tại Nhóm 9 |
 | K_NHNCK_47 | Số quyết định cấp | Text | Base | `Securities Practitioner License Certificate Document`.Issue License Decision Code — ETL join `Securities Practitioner License Decision Document`.Decision Number theo `issu_license_dcsn_code` khi populate bảng | Khai sinh tại Nhóm 9 |
 | K_NHNCK_92 | Số quyết định thu hồi | Text | Base | `Securities Practitioner License Certificate Document`.Revocation License Decision Code — ETL join `Securities Practitioner License Decision Document`.Decision Number theo `revocation_license_dcsn_code` khi populate bảng; NULL nếu chưa thu hồi | Khai sinh tại Nhóm 9 |
-| K_NHNCK_48 | Trạng thái CCHN | Text | Base | `Securities Practitioner License Certificate Document`.Process Status Code — ETL denormalize Process Status Name (scheme: LICENSE_CERTIFICATE_PROCESS_STATUS) khi populate bảng | Khai sinh tại Nhóm 9 |
+| K_NHNCK_48 | Trạng thái CCHN | Text | PENDING | — | Nguồn thật `CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS` (0-5: Chưa sử dụng/Đang sử dụng/Thu hồi có cấp lại/Thu hồi không cấp lại/Đã hủy/Hết hiệu lực) — bảng này out-of-scope Atomic (audit log, xem `NHNCK_HLD_Human_Review.txt`). `Process Status Code` (scheme LICENSE_CERTIFICATE_PROCESS_STATUS: Đã cấp/Đã ký nháy/Đã ký/Đã trả) là trạng thái workflow xử lý hồ sơ — KHÁC ý nghĩa hiệu lực CCHN, không dùng thay thế |
 
 **Schema bảng tác nghiệp:**
 
 ```mermaid
 erDiagram
-    Practitioner_Certificate_History {
+    Operational_Practitioner_Certificate_History {
         varchar Practitioner_Code PK
         varchar License_Certificate_Document_Code PK
         varchar Certificate_Number
@@ -1255,20 +1260,18 @@ erDiagram
         date Revocation_Date
         varchar Issuance_Decision_Number
         varchar Revocation_Decision_Number
-        varchar Process_Status_Code
-        varchar Process_Status_Name
 
     }
 ```
 
-> **Ghi chú schema Nhóm 9:** `Certificate_Type_Name` và `Process_Status_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng Tác nghiệp. `Revocation_Decision_Number` NULL nếu CCHN chưa bị thu hồi. Presentation layer đọc trực tiếp từ bảng này, không join Classification ở query time.
+> **Ghi chú schema Nhóm 9:** `Certificate_Type_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng Tác nghiệp. `Revocation_Decision_Number` NULL nếu CCHN chưa bị thu hồi. Presentation layer đọc trực tiếp từ bảng này, không join Classification ở query time. `Process_Status_Code`/`Process_Status_Name` đã loại khỏi schema — xem K_NHNCK_48 PENDING ở trên.
 
 **Lineage Mart → Báo cáo — Nhóm 9:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Certificate History"]
+        G1["Operational Practitioner Certificate History"]
     end
     subgraph RPT["Bao cao - Nhom 9"]
         R1["K_NHNCK_43-48,92: Lich su cap CCHN"]
@@ -1280,16 +1283,16 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner Certificate History` | 1 CCHN per NHN (toàn bộ lịch sử) |
+| `Operational Practitioner Certificate History` | 1 CCHN per NHN (toàn bộ lịch sử) |
 
 ---
 
 #### Nhóm 10 — Sub-tab Đợt thi sát hạch
 
 > Phân loại: **Tác nghiệp**
-> Atomic chính: `Securities Practitioner Qualification Examination Assessment Result` (`scr_prac_qualf_exam_ases_rslt`) ← NHNCK.ExamDetails — **READY**
-> Atomic phụ: `Securities Practitioner Qualification Examination Assessment` (`scr_prac_qualf_exam_ases`) ← NHNCK.ExamSessions — join để lấy tên đợt thi, ngày thi, số quyết định công bố
-> Atomic phụ: `Securities Practitioner License Decision Document` (`scr_prac_license_dcsn_doc`) ← NHNCK.Decisions — join qua `License Decision Code` để lấy số quyết định và ngày ký
+> Atomic chính: `Securities Practitioner Qualification Examination Assessment Result` (`sp_qualification_examination_assessment_result`) ← NHNCK.ExamDetails — **READY**
+> Atomic phụ: `Securities Practitioner Qualification Examination Assessment` (`sp_qualification_examination_assessment`) ← NHNCK.ExamSessions — join để lấy tên đợt thi, ngày thi, số quyết định công bố
+> Atomic phụ: `Securities Practitioner License Decision Document` (`sp_license_decision_document`) ← NHNCK.Decisions — join qua `License Decision Code` để lấy số quyết định và ngày ký
 
 **Mockup:**
 
@@ -1299,7 +1302,7 @@ flowchart LR
 | Đợt 2/2024 | 10/09/2023 | 45 | 58 | Không đạt | Không đạt | — | Không đạt |
 | Đợt 1/2023 | 18/03/2023 | 75 | 80 | Đạt | Đạt | 28/QĐ-UBCK · 25/03/2023 | Đạt |
 
-**Source:** `Practitioner Exam History` (Tác nghiệp)
+**Source:** `Operational Practitioner Exam History` (Tác nghiệp)
 
 **Bảng KPI:**
 
@@ -1319,7 +1322,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_Exam_History {
+    Operational_Practitioner_Exam_History {
         varchar Practitioner_Code PK
         varchar Examination_Assessment_Result_Code PK
         varchar Assessment_Name
@@ -1348,7 +1351,7 @@ erDiagram
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Exam History"]
+        G1["Operational Practitioner Exam History"]
     end
     subgraph RPT["Bao cao - Nhom 10"]
         R1["K_NHNCK_59-63,93-95,103: Dot thi sat hach"]
@@ -1360,15 +1363,15 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner Exam History` | 1 lần thi per NHN (toàn bộ lịch sử) |
+| `Operational Practitioner Exam History` | 1 lần thi per NHN (toàn bộ lịch sử) |
 
 ---
 
 #### Nhóm 11 — Sub-tab Cập nhật kiến thức hành nghề
 
 > Phân loại: **Tác nghiệp**
-> Atomic chính: `Securities Practitioner Professional Training Class Enrollment` (`scr_prac_prof_trn_clss_enrollment`) ← NHNCK.SPECIALIZATION_COURSE_DETAILS — **READY**
-> Atomic phụ: `Securities Practitioner Professional Training Class` (`scr_prac_prof_trn_clss`) ← NHNCK.SPECIALIZATION_COURSES — join để lấy tên khóa học, năm học, ngày thi
+> Atomic chính: `Securities Practitioner Professional Training Class Enrollment` (`sp_professional_training_class_enrollment`) ← NHNCK.SPECIALIZATION_COURSE_DETAILS — **READY**
+> Atomic phụ: `Securities Practitioner Professional Training Class` (`sp_professional_training_class`) ← NHNCK.SPECIALIZATION_COURSES — join để lấy tên khóa học, năm học, ngày thi
 > Ghi chú: Grain bảng = 1 enrollment per NHN. Presentation layer GROUP BY `(Practitioner_Code, Academic_Year)` để hiển thị summary theo năm trên màn hình. Số giờ (`POST_CERT_TRAINING_COURSES`) chưa có Atomic entity — PENDING theo O_NHNCK_9.
 
 **Mockup — Màn hình:**
@@ -1380,16 +1383,16 @@ flowchart LR
 | 2022 | 0/8h | N/A | Chưa đủ 8h |
 | 2021 | 8/8h | Loại B | Đã đủ 8h |
 
-**Source:** `Practitioner Training History` (Tác nghiệp)
+**Source:** `Operational Practitioner Training History` (Tác nghiệp)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Nguồn | Ghi chú |
 |---|---|---|---|---|---|
-| K_NHNCK_100 | Mã khóa học chuyên môn | Text | Base | `Securities Practitioner Professional Training Class`.Training Class Code (`scr_prac_prof_trn_clss_code`) — direct từ Enrollment via FK | Khai sinh tại Nhóm 11 |
-| K_NHNCK_96 | Tên khóa học | Text | Base | `Securities Practitioner Professional Training Class`.Training Class Name — ETL join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code` | Khai sinh tại Nhóm 11 |
-| K_NHNCK_97 | Ngày bắt đầu thi | Date | Base | `Securities Practitioner Professional Training Class`.Exam Start Date — ETL join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code` | Khai sinh tại Nhóm 11 |
-| K_NHNCK_98 | Ngày kết thúc thi | Text | Base | `Securities Practitioner Professional Training Class`.Exam End Date — ETL join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code`; kiểu Text do nguồn VARCHAR (conversion risk) | Khai sinh tại Nhóm 11 |
+| K_NHNCK_100 | Mã khóa học chuyên môn | Text | Base | `Securities Practitioner Professional Training Class`.Training Class Code (`sp_professional_training_class_code`) — direct từ Enrollment via FK | Khai sinh tại Nhóm 11 |
+| K_NHNCK_96 | Tên khóa học | Text | Base | `Securities Practitioner Professional Training Class`.Training Class Name — ETL join `sp_professional_training_class` theo `sp_professional_training_class_code` | Khai sinh tại Nhóm 11 |
+| K_NHNCK_97 | Ngày bắt đầu thi | Date | Base | `Securities Practitioner Professional Training Class`.Exam Start Date — ETL join `sp_professional_training_class` theo `sp_professional_training_class_code` | Khai sinh tại Nhóm 11 |
+| K_NHNCK_98 | Ngày kết thúc thi | Text | Base | `Securities Practitioner Professional Training Class`.Exam End Date — ETL join `sp_professional_training_class` theo `sp_professional_training_class_code`; kiểu Text do nguồn VARCHAR (conversion risk) | Khai sinh tại Nhóm 11 |
 | K_NHNCK_99 | Điểm thi | Percentage | Base | `Securities Practitioner Professional Training Class Enrollment`.Exam Score — kiểu decimal(5,2); nullable | Khai sinh tại Nhóm 11 |
 | K_NHNCK_66 | Kết quả thi | Text | Base | `Securities Practitioner Professional Training Class Enrollment`.Training Result Code (`trn_rslt_code`) — ETL denormalize Training Result Name (scheme: EXAM_RESULT: -1=Không thi, 0=Không đạt, 1=Đạt) khi populate bảng ← Specialization_Course_Details.Result | Khai sinh tại Nhóm 11 |
 | K_NHNCK_101 | Kết quả kiểm tra, phân loại | Text | Base | **PENDING** — `POST_CERT_TRAINING_COURSES.RECORD_STATUS` là trường kỹ thuật xác định trạng thái bản ghi, không phải thông tin nghiệp vụ. Chờ BA xác nhận trường nghiệp vụ thay thế. | |
@@ -1399,7 +1402,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_Training_History {
+    Operational_Practitioner_Training_History {
         varchar Practitioner_Code PK
         varchar Training_Class_Enrollment_Code PK
         varchar Training_Class_Code
@@ -1414,14 +1417,14 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema Nhóm 11:** `Training_Class_Name` ETL-derived — join `scr_prac_prof_trn_clss` theo `scr_prac_prof_trn_clss_code`. `Training_Result_Name` ETL-derived — denormalize từ Classification (scheme: EXAM_RESULT) tại thời điểm populate. `Exam_End_Date` kiểu varchar (giữ nguyên như Atomic — nguồn EXAM_DATE_TO kiểu VARCHAR2(200), conversion risk). `Exam_Score` nullable — có thể null nếu chưa thi. Trường `Training_Hours` và `Is_Hours_Sufficient` chưa đưa vào schema — chờ O_NHNCK_9 giải quyết.
+> **Ghi chú schema Nhóm 11:** `Training_Class_Name` ETL-derived — join `sp_professional_training_class` theo `sp_professional_training_class_code`. `Training_Result_Name` ETL-derived — denormalize từ Classification (scheme: EXAM_RESULT) tại thời điểm populate. `Exam_End_Date` kiểu varchar (giữ nguyên như Atomic — nguồn EXAM_DATE_TO kiểu VARCHAR2(200), conversion risk). `Exam_Score` nullable — có thể null nếu chưa thi. Trường `Training_Hours` và `Is_Hours_Sufficient` chưa đưa vào schema — chờ O_NHNCK_9 giải quyết.
 
 **Lineage Mart → Báo cáo — Nhóm 11:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Training History"]
+        G1["Operational Practitioner Training History"]
     end
     subgraph RPT["Bao cao - Nhom 11"]
         R1["K_NHNCK_66,67,96-100: Cap nhat kien thuc hanh nghe"]
@@ -1433,7 +1436,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner Training History` | 1 enrollment per NHN — presentation GROUP BY `(Practitioner_Code, Academic_Year)` để hiển thị summary theo năm |
+| `Operational Practitioner Training History` | 1 enrollment per NHN — presentation GROUP BY `(Practitioner_Code, Academic_Year)` để hiển thị summary theo năm |
 
 ---
 
@@ -1451,7 +1454,7 @@ flowchart LR
 | 05/02/2021 | 24/QĐ-UBCK | Chậm công bố thông tin sở hữu | Cảnh cáo | Đã ban hành |
 | 12/11/2019 | BC-0012/CTCK | Vi phạm quy trình mở tài khoản | Đình chỉ hành nghề 3 tháng | Đang thực thi |
 
-**Source:** `Practitioner Violation History` (Tác nghiệp)
+**Source:** `Operational Practitioner Violation History` (Tác nghiệp)
 
 **Bảng KPI:**
 
@@ -1467,7 +1470,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_Violation_History {
+    Operational_Practitioner_Violation_History {
         varchar Practitioner_Code PK
         varchar Conduct_Violation_Code PK
         varchar Record_Type_Code
@@ -1488,7 +1491,7 @@ erDiagram
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Violation History"]
+        G1["Operational Practitioner Violation History"]
     end
     subgraph RPT["Bao cao - Nhom 12"]
         R1["K_NHNCK_54-58: Lich su vi pham"]
@@ -1500,7 +1503,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner Violation History` | 1 vi phạm per NHN (toàn bộ lịch sử) |
+| `Operational Practitioner Violation History` | 1 vi phạm per NHN (toàn bộ lịch sử) |
 
 ---
 
@@ -1510,7 +1513,7 @@ flowchart LR
 
 ---
 
-#### Nhóm 13 — Practitioner Data Explorer (bảng tra cứu tổng hợp)
+#### Nhóm 13 — Operational Practitioner Data Explorer (bảng tra cứu tổng hợp)
 
 > Phân loại: **Tác nghiệp**
 > Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
@@ -1527,7 +1530,7 @@ flowchart LR
 | Trần Minh C | CCHN-QLQ-2019-112 | Quản lý quỹ | GOOGLE | 05/01/2019 | Đang hoạt động |
 | Đinh Quốc G | CCHN-QLQ-2020-055 | Quản lý quỹ | DEEPSEEK | 22/07/2020 | Đang hoạt động |
 
-**Source:** `Practitioner Data Explorer` (Tác nghiệp — trực tiếp từ Atomic)
+**Source:** `Operational Practitioner Data Explorer` (Tác nghiệp — trực tiếp từ Atomic)
 
 **Bảng KPI:**
 
@@ -1546,7 +1549,7 @@ flowchart LR
 
 ```mermaid
 erDiagram
-    Practitioner_Data_Explorer {
+    Operational_Practitioner_Data_Explorer {
         varchar Practitioner_Code PK
         varchar License_Certificate_Document_Code PK
         varchar Full_Name
@@ -1561,14 +1564,14 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema:** Grain = 1 CCHN per NHN. Slicer "Loại hình" filter trên `Certificate_Type_Code`; slicer "Trạng thái" filter trên `Practice_Status_Code` — cả hai filter tại query time, không pre-filter khi ETL populate. `Practice_Status_Code` phục vụ đồng thời K_NHNCK_73 (hiển thị) và slicer Trạng thái (filter) — 1 cột duy nhất, không tạo cột riêng cho slicer. `Certificate_Type_Name` ETL-denormalized từ Classification khi populate — presentation không join ở query time. `Current_Organization_Name` ETL-derived từ `Organization Employment Report` mới nhất có Termination Date = NULL. `Identification_Type_Code` (K_NHNCK_102) lấy từ `ip_alt_identn` join qua `scr_prac_id`.
+> **Ghi chú schema:** Grain = 1 CCHN per NHN. Slicer "Loại hình" filter trên `Certificate_Type_Code`; slicer "Trạng thái" filter trên `Practice_Status_Code` — cả hai filter tại query time, không pre-filter khi ETL populate. `Practice_Status_Code` phục vụ đồng thời K_NHNCK_73 (hiển thị) và slicer Trạng thái (filter) — 1 cột duy nhất, không tạo cột riêng cho slicer. `Certificate_Type_Name` ETL-denormalized từ Classification khi populate — presentation không join ở query time. `Current_Organization_Name` ETL-derived từ `Organization Employment Report` mới nhất có Termination Date = NULL. `Identification_Type_Code` (K_NHNCK_102) lấy từ `ip_alt_identn` join qua `securities_practitioner_id`.
 
 **Lineage Mart → Báo cáo — Nhóm 13:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Practitioner Data Explorer"]
+        G1["Operational Practitioner Data Explorer"]
     end
     subgraph RPT["Bao cao - Nhom 13"]
         R1["K_NHNCK_68-74,102: Bang tra cuu CCHN"]
@@ -1580,7 +1583,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Practitioner Data Explorer` | 1 CCHN per NHN (toàn bộ trạng thái — slicer filter tại query time) |
+| `Operational Practitioner Data Explorer` | 1 CCHN per NHN (toàn bộ trạng thái — slicer filter tại query time) |
 
 ---
 
@@ -1599,14 +1602,14 @@ graph TB
     FACT_CERT["Fact Practitioner License Certificate Snapshot"]:::fact
     FACT_ANN["Fact Practitioner Daily Snapshot"]:::fact
 
-    OPR1["Practitioner 360 Profile"]:::oper
-    OPR2["Practitioner Certificate History"]:::oper
-    OPR3["Practitioner Employment History"]:::oper
-    OPR4["Practitioner Violation History"]:::oper
-    OPR5["Practitioner Exam History"]:::oper
-    OPR6["Practitioner Training History"]:::oper
-    OPR7["Practitioner Related Party Profile"]:::oper
-    OPR8["Practitioner Data Explorer"]:::oper
+    OPR1["Operational Practitioner 360 Profile"]:::oper
+    OPR2["Operational Practitioner Certificate History"]:::oper
+    OPR3["Operational Practitioner Employment History"]:::oper
+    OPR4["Operational Practitioner Violation History"]:::oper
+    OPR5["Operational Practitioner Exam History"]:::oper
+    OPR6["Operational Practitioner Training History"]:::oper
+    OPR7["Operational Practitioner Related Party Profile"]:::oper
+    OPR8["Operational Practitioner Data Explorer"]:::oper
 
     DIM_DATE --> FACT_CERT
     DIM_DATE --> FACT_ANN
@@ -1626,15 +1629,15 @@ graph TB
 
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| `Practitioner 360 Profile` | 1 NHN (latest state) | K_NHNCK_33–41 (Nhóm 5) | READY |
-| `Practitioner Certificate History` | 1 CCHN per NHN | K_NHNCK_43–48 READY; K_NHNCK_92 (Số quyết định thu hồi) READY | READY |
-| `Practitioner Employment History` | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90 (Phân loại tổ chức), K_NHNCK_91 (Phòng ban) | READY |
-| `Practitioner Violation History` | 1 vi phạm per NHN | K_NHNCK_54, K_NHNCK_55, K_NHNCK_56, K_NHNCK_57 READY; K_NHNCK_58 PENDING (O_NHNCK_15 — RECORD_STATUS là trường kỹ thuật) | PARTIAL |
-| `Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_93 (Điểm CM), K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_103 (Kỳ thi) READY | READY |
-| `Practitioner Training History` | 1 enrollment per NHN | K_NHNCK_100, K_NHNCK_96, K_NHNCK_97, K_NHNCK_98, K_NHNCK_99, K_NHNCK_66 READY; K_NHNCK_101 PENDING (O_NHNCK_15 — RECORD_STATUS là trường kỹ thuật); K_NHNCK_67 PENDING (O_NHNCK_9 — chờ Atomic entity) | DRAFT |
-| `Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–80 READY; K_NHNCK_86 (Địa chỉ) READY | READY |
-| `Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–84 READY; K_NHNCK_85 PENDING (VSDC); K_NHNCK_87–89 PENDING (VSDC/MSS) | PARTIAL |
-| `Practitioner Data Explorer` | 1 CCHN per NHN (slicer filter tại query time) | K_NHNCK_68–74 READY; K_NHNCK_102 (Mã định danh) READY | READY |
+| `Operational Practitioner 360 Profile` | 1 NHN (latest state) | K_NHNCK_33–41 (Nhóm 5) | READY |
+| `Operational Practitioner Certificate History` | 1 CCHN per NHN | K_NHNCK_43–48 READY; K_NHNCK_92 (Số quyết định thu hồi) READY | READY |
+| `Operational Practitioner Employment History` | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90 (Phân loại tổ chức), K_NHNCK_91 (Phòng ban) | READY |
+| `Operational Practitioner Violation History` | 1 vi phạm per NHN | K_NHNCK_54, K_NHNCK_55, K_NHNCK_56, K_NHNCK_57 READY; K_NHNCK_58 PENDING (O_NHNCK_15 — RECORD_STATUS là trường kỹ thuật) | PARTIAL |
+| `Operational Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_93 (Điểm CM), K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_103 (Kỳ thi) READY | READY |
+| `Operational Practitioner Training History` | 1 enrollment per NHN | K_NHNCK_100, K_NHNCK_96, K_NHNCK_97, K_NHNCK_98, K_NHNCK_99, K_NHNCK_66 READY; K_NHNCK_101 PENDING (O_NHNCK_15 — RECORD_STATUS là trường kỹ thuật); K_NHNCK_67 PENDING (O_NHNCK_9 — chờ Atomic entity) | DRAFT |
+| `Operational Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–80 READY; K_NHNCK_86 (Địa chỉ) READY | READY |
+| `Operational Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–85 READY; K_NHNCK_87–89 PENDING (VSDC/MSS) | PARTIAL |
+| `Operational Practitioner Data Explorer` | 1 CCHN per NHN (slicer filter tại query time) | K_NHNCK_68–74 READY; K_NHNCK_102 (Mã định danh) READY | READY |
 
 **Bảng Dimension:**
 
@@ -1655,15 +1658,15 @@ graph TB
 | Fact Practitioner License Certificate Snapshot | fct_practitioner_license_certificate_snpst | new | Chưa có trong datamart_model.yaml |
 | Fact Practitioner Daily Snapshot | fct_practitioner_daily_snpst | new | Chưa có trong datamart_model.yaml |
 | Classification Dimension | cl_dim | new | Chưa có trong datamart_model.yaml |
-| Practitioner 360 Profile | prac_360_prfl | new | Chưa có trong datamart_model.yaml |
-| Practitioner Certificate History | prac_ctf_hist | new | Chưa có trong datamart_model.yaml |
-| Practitioner Employment History | prac_emp_hist | new | Chưa có trong datamart_model.yaml |
-| Practitioner Violation History | prac_vln_hist | new | Chưa có trong datamart_model.yaml |
-| Practitioner Exam History | prac_exam_hist | new | Chưa có trong datamart_model.yaml |
-| Practitioner Training History | prac_trn_hist | new | Chưa có trong datamart_model.yaml |
-| Practitioner Related Party Profile | prac_rel_p_prfl | new | Chưa có trong datamart_model.yaml |
-| Practitioner Listed Company Role | prac_listd_co_role | new | Chưa có trong datamart_model.yaml |
-| Practitioner Data Explorer | prac_data_explr | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner 360 Profile | prac_360_prfl | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Certificate History | prac_ctf_hist | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Employment History | prac_emp_hist | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Violation History | prac_vln_hist | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Exam History | prac_exam_hist | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Training History | prac_trn_hist | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Related Party Profile | prac_rel_p_prfl | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Listed Company Role | prac_listd_co_role | new | Chưa có trong datamart_model.yaml |
+| Operational Practitioner Data Explorer | prac_data_explr | new | Chưa có trong datamart_model.yaml |
 
 ---
 
@@ -1676,13 +1679,14 @@ graph TB
 | O_NHNCK_3 | Logic YTD: năm hiện tại đến today; năm quá khứ đến 31/12/Y. | Đã xác nhận. | K_NHNCK_2, 2a, 2b | Closed |
 | O_NHNCK_4 | Tuổi tính từ `Date_Of_Birth` (date) từ `ProfessionalHistories.BirthDate`. | `Age = Year(Snapshot_Date) − Year(Date_Of_Birth)`. Đã xác nhận. | K_NHNCK_23–32, K_NHNCK_35 | Closed |
 | O_NHNCK_5 | `Has_Active_Violation`: ETL tính tại thời điểm snapshot chạy hàng ngày — Atomic không lưu lịch sử thay đổi trạng thái vi phạm theo ngày nên không thể tính point-in-time chính xác. Logic tạm: `Has_Active_Violation = TRUE` nếu NHN có ít nhất 1 `Conduct Violation` có `Violation_Status_Code = 1 (ACTIVE)` tại thời điểm ETL chạy. Slicer năm lấy row Snapshot_Date = 31/12/Y (quá khứ) hoặc MAX ngày (hiện tại). | Tạm chấp nhận — cần BA xác nhận có đúng yêu cầu nghiệp vụ không. | K_NHNCK_4 | Open |
-| O_NHNCK_6 | (Cập nhật v6.5) K_NHNCK_81–84 đã READY. K_NHNCK_84 (Mã CTCK): `scr_prac_org_emp_rpt.scr_org_refr_code` JOIN `scr_org_refr` filter `Organization Type Code = 'CTCK'` — xác nhận Atomic có attribute này. Tên DN: `Practitioner Workplace At Report` (đã fix từ "Workplace Name"). PENDING còn lại: K_NHNCK_85 (Số cổ phiếu — VSDC), K_NHNCK_87/88/89 (Tài khoản cross-broker — VSDC/MSS). | K_NHNCK_81–84 READY. K_NHNCK_85, 87–89 PENDING. | K_NHNCK_81–89 | Open |
+| O_NHNCK_6 | (Cập nhật v6.5) K_NHNCK_81–84 đã READY. K_NHNCK_84 (Mã CTCK): `sp_organization_employment_report.securities_organization_reference_code` JOIN `securities_organization_reference` filter `Organization Type Code = 'CTCK'` — xác nhận Atomic có attribute này. Tên DN: `Practitioner Workplace At Report` (đã fix từ "Workplace Name"). (Cập nhật 2026-07-17) **K_NHNCK_85 reopen review — chuyển READY**: nguồn thật là SCMS (`SC_FIRM_SHAREHOLDER.SHARES_HELD`), không phải VSDC như ghi nhận trước đó — người thiết kế đã xác nhận qua kiểm tra Atomic. Join key đầy đủ: `Securities Practitioner` (NHNCK) → `Involved Party Alternative Identification` (NHNCK, CCCD) = `Involved Party Alternative Identification` (SCMS, NATIONAL_ID) → `Sc Insider Related Person` → cùng `sc_id` → `Securities Company Shareholder`.Shares Held. Cả 4 entity Atomic trong chuỗi join đều đã approved — không còn gap. PENDING còn lại: K_NHNCK_87/88/89 (Tài khoản cross-broker — VSDC/MSS, nguồn dạng biểu mẫu thủ công, chưa có CSDL). | K_NHNCK_81–85 READY. K_NHNCK_87–89 PENDING. | K_NHNCK_81–89 | Closed (K_NHNCK_85) — Open (K_NHNCK_87–89, chờ CSDL VSDC/MSS) |
 | O_NHNCK_7 | Counter "N N/Quan": nguồn `Securities Practitioner Related Party` (NHNCK) READY. Cần BA xác nhận filter loại quan hệ: toàn bộ hay chỉ một số loại (vợ/chồng, con, bố/mẹ...)? Counter "N Doanh nghiệp": PENDING chờ Atomic SGDCK. | K_NHNCK_42 đã bị xóa khỏi BA analyst — KPI không còn tồn tại trong scope. Issue tự đóng. | K_NHNCK_42 | Closed |
-| O_NHNCK_8 | Logic Đạt/Không đạt trong `Practitioner Exam History`: Atomic `ExamDetails` có `Examination_Result_Code` (scheme: EXAMINATION_RESULT — 1: Đạt, 0: Không đạt) — đã có sẵn, không cần derive. | Dùng `Examination_Result_Code` trực tiếp từ Atomic. Đã xác nhận. | K_NHNCK_63 | Closed |
-| O_NHNCK_9 | `POST_CERT_TRAINING_COURSES` chưa có Atomic entity — blocking K_NHNCK_67 "Trạng thái đủ 8h" (logic SUM giờ ≥ 8h theo năm học). Nguồn staging rõ nhưng cần HTTT model Atomic `POST_CERT_TRAINING_COURSES` trước. (K_NHNCK_101 tách sang O_NHNCK_15 — lý do pending khác.) | `Practitioner Training History` ở trạng thái DRAFT — chờ Atomic entity `post_cert_trn_crs`. K_NHNCK_67 PENDING chờ HTTT. | K_NHNCK_67 | Open |
+| O_NHNCK_8 | Logic Đạt/Không đạt trong `Operational Practitioner Exam History`: Atomic `ExamDetails` có `Examination_Result_Code` (scheme: EXAMINATION_RESULT — 1: Đạt, 0: Không đạt) — đã có sẵn, không cần derive. | Dùng `Examination_Result_Code` trực tiếp từ Atomic. Đã xác nhận. | K_NHNCK_63 | Closed |
+| O_NHNCK_9 | `POST_CERT_TRAINING_COURSES` chưa có Atomic entity — blocking K_NHNCK_67 "Trạng thái đủ 8h" (logic SUM giờ ≥ 8h theo năm học). Nguồn staging rõ nhưng cần HTTT model Atomic `POST_CERT_TRAINING_COURSES` trước. (K_NHNCK_101 tách sang O_NHNCK_15 — lý do pending khác.) | `Operational Practitioner Training History` ở trạng thái DRAFT — chờ Atomic entity `post_cert_trn_crs`. K_NHNCK_67 PENDING chờ HTTT. | K_NHNCK_67 | Open |
 | O_NHNCK_10 | `Is_Reissue_Indicator` trên Fact Certificate Snapshot: ETL-derived bằng cách join `CertificateRecords → Applications` lấy `Application_Type_Code` (scheme: APPLICATION_TYPE). BA v2 xác nhận scheme APPLICATION_TYPE có 4 giá trị: (1) "Hồ sơ cấp mới" → `Is_Reissue_Indicator = FALSE`; (2) "Hồ sơ cấp lại do thu hồi", (3) "Hồ sơ cấp lại do hỏng mất", (4) "Hồ sơ cấp lại do thay đổi thông tin" → `Is_Reissue_Indicator = TRUE`. ETL logic: nếu Application_Type_Code thuộc nhóm (2)/(3)/(4) thì TRUE, chỉ (1) là FALSE. K_NHNCK_2b đếm tất cả 3 loại cấp lại gộp chung. | `Is_Reissue_Indicator = TRUE` nếu ApplicationType ∈ {cấp lại do thu hồi, do hỏng mất, do thay đổi thông tin}. Đã xác nhận logic với BA v2. | K_NHNCK_2a, K_NHNCK_2b | Closed |
-| O_NHNCK_11 | (Cập nhật v6.5) "Mạng lưới người có liên quan" — nguồn NHNCK READY. K_NHNCK_75–80 và K_NHNCK_86 đều READY: K_NHNCK_79 (CCCD), K_NHNCK_80 (Quốc tịch — `Country Code` từ `Securities Practitioner Related Party`), K_NHNCK_86 (Địa chỉ — `Related Individual Address`). O_NHNCK_11 không còn PENDING. | K_NHNCK_75–80, K_NHNCK_86 đều READY. | K_NHNCK_75–80, K_NHNCK_86 | Closed |
+| O_NHNCK_11 | (Cập nhật review 2026-07-16) "Mạng lưới người có liên quan" — K_NHNCK_75–78, 80, 86 READY. **K_NHNCK_79 (CCCD/CMND) reopen PENDING**: thiết kế trước đó dùng `PROFESSIONAL_RELATIONSHIPS.IDENTITY_ID` làm giá trị hiển thị, nhưng đây chỉ là FK trỏ tới `IDENTITY_INFO_C06S.ID` — số CMND/CCCD thật nằm ở `IDENTITY_INFO_C06S.IDENTITY_NUMBER` (theo SQL BA tham khảo). `IDENTITY_INFO_C06S` đang out-of-scope Atomic (xem `NHNCK_HLD_Human_Review.txt` dòng 62) nên chưa thể join lấy đúng giá trị. | K_NHNCK_75–78, 80, 86 READY. K_NHNCK_79 PENDING — chờ Atomic bổ sung entity cho `IDENTITY_INFO_C06S`. | K_NHNCK_75–80, K_NHNCK_86 | Open |
 | O_NHNCK_12 | K_NHNCK_101 "Kết quả kiểm tra, phân loại": BA cập nhật xác nhận nguồn là `POST_CERT_TRAINING_COURSES.RECORD_STATUS` (không phải `SPECIALIZATION_COURSES.RESULT` như BA ban đầu ghi). Join `SPECIALIZATION_COURSES ON COURSE_CODE`, filter `POST_CERT_TRAINING_COURSES.RECORD_STATUS = '1'`. Nguồn staging rõ ràng — vấn đề mapping nguồn đã giải quyết. Blocking chuyển sang O_NHNCK_9 (chờ Atomic entity). | Đã xác nhận nguồn staging. K_NHNCK_101 di chuyển về O_NHNCK_9. | K_NHNCK_101 | Closed |
 | O_NHNCK_13 | K_NHNCK_57 "Hình thức xử phạt": BA (STT 12, row 406) ghi nguồn `Violations.RECORD_TYPE` → Atomic `record_tp_code` (scheme RECORD_TYPE: 1=Hành chính, 2=Pháp luật). Màn hình mockup hiển thị nội dung xử phạt chi tiết ("550,000,000 VND", "Cảnh cáo"...) nhưng đây là **dữ liệu giả lập** — không phải nguồn sự thật. Mapping `record_tp_code` theo BA là đúng. | Đã xác nhận — mapping theo BA. | K_NHNCK_57 | Closed |
 | O_NHNCK_14 | K_NHNCK_73 "Trạng thái": BA ghi `PROFESSIONALS.RECORD_STATUS`; người thiết kế xác nhận đây là **trạng thái NHN** (không phải trạng thái CCHN). Đã đổi nguồn → `securities_practitioner_dim.practice_status_code` ← `PROFESSIONALS.STATUS_WORK` (scheme: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại). Tên KPI đổi từ "Trạng thái CCHN" → "Trạng thái NHN". | Đã xác nhận — mapping cập nhật về `practice_status_code`. | K_NHNCK_73 | Closed |
 | O_NHNCK_15 | K_NHNCK_58 "Trạng thái vi phạm" và K_NHNCK_101 "Kết quả kiểm tra, phân loại": BA mapping về `VIOLATIONS.RECORD_STATUS` và `POST_CERT_TRAINING_COURSES.RECORD_STATUS` — đây là trường kỹ thuật (`RECORD_STATUS`) xác định trạng thái bản ghi T24, không phải thông tin nghiệp vụ. Chờ BA xác nhận trường nghiệp vụ thay thế cho cả 2 KPI. | K_NHNCK_58 và K_NHNCK_101 chuyển PENDING. | K_NHNCK_58, K_NHNCK_101 | Open |
+| O_NHNCK_16 | (Phát hiện review 2026-07-16) K_NHNCK_48 "Trạng thái CCHN" (Nhóm 9): BA ghi nguồn `CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS` (scheme 0-5: Chưa sử dụng/Đang sử dụng/Thu hồi có cấp lại/Thu hồi không cấp lại/Đã hủy/Hết hiệu lực — khớp đúng ý nghĩa Mockup "Đang hiệu lực/Thu hồi 3 năm/Thu hồi vĩnh viễn"), nhưng thiết kế trước đó dùng nhầm `Process Status Code` (scheme LICENSE_CERTIFICATE_PROCESS_STATUS: Đã cấp/Đã ký nháy/Đã ký/Đã trả — trạng thái workflow xử lý hồ sơ, khác ý nghĩa hoàn toàn). `CERTIFICATE_RECORD_STATUS_HISTORIES` đang out-of-scope Atomic (bảng audit log, xem `NHNCK_HLD_Human_Review.txt` dòng 35). | K_NHNCK_48 chuyển PENDING — chờ Atomic bổ sung entity cho `CERTIFICATE_RECORD_STATUS_HISTORIES`. | K_NHNCK_48 | Open |

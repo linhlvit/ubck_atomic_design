@@ -1,0 +1,99 @@
+﻿;;;;;;;;;;;;;;;Khai thác nguồn;;;;;;;
+STT;Mã dashboard/BC;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện;Câu lệnh tham khảo;Note;Kết quả Test;Model;DMT
+;;;Tên chiều/chỉ tiêu/thuộc tính;;Dashboard/báo cáo/DataExplorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: lấy 1: 1 từ nguồn
+TB: có tính toán tổng hợp
+Khó: Có logic phức tạp và lấy nhiều mốc thời gian
+Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;;;;;;;
+1;;Chào bán phát hành/Tình hình thực hiện chào bán phát hành theo ngành;Ngày;Ngày;Dashboard;Chiều;Dễ;ngày/theo ngành;IDS - QLCB;x;x;;Done;;company_securities_issuance;ssc_official_doc_date;;;;;;
+1;;;Giá trị Cấp phép;Giá trị chào bán/phát hành đã cấp phép;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS - QLCB;x;x;;Done;;company_securities_issuance;planned_proceeds_am;;;;;;
+1;;;Giá trị huy động thành công;Giá trị chào bán/phát hành thành công thực tế;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS - QLCB;x;x;;Done;;company_securities_issuance;actual_proceeds_am;;;;;;
+1;;;Chưa thành công;Giá trị chào bán/phát hành còn lại;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS - QLCB;x;x;;Done;;company_securities_issuance;planned_proceeds_am - actual_proceeds_am;;;;;;
+2;;"Chào bán phát hành/ Giá trị cấp phép chào bán phát hành theo ngành
+";Loại hình;"Hình thức phát hành gồm:
+- Công chúng
+- Riêng lẻ
+- ESOP
+- Trả cổ tức
+- Phát hành tăng vốn từ vốn chủ sở hữu
+- Khác""";Dashboard;Chỉ tiêu cơ sở;Dễ;ngày/theo ngành;IDS - QLCB;x;x;;Done;;;"- Công chúng
+- Riêng lẻ
+- ESOP
+- Trả cổ tức
+- Phát hành tăng vốn từ vốn chủ sở hữu
+- Khác";;;security_cd;;;
+2;;;Giá trị cấp phép loại hình công chúng;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành ra công chúng;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS - QLCB;;x;;Done;;company_securities_issuance;plan_shareholder_qty*plan_shareholder_price + plan_auction_qty*plan_auction_price + plan_public_qty*plan_public_price + plan_public_company_qty*plan_public_company_price;;;;;;
+2;;;Giá trị cấp phép loại hình riêng lẻ;Giá trị chào bán/phát hành đã cấp phép loại hình phát riêng lẻ;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS - QLCB;;x;;Pending;;company_securities_issuance;plan_single_qty*plan_single_price;;;;;;
+2;;;Giá trị cấp phép loại hình ESOP;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành ra ESOP;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS - QLCB;;x;;Pending;;company_securities_issuance;plan_esop_qty*plan_esop_price + plan_bonus_share_price*plan_bonus_share_qty;;;;;;
+2;;;Giá trị cấp phép loại hình trả cổ tức;Giá trị chào bán/phát hành đã cấp phép loại hình trả cổ tức;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS - QLCB;;x;;Pending;;company_securities_issuance;;;;;;;
+2;;;Giá trị cấp phép loại hình phát hành tăng vốn từ vốn chủ sở hữu;Giá trị chào bán/phát hành đã cấp phép loại hình phát hành tăng vốn từ vốn chủ sở hữu;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS - QLCB;;x;;Pending;;company_securities_issuance;plan_owner_qty*plan_owner_qty;;;;;;
+2;;;Giá trị cấp phép các loại khác;Giá trị chào bán/phát hành đã cấp phép loại hình khác;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo ngành;IDS - QLCB;;x;;Pending;;company_securities_issuance;"planned_proceeds_am -(plan_shareholder_qty*plan_shareholder_price + plan_auction_qty*plan_auction_price + plan_public_qty*plan_public_price + plan_public_company_qty*plan_public_company_price) 
+- plan_single_qty*plan_single_price
+- (plan_esop_qty*plan_esop_price + plan_bonus_share_price*plan_bonus_share_qty)
+- plan_dividend_qty*plan_dividend_qty
+- plan_owner_qty*plan_owner_qty";;;;;;
+3;;Chào bán phát hành/ Giá trị phát hành theo hình thức phát hành và nhóm ngành;Giá trị huy động loại hình công chúng;Giá trị huy động loại hình phát hành ra công chúng;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS - QLCB;;x;;Done;;company_securities_issuance;result_shareholder_qty*result_shareholder_price + result_auction_qty*result_auction_price + result_public_qty*result_public_price + result_public_company_qty*result_public_company_price;;;;;;
+3;;;Giá trị huy động loại hình riêng lẻ;Giá trị huy động loại hình phát riêng lẻ;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS - QLCB;;x;;Pending;;company_securities_issuance;result_single_qty*result_single_price;;;;;;
+3;;;Giá trị huy động loại hình ESOP;Giá trị huy động loại hình phát hành ra ESOP;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS - QLCB;;x;;Doing;;company_securities_issuance;result_esop_qty*result_esop_qty_price + result_bonus_share_qty*result_bonus_share_no;;;;;;
+3;;;Giá trị huy động loại hình trả cổ tức;Giá trị huy động loại hình trả cổ tức;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS - QLCB;;x;;Pending;;company_securities_issuance;;;;;;;
+3;;;Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu;Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS - QLCB;;x;;Pending;;company_securities_issuance;result_owner_qty*result_owner_qty;;;;;;
+3;;;Giá trị huy động các loại khác;Giá trị huy động loại hình khác;Dashboard;Chỉ tiêu phái sinh;TB;ngày/theo hình thức phát hành;IDS - QLCB;;x;;Pending;;company_securities_issuance;"actual_proceeds_am - (result_shareholder_qty*result_shareholder_price + result_auction_qty*result_auction_price + result_public_qty*result_public_price + result_public_company_qty*result_public_company_price)
+- result_single_qty*result_single_price
+- (result_esop_qty*result_esop_qty_price + result_bonus_share_qty*result_bonus_share_no)
+- result_dividend_qty*result_dividend_qty
+- result_owner_qty*result_owner_qty";;;;;;
+4;;Chào bán phát hành/ Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành;Thông tin doanh nghiệp;Tên doanh nghiệp, Tên đối tượng chào bán phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS - QLCB;x;x;;Done;;company_profiles;company_name_vn;;;;;;
+;;;Mã chứng khoán;Mã chứng khoán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS - QLCB;x;x;;Done;;company_profiles;equity_ticker;;;;;;
+4;;;Hình thức chào bán;Hình thức chào bán/phát hành chứng khoán mà doanh nghiệp lựa chọn để huy động vốn từ thị trường.;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;IDS - QLCB;x;x;;Done;;;"-Giá trị huy động loại hình phát hành ra công chúng
+-Giá trị huy động loại hình phát riêng lẻ
+-Giá trị huy động loại hình phát hành ra ESOP
+-Giá trị huy động loại hình trả cổ tức
+-Giá trị huy động loại hình phát hành tăng vốn từ vốn chủ sở hữu
+-Khác";;;;;;
+4;;;Đơn vị tư vấn;Đơn vị tư vấn phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;;;;;;;;
+4;;;Tổ chức kiểm toán;Tổ chức kiểm toán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;;;;;;;;
+4;;;Đơn vị bảo lãnh;Đơn vị bảo lãnh phát hành;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;;;;;;;;
+4;;;Đơn vị xếp hạng tín nhiệm;Đơn vị xếp hạng tín nhiệm doanh nghiệp;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;;;;;;;;
+4;;;Số lượng CK được cấp phép;Tổng số lượng CK được cấp phép chào bán.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS - QLCB;x;x;;Done;;company_securities_issuance;planned_security_qty;;;;;;
+4;;;Số lượng CK chào bán thành công;Tổng số lượng CK chào bán thành công thực tế.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS - QLCB;x;x;;Done;;company_securities_issuance;successful_security_qty;;;;;;
+4;;;Giá trị cấp phép;Giá trị CK được cấp phép;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS - QLCB;x;x;;Done;;company_securities_issuance;planned_proceeds_am;;;;;;
+4;;;Giá trị chào bán thành công;Giá trị CK chào bán thành công;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS - QLCB;x;x;;Done;;company_securities_issuance;actual_proceeds_am;;;;;;
+4;;;Tỷ lệ chào bán thành công;chào bán thành công / Tổng số lượng CK được cấp phép chào bán.;Dashboard;Chỉ tiêu phái sinh;TB;ngày;IDS - QLCB;x;x;;Done;;company_securities_issuance;(successful_security_qty/planned_security_qty)*100%;;;;;;
+5;;Hồ sơ đăng ký chào bán/ Tỷ lệ xử lý hồ sơ;Tỷ lệ hồ sơ đăng ký;Số lượng hồ sơ đăng ký/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;TTHC;x;x;;Pending;;HOSO;;;;;;;
+5;;;Tỷ lệ hồ sơ đang xử lý;Số lượng hồ sơ đang xử lý/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;TTHC;;x;;Pending;;HOSO;;;;;;;
+5;;;Tỷ lệ hồ sơ đã chấp thuận;Số lượng hồ sơ đã được chấp thuận/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;TTHC;;x;;Pending;;HOSO;;;;;;;
+5;;;Tỷ lệ hồ sơ bị từ chối;Số lượng hồ sơ bị từ chối/Tổng số lượng hồ sơ;Dashboard;Chỉ tiêu phái sinh;TB;ngày;TTHC;;x;;Pending;;HOSO;;;;;;;
+5;;Hồ sơ đăng ký chào bán/Bảng chi tiết hồ sơ chào bán & phát hành;Hình thức chào bán;Hình thức chào bán/phát hành chứng khoán mà doanh nghiệp lựa chọn để huy động vốn từ thị trường.;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;HOSO;;;;;;;
+5;;;Năm;Thời gian hồ sơ đăng ký;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;HOSO;;;;;;;
+5;;;Số lượng hồ sơ đăng ký;Số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;HOSO;;;;;;;
+5;;;Số lượng hồ sơ đang xử lý;Số lượng hồ sơ đăng ký chào bán đang xử lý;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;HOSO;;;;;;;
+5;;;Số lượng hồ sơ đã cấp phép;Số lượng hồ sơ đăng ký chào bán đã được cấp phép;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;HOSO;;;;;;;
+5;;;Số lượng hồ sơ bị từ chối;Số lượng hồ sơ đăng ký chào bán bị từ chối;Dashboard;Chỉ tiêu cơ sở;Dễ;ngày;TTHC;x;x;;Pending;;HOSO;;;;;;;
+5;;;Tổng hồ sơ;Tổng số lượng hồ sơ đăng ký chào bán;Dashboard;Chỉ tiêu phái sinh;TB;ngày;TTHC;;x;;Pending;;HOSO;;;;;;;
+6;;Chào bán và phát hành/Thông tin cơ sở;Thời điểm báo cáo;Thời điểm báo cáo;Data Explorer;Chỉ tiêu cơ sở;Dễ;Ngày;IDS - QLCB;x;x;;Doing;;report_catalog;report_year;;;;;;
+6;;;Chuyên viên;Chuyên viên;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;;;;;;;;
+6;;;Tên công ty;Tên công ty;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_profiles;company_name_vn;;;;;;
+6;;;Mã chứng khoán;Mã chứng khoán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_profiles;equity_ticker;;;;;;
+6;;;Sàn;Sàn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_profiles;equity_listing_exch_cd;;;;;;
+6;;;Loại chứng khoán;Loại chứng khoán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_profiles;securities_type_cd;;;;;;
+7;;Chào bán và phát hành/Thông tin công văn cấp phép;Số giấy chứng nhận;Số giấy chứng nhận;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_securities_issuance;certificate_no;;;;;;
+7;;;Ngày cấp giấy chứng nhận;Ngày cấp giấy chứng nhận;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_securities_issuance;Ngày giấy chứng nhận;;;;;;
+7;;;Số công văn gửi công ty;Số công văn gửi công ty;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_securities_issuance;ssc_official_doc_no;;;;;;
+7;;;Ngày công văn;Ngày công văn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;company_securities_issuance;ssc_official_doc_date;;;;;;
+7;;;Hình thức phát hành;Hình thức phát hành;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Done;;;"Hình thức phát hành gồm:
+- Công chúng
+- Riêng lẻ
+- ESOP
+- Trả cổ tức
+- Phát hành tăng vốn từ vốn chủ sở hữu
+- Khác";;;;;;
+8;;Chào bán và phát hành/Thông tin cấp phép chào bán;Số lượng cấp phép;Số lượng cấp phép;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;planned_security_qty;;;;;;
+8;;;Giá (cấp phép);Giá theo quyết định cấp phép chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;planned_security_qty;;;;;;
+8;;;Giá trị cấp phép;Giá trị cấp phép chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;planned_proceeds_am;;;;;;
+8;;;Số lượng người lao động;Số lượng người lao động;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;
+8;;;Đối tượng;Đối tượng được chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;
+8;;;Mục đích sử dụng vốn;Mục đích sử dụng vốn;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;
+9;;Chào bán và phát hành/Thông tin kết quả chào bán;Số lượng thực tế;Số lượng thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;
+9;;;Giá thực tế;Giá thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;TB;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;
+9;;;Giá trị thực tế;Giá trị thực tế chào bán phát hành;Data Explorer;Chỉ tiêu cơ sở;TB;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;
+9;;;Số lượng người lao động;Số lượng người lao động;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;
+9;;;Đối tượng;Đối tượng được chào bán;Data Explorer;Chỉ tiêu cơ sở;Dễ;Mã chứng khoán;IDS - QLCB;x;x;;Doing;;company_securities_issuance;;;;;;;

@@ -101,9 +101,9 @@ subgraph SIL["Atomic"]
     ...
 end
 subgraph GOLD["Datamart"]
-    cls_dim["Classification Dimension"]
+    cl_dim["Classification Dimension"]
 end
-Classification_Value --> cls_dim
+Classification_Value --> cl_dim
 ```
 
 ❌ Không vẽ node `cv` trong subgraph Staging.

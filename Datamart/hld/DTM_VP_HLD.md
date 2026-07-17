@@ -141,7 +141,7 @@ flowchart LR
     end
     subgraph GOLD["Datamart"]
         fct_lst_crp_bnd_indy_trm_snpst["Fact Listed Corporate Bond Industry Term Snapshot"]
-        cls_dim5["Classification Dimension"]
+        cl_dim5["Classification Dimension"]
         cdr_dt_dim5["Calendar Date Dimension"]
     end
     ORDERTRADE_TRADE_BOOK_HOSE5 --> Securities_Trade5
@@ -153,9 +153,9 @@ flowchart LR
     Securities_Trade5 --> fct_lst_crp_bnd_indy_trm_snpst
     Securities_Trading_Snapshot5 --> fct_lst_crp_bnd_indy_trm_snpst
     Public_Company5 --> fct_lst_crp_bnd_indy_trm_snpst
-    Classification_Value5 --> cls_dim5
+    Classification_Value5 --> cl_dim5
     Calendar_Date5 --> cdr_dt_dim5
-    cls_dim5 --> fct_lst_crp_bnd_indy_trm_snpst
+    cl_dim5 --> fct_lst_crp_bnd_indy_trm_snpst
     cdr_dt_dim5 --> fct_lst_crp_bnd_indy_trm_snpst
 ```
 
@@ -766,10 +766,10 @@ flowchart LR
     subgraph GOLD["Datamart"]
         fct_lst_crp_bnd_indy_trm_snpst["Fact Listed Corporate Bond Industry Term Snapshot"]
         cdr_dt_dim["Calendar Date Dimension"]
-        cls_dim["Classification Dimension"]
+        cl_dim["Classification Dimension"]
     end
     cdr_dt_dim --> fct_lst_crp_bnd_indy_trm_snpst
-    cls_dim --> fct_lst_crp_bnd_indy_trm_snpst
+    cl_dim --> fct_lst_crp_bnd_indy_trm_snpst
     fct_lst_crp_bnd_indy_trm_snpst --> RPT8["Thống kê TPDN niêm yết theo ngành và kỳ hạn"]
 ```
 
@@ -866,14 +866,14 @@ graph TB
     fct_lst_crp_bnd_snpst(["Fact Listed Corporate Bond Snapshot"]):::fact
     fct_lst_crp_bnd_indy_trm_snpst(["Fact Listed Corporate Bond Industry Term Snapshot"]):::fact
     cdr_dt_dim(["Calendar Date Dimension"]):::dim
-    cls_dim(["Classification Dimension"]):::dim
+    cl_dim(["Classification Dimension"]):::dim
 
     cdr_dt_dim --> fct_scr_mkt_indx_snpst
     cdr_dt_dim --> fct_derv_tdg_snpst
     cdr_dt_dim --> fct_derv_prc_snpst
     cdr_dt_dim --> fct_lst_crp_bnd_snpst
     cdr_dt_dim --> fct_lst_crp_bnd_indy_trm_snpst
-    cls_dim --> fct_lst_crp_bnd_indy_trm_snpst
+    cl_dim --> fct_lst_crp_bnd_indy_trm_snpst
 ```
 
 ### 3.2 Bảng Phân tích
@@ -905,7 +905,7 @@ Không có.
 
 > Phân loại: **Phân tích** (toàn bộ reuse)
 > Reuse: `Fact Listed Corporate Bond Industry Term Snapshot` (Nhóm 8) — aggregate theo ngành, bỏ chiều kỳ hạn
-> Reuse: `Classification Dimension` (scheme: `IDS_INDUSTRY_CATEGORY`) — L2 cls_dim
+> Reuse: `Classification Dimension` (scheme: `IDS_INDUSTRY_CATEGORY`) — L2 cl_dim
 > Reuse: `Calendar Date Dimension` — L1 Conformed
 
 **Mockup:**
@@ -931,10 +931,10 @@ flowchart LR
     subgraph GOLD["Datamart"]
         fct_lst_crp_bnd_indy_trm_snpst["Fact Listed Corporate Bond Industry Term Snapshot"]
         cdr_dt_dim["Calendar Date Dimension"]
-        cls_dim["Classification Dimension"]
+        cl_dim["Classification Dimension"]
     end
     cdr_dt_dim --> fct_lst_crp_bnd_indy_trm_snpst
-    cls_dim --> fct_lst_crp_bnd_indy_trm_snpst
+    cl_dim --> fct_lst_crp_bnd_indy_trm_snpst
     fct_lst_crp_bnd_indy_trm_snpst --> RPT10["Biểu đồ GTGD TPDN theo ngành"]
 ```
 
@@ -1920,10 +1920,10 @@ flowchart LR
     subgraph GOLD["Datamart"]
         fct_fi_tdg_snpst["Fact Foreign Investor Trading Snapshot"]
         cdr_dt_dim34["Calendar Date Dimension"]
-        cls_dim34["Classification Dimension"]
+        cl_dim34["Classification Dimension"]
     end
     cdr_dt_dim34 --> fct_fi_tdg_snpst
-    cls_dim34 --> fct_fi_tdg_snpst
+    cl_dim34 --> fct_fi_tdg_snpst
     fct_fi_tdg_snpst --> RPT34["Biểu đồ GT mua/bán ròng NĐTNN theo ngành"]
 ```
 

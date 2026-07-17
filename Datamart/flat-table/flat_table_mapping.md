@@ -1382,26 +1382,6 @@ _Không có dim join (operational / self-contained table)._
 
 ---
 
-### `datamart.qlkd_securities_company_shareholder_profile_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Securities Company Shareholder Profile |
-| **Bảng fact/operational** | `datamart.qlkd_securities_company_shareholder_profile` |
-| **PK** | `shareholder_profile_id` |
-| **Số dim join** | 0 |
-
-_Không có dim join (operational / self-contained table)._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 360-8 — Nhân sự & Cổ đông | 1 |
-
----
-
 ### `datamart.qlkd_securities_company_practitioner_profile_flat`
 
 | Thuộc tính | Giá trị |
