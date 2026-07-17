@@ -1,0 +1,359 @@
+-- ============================================================
+-- QLKD Flat Tables — CREATE
+-- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
+-- Generated: Phase 3 LLD Datamart
+-- 14 bảng: 5 fact + 9 operational
+-- ============================================================
+
+-- ============================================================
+-- 1. FACT: qlkd_fct_sc_status_snpst_flat
+--    Fact Securities Company Status Snapshot
+--    Joins: Calendar Date × Securities Company Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_status_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Securities Company Status Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D — date-spine từ MIN(License_Issue_Date)',
+    securities_company_dim_id       String                  COMMENT 'FK CTCK',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                          Nullable(Date)          COMMENT 'FK ngày snapshot D — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_id                           Nullable(String)        COMMENT 'Business Id CTCK (Atomic surrogate) — từ Securities Company Dimension',
+    sc_code                         Nullable(String)        COMMENT 'Mã định danh CTCK — từ Securities Company Dimension',
+    sc_nm                           Nullable(String)        COMMENT 'Tên đầy đủ CTCK bằng tiếng Việt — từ Securities Company Dimension',
+    company_tp_code                 Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK — từ Securities Company Dimension',
+    company_status_code             Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — derive CASE/LIKE trên Classification Firm Status Name — LEFT JOIN cl_firm_status — từ Securities Company Dimension',
+    is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
+    stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id)
+COMMENT 'Flat table — Fact Securities Company Status Snapshot × Calendar Date × Securities Company Dimension'
+;
+
+
+-- ============================================================
+-- 2. FACT: qlkd_fct_sc_service_registration_flat
+--    Fact Securities Company Service Registration
+--    Joins: Calendar Date × Securities Company Dimension × Service Type Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_service_registration_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Securities Company Service Registration
+    registration_dt_dim_id          String                  COMMENT 'FK ngày đăng ký dịch vụ',
+    securities_company_dim_id       String                  COMMENT 'FK CTCK',
+    service_type_dim_id             String                  COMMENT 'FK dịch vụ',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                          Nullable(Date)          COMMENT 'FK ngày đăng ký dịch vụ — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_id                           Nullable(String)        COMMENT 'Business Id CTCK (Atomic surrogate) — từ Securities Company Dimension',
+    sc_code                         Nullable(String)        COMMENT 'Mã định danh CTCK — từ Securities Company Dimension',
+    sc_nm                           Nullable(String)        COMMENT 'Tên đầy đủ CTCK bằng tiếng Việt — từ Securities Company Dimension',
+    company_tp_code                 Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK — từ Securities Company Dimension',
+    company_status_code             Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — derive CASE/LIKE trên Classification Firm Status Name — LEFT JOIN cl_firm_status — từ Securities Company Dimension',
+    is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
+    stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension',
+
+    -- From: SERVICE TYPE DIMENSION
+    cl_service_code                 Nullable(String)        COMMENT 'Mã dịch vụ chứng khoán — từ Service Type Dimension',
+    cl_service_nm                   Nullable(String)        COMMENT 'Tên dịch vụ chứng khoán — dùng CASE/LIKE phân loại tại tầng báo cáo — từ Service Type Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, service_type_dim_id)
+COMMENT 'Flat table — Fact Securities Company Service Registration × Calendar Date × Securities Company Dimension × Service Type Dimension'
+;
+
+
+-- ============================================================
+-- 3. FACT: qlkd_fct_sc_license_condition_snpst_flat
+--    Fact Securities Company License Condition Snapshot
+--    Joins: Calendar Date × Securities Company Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_license_condition_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Securities Company License Condition Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D (Processing Date)',
+    securities_company_dim_id       String                  COMMENT 'FK CTCK',
+    indicator_code                  Nullable(String)        COMMENT 'Loại giấy phép — phân biệt Nhóm 5/6/7 trên cùng 1 Fact — JOIN sc_alert_indicator',
+    severity_level                  Nullable(String)        COMMENT 'Mức duy trì điều kiện cấp phép (1/2/3)',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                          Nullable(Date)          COMMENT 'FK ngày snapshot D (Processing Date) — từ Calendar Date Dimension',
+
+    -- From: SECURITIES COMPANY DIMENSION
+    sc_id                           Nullable(String)        COMMENT 'Business Id CTCK (Atomic surrogate) — từ Securities Company Dimension',
+    sc_code                         Nullable(String)        COMMENT 'Mã định danh CTCK — từ Securities Company Dimension',
+    sc_nm                           Nullable(String)        COMMENT 'Tên đầy đủ CTCK bằng tiếng Việt — từ Securities Company Dimension',
+    company_tp_code                 Nullable(String)        COMMENT 'Loại hình doanh nghiệp CTCK — từ Securities Company Dimension',
+    company_status_code             Nullable(String)        COMMENT '7 nhóm trạng thái CTCK — derive CASE/LIKE trên Classification Firm Status Name — LEFT JOIN cl_firm_status — từ Securities Company Dimension',
+    is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
+    stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, indicator_code)
+COMMENT 'Flat table — Fact Securities Company License Condition Snapshot × Calendar Date × Securities Company Dimension'
+;
+
+
+-- ============================================================
+-- 4. FACT: qlkd_fct_sc_capital_raising_event_flat
+--    Fact Securities Company Capital Raising Event
+--    Joins: Calendar Date × Offering Form Dimension
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_capital_raising_event_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Securities Company Capital Raising Event
+    event_dt_dim_id                 String                  COMMENT 'FK tháng của đợt chào bán/phát hành (Result Report Date)',
+    offering_form_dim_id            String                  COMMENT 'FK hình thức tăng vốn',
+    proceeds_collected_amt          Nullable(Decimal(23,2)) COMMENT 'Tổng tiền thực tế thu được (SUM theo tháng x hình thức tăng vốn)',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                          Nullable(Date)          COMMENT 'FK tháng của đợt chào bán/phát hành (Result Report Date) — từ Calendar Date Dimension',
+
+    -- From: OFFERING FORM DIMENSION
+    capital_raising_form_code       Nullable(String)        COMMENT 'Mã hình thức tăng vốn — ETL-derived CASE WHEN Item Category Code + Offering Method — từ Offering Form Dimension',
+    capital_raising_form_nm         Nullable(String)        COMMENT 'Tên hình thức tăng vốn (5 nhóm) — từ Offering Form Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), offering_form_dim_id)
+COMMENT 'Flat table — Fact Securities Company Capital Raising Event × Calendar Date × Offering Form Dimension'
+;
+
+
+-- ============================================================
+-- 5. FACT: qlkd_market_index_snpst_flat
+--    Market Index Snapshot
+--    Joins: Calendar Date
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_market_index_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Market Index Snapshot
+    snpst_dt_dim_id                 String                  COMMENT 'FK tháng (bản ghi cuối tháng theo Trading Date)',
+    market_code                     String                  COMMENT 'Mã sàn/chỉ số (HOSE/HNX/UPCOM/30)',
+    market_index_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ số (bản ghi cuối tháng)',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                          Nullable(Date)          COMMENT 'FK tháng (bản ghi cuối tháng theo Trading Date) — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), market_code)
+COMMENT 'Flat table — Market Index Snapshot × Calendar Date'
+;
+
+
+-- ============================================================
+-- 6. OPERATIONAL: qlkd_securities_company_personnel_profile_flat
+--    Securities Company Personnel Profile
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Securities Company Personnel Profile
+    sc_senior_personnel_code        String                  COMMENT 'PK — mã nhân sự cao cấp (Bảng Tác nghiệp)',
+    sc_code                         String                  COMMENT 'Mã CTCK nơi nhân sự công tác',
+    full_nm                         Nullable(String)        COMMENT 'Họ và tên đầy đủ nhân sự',
+    department                      Nullable(String)        COMMENT 'Phòng/Ban — dùng CASE/LIKE phân nhóm tại tầng báo cáo',
+    position_nm                     Nullable(String)        COMMENT 'Chức vụ',
+    email                           Nullable(String)        COMMENT 'Email nhân sự — JOIN ip_electronic_address filter EMAIL',
+    phone                           Nullable(String)        COMMENT 'Số điện thoại nhân sự — JOIN ip_electronic_address filter PHONE',
+    work_start_dt                   Nullable(Date)          COMMENT 'Ngày bắt đầu làm việc tại CTCK',
+    dismissal_dt                    Nullable(Date)          COMMENT 'Ngày miễn nhiệm (NULL = đương nhiệm)',
+    personnel_status_code           Nullable(String)        COMMENT 'Trạng thái nhân sự',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(work_start_dt))
+ORDER BY (assumeNotNull(work_start_dt), sc_senior_personnel_code)
+COMMENT 'Flat table — Securities Company Personnel Profile'
+;
+
+
+-- ============================================================
+-- 7. OPERATIONAL: qlkd_securities_company_organization_unit_profile_flat
+--    Securities Company Organization Unit Profile
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Securities Company Organization Unit Profile
+    sc_ou_code                      String                  COMMENT 'PK — mã đơn vị (Bảng Tác nghiệp)',
+    sc_code                         String                  COMMENT 'Mã CTCK',
+    ou_tp_code                      String                  COMMENT 'Loại đơn vị (BRANCH/TRANSACTION_OFFICE/REP_OFFICE)',
+    ou_nm                           Nullable(String)        COMMENT 'Tên đơn vị',
+    adr_val                         Nullable(String)        COMMENT 'Địa chỉ đơn vị — JOIN ip_postal_address',
+    decision_dt                     Nullable(Date)          COMMENT 'Ngày thành lập',
+    director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name',
+    cl_firm_status_code             Nullable(String)        COMMENT 'Trạng thái pháp lý đơn vị',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
+ORDER BY (assumeNotNull(decision_dt), sc_ou_code)
+COMMENT 'Flat table — Securities Company Organization Unit Profile'
+;
+
+
+-- ============================================================
+-- 8. OPERATIONAL: qlkd_securities_company_compliance_history_flat
+--    Securities Company Compliance History
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_compliance_history_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Securities Company Compliance History
+    pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt (Bảng Tác nghiệp). Bộ Admin Penalty Decision dùng sc_administrative_pd_code làm PK riêng.',
+    event_tp_code                   String                  COMMENT 'Loại sự kiện tuân thủ (ADMIN_PENALTY_DECISION/INSPECTION/EXAMINATION) — ETL hardcode theo bộ',
+    form_tp_code                    Nullable(String)        COMMENT 'Loại thanh tra/kiểm tra (PERIODIC/UNSCHEDULED) — JOIN qua Team Target text match',
+    insp_decision_dt                Nullable(Date)          COMMENT 'Ngày ban hành quyết định thanh tra/kiểm tra',
+    decision_nbr                    Nullable(String)        COMMENT 'Số quyết định xử phạt',
+    issued_dt                       Nullable(Date)          COMMENT 'Ngày ban hành quyết định xử phạt',
+    violation_behavior_nm           Nullable(String)        COMMENT 'Hành vi vi phạm',
+    supplementary_penalty_nm        Nullable(String)        COMMENT 'Hình thức xử phạt bổ sung (nếu có)',
+    remedial_measure_nm             Nullable(String)        COMMENT 'Biện pháp khắc phục (nếu có)',
+    sc_code                         String                  COMMENT 'Mã CTCK — chỉ có ở bộ Admin Penalty Decision',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
+ORDER BY (assumeNotNull(issued_dt), pd_code)
+COMMENT 'Flat table — Securities Company Compliance History'
+;
+
+
+-- ============================================================
+-- 9. OPERATIONAL: qlkd_individual_profile_flat
+--    Individual Profile
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_profile_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Individual Profile
+    sc_senior_personnel_code        String                  COMMENT 'PK — mã cá nhân (Bảng Tác nghiệp)',
+    sc_code                         Nullable(String)        COMMENT 'Mã CTCK — chỉ áp dụng nguồn SCMS',
+    full_nm                         Nullable(String)        COMMENT 'Họ và tên đầy đủ',
+    position_nm                     Nullable(String)        COMMENT 'Vai trò/chức vụ',
+    identification_nbr              Nullable(String)        COMMENT 'Số CCCD — merge key với nguồn còn lại (ETL, không phải FK Atomic)',
+    license_certificate_nbr         Nullable(String)        COMMENT 'Số GCN hành nghề — chỉ áp dụng nguồn NHNCK',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 2 giá trị khác nhau theo bộ (SC_FIRM_SENIOR_PERSONNEL/NHNCK.PROFESSIONALS)'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (sc_senior_personnel_code)
+COMMENT 'Flat table — Individual Profile'
+;
+
+
+-- ============================================================
+-- 10. OPERATIONAL: qlkd_individual_related_party_network_flat
+--    Individual Related Party Network
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_related_party_network_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Individual Related Party Network
+    sc_insider_related_person_code  String                  COMMENT 'PK — mã người liên quan (self-join)',
+    sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã nhân sự cao cấp chính — join key self-join',
+    related_person_full_nm          Nullable(String)        COMMENT 'Tên người có liên quan',
+    rltnp                           Nullable(String)        COMMENT 'Mối quan hệ của người có liên quan',
+    representative_position         Nullable(String)        COMMENT 'Vai trò/chức vụ của người có liên quan',
+    identification_nbr              Nullable(String)        COMMENT 'CCCD người liên quan',
+    shares_count                    Nullable(Int64)         COMMENT 'Số cổ phần người liên quan nắm giữ',
+    ownership_ratio                 Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu cổ phần người liên quan',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (sc_insider_related_person_code)
+COMMENT 'Flat table — Individual Related Party Network'
+;
+
+
+-- ============================================================
+-- 11. OPERATIONAL: qlkd_individual_listed_company_role_flat
+--    Individual Listed Company Role
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_listed_company_role_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Individual Listed Company Role
+    sc_insider_related_person_code  String                  COMMENT 'PK — mã vai trò tại tổ chức (Bảng Tác nghiệp)',
+    sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã cá nhân — join key với Individual Profile',
+    sc_code                         Nullable(String)        COMMENT 'Mã tổ chức (CTCK)',
+    representative_position         Nullable(String)        COMMENT 'Vai trò tại tổ chức',
+    shares_count                    Nullable(Int64)         COMMENT 'Số cổ phần nắm giữ',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (sc_insider_related_person_code)
+COMMENT 'Flat table — Individual Listed Company Role'
+;
+
+
+-- ============================================================
+-- 12. OPERATIONAL: qlkd_individual_trading_account_flat
+--    Individual Trading Account
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_trading_account_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Individual Trading Account
+    sc_shareholder_code             String                  COMMENT 'PK — mã cổ đông/chủ TK (Bảng Tác nghiệp)',
+    sc_code                         String                  COMMENT 'Mã CTCK nơi mở tài khoản',
+    trading_account                 Nullable(String)        COMMENT 'Số tài khoản giao dịch',
+    shareholder_nm                  Nullable(String)        COMMENT 'Tên chủ tài khoản',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (sc_shareholder_code)
+COMMENT 'Flat table — Individual Trading Account'
+;
+
+
+-- ============================================================
+-- 13. OPERATIONAL: qlkd_individual_work_history_flat
+--    Individual Work History
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_work_history_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Individual Work History
+    sc_senior_personnel_code        String                  COMMENT 'PK — mã lần bổ nhiệm (Bảng Tác nghiệp)',
+    sc_code                         String                  COMMENT 'Mã CTCK công tác',
+    position_nm                     Nullable(String)        COMMENT 'Chức vụ tại công ty',
+    work_start_dt                   Nullable(Date)          COMMENT 'Ngày bắt đầu làm việc',
+    resignation_dt                  Nullable(Date)          COMMENT 'Ngày nghỉ việc (NULL = hiện tại)',
+    employment_status_code          Nullable(String)        COMMENT 'Trạng thái công tác (CURRENT/PAST) — derive từ Resignation Date',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(work_start_dt))
+ORDER BY (assumeNotNull(work_start_dt), sc_senior_personnel_code)
+COMMENT 'Flat table — Individual Work History'
+;
+
+
+-- ============================================================
+-- 14. OPERATIONAL: qlkd_individual_violation_history_flat
+--    Individual Violation History
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_violation_history_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Individual Violation History
+    pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt cá nhân (Bảng Tác nghiệp)',
+    identification_nbr              Nullable(String)        COMMENT 'Số định danh cá nhân bị xử phạt — merge key với Individual Profile',
+    decision_nbr                    Nullable(String)        COMMENT 'Số quyết định xử phạt',
+    issued_dt                       Nullable(Date)          COMMENT 'Ngày ban hành quyết định xử phạt',
+    violation_behavior_nm           Nullable(String)        COMMENT 'Nội dung vi phạm',
+    penalty_tp_nm                   Nullable(String)        COMMENT 'Hình thức xử phạt chính',
+    decision_status_code            Nullable(String)        COMMENT 'Trạng thái quyết định — LEFT JOIN Violation Case',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
+ORDER BY (assumeNotNull(issued_dt), pd_code)
+COMMENT 'Flat table — Individual Violation History'
+;
+
