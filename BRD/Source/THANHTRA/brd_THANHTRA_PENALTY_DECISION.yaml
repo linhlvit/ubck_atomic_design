@@ -1,0 +1,161 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: PENALTY_DECISION
+brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: DECISION_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số quyết định xử phạt VPHC (cập nhật sau khi ký, cấp số từ VBĐH)"
+    key: null
+    fk_note: null
+  - name: ISSUED_DATE
+    data_type: DATE
+    description: "Ngày ban hành quyết định xử phạt"
+    key: null
+    fk_note: null
+  - name: SIGNER_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID người ký quyết định (Lãnh đạo Thanh tra hoặc LĐ UBCKNN)"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: SIGNER_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên người ký quyết định xử phạt"
+    key: null
+    fk_note: null
+  - name: VIOLATION_CASE_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> violation_case: hồ sơ xử lý VPHC liên kết"
+    key: FK
+    fk_note: "FK → VIOLATION_CASE.id"
+  - name: DECISION_CATEGORY
+    data_type: VARCHAR2(50 CHAR)
+    description: "Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ UBCKNN ký)"
+    key: null
+    fk_note: null
+  - name: ASSIGNED_OFFICER_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID cán bộ được phân công theo dõi quyết định"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: ASSIGNED_OFFICER_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên cán bộ được phân công theo dõi quyết định"
+    key: null
+    fk_note: null
+  - name: ANTI_MONEY_LAUNDERING
+    data_type: NUMBER(1,0)
+    description: "Quyết định có nội dung PCRT: 0=Không, 1=Có (phục vụ lọc báo cáo PCRT)"
+    key: null
+    fk_note: null
+  - name: TOTAL_FINE_AMOUNT
+    data_type: NUMBER(19,4)
+    description: "Tổng mức phạt tiền của quyết định (tổng tất cả đối tượng và hành vi)"
+    key: null
+    fk_note: null
+  - name: PAYMENT_DEADLINE
+    data_type: DATE
+    description: "Thời hạn nộp tiền phạt (chung cho tất cả đối tượng trong QĐ)"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái: DRAFT (Nháp), PENDING_APPROVAL (Chờ phê duyệt), APPROVED (Đã phê duyệt - chờ cấp số), REJECTED (Bị từ chối), ISSUED (Đã ban hành), SENT_TO_SUBJECT (Đã gửi đối tượng), ENFORCED (Đang thi hành)"
+    key: null
+    fk_note: null
+  - name: COMPLAINT_EXISTS
+    data_type: NUMBER(1,0)
+    description: "Có khiếu nại: 0=Không, 1=Có"
+    key: null
+    fk_note: null
+  - name: COMPLAINT_CONTENT
+    data_type: CLOB
+    description: "Nội dung khiếu nại đối với quyết định xử phạt"
+    key: null
+    fk_note: null
+  - name: COMPLAINT_RECEIVED_DATE
+    data_type: DATE
+    description: "Ngày nhận đơn khiếu nại"
+    key: null
+    fk_note: null
+  - name: COMPLAINT_STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái khiếu nại: PROCESSING (Đang xử lý), RESOLVED (Đã giải quyết)"
+    key: null
+    fk_note: null
+  - name: COMPLAINT_RESULT
+    data_type: CLOB
+    description: "Kết quả giải quyết khiếu nại"
+    key: null
+    fk_note: null
+  - name: LAWSUIT_EXISTS
+    data_type: NUMBER(1,0)
+    description: "Có khởi kiện: 0=Không, 1=Có"
+    key: null
+    fk_note: null
+  - name: LAWSUIT_CONTENT
+    data_type: CLOB
+    description: "Nội dung khởi kiện đối với quyết định xử phạt"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: SUBMITTED_BY_ID
+    data_type: VARCHAR2(100 BYTE)
+    description: "ID cán bộ trình phê duyệt quyết định"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: APPROVER_ID
+    data_type: VARCHAR2(100 BYTE)
+    description: "ID Lãnh đạo Thanh tra được chọn phê duyệt"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: SUBMITTED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm trình phê duyệt quyết định"
+    key: null
+    fk_note: null
+  - name: SIGNED_DOCUMENT_URL
+    data_type: VARCHAR2(1000 CHAR)
+    description: "URL file PDF đã ký số, cập nhật sau khi VBĐH callback"
+    key: null
+    fk_note: null
+  - name: SUMMARY
+    data_type: CLOB
+    description: "Trích yếu nội dung quyết định xử phạt"
+    key: null
+    fk_note: null

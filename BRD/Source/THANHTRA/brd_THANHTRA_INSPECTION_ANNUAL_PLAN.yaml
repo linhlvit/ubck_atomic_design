@@ -1,0 +1,71 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: INSPECTION_ANNUAL_PLAN
+brd_ref: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên kế hoạch thanh tra hàng năm"
+    key: null
+    fk_note: null
+  - name: PLAN_YEAR
+    data_type: NUMBER(4,0)
+    description: "Năm thanh tra, UNIQUE (mỗi năm chỉ 1 kế hoạch)"
+    key: null
+    fk_note: null
+  - name: DECISION_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số quyết định ban hành (bắt buộc khi status=APPROVED)"
+    key: null
+    fk_note: null
+  - name: DECISION_DATE
+    data_type: DATE
+    description: "Ngày quyết định (bắt buộc khi status=APPROVED)"
+    key: null
+    fk_note: null
+  - name: STATUS
+    data_type: VARCHAR2(50 CHAR)
+    description: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)"
+    key: null
+    fk_note: null
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

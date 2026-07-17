@@ -1,0 +1,136 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "EXAMINATION_ANNUAL_PLAN"
+  atomic_entity: "Examination Annual Plan"
+  entity_physical_name: "examination_annual_plan"
+  bcv_core_object: "Business Direction"
+  bcv_concept: "[Business Direction] Business Plan"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Examination Annual Plan Id"
+  physical_name: "examination_annual_plan_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Business Direction] Business Plan."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Examination Annual Plan Code"
+  physical_name: "examination_annual_plan_code"
+  description: "Khóa chính UUID của bảng nguồn. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.EXAMINATION_ANNUAL_PLAN"
+  etl_derived_value: "THANHTRA.EXAMINATION_ANNUAL_PLAN"
+  data_type: "string"
+- attribute_name: "Examination Annual Plan Name"
+  physical_name: "examination_annual_plan_nm"
+  description: "Tên kế hoạch kiểm tra chuyên đề hàng năm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Plan Year"
+  physical_name: "plan_year"
+  description: "Năm kiểm tra, UNIQUE (mỗi năm chỉ 1 kế hoạch)."
+  data_domain: "Small Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN.PLAN_YEAR"
+  comment: "Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Approval Decision Number"
+  physical_name: "approval_decision_nbr"
+  description: "Số quyết định phê duyệt kế hoạch (bắt buộc khi status=APPROVED)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN.DECISION_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approval Decision Date"
+  physical_name: "approval_decision_dt"
+  description: "Ngày quyết định phê duyệt (bắt buộc khi status=APPROVED)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN.DECISION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Life Cycle Status Code"
+  physical_name: "life_cycle_status_code"
+  description: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN.STATUS"
+  comment: "Scheme: PLAN_STATUS."
+  classification_context: "PLAN_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_ANNUAL_PLAN.NOTE"
+  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

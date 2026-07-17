@@ -1,0 +1,223 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "POST_INSPECTION_PROCESSING"
+  atomic_entity: "Inspection Post Processing"
+  entity_physical_name: "inspection_post_processing"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Theo dõi thực hiện kiến nghị sau thanh tra. FK→Inspection Conclusion (T3).\
+    \ Ghi nhận T4-03: tên entity là 'Inspection Post Processing' (không có 'Conclusion'\
+    \ trong tên — xem xét đổi thành 'Inspection Conclusion Post Processing' sau khi\
+    \ xác nhận)."
+attributes:
+- attribute_name: "Inspection Post Processing Id"
+  physical_name: "inspection_post_processing_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Business Activity] Business Review — Status Review\
+    \ sub-type."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Post Processing Code"
+  physical_name: "inspection_post_processing_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.POST_INSPECTION_PROCESSING"
+  etl_derived_value: "THANHTRA.POST_INSPECTION_PROCESSING"
+  data_type: "string"
+- attribute_name: "Inspection Conclusion Id"
+  physical_name: "inspection_conclusion_id"
+  description: "FK đến kết luận thanh tra."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.INSPECTION_CONCLUSION_ID"
+  comment: "FK target: Inspection Conclusion.Inspection Conclusion Id. Hash: hash_id('THANHTRA.INSPECTION_CONCLUSION',\
+    \ INSPECTION_CONCLUSION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Conclusion Code"
+  physical_name: "inspection_conclusion_code"
+  description: "Mã kết luận thanh tra liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.INSPECTION_CONCLUSION_ID"
+  comment: "Lookup pair: Inspection Conclusion.Inspection Conclusion Code. Pair with\
+    \ Inspection Conclusion Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Requirement Type Code"
+  physical_name: "requirement_tp_code"
+  description: "Loại yêu cầu xử lý sau thanh tra."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.REQUIREMENT_TYPE"
+  comment: "Scheme: POST_PROCESSING_REQUIREMENT_TYPE."
+  classification_context: "POST_PROCESSING_REQUIREMENT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Responsible Party"
+  physical_name: "responsible_party"
+  description: "Đơn vị/cá nhân chịu trách nhiệm thực hiện kiến nghị."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.RESPONSIBLE_PARTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Due Date"
+  physical_name: "due_dt"
+  description: "Thời hạn thực hiện kiến nghị."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.DUE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Life Cycle Status Code"
+  physical_name: "life_cycle_status_code"
+  description: "Trạng thái: PENDING, IN_PROGRESS, PARTIALLY_DONE, COMPLETED, OVERDUE."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.STATUS"
+  comment: "Scheme: POST_PROCESSING_STATUS."
+  classification_context: "POST_PROCESSING_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Requirement Summary"
+  physical_name: "requirement_summary"
+  description: "Tóm tắt yêu cầu/kiến nghị cần thực hiện từ kết luận thanh tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.REQUIREMENT_SUMMARY"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Implementation Notes"
+  physical_name: "implementation_notes"
+  description: "Ghi chú về tiến trình thực hiện kiến nghị."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.IMPLEMENTATION_NOTES"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Result Summary"
+  physical_name: "result_summary"
+  description: "Tóm tắt kết quả thực hiện kiến nghị."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.RESULT_SUMMARY"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Last Updated Date"
+  physical_name: "last_updated_dt"
+  description: "Ngày cập nhật tình hình thực hiện gần nhất."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.LAST_UPDATED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Monitoring Officer Id"
+  physical_name: "monitoring_officer_id"
+  description: "FK đến cán bộ theo dõi thực hiện kiến nghị."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID"
+  comment: "FK target: Regulatory Authority Officer.Regulatory Authority Officer Id.\
+    \ Hash: hash_id('NHNCK.USERS', MONITORING_OFFICER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Monitoring Officer Code"
+  physical_name: "monitoring_officer_code"
+  description: "Tên cán bộ theo dõi thực hiện kiến nghị (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_NAME"
+  comment: "Lookup pair: Regulatory Authority Officer.Regulatory Authority Officer\
+    \ Code. Pair with Monitoring Officer Id. Nguồn lưu MONITORING_OFFICER_NAME (text\
+    \ snapshot)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -1,0 +1,199 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "PROACTIVE_NOTICE_RECIPIENT"
+  atomic_entity: "Proactive Notice Recipient"
+  entity_physical_name: "proactive_notice_recipient"
+  bcv_core_object: "Event"
+  bcv_concept: "[Event] Event"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "COMPANY_TYPE, CONFIRMATION_STATUS, PUSH_STATUS chưa có scheme chuẩn — lưu\
+    \ Text + ghi chú đề xuất scheme. Cần profile giá trị thực tế trước khi thêm Classification\
+    \ Value."
+attributes:
+- attribute_name: "Proactive Notice Recipient Id"
+  physical_name: "proactive_notice_recipient_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Event] Event."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Proactive Notice Recipient Code"
+  physical_name: "proactive_notice_recipient_code"
+  description: "Khóa chính UUID của bảng nguồn. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.PROACTIVE_NOTICE_RECIPIENT"
+  etl_derived_value: "THANHTRA.PROACTIVE_NOTICE_RECIPIENT"
+  data_type: "string"
+- attribute_name: "Proactive Notice Id"
+  physical_name: "proactive_notice_id"
+  description: "FK đến Proactive Notice (thông báo chủ động được gửi đến công ty này)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PROACTIVE_NOTICE_ID"
+  comment: "FK target: Proactive Notice.Proactive Notice Id. Hash: hash_id('THANHTRA.PROACTIVE_NOTICE',\
+    \ PROACTIVE_NOTICE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Proactive Notice Code"
+  physical_name: "proactive_notice_code"
+  description: "Mã Proactive Notice (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PROACTIVE_NOTICE_ID"
+  comment: "Lookup pair: Proactive Notice.Proactive Notice Code. Pair with Proactive\
+    \ Notice Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Company Code"
+  physical_name: "company_code"
+  description: "Mã công ty nhận thông báo (CTCK hoặc CTQLQ). BK denormalized."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.COMPANY_CODE"
+  comment: "Mã định danh công ty — không FK formal sang SCMS/NHNCK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Company Name"
+  physical_name: "company_nm"
+  description: "Tên công ty nhận thông báo (snapshot tại thời điểm gửi)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.COMPANY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Company Type"
+  physical_name: "company_tp"
+  description: "Loại công ty nhận thông báo (CTCK, CTQLQ hoặc giá trị tương đương\
+    \ từ nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.COMPANY_TYPE"
+  comment: "Lưu Text — chưa có scheme COMPANY_TYPE. Cần thêm scheme: SECURITIES_COMPANY,\
+    \ FUND_MANAGEMENT_COMPANY. Profile giá trị thực tế trước khi chuyển sang Classification\
+    \ Value."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Confirmation Status"
+  physical_name: "confirmation_status"
+  description: "Trạng thái xác nhận đã nhận thông báo (PENDING/CONFIRMED hoặc giá\
+    \ trị tương đương)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.CONFIRMATION_STATUS"
+  comment: "Lưu Text — chưa có scheme NOTICE_RECIPIENT_STATUS. Cần thêm scheme: PENDING,\
+    \ CONFIRMED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Confirmed Timestamp"
+  physical_name: "confirmed_tms"
+  description: "Thời điểm xác nhận đã nhận thông báo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.CONFIRMED_AT"
+  comment: "Nguồn TIMESTAMP(6)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Confirmed By"
+  physical_name: "confirmed_by"
+  description: "Người đại diện công ty xác nhận đã nhận thông báo (text tự do)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.CONFIRMED_BY"
+  comment: "Không có FK formal đến Officer hoặc tổ chức — lưu dạng text denormalized."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Push Status"
+  physical_name: "push_status"
+  description: "Trạng thái đẩy thông báo đến công ty (PENDING/SUCCESS/FAILED hoặc\
+    \ giá trị tương đương)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PUSH_STATUS"
+  comment: "Lưu Text — chưa có scheme PUSH_STATUS. Cần thêm scheme: PENDING, SUCCESS,\
+    \ FAILED. Profile giá trị thực tế trước khi chuyển sang Classification Value."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Push Error"
+  physical_name: "push_error"
+  description: "Thông tin lỗi khi đẩy thông báo thất bại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PROACTIVE_NOTICE_RECIPIENT.PUSH_ERROR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

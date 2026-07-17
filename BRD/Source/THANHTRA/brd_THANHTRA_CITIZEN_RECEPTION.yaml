@@ -1,0 +1,101 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: CITIZEN_RECEPTION
+brd_ref: BRD-SRC-THANHTRA-CITIZEN_RECEPTION
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: RECEPTION_DATE
+    data_type: DATE
+    description: "Ngày tiếp công dân"
+    key: null
+    fk_note: null
+  - name: RECEIVER_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID cán bộ tiếp công dân (FK -> user)"
+    key: FK
+    fk_note: "FK → user.id"
+  - name: RECEIVER_NAME
+    data_type: VARCHAR2(200 CHAR)
+    description: "Tên cán bộ tiếp công dân"
+    key: null
+    fk_note: null
+  - name: SUBJECT_TYPE
+    data_type: VARCHAR2(50 CHAR)
+    description: "Phân loại đối tượng: INDIVIDUAL (Cá nhân), ORGANIZATION (Tổ chức)"
+    key: null
+    fk_note: null
+  - name: SUBJECT_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên cá nhân/tổ chức được tiếp"
+    key: null
+    fk_note: null
+  - name: NUMBER_OF_PEOPLE
+    data_type: NUMBER(5,0)
+    description: "Số người (tiếp đông người: nhóm có tối đa 5 người đại diện)"
+    key: null
+    fk_note: null
+  - name: SUMMARY
+    data_type: CLOB
+    description: "Nội dung tóm tắt buổi tiếp công dân"
+    key: null
+    fk_note: null
+  - name: PETITION_ATTACHED
+    data_type: NUMBER(1,0)
+    description: "Có đơn: 0=Không, 1=Có"
+    key: null
+    fk_note: null
+  - name: PETITION_CATEGORY
+    data_type: VARCHAR2(50 CHAR)
+    description: "Loại đơn: COMPLAINT (Khiếu nại), DENUNCIATION (Tố cáo), FEEDBACK_SUGGESTION (Phản ánh kiến nghị). Bắt buộc khi petition_attached=1"
+    key: null
+    fk_note: null
+  - name: PROCESSING_STATUS
+    data_type: VARCHAR2(200 CHAR)
+    description: "Trạng thái xử lý vụ việc tiếp công dân"
+    key: null
+    fk_note: null
+  - name: PETITION_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> petition (liên kết hồ sơ đơn thư, thêm FK sau khi tạo bảng petition)"
+    key: FK
+    fk_note: "FK → PETITION.id"
+  - name: NOTE
+    data_type: CLOB
+    description: "Ghi chú bổ sung"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

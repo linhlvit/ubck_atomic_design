@@ -1,0 +1,181 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "INSPECTION_ANNUAL_PLAN_TARGET"
+  atomic_entity: "Inspection Annual Plan Target"
+  entity_physical_name: "inspection_annual_plan_target"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Inspection Annual Plan Target Id"
+  physical_name: "inspection_annual_plan_target_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Business Activity] Business Review."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Annual Plan Target Code"
+  physical_name: "inspection_annual_plan_target_code"
+  description: "Khóa chính UUID của bảng nguồn. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET"
+  etl_derived_value: "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET"
+  data_type: "string"
+- attribute_name: "Inspection Annual Plan Id"
+  physical_name: "inspection_annual_plan_id"
+  description: "FK đến Inspection Annual Plan (kế hoạch thanh tra năm chứa mục tiêu\
+    \ này)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.INSPECTION_ANNUAL_PLAN_ID"
+  comment: "FK target: Inspection Annual Plan.Inspection Annual Plan Id. Hash: hash_id('THANHTRA.INSPECTION_ANNUAL_PLAN',\
+    \ INSPECTION_ANNUAL_PLAN_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Annual Plan Code"
+  physical_name: "inspection_annual_plan_code"
+  description: "Mã Inspection Annual Plan (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.INSPECTION_ANNUAL_PLAN_ID"
+  comment: "Lookup pair: Inspection Annual Plan.Inspection Annual Plan Code. Pair\
+    \ with Inspection Annual Plan Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Type Code"
+  physical_name: "target_tp_code"
+  description: "Loại đối tượng trong kế hoạch thanh tra: SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY,\
+    \ PUBLIC_COMPANY, v.v."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.TARGET_TYPE"
+  comment: "Scheme: INSPECTION_TARGET_TYPE."
+  classification_context: "INSPECTION_TARGET_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Reference Id"
+  physical_name: "target_reference_id"
+  description: "ID tham chiếu đối tượng trong hệ thống nguồn (IDS/SCMS/FMS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.TARGET_REFERENCE_ID"
+  comment: "Denormalized reference — không FK formal sang hệ thống nguồn. Hệ thống\
+    \ nguồn tra theo TARGET_SOURCE."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Name"
+  physical_name: "target_nm"
+  description: "Tên đối tượng thanh tra trong kế hoạch (snapshot tại thời điểm lập\
+    \ kế hoạch)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.TARGET_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Code"
+  physical_name: "target_code"
+  description: "Mã chứng khoán hoặc mã số doanh nghiệp của đối tượng thanh tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.TARGET_CODE"
+  comment: "Mã CK (ticker) hoặc MST/mã doanh nghiệp — phụ thuộc loại đối tượng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Source"
+  physical_name: "target_src"
+  description: "Hệ thống nguồn cung cấp thông tin đối tượng (IDS/SCMS/FMS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.TARGET_SOURCE"
+  comment: "Cho biết TARGET_REFERENCE_ID thuộc hệ thống nào."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Planned Quarter"
+  physical_name: "planned_quarter"
+  description: "Quý dự kiến thực hiện thanh tra (1, 2, 3 hoặc 4)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.PLANNED_QUARTER"
+  comment: "Nguồn NUMBER(1,0) — ETL cast sang integer. Giá trị hợp lệ: 1–4."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Planned Content"
+  physical_name: "planned_content"
+  description: "Nội dung thanh tra dự kiến đối với đối tượng này."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET.PLANNED_CONTENT"
+  comment: "Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

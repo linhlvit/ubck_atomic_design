@@ -318,13 +318,13 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | rcvd_dt_dim_id | string | | | F | | FK lịch ngày nhận hồ sơ | ThanhTra | ATM.inspection_case | rcvd_dt | ETL lookup Calendar Date Dimension từ Inspection Case.Received Date |
-| 2 | sbj_cgy_dim_id | string | | | F | | FK phân loại đối tượng | ThanhTra | ATM.inspection_dcsn_sbj | sbj_refr_id | ETL derived — resolve polymorphic FK từ Inspection Decision Subject.Subject Reference Id → lookup Classification Dimension (scheme TT_SUBJECT_CATEGORY) |
-| 3 | vln_tp_dim_id | string | | | F | | FK loại hành vi vi phạm | ThanhTra | ATM.inspection_case_conclusion | vln_tp_code | ETL join Inspection Case Conclusion (lấy MAX Conclusion Sequence Number) → lookup Classification Dimension (scheme TT_VIOLATION_TYPE) |
-| 4 | inspection_case_code | string | X | | | | Mã hồ sơ (degenerate key) | ThanhTra | ATM.inspection_case | inspection_case_code | ETL sinh tự động |
-| 5 | inspection_dcsn_sbj_code | string | X | | | | Mã đối tượng trong quyết định (degenerate key) | ThanhTra | ATM.inspection_dcsn_sbj | inspection_dcsn_sbj_code | ETL sinh tự động |
-| 6 | inspection_tp_code | string | X | | | | Loại hình THANH_TRA / KIEM_TRA | ThanhTra | ATM.inspection_case | inspection_tp_code | ETL sinh tự động |
-| 7 | case_st_code | string | X | | | | Trạng thái hồ sơ | ThanhTra | ATM.inspection_case | case_st_code | ETL sinh tự động |
+| 1 | rcvd_dt_dim_id | string | | | F | | FK lịch ngày nhận hồ sơ | THANHTRA | ATM.inspection_case | rcvd_dt | ETL lookup Calendar Date Dimension từ Inspection Case.Received Date |
+| 2 | sbj_cgy_dim_id | string | | | F | | FK phân loại đối tượng | THANHTRA | ATM.inspection_dcsn_sbj | sbj_refr_id | ETL derived — resolve polymorphic FK từ Inspection Decision Subject.Subject Reference Id → lookup Classification Dimension (scheme TT_SUBJECT_CATEGORY) |
+| 3 | vln_tp_dim_id | string | | | F | | FK loại hành vi vi phạm | THANHTRA | ATM.inspection_case_conclusion | vln_tp_code | ETL join Inspection Case Conclusion (lấy MAX Conclusion Sequence Number) → lookup Classification Dimension (scheme TT_VIOLATION_TYPE) |
+| 4 | inspection_case_code | string | X | | | | Mã hồ sơ (degenerate key) | THANHTRA | ATM.inspection_case | inspection_case_code | ETL sinh tự động |
+| 5 | inspection_dcsn_sbj_code | string | X | | | | Mã đối tượng trong quyết định (degenerate key) | THANHTRA | ATM.inspection_dcsn_sbj | inspection_dcsn_sbj_code | ETL sinh tự động |
+| 6 | inspection_tp_code | string | X | | | | Loại hình THANH_TRA / KIEM_TRA | THANHTRA | ATM.inspection_case | inspection_tp_code | ETL sinh tự động |
+| 7 | case_st_code | string | X | | | | Trạng thái hồ sơ | THANHTRA | ATM.inspection_case | case_st_code | ETL sinh tự động |
 | 8 | ppn_dt | timestamp | X | | | | ETL load timestamp | | | | ETL sinh tự động |
 
 #### 3.3.3.2 Bảng Fact Penalty Decision (fct_pny_dcsn)
@@ -337,11 +337,11 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | vln_rpt_dt_dim_id | string | | | F | | FK lịch ngày ký biên bản vi phạm | ThanhTra | ATM.surveillance_enforcement_dcsn | vln_rpt_dt | ETL lookup Calendar Date Dimension từ Surveillance Enforcement Decision.Violation Report Date |
+| 1 | vln_rpt_dt_dim_id | string | | | F | | FK lịch ngày ký biên bản vi phạm | THANHTRA | ATM.surveillance_enforcement_dcsn | vln_rpt_dt | ETL lookup Calendar Date Dimension từ Surveillance Enforcement Decision.Violation Report Date |
 | 2 | pny_sbj_cgy_dim_id | string | | | F | | FK phân loại đối tượng bị xử phạt | | | | ETL sinh tự động |
 | 3 | vln_tp_dim_id | string | | | F | | FK loại hành vi vi phạm | | | | ETL sinh tự động |
-| 4 | pny_dcsn_code | string | X | | | | Mã quyết định xử phạt (degenerate key) | ThanhTra | ATM.surveillance_enforcement_dcsn | surveillance_enforcement_dcsn_code | ETL sinh tự động |
-| 5 | tot_pny_amt | decimal(23,2) | X | | | | Tổng tiền phạt (đơn vị VNĐ) | ThanhTra | ATM.surveillance_enforcement_dcsn | tot_pny_amt | ETL sinh tự động |
+| 4 | pny_dcsn_code | string | X | | | | Mã quyết định xử phạt (degenerate key) | THANHTRA | ATM.surveillance_enforcement_dcsn | surveillance_enforcement_dcsn_code | ETL sinh tự động |
+| 5 | tot_pny_amt | decimal(23,2) | X | | | | Tổng tiền phạt (đơn vị VNĐ) | THANHTRA | ATM.surveillance_enforcement_dcsn | tot_pny_amt | ETL sinh tự động |
 | 6 | ppn_dt | timestamp | X | | | | ETL load timestamp | | | | ETL sinh tự động |
 
 ### 3.3.4 Danh sách bảng tác nghiệp (Operational)
@@ -356,14 +356,14 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | inspection_case_code | string | | X | P | | Mã hồ sơ thanh tra/kiểm tra (PK) | ThanhTra | ATM.inspection_case | inspection_case_code | ETL sinh tự động |
-| 2 | case_nbr | string | X | | | | Mã hồ sơ nghiệp vụ hiển thị | ThanhTra | ATM.inspection_case | case_nbr | ETL sinh tự động |
+| 1 | inspection_case_code | string | | X | P | | Mã hồ sơ thanh tra/kiểm tra (PK) | THANHTRA | ATM.inspection_case | inspection_case_code | ETL sinh tự động |
+| 2 | case_nbr | string | X | | | | Mã hồ sơ nghiệp vụ hiển thị | THANHTRA | ATM.inspection_case | case_nbr | ETL sinh tự động |
 | 3 | dspl_nm | string | X | | | | Tên hiển thị đối tượng | | | | ETL sinh tự động |
 | 4 | sbj_cgy_code | string | X | | | | Phân loại đối tượng | | | | ETL sinh tự động |
-| 5 | inspection_tp_code | string | X | | | | Loại hình THANH_TRA / KIEM_TRA | ThanhTra | ATM.inspection_case | inspection_tp_code | ETL sinh tự động |
+| 5 | inspection_tp_code | string | X | | | | Loại hình THANH_TRA / KIEM_TRA | THANHTRA | ATM.inspection_case | inspection_tp_code | ETL sinh tự động |
 | 6 | inspection_form_tp_code | string | X | | | | Loại hình đợt: DINH_KY / DOT_XUAT | | | | ETL derived: Inspection Decision.Inspection Annual Plan Id IS NULL → DOT_XUAT; NOT NULL → DINH_KY |
-| 7 | case_st_code | string | X | | | | Trạng thái hồ sơ | ThanhTra | ATM.inspection_case | case_st_code | ETL sinh tự động |
-| 8 | rcvd_dt | date | X | | | | Ngày nhận hồ sơ | ThanhTra | ATM.inspection_case | rcvd_dt | ETL sinh tự động |
+| 7 | case_st_code | string | X | | | | Trạng thái hồ sơ | THANHTRA | ATM.inspection_case | case_st_code | ETL sinh tự động |
+| 8 | rcvd_dt | date | X | | | | Ngày nhận hồ sơ | THANHTRA | ATM.inspection_case | rcvd_dt | ETL sinh tự động |
 | 9 | rcvd_yr | int | X | | | | Năm nhận hồ sơ | | | | ETL sinh tự động |
 | 10 | ppn_dt | timestamp | X | | | | ETL load timestamp | | | | ETL sinh tự động |
 
@@ -377,16 +377,16 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | pny_dcsn_code | string | | X | P | | Mã quyết định xử phạt (PK) | ThanhTra | ATM.surveillance_enforcement_dcsn | surveillance_enforcement_dcsn_code | ETL sinh tự động |
-| 2 | pny_dcsn_nbr | string | X | | | | Số quyết định xử phạt | ThanhTra | ATM.surveillance_enforcement_dcsn | pny_dcsn_nbr | ETL sinh tự động |
-| 3 | surveillance_case_code | string | X | | | | Mã hồ sơ giám sát | ThanhTra | ATM.surveillance_enforcement_case | case_nbr | ETL sinh tự động |
-| 4 | sbj_nm | string | X | | | | Tên đối tượng vi phạm | ThanhTra | ATM.surveillance_enforcement_case | sbj_nm | ETL sinh tự động |
+| 1 | pny_dcsn_code | string | | X | P | | Mã quyết định xử phạt (PK) | THANHTRA | ATM.surveillance_enforcement_dcsn | surveillance_enforcement_dcsn_code | ETL sinh tự động |
+| 2 | pny_dcsn_nbr | string | X | | | | Số quyết định xử phạt | THANHTRA | ATM.surveillance_enforcement_dcsn | pny_dcsn_nbr | ETL sinh tự động |
+| 3 | surveillance_case_code | string | X | | | | Mã hồ sơ giám sát | THANHTRA | ATM.surveillance_enforcement_case | case_nbr | ETL sinh tự động |
+| 4 | sbj_nm | string | X | | | | Tên đối tượng vi phạm | THANHTRA | ATM.surveillance_enforcement_case | sbj_nm | ETL sinh tự động |
 | 5 | pny_sbj_cgy_code | string | X | | | | Phân loại đối tượng bị xử phạt | | | | ETL sinh tự động |
 | 6 | vln_tp_code | string | X | | | | Loại hành vi vi phạm | | | | ETL sinh tự động |
-| 7 | dcsn_st_code | string | X | | | | Trạng thái quyết định | ThanhTra | ATM.surveillance_enforcement_dcsn | dcsn_st_code | ETL sinh tự động |
-| 8 | vln_rpt_dt | date | X | | | | Ngày ký biên bản vi phạm hành chính | ThanhTra | ATM.surveillance_enforcement_dcsn | vln_rpt_dt | ETL sinh tự động |
+| 7 | dcsn_st_code | string | X | | | | Trạng thái quyết định | THANHTRA | ATM.surveillance_enforcement_dcsn | dcsn_st_code | ETL sinh tự động |
+| 8 | vln_rpt_dt | date | X | | | | Ngày ký biên bản vi phạm hành chính | THANHTRA | ATM.surveillance_enforcement_dcsn | vln_rpt_dt | ETL sinh tự động |
 | 9 | vln_rpt_yr | int | X | | | | Năm biên bản vi phạm | | | | ETL sinh tự động |
-| 10 | tot_pny_amt | decimal(23,2) | X | | | | Tổng tiền phạt (VNĐ) | ThanhTra | ATM.surveillance_enforcement_dcsn | tot_pny_amt | ETL sinh tự động |
+| 10 | tot_pny_amt | decimal(23,2) | X | | | | Tổng tiền phạt (VNĐ) | THANHTRA | ATM.surveillance_enforcement_dcsn | tot_pny_amt | ETL sinh tự động |
 | 11 | ppn_dt | timestamp | X | | | | ETL load timestamp | | | | ETL sinh tự động |
 
 #### 3.3.4.3 Bảng Complaint Petition List (cpln_petition_list)
@@ -399,10 +399,10 @@ erDiagram
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Giá trị mặc định | Mô tả | Hệ thống nguồn | Schema.Table | Source Field Name | ETL Rules |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | cpln_petition_code | string | | X | P | | Mã đơn thư (PK) | ThanhTra | ATM.cpln_petition | cpln_petition_code | ETL sinh tự động |
-| 2 | petition_tp_code | string | X | | | | Loại đơn (scheme TT_PETITION_TYPE) | ThanhTra | ATM.cpln_petition | petition_tp_code | ETL sinh tự động |
-| 3 | complainant_nm | string | X | | | | Tên tổ chức/cá nhân gửi đơn | ThanhTra | ATM.cpln_petition | complainant_nm | ETL sinh tự động |
-| 4 | petition_st_code | string | X | | | | Trạng thái đơn (scheme TT_PETITION_STATUS) | ThanhTra | ATM.cpln_petition | petition_st_code | ETL sinh tự động |
-| 5 | submission_dt | date | X | | | | Ngày tiếp nhận đơn | ThanhTra | ATM.cpln_petition | submission_dt | ETL sinh tự động |
+| 1 | cpln_petition_code | string | | X | P | | Mã đơn thư (PK) | THANHTRA | ATM.cpln_petition | cpln_petition_code | ETL sinh tự động |
+| 2 | petition_tp_code | string | X | | | | Loại đơn (scheme TT_PETITION_TYPE) | THANHTRA | ATM.cpln_petition | petition_tp_code | ETL sinh tự động |
+| 3 | complainant_nm | string | X | | | | Tên tổ chức/cá nhân gửi đơn | THANHTRA | ATM.cpln_petition | complainant_nm | ETL sinh tự động |
+| 4 | petition_st_code | string | X | | | | Trạng thái đơn (scheme TT_PETITION_STATUS) | THANHTRA | ATM.cpln_petition | petition_st_code | ETL sinh tự động |
+| 5 | submission_dt | date | X | | | | Ngày tiếp nhận đơn | THANHTRA | ATM.cpln_petition | submission_dt | ETL sinh tự động |
 | 6 | submission_yr | int | X | | | | Năm tiếp nhận đơn | | | | ETL sinh tự động |
 | 7 | ppn_dt | timestamp | X | | | | ETL load timestamp | | | | ETL sinh tự động |

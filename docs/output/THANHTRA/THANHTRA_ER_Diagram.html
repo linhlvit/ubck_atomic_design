@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>THANHTRA ER Diagram — INSPECT Schema</title>
+<style>
+:root{
+  --bg:#f0f2f7;--surface:#fff;--surface2:#f5f6fa;--border:#d1d5e0;
+  --accent:#4f46e5;--accent2:#0891b2;--text:#1e2130;--muted:#6b7280;
+  --amber:#d97706;--blue:#2563eb;
+  --brd-border:#4f46e5;--fk-border:#93a3c8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;overflow:hidden}
+.app{display:flex;height:100vh}
+.sidebar{width:256px;min-width:256px;background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;z-index:10;box-shadow:2px 0 8px rgba(0,0,0,.06)}
+.sb-title{padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.sb-title h2{font-size:13px;font-weight:700}
+.sb-title p{font-size:11px;color:var(--muted);margin-top:2px}
+.sb-section{padding:10px 14px;border-bottom:1px solid var(--border)}
+.sb-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:7px}
+.search-box{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:6px 10px;color:var(--text);font-size:12px;outline:none}
+.search-box:focus{border-color:var(--accent)}
+.hint{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}
+.grp-list{overflow-y:auto;flex:1;padding:6px 0}
+.grp-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;
+  border-left:3px solid transparent;transition:all .12s}
+.grp-item:hover{background:var(--surface2)}
+.grp-item.active{border-left-color:var(--accent);background:rgba(79,70,229,.06)}
+.grp-item.active .grp-name{color:var(--text);font-weight:600}
+.grp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.grp-name{font-size:12px;color:var(--muted);flex:1}
+.grp-count{font-size:10px;color:var(--muted);background:var(--surface2);
+  border-radius:3px;padding:1px 5px;min-width:18px;text-align:center}
+.stats{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap}
+.stat{background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:5px 10px;flex:1;min-width:56px;text-align:center}
+.stat-n{font-size:15px;font-weight:700;color:var(--accent)}
+.stat-l{font-size:9px;color:var(--muted);margin-top:1px}
+.canvas-wrap{flex:1;overflow:hidden;position:relative;background:var(--bg)}
+#canvas{position:absolute;top:0;left:0;transform-origin:0 0}
+#svg-layer{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
+.tbl-card{position:absolute;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:9px;width:252px;overflow:hidden;cursor:default;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);transition:opacity .18s,box-shadow .15s;display:none}
+.tbl-card.visible{display:block}
+.tbl-card:hover{box-shadow:0 2px 12px rgba(79,70,229,.18);z-index:5}
+.tbl-card.brd-table{border-color:var(--brd-border);box-shadow:0 0 0 1px var(--brd-border),0 2px 10px rgba(79,70,229,.15)}
+.tbl-card.fk-linked{border-color:var(--fk-border)}
+.tbl-card.selected{box-shadow:0 0 0 2.5px var(--accent),0 4px 18px rgba(79,70,229,.25);z-index:9}
+.tbl-card.neighbor{box-shadow:0 0 0 2px var(--accent2),0 2px 12px rgba(8,145,178,.2);z-index:7}
+.tbl-card.dimmed{opacity:.12}
+.tbl-hdr{padding:8px 10px 5px;border-bottom:1px solid var(--border)}
+.tbl-badges{display:flex;gap:4px;margin-bottom:3px;flex-wrap:wrap}
+.badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.4px}
+.badge-brd{background:rgba(79,70,229,.14);color:#3730a3;border:1px solid rgba(79,70,229,.35)}
+.badge-grp{font-size:9px;padding:1px 5px;border-radius:3px;border:1px solid;opacity:.85}
+.tbl-name{font-size:11px;font-weight:700;word-break:break-word;line-height:1.3}
+.tbl-cmt{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.35}
+.col-list{max-height:220px;overflow-y:auto}
+.col-row{display:flex;align-items:center;padding:2px 10px;border-bottom:1px solid rgba(209,213,224,.5);gap:3px}
+.col-row:last-child{border-bottom:none}
+.col-row.brd-col{background:rgba(79,70,229,.07)}
+.col-row.dim-col{opacity:.38}
+.col-icon{width:12px;font-size:9px;text-align:center;flex-shrink:0}
+.col-name{flex:1;font-size:10px;font-family:Consolas,monospace;word-break:break-all}
+.col-row.brd-col .col-name{color:#3730a3;font-weight:600}
+.kbadge{font-size:8px;padding:1px 3px;border-radius:2px;flex-shrink:0}
+.kpk{background:rgba(217,119,6,.15);color:var(--amber);border:1px solid rgba(217,119,6,.3)}
+.kfk{background:rgba(37,99,235,.12);color:var(--blue);border:1px solid rgba(37,99,235,.25)}
+.brd-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-left:2px}
+.fk-path{stroke:#93a3c8;stroke-width:2;fill:none;opacity:.75;cursor:pointer;
+  pointer-events:stroke;transition:opacity .15s}
+.fk-path.hidden-line{opacity:0;pointer-events:none}
+.fk-path.active-line{stroke:var(--accent2);stroke-width:3;opacity:1}
+.fk-path.dim-line{opacity:.07;pointer-events:none}
+.zoom-ctrl{position:absolute;bottom:14px;right:14px;display:flex;flex-direction:column;gap:4px;z-index:20}
+.zbtn{width:30px;height:30px;border-radius:6px;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 3px rgba(0,0,0,.08);transition:all .12s}
+.zbtn:hover{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+#tip{position:fixed;background:#1e2130;color:#e2e8f0;border-radius:6px;
+  padding:5px 10px;font-size:11px;pointer-events:none;z-index:200;display:none;
+  max-width:300px;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.legend{position:absolute;bottom:14px;left:14px;background:var(--surface);border:1px solid var(--border);
+  border-radius:7px;padding:8px 12px;font-size:10px;color:var(--muted);z-index:20;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);line-height:1.8}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tbl-card.dragging-card{opacity:.85;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:100;cursor:grabbing}
+.layout-bar{padding:8px 14px;border-top:1px solid var(--border);display:flex;gap:5px;flex-wrap:wrap}
+.lbtn{flex:1;padding:5px 6px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);
+  color:var(--muted);font-size:10px;cursor:pointer;text-align:center;transition:all .12s;white-space:nowrap}
+.lbtn:hover{border-color:var(--accent);color:var(--accent);background:rgba(79,70,229,.06)}
+.lbtn.warn:hover{border-color:var(--red,#dc2626);color:var(--red,#dc2626)}
+.local-warn{padding:5px 14px;font-size:9px;color:var(--amber,#d97706);border-top:1px solid var(--border);
+  background:rgba(217,119,6,.06);display:none}
+.tbl-hdr{cursor:pointer;user-select:none}
+.col-list{user-select:text;cursor:text}
+.col-name{cursor:text}
+.tbl-name{cursor:pointer;user-select:text}
+.tbl-cmt{user-select:text}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{animation:spin .6s linear}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="sb-title"><h2>THANHTRA ER Diagram</h2><p>Schema INSPECT &middot; BRD Mapping</p></div>
+  <div class="sb-section">
+    <span class="sb-label">Tìm kiếm bảng</span>
+    <input class="search-box" id="searchBox" placeholder="Tên bảng..." type="text">
+  </div>
+  <div class="sb-section" style="padding-bottom:6px">
+    <span class="sb-label">Nhóm nghiệp vụ</span>
+    <p class="hint">Click nhóm &rarr; hiện bảng trong nhóm.<br>Click bảng &rarr; hiện bảng có quan hệ FK.<br>Click lại &rarr; bỏ chọn.</p>
+  </div>
+  <div class="grp-list" id="grpList"></div>
+  <div class="stats" id="statsBar"></div>
+  <div class="local-warn" id="localWarn">&#9888; Mở qua file:// — layout lưu trong phiên này.<br>Dùng Export để lưu lâu dài.</div>
+  <div class="layout-bar">
+    <button class="lbtn" onclick="exportLayout()" title="Tải file layout.json về máy">&#8595; Export</button>
+    <button class="lbtn" onclick="document.getElementById('importFile').click()" title="Nạp file layout.json đã lưu">&#8593; Import</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importLayout(this)">
+  </div>
+</div>
+<div class="canvas-wrap" id="canvasWrap">
+  <div id="canvas"><svg id="svg-layer"></svg></div>
+  <div class="zoom-ctrl">
+    <button class="zbtn" onclick="zoomBy(1.2)" title="Zoom in">+</button>
+    <button class="zbtn" onclick="zoomBy(0.83)" title="Zoom out">&minus;</button>
+    <button class="zbtn" onclick="fitView()" title="Fit view">&#x229F;</button>
+    <button class="zbtn" id="btnAutoLayout" onclick="autoLayout()" title="Auto arrange layout" style="font-size:12px">&#x27F3;</button>
+    <button class="zbtn" onclick="resetLayout()" title="Xóa layout đã lưu, reset về mặc định" style="font-size:11px">&#x2715;</button>
+  </div>
+  <div class="legend">
+    <div><b style="color:var(--brd-border)">&#9632;</b> Dùng trong BRD &nbsp;<b style="color:var(--fk-border)">&#9632;</b> Liên quan FK</div>
+    <div>&#9679; Cột dùng trong BRD &nbsp; 🔑 PK &nbsp; 🔗 FK</div>
+    <div style="color:#93a3c8">&#8212;&#8212; Đường FK (hover để xem chi tiết)</div>
+  </div>
+</div>
+</div>
+<div id="tip"></div>
+<script>
+const RAW={"tables":[{"name":"ADHOC_INSPECTION_REPORT","comment":"Báo cáo đột xuất thanh tra","group":"inspection","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REQUESTING_UNIT","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_FROM","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TO","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"EXAMINATION_ANNUAL_PLAN","comment":"Kế hoạch kiểm tra hàng năm","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"PLAN_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_DATE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"EXAMINATION_ANNUAL_PLAN_TARGET","comment":"Đối tượng trong kế hoạch kiểm tra hàng năm","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"EXAMINATION_ANNUAL_PLAN_ID","desc":"FK -> examination_annual_plan","key":"FK","fk":"FK → EXAMINATION_ANNUAL_PLAN.id","brd":false},{"name":"TARGET_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_NAME","desc":"","key":"","fk":"","brd":false},{"name":"PLANNED_CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"PLANNED_QUARTER","desc":"","key":"","fk":"","brd":false},{"name":"LEADING_UNIT_ID","desc":"","key":"","fk":"","brd":false},{"name":"LEADING_UNIT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"EXAMINATION_RESULT_NOTICE","comment":"Thông báo kết quả kiểm tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"EXAMINATION_TEAM_ID","desc":"FK -> examination_team: hồ sơ đoàn kiểm tra liên quan","key":"FK","fk":"FK → EXAMINATION_TEAM.id","brd":false},{"name":"NOTICE_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"ISSUED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"ANNOUNCED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_NAME","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"RECOMMENDATION","desc":"","key":"","fk":"","brd":false},{"name":"EXECUTION_STATUS","desc":"Trạng thái thực hiện: NOT_EXECUTED (Chưa thực hiện), FULLY_EXECUTED (Đã khắc phục xong), PARTIALLY_EXECUTED (Đã khắc phục 1 phần)","key":"","fk":"","brd":false},{"name":"EXECUTION_DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"EXAMINATION_RESULT_NOTICE_REMEDIAL","comment":"Kiến nghị, biện pháp khắc phục trong thông báo kết quả kiểm tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"EXAMINATION_RESULT_NOTICE_ID","desc":"FK -> examination_result_notice","key":"FK","fk":"FK → EXAMINATION_RESULT_NOTICE.id","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"SORT_ORDER","desc":"Thứ tự hiển thị biện pháp khắc phục","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"EXAMINATION_TEAM","comment":"Hồ sơ đoàn kiểm tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"Mã hồ sơ đoàn kiểm tra tự sinh: HSKT-YYYY-XXX","key":"","fk":"","brd":false},{"name":"EXAMINATION_ANNUAL_PLAN_ID","desc":"FK -> examination_annual_plan (chỉ có khi form_type=PERIODIC)","key":"FK","fk":"FK → EXAMINATION_ANNUAL_PLAN.id","brd":false},{"name":"UNIT_ID","desc":"","key":"","fk":"","brd":false},{"name":"UNIT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"PLAN_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"FORM_TYPE","desc":"Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)","key":"","fk":"","brd":false},{"name":"START_DATE","desc":"","key":"","fk":"","brd":false},{"name":"END_DATE","desc":"","key":"","fk":"","brd":false},{"name":"DURATION_DAYS","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_NUMBER","desc":"Số quyết định kiểm tra (UNIQUE trên phân hệ)","key":"","fk":"","brd":false},{"name":"DECISION_DATE","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ANNOUNCEMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"EXAMINATION_PERIOD_FROM","desc":"","key":"","fk":"","brd":false},{"name":"EXAMINATION_PERIOD_TO","desc":"","key":"","fk":"","brd":false},{"name":"ANTI_MONEY_LAUNDERING","desc":"Có kiểm tra nội dung PCRT: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"ABNORMAL_TRANSACTION_CHECK","desc":"Kiểm tra giao dịch bất thường: 0=Không, 1=Có. Nếu=1 thì không tạo thông báo kết quả","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"EXAMINATION_TEAM_MEMBER","comment":"Thành viên đoàn kiểm tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"EXAMINATION_TEAM_ID","desc":"FK -> examination_team","key":"FK","fk":"FK → EXAMINATION_TEAM.id","brd":false},{"name":"USER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"USER_FULL_NAME","desc":"","key":"","fk":"","brd":false},{"name":"USER_ACCOUNT","desc":"","key":"","fk":"","brd":false},{"name":"DEPARTMENT_ID","desc":"","key":"","fk":"","brd":false},{"name":"DEPARTMENT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ROLE_IN_TEAM","desc":"Vai trò: LEADER (Trưởng đoàn), SECRETARY (Thư ký đoàn), MEMBER (Thành viên - mặc định)","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"EXAMINATION_TEAM_TARGET","comment":"Đối tượng kiểm tra của đoàn","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"EXAMINATION_TEAM_ID","desc":"FK -> examination_team","key":"FK","fk":"FK → EXAMINATION_TEAM.id","brd":false},{"name":"TARGET_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_NAME","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"ACCOUNT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"SECURITIES_COMPANY_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ADDRESS","desc":"","key":"","fk":"","brd":false},{"name":"CITIZEN_ID","desc":"","key":"","fk":"","brd":false},{"name":"BUSINESS_REGISTRATION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"LEGAL_REP_NAME","desc":"","key":"","fk":"","brd":false},{"name":"LEGAL_REP_CITIZEN_ID","desc":"","key":"","fk":"","brd":false}]},{"name":"INSPECTION_ANNUAL_PLAN","comment":"Kế hoạch thanh tra hàng năm","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"PLAN_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_DATE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"INSPECTION_ANNUAL_PLAN_TARGET","comment":"Đối tượng trong kế hoạch thanh tra hàng năm","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"INSPECTION_ANNUAL_PLAN_ID","desc":"FK -> inspection_annual_plan","key":"FK","fk":"FK → INSPECTION_ANNUAL_PLAN.id","brd":false},{"name":"TARGET_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_NAME","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_CODE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_SOURCE","desc":"","key":"","fk":"","brd":false},{"name":"PLANNED_QUARTER","desc":"","key":"","fk":"","brd":false},{"name":"PLANNED_CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"INSPECTION_CONCLUSION","comment":"Kết luận thanh tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"INSPECTION_TEAM_ID","desc":"FK -> inspection_team: hồ sơ đoàn thanh tra liên quan","key":"FK","fk":"FK → INSPECTION_TEAM.id","brd":false},{"name":"CONCLUSION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"ISSUED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"ANNOUNCED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_NAME","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"GOVERNMENT_INSPECTOR_SENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"RECOMMENDATION","desc":"","key":"","fk":"","brd":false},{"name":"EXECUTION_STATUS","desc":"Trạng thái thực hiện: NOT_EXECUTED (Chưa thực hiện), FULLY_EXECUTED (Đã khắc phục xong), PARTIALLY_EXECUTED (Đã khắc phục 1 phần)","key":"","fk":"","brd":false},{"name":"EXECUTION_DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"INSPECTION_CONCLUSION_REMEDIAL","comment":"Kiến nghị, biện pháp khắc phục trong kết luận thanh tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"INSPECTION_CONCLUSION_ID","desc":"FK -> inspection_conclusion","key":"FK","fk":"FK → INSPECTION_CONCLUSION.id","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"SORT_ORDER","desc":"Thứ tự hiển thị biện pháp khắc phục","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"INSPECTION_REPORT_OUTLINE","comment":"Đề cương báo cáo thanh tra","group":"inspection","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"TITLE","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_VALUE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"INSPECTION_TEAM","comment":"Hồ sơ đoàn thanh tra (quyết định và thông tin đoàn)","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"","key":"","fk":"","brd":false},{"name":"INSPECTION_ANNUAL_PLAN_ID","desc":"FK -> inspection_annual_plan (chỉ có khi form_type=PERIODIC)","key":"FK","fk":"FK → INSPECTION_ANNUAL_PLAN.id","brd":false},{"name":"PLAN_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"FORM_TYPE","desc":"Hình thức: PERIODIC (Định kỳ), UNSCHEDULED (Đột xuất)","key":"","fk":"","brd":false},{"name":"START_DATE","desc":"","key":"","fk":"","brd":false},{"name":"END_DATE","desc":"","key":"","fk":"","brd":false},{"name":"DURATION_DAYS","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_DATE","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ANNOUNCEMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"INSPECTION_PERIOD_FROM","desc":"","key":"","fk":"","brd":false},{"name":"INSPECTION_PERIOD_TO","desc":"","key":"","fk":"","brd":false},{"name":"ANTI_MONEY_LAUNDERING","desc":"Có thanh tra PCRT: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"ABNORMAL_TRANSACTION_CHECK","desc":"Kiểm tra giao dịch bất thường: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"VERIFICATION_MINUTES_SIGN_DATE","desc":"","key":"","fk":"","brd":false}]},{"name":"INSPECTION_TEAM_MEMBER","comment":"Thành viên đoàn thanh tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"INSPECTION_TEAM_ID","desc":"FK -> inspection_team","key":"FK","fk":"FK → INSPECTION_TEAM.id","brd":false},{"name":"USER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"USER_FULL_NAME","desc":"","key":"","fk":"","brd":false},{"name":"USER_ACCOUNT","desc":"","key":"","fk":"","brd":false},{"name":"DEPARTMENT_ID","desc":"","key":"","fk":"","brd":false},{"name":"DEPARTMENT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ROLE_IN_TEAM","desc":"Vai trò: LEADER (Trưởng đoàn), SECRETARY (Thư ký đoàn), MEMBER (Thành viên - mặc định)","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"INSPECTION_TEAM_TARGET","comment":"Đối tượng thanh tra của đoàn","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"INSPECTION_TEAM_ID","desc":"FK -> inspection_team","key":"FK","fk":"FK → INSPECTION_TEAM.id","brd":false},{"name":"TARGET_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"TARGET_NAME","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"INSPECTION_PERIOD_FROM","desc":"","key":"","fk":"","brd":false},{"name":"INSPECTION_PERIOD_TO","desc":"","key":"","fk":"","brd":false},{"name":"ANTI_MONEY_LAUNDERING","desc":"Có/không thanh tra về PCRT: 1=Có, 0=Không","key":"","fk":"","brd":false},{"name":"ABNORMAL_TRANSACTION_CHECK","desc":"Kiểm tra giao dịch bất thường: 1=Có, 0=Không. Nếu =1 thì không tạo thông báo kết quả kiểm tra","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false}]},{"name":"POST_INSPECTION_PROCESSING","comment":"Theo dõi xử lý sau thanh tra","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"INSPECTION_CONCLUSION_ID","desc":"FK -> inspection_conclusion: kết luận thanh tra liên quan","key":"FK","fk":"FK → INSPECTION_CONCLUSION.id","brd":false},{"name":"REQUIREMENT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"RESPONSIBLE_PARTY","desc":"","key":"","fk":"","brd":false},{"name":"DUE_DATE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: PENDING (Chưa thực hiện - mặc định), IN_PROGRESS (Đang thực hiện), PARTIALLY_DONE (Thực hiện một phần), COMPLETED (Hoàn thành), OVERDUE (Quá hạn)","key":"","fk":"","brd":false},{"name":"IMPLEMENTATION_NOTES","desc":"","key":"","fk":"","brd":false},{"name":"LAST_UPDATED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"MONITORING_OFFICER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"MONITORING_OFFICER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"REQUIREMENT_SUMMARY","desc":"","key":"","fk":"","brd":false},{"name":"RESULT_SUMMARY","desc":"","key":"","fk":"","brd":false}]},{"name":"PROACTIVE_NOTICE","comment":"Thông báo chủ động (công bố thông tin)","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"TITLE","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"NOTICE_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"PRIORITY","desc":"Mức độ ưu tiên: NORMAL (Bình thường), URGENT (Khẩn)","key":"","fk":"","brd":false},{"name":"SENDER_ID","desc":"","key":"","fk":"","brd":false},{"name":"SENDER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SENT_AT","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: DRAFT (Nháp), SENT (Đã gửi) — sau khi SENT không thể sửa hoặc thu hồi","key":"","fk":"","brd":false},{"name":"ATTACHMENT_IDS_JSON","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"PROACTIVE_NOTICE_RECIPIENT","comment":"Danh sách người nhận thông báo chủ động","group":"inspection","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PROACTIVE_NOTICE_ID","desc":"FK -> proactive_notice","key":"FK","fk":"FK → PROACTIVE_NOTICE.id","brd":false},{"name":"COMPANY_CODE","desc":"","key":"","fk":"","brd":false},{"name":"COMPANY_NAME","desc":"","key":"","fk":"","brd":false},{"name":"COMPANY_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"CONFIRMATION_STATUS","desc":"Trạng thái xác nhận: PENDING (Chưa xác nhận), CONFIRMED (Đã xác nhận)","key":"","fk":"","brd":false},{"name":"CONFIRMED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CONFIRMED_BY","desc":"","key":"","fk":"","brd":false},{"name":"PUSH_STATUS","desc":"Trạng thái đẩy thông báo sang SCMS/FMS: PENDING (Chờ gửi), SUCCESS (Thành công), FAILED (Thất bại)","key":"","fk":"","brd":false},{"name":"PUSH_ERROR","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"SUPERVISION_ACTIVITY_REPORT","comment":"Báo cáo hoạt động giám sát","group":"inspection","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"UNIT_ID","desc":"","key":"","fk":"","brd":false},{"name":"UNIT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"TITLE","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_VALUE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: DRAFT (Nháp), SENT_TO_INSPECTOR (Đã gửi Thanh tra)","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"ADHOC_ADMIN_VIOLATION_REPORT","comment":"Báo cáo đột xuất vi phạm hành chính","group":"violation","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REQUESTING_UNIT","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_FROM","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TO","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: DRAFT (Nháp - mặc định), COMPLETED (Hoàn thành)","key":"","fk":"","brd":false}]},{"name":"ADMIN_VIOLATION_REPORT_OUTLINE","comment":"Đề cương báo cáo vi phạm hành chính","group":"violation","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"PENALTY_DECISION","comment":"Quyết định xử phạt vi phạm hành chính","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"DECISION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"ISSUED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"SIGNER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"SIGNER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATION_CASE_ID","desc":"FK -> violation_case: hồ sơ xử lý VPHC liên kết","key":"FK","fk":"FK → VIOLATION_CASE.id","brd":false},{"name":"DECISION_CATEGORY","desc":"Phân loại: INSPECTOR_SIGNED (LĐ Thanh tra ký), SSC_LEADER_SIGNED (LĐ UBCKNN ký)","key":"","fk":"","brd":false},{"name":"ASSIGNED_OFFICER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"ASSIGNED_OFFICER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ANTI_MONEY_LAUNDERING","desc":"Quyết định có nội dung PCRT: 0=Không, 1=Có (phục vụ lọc báo cáo PCRT)","key":"","fk":"","brd":false},{"name":"TOTAL_FINE_AMOUNT","desc":"","key":"","fk":"","brd":false},{"name":"PAYMENT_DEADLINE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: DRAFT (Nháp), PENDING_APPROVAL (Chờ phê duyệt), APPROVED (Đã phê duyệt - chờ cấp số), REJECTED (Bị từ chối), ISSUED (Đã ban hành), SENT_TO_SUBJECT (Đã gửi đối tượng), ENFORCED (Đang thi hành)","key":"","fk":"","brd":false},{"name":"COMPLAINT_EXISTS","desc":"Có khiếu nại: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"COMPLAINT_CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"COMPLAINT_RECEIVED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"COMPLAINT_STATUS","desc":"","key":"","fk":"","brd":false},{"name":"COMPLAINT_RESULT","desc":"","key":"","fk":"","brd":false},{"name":"LAWSUIT_EXISTS","desc":"Có khởi kiện: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"LAWSUIT_CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"SUBMITTED_BY_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"APPROVER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"SUBMITTED_AT","desc":"","key":"","fk":"","brd":false},{"name":"SIGNED_DOCUMENT_URL","desc":"","key":"","fk":"","brd":false},{"name":"SUMMARY","desc":"","key":"","fk":"","brd":false}]},{"name":"PENALTY_DECISION_APPROVAL_HISTORY","comment":"Lịch sử phê duyệt quyết định xử phạt","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PENALTY_DECISION_ID","desc":"FK -> penalty_decision","key":"FK","fk":"FK → PENALTY_DECISION.id","brd":false},{"name":"ACTION","desc":"","key":"","fk":"","brd":false},{"name":"PERFORMED_BY","desc":"","key":"","fk":"","brd":false},{"name":"PERFORMED_AT","desc":"","key":"","fk":"","brd":false},{"name":"REJECTION_REASON","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"PENALTY_DECISION_CIRCUMSTANCE","comment":"Tình tiết tăng nặng/giảm nhẹ trong quyết định xử phạt","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PENALTY_DECISION_SUBJECT_BEHAVIOR_ID","desc":"FK -> penalty_decision_subject_behavior","key":"FK","fk":"FK → PENALTY_DECISION_SUBJECT_BEHAVIOR.id","brd":false},{"name":"CIRCUMSTANCE_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false}]},{"name":"PENALTY_DECISION_SUBJECT","comment":"Đối tượng bị xử phạt trong quyết định","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PENALTY_DECISION_ID","desc":"FK -> penalty_decision","key":"FK","fk":"FK → PENALTY_DECISION.id","brd":false},{"name":"SUBJECT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_ID_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_DOB","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_ADDRESS","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_LEGAL_REP","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_LEGAL_REP_TITLE","desc":"","key":"","fk":"","brd":false},{"name":"TOTAL_FINE_AMOUNT","desc":"","key":"","fk":"","brd":false},{"name":"PAID_AMOUNT","desc":"Số tiền đã nộp phạt","key":"","fk":"","brd":false},{"name":"COERCED_AMOUNT","desc":"Số tiền đã cưỡng chế tài khoản","key":"","fk":"","brd":false},{"name":"PAYMENT_RECEIVED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"COMPLIANCE_STATUS","desc":"Trạng thái thi hành: NOT_PAID (Chưa nộp phạt - mặc định), PAID (Đã nộp phạt đủ), PARTIAL (Đã nộp một phần), COMPLAINING (Đang khiếu nại/khởi kiện)","key":"","fk":"","brd":false},{"name":"ENFORCEMENT_PROGRESS","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"PAYMENT_PROOF_URL","desc":"","key":"","fk":"","brd":false},{"name":"PAYMENT_PROOF_UPLOADED_AT","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_TAX_CODE","desc":"","key":"","fk":"","brd":false}]},{"name":"PENALTY_DECISION_SUBJECT_BEHAVIOR","comment":"Hành vi vi phạm của đối tượng trong quyết định xử phạt","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PENALTY_DECISION_SUBJECT_ID","desc":"FK -> penalty_decision_subject","key":"FK","fk":"FK → PENALTY_DECISION_SUBJECT.id","brd":false},{"name":"VIOLATION_BEHAVIOR_ID","desc":"FK -> violation_behavior: hành vi vi phạm được chọn","key":"FK","fk":"FK → VIOLATION_BEHAVIOR.id","brd":false},{"name":"PENALTY_TYPE_ID","desc":"FK -> penalty_type: hình thức xử phạt áp dụng","key":"FK","fk":"FK → PENALTY_TYPE.id","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"MIN_FINE_AMOUNT","desc":"","key":"","fk":"","brd":false},{"name":"MAX_FINE_AMOUNT","desc":"","key":"","fk":"","brd":false},{"name":"APPLIED_FINE_AMOUNT","desc":"","key":"","fk":"","brd":false},{"name":"REMEDIAL_MEASURE","desc":"","key":"","fk":"","brd":false},{"name":"REMEDIAL_DEADLINE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"LEGAL_BASIS","desc":"","key":"","fk":"","brd":false}]},{"name":"PENALTY_DECISION_VIOLATION_RECORD","comment":"Liên kết giữa quyết định xử phạt và biên bản vi phạm","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PENALTY_DECISION_ID","desc":"FK -> penalty_decision","key":"FK","fk":"FK → PENALTY_DECISION.id","brd":false},{"name":"VIOLATION_RECORD_ID","desc":"FK -> violation_record: biên bản VPHC liên kết với quyết định xử phạt","key":"FK","fk":"FK → VIOLATION_RECORD.id","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"PENALTY_TYPE","comment":"Danh mục hình thức xử phạt","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"Mã hình thức xử phạt, tự động sinh, UNIQUE","key":"","fk":"","brd":false},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"CATEGORY","desc":"","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"LEGAL_BASIS","desc":"","key":"","fk":"","brd":false}]},{"name":"PENALTY_TYPE_VIOLATION_BEHAVIOR","comment":"Ánh xạ hình thức xử phạt theo hành vi vi phạm","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PENALTY_TYPE_ID","desc":"FK -> penalty_type: hình thức xử phạt bổ sung","key":"FK","fk":"FK → PENALTY_TYPE.id","brd":false},{"name":"VIOLATION_BEHAVIOR_ID","desc":"FK -> violation_behavior: hành vi vi phạm liên kết","key":"FK","fk":"FK → VIOLATION_BEHAVIOR.id","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"SECURITY_MEASURE_DECISION","comment":"Quyết định áp dụng biện pháp ngăn chặn và bảo đảm xử phạt","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"DECISION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DECISION_DATE","desc":"","key":"","fk":"","brd":false},{"name":"MEASURE_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"EFFECTIVE_DATE","desc":"","key":"","fk":"","brd":false},{"name":"DURATION_MONTHS","desc":"","key":"","fk":"","brd":false},{"name":"SIGNER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SUMMARY","desc":"","key":"","fk":"","brd":false},{"name":"SENT_STATUS","desc":"Trạng thái gửi: NOT_SENT (Chưa gửi), SENT (Đã gửi)","key":"","fk":"","brd":false},{"name":"SENT_AT","desc":"","key":"","fk":"","brd":false},{"name":"SENT_BY","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"SECURITY_MEASURE_DECISION_RECIPIENT","comment":"Người nhận quyết định biện pháp ngăn chặn","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"SECURITY_MEASURE_DECISION_ID","desc":"FK -> security_measure_decision","key":"FK","fk":"FK → SECURITY_MEASURE_DECISION.id","brd":false},{"name":"RECIPIENT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"RECIPIENT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"RECIPIENT_REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"SENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"CONFIRMATION_STATUS","desc":"Trạng thái nhận: NOT_CONFIRMED (Chưa xác nhận), CONFIRMED (Đã xác nhận)","key":"","fk":"","brd":false},{"name":"CONFIRMED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CONFIRMED_BY","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"SECURITY_MEASURE_DECISION_SUBJECT","comment":"Đối tượng áp dụng biện pháp ngăn chặn","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"SECURITY_MEASURE_DECISION_ID","desc":"FK -> security_measure_decision","key":"FK","fk":"FK → SECURITY_MEASURE_DECISION.id","brd":false},{"name":"SUBJECT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_ID_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_DOB","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_ADDRESS","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_LEGAL_REP","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"SECURITY_MEASURE_EXECUTION","comment":"Theo dõi thực hiện quyết định biện pháp ngăn chặn","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"SECURITY_MEASURE_DECISION_ID","desc":"FK -> security_measure_decision","key":"FK","fk":"FK → SECURITY_MEASURE_DECISION.id","brd":false},{"name":"REPORTER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"EXECUTION_RESULT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"VIOLATION_BEHAVIOR","comment":"Danh mục hành vi vi phạm hành chính","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"Mã hành vi, tự động sinh, UNIQUE","key":"","fk":"","brd":false},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"PRIMARY_PENALTY_TYPE_ID","desc":"FK -> penalty_type: Hình thức xử phạt chính (chỉ chọn 1)","key":"FK","fk":"FK → PENALTY_TYPE.id","brd":false},{"name":"MIN_FINE_AMOUNT","desc":"","key":"","fk":"","brd":false},{"name":"MAX_FINE_AMOUNT","desc":"","key":"","fk":"","brd":false},{"name":"REMEDIAL_MEASURE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"LEGAL_DOCUMENT","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATION_CLAUSE","desc":"","key":"","fk":"","brd":false}]},{"name":"VIOLATION_BEHAVIOR_LEGAL_DOCUMENT","comment":"Văn bản pháp luật áp dụng cho hành vi vi phạm","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"VIOLATION_BEHAVIOR_ID","desc":"FK -> violation_behavior.id","key":"FK","fk":"FK → VIOLATION_BEHAVIOR.id","brd":false},{"name":"LEGAL_DOCUMENT_ID","desc":"FK -> legal_document.id","key":"FK","fk":"FK → LEGAL_DOCUMENT.id","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"VIOLATION_CASE","comment":"Hồ sơ vụ việc vi phạm hành chính","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"Mã hồ sơ tự động sinh","key":"","fk":"","brd":false},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"SOURCE_CATEGORY","desc":"","key":"","fk":"","brd":false},{"name":"SOURCE_UNIT_ID","desc":"","key":"","fk":"","brd":false},{"name":"SOURCE_UNIT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"INSPECTION_TEAM_ID","desc":"FK -> inspection_team (liên kết hồ sơ đoàn thanh tra nếu phát sinh từ thanh tra)","key":"FK","fk":"FK → INSPECTION_TEAM.id","brd":false},{"name":"EXAMINATION_TEAM_ID","desc":"FK -> examination_team (liên kết hồ sơ đoàn kiểm tra nếu phát sinh từ kiểm tra)","key":"FK","fk":"FK → EXAMINATION_TEAM.id","brd":false},{"name":"ASSIGNED_OFFICER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"ASSIGNED_OFFICER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SUPERVISING_LEADER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"SUPERVISING_LEADER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: NEW (Mới tiếp nhận), PROCESSING (Đang xử lý), DECISION_ISSUED (Đã ban hành quyết định), ENFORCED (Đang cưỡng chế), CLOSED (Đã kết thúc)","key":"","fk":"","brd":false},{"name":"BOND_ISSUER_CODE","desc":"","key":"","fk":"","brd":false},{"name":"MARKET_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"BOND_CODE","desc":"","key":"","fk":"","brd":false},{"name":"PROCESSING_PROGRESS","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"VIOLATION_CASE_OUTPUT_DOCUMENT","comment":"Văn bản đầu ra của hồ sơ vi phạm","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"VIOLATION_CASE_ID","desc":"FK -> violation_case","key":"FK","fk":"FK → VIOLATION_CASE.id","brd":false},{"name":"DOCUMENT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"PENALTY_DECISION_ID","desc":"FK -> penalty_decision (nếu văn bản đầu ra là quyết định xử phạt)","key":"FK","fk":"FK → PENALTY_DECISION.id","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"VIOLATION_CASE_RECEIVED_DOCUMENT","comment":"Văn bản đầu vào của hồ sơ vi phạm","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"VIOLATION_CASE_ID","desc":"FK -> violation_case","key":"FK","fk":"FK → VIOLATION_CASE.id","brd":false},{"name":"DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"ISSUING_UNIT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATION_SUBJECT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATION_RECORD_ID","desc":"FK -> violation_record (nếu chọn từ BB VPHC trên phân hệ, thêm FK sau khi tạo bảng violation_record)","key":"FK","fk":"FK → VIOLATION_RECORD.id","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"ISSUING_UNIT_ID","desc":"","key":"","fk":"","brd":false}]},{"name":"VIOLATION_CASE_STATUS_HISTORY","comment":"Lịch sử trạng thái hồ sơ vi phạm","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"VIOLATION_CASE_ID","desc":"FK -> violation_case","key":"FK","fk":"FK → VIOLATION_CASE.id","brd":false},{"name":"FROM_STATUS","desc":"","key":"","fk":"","brd":false},{"name":"TO_STATUS","desc":"","key":"","fk":"","brd":false},{"name":"CHANGED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"CHANGED_AT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"VIOLATION_RECORD","comment":"Biên bản vi phạm hành chính","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"RECORD_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"RECORD_DATE","desc":"","key":"","fk":"","brd":false},{"name":"RECORD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"INSPECTION_TEAM_ID","desc":"","key":"","fk":"FK suy luận → INSPECTION_TEAM.id","brd":false},{"name":"EXAMINATION_TEAM_ID","desc":"","key":"","fk":"FK suy luận → EXAMINATION_TEAM.id","brd":false},{"name":"VIOLATION_TIME","desc":"","key":"","fk":"","brd":false},{"name":"LOCATION","desc":"","key":"","fk":"","brd":false},{"name":"SOURCE_INFO","desc":"","key":"","fk":"","brd":false},{"name":"RECORDER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"RECORDER_TITLE","desc":"","key":"","fk":"","brd":false},{"name":"RECORDER_UNIT","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_ID_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_DOB","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_ADDRESS","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_LEGAL_REP","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_LEGAL_REP_TITLE","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_EMAIL","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_PHONE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: DRAFT (Nháp), PENDING_LEADER_SIGN (Chờ lãnh đạo ký - ký 2 bước), SIGNED (Đã ký số), NUMBERED (Đã có số văn bản), SENT_TO_SUBJECT (Đã gửi đối tượng vi phạm)","key":"","fk":"","brd":false},{"name":"SIGNED_BY","desc":"","key":"","fk":"","brd":false},{"name":"SIGNED_AT","desc":"","key":"","fk":"","brd":false},{"name":"NUMBERED_AT","desc":"","key":"","fk":"","brd":false},{"name":"SENT_AT","desc":"","key":"","fk":"","brd":false},{"name":"SENT_TO_INSPECTOR","desc":"Đã gửi Thanh tra (dành cho ĐVGS): 0=Chưa, 1=Đã gửi","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"FORWARDED_TO_INSPECTION","desc":"Đã gửi biên bản đến Thanh tra (dành cho ĐVGS): 0=Chưa, 1=Đã","key":"","fk":"","brd":false},{"name":"FORWARDED_AT","desc":"","key":"","fk":"","brd":false},{"name":"FORWARDED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VIOLATOR_SIGNED_FILE_URL","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATOR_CONFIRMED_RECEIPT_AT","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATOR_CONFIRMED_BY","desc":"","key":"","fk":"","brd":false},{"name":"RECORDER_UNIT_ID","desc":"","key":"","fk":"","brd":false},{"name":"SIGNATURE_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"FIRST_SIGNED_BY","desc":"","key":"","fk":"","brd":false},{"name":"FIRST_SIGNED_AT","desc":"","key":"","fk":"","brd":false},{"name":"SIGNED_DOCUMENT_URL","desc":"","key":"","fk":"","brd":false}]},{"name":"VIOLATION_RECORD_BEHAVIOR","comment":"Hành vi vi phạm ghi nhận trong biên bản","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"VIOLATION_RECORD_ID","desc":"FK -> violation_record","key":"FK","fk":"FK → VIOLATION_RECORD.id","brd":false},{"name":"VIOLATION_BEHAVIOR_ID","desc":"FK -> violation_behavior: hành vi vi phạm được ghi nhận","key":"FK","fk":"FK → VIOLATION_BEHAVIOR.id","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"LEGAL_BASIS","desc":"","key":"","fk":"","brd":false}]},{"name":"VPHC_PROCESS_OFFICIAL_LETTER","comment":"Công văn trong quy trình xử lý vi phạm hành chính","group":"violation","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"OFFICIAL_LETTER_SUBTYPE","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_TEMPLATE_ID","desc":"FK -> document_template: biểu mẫu công văn được sử dụng","key":"FK","fk":"FK → DOCUMENT_TEMPLATE.id","brd":false},{"name":"DOCUMENT_TEMPLATE_NAME","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATION_CASE_ID","desc":"FK -> violation_case: hồ sơ xử lý VPHC liên kết","key":"FK","fk":"FK → VIOLATION_CASE.id","brd":false},{"name":"VIOLATION_CASE_CODE","desc":"","key":"","fk":"","brd":false},{"name":"VIOLATION_RECORD_ID","desc":"FK -> violation_record: biên bản VPHC liên kết","key":"FK","fk":"FK → VIOLATION_RECORD.id","brd":false},{"name":"VIOLATION_RECORD_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"PENALTY_DECISION_ID","desc":"FK -> penalty_decision: quyết định xử phạt liên kết","key":"FK","fk":"FK → PENALTY_DECISION.id","brd":false},{"name":"PENALTY_DECISION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"FIELD_HTML_JSON","desc":"","key":"","fk":"","brd":false},{"name":"FIELD_SOURCE_JSON","desc":"","key":"","fk":"","brd":false},{"name":"MANUAL_MERGE_DATA_JSON","desc":"","key":"","fk":"","brd":false},{"name":"OUTPUT_DOCUMENT_ID","desc":"","key":"","fk":"FK suy luận → VIOLATION_CASE_OUTPUT_DOCUMENT.id","brd":false}]},{"name":"CITIZEN_COMPLAINT_REPORT_OUTLINE","comment":"Đề cương báo cáo khiếu nại, tố cáo","group":"petition","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"CITIZEN_RECEPTION","comment":"Hồ sơ tiếp công dân","group":"petition","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"RECEPTION_DATE","desc":"","key":"","fk":"","brd":false},{"name":"RECEIVER_ID","desc":"ID cán bộ tiếp công dân (FK -> user)","key":"FK","fk":"FK → system_user.id","brd":false},{"name":"RECEIVER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"SUBJECT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"NUMBER_OF_PEOPLE","desc":"Số người (tiếp đông người: nhóm có tối đa 5 người đại diện)","key":"","fk":"","brd":false},{"name":"SUMMARY","desc":"","key":"","fk":"","brd":false},{"name":"PETITION_ATTACHED","desc":"Có đơn: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"PETITION_CATEGORY","desc":"","key":"","fk":"","brd":false},{"name":"PROCESSING_STATUS","desc":"","key":"","fk":"","brd":false},{"name":"PETITION_ID","desc":"FK -> petition (liên kết hồ sơ đơn thư, thêm FK sau khi tạo bảng petition)","key":"FK","fk":"FK → PETITION.id","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"PETITION","comment":"Đơn thư khiếu nại, tố cáo, phản ánh kiến nghị","group":"petition","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"Mã vụ việc tự động sinh. VD: DA2540","key":"","fk":"","brd":false},{"name":"RECEIVED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"FORWARDING_UNIT","desc":"","key":"","fk":"","brd":false},{"name":"SENDER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"SENDER_ADDRESS","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"PETITION_CATEGORY","desc":"","key":"","fk":"","brd":false},{"name":"RELATED_TO_CORPORATE_BOND","desc":"Liên quan TPDN: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"ELIGIBLE_FOR_PROCESSING","desc":"Đủ điều kiện xử lý: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"WITHIN_JURISDICTION","desc":"Thuộc thẩm quyền: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"ASSIGNED_OFFICER_ID","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"ASSIGNED_OFFICER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"DUPLICATE_TYPE","desc":"Loại: ORIGINAL (Đơn gốc), DUPLICATE (Đơn trùng)","key":"","fk":"","brd":false},{"name":"ORIGINAL_PETITION_ID","desc":"FK tự tham chiếu -> petition (đơn gốc). Bắt buộc khi duplicate_type=DUPLICATE","key":"FK","fk":"FK → PETITION.id","brd":false},{"name":"SUBMISSION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"TRANSFERRED_AUTHORITY","desc":"","key":"","fk":"","brd":false},{"name":"INTERNAL_TRANSFER_UNIT_ID","desc":"","key":"","fk":"","brd":false},{"name":"INTERNAL_TRANSFER_UNIT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ARCHIVED","desc":"Lưu đơn: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"GUIDANCE_DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"GUIDANCE_DOCUMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: RECEIVED (Đã tiếp nhận), PROCESSED (Đã xử lý xong)","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"END_DATE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"PETITION_DOCUMENT","comment":"Văn bản đính kèm đơn thư","group":"petition","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"PETITION_ID","desc":"FK -> petition: hồ sơ đơn thư liên quan","key":"FK","fk":"FK → PETITION.id","brd":false},{"name":"DOCUMENT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"CLASSIFICATION_RESULT","desc":"","key":"","fk":"","brd":false},{"name":"PROPOSED_ACTION","desc":"","key":"","fk":"","brd":false},{"name":"TRANSFER_TARGET_UNIT","desc":"","key":"","fk":"","brd":false},{"name":"RESOLUTION_DEADLINE","desc":"","key":"","fk":"","brd":false},{"name":"SIGNER_NAME","desc":"","key":"","fk":"","brd":false},{"name":"ACCEPTANCE_PROPOSAL_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REJECTION_REASON","desc":"","key":"","fk":"","brd":false},{"name":"PREPARED_BY","desc":"","key":"","fk":"","brd":false},{"name":"PREPARED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"DOCUMENT_TEMPLATE_ID","desc":"FK -> document_template: mẫu sử dụng cho màn nhập liệu biểu mẫu đơn thư","key":"FK","fk":"FK → DOCUMENT_TEMPLATE.id","brd":false},{"name":"DOCUMENT_TEMPLATE_NAME","desc":"","key":"","fk":"","brd":false},{"name":"FIELD_HTML_JSON","desc":"","key":"","fk":"","brd":false}]},{"name":"ADHOC_ANTI_CORRUPTION_REPORT","comment":"Báo cáo đột xuất phòng chống tham nhũng","group":"anticorruption","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"REQUESTING_AUTHORITY","desc":"","key":"","fk":"","brd":false},{"name":"REQUEST_DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"REQUEST_DOCUMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"SUBMISSION_DEADLINE","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"ANTI_CORRUPTION_DOCUMENT","comment":"Văn bản phòng chống tham nhũng","group":"anticorruption","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"DOCUMENT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"ISSUED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"SUMMARY","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"RECEIVING_UNIT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"QUARTER","desc":"","key":"","fk":"","brd":false}]},{"name":"ANTI_CORRUPTION_PERIODIC_REPORT","comment":"Báo cáo định kỳ phòng chống tham nhũng","group":"anticorruption","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_TEMPLATE","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"DATA_PERIOD_FROM","desc":"","key":"","fk":"","brd":false},{"name":"DATA_PERIOD_TO","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"ANTI_CORRUPTION_REPORT_OUTLINE","comment":"Đề cương báo cáo phòng chống tham nhũng","group":"anticorruption","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"ANTI_MONEY_LAUNDERING_DOCUMENT","comment":"Văn bản phòng chống rửa tiền","group":"aml","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"DOCUMENT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"ISSUED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"SUMMARY","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"QUARTER","desc":"","key":"","fk":"","brd":false},{"name":"RECEIVING_UNIT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"ANTI_MONEY_LAUNDERING_REPORT","comment":"Báo cáo phòng chống rửa tiền","group":"aml","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REPORT_YEAR","desc":"","key":"","fk":"","brd":false},{"name":"PERIOD_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REQUESTING_AUTHORITY","desc":"","key":"","fk":"","brd":false},{"name":"REQUEST_DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"LEGAL_DOCUMENT","comment":"Văn bản pháp luật tham chiếu","group":"catalog","brd":true,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"Mã tự động: VBPL-XXXX","key":"","fk":"","brd":false},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"ISSUED_DATE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"OFFICIAL_LETTER_TYPE","comment":"Danh mục loại công văn","group":"catalog","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"","key":"","fk":"","brd":false},{"name":"LABEL","desc":"","key":"","fk":"","brd":false},{"name":"GROUP_CODE","desc":"","key":"","fk":"","brd":false},{"name":"PREFERRED_SOURCE_ENTITY_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"SORT_ORDER","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"PRIVATE_CATALOG_ITEM","comment":"Danh mục dùng riêng cho phân hệ thanh tra","group":"catalog","brd":true,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CATALOG_TYPE","desc":"Loại danh mục dùng riêng của phân hệ","key":"","fk":"","brd":false},{"name":"CODE","desc":"Mã danh mục","key":"","fk":"","brd":false},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"ITEM_VALUE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)","key":"","fk":"","brd":false},{"name":"SORT_ORDER","desc":"Thứ tự hiển thị","key":"","fk":"","brd":false},{"name":"NOTE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false}]},{"name":"CODE_SEQUENCE_COUNTER","comment":"Bộ đếm sinh mã tự động","group":"system","brd":false,"fk_linked":false,"cols":[{"name":"PREFIX","desc":"Tiền tố mã: HSTT, HSKT, HS-VPHC, HVVP, HTXP, DA...","key":"PK","fk":"","brd":true},{"name":"YEAR_KEY","desc":"Năm (2024/2025) hoặc 0000 cho counter không theo năm","key":"PK","fk":"","brd":true},{"name":"LAST_SEQ","desc":"Số thứ tự cuối cùng đã cấp phát","key":"","fk":"","brd":false}]},{"name":"DOCUMENT_ATTACHMENT","comment":"Tệp đính kèm văn bản","group":"system","brd":false,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"ENTITY_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"ENTITY_ID","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_NAME","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_DATE","desc":"","key":"","fk":"","brd":false},{"name":"DOCUMENT_CATEGORY","desc":"","key":"","fk":"","brd":false},{"name":"FILE_PATH","desc":"","key":"","fk":"","brd":false},{"name":"FILE_NAME","desc":"","key":"","fk":"","brd":false},{"name":"FILE_SIZE","desc":"","key":"","fk":"","brd":false},{"name":"SORT_ORDER","desc":"Thứ tự hiển thị","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"DOCUMENT_TEMPLATE","comment":"Mẫu văn bản","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"","key":"","fk":"","brd":false},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"TEMPLATE_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"STATUS","desc":"","key":"","fk":"","brd":false},{"name":"CURRENT_VERSION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"OFFICIAL_LETTER_SUBTYPE","desc":"","key":"","fk":"","brd":false}]},{"name":"DOCUMENT_TEMPLATE_KEY_ASSIGN","comment":"Phân công trường dữ liệu cho phiên bản mẫu văn bản","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"TEMPLATE_ID","desc":"FK -> document_template","key":"FK","fk":"FK → DOCUMENT_TEMPLATE.id","brd":false},{"name":"KEY_DEFINITION_ID","desc":"FK -> document_template_key_definition","key":"FK","fk":"FK → DOCUMENT_TEMPLATE_KEY_DEFINITION.id","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"TEMPLATE_VERSION_ID","desc":"FK -> document_template_version: phiên bản file mẫu áp dụng key này","key":"FK","fk":"FK → DOCUMENT_TEMPLATE_VERSION.id","brd":false}]},{"name":"DOCUMENT_TEMPLATE_KEY_DEFINITION","comment":"Định nghĩa trường dữ liệu mẫu văn bản","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"KEY_CODE","desc":"","key":"","fk":"","brd":false},{"name":"TEMPLATE_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"KEY_KIND","desc":"Loại key: STATIC (Cố định - tự động điền từ API field), DYNAMIC (Động - người dùng nhập thủ công)","key":"","fk":"","brd":false},{"name":"OFFICIAL_LETTER_SUBTYPE","desc":"","key":"","fk":"","brd":false},{"name":"API_FIELD_KEY","desc":"","key":"","fk":"","brd":false},{"name":"INTERACTION_MODE","desc":"Cách dùng key khi merge: PLAIN (Điền giá trị đơn), SINGLE_SELECT (Chọn một từ danh sách), LOOP_BLOCK (Lặp theo danh sách)","key":"","fk":"","brd":false},{"name":"FALLBACK_CONFIG_JSON","desc":"","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false}]},{"name":"DOCUMENT_TEMPLATE_VERSION","comment":"Phiên bản mẫu văn bản","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"TEMPLATE_ID","desc":"FK -> document_template","key":"FK","fk":"FK → DOCUMENT_TEMPLATE.id","brd":false},{"name":"VERSION_NUMBER","desc":"","key":"","fk":"","brd":false},{"name":"FILE_NAME","desc":"","key":"","fk":"","brd":false},{"name":"DOCX_CONTENT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"FORM_TEMPLATE","comment":"Mẫu biểu mẫu in","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"CODE","desc":"Mã biểu mẫu, UNIQUE","key":"","fk":"","brd":false},{"name":"NAME","desc":"","key":"","fk":"","brd":false},{"name":"CATEGORY","desc":"","key":"","fk":"","brd":false},{"name":"CURRENT_VERSION","desc":"Số phiên bản hiện tại","key":"","fk":"","brd":false},{"name":"STATUS","desc":"Trạng thái: ACTIVE (Đang sử dụng), INACTIVE (Ngừng sử dụng)","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"FORM_TEMPLATE_PLACEHOLDER","comment":"Trường placeholder trong mẫu biểu mẫu","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"FORM_TEMPLATE_VERSION_ID","desc":"FK -> form_template_version","key":"FK","fk":"FK → FORM_TEMPLATE_VERSION.id","brd":false},{"name":"PLACEHOLDER_KEY","desc":"Key của placeholder trong file mẫu (ví dụ: {{ten_to_chuc}})","key":"","fk":"","brd":false},{"name":"PLACEHOLDER_LABEL","desc":"","key":"","fk":"","brd":false},{"name":"DATA_TYPE","desc":"Kiểu dữ liệu: TEXT, DATE, NUMBER, CURRENCY, SELECTION","key":"","fk":"","brd":false},{"name":"REQUIRED","desc":"Bắt buộc: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"DEFAULT_VALUE","desc":"","key":"","fk":"","brd":false},{"name":"SORT_ORDER","desc":"Thứ tự hiển thị","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false},{"name":"API_BINDING_PATH","desc":"","key":"","fk":"","brd":false}]},{"name":"FORM_TEMPLATE_VERSION","comment":"Phiên bản mẫu biểu mẫu in","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"FORM_TEMPLATE_ID","desc":"FK -> form_template","key":"FK","fk":"FK → FORM_TEMPLATE.id","brd":false},{"name":"VERSION_NUMBER","desc":"Số thứ tự phiên bản","key":"","fk":"","brd":false},{"name":"FILE_PATH","desc":"","key":"","fk":"","brd":false},{"name":"FILE_NAME","desc":"","key":"","fk":"","brd":false},{"name":"FILE_SIZE","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"NOTIFICATION","comment":"Thông báo trong hệ thống","group":"system","brd":false,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"PK","fk":"","brd":true},{"name":"RECIPIENT_ID","desc":"","key":"","fk":"","brd":false},{"name":"NOTIFICATION_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"TITLE","desc":"","key":"","fk":"","brd":false},{"name":"MESSAGE","desc":"","key":"","fk":"","brd":false},{"name":"REFERENCE_TYPE","desc":"","key":"","fk":"","brd":false},{"name":"REFERENCE_ID","desc":"","key":"","fk":"","brd":false},{"name":"READ","desc":"Đã đọc: 0=Chưa đọc, 1=Đã đọc","key":"","fk":"","brd":false},{"name":"CREATED_AT","desc":"","key":"","fk":"","brd":false},{"name":"LAST_MODIFIED_AT","desc":"","key":"","fk":"","brd":false},{"name":"CREATED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"LAST_MODIFIED_BY","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false},{"name":"VERSION","desc":"Số phiên bản bản ghi (optimistic locking)","key":"","fk":"","brd":false},{"name":"DELETED","desc":"Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa","key":"","fk":"","brd":false}]},{"name":"dynamic_column","comment":"Cấu hình cột động (hệ thống dynamic)","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"","key":"","fk":"","brd":false},{"name":"table_config_id","desc":"FK -> dynamictables: bảng chứa cột này","key":"FK","fk":"FK → dynamic_table.id","brd":false},{"name":"column_name","desc":"","key":"","fk":"","brd":false},{"name":"data_type","desc":"","key":"","fk":"","brd":false},{"name":"nullable","desc":"Cho phép NULL: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"primary_key","desc":"Là khóa chính: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"default_value","desc":"","key":"","fk":"","brd":false},{"name":"order_index","desc":"Thứ tự hiển thị cột","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"created_at","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false}]},{"name":"dynamic_connection","comment":"Cấu hình kết nối động","group":"system","brd":false,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"","fk":"","brd":false},{"name":"table_name","desc":"","key":"","fk":"","brd":false},{"name":"schema_name","desc":"","key":"","fk":"","brd":false},{"name":"connection_name","desc":"Tên kết nối (định danh duy nhất)","key":"","fk":"","brd":false},{"name":"mapping_config","desc":"","key":"","fk":"","brd":false},{"name":"source_data_path","desc":"","key":"","fk":"","brd":false},{"name":"post_process_handler","desc":"","key":"","fk":"","brd":false},{"name":"post_process_script","desc":"","key":"","fk":"","brd":false},{"name":"source_api_url","desc":"","key":"","fk":"","brd":false},{"name":"http_method","desc":"HTTP method: GET, POST...","key":"","fk":"","brd":false},{"name":"response_type","desc":"Kiểu phản hồi: JSON, XML...","key":"","fk":"","brd":false},{"name":"custom_headers","desc":"","key":"","fk":"","brd":false},{"name":"request_body_template","desc":"","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"active","desc":"Kết nối đang hoạt động: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"created_at","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"updated_at","desc":"","key":"","fk":"","brd":false},{"name":"created_by","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false}]},{"name":"dynamic_generator_config","comment":"Cấu hình bộ sinh dữ liệu động","group":"system","brd":false,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"","fk":"","brd":false},{"name":"table_name","desc":"Tên bảng áp dụng cấu hình sinh mã","key":"","fk":"","brd":false},{"name":"column_name","desc":"Tên cột được sinh mã tự động","key":"","fk":"","brd":false},{"name":"PATTERN","desc":"","key":"","fk":"","brd":false},{"name":"number_length","desc":"Độ dài phần số thứ tự","key":"","fk":"","brd":false},{"name":"reset_type","desc":"Kiểu reset: YEARLY (theo năm), NEVER (không reset)","key":"","fk":"","brd":false},{"name":"active","desc":"Đang áp dụng: 0=Không, 1=Có","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"created_at","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"updated_at","desc":"","key":"","fk":"","brd":false},{"name":"created_by","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false}]},{"name":"dynamic_generator_seq","comment":"Sequence bộ sinh dữ liệu động","group":"system","brd":false,"fk_linked":false,"cols":[{"name":"ID","desc":"Khóa chính UUID","key":"","fk":"","brd":false},{"name":"table_name","desc":"Tên bảng quản lý sequence","key":"","fk":"","brd":false},{"name":"column_name","desc":"Tên cột quản lý sequence","key":"","fk":"","brd":false},{"name":"PERIOD","desc":"Chu kỳ sequence (năm: YYYY hoặc ALL)","key":"","fk":"","brd":false},{"name":"current_seq","desc":"Giá trị sequence hiện tại","key":"","fk":"","brd":false}]},{"name":"dynamic_table","comment":"Cấu hình bảng động","group":"system","brd":false,"fk_linked":true,"cols":[{"name":"ID","desc":"","key":"","fk":"","brd":false},{"name":"table_name","desc":"","key":"","fk":"","brd":false},{"name":"schema_name","desc":"","key":"","fk":"","brd":false},{"name":"DESCRIPTION","desc":"","key":"","fk":"","brd":false},{"name":"created_at","desc":"Thời điểm tạo bản ghi","key":"","fk":"","brd":false},{"name":"updated_at","desc":"","key":"","fk":"","brd":false},{"name":"created_by","desc":"","key":"","fk":"FK suy luận → system_user.id","brd":false}]},{"name":"flyway_schema_history","comment":"Lịch sử migration schema (Flyway)","group":"system","brd":false,"fk_linked":false,"cols":[{"name":"installed_rank","desc":"Thứ tự cài đặt migration","key":"PK","fk":"","brd":true},{"name":"version","desc":"","key":"","fk":"","brd":false},{"name":"description","desc":"","key":"","fk":"","brd":false},{"name":"type","desc":"","key":"","fk":"","brd":false},{"name":"script","desc":"","key":"","fk":"","brd":false},{"name":"checksum","desc":"","key":"","fk":"","brd":false},{"name":"installed_by","desc":"","key":"","fk":"","brd":false},{"name":"installed_on","desc":"Thời điểm thực hiện migration","key":"","fk":"","brd":false},{"name":"execution_time","desc":"","key":"","fk":"","brd":false},{"name":"success","desc":"","key":"","fk":"","brd":false},{"name":"SP_TIM_KIEM_HO_SO_TT","desc":"Tìm kiếm hồ sơ thanh tra theo các tiêu chí","key":"","fk":"","brd":false},{"name":"SP_CAP_NHAT_TRANG_THAI_HS","desc":"Cập nhật trạng thái hồ sơ","key":"","fk":"","brd":false},{"name":"SP_BAO_CAO_THANH_TRA","desc":"Xuất báo cáo tổng hợp thanh tra","key":"","fk":"","brd":false},{"name":"SP_BAO_CAO_XU_LY_VPHC","desc":"Xuất báo cáo xử lý vi phạm hành chính","key":"","fk":"","brd":false},{"name":"SP_TIM_KIEM_DON_THU","desc":"Tìm kiếm đơn thư KNTC","key":"","fk":"","brd":false},{"name":"FN_LAY_TONG_SO_TIEN_PHAT","desc":"Lấy tổng số tiền phạt của hồ sơ","key":"","fk":"","brd":false},{"name":"SP_THONG_KE_TIEN_DO_TT","desc":"Thống kê tiến độ thanh tra theo năm","key":"","fk":"","brd":false},{"name":"SP_NHAT_KY_HOAT_DONG","desc":"Ghi nhật ký hoạt động hệ thống","key":"","fk":"","brd":false},{"name":"PKG_THANH_TRA","desc":"","key":"","fk":"","brd":false},{"name":"PKG_BAO_CAO","desc":"","key":"","fk":"","brd":false},{"name":"PKG_DON_THU","desc":"","key":"","fk":"","brd":false},{"name":"PKG_HE_THONG","desc":"","key":"","fk":"","brd":false}]}],"fks":[{"ft":"INSPECTION_ANNUAL_PLAN_TARGET","fc":"INSPECTION_ANNUAL_PLAN_ID","tt":"INSPECTION_ANNUAL_PLAN","tc":"id"},{"ft":"INSPECTION_TEAM","fc":"INSPECTION_ANNUAL_PLAN_ID","tt":"INSPECTION_ANNUAL_PLAN","tc":"id"},{"ft":"INSPECTION_TEAM_MEMBER","fc":"INSPECTION_TEAM_ID","tt":"INSPECTION_TEAM","tc":"id"},{"ft":"INSPECTION_TEAM_TARGET","fc":"INSPECTION_TEAM_ID","tt":"INSPECTION_TEAM","tc":"id"},{"ft":"INSPECTION_CONCLUSION","fc":"INSPECTION_TEAM_ID","tt":"INSPECTION_TEAM","tc":"id"},{"ft":"INSPECTION_CONCLUSION_REMEDIAL","fc":"INSPECTION_CONCLUSION_ID","tt":"INSPECTION_CONCLUSION","tc":"id"},{"ft":"POST_INSPECTION_PROCESSING","fc":"INSPECTION_CONCLUSION_ID","tt":"INSPECTION_CONCLUSION","tc":"id"},{"ft":"PROACTIVE_NOTICE_RECIPIENT","fc":"PROACTIVE_NOTICE_ID","tt":"PROACTIVE_NOTICE","tc":"id"},{"ft":"EXAMINATION_ANNUAL_PLAN_TARGET","fc":"EXAMINATION_ANNUAL_PLAN_ID","tt":"EXAMINATION_ANNUAL_PLAN","tc":"id"},{"ft":"EXAMINATION_TEAM","fc":"EXAMINATION_ANNUAL_PLAN_ID","tt":"EXAMINATION_ANNUAL_PLAN","tc":"id"},{"ft":"EXAMINATION_TEAM_MEMBER","fc":"EXAMINATION_TEAM_ID","tt":"EXAMINATION_TEAM","tc":"id"},{"ft":"EXAMINATION_TEAM_TARGET","fc":"EXAMINATION_TEAM_ID","tt":"EXAMINATION_TEAM","tc":"id"},{"ft":"EXAMINATION_RESULT_NOTICE","fc":"EXAMINATION_TEAM_ID","tt":"EXAMINATION_TEAM","tc":"id"},{"ft":"EXAMINATION_RESULT_NOTICE_REMEDIAL","fc":"EXAMINATION_RESULT_NOTICE_ID","tt":"EXAMINATION_RESULT_NOTICE","tc":"id"},{"ft":"VIOLATION_CASE","fc":"INSPECTION_TEAM_ID","tt":"INSPECTION_TEAM","tc":"id"},{"ft":"VIOLATION_CASE","fc":"EXAMINATION_TEAM_ID","tt":"EXAMINATION_TEAM","tc":"id"},{"ft":"VIOLATION_CASE_RECEIVED_DOCUMENT","fc":"VIOLATION_CASE_ID","tt":"VIOLATION_CASE","tc":"id"},{"ft":"VIOLATION_CASE_RECEIVED_DOCUMENT","fc":"VIOLATION_RECORD_ID","tt":"VIOLATION_RECORD","tc":"id"},{"ft":"VIOLATION_CASE_OUTPUT_DOCUMENT","fc":"VIOLATION_CASE_ID","tt":"VIOLATION_CASE","tc":"id"},{"ft":"VIOLATION_CASE_OUTPUT_DOCUMENT","fc":"PENALTY_DECISION_ID","tt":"PENALTY_DECISION","tc":"id"},{"ft":"VIOLATION_CASE_STATUS_HISTORY","fc":"VIOLATION_CASE_ID","tt":"VIOLATION_CASE","tc":"id"},{"ft":"VIOLATION_RECORD","fc":"INSPECTION_TEAM_ID","tt":"INSPECTION_TEAM","tc":"id"},{"ft":"VIOLATION_RECORD","fc":"EXAMINATION_TEAM_ID","tt":"EXAMINATION_TEAM","tc":"id"},{"ft":"VIOLATION_RECORD_BEHAVIOR","fc":"VIOLATION_RECORD_ID","tt":"VIOLATION_RECORD","tc":"id"},{"ft":"VIOLATION_RECORD_BEHAVIOR","fc":"VIOLATION_BEHAVIOR_ID","tt":"VIOLATION_BEHAVIOR","tc":"id"},{"ft":"VIOLATION_BEHAVIOR","fc":"PRIMARY_PENALTY_TYPE_ID","tt":"PENALTY_TYPE","tc":"id"},{"ft":"VIOLATION_BEHAVIOR_LEGAL_DOCUMENT","fc":"VIOLATION_BEHAVIOR_ID","tt":"VIOLATION_BEHAVIOR","tc":"id"},{"ft":"VIOLATION_BEHAVIOR_LEGAL_DOCUMENT","fc":"LEGAL_DOCUMENT_ID","tt":"LEGAL_DOCUMENT","tc":"id"},{"ft":"PENALTY_DECISION","fc":"VIOLATION_CASE_ID","tt":"VIOLATION_CASE","tc":"id"},{"ft":"PENALTY_DECISION_APPROVAL_HISTORY","fc":"PENALTY_DECISION_ID","tt":"PENALTY_DECISION","tc":"id"},{"ft":"PENALTY_DECISION_SUBJECT","fc":"PENALTY_DECISION_ID","tt":"PENALTY_DECISION","tc":"id"},{"ft":"PENALTY_DECISION_SUBJECT_BEHAVIOR","fc":"PENALTY_DECISION_SUBJECT_ID","tt":"PENALTY_DECISION_SUBJECT","tc":"id"},{"ft":"PENALTY_DECISION_SUBJECT_BEHAVIOR","fc":"VIOLATION_BEHAVIOR_ID","tt":"VIOLATION_BEHAVIOR","tc":"id"},{"ft":"PENALTY_DECISION_SUBJECT_BEHAVIOR","fc":"PENALTY_TYPE_ID","tt":"PENALTY_TYPE","tc":"id"},{"ft":"PENALTY_DECISION_VIOLATION_RECORD","fc":"PENALTY_DECISION_ID","tt":"PENALTY_DECISION","tc":"id"},{"ft":"PENALTY_DECISION_VIOLATION_RECORD","fc":"VIOLATION_RECORD_ID","tt":"VIOLATION_RECORD","tc":"id"},{"ft":"PENALTY_DECISION_CIRCUMSTANCE","fc":"PENALTY_DECISION_SUBJECT_BEHAVIOR_ID","tt":"PENALTY_DECISION_SUBJECT_BEHAVIOR","tc":"id"},{"ft":"PENALTY_TYPE_VIOLATION_BEHAVIOR","fc":"PENALTY_TYPE_ID","tt":"PENALTY_TYPE","tc":"id"},{"ft":"PENALTY_TYPE_VIOLATION_BEHAVIOR","fc":"VIOLATION_BEHAVIOR_ID","tt":"VIOLATION_BEHAVIOR","tc":"id"},{"ft":"SECURITY_MEASURE_DECISION_SUBJECT","fc":"SECURITY_MEASURE_DECISION_ID","tt":"SECURITY_MEASURE_DECISION","tc":"id"},{"ft":"SECURITY_MEASURE_DECISION_RECIPIENT","fc":"SECURITY_MEASURE_DECISION_ID","tt":"SECURITY_MEASURE_DECISION","tc":"id"},{"ft":"SECURITY_MEASURE_EXECUTION","fc":"SECURITY_MEASURE_DECISION_ID","tt":"SECURITY_MEASURE_DECISION","tc":"id"},{"ft":"VPHC_PROCESS_OFFICIAL_LETTER","fc":"DOCUMENT_TEMPLATE_ID","tt":"DOCUMENT_TEMPLATE","tc":"id"},{"ft":"VPHC_PROCESS_OFFICIAL_LETTER","fc":"VIOLATION_CASE_ID","tt":"VIOLATION_CASE","tc":"id"},{"ft":"VPHC_PROCESS_OFFICIAL_LETTER","fc":"VIOLATION_RECORD_ID","tt":"VIOLATION_RECORD","tc":"id"},{"ft":"VPHC_PROCESS_OFFICIAL_LETTER","fc":"PENALTY_DECISION_ID","tt":"PENALTY_DECISION","tc":"id"},{"ft":"VPHC_PROCESS_OFFICIAL_LETTER","fc":"OUTPUT_DOCUMENT_ID","tt":"VIOLATION_CASE_OUTPUT_DOCUMENT","tc":"id"},{"ft":"PETITION","fc":"ORIGINAL_PETITION_ID","tt":"PETITION","tc":"id"},{"ft":"PETITION_DOCUMENT","fc":"PETITION_ID","tt":"PETITION","tc":"id"},{"ft":"PETITION_DOCUMENT","fc":"DOCUMENT_TEMPLATE_ID","tt":"DOCUMENT_TEMPLATE","tc":"id"},{"ft":"CITIZEN_RECEPTION","fc":"PETITION_ID","tt":"PETITION","tc":"id"},{"ft":"DOCUMENT_TEMPLATE_VERSION","fc":"TEMPLATE_ID","tt":"DOCUMENT_TEMPLATE","tc":"id"},{"ft":"DOCUMENT_TEMPLATE_KEY_ASSIGN","fc":"TEMPLATE_ID","tt":"DOCUMENT_TEMPLATE","tc":"id"},{"ft":"DOCUMENT_TEMPLATE_KEY_ASSIGN","fc":"KEY_DEFINITION_ID","tt":"DOCUMENT_TEMPLATE_KEY_DEFINITION","tc":"id"},{"ft":"DOCUMENT_TEMPLATE_KEY_ASSIGN","fc":"TEMPLATE_VERSION_ID","tt":"DOCUMENT_TEMPLATE_VERSION","tc":"id"},{"ft":"FORM_TEMPLATE_VERSION","fc":"FORM_TEMPLATE_ID","tt":"FORM_TEMPLATE","tc":"id"},{"ft":"FORM_TEMPLATE_PLACEHOLDER","fc":"FORM_TEMPLATE_VERSION_ID","tt":"FORM_TEMPLATE_VERSION","tc":"id"},{"ft":"dynamic_column","fc":"table_config_id","tt":"dynamic_table","tc":"id"}]};
+const GROUPS={
+  inspection:{label:"Thanh tra",color:"#4f46e5"},
+  examination:{label:"Kiểm tra",color:"#059669"},
+  penalty:{label:"Xử phạt VPHC",color:"#dc2626"},
+  petition:{label:"Đơn thư / Tiếp dân",color:"#7c3aed"},
+  anti:{label:"PCTN / PCRT / Báo cáo",color:"#d97706"},
+  security:{label:"Biện pháp phòng ngừa",color:"#ea580c"},
+  document:{label:"Biểu mẫu / Tài liệu",color:"#0891b2"},
+  system:{label:"Hệ thống",color:"#6b7280"},
+  other:{label:"Khác",color:"#9ca3af"}
+};
+const CARD_W=252,CARD_H=190;
+let scale=1,panX=0,panY=0,dragMode=false,dragSX=0,dragSY=0,panSX=0,panSY=0;
+let activeGroup=null,selectedTable=null;
+let positions={},cardEls={},lineEls=[];
+const fkFrom={},fkTo={};
+const STORAGE_KEY='er_thanhtra_layout_v1';
+// Storage wrapper: localStorage (served) → in-memory (file://)
+const Store=(()=>{
+  let mem=null;
+  function canLS(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true;}catch(e){return false;}}
+  const useLS=canLS();
+  return{
+    set(k,v){
+      if(useLS){try{localStorage.setItem(k,v);}catch(e){}}
+      else mem=v;
+    },
+    get(k){
+      if(useLS){try{return localStorage.getItem(k);}catch(e){return null;}}
+      return mem;
+    },
+    remove(k){
+      if(useLS){try{localStorage.removeItem(k);}catch(e){}}
+      else mem=null;
+    },
+    isLocal:!useLS
+  };
+})();
+function saveLayout(){
+  try{
+    const data={positions:{},activeGroup,pan:{x:panX,y:panY},scale};
+    Object.entries(positions).forEach(([k,v])=>data.positions[k]={x:Math.round(v.x),y:Math.round(v.y)});
+    Store.set(STORAGE_KEY,JSON.stringify(data));
+  }catch(e){}
+}
+function loadLayout(){
+  try{
+    const raw=Store.get(STORAGE_KEY);
+    if(!raw) return false;
+    const data=JSON.parse(raw);
+    if(data.positions) Object.assign(positions,data.positions);
+    if(data.pan){panX=data.pan.x;panY=data.pan.y;}
+    if(data.scale) scale=data.scale;
+    return data;
+  }catch(e){return false;}
+}
+function resetLayout(){
+  try{Store.remove(STORAGE_KEY);}catch(e){}
+  Object.keys(positions).forEach(k=>delete positions[k]);
+  if(activeGroup) showGroup(activeGroup);
+  else{RAW.tables.forEach(t=>cardEls[t.name].classList.remove('visible'));updateLines(new Set(),null);updateStats(0,0);}
+}
+RAW.fks.forEach(e=>{(fkFrom[e.ft]||(fkFrom[e.ft]=[])).push(e);(fkTo[e.tt]||(fkTo[e.tt]=[])).push(e);});
+function linkedTables(name){const s=new Set();(fkFrom[name]||[]).forEach(e=>s.add(e.tt));(fkTo[name]||[]).forEach(e=>s.add(e.ft));return s;}
+
+function initPositions(subset){
+  const n=subset.length; if(!n) return;
+  const nameSet=new Set(subset.map(t=>t.name));
+  const edges=RAW.fks.filter(e=>nameSet.has(e.ft)&&nameSet.has(e.tt));
+
+  // ── Bước 1: tìm connected components ──────────────────────────────────────
+  const adj={};
+  subset.forEach(t=>adj[t.name]=new Set());
+  edges.forEach(e=>{adj[e.ft].add(e.tt);adj[e.tt].add(e.ft);});
+  const visited=new Set(), components=[];
+  subset.forEach(t=>{
+    if(visited.has(t.name)) return;
+    const comp=[], queue=[t.name];
+    while(queue.length){
+      const cur=queue.pop();
+      if(visited.has(cur)) continue;
+      visited.add(cur); comp.push(cur);
+      adj[cur].forEach(nb=>{if(!visited.has(nb)) queue.push(nb);});
+    }
+    components.push(comp);
+  });
+  // Sort: component lớn trước
+  components.sort((a,b)=>b.length-a.length);
+
+  // ── Bước 2: layout từng component bằng force ──────────────────────────────
+  const PAD_X=60, PAD_Y=60;
+  const compBounds=[]; // {x,y,w,h} sau khi layout
+  const localPos={}; // {name:{x,y}} relative to 0,0
+
+  components.forEach(comp=>{
+    const cn=comp.length;
+    if(cn===1){
+      // Isolated node: đặt tại gốc
+      localPos[comp[0]]={x:0,y:0};
+      compBounds.push({names:comp,w:CARD_W,h:CARD_H});
+      return;
+    }
+    // Init vòng tròn nhỏ
+    const R=Math.max(180,cn*36);
+    comp.forEach((name,i)=>{
+      const a=2*Math.PI*i/cn;
+      localPos[name]={x:R+R*Math.cos(a),y:R+R*Math.sin(a)};
+    });
+    const compEdges=edges.filter(e=>comp.includes(e.ft)&&comp.includes(e.tt));
+    const K=Math.sqrt((2*R*2*R)/Math.max(cn,1))*1.1;
+    const cx=R, cy=R;
+    for(let iter=0;iter<220;iter++){
+      const cool=1-iter/220, tmax=Math.max(3,80*cool*cool);
+      const dvx={},dvy={};
+      comp.forEach(name=>{dvx[name]=0;dvy[name]=0;});
+      // Repulsion
+      for(let i=0;i<comp.length;i++){
+        for(let j=i+1;j<comp.length;j++){
+          const pa=localPos[comp[i]],pb=localPos[comp[j]];
+          let dx=pa.x-pb.x,dy=pa.y-pb.y;
+          const dist=Math.sqrt(dx*dx+dy*dy)||1;
+          const rep=K*K/dist;
+          dx/=dist;dy/=dist;
+          dvx[comp[i]]+=dx*rep;dvy[comp[i]]+=dy*rep;
+          dvx[comp[j]]-=dx*rep;dvy[comp[j]]-=dy*rep;
+        }
+      }
+      // Attraction (FK edges)
+      compEdges.forEach(e=>{
+        const pa=localPos[e.ft],pb=localPos[e.tt];
+        let dx=pb.x-pa.x,dy=pb.y-pa.y;
+        const dist=Math.sqrt(dx*dx+dy*dy)||1;
+        const att=Math.min(dist,K*2)*0.4;
+        dx/=dist;dy/=dist;
+        dvx[e.ft]+=dx*att;dvy[e.ft]+=dy*att;
+        dvx[e.tt]-=dx*att;dvy[e.tt]-=dy*att;
+      });
+      // Gravity to center
+      comp.forEach(name=>{
+        const p=localPos[name];
+        dvx[name]+=(cx-p.x)*0.12;
+        dvy[name]+=(cy-p.y)*0.12;
+      });
+      // Apply
+      comp.forEach(name=>{
+        const p=localPos[name];
+        const spd=Math.sqrt(dvx[name]**2+dvy[name]**2)||1;
+        const c=Math.min(spd,tmax)/spd;
+        p.x+=dvx[name]*c;p.y+=dvy[name]*c;
+      });
+      // Overlap push
+      for(let i=0;i<comp.length;i++){
+        for(let j=i+1;j<comp.length;j++){
+          const pa=localPos[comp[i]],pb=localPos[comp[j]];
+          const minX=CARD_W+20,minY=CARD_H+20;
+          const dx=pb.x-pa.x,dy=pb.y-pa.y;
+          const ox=minX-Math.abs(dx),oy=minY-Math.abs(dy);
+          if(ox>0&&oy>0){
+            const push=(ox<oy?ox:oy)/2+1;
+            if(Math.abs(dx)<0.01&&Math.abs(dy)<0.01){pa.x-=push;pb.x+=push;}
+            else if(ox<oy){pa.x-=Math.sign(dx)*push;pb.x+=Math.sign(dx)*push;}
+            else{pa.y-=Math.sign(dy)*push;pb.y+=Math.sign(dy)*push;}
+          }
+        }
+      }
+    }
+    // Normalize local coords
+    let mnX=Infinity,mnY=Infinity,mxX=-Infinity,mxY=-Infinity;
+    comp.forEach(name=>{
+      mnX=Math.min(mnX,localPos[name].x);mnY=Math.min(mnY,localPos[name].y);
+      mxX=Math.max(mxX,localPos[name].x+CARD_W);mxY=Math.max(mxY,localPos[name].y+CARD_H);
+    });
+    comp.forEach(name=>{localPos[name].x-=mnX;localPos[name].y-=mnY;});
+    compBounds.push({names:comp,w:mxX-mnX,h:mxY-mnY});
+  });
+
+  // ── Bước 3: pack các component bằng shelf packing ─────────────────────────
+  // Sắp xếp components vào các hàng (rows), mỗi hàng không vượt maxRowW
+  const maxRowW=Math.max(1200, compBounds.reduce((s,c)=>Math.max(s,c.w),0)+PAD_X);
+  let curX=0,curY=0,rowH=0;
+  const offsets={}; // {compIdx: {ox,oy}}
+  compBounds.forEach((cb,ci)=>{
+    if(curX>0 && curX+cb.w+PAD_X>maxRowW){
+      curY+=rowH+PAD_Y; curX=0; rowH=0;
+    }
+    offsets[ci]={ox:curX,oy:curY};
+    curX+=cb.w+PAD_X;
+    rowH=Math.max(rowH,cb.h);
+  });
+
+  // ── Bước 4: áp dụng vào positions ─────────────────────────────────────────
+  compBounds.forEach((cb,ci)=>{
+    const {ox,oy}=offsets[ci];
+    cb.names.forEach(name=>{
+      const lp=localPos[name]||{x:0,y:0};
+      positions[name]={x:ox+lp.x+40,y:oy+lp.y+40};
+    });
+  });
+  let minX=Infinity,minY=Infinity;
+  subset.forEach(t=>{minX=Math.min(minX,positions[t.name].x);minY=Math.min(minY,positions[t.name].y);});
+  subset.forEach(t=>{positions[t.name].x-=minX-40;positions[t.name].y-=minY-40;});
+}
+
+function placeCards(subset){
+  subset.forEach(t=>{
+    const el=cardEls[t.name],p=positions[t.name];
+    if(p){el.style.left=Math.round(p.x)+"px";el.style.top=Math.round(p.y)+"px";}
+  });
+}
+
+function buildCards(){
+  const canvas=document.getElementById("canvas");
+  RAW.tables.forEach(t=>{
+    const g=GROUPS[t.group]||GROUPS.other;
+    const div=document.createElement("div");
+    div.className="tbl-card"+(t.brd?" brd-table":t.fk_linked?" fk-linked":"");
+    div.id="card-"+t.name;
+    div.style.cssText="left:0px;top:0px";
+    div.innerHTML=
+      '<div class="tbl-hdr">'+
+        '<div class="tbl-badges">'+
+          (t.brd?'<span class="badge badge-brd">BRD</span>':'')+
+          '<span class="badge badge-grp" style="color:'+g.color+';border-color:'+g.color+'55">'+g.label+'</span>'+
+        '</div>'+
+        '<div class="tbl-name">'+t.name+'</div>'+
+        (t.comment?'<div class="tbl-cmt">'+esc(t.comment)+'</div>':'')+
+      '</div>'+
+      '<div class="col-list">'+
+        t.cols.map(c=>{
+          const isPk=c.key==="PK",isFk=c.key==="FK";
+          return '<div class="col-row'+(c.brd?' brd-col':(!isPk?' dim-col':''))+'">'+
+            '<span class="col-icon">'+(isPk?"🔑":isFk?"🔗":"")+'</span>'+
+            '<span class="col-name">'+c.name+'</span>'+
+            (isPk?'<span class="kbadge kpk">PK</span>':'')+
+            (isFk?'<span class="kbadge kfk">FK</span>':'')+
+            (c.brd?'<span class="brd-dot"></span>':'')+
+          '</div>';
+        }).join("")+
+      '</div>';
+    div.addEventListener("click",e=>{e.stopPropagation();onSelectTable(t.name);});
+    // Drag card
+    div.addEventListener("mousedown",e=>{
+      if(e.button!==0) return;
+      e.stopPropagation();
+      const tname=t.name;
+      const startX=e.clientX,startY=e.clientY;
+      const startL=parseFloat(div.style.left),startT=parseFloat(div.style.top);
+      let moved=false;
+      function onMove(ev){
+        const dx=(ev.clientX-startX)/scale,dy=(ev.clientY-startY)/scale;
+        if(!moved&&Math.abs(dx)+Math.abs(dy)<4) return;
+        moved=true;
+        div.classList.add("dragging-card");
+        positions[tname]={x:startL+dx,y:startT+dy};
+        div.style.left=Math.round(positions[tname].x)+"px";
+        div.style.top=Math.round(positions[tname].y)+"px";
+        // Redraw lines live
+        const visSet=new Set(RAW.tables.filter(t=>cardEls[t.name].classList.contains("visible")).map(t=>t.name));
+        updateLines(visSet,selectedTable);
+      }
+      function onUp(ev){
+        window.removeEventListener("mousemove",onMove);
+        window.removeEventListener("mouseup",onUp);
+        div.classList.remove("dragging-card");
+        if(moved){
+          window._justDragged=true;
+          setTimeout(()=>{window._justDragged=false;},50);
+          saveLayout();
+        }
+      }
+      window.addEventListener("mousemove",onMove);
+      window.addEventListener("mouseup",onUp);
+    });
+    canvas.appendChild(div);
+    cardEls[t.name]=div;
+  });
+}
+
+function buildLines(){
+  const svg=document.getElementById("svg-layer");
+  const defs=document.createElementNS("http://www.w3.org/2000/svg","defs");
+  defs.innerHTML=
+    '<marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#93a3c8"/></marker>'+
+    '<marker id="arr-hl" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#0891b2"/></marker>';
+  svg.appendChild(defs);
+  RAW.fks.forEach((e,i)=>{
+    const path=document.createElementNS("http://www.w3.org/2000/svg","path");
+    path.setAttribute("class","fk-path hidden-line");
+    path.setAttribute("marker-end","url(#arr)");
+    path.dataset.ft=e.ft;path.dataset.tt=e.tt;
+    path.addEventListener("mouseenter",ev=>showTip(ev,e.ft+"."+e.fc+" &rarr; "+e.tt+"."+e.tc));
+    path.addEventListener("mouseleave",hideTip);
+    svg.appendChild(path);
+    lineEls.push({el:path,fk:e});
+  });
+}
+
+function showGroup(k){
+  activeGroup=k;selectedTable=null;
+  const subset=RAW.tables.filter(t=>t.group===k);
+  const nameSet=new Set(subset.map(t=>t.name));
+  initPositions(subset);
+  placeCards(subset);
+  RAW.tables.forEach(t=>{
+    const el=cardEls[t.name];
+    if(nameSet.has(t.name)){el.className="tbl-card visible"+(t.brd?" brd-table":t.fk_linked?" fk-linked":"");}
+    else{el.classList.remove("visible");}
+  });
+  updateLines(nameSet,null);
+  updateSvg(subset);
+  updateStats(subset.length,subset.filter(t=>t.brd).length);
+  setTimeout(()=>{fitView();saveLayout();},60);
+}
+
+function onSelectTable(name){
+  if(selectedTable===name){clearSel();return;}
+  selectedTable=name;
+  const linked=linkedTables(name);
+  // Chỉ highlight/dim — KHÔNG re-layout, KHÔNG fitView
+  // Bảng hiện visible trong nhóm: giữ nguyên, chỉ đổi class
+  const visNames=new Set(RAW.tables.filter(t=>cardEls[t.name].classList.contains("visible")).map(t=>t.name));
+  // Nếu chưa có bảng nào visible (chưa chọn nhóm): hiện FK neighborhood
+  if(visNames.size===0){
+    const nameSet=new Set([name,...linked]);
+    const subset=RAW.tables.filter(t=>nameSet.has(t.name));
+    if(subset.some(t=>!positions[t.name])) initPositions(subset);
+    placeCards(subset);
+    RAW.tables.forEach(t=>{
+      const el=cardEls[t.name];
+      if(!nameSet.has(t.name)){el.classList.remove("visible");return;}
+      let cls="tbl-card visible";
+      if(t.brd) cls+=" brd-table"; else if(t.fk_linked) cls+=" fk-linked";
+      if(t.name===name) cls+=" selected"; else cls+=" neighbor";
+      el.className=cls;
+    });
+    updateLines(nameSet,name);
+    updateSvg(subset);
+    updateStats(nameSet.size,[...nameSet].filter(n=>RAW.tables.find(t=>t.name===n&&t.brd)).length);
+    setTimeout(fitView,60);
+    return;
+  }
+  // Đang trong nhóm: chỉ thay đổi visual class, không dịch chuyển
+  RAW.tables.forEach(t=>{
+    const el=cardEls[t.name];
+    if(!visNames.has(t.name)) return;
+    let cls="tbl-card visible";
+    if(t.brd) cls+=" brd-table"; else if(t.fk_linked) cls+=" fk-linked";
+    if(t.name===name) cls+=" selected";
+    else if(linked.has(t.name)) cls+=" neighbor";
+    else cls+=" dimmed";
+    el.className=cls;
+  });
+  updateLines(visNames,name);
+  updateStats(visNames.size,[...visNames].filter(n=>RAW.tables.find(t=>t.name===n&&t.brd)).length);
+}
+
+function clearSel(){
+  selectedTable=null;
+  if(activeGroup){
+    // Bỏ highlight/dim, giữ nguyên layout
+    const subset=RAW.tables.filter(t=>t.group===activeGroup);
+    const nameSet=new Set(subset.map(t=>t.name));
+    subset.forEach(t=>{
+      const el=cardEls[t.name];
+      let cls="tbl-card visible";
+      if(t.brd) cls+=" brd-table"; else if(t.fk_linked) cls+=" fk-linked";
+      el.className=cls;
+    });
+    updateLines(nameSet,null);
+    updateStats(subset.length,subset.filter(t=>t.brd).length);
+  } else {
+    RAW.tables.forEach(t=>cardEls[t.name].classList.remove("visible"));
+    updateLines(new Set(),null);updateStats(0,0);
+  }
+}
+
+function autoLayout(){
+  // Re-layout các bảng đang visible
+  const btn=document.getElementById("btnAutoLayout");
+  btn.classList.add("spinning");
+  const subset=RAW.tables.filter(t=>cardEls[t.name].classList.contains("visible"));
+  if(!subset.length){btn.classList.remove("spinning");return;}
+  // Reset positions để force layout lại từ đầu
+  subset.forEach(t=>delete positions[t.name]);
+  initPositions(subset);
+  placeCards(subset);
+  // Redraw lines
+  const visSet=new Set(subset.map(t=>t.name));
+  updateLines(visSet,selectedTable);
+  updateSvg(subset);
+  setTimeout(()=>{fitView();btn.classList.remove("spinning");saveLayout();},80);
+}
+
+function updateLines(visSet,sel){
+  lineEls.forEach(({el,fk})=>{
+    if(!visSet.has(fk.ft)||!visSet.has(fk.tt)){el.setAttribute("class","fk-path hidden-line");return;}
+    const isActive=sel&&(fk.ft===sel||fk.tt===sel);
+    el.setAttribute("class","fk-path"+(isActive?" active-line":sel?" dim-line":""));
+    el.setAttribute("marker-end",isActive?"url(#arr-hl)":"url(#arr)");
+    drawLine(el,fk);
+  });
+}
+
+function drawLine(p,e){
+  const fa=cardEls[e.ft],ta=cardEls[e.tt]; if(!fa||!ta) return;
+  if(e.ft===e.tt){
+    const x=parseFloat(fa.style.left)+CARD_W/2,y=parseFloat(fa.style.top);
+    p.setAttribute("d","M"+x+","+y+" C"+(x+80)+","+(y-60)+" "+(x+80)+","+(y-20)+" "+(x+20)+","+y);
+    return;
+  }
+  const fx=parseFloat(fa.style.left)+fa.offsetWidth,fy=parseFloat(fa.style.top)+fa.offsetHeight/2;
+  const tx=parseFloat(ta.style.left),ty=parseFloat(ta.style.top)+ta.offsetHeight/2;
+  const mx=(fx+tx)/2;
+  p.setAttribute("d","M"+fx+","+fy+" C"+mx+","+fy+" "+mx+","+ty+" "+tx+","+ty);
+}
+
+function updateSvg(subset){
+  let mx=0,my=0;
+  subset.forEach(t=>{const el=cardEls[t.name];mx=Math.max(mx,parseFloat(el.style.left)+CARD_W);my=Math.max(my,parseFloat(el.style.top)+CARD_H);});
+  const svg=document.getElementById("svg-layer");
+  svg.setAttribute("width",mx+120);svg.setAttribute("height",my+120);
+}
+
+function buildGroupList(){
+  const cnt={};
+  RAW.tables.forEach(t=>cnt[t.group]=(cnt[t.group]||0)+1);
+  const cont=document.getElementById("grpList");
+  Object.entries(GROUPS).forEach(([k,g])=>{
+    if(!cnt[k]) return;
+    const div=document.createElement("div");
+    div.className="grp-item";div.dataset.grp=k;
+    div.innerHTML='<span class="grp-dot" style="background:'+g.color+'"></span>'+'<span class="grp-name">'+g.label+'</span>'+'<span class="grp-count">'+cnt[k]+'</span>';
+    div.addEventListener("click",()=>{
+      if(activeGroup===k){activeGroup=null;selectedTable=null;
+        document.querySelectorAll(".grp-item").forEach(el=>el.classList.remove("active"));
+        RAW.tables.forEach(t=>cardEls[t.name].classList.remove("visible"));
+        updateLines(new Set(),null);updateStats(0,0);return;
+      }
+      document.querySelectorAll(".grp-item").forEach(el=>el.classList.toggle("active",el.dataset.grp===k));
+      showGroup(k);
+    });
+    cont.appendChild(div);
+  });
+}
+
+function updateStats(shown,brd){
+  document.getElementById("statsBar").innerHTML=
+    '<div class="stat"><div class="stat-n">'+shown+'</div><div class="stat-l">Đang hiện</div></div>'+
+    '<div class="stat"><div class="stat-n" style="color:var(--brd-border)">'+brd+'</div><div class="stat-l">BRD</div></div>'+
+    '<div class="stat"><div class="stat-n">'+RAW.fks.length+'</div><div class="stat-l">FK</div></div>';
+}
+
+function applyTransform(){document.getElementById("canvas").style.transform="translate("+panX+"px,"+panY+"px) scale("+scale+")";}
+function zoomBy(f,cx,cy){
+  const wrap=document.getElementById("canvasWrap");
+  const mx=cx??wrap.offsetWidth/2,my=cy??wrap.offsetHeight/2;
+  const ns=Math.min(3,Math.max(.08,scale*f));
+  panX=mx-(mx-panX)*ns/scale;panY=my-(my-panY)*ns/scale;
+  scale=ns;applyTransform();
+}
+function fitView(){
+  const vis=RAW.tables.filter(t=>cardEls[t.name]&&cardEls[t.name].classList.contains("visible"));
+  if(!vis.length) return;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  vis.forEach(t=>{const el=cardEls[t.name],x=parseFloat(el.style.left),y=parseFloat(el.style.top);x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x+CARD_W);y1=Math.max(y1,y+CARD_H);});
+  const wrap=document.getElementById("canvasWrap"),W=wrap.offsetWidth-48,H=wrap.offsetHeight-48;
+  const ns=Math.min(3,Math.max(.08,Math.min(W/(x1-x0),H/(y1-y0))*.88));
+  panX=(W-(x1-x0)*ns)/2-x0*ns+24;panY=(H-(y1-y0)*ns)/2-y0*ns+24;
+  scale=ns;applyTransform();
+}
+
+const wrap=document.getElementById("canvasWrap");
+wrap.addEventListener("wheel",e=>{
+  e.preventDefault();
+  const r=wrap.getBoundingClientRect();
+  zoomBy(e.deltaY<0?1.12:.9,e.clientX-r.left,e.clientY-r.top);
+},{passive:false});
+wrap.addEventListener("mousedown",e=>{
+  if(e.button!==0||e.target.closest(".tbl-card")) return;
+  dragMode=true;dragSX=e.clientX;dragSY=e.clientY;panSX=panX;panSY=panY;
+  wrap.style.cursor="grabbing";
+});
+window.addEventListener("mousemove",e=>{if(dragMode){panX=panSX+(e.clientX-dragSX);panY=panSY+(e.clientY-dragSY);applyTransform();}});
+window.addEventListener("mouseup",()=>{dragMode=false;wrap.style.cursor="default";});
+// Click vùng trắng → bỏ chọn (dùng canvasWrap để bắt mọi click không phải card)
+document.getElementById("canvasWrap").addEventListener("click",e=>{
+  if(window._justDragged) return;
+  if(!e.target.closest(".tbl-card") && !e.target.closest(".zbtn")) clearSel();
+});
+
+document.getElementById("searchBox").addEventListener("input",function(){
+  const q=this.value.trim().toLowerCase();
+  if(!q){if(activeGroup)showGroup(activeGroup);return;}
+  const match=RAW.tables.find(t=>t.name.toLowerCase().includes(q));
+  if(match) onSelectTable(match.name);
+});
+
+const tipEl=document.getElementById("tip");
+function showTip(e,txt){tipEl.style.display="block";tipEl.innerHTML=txt;}
+function hideTip(){tipEl.style.display="none";}
+document.addEventListener("mousemove",e=>{if(tipEl.style.display!=="none"){tipEl.style.left=(e.clientX+12)+"px";tipEl.style.top=(e.clientY-8)+"px";}});
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function exportLayout(){
+  const data=Store.get(STORAGE_KEY);
+  if(!data){alert('Chưa có layout để export. Hãy chọn nhóm hoặc kéo bảng trước.');return;}
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='thanhtra_er_layout.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importLayout(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      Store.set(STORAGE_KEY,JSON.stringify(data));
+      // Apply immediately
+      if(data.positions) Object.assign(positions,data.positions);
+      if(data.pan){panX=data.pan.x;panY=data.pan.y;}
+      if(data.scale) scale=data.scale;
+      applyTransform();
+      if(data.activeGroup && GROUPS[data.activeGroup]){
+        activeGroup=data.activeGroup;
+        document.querySelectorAll('.grp-item').forEach(el=>el.classList.toggle('active',el.dataset.grp===data.activeGroup));
+        const subset=RAW.tables.filter(t=>t.group===data.activeGroup);
+        const nameSet=new Set(subset.map(t=>t.name));
+        placeCards(subset);
+        RAW.tables.forEach(t=>{
+          const el=cardEls[t.name];
+          if(nameSet.has(t.name)) el.className='tbl-card visible'+(t.brd?' brd-table':t.fk_linked?' fk-linked':'');
+          else el.classList.remove('visible');
+        });
+        updateLines(nameSet,null);updateSvg(subset);updateStats(subset.length,subset.filter(t=>t.brd).length);
+      }
+    }catch(ex){alert('File không hợp lệ: '+ex.message);}
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+buildCards();
+buildLines();
+buildGroupList();
+updateStats(0,0);
+// Hiện warning nếu file://
+if(Store.isLocal) document.getElementById('localWarn').style.display='block';
+// Restore layout đã lưu
+(function(){
+  const saved=loadLayout();
+  if(!saved) return;
+  applyTransform();
+  // Nếu có activeGroup được lưu → hiện lại nhóm đó với positions đã lưu
+  if(saved.activeGroup && GROUPS[saved.activeGroup]){
+    activeGroup=saved.activeGroup;
+    document.querySelectorAll('.grp-item').forEach(el=>el.classList.toggle('active',el.dataset.grp===saved.activeGroup));
+    const subset=RAW.tables.filter(t=>t.group===saved.activeGroup);
+    const nameSet=new Set(subset.map(t=>t.name));
+    // Dùng positions đã lưu, chỉ fallback initPositions nếu thiếu
+    const missing=subset.filter(t=>!positions[t.name]);
+    if(missing.length) initPositions(missing);
+    placeCards(subset);
+    RAW.tables.forEach(t=>{
+      const el=cardEls[t.name];
+      if(nameSet.has(t.name)) el.className='tbl-card visible'+(t.brd?' brd-table':t.fk_linked?' fk-linked':'');
+      else el.classList.remove('visible');
+    });
+    const visSet=new Set(subset.map(t=>t.name));
+    updateLines(visSet,null);
+    updateSvg(subset);
+    updateStats(subset.length,subset.filter(t=>t.brd).length);
+  }
+})();
+</script>
+</body>
+</html>

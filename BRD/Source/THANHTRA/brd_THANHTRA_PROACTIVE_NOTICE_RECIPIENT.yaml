@@ -1,0 +1,86 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: PROACTIVE_NOTICE_RECIPIENT
+brd_ref: BRD-SRC-THANHTRA-PROACTIVE_NOTICE_RECIPIENT
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 BYTE)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: PROACTIVE_NOTICE_ID
+    data_type: VARCHAR2(36 BYTE)
+    description: "FK -> proactive_notice"
+    key: FK
+    fk_note: "FK → PROACTIVE_NOTICE.id"
+  - name: COMPANY_CODE
+    data_type: VARCHAR2(100 BYTE)
+    description: "Mã công ty nhận thông báo (CTCK hoặc CTQLQ)"
+    key: null
+    fk_note: null
+  - name: COMPANY_NAME
+    data_type: VARCHAR2(500 BYTE)
+    description: "Tên công ty nhận thông báo"
+    key: null
+    fk_note: null
+  - name: COMPANY_TYPE
+    data_type: VARCHAR2(50 BYTE)
+    description: "Loại công ty: SECURITIES_COMPANY (CTCK), FUND_MANAGEMENT_COMPANY (CT QLQ)"
+    key: null
+    fk_note: null
+  - name: CONFIRMATION_STATUS
+    data_type: VARCHAR2(50 BYTE)
+    description: "Trạng thái xác nhận: PENDING (Chưa xác nhận), CONFIRMED (Đã xác nhận)"
+    key: null
+    fk_note: null
+  - name: CONFIRMED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm công ty xác nhận đã nhận thông báo"
+    key: null
+    fk_note: null
+  - name: CONFIRMED_BY
+    data_type: VARCHAR2(200 BYTE)
+    description: "Người đại diện công ty xác nhận nhận thông báo"
+    key: null
+    fk_note: null
+  - name: PUSH_STATUS
+    data_type: VARCHAR2(50 BYTE)
+    description: "Trạng thái đẩy thông báo sang SCMS/FMS: PENDING (Chờ gửi), SUCCESS (Thành công), FAILED (Thất bại)"
+    key: null
+    fk_note: null
+  - name: PUSH_ERROR
+    data_type: VARCHAR2(1000 BYTE)
+    description: "Thông tin lỗi khi đẩy thông báo thất bại"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: TIMESTAMP(6)
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(200 BYTE)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(200 BYTE)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

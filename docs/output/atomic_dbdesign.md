@@ -14662,11 +14662,11 @@ N/A
 N/A
 
 
-## ThanhTra — Phần hệ phục vụ công tác thanh tra chứng khoán
+## THANHTRA — Phần hệ phục vụ công tác thanh tra chứng khoán
 
 ### Các mô hình quan hệ dữ liệu
 
-![Mô hình quan hệ dữ liệu ThanhTra](ThanhTra/fragments/ThanhTra_diagram.png)
+![Mô hình quan hệ dữ liệu THANHTRA](THANHTRA/fragments/THANHTRA_diagram.png)
 
 **Danh sách bảng:**
 
@@ -14718,8 +14718,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | aml_nfrc_case_id | STRING |  | X | P |  | Khóa đại diện cho hồ sơ phòng chống rửa tiền. |
-| 2 | aml_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK ThanhTra.PCRT_HO_SO.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.PCRT_HO_SO' | Mã hệ thống nguồn. |
+| 2 | aml_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK THANHTRA.PCRT_HO_SO.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.PCRT_HO_SO' | Mã hệ thống nguồn. |
 | 4 | case_nbr | STRING |  |  |  |  | Mã hồ sơ nghiệp vụ (duy nhất). |
 | 5 | case_nm | STRING | X |  |  |  | Tên hồ sơ. |
 | 6 | sbj_tp_code | STRING |  |  |  |  | Loại đối tượng: CA_NHAN / TO_CHUC. |
@@ -14772,8 +14772,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | aml_nfrc_dcsn_id | STRING |  | X | P |  | Khóa đại diện cho quyết định xử phạt PCRT. |
-| 2 | aml_nfrc_dcsn_code | STRING |  |  |  |  | Mã quyết định. Map từ PK ThanhTra.PCRT_VAN_BAN_XU_LY.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.PCRT_VAN_BAN_XU_LY' | Mã hệ thống nguồn. |
+| 2 | aml_nfrc_dcsn_code | STRING |  |  |  |  | Mã quyết định. Map từ PK THANHTRA.PCRT_VAN_BAN_XU_LY.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.PCRT_VAN_BAN_XU_LY' | Mã hệ thống nguồn. |
 | 4 | aml_nfrc_case_id | STRING |  |  | F |  | FK đến AML Enforcement Case. |
 | 5 | aml_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ PCRT. |
 | 6 | pny_dcsn_nbr | STRING | X |  |  |  | Số quyết định xử phạt / công văn nhắc nhở. |
@@ -14821,9 +14821,9 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | aml_prd_rpt_id | STRING |  | X | P |  | Khóa đại diện cho báo cáo phòng chống rửa tiền định kỳ. |
-| 2 | aml_prd_rpt_code | STRING |  |  |  |  | Mã báo cáo. Map từ ThanhTra.PCRT_BAO_CAO.MA_BAO_CAO (unique). |
-| 3 | src_rcrd_id | STRING |  |  |  |  | Khóa chính nội bộ từ bảng nguồn ThanhTra.PCRT_BAO_CAO.ID. |
-| 4 | src_stm_code | STRING |  |  |  | 'ThanhTra.PCRT_BAO_CAO' | Mã hệ thống nguồn. |
+| 2 | aml_prd_rpt_code | STRING |  |  |  |  | Mã báo cáo. Map từ THANHTRA.PCRT_BAO_CAO.MA_BAO_CAO (unique). |
+| 3 | src_rcrd_id | STRING |  |  |  |  | Khóa chính nội bộ từ bảng nguồn THANHTRA.PCRT_BAO_CAO.ID. |
+| 4 | src_stm_code | STRING |  |  |  | 'THANHTRA.PCRT_BAO_CAO' | Mã hệ thống nguồn. |
 | 5 | rpt_nm | STRING |  |  |  |  | Tên báo cáo phòng chống rửa tiền. |
 | 6 | rpt_dt | DATE | X |  |  |  | Ngày lập báo cáo. |
 | 7 | rpt_snd_dt | DATE | X |  |  |  | Ngày gửi báo cáo. |
@@ -14866,8 +14866,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | anti-corruption_rpt_id | STRING |  | X | P |  | Khóa đại diện cho báo cáo phòng chống tham nhũng. |
-| 2 | anti-corruption_rpt_code | STRING |  |  |  |  | Mã báo cáo PCTN. Map từ PK ThanhTra.PCTN_BAO_CAO.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.PCTN_BAO_CAO' | Mã hệ thống nguồn. |
+| 2 | anti-corruption_rpt_code | STRING |  |  |  |  | Mã báo cáo PCTN. Map từ PK THANHTRA.PCTN_BAO_CAO.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.PCTN_BAO_CAO' | Mã hệ thống nguồn. |
 | 4 | rpt_nm | STRING |  |  |  |  | Tên báo cáo phòng chống tham nhũng. |
 | 5 | rpt_dt | DATE | X |  |  |  | Ngày lập báo cáo. |
 | 6 | rpt_snd_dt | DATE | X |  |  |  | Ngày gửi báo cáo. |
@@ -14911,8 +14911,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | cpln_nfrc_dcsn_id | STRING |  | X | P |  | Khóa đại diện cho quyết định xử phạt từ hồ sơ đơn thư. |
-| 2 | cpln_nfrc_dcsn_code | STRING |  |  |  |  | Mã quyết định xử phạt. Map từ PK ThanhTra.DT_VAN_BAN_XU_LY.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DT_VAN_BAN_XU_LY' | Mã hệ thống nguồn. |
+| 2 | cpln_nfrc_dcsn_code | STRING |  |  |  |  | Mã quyết định xử phạt. Map từ PK THANHTRA.DT_VAN_BAN_XU_LY.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DT_VAN_BAN_XU_LY' | Mã hệ thống nguồn. |
 | 4 | cpln_pcs_case_id | STRING |  |  | F |  | FK đến Complaint Processing Case (OQ-5: DT_VAN_BAN_XU_LY FK → DT_HO_SO). |
 | 5 | cpln_pcs_case_code | STRING |  |  |  |  | Mã hồ sơ đơn thư. |
 | 6 | pny_dcsn_nbr | STRING | X |  |  |  | Số quyết định xử phạt. |
@@ -14959,8 +14959,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | cpln_pny_ancm_id | STRING |  | X | P |  | Khóa đại diện cho công bố xử phạt từ đơn thư. |
-| 2 | cpln_pny_ancm_code | STRING |  |  |  |  | Mã công bố. Map từ PK ThanhTra.DT_CONG_BO_XU_PHAT.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DT_CONG_BO_XU_PHAT' | Mã hệ thống nguồn. |
+| 2 | cpln_pny_ancm_code | STRING |  |  |  |  | Mã công bố. Map từ PK THANHTRA.DT_CONG_BO_XU_PHAT.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DT_CONG_BO_XU_PHAT' | Mã hệ thống nguồn. |
 | 4 | cpln_pcs_case_id | STRING | X |  | F |  | FK đến Complaint Processing Case (via HO_SO_ID — redundant navigation FK). |
 | 5 | cpln_pcs_case_code | STRING | X |  |  |  | Mã hồ sơ đơn thư. |
 | 6 | cpln_nfrc_dcsn_id | STRING |  |  | F |  | FK đến Complaint Enforcement Decision. |
@@ -15008,8 +15008,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | cpln_petition_id | STRING |  | X | P |  | Khóa đại diện cho đơn thư khiếu nại tố cáo. |
-| 2 | cpln_petition_code | STRING |  |  |  |  | Mã đơn thư. Map từ PK ThanhTra.DT_DON_THU.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DT_DON_THU' | Mã hệ thống nguồn. |
+| 2 | cpln_petition_code | STRING |  |  |  |  | Mã đơn thư. Map từ PK THANHTRA.DT_DON_THU.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DT_DON_THU' | Mã hệ thống nguồn. |
 | 4 | petition_nm | STRING | X |  |  |  | Tên đơn thư. |
 | 5 | complainant_tp_code | STRING |  |  |  |  | Loại đối tượng gửi đơn: CA_NHAN / TO_CHUC. |
 | 6 | complainant_nm | STRING | X |  |  |  | Tên tổ chức / cá nhân gửi đơn (snapshot tại thời điểm tiếp nhận). |
@@ -15062,8 +15062,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | cpln_pcs_case_id | STRING |  | X | P |  | Khóa đại diện cho hồ sơ giải quyết đơn thư. |
-| 2 | cpln_pcs_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK ThanhTra.DT_HO_SO.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DT_HO_SO' | Mã hệ thống nguồn. |
+| 2 | cpln_pcs_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK THANHTRA.DT_HO_SO.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DT_HO_SO' | Mã hệ thống nguồn. |
 | 4 | cpln_petition_id | STRING |  |  | F |  | FK đến Complaint Petition — đơn thư gốc. |
 | 5 | cpln_petition_code | STRING |  |  |  |  | Mã đơn thư gốc. |
 | 6 | case_nbr | STRING | X |  |  |  | Số hồ sơ. |
@@ -15111,8 +15111,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | cpln_pcs_conclusion_id | STRING |  | X | P |  | Khóa đại diện cho kết luận giải quyết đơn thư. |
-| 2 | cpln_pcs_conclusion_code | STRING |  |  |  |  | Mã kết luận. Map từ PK ThanhTra.DT_KET_LUAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DT_KET_LUAN' | Mã hệ thống nguồn. |
+| 2 | cpln_pcs_conclusion_code | STRING |  |  |  |  | Mã kết luận. Map từ PK THANHTRA.DT_KET_LUAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DT_KET_LUAN' | Mã hệ thống nguồn. |
 | 4 | cpln_pcs_case_id | STRING |  |  | F |  | FK đến Complaint Processing Case. |
 | 5 | cpln_pcs_case_code | STRING |  |  |  |  | Mã hồ sơ đơn thư. |
 | 6 | conclusion_nbr | STRING | X |  |  |  | Số kết luận. |
@@ -15161,8 +15161,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_anul_pln_id | STRING |  | X | P |  | Khóa đại diện cho kế hoạch thanh tra hàng năm. |
-| 2 | insp_anul_pln_code | STRING |  |  |  |  | Mã kế hoạch. Map từ PK ThanhTra.TT_KE_HOACH.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_KE_HOACH' | Mã hệ thống nguồn. |
+| 2 | insp_anul_pln_code | STRING |  |  |  |  | Mã kế hoạch. Map từ PK THANHTRA.TT_KE_HOACH.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_KE_HOACH' | Mã hệ thống nguồn. |
 | 4 | pln_tp_code | STRING |  |  |  |  | Loại kế hoạch: THANH_TRA / KIEM_TRA. |
 | 5 | pln_nm | STRING |  |  |  |  | Tên kế hoạch (ví dụ: Kế hoạch thanh tra năm 2025). |
 | 6 | aprv_dcsn_nbr | STRING | X |  |  |  | Số quyết định phê duyệt kế hoạch. |
@@ -15207,8 +15207,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_anul_pln_sbj_id | STRING |  | X | P |  | Khóa đại diện cho đối tượng trong kế hoạch thanh tra. |
-| 2 | insp_anul_pln_sbj_code | STRING |  |  |  |  | Mã đối tượng kế hoạch. Map từ PK ThanhTra.TT_KE_HOACH_DOI_TUONG.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_KE_HOACH_DOI_TUONG' | Mã hệ thống nguồn. |
+| 2 | insp_anul_pln_sbj_code | STRING |  |  |  |  | Mã đối tượng kế hoạch. Map từ PK THANHTRA.TT_KE_HOACH_DOI_TUONG.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_KE_HOACH_DOI_TUONG' | Mã hệ thống nguồn. |
 | 4 | insp_anul_pln_id | STRING |  |  | F |  | FK đến Inspection Annual Plan. |
 | 5 | insp_anul_pln_code | STRING |  |  |  |  | Mã kế hoạch. |
 | 6 | seq_nbr | INT | X |  |  |  | Số thứ tự đối tượng trong kế hoạch. |
@@ -15256,8 +15256,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_case_id | STRING |  | X | P |  | Khóa đại diện cho hồ sơ thanh tra. |
-| 2 | insp_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK ThanhTra.TT_HO_SO.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_HO_SO' | Mã hệ thống nguồn. |
+| 2 | insp_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK THANHTRA.TT_HO_SO.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_HO_SO' | Mã hệ thống nguồn. |
 | 4 | insp_dcsn_id | STRING |  |  | F |  | FK đến Inspection Decision. |
 | 5 | insp_dcsn_code | STRING |  |  |  |  | Mã quyết định. |
 | 6 | insp_tp_code | STRING |  |  |  |  | Loại hình: THANH_TRA / KIEM_TRA. |
@@ -15331,8 +15331,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_case_conclusion_id | STRING |  | X | P |  | Khóa đại diện cho kết luận thanh tra. |
-| 2 | insp_case_conclusion_code | STRING |  |  |  |  | Mã kết luận. Map từ PK ThanhTra.TT_KET_LUAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_KET_LUAN' | Mã hệ thống nguồn. |
+| 2 | insp_case_conclusion_code | STRING |  |  |  |  | Mã kết luận. Map từ PK THANHTRA.TT_KET_LUAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_KET_LUAN' | Mã hệ thống nguồn. |
 | 4 | insp_case_id | STRING |  |  | F |  | FK đến Inspection Case. |
 | 5 | insp_case_code | STRING |  |  |  |  | Mã hồ sơ thanh tra. |
 | 6 | conclusion_seq_nbr | INT |  |  |  |  | Số thứ tự kết luận trong 1 hồ sơ (1:N — có thể có nhiều kết luận: sơ bộ, chính thức, bổ sung). |
@@ -15388,8 +15388,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_case_ofcr_asgnm_id | STRING |  | X | P |  | Khóa đại diện cho phân công cán bộ xử lý hồ sơ thanh tra. |
-| 2 | insp_case_ofcr_asgnm_code | STRING |  |  |  |  | Mã phân công. Map từ PK ThanhTra.TT_HO_SO_CAN_BO.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_HO_SO_CAN_BO' | Mã hệ thống nguồn. |
+| 2 | insp_case_ofcr_asgnm_code | STRING |  |  |  |  | Mã phân công. Map từ PK THANHTRA.TT_HO_SO_CAN_BO.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_HO_SO_CAN_BO' | Mã hệ thống nguồn. |
 | 4 | insp_case_id | STRING |  |  | F |  | FK đến Inspection Case. |
 | 5 | insp_case_code | STRING |  |  |  |  | Mã hồ sơ thanh tra. |
 | 6 | insp_ofcr_id | STRING |  |  | F |  | FK đến Inspection Officer — cán bộ được phân công. |
@@ -15436,8 +15436,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_dcsn_id | STRING |  | X | P |  | Khóa đại diện cho quyết định thanh tra. |
-| 2 | insp_dcsn_code | STRING |  |  |  |  | Mã quyết định. Map từ PK ThanhTra.TT_QUYET_DINH.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_QUYET_DINH' | Mã hệ thống nguồn. |
+| 2 | insp_dcsn_code | STRING |  |  |  |  | Mã quyết định. Map từ PK THANHTRA.TT_QUYET_DINH.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_QUYET_DINH' | Mã hệ thống nguồn. |
 | 4 | insp_anul_pln_id | STRING | X |  | F |  | FK đến Inspection Annual Plan (nullable — quyết định đột xuất không có kế hoạch). |
 | 5 | insp_anul_pln_code | STRING | X |  |  |  | Mã kế hoạch. |
 | 6 | insp_tp_code | STRING |  |  |  |  | Loại hình: THANH_TRA / KIEM_TRA. |
@@ -15489,8 +15489,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_dcsn_sbj_id | STRING |  | X | P |  | Khóa đại diện cho đối tượng trong quyết định thanh tra. |
-| 2 | insp_dcsn_sbj_code | STRING |  |  |  |  | Mã đối tượng quyết định. Map từ PK ThanhTra.TT_QUYET_DINH_DOI_TUONG.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_QUYET_DINH_DOI_TUONG' | Mã hệ thống nguồn. |
+| 2 | insp_dcsn_sbj_code | STRING |  |  |  |  | Mã đối tượng quyết định. Map từ PK THANHTRA.TT_QUYET_DINH_DOI_TUONG.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_QUYET_DINH_DOI_TUONG' | Mã hệ thống nguồn. |
 | 4 | insp_dcsn_id | STRING |  |  | F |  | FK đến Inspection Decision. |
 | 5 | insp_dcsn_code | STRING |  |  |  |  | Mã quyết định. |
 | 6 | seq_nbr | INT | X |  |  |  | Số thứ tự đối tượng trong quyết định. |
@@ -15535,8 +15535,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_dcsn_team_mbr_id | STRING |  | X | P |  | Khóa đại diện cho thành viên đoàn thanh tra trong quyết định. |
-| 2 | insp_dcsn_team_mbr_code | STRING |  |  |  |  | Mã thành viên. Map từ PK ThanhTra.TT_QUYET_DINH_THANH_PHAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_QUYET_DINH_THANH_PHAN' | Mã hệ thống nguồn. |
+| 2 | insp_dcsn_team_mbr_code | STRING |  |  |  |  | Mã thành viên. Map từ PK THANHTRA.TT_QUYET_DINH_THANH_PHAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_QUYET_DINH_THANH_PHAN' | Mã hệ thống nguồn. |
 | 4 | insp_dcsn_id | STRING |  |  | F |  | FK đến Inspection Decision. |
 | 5 | insp_dcsn_code | STRING |  |  |  |  | Mã quyết định. |
 | 6 | insp_ofcr_id | STRING |  |  | F |  | FK đến Inspection Officer — cán bộ trong đoàn. |
@@ -15582,8 +15582,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_pny_ancm_id | STRING |  | X | P |  | Khóa đại diện cho công bố xử phạt từ kết luận thanh tra. |
-| 2 | insp_pny_ancm_code | STRING |  |  |  |  | Mã công bố. Map từ PK ThanhTra.TT_CONG_BO_XU_PHAT.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_CONG_BO_XU_PHAT' | Mã hệ thống nguồn. |
+| 2 | insp_pny_ancm_code | STRING |  |  |  |  | Mã công bố. Map từ PK THANHTRA.TT_CONG_BO_XU_PHAT.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_CONG_BO_XU_PHAT' | Mã hệ thống nguồn. |
 | 4 | insp_case_id | STRING | X |  | F |  | FK đến Inspection Case (via HO_SO_ID — redundant navigation FK). |
 | 5 | insp_case_code | STRING | X |  |  |  | Mã hồ sơ thanh tra. |
 | 6 | insp_case_conclusion_id | STRING |  |  | F |  | FK đến Inspection Case Conclusion. |
@@ -15631,8 +15631,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | surveil_nfrc_case_id | STRING |  | X | P |  | Khóa đại diện cho hồ sơ xử lý vi phạm từ giám sát. |
-| 2 | surveil_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK ThanhTra.GS_HO_SO.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.GS_HO_SO' | Mã hệ thống nguồn. |
+| 2 | surveil_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ. Map từ PK THANHTRA.GS_HO_SO.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.GS_HO_SO' | Mã hệ thống nguồn. |
 | 4 | case_nbr | STRING |  |  |  |  | Mã hồ sơ nghiệp vụ (duy nhất trong hệ thống). |
 | 5 | case_nm | STRING | X |  |  |  | Tên hồ sơ. |
 | 6 | archv_nbr | STRING | X |  |  |  | Mã số lưu trữ. |
@@ -15687,8 +15687,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | surveil_nfrc_dcsn_id | STRING |  | X | P |  | Khóa đại diện cho quyết định xử phạt từ giám sát. |
-| 2 | surveil_nfrc_dcsn_code | STRING |  |  |  |  | Mã quyết định. Map từ PK ThanhTra.GS_VAN_BAN_XU_LY.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.GS_VAN_BAN_XU_LY' | Mã hệ thống nguồn. |
+| 2 | surveil_nfrc_dcsn_code | STRING |  |  |  |  | Mã quyết định. Map từ PK THANHTRA.GS_VAN_BAN_XU_LY.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.GS_VAN_BAN_XU_LY' | Mã hệ thống nguồn. |
 | 4 | surveil_nfrc_case_id | STRING |  |  | F |  | FK đến Surveillance Enforcement Case. |
 | 5 | surveil_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ giám sát. |
 | 6 | pny_dcsn_nbr | STRING | X |  |  |  | Số quyết định xử phạt / số công văn nhắc nhở. |
@@ -15736,8 +15736,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | surveil_pny_ancm_id | STRING |  | X | P |  | Khóa đại diện cho thông báo công bố xử phạt từ giám sát. |
-| 2 | surveil_pny_ancm_code | STRING |  |  |  |  | Mã công bố. Map từ PK ThanhTra.GS_CONG_BO_XU_PHAT.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.GS_CONG_BO_XU_PHAT' | Mã hệ thống nguồn. |
+| 2 | surveil_pny_ancm_code | STRING |  |  |  |  | Mã công bố. Map từ PK THANHTRA.GS_CONG_BO_XU_PHAT.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.GS_CONG_BO_XU_PHAT' | Mã hệ thống nguồn. |
 | 4 | surveil_nfrc_case_id | STRING | X |  | F |  | FK đến Surveillance Enforcement Case (via HO_SO_ID — redundant navigation FK). |
 | 5 | surveil_nfrc_case_code | STRING | X |  |  |  | Mã hồ sơ giám sát. |
 | 6 | surveil_nfrc_dcsn_id | STRING |  |  | F |  | FK đến Surveillance Enforcement Decision (via QUYET_DINH_XU_PHAT_ID). |
@@ -15785,8 +15785,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | aml_case_doc_attch_id | STRING |  | X | P |  | Khóa đại diện cho văn bản đính kèm hồ sơ PCRT. |
-| 2 | aml_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK ThanhTra.PCRT_HO_SO_VAN_BAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.PCRT_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
+| 2 | aml_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK THANHTRA.PCRT_HO_SO_VAN_BAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.PCRT_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
 | 4 | aml_nfrc_case_id | STRING |  |  | F |  | FK đến AML Enforcement Case. |
 | 5 | aml_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ PCRT. |
 | 6 | doc_nbr | STRING | X |  |  |  | Số hiệu văn bản. |
@@ -15834,8 +15834,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | cpln_pcs_case_doc_attch_id | STRING |  | X | P |  | Khóa đại diện cho văn bản đính kèm hồ sơ đơn thư. |
-| 2 | cpln_pcs_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK ThanhTra.DT_HO_SO_VAN_BAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DT_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
+| 2 | cpln_pcs_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK THANHTRA.DT_HO_SO_VAN_BAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DT_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
 | 4 | cpln_pcs_case_id | STRING |  |  | F |  | FK đến Complaint Processing Case. |
 | 5 | cpln_pcs_case_code | STRING |  |  |  |  | Mã hồ sơ đơn thư. |
 | 6 | doc_tp_code | STRING | X |  |  |  | Loại văn bản: QUYET_DINH_THU_LY / BIEN_BAN_VPHC / CONG_VAN_TB / DON_THU. |
@@ -15884,8 +15884,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_anul_pln_doc_attch_id | STRING |  | X | P |  | Khóa đại diện cho văn bản kèm kế hoạch thanh tra. |
-| 2 | insp_anul_pln_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK ThanhTra.TT_KE_HOACH_VAN_BAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_KE_HOACH_VAN_BAN' | Mã hệ thống nguồn. |
+| 2 | insp_anul_pln_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK THANHTRA.TT_KE_HOACH_VAN_BAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_KE_HOACH_VAN_BAN' | Mã hệ thống nguồn. |
 | 4 | insp_anul_pln_id | STRING |  |  | F |  | FK đến Inspection Annual Plan. |
 | 5 | insp_anul_pln_code | STRING |  |  |  |  | Mã kế hoạch. |
 | 6 | doc_nbr | STRING | X |  |  |  | Số hiệu văn bản. |
@@ -15934,8 +15934,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_case_doc_attch_id | STRING |  | X | P |  | Khóa đại diện cho văn bản đính kèm hồ sơ thanh tra. |
-| 2 | insp_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK ThanhTra.TT_HO_SO_VAN_BAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
+| 2 | insp_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK THANHTRA.TT_HO_SO_VAN_BAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
 | 4 | insp_case_id | STRING |  |  | F |  | FK đến Inspection Case. |
 | 5 | insp_case_code | STRING |  |  |  |  | Mã hồ sơ thanh tra. |
 | 6 | doc_tp_code | STRING | X |  |  |  | Loại văn bản: KE_HOACH / QUYET_DINH / BIEN_BAN / KET_LUAN / CONG_VAN / GIAI_TRINH. |
@@ -15985,8 +15985,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_dcsn_doc_attch_id | STRING |  | X | P |  | Khóa đại diện cho văn bản kèm quyết định thanh tra. |
-| 2 | insp_dcsn_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK ThanhTra.TT_QUYET_DINH_VAN_BAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.TT_QUYET_DINH_VAN_BAN' | Mã hệ thống nguồn. |
+| 2 | insp_dcsn_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK THANHTRA.TT_QUYET_DINH_VAN_BAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.TT_QUYET_DINH_VAN_BAN' | Mã hệ thống nguồn. |
 | 4 | insp_dcsn_id | STRING |  |  | F |  | FK đến Inspection Decision. |
 | 5 | insp_dcsn_code | STRING |  |  |  |  | Mã quyết định. |
 | 6 | doc_nbr | STRING | X |  |  |  | Số hiệu văn bản. |
@@ -16035,8 +16035,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | surveil_case_doc_attch_id | STRING |  | X | P |  | Khóa đại diện cho văn bản đính kèm hồ sơ giám sát. |
-| 2 | surveil_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK ThanhTra.GS_HO_SO_VAN_BAN.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.GS_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
+| 2 | surveil_case_doc_attch_code | STRING |  |  |  |  | Mã văn bản. Map từ PK THANHTRA.GS_HO_SO_VAN_BAN.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.GS_HO_SO_VAN_BAN' | Mã hệ thống nguồn. |
 | 4 | surveil_nfrc_case_id | STRING |  |  | F |  | FK đến Surveillance Enforcement Case. |
 | 5 | surveil_nfrc_case_code | STRING |  |  |  |  | Mã hồ sơ giám sát. |
 | 6 | doc_nbr | STRING | X |  |  |  | Số hiệu văn bản. |
@@ -16085,8 +16085,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | surveil_nfrc_dcsn_file_attch_id | STRING |  | X | P |  | Khóa đại diện cho file đính kèm quyết định xử phạt giám sát. |
-| 2 | surveil_nfrc_dcsn_file_attch_code | STRING |  |  |  |  | Mã file. Map từ PK ThanhTra.GS_VAN_BAN_XU_LY_FILE.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.GS_VAN_BAN_XU_LY_FILE' | Mã hệ thống nguồn. |
+| 2 | surveil_nfrc_dcsn_file_attch_code | STRING |  |  |  |  | Mã file. Map từ PK THANHTRA.GS_VAN_BAN_XU_LY_FILE.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.GS_VAN_BAN_XU_LY_FILE' | Mã hệ thống nguồn. |
 | 4 | surveil_nfrc_dcsn_id | STRING |  |  | F |  | FK đến Surveillance Enforcement Decision. |
 | 5 | surveil_nfrc_dcsn_code | STRING |  |  |  |  | Mã quyết định xử phạt. |
 | 6 | doc_nbr | STRING | X |  |  |  | Số hiệu văn bản. |
@@ -16133,8 +16133,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | fnd_mgt_co_id | STRING |  | X | P |  | Khóa đại diện cho công ty quản lý quỹ. |
-| 2 | fnd_mgt_co_code | STRING |  |  |  |  | Mã công ty quản lý quỹ. Map từ PK ThanhTra.DM_CONG_TY_QLQ.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
+| 2 | fnd_mgt_co_code | STRING |  |  |  |  | Mã công ty quản lý quỹ. Map từ PK THANHTRA.DM_CONG_TY_QLQ.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
 | 4 | fnd_mgt_co_nm | STRING |  |  |  |  | Tên tiếng Việt công ty quản lý quỹ. |
 | 5 | fnd_mgt_co_shrt_nm | STRING | X |  |  |  | Tên viết tắt công ty quản lý quỹ. |
 | 6 | fnd_mgt_co_en_nm | STRING | X |  |  |  | Tên tiếng Anh công ty quản lý quỹ. |
@@ -16198,8 +16198,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_ofcr_id | STRING |  | X | P |  | Khóa đại diện cho cán bộ thanh tra. |
-| 2 | insp_ofcr_code | STRING |  |  |  |  | Mã cán bộ thanh tra. Map từ PK bảng nguồn ThanhTra.DM_CAN_BO.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CAN_BO' | Mã hệ thống nguồn. |
+| 2 | insp_ofcr_code | STRING |  |  |  |  | Mã cán bộ thanh tra. Map từ PK bảng nguồn THANHTRA.DM_CAN_BO.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CAN_BO' | Mã hệ thống nguồn. |
 | 4 | login_nm | STRING | X |  |  |  | Tên đăng nhập, liên kết tài khoản hệ thống nội bộ. |
 | 5 | full_nm | STRING |  |  |  |  | Họ và tên cán bộ thanh tra. |
 | 6 | dob | DATE | X |  |  |  | Ngày sinh cán bộ. |
@@ -16241,8 +16241,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | insp_sbj_othr_p_id | STRING |  | X | P |  | Khóa đại diện cho đối tượng thanh tra khác. |
-| 2 | insp_sbj_othr_p_code | STRING |  |  |  |  | Mã đối tượng. Map từ PK ThanhTra.DM_DOI_TUONG_KHAC.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
+| 2 | insp_sbj_othr_p_code | STRING |  |  |  |  | Mã đối tượng. Map từ PK THANHTRA.DM_DOI_TUONG_KHAC.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
 | 4 | p_tp_code | STRING |  |  |  |  | Loại đối tượng: CA_NHAN / TO_CHUC. |
 | 5 | nm | STRING |  |  |  |  | Tên đối tượng thanh tra. |
 | 6 | shrt_nm | STRING | X |  |  |  | Tên viết tắt. |
@@ -16289,8 +16289,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | pblc_co_id | STRING |  | X | P |  | Khóa đại diện cho công ty đại chúng. |
-| 2 | pblc_co_code | STRING |  |  |  |  | Mã công ty đại chúng. Map từ PK ThanhTra.DM_CONG_TY_DC.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
+| 2 | pblc_co_code | STRING |  |  |  |  | Mã công ty đại chúng. Map từ PK THANHTRA.DM_CONG_TY_DC.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
 | 4 | pblc_co_nm | STRING |  |  |  |  | Tên tiếng Việt công ty đại chúng. |
 | 5 | pblc_co_en_nm | STRING | X |  |  |  | Tên tiếng Anh công ty đại chúng. |
 | 6 | pblc_co_shrt_nm | STRING | X |  |  |  | Tên viết tắt công ty đại chúng. |
@@ -16385,8 +16385,8 @@ N/A
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | scr_co_id | STRING |  | X | P |  | Khóa đại diện cho công ty chứng khoán. |
-| 2 | scr_co_code | STRING |  |  |  |  | Mã công ty chứng khoán. Map từ PK ThanhTra.DM_CONG_TY_CK.ID. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
+| 2 | scr_co_code | STRING |  |  |  |  | Mã công ty chứng khoán. Map từ PK THANHTRA.DM_CONG_TY_CK.ID. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
 | 4 | cty_of_rgst_id | STRING | X |  | F |  | FK đến quốc gia đăng ký của công ty chứng khoán. |
 | 5 | cty_of_rgst_code | STRING | X |  |  |  | Mã quốc gia đăng ký. |
 | 6 | full_nm | STRING |  |  |  |  | Tên công ty chứng khoán. |
@@ -16459,18 +16459,18 @@ N/A
 
 
 
-#### Từ ThanhTra.DM_CAN_BO
+#### Từ THANHTRA.DM_CAN_BO
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Inspection Officer. |
 | 2 | ip_code | STRING |  |  |  |  | Mã cán bộ thanh tra. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CAN_BO' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CAN_BO' | Mã hệ thống nguồn. |
 | 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email. |
 | 5 | elc_adr_val | STRING | X |  |  |  | Email cán bộ. |
 | 6 | ip_id | STRING |  |  | F |  | FK đến Inspection Officer. |
 | 7 | ip_code | STRING |  |  |  |  | Mã cán bộ thanh tra. |
-| 8 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CAN_BO' | Mã hệ thống nguồn. |
+| 8 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CAN_BO' | Mã hệ thống nguồn. |
 | 9 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại. |
 | 10 | elc_adr_val | STRING | X |  |  |  | Số điện thoại cán bộ. |
 
@@ -16493,18 +16493,18 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_CONG_TY_DC
+#### Từ THANHTRA.DM_CONG_TY_DC
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Public Company. |
 | 2 | ip_code | STRING |  |  |  |  | Mã công ty đại chúng. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
 | 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email. |
 | 5 | elc_adr_val | STRING | X |  |  |  | Email. |
 | 6 | ip_id | STRING |  |  | F |  | FK đến Public Company. |
 | 7 | ip_code | STRING |  |  |  |  | Mã công ty đại chúng. |
-| 8 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
+| 8 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
 | 9 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại. |
 | 10 | elc_adr_val | STRING | X |  |  |  | Số điện thoại. |
 
@@ -16527,18 +16527,18 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_CONG_TY_CK
+#### Từ THANHTRA.DM_CONG_TY_CK
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Securities Company. |
 | 2 | ip_code | STRING |  |  |  |  | Mã công ty chứng khoán. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
 | 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email. |
 | 5 | elc_adr_val | STRING | X |  |  |  | Email. |
 | 6 | ip_id | STRING |  |  | F |  | FK đến Securities Company. |
 | 7 | ip_code | STRING |  |  |  |  | Mã công ty chứng khoán. |
-| 8 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
+| 8 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
 | 9 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại. |
 | 10 | elc_adr_val | STRING | X |  |  |  | Số điện thoại. |
 
@@ -16561,18 +16561,18 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_CONG_TY_QLQ
+#### Từ THANHTRA.DM_CONG_TY_QLQ
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Fund Management Company. |
 | 2 | ip_code | STRING |  |  |  |  | Mã công ty quản lý quỹ. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
 | 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email. |
 | 5 | elc_adr_val | STRING | X |  |  |  | Email. |
 | 6 | ip_id | STRING |  |  | F |  | FK đến Fund Management Company. |
 | 7 | ip_code | STRING |  |  |  |  | Mã công ty quản lý quỹ. |
-| 8 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
+| 8 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
 | 9 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — điện thoại. |
 | 10 | elc_adr_val | STRING | X |  |  |  | Số điện thoại. |
 
@@ -16595,23 +16595,23 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_DOI_TUONG_KHAC
+#### Từ THANHTRA.DM_DOI_TUONG_KHAC
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Inspection Subject Other Party. |
 | 2 | ip_code | STRING |  |  |  |  | Mã đối tượng thanh tra. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
 | 4 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — email. |
 | 5 | elc_adr_val | STRING | X |  |  |  | Email. |
 | 6 | ip_id | STRING |  |  | F |  | FK đến Inspection Subject Other Party. |
 | 7 | ip_code | STRING |  |  |  |  | Mã đối tượng thanh tra. |
-| 8 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
+| 8 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
 | 9 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — fax. |
 | 10 | elc_adr_val | STRING | X |  |  |  | Số fax. |
 | 11 | ip_id | STRING |  |  | F |  | FK đến Inspection Subject Other Party. |
 | 12 | ip_code | STRING |  |  |  |  | Mã đối tượng thanh tra. |
-| 13 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
+| 13 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
 | 14 | elc_adr_tp_code | STRING |  |  |  |  | Loại kênh liên lạc — số điện thoại. |
 | 15 | elc_adr_val | STRING | X |  |  |  | Số điện thoại. |
 
@@ -16641,13 +16641,13 @@ N/A
 
 
 
-#### Từ ThanhTra.DM_CAN_BO
+#### Từ THANHTRA.DM_CAN_BO
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Inspection Officer. |
 | 2 | ip_code | STRING |  |  |  |  | Mã cán bộ thanh tra. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CAN_BO' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CAN_BO' | Mã hệ thống nguồn. |
 | 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — địa chỉ hiện tại. |
 | 5 | adr_val | STRING | X |  |  |  | Địa chỉ cán bộ. |
 | 6 | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. |
@@ -16671,13 +16671,13 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_CONG_TY_DC
+#### Từ THANHTRA.DM_CONG_TY_DC
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Public Company. |
 | 2 | ip_code | STRING |  |  |  |  | Mã công ty đại chúng. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_DC' | Mã hệ thống nguồn. |
 | 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính. |
 | 5 | adr_val | STRING | X |  |  |  | Địa chỉ trụ sở chính. |
 | 6 | prov_id | STRING | X |  | F |  | FK đến tỉnh/thành phố trụ sở. |
@@ -16709,13 +16709,13 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_CONG_TY_CK
+#### Từ THANHTRA.DM_CONG_TY_CK
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Securities Company. |
 | 2 | ip_code | STRING |  |  |  |  | Mã công ty chứng khoán. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_CK' | Mã hệ thống nguồn. |
 | 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính. |
 | 5 | adr_val | STRING | X |  |  |  | Địa chỉ trụ sở chính. |
 | 6 | prov_id | STRING | X |  | F |  | FK đến tỉnh/thành phố trụ sở. |
@@ -16747,13 +16747,13 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_CONG_TY_QLQ
+#### Từ THANHTRA.DM_CONG_TY_QLQ
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Fund Management Company. |
 | 2 | ip_code | STRING |  |  |  |  | Mã công ty quản lý quỹ. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_CONG_TY_QLQ' | Mã hệ thống nguồn. |
 | 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — trụ sở chính. |
 | 5 | adr_val | STRING | X |  |  |  | Địa chỉ trụ sở chính. |
 | 6 | prov_id | STRING | X |  | F |  | FK đến tỉnh/thành phố trụ sở. |
@@ -16785,13 +16785,13 @@ N/A
 **Trigger:** N/A
 
 
-#### Từ ThanhTra.DM_DOI_TUONG_KHAC
+#### Từ THANHTRA.DM_DOI_TUONG_KHAC
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
 | 1 | ip_id | STRING |  |  | F |  | FK đến Inspection Subject Other Party. |
 | 2 | ip_code | STRING |  |  |  |  | Mã đối tượng thanh tra. |
-| 3 | src_stm_code | STRING |  |  |  | 'ThanhTra.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
+| 3 | src_stm_code | STRING |  |  |  | 'THANHTRA.DM_DOI_TUONG_KHAC' | Mã hệ thống nguồn. |
 | 4 | adr_tp_code | STRING |  |  |  |  | Loại địa chỉ — địa chỉ liên hệ. |
 | 5 | adr_val | STRING | X |  |  |  | Địa chỉ. |
 | 6 | adr_dtl | STRING | X |  |  |  | Địa chỉ văn phòng đại diện. |

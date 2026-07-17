@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-inspection_annual_plan-THANHTRA.INSPECTION_ANNUAL_PLAN
+  logical_name: Inspection Annual Plan
+  physical_name: inspection_annual_plan
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Direction
+  bcv_concept: "[Business Direction] Business Plan"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  description: |
+    Kế hoạch thanh tra hàng năm của UBCKNN, được phê duyệt bằng quyết định hành chính. Mỗi năm có 1 kế hoạch (PLAN_YEAR unique), bao gồm thông tin quyết định phê duyệt, trạng thái DRAFT/APPROVED.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN
+
+attributes:
+  - name: Inspection Annual Plan Id
+    physical_name: inspection_annual_plan_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: null
+    comment: "PK surrogate. BCV: [Business Direction] Business Plan."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null
+
+  - name: Inspection Annual Plan Code
+    physical_name: inspection_annual_plan_code
+    business_meaning: Khóa chính UUID của bảng nguồn. BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: THANHTRA.INSPECTION_ANNUAL_PLAN
+
+  - name: Inspection Annual Plan Name
+    physical_name: inspection_annual_plan_nm
+    business_meaning: Tên kế hoạch thanh tra hàng năm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN.NAME
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null
+
+  - name: Plan Year
+    physical_name: plan_year
+    business_meaning: "Năm thanh tra, UNIQUE (mỗi năm chỉ 1 kế hoạch)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN.PLAN_YEAR
+    comment: "Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer. Năm dương lịch 4 chữ số."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null
+
+  - name: Approval Decision Number
+    physical_name: approval_decision_nbr
+    business_meaning: "Số quyết định ban hành (bắt buộc khi status=APPROVED)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN.DECISION_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null
+
+  - name: Approval Decision Date
+    physical_name: approval_decision_dt
+    business_meaning: "Ngày quyết định (bắt buộc khi status=APPROVED)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN.DECISION_DATE
+    comment: null
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null
+
+  - name: Life Cycle Status Code
+    physical_name: life_cycle_status_code
+    business_meaning: "Trạng thái: DRAFT (Dự thảo), APPROVED (Đã duyệt)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN.STATUS
+    comment: "Scheme: PLAN_STATUS."
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: INSPECTION_ANNUAL_PLAN
+    source_column: THANHTRA.INSPECTION_ANNUAL_PLAN.NOTE
+    comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
+    classification_context: "Source System Code = 'THANHTRA_INSPECTION_ANNUAL_PLAN'"
+    etl_derived_value: null

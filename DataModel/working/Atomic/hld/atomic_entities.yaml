@@ -50,7 +50,7 @@ entities:
   description: "Hồ sơ đoàn kiểm tra cụ thể (mã HSKT-YYYY-XXX), ghi nhận thông tin\
     \ thành lập đoàn, quyết định kiểm tra, đơn vị chủ trì và hình thức kiểm tra (định\
     \ kỳ/đột xuất)."
-  source_table: "ThanhTra.EXAMINATION_TEAM"
+  source_table: "THANHTRA.EXAMINATION_TEAM"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -60,7 +60,7 @@ entities:
   entity_physical_name: "examination_team_target"
   description: "Danh sách đối tượng được kiểm tra trong đoàn cụ thể: 7 loại đơn vị/cá\
     \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
-  source_table: "ThanhTra.EXAMINATION_TEAM_TARGET"
+  source_table: "THANHTRA.EXAMINATION_TEAM_TARGET"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
@@ -114,7 +114,7 @@ entities:
   description: "Hồ sơ đoàn thanh tra cụ thể (mã HSTT-YYYY-XXX), ghi nhận thông tin\
     \ thành lập đoàn, quyết định thanh tra, hình thức thanh tra (định kỳ/đột xuất)\
     \ và ngày ký biên bản xác minh."
-  source_table: "ThanhTra.INSPECTION_TEAM"
+  source_table: "THANHTRA.INSPECTION_TEAM"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -124,7 +124,7 @@ entities:
   entity_physical_name: "inspection_team_target"
   description: "Danh sách đối tượng được thanh tra trong đoàn cụ thể: 7 loại đơn vị/cá\
     \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
-  source_table: "ThanhTra.INSPECTION_TEAM_TARGET"
+  source_table: "THANHTRA.INSPECTION_TEAM_TARGET"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
@@ -326,7 +326,7 @@ entities:
   entity_physical_name: "violation_behavior"
   description: "Danh mục hành vi vi phạm hành chính được pháp luật quy định: loại\
     \ hành vi, hình thức xử phạt chính, khung tiền phạt min/max, biện pháp khắc phục."
-  source_table: "ThanhTra.VIOLATION_BEHAVIOR"
+  source_table: "THANHTRA.VIOLATION_BEHAVIOR"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
@@ -337,7 +337,7 @@ entities:
   description: "Hồ sơ xử lý vi phạm hành chính (VPHC): ghi nhận nguồn phát hiện, liên\
     \ kết đoàn thanh tra/kiểm tra, cán bộ phụ trách, vòng đời hồ sơ (5 trạng thái),\
     \ theo dõi tiền bảo đảm."
-  source_table: "ThanhTra.VIOLATION_CASE"
+  source_table: "THANHTRA.VIOLATION_CASE"
   status: "draft"
 - bcv_core_object: "Communication"
   bcv_concept: "[Communication] Announcement"
@@ -357,7 +357,7 @@ entities:
   entity_physical_name: ""
   description: "Hồ sơ đơn thư gửi đến UBCKNN từ công dân hoặc tổ chức, gồm phản ánh\
     \ kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference."
-  source_table: "ThanhTra.PETITION"
+  source_table: "THANHTRA.PETITION"
   status: "draft"
 - bcv_core_object: "Communication"
   bcv_concept: "[Communication] Financial Market Order"
@@ -586,7 +586,7 @@ entities:
   description: "Quyết định xử phạt vi phạm hành chính: ghi nhận số quyết định, ngày\
     \ ban hành, tổng số tiền phạt, trạng thái (7 bước), thông tin khiếu nại và khởi\
     \ kiện liên quan."
-  source_table: "ThanhTra.PENALTY_DECISION"
+  source_table: "THANHTRA.PENALTY_DECISION"
   status: "draft"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
@@ -596,7 +596,7 @@ entities:
   entity_physical_name: "penalty_decision_subject"
   description: "Đối tượng bị xử phạt trong quyết định: thông tin định danh, tổng số\
     \ tiền phạt, số tiền đã nộp, số tiền cưỡng chế, trạng thái tuân thủ thanh toán."
-  source_table: "ThanhTra.PENALTY_DECISION_SUBJECT"
+  source_table: "THANHTRA.PENALTY_DECISION_SUBJECT"
   status: "draft"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
@@ -607,7 +607,7 @@ entities:
   description: "Chi tiết từng hành vi vi phạm của một đối tượng trong quyết định xử\
     \ phạt: liên kết hành vi vi phạm, hình thức xử phạt được áp dụng, mức phạt thực\
     \ tế."
-  source_table: "ThanhTra.PENALTY_DECISION_SUBJECT_BEHAVIOR"
+  source_table: "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR"
   status: "draft"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Period"
@@ -844,7 +844,7 @@ entities:
   description: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ\
     \ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ\
     \ 1 nguồn."
-  source_table: "NHNCK.PROFESSIONALS, IAM.USERS, ThanhTra.PENALTY_DECISION_SUBJECT,\
+  source_table: "NHNCK.PROFESSIONALS, IAM.USERS, THANHTRA.PENALTY_DECISION_SUBJECT,\
     \ SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE,\
     \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH,\
     \ SCMS.AUDITOR, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
@@ -888,7 +888,7 @@ entities:
   description: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường\
     \ trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."
   source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS, IAM.USERS,\
-    \ ThanhTra.EXAMINATION_TEAM_TARGET, ThanhTra.PENALTY_DECISION_SUBJECT, SCMS.AUDIT_FIRM,\
+    \ THANHTRA.EXAMINATION_TEAM_TARGET, THANHTRA.PENALTY_DECISION_SUBJECT, SCMS.AUDIT_FIRM,\
     \ SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE,\
     \ SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE,\
     \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL,\
@@ -1362,7 +1362,7 @@ entities:
   entity_physical_name: "citizen_reception"
   description: "Ghi nhận buổi tiếp công dân tại UBCKNN: ngày tiếp, cán bộ tiếp, loại\
     \ đối tượng, nội dung tóm tắt, liên kết hồ sơ đơn thư nếu có."
-  source_table: "ThanhTra.CITIZEN_RECEPTION"
+  source_table: "THANHTRA.CITIZEN_RECEPTION"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -1532,7 +1532,7 @@ entities:
   entity_physical_name: ""
   description: "Kế hoạch kiểm tra hàng năm của UBCKNN, cấu trúc đồng nhất với kế hoạch\
     \ thanh tra nhưng dành riêng cho hoạt động kiểm tra (khác thẩm quyền)."
-  source_table: "ThanhTra.EXAMINATION_ANNUAL_PLAN"
+  source_table: "THANHTRA.EXAMINATION_ANNUAL_PLAN"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -1542,7 +1542,7 @@ entities:
   entity_physical_name: "examination_annual_plan_target"
   description: "Danh sách đối tượng được đưa vào kế hoạch kiểm tra hàng năm, phân\
     \ loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng)."
-  source_table: "ThanhTra.EXAMINATION_ANNUAL_PLAN_TARGET"
+  source_table: "THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -1553,7 +1553,7 @@ entities:
   description: "Thông báo kết quả kiểm tra chính thức: số công văn, ngày ban hành\
     \ và công bố, đối tượng kiểm tra, nội dung kết quả, kiến nghị và trạng thái thực\
     \ hiện."
-  source_table: "ThanhTra.EXAMINATION_RESULT_NOTICE"
+  source_table: "THANHTRA.EXAMINATION_RESULT_NOTICE"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -1563,7 +1563,7 @@ entities:
   entity_physical_name: "examination_result_notice_remedial"
   description: "Từng biện pháp khắc phục yêu cầu trong thông báo kết quả kiểm tra:\
     \ nội dung chi tiết biện pháp khắc phục theo từng kết quả kiểm tra."
-  source_table: "ThanhTra.EXAMINATION_RESULT_NOTICE_REMEDIAL"
+  source_table: "THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -1573,7 +1573,7 @@ entities:
   entity_physical_name: "examination_team_member"
   description: "Danh sách thành viên đoàn kiểm tra: ID người dùng, tên và vai trò\
     \ trong đoàn (trưởng đoàn, kiểm tra viên, thư ký...)."
-  source_table: "ThanhTra.EXAMINATION_TEAM_MEMBER"
+  source_table: "THANHTRA.EXAMINATION_TEAM_MEMBER"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -1636,7 +1636,7 @@ entities:
   description: "Kế hoạch thanh tra hàng năm của UBCKNN, được phê duyệt bằng quyết\
     \ định hành chính. Mỗi năm có 1 kế hoạch (PLAN_YEAR unique), bao gồm thông tin\
     \ quyết định phê duyệt, trạng thái DRAFT/APPROVED."
-  source_table: "ThanhTra.INSPECTION_ANNUAL_PLAN"
+  source_table: "THANHTRA.INSPECTION_ANNUAL_PLAN"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -1646,7 +1646,7 @@ entities:
   entity_physical_name: "inspection_annual_plan_target"
   description: "Danh sách đối tượng được đưa vào kế hoạch thanh tra hàng năm, phân\
     \ loại theo loại đơn vị (công ty chứng khoán, quản lý quỹ, công ty đại chúng)."
-  source_table: "ThanhTra.INSPECTION_ANNUAL_PLAN_TARGET"
+  source_table: "THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -1657,7 +1657,7 @@ entities:
   description: "Kết luận thanh tra chính thức: số kết luận, ngày ban hành và công\
     \ bố, đối tượng thanh tra, nội dung kết luận, kiến nghị, trạng thái thực hiện\
     \ kiến nghị."
-  source_table: "ThanhTra.INSPECTION_CONCLUSION"
+  source_table: "THANHTRA.INSPECTION_CONCLUSION"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -1667,7 +1667,7 @@ entities:
   entity_physical_name: "inspection_conclusion_remedial"
   description: "Từng biện pháp khắc phục yêu cầu trong kết luận thanh tra: nội dung\
     \ chi tiết từng kiến nghị cần thực hiện."
-  source_table: "ThanhTra.INSPECTION_CONCLUSION_REMEDIAL"
+  source_table: "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -1678,7 +1678,7 @@ entities:
   description: "Theo dõi tiến độ thực hiện từng kiến nghị sau thanh tra: loại yêu\
     \ cầu, đơn vị chịu trách nhiệm, thời hạn, trạng thái thực hiện (5 bước), ghi chú\
     \ tình hình."
-  source_table: "ThanhTra.POST_INSPECTION_PROCESSING"
+  source_table: "THANHTRA.POST_INSPECTION_PROCESSING"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -1688,7 +1688,7 @@ entities:
   entity_physical_name: "inspection_team_member"
   description: "Danh sách thành viên đoàn thanh tra: ID người dùng, tên và vai trò\
     \ trong đoàn (trưởng đoàn, thanh tra viên, thư ký...)."
-  source_table: "ThanhTra.INSPECTION_TEAM_MEMBER"
+  source_table: "THANHTRA.INSPECTION_TEAM_MEMBER"
   status: "draft"
 - bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Law"
@@ -1698,7 +1698,7 @@ entities:
   entity_physical_name: ""
   description: "Danh mục văn bản pháp luật (nghị định, thông tư, quyết định) làm căn\
     \ cứ pháp lý cho việc xử phạt vi phạm hành chính, có trạng thái hiệu lực ACTIVE/INACTIVE."
-  source_table: "ThanhTra.LEGAL_DOCUMENT"
+  source_table: "THANHTRA.LEGAL_DOCUMENT"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -1730,7 +1730,7 @@ entities:
   entity_physical_name: "pd_circumstance"
   description: "Tình tiết tăng nặng/giảm nhẹ áp dụng cho từng hành vi vi phạm của\
     \ từng đối tượng trong quyết định xử phạt."
-  source_table: "ThanhTra.PENALTY_DECISION_CIRCUMSTANCE"
+  source_table: "THANHTRA.PENALTY_DECISION_CIRCUMSTANCE"
   status: "draft"
 - bcv_core_object: "Business Direction"
   bcv_concept: "[Business Direction] Law"
@@ -1741,7 +1741,7 @@ entities:
   description: "Danh mục hình thức xử phạt hành chính được pháp luật quy định, phân\
     \ loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có trạng\
     \ thái hiệu lực."
-  source_table: "ThanhTra.PENALTY_TYPE"
+  source_table: "THANHTRA.PENALTY_TYPE"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -1779,7 +1779,7 @@ entities:
   entity_physical_name: "petition_document"
   description: "Văn bản phát sinh trong quá trình xử lý đơn thư (8 loại), từ tờ trình\
     \ phân loại, phiếu đề xuất thụ lý đến công văn trả lời nhà đầu tư."
-  source_table: "ThanhTra.PETITION_DOCUMENT"
+  source_table: "THANHTRA.PETITION_DOCUMENT"
   status: "draft"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
@@ -1789,7 +1789,7 @@ entities:
   entity_physical_name: ""
   description: "Thông báo chủ động phát đi từ thanh tra UBCKNN (không gắn với hồ sơ\
     \ cụ thể), dùng để cảnh báo, nhắc nhở hoặc hướng dẫn các đơn vị được giám sát."
-  source_table: "ThanhTra.PROACTIVE_NOTICE"
+  source_table: "THANHTRA.PROACTIVE_NOTICE"
   status: "draft"
 - bcv_core_object: "Event"
   bcv_concept: "[Event] Event"
@@ -1799,7 +1799,7 @@ entities:
   entity_physical_name: "proactive_notice_recipient"
   description: "Danh sách công ty nhận thông báo chủ động: mã công ty và loại người\
     \ nhận, theo dõi phạm vi phát hành thông báo."
-  source_table: "ThanhTra.PROACTIVE_NOTICE_RECIPIENT"
+  source_table: "THANHTRA.PROACTIVE_NOTICE_RECIPIENT"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -2319,7 +2319,7 @@ entities:
   entity_physical_name: ""
   description: "Quyết định áp dụng biện pháp ngăn chặn/khẩn cấp hành chính (cấm đảm\
     \ nhiệm chức vụ, đình chỉ hoạt động, phong tỏa tài khoản), độc lập với hồ sơ VPHC."
-  source_table: "ThanhTra.SECURITY_MEASURE_DECISION"
+  source_table: "THANHTRA.SECURITY_MEASURE_DECISION"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
@@ -2329,7 +2329,7 @@ entities:
   entity_physical_name: "sm_decision_recipient"
   description: "Danh sách đơn vị nhận bản sao quyết định biện pháp ngăn chặn: công\
     \ ty chứng khoán, quản lý quỹ, sở giao dịch, VSDC, ban nghiệp vụ UBCKNN."
-  source_table: "ThanhTra.SECURITY_MEASURE_DECISION_RECIPIENT"
+  source_table: "THANHTRA.SECURITY_MEASURE_DECISION_RECIPIENT"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
@@ -2339,7 +2339,7 @@ entities:
   entity_physical_name: "sm_decision_subject"
   description: "Đối tượng bị áp dụng biện pháp ngăn chặn trong quyết định: thông tin\
     \ định danh nhúng (loại, tên, số giấy tờ)."
-  source_table: "ThanhTra.SECURITY_MEASURE_DECISION_SUBJECT"
+  source_table: "THANHTRA.SECURITY_MEASURE_DECISION_SUBJECT"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -2349,7 +2349,7 @@ entities:
   entity_physical_name: "sm_execution"
   description: "Theo dõi kết quả thực thi quyết định biện pháp ngăn chặn: người báo\
     \ cáo, ngày báo cáo, kết quả (đã thực hiện đầy đủ/đang thực hiện/chưa thực hiện)."
-  source_table: "ThanhTra.SECURITY_MEASURE_EXECUTION"
+  source_table: "THANHTRA.SECURITY_MEASURE_EXECUTION"
   status: "draft"
 - bcv_core_object: "Product"
   bcv_concept: "[Product] Financial Market Instrument"
@@ -2401,7 +2401,7 @@ entities:
   description: "Công văn phát sinh trong quy trình xử lý vi phạm hành chính (VPHC):\
     \ thông báo vi phạm, nhắc nhở, yêu cầu cung cấp thông tin, hướng dẫn/đôn đốc nộp\
     \ phạt, đôn đốc khắc phục."
-  source_table: "ThanhTra.VPHC_PROCESS_OFFICIAL_LETTER"
+  source_table: "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
@@ -2411,7 +2411,7 @@ entities:
   entity_physical_name: "violation_case_output_document"
   description: "Danh sách văn bản đầu ra phát sinh trong quá trình xử lý hồ sơ VPHC\
     \ (9 loại), từ thông báo vi phạm đến quyết định xử phạt."
-  source_table: "ThanhTra.VIOLATION_CASE_OUTPUT_DOCUMENT"
+  source_table: "THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Documentation Item"
@@ -2421,7 +2421,7 @@ entities:
   entity_physical_name: "violation_case_received_document"
   description: "Văn bản do đối tượng vi phạm hoặc cơ quan nộp vào hồ sơ VPHC: số văn\
     \ bản, ngày tiếp nhận, nội dung tóm tắt."
-  source_table: "ThanhTra.VIOLATION_CASE_RECEIVED_DOCUMENT"
+  source_table: "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
@@ -2431,7 +2431,7 @@ entities:
   entity_physical_name: "violation_record"
   description: "Biên bản vi phạm hành chính: tài liệu pháp lý chính thức ghi nhận\
     \ hành vi vi phạm, trải qua workflow 4 bước từ soạn thảo đến gửi cho đối tượng."
-  source_table: "ThanhTra.VIOLATION_RECORD"
+  source_table: "THANHTRA.VIOLATION_RECORD"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Conduct Violation"
@@ -2441,5 +2441,5 @@ entities:
   entity_physical_name: "violation_record_behavior"
   description: "Từng hành vi vi phạm cụ thể được ghi nhận trong biên bản: liên kết\
     \ danh mục hành vi, mô tả chi tiết (thời gian, địa điểm), căn cứ pháp lý áp dụng."
-  source_table: "ThanhTra.VIOLATION_RECORD_BEHAVIOR"
+  source_table: "THANHTRA.VIOLATION_RECORD_BEHAVIOR"
   status: "draft"

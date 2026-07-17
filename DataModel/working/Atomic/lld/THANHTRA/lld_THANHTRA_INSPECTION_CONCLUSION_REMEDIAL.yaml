@@ -1,0 +1,112 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "INSPECTION_CONCLUSION_REMEDIAL"
+  atomic_entity: "Inspection Conclusion Remedial"
+  entity_physical_name: "inspection_conclusion_remedial"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Inspection Conclusion Remedial Id"
+  physical_name: "inspection_conclusion_remedial_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Documentation] Form Document."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Conclusion Remedial Code"
+  physical_name: "inspection_conclusion_remedial_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.INSPECTION_CONCLUSION_REMEDIAL"
+  etl_derived_value: "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL"
+  data_type: "string"
+- attribute_name: "Inspection Conclusion Id"
+  physical_name: "inspection_conclusion_id"
+  description: "FK đến kết luận thanh tra."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL.INSPECTION_CONCLUSION_ID"
+  comment: "FK target: Inspection Conclusion.Inspection Conclusion Id. Hash: hash_id('THANHTRA.INSPECTION_CONCLUSION',\
+    \ INSPECTION_CONCLUSION_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Conclusion Code"
+  physical_name: "inspection_conclusion_code"
+  description: "Mã kết luận thanh tra liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL.INSPECTION_CONCLUSION_ID"
+  comment: "Lookup pair: Inspection Conclusion.Inspection Conclusion Code. Pair with\
+    \ Inspection Conclusion Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Nội dung biện pháp khắc phục trong kết luận thanh tra."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL.DESCRIPTION"
+  comment: "Nguồn CLOB — ETL truncate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sort Order"
+  physical_name: "sort_order"
+  description: "Thứ tự hiển thị biện pháp khắc phục."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL.SORT_ORDER"
+  comment: "Nguồn NUMBER(5,0) — ETL cast sang integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

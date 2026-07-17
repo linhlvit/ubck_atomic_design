@@ -1,0 +1,166 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "THANHTRA"
+  source_table: "VIOLATION_CASE_RECEIVED_DOCUMENT"
+  atomic_entity: "Violation Case Received Document"
+  entity_physical_name: "violation_case_received_document"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation Item"
+  table_type: "Fundamental"
+  group: "T4"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Violation Case Received Document Id"
+  physical_name: "violation_case_received_document_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Documentation] Documentation Item."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Case Received Document Code"
+  physical_name: "violation_case_received_document_code"
+  description: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2 UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT"
+  etl_derived_value: "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT"
+  data_type: "string"
+- attribute_name: "Violation Case Id"
+  physical_name: "violation_case_id"
+  description: "FK đến hồ sơ VPHC."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID"
+  comment: "FK target: Violation Case.Violation Case Id. Hash: hash_id('THANHTRA.VIOLATION_CASE',\
+    \ VIOLATION_CASE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Case Code"
+  physical_name: "violation_case_code"
+  description: "Mã hồ sơ VPHC liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_CASE_ID"
+  comment: "Lookup pair: Violation Case.Violation Case Code. Pair with Violation Case\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Number"
+  physical_name: "document_nbr"
+  description: "Số văn bản tiếp nhận."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.DOCUMENT_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Document Date"
+  physical_name: "document_dt"
+  description: "Ngày phát hành văn bản tiếp nhận."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.DOCUMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Issuing Unit Name"
+  physical_name: "issuing_unit_nm"
+  description: "Tên đơn vị lập/gửi văn bản tiếp nhận (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.ISSUING_UNIT_NAME"
+  comment: "Denormalized — ISSUING_UNIT_ID là FK suy luận không formal."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Subject Name"
+  physical_name: "violation_subject_nm"
+  description: "Tên đối tượng vi phạm trong văn bản tiếp nhận (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_SUBJECT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Id"
+  physical_name: "violation_record_id"
+  description: "FK đến biên bản VPHC (nếu chọn từ hệ thống)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_RECORD_ID"
+  comment: "FK target: Violation Record.Violation Record Id. Hash: hash_id('THANHTRA.VIOLATION_RECORD',\
+    \ VIOLATION_RECORD_ID). Nullable — chỉ có khi chọn từ biên bản VPHC trên hệ thống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Record Code"
+  physical_name: "violation_record_code"
+  description: "Mã biên bản VPHC liên kết (snapshot)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT.VIOLATION_RECORD_ID"
+  comment: "Lookup pair: Violation Record.Violation Record Code. Pair with Violation\
+    \ Record Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

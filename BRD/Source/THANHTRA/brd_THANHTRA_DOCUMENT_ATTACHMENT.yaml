@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: DOCUMENT_ATTACHMENT
+brd_ref: BRD-SRC-THANHTRA-DOCUMENT_ATTACHMENT
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: ENTITY_TYPE
+    data_type: VARCHAR2(100 CHAR)
+    description: "Tên bảng gốc: inspection_team, examination_team, inspection_conclusion, adhoc_inspection_report..."
+    key: null
+    fk_note: null
+  - name: ENTITY_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "ID bản ghi trong bảng gốc"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_NUMBER
+    data_type: VARCHAR2(100 CHAR)
+    description: "Số văn bản (nullable, dùng cho hồ sơ đoàn)"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên văn bản đính kèm"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_DATE
+    data_type: DATE
+    description: "Ngày ban hành văn bản"
+    key: null
+    fk_note: null
+  - name: DOCUMENT_CATEGORY
+    data_type: VARCHAR2(100 CHAR)
+    description: "Phân loại văn bản: SURVEY_REPORT, INSPECTION_DECISION, SUPERVISION_DECISION, INSPECTION_PLAN, CONCLUSION, PENALTY_DECISION, FOLLOW_UP_LETTER, REQUEST_LETTER, REPORT_FILE, APPENDIX, OTHER"
+    key: null
+    fk_note: null
+  - name: FILE_PATH
+    data_type: VARCHAR2(1000 CHAR)
+    description: "Đường dẫn file trên storage"
+    key: null
+    fk_note: null
+  - name: FILE_NAME
+    data_type: VARCHAR2(500 CHAR)
+    description: "Tên file gốc khi upload"
+    key: null
+    fk_note: null
+  - name: FILE_SIZE
+    data_type: NUMBER(19,0)
+    description: "Dung lượng file (bytes)"
+    key: null
+    fk_note: null
+  - name: SORT_ORDER
+    data_type: NUMBER(5,0)
+    description: "Thứ tự hiển thị"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null

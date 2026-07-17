@@ -1,0 +1,91 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: THANHTRA
+table: PENALTY_DECISION_SUBJECT_BEHAVIOR
+brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR
+columns:
+  - name: ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "Khóa chính UUID"
+    key: PK
+    fk_note: null
+  - name: PENALTY_DECISION_SUBJECT_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> penalty_decision_subject"
+    key: FK
+    fk_note: "FK → PENALTY_DECISION_SUBJECT.id"
+  - name: VIOLATION_BEHAVIOR_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> violation_behavior: hành vi vi phạm được chọn"
+    key: FK
+    fk_note: "FK → VIOLATION_BEHAVIOR.id"
+  - name: PENALTY_TYPE_ID
+    data_type: VARCHAR2(36 CHAR)
+    description: "FK -> penalty_type: hình thức xử phạt áp dụng"
+    key: FK
+    fk_note: "FK → PENALTY_TYPE.id"
+  - name: DESCRIPTION
+    data_type: CLOB
+    description: "Mô tả chi tiết hành vi vi phạm (bao gồm thời gian, địa điểm vi phạm)"
+    key: null
+    fk_note: null
+  - name: MIN_FINE_AMOUNT
+    data_type: NUMBER(19,4)
+    description: "Mức phạt tiền tối thiểu của khung xử phạt (A)"
+    key: null
+    fk_note: null
+  - name: MAX_FINE_AMOUNT
+    data_type: NUMBER(19,4)
+    description: "Mức phạt tiền tối đa của khung xử phạt (B)"
+    key: null
+    fk_note: null
+  - name: APPLIED_FINE_AMOUNT
+    data_type: NUMBER(19,4)
+    description: "Mức phạt tiền áp dụng (tự động tính theo công thức, cho phép điều chỉnh thủ công)"
+    key: null
+    fk_note: null
+  - name: REMEDIAL_MEASURE
+    data_type: CLOB
+    description: "Biện pháp khắc phục hậu quả áp dụng cho hành vi vi phạm"
+    key: null
+    fk_note: null
+  - name: REMEDIAL_DEADLINE
+    data_type: DATE
+    description: "Thời hạn khắc phục hậu quả"
+    key: null
+    fk_note: null
+  - name: CREATED_AT
+    data_type: DATE
+    description: "Thời điểm tạo bản ghi"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_AT
+    data_type: DATE
+    description: "Thời điểm cập nhật gần nhất"
+    key: null
+    fk_note: null
+  - name: CREATED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng tạo bản ghi"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: LAST_MODIFIED_BY
+    data_type: VARCHAR2(100 CHAR)
+    description: "ID người dùng cập nhật gần nhất"
+    key: null
+    fk_note: "FK suy luận → system_user.id"
+  - name: VERSION
+    data_type: NUMBER(10,0)
+    description: "Số phiên bản bản ghi (optimistic locking)"
+    key: null
+    fk_note: null
+  - name: DELETED
+    data_type: NUMBER(1,0)
+    description: "Cờ xóa mềm: 0=Chưa xóa, 1=Đã xóa"
+    key: null
+    fk_note: null
+  - name: LEGAL_BASIS
+    data_type: CLOB
+    description: "Căn cứ pháp luật để xử phạt hành vi vi phạm này"
+    key: null
+    fk_note: null
