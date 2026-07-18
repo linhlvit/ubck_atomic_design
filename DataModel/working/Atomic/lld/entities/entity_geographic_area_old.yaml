@@ -20,28 +20,16 @@ sources:
 - source_system: "ECAT"
   source_table: "WARD_OLD"
   lld_file: "ECAT/lld_ECAT_WARD_OLD.yaml"
-consolidation_notes:
-- "Entity mới — tách riêng khỏi Geographic Area theo yêu cầu Data Modeler vì cấu trúc\
-  \ phân cấp cũ (3 cấp: Tỉnh cũ → Quận/huyện cũ → Phường/xã cũ) khác cấu trúc hiện\
-  \ hành (2 cấp: Tỉnh mới → Phường/xã mới). Chỉ phục vụ tra cứu lịch sử, không phát\
-  \ sinh instance mới sau sáp nhập hành chính 2025."
-- "DISTRICT_OLD không có cột EFFECTIVE/DELETED_REASON/NAME_EN/DISPLAY_LABEL đầy đủ\
-  \ như PROVINCE_OLD/WARD_OLD — source_mappings null cho các attribute tương ứng (riêng\
-  \ DISPLAY_LABEL DISTRICT_OLD có, chỉ thiếu EFFECTIVE/DELETED_REASON/NAME_EN)."
-- "2 FK cross-entity sang Geographic Area (không phải self-ref nội bộ): Region Geographic\
-  \ Area Id/Code (anchor — chỉ PROVINCE_OLD) và Successor Geographic Area Id/Code\
-  \ (successor mapping sau sáp nhập — PROVINCE_OLD→PROVINCE_NEW, WARD_OLD→WARD_NEW;\
-  \ DISTRICT_OLD không có successor vì cấp quận/huyện bị bỏ hoàn toàn)."
+consolidation_notes: []
 attributes:
 - attribute_name: "Geographic Area Old Id"
   physical_name: "geographic_area_old_id"
-  description: "Id tự sinh (surrogate key)."
+  description: "Id tự sinh (surrogate key)"
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  comment: "PK surrogate. Hash theo từng source: hash_id('ECAT.PROVINCE_OLD', CODE)\
-    \ / hash_id('ECAT.DISTRICT_OLD', CODE) / hash_id('ECAT.WARD_OLD', CODE). BCV:\
-    \ \"Geographic Area\" (Location) — entity riêng cho phân cấp lịch sử pre-2025."
+  comment: "PK surrogate. Hash: hash_id('ECAT.PROVINCE_OLD', CODE). BCV: \"Geographic\
+    \ Area\" (Location) — entity riêng Geographic Area Old cho phân cấp lịch sử pre-2025."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -50,39 +38,40 @@ attributes:
     ECAT.WARD_OLD: null
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
-  description: "Mã nguồn dữ liệu."
+  description: "Mã nguồn dữ liệu"
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
   classification_context: "SOURCE_SYSTEM=..."
-  etl_derived_value: null
+  etl_derived_value: "ECAT.PROVINCE_OLD"
   source_mappings:
     ECAT.PROVINCE_OLD: null
     ECAT.DISTRICT_OLD: null
     ECAT.WARD_OLD: null
 - attribute_name: "Geographic Area Old Type Code"
   physical_name: "geographic_area_old_tp_code"
-  description: "Phân loại vùng địa lý lịch sử — Tỉnh/Quận-huyện/Phường-xã cũ"
+  description: "Phân loại vùng địa lý lịch sử — Phường/Xã/Thị trấn cũ"
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   comment: null
-  classification_context: "GEOGRAPHIC_AREA_OLD_TYPE=..."
-  etl_derived_value: null
+  classification_context: "GEOGRAPHIC_AREA_OLD_TYPE=PROVINCE_OLD"
+  etl_derived_value: "PROVINCE_OLD"
   source_mappings:
     ECAT.PROVINCE_OLD: null
     ECAT.DISTRICT_OLD: null
     ECAT.WARD_OLD: null
 - attribute_name: "Geographic Area Old Code"
   physical_name: "geographic_area_old_code"
-  description: "Mã nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ trường này."
+  description: "Mã tỉnh/thành phố cũ nghiệp vụ (do ECAT quản lý). BK duy nhất — Id\
+    \ hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique Key\
-    \ cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT\
-    \ NULL/unique trước go-live."
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn\
+    \ 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước\
+    \ go-live."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -91,12 +80,11 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.CODE"
 - attribute_name: "Geographic Area Old Name"
   physical_name: "geographic_area_old_nm"
-  description: "Tên khu vực địa lý cũ (tiếng Việt, hoặc tên duy nhất nếu nguồn không\
-    \ phân biệt VN/EN)."
+  description: "Tên phường/xã/thị trấn cũ (tiếng Việt)"
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  comment: "DISTRICT_OLD chỉ có 1 cột NAME (không có NAME_VN/NAME_EN)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -104,43 +92,27 @@ attributes:
     ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.NAME"
     ECAT.WARD_OLD: "ECAT.WARD_OLD.NAME_VN"
 - attribute_name: "Geographic Area Old English Name"
-  physical_name: "geographic_area_old_eng_nm"
-  description: "Tên khu vực địa lý cũ (tiếng Anh)."
+  physical_name: "geographic_area_old_english_nm"
+  description: "Tên phường/xã/thị trấn cũ (tiếng Anh)"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "DISTRICT_OLD không có cột NAME_EN."
+  comment: null
   classification_context: null
   etl_derived_value: null
   source_mappings:
     ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.NAME_EN"
     ECAT.DISTRICT_OLD: null
     ECAT.WARD_OLD: "ECAT.WARD_OLD.NAME_EN"
-- attribute_name: "Geographic Area Old Category Code"
-  physical_name: "geographic_area_old_ctg_code"
-  description: "Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn) — chỉ\
-    \ áp dụng cấp WARD_OLD."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với Geographic Area).\
-    \ NULL cho PROVINCE_OLD/DISTRICT_OLD."
-  classification_context: "GEOGRAPHIC_AREA_WARD_CATEGORY=(source)"
-  etl_derived_value: null
-  source_mappings:
-    ECAT.PROVINCE_OLD: null
-    ECAT.DISTRICT_OLD: null
-    ECAT.WARD_OLD: "ECAT.WARD_OLD.CATEGORY"
 - attribute_name: "Parent Geographic Area Old Id"
   physical_name: "parent_geographic_area_old_id"
   description: "FK tự tham chiếu trong Geographic Area Old. NULL cho tỉnh/thành phố\
-    \ cũ — đỉnh phân cấp lịch sử."
+    \ cũ — đỉnh phân cấp lịch sử"
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area Old.Geographic Area Old Id. Chuỗi phân cấp\
-    \ nội bộ: WARD_OLD → DISTRICT_OLD → PROVINCE_OLD (NULL). Resolve qua join FK.ID\
-    \ → bảng cha.ID để lấy CODE, rồi hash_id() theo CODE cha."
+  comment: "FK target: Geographic Area Old.Geographic Area Old Id. NULL vì PROVINCE_OLD\
+    \ không có parent nội bộ trong Geographic Area Old."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -149,11 +121,11 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.DISTRICT_OLD_ID"
 - attribute_name: "Parent Geographic Area Old Code"
   physical_name: "parent_geographic_area_old_code"
-  description: "Mã cha trong Geographic Area Old."
+  description: "Mã cha trong Geographic Area Old"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code."
+  comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code. NULL cho PROVINCE_OLD."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -163,13 +135,14 @@ attributes:
 - attribute_name: "Region Geographic Area Id"
   physical_name: "region_geographic_area_id"
   description: "FK anchor cross-entity sang Region trong Geographic Area (hiện hành)\
-    \ — Region/Country dùng chung cho cả 2 hệ cũ/mới. Chỉ áp dụng PROVINCE_OLD (đỉnh\
-    \ phân cấp lịch sử)."
+    \ — Region/Country dùng chung cho cả 2 hệ cũ/mới"
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Geographic Area.Geographic Area Id (KHÁC entity). NULL cho\
-    \ DISTRICT_OLD/WARD_OLD (đã có parent nội bộ)."
+  comment: "FK target: Geographic Area.Geographic Area Id (KHÁC entity — cross-entity\
+    \ anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID để lấy\
+    \ CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn denormalized\
+    \ qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -178,11 +151,12 @@ attributes:
     ECAT.WARD_OLD: null
 - attribute_name: "Region Geographic Area Code"
   physical_name: "region_geographic_area_code"
-  description: "Mã vùng/miền — lookup pair với Region Geographic Area Id."
+  description: "Mã vùng/miền — lookup pair với Region Geographic Area Id"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Region Geographic\
+    \ Area Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -191,14 +165,15 @@ attributes:
     ECAT.WARD_OLD: null
 - attribute_name: "Successor Geographic Area Id"
   physical_name: "successor_geographic_area_id"
-  description: "FK cross-entity sang khu vực hiện hành tương ứng sau sáp nhập 2025\
-    \ (lateral mapping, không phải quan hệ cha-con). PROVINCE_OLD→PROVINCE_NEW, WARD_OLD→WARD_NEW;\
-    \ DISTRICT_OLD không có successor."
+  description: "FK cross-entity sang tỉnh/thành phố hiện hành tương ứng sau sáp nhập\
+    \ 2025 (lateral mapping, không phải quan hệ cha-con)"
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   comment: "FK target: Geographic Area.Geographic Area Id (KHÁC entity — successor\
-    \ mapping)."
+    \ mapping sau sáp nhập hành chính, không phải hierarchy cha-con). Resolve: join\
+    \ PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW',\
+    \ CODE)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -207,12 +182,13 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.WARD_NEW_ID"
 - attribute_name: "Successor Geographic Area Code"
   physical_name: "successor_geographic_area_code"
-  description: "Mã khu vực hiện hành tương ứng — lookup pair với Successor Geographic\
-    \ Area Id."
+  description: "Mã tỉnh/thành phố hiện hành tương ứng — lookup pair với Successor\
+    \ Geographic Area Id"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Geographic Area.Geographic Area Code."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Successor\
+    \ Geographic Area Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -220,25 +196,26 @@ attributes:
     ECAT.DISTRICT_OLD: null
     ECAT.WARD_OLD: "ECAT.WARD_OLD.WARD_NEW_ID"
 - attribute_name: "Effective Indicator"
-  physical_name: "effective_ind"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực."
+  physical_name: "effective_indicator"
+  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
   data_domain: "Boolean"
   nullable: false
   is_primary_key: false
-  comment: "Giá trị 1 → true; 0 → false. DISTRICT_OLD không có cột EFFECTIVE."
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
   classification_context: null
   etl_derived_value: null
   source_mappings:
     ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.EFFECTIVE"
-    ECAT.DISTRICT_OLD: null
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.EFFECTIVE"
     ECAT.WARD_OLD: "ECAT.WARD_OLD.EFFECTIVE"
 - attribute_name: "Active Indicator"
-  physical_name: "active_ind"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng."
+  physical_name: "active_indicator"
+  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
   data_domain: "Boolean"
   nullable: false
   is_primary_key: false
-  comment: "Giá trị 1 → true; 0 → false."
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -246,12 +223,12 @@ attributes:
     ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.ACTIVE"
     ECAT.WARD_OLD: "ECAT.WARD_OLD.ACTIVE"
 - attribute_name: "Deleted Indicator"
-  physical_name: "deleted_ind"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa."
+  physical_name: "deleted_indicator"
+  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
   data_domain: "Boolean"
   nullable: false
   is_primary_key: false
-  comment: "Giá trị 1 → true; 0 → false."
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -260,7 +237,7 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.DELETED"
 - attribute_name: "Effective Start Date"
   physical_name: "effective_start_dt"
-  description: "Ngày bắt đầu hiệu lực."
+  description: "Ngày bắt đầu hiệu lực"
   data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
@@ -273,7 +250,7 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.EFFECTIVE_START_DATE"
 - attribute_name: "Effective End Date"
   physical_name: "effective_end_dt"
-  description: "Ngày kết thúc hiệu lực."
+  description: "Ngày kết thúc hiệu lực"
   data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
@@ -285,8 +262,8 @@ attributes:
     ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.EFFECTIVE_END_DATE"
     ECAT.WARD_OLD: "ECAT.WARD_OLD.EFFECTIVE_END_DATE"
 - attribute_name: "Version Number"
-  physical_name: "version_no"
-  description: "Số phiên bản bản ghi tại nguồn."
+  physical_name: "version_nbr"
+  description: "Số phiên bản bản ghi tại nguồn"
   data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
@@ -299,7 +276,7 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.VERSION"
 - attribute_name: "Display Label"
   physical_name: "display_label"
-  description: "Nhãn hiển thị."
+  description: "Nhãn hiển thị"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -312,7 +289,7 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.DISPLAY_LABEL"
 - attribute_name: "Active Reason"
   physical_name: "active_reason"
-  description: "Lý do thay đổi trạng thái sử dụng."
+  description: "Lý do thay đổi trạng thái sử dụng"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -325,14 +302,139 @@ attributes:
     ECAT.WARD_OLD: "ECAT.WARD_OLD.ACTIVE_REASON"
 - attribute_name: "Deleted Reason"
   physical_name: "deleted_reason"
-  description: "Lý do xóa."
+  description: "Lý do xóa"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Đẩy 1:1 theo yêu cầu. DISTRICT_OLD không có cột DELETED_REASON."
+  comment: "Đẩy 1:1 theo yêu cầu."
   classification_context: null
   etl_derived_value: null
   source_mappings:
     ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.DELETED_REASON"
-    ECAT.DISTRICT_OLD: null
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.DELETED_REASON"
     ECAT.WARD_OLD: "ECAT.WARD_OLD.DELETED_REASON"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm bản ghi được tạo tại nguồn"
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.CREATED_AT"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.CREATED_AT"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.CREATED_AT"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
+  data_domain: "Timestamp"
+  nullable: false
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.UPDATED_AT"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.UPDATED_AT"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.UPDATED_AT"
+- attribute_name: "Created By Staff Id"
+  physical_name: "created_by_staff_id"
+  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
+    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.CREATED_BY_ID"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.CREATED_BY_ID"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.CREATED_BY_ID"
+- attribute_name: "Created By Staff Code"
+  physical_name: "created_by_staff_code"
+  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
+    \ Pending — xem ghi chú ở Created By Staff Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.CREATED_BY_ID"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.CREATED_BY_ID"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.CREATED_BY_ID"
+- attribute_name: "Created By Staff Name"
+  physical_name: "created_by_staff_nm"
+  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
+    \ thị, không phải mã nhân viên)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.CREATED_BY_NAME"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.CREATED_BY_NAME"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.CREATED_BY_NAME"
+- attribute_name: "Updated By Staff Id"
+  physical_name: "updated_by_staff_id"
+  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
+    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.UPDATED_BY_ID"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.UPDATED_BY_ID"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.UPDATED_BY_ID"
+- attribute_name: "Updated By Staff Code"
+  physical_name: "updated_by_staff_code"
+  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
+    \ Pending — xem ghi chú ở Updated By Staff Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.UPDATED_BY_ID"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.UPDATED_BY_ID"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.UPDATED_BY_ID"
+- attribute_name: "Updated By Staff Name"
+  physical_name: "updated_by_staff_nm"
+  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
+    \ thị, không phải mã nhân viên)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: "ECAT.PROVINCE_OLD.UPDATED_BY_NAME"
+    ECAT.DISTRICT_OLD: "ECAT.DISTRICT_OLD.UPDATED_BY_NAME"
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.UPDATED_BY_NAME"
+- attribute_name: "Geographic Area Old Category Code"
+  physical_name: "geographic_area_old_category_code"
+  description: "Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
+  classification_context: "GEOGRAPHIC_AREA_WARD_CATEGORY=(source)"
+  etl_derived_value: null
+  source_mappings:
+    ECAT.PROVINCE_OLD: null
+    ECAT.DISTRICT_OLD: null
+    ECAT.WARD_OLD: "ECAT.WARD_OLD.CATEGORY"

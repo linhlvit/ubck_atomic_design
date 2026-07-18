@@ -217,17 +217,3 @@ attributes:
     comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
     classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
     etl_derived_value: null
-
-  - name: Legal Document Codes
-    physical_name: legal_document_codes
-    business_meaning: Danh sách mã văn bản pháp luật liên kết với hành vi vi phạm (denormalize từ junction).
-    data_domain: "Array<Text>"
-    data_type: array<string>
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: VIOLATION_BEHAVIOR
-    source_column: THANHTRA.VIOLATION_BEHAVIOR_LEGAL_DOCUMENT.LEGAL_DOCUMENT_ID
-    comment: "Pure junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT → denormalize thành ARRAY. Struct: legal_document_code: Text. HLD decision: THANHTRA_HLD_Overview.md section 7d."
-    classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
-    etl_derived_value: null

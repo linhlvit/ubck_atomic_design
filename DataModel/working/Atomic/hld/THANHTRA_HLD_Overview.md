@@ -171,7 +171,7 @@ graph TD
 | Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
 |---|---|---|---|
 | PENALTY_TYPE_VIOLATION_BEHAVIOR | Junction giữa PENALTY_TYPE và VIOLATION_BEHAVIOR (out_of_scope trong BRD) | Violation Behavior | Denormalize: PRIMARY_PENALTY_TYPE_ID là FK trực tiếp trên VIOLATION_BEHAVIOR |
-| VIOLATION_BEHAVIOR_LEGAL_DOCUMENT | Junction giữa VIOLATION_BEHAVIOR và LEGAL_DOCUMENT (out_of_scope trong BRD) | Violation Behavior | Denormalize thành trường `legal_document_codes ARRAY<STRING>` hoặc giữ dạng text legacy trên TT Violation Behavior |
+| VIOLATION_BEHAVIOR_LEGAL_DOCUMENT | Junction giữa VIOLATION_BEHAVIOR và LEGAL_DOCUMENT (out_of_scope trong BRD) | Violation Behavior | Quyết định 2026-07-18: KHÔNG denormalize thành ARRAY — giữ dạng text legacy sẵn có (`Legal Document`) trên TT Violation Behavior để tránh trùng lặp. Xem `pending_design.yaml`. |
 
 ---
 
@@ -197,7 +197,7 @@ graph TD
 | Audit Log nguồn | PENALTY_DECISION_APPROVAL_HISTORY | Log hoạt động phê duyệt quyết định xử phạt | Audit Log nguồn — không thiết kế entity Atomic riêng |
 | Junction | PENALTY_TYPE_VIOLATION_BEHAVIOR | Bảng nối nhiều-nhiều giữa loại xử phạt và hành vi vi phạm | Pure junction không có business attribute — denormalize vào TT Violation Behavior |
 | Junction | PENALTY_DECISION_VIOLATION_RECORD | Bảng nối nhiều-nhiều giữa quyết định xử phạt và biên bản vi phạm | Pure junction không có business attribute — quan hệ đã suy luận qua VIOLATION_CASE |
-| Junction | VIOLATION_BEHAVIOR_LEGAL_DOCUMENT | Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật | Pure junction không có business attribute — denormalize vào TT Violation Behavior dạng ARRAY |
+| Junction | VIOLATION_BEHAVIOR_LEGAL_DOCUMENT | Bảng nối nhiều-nhiều giữa hành vi vi phạm và văn bản pháp luật | Pure junction không có business attribute — KHÔNG denormalize thành ARRAY (trùng với text legacy `Legal Document` đã có sẵn). Xem `pending_design.yaml`. |
 | Form Metadata | DOCUMENT_TEMPLATE | Template biểu mẫu công văn: định nghĩa cấu trúc form, placeholder fields | Operational/system data — metadata form/template không có giá trị nghiệp vụ Atomic |
 | Audit Log nguồn | ADHOC_INSPECTION_REPORT | Báo cáo thanh tra ad-hoc | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
 | Audit Log nguồn | SUPERVISION_ACTIVITY_REPORT | Báo cáo hoạt động giám sát | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |

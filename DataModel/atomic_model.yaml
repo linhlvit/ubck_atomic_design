@@ -8542,29 +8542,6 @@ entities:
         source_column: THANHTRA.VIOLATION_BEHAVIOR.VIOLATION_CLAUSE
         business_meaning: Điều khoản pháp lý vi phạm tương ứng với hành vi này.
         comment: Nguồn lưu dạng CLOB — ETL cần truncate nếu vượt ngưỡng.
-  - name: Legal Document Codes
-    physical_name: legal_document_codes
-    business_meaning_1st: Danh sách mã văn bản pháp luật liên kết với hành vi vi phạm
-      (denormalize từ junction).
-    comment_1st: "Pure junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT → denormalize thành\
-      \ ARRAY. Struct: legal_document_code: Text. HLD decision: THANHTRA_HLD_Overview.md\
-      \ section 7d."
-    data_domain_most: Array<Text>
-    data_type_most: array<string>
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: THANHTRA
-      source_tables:
-      - source_table: VIOLATION_BEHAVIOR
-        source_column: THANHTRA.VIOLATION_BEHAVIOR_LEGAL_DOCUMENT.LEGAL_DOCUMENT_ID
-        business_meaning: Danh sách mã văn bản pháp luật liên kết với hành vi vi phạm
-          (denormalize từ junction).
-        comment: "Pure junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT → denormalize thành\
-          \ ARRAY. Struct: legal_document_code: Text. HLD decision: THANHTRA_HLD_Overview.md\
-          \ section 7d."
 - ldm:
     id: ATM-violation_case
     logical_name_1st: Violation Case

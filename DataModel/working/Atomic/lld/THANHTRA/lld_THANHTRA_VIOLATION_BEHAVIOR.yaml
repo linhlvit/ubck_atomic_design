@@ -17,9 +17,11 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT (out_of_scope) denormalize thành\
-    \ ARRAY. Junction PENALTY_TYPE_VIOLATION_BEHAVIOR (out_of_scope) capture qua FK\
-    \ PRIMARY_PENALTY_TYPE_ID trực tiếp."
+  notes: "Junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT (out_of_scope) KHÔNG denormalize\
+    \ thành ARRAY — HLD 7d cho 2 phương án (ARRAY hoặc giữ text legacy), chọn giữ text\
+    \ legacy (field 'Legal Document' đã có sẵn trên bảng chính) để tránh trùng lặp.\
+    \ Xem pending_design.yaml. Junction PENALTY_TYPE_VIOLATION_BEHAVIOR (out_of_scope)\
+    \ capture qua FK PRIMARY_PENALTY_TYPE_ID trực tiếp."
 attributes:
 - attribute_name: "Violation Behavior Id"
   physical_name: "violation_behavior_id"
@@ -208,19 +210,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Legal Document Codes"
-  physical_name: "legal_document_codes"
-  description: "Danh sách mã văn bản pháp luật liên kết với hành vi vi phạm (denormalize\
-    \ từ junction)."
-  data_domain: "Array<Text>"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.VIOLATION_BEHAVIOR_LEGAL_DOCUMENT.LEGAL_DOCUMENT_ID"
-  comment: "Pure junction VIOLATION_BEHAVIOR_LEGAL_DOCUMENT → denormalize thành ARRAY.\
-    \ Struct: legal_document_code: Text. HLD decision: THANHTRA_HLD_Overview.md section\
-    \ 7d."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "array<string>"

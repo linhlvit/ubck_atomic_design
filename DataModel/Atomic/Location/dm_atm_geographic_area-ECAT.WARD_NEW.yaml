@@ -1,0 +1,387 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-geographic_area-ECAT.WARD_NEW
+  logical_name: Geographic Area
+  physical_name: geographic_area
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Location
+  bcv_concept: "[Location] Geographic Area"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: ECAT
+  description: |
+    Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY), vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code. Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ECAT-WARD_NEW
+
+attributes:
+  - name: Geographic Area Id
+    physical_name: geographic_area_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('ECAT.WARD_NEW', CODE). BCV: \"Geographic Area\" (Location)."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: ECAT.WARD_NEW
+
+  - name: Geographic Area Type Code
+    physical_name: geographic_area_tp_code
+    business_meaning: Phân loại vùng địa lý — Phường/Xã/Thị trấn hiện hành
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: WARD
+
+  - name: Geographic Area Code
+    physical_name: geographic_area_code
+    business_meaning: Mã phường/xã nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.CODE
+    comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Geographic Area Name
+    physical_name: geographic_area_nm
+    business_meaning: Tên phường/xã/thị trấn (tiếng Việt)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.NAME_VN
+    comment: null
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Geographic Area English Name
+    physical_name: geographic_area_english_nm
+    business_meaning: Tên phường/xã/thị trấn (tiếng Anh)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.NAME_EN
+    comment: null
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Id
+    physical_name: parent_geographic_area_id
+    business_meaning: FK đến tỉnh/thành phố cha
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.PROVINCE_NEW_ID
+    comment: "FK target: geographic_area.geographic_area_id. Parent là PROVINCE_NEW (không qua cấp quận/huyện — đã bỏ sau sáp nhập 2025). Resolve: join PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW', CODE_CHA)."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Parent Geographic Area Code
+    physical_name: parent_geographic_area_code
+    business_meaning: Mã tỉnh/thành phố cha
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.PROVINCE_NEW_ID
+    comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Parent Geographic Area Id."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Effective Indicator
+    physical_name: effective_indicator
+    business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.EFFECTIVE
+    comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Active Indicator
+    physical_name: active_indicator
+    business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.ACTIVE
+    comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted Indicator."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+    data_domain: Boolean
+    data_type: boolean
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.DELETED
+    comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Effective Start Date
+    physical_name: effective_start_dt
+    business_meaning: Ngày bắt đầu hiệu lực
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.EFFECTIVE_START_DATE
+    comment: null
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Effective End Date
+    physical_name: effective_end_dt
+    business_meaning: Ngày kết thúc hiệu lực
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.EFFECTIVE_END_DATE
+    comment: null
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning: Số phiên bản bản ghi tại nguồn
+    data_domain: Small Counter
+    data_type: int
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.VERSION
+    comment: "Đẩy 1:1 theo yêu cầu."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Display Label
+    physical_name: display_label
+    business_meaning: Nhãn hiển thị
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.DISPLAY_LABEL
+    comment: "Đẩy 1:1 theo yêu cầu."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Active Reason
+    physical_name: active_reason
+    business_meaning: Lý do thay đổi trạng thái sử dụng
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.ACTIVE_REASON
+    comment: "Đẩy 1:1 theo yêu cầu."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Deleted Reason
+    physical_name: deleted_reason
+    business_meaning: Lý do xóa
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.DELETED_REASON
+    comment: "Đẩy 1:1 theo yêu cầu."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning: Thời điểm bản ghi được tạo tại nguồn
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.CREATED_AT
+    comment: null
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.UPDATED_AT
+    comment: null
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Created By Staff Id
+    physical_name: created_by_staff_id
+    business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.CREATED_BY_ID
+    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Created By Staff Code
+    physical_name: created_by_staff_code
+    business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.CREATED_BY_ID
+    comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Created By Staff Id."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Created By Staff Name
+    physical_name: created_by_staff_nm
+    business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.CREATED_BY_NAME
+    comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Updated By Staff Id
+    physical_name: updated_by_staff_id
+    business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.UPDATED_BY_ID
+    comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF', CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Updated By Staff Code
+    physical_name: updated_by_staff_code
+    business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.UPDATED_BY_ID
+    comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code. Pending — xem ghi chú ở Updated By Staff Id."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Updated By Staff Name
+    physical_name: updated_by_staff_nm
+    business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.UPDATED_BY_NAME
+    comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển thị, không phải mã nhân viên)."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
+
+  - name: Geographic Area Category Code
+    physical_name: geographic_area_category_code
+    business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: WARD_NEW
+    source_column: ECAT.WARD_NEW.CATEGORY
+    comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
+    classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+    etl_derived_value: null
