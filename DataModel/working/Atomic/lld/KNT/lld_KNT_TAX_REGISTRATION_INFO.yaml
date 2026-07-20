@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Organization"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -87,16 +87,15 @@ attributes:
 - attribute_name: "Primary Business Line Code"
   physical_name: "primary_business_line_code"
   description: "Mã ngành nghề kinh doanh chính."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REGISTRATION_INFO.BUSINESS_LINE_CODE"
-  comment: "Scheme: KNT_BUSINESS_LINE. Tái sử dụng scheme đã đăng ký (junction TAX_REG_BUSINESS_LINE)\
-    \ — đây là ngành nghề chính (scalar), khác với business_line_codes ARRAY (đầy\
-    \ đủ danh sách)."
-  classification_context: "KNT_BUSINESS_LINE"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value. Giữ nguyên giá trị text từ nguồn."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Primary Business Line Name"
@@ -380,13 +379,14 @@ attributes:
 - attribute_name: "Domestic Capital Currency Code"
   physical_name: "domestic_capital_currency_code"
   description: "Loại tiền vốn điều lệ trong nước."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REGISTRATION_INFO.DOMESTIC_CAPITAL_CURRENCY"
-  comment: "FK target: Currency.Currency Code."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -406,13 +406,14 @@ attributes:
 - attribute_name: "Foreign Capital Currency Code"
   physical_name: "foreign_capital_currency_code"
   description: "Loại tiền vốn điều lệ nước ngoài."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_CURRENCY"
-  comment: "FK target: Currency.Currency Code."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -548,18 +549,35 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Business Line Codes"
-  physical_name: "business_line_codes"
-  description: "Danh sách ngành nghề kinh doanh của doanh nghiệp."
-  data_domain: "Array<Text>"
+- attribute_name: "Secondary Business Line Code"
+  physical_name: "secondary_business_line_code"
+  description: "Ngành nghề kinh doanh bổ sung của doanh nghiệp (từ TAX_REG_BUSINESS_LINE)."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REG_BUSINESS_LINE.BUSINESS_LINE_CODE"
-  comment: "Pure junction TAX_REG_BUSINESS_LINE (TAX_CODE + BUSINESS_LINE_CODE, không\
-    \ có attribute nghiệp vụ riêng) → denormalize thành ARRAY<Classification Value\
-    \ Code>. Scheme: KNT_BUSINESS_LINE. HLD decision: KNT_HLD_Overview.md mục 7d."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Array<Text>.\
+    \ Trước đây denormalize thành ARRAY do xem TAX_REG_BUSINESS_LINE là junction\
+    \ 1:N; nay map trực tiếp giả định 1 dòng/TAX_CODE. Không còn dùng scheme KNT_BUSINESS_LINE\
+    \ (đã revert về Text). HLD decision cũ (ARRAY): KNT_HLD_Overview.md mục 7d —\
+    \ cần cập nhật lại nếu áp dụng."
   classification_context: null
   etl_derived_value: null
-  data_type: "array<string>"
+  data_type: "string"
+- attribute_name: "Message Packet Id"
+  physical_name: "message_packet_id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REGISTRATION_INFO.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

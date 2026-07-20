@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Designated Representative"
   table_type: "Fundamental"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -101,17 +101,18 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Position Code"
-  physical_name: "position_code"
+- attribute_name: "Position"
+  physical_name: "position"
   description: "Chức vụ (tên hoặc mã)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REG_REPRESENTATIVE.POSITION"
-  comment: "Scheme: KNT_REPRESENTATIVE_POSITION. Cần profile dữ liệu — free text hay\
-    \ danh mục cố định (xem KNT_HLD_Overview.md mục 7e#5)."
-  classification_context: "KNT_REPRESENTATIVE_POSITION"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free text,\
+    \ không phải Classification Value cố định. Đổi tên từ \"Position Code\" vì mô\
+    \ tả nguồn là \"tên hoặc mã\", không chỉ mã."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"

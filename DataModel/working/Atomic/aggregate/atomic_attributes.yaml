@@ -4050,6 +4050,24 @@ attributes:
   atomic_column: "risk_assessment_year"
   data_type: "string"
 - bcv_core_object: "Business Activity"
+  atomic_entity: "External Tax High Risk Enterprise"
+  atomic_attribute: "Message Packet Id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "HIGH_RISK_ENTERPRISE"
+  source_column: "KNT.HIGH_RISK_ENTERPRISE.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: "Source System Code = 'KNT_HIGH_RISK_ENTERPRISE'"
+  etl_derived_value: null
+  atomic_table: "et_high_risk_enterprise"
+  atomic_column: "message_packet_id"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
   atomic_entity: "Fund Management Company Insider Shareholding Change Log"
   atomic_attribute: "Fund Management Company Insider Shareholding Change Log Id"
   description: "Khóa đại diện (surrogate key)."
@@ -16511,6 +16529,24 @@ attributes:
   atomic_column: "response_status_code"
   data_type: "string"
 - bcv_core_object: "Communication"
+  atomic_entity: "External Tax Information Request"
+  atomic_attribute: "Message Packet Id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "INFO_REQUEST_DETAIL"
+  source_column: "KNT.INFO_REQUEST_DETAIL.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: "Source System Code = 'KNT_INFO_REQUEST_DETAIL'"
+  etl_derived_value: null
+  atomic_table: "et_information_request"
+  atomic_column: "message_packet_id"
+  data_type: "string"
+- bcv_core_object: "Communication"
   atomic_entity: "Member Disclosure Announcement"
   atomic_attribute: "Member Disclosure Announcement Id"
   description: "Khóa đại diện (surrogate key)."
@@ -19768,7 +19804,7 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.EXAM_SESSIONS.SESSION_NUMBER"
+  source_column: "NHNCK.EXAM_SESSIONS.SESSION_"
   comment: null
   classification_context: "Source System Code = 'NHNCK_EXAM_SESSIONS'"
   etl_derived_value: null
@@ -22584,14 +22620,14 @@ attributes:
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "Extension Reason Code"
   description: "Mã lý do gia hạn nộp báo cáo."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.EXTENSION_REASON_CODE"
-  comment: "Scheme: KNT_EXTENSION_REASON. [PROPOSE NEW SCHEME] — chưa có trong HLD\
-    \ 7c, cần profile dữ liệu để liệt kê values."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value."
   classification_context: "Source System Code = 'KNT_TAX_REPORT'"
   etl_derived_value: null
   atomic_table: "et_declaration_report"
@@ -23145,6 +23181,24 @@ attributes:
   etl_derived_value: null
   atomic_table: "et_declaration_report"
   atomic_column: "global_unique_identifier"
+  data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "External Tax Declaration Report"
+  atomic_attribute: "Message Packet Id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "TAX_REPORT"
+  source_column: "KNT.TAX_REPORT.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: "Source System Code = 'KNT_TAX_REPORT'"
+  etl_derived_value: null
+  atomic_table: "et_declaration_report"
+  atomic_column: "message_packet_id"
   data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
@@ -23789,14 +23843,15 @@ attributes:
   atomic_entity: "External Tax Enforcement Debt Decision"
   atomic_attribute: "Enforcement Method Code"
   description: "Mã hình thức cưỡng chế."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_ENFORCEMENT_DEBT"
   source_column: "KNT.TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_CODE"
-  comment: "Scheme: KNT_ENFORCEMENT_METHOD. Dùng chung với External Tax Enforcement\
-    \ Invoice Decision."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value. Trước đây dùng chung scheme KNT_ENFORCEMENT_METHOD với External Tax Enforcement\
+    \ Invoice Decision — nay cả 2 đều map Text 1:1."
   classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_DEBT'"
   etl_derived_value: null
   atomic_table: "et_enforcement_debt_decision"
@@ -24128,6 +24183,24 @@ attributes:
   atomic_column: "direct_tax_authority_nm"
   data_type: "string"
 - bcv_core_object: "Documentation"
+  atomic_entity: "External Tax Enforcement Debt Decision"
+  atomic_attribute: "Message Packet Id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "TAX_ENFORCEMENT_DEBT"
+  source_column: "KNT.TAX_ENFORCEMENT_DEBT.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_DEBT'"
+  etl_derived_value: null
+  atomic_table: "et_enforcement_debt_decision"
+  atomic_column: "message_packet_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
   atomic_entity: "External Tax Enforcement Invoice Decision"
   atomic_attribute: "External Tax Enforcement Invoice Decision Id"
   description: "Khóa đại diện (surrogate key)."
@@ -24264,14 +24337,15 @@ attributes:
   atomic_entity: "External Tax Enforcement Invoice Decision"
   atomic_attribute: "Enforcement Method Code"
   description: "Mã hình thức cưỡng chế."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_ENFORCEMENT_INVOICE"
   source_column: "KNT.TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_CODE"
-  comment: "Scheme: KNT_ENFORCEMENT_METHOD. Dùng chung với External Tax Enforcement\
-    \ Debt Decision."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value. Trước đây dùng chung scheme KNT_ENFORCEMENT_METHOD với External Tax Enforcement\
+    \ Debt Decision — nay cả 2 đều map Text 1:1."
   classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
   etl_derived_value: null
   atomic_table: "et_enforcement_invoice_decision"
@@ -24540,6 +24614,24 @@ attributes:
   atomic_column: "global_unique_identifier"
   data_type: "string"
 - bcv_core_object: "Documentation"
+  atomic_entity: "External Tax Enforcement Invoice Decision"
+  atomic_attribute: "Message Packet Id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "TAX_ENFORCEMENT_INVOICE"
+  source_column: "KNT.TAX_ENFORCEMENT_INVOICE.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: "Source System Code = 'KNT_TAX_ENFORCEMENT_INVOICE'"
+  etl_derived_value: null
+  atomic_table: "et_enforcement_invoice_decision"
+  atomic_column: "message_packet_id"
+  data_type: "string"
+- bcv_core_object: "Documentation"
   atomic_entity: "External Tax Invoice Detail"
   atomic_attribute: "External Tax Invoice Detail Id"
   description: "Khóa đại diện (surrogate key)."
@@ -24679,14 +24771,14 @@ attributes:
   atomic_entity: "External Tax Invoice Detail"
   atomic_attribute: "Invoice Type Code"
   description: "Loại hóa đơn bị cưỡng chế ngừng sử dụng."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "INVOICE_DETAIL"
   source_column: "KNT.INVOICE_DETAIL.INVOICE_TYPE"
-  comment: "Scheme: KNT_INVOICE_TYPE. Cần profile dữ liệu để liệt kê values (xem KNT_HLD_Overview.md\
-    \ mục 7e#4 đã giải quyết — chỉ còn cần profile giá trị)."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value. Giữ nguyên giá trị text từ nguồn."
   classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
   etl_derived_value: null
   atomic_table: "et_invoice_detail"
@@ -24911,14 +25003,14 @@ attributes:
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "Decision Type Code"
   description: "Loại quyết định: xử phạt hành chính, truy thu, đình chỉ..."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.DECISION_TYPE"
-  comment: "Scheme: KNT_VIOLATION_DECISION_TYPE. [PROPOSE NEW SCHEME] — chưa có trong\
-    \ HLD 7c, cần profile dữ liệu để liệt kê values."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value."
   classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
   etl_derived_value: null
   atomic_table: "et_violation_handling"
@@ -24974,6 +25066,24 @@ attributes:
   atomic_table: "et_violation_handling"
   atomic_column: "other_fine_amt"
   data_type: "decimal(23,2)"
+- bcv_core_object: "Documentation"
+  atomic_entity: "External Tax Violation Handling"
+  atomic_attribute: "Message Packet Id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "TAX_VIOLATION_HANDLING"
+  source_column: "KNT.TAX_VIOLATION_HANDLING.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
+  etl_derived_value: null
+  atomic_table: "et_violation_handling"
+  atomic_column: "message_packet_id"
+  data_type: "string"
 - bcv_core_object: "Documentation"
   atomic_entity: "Inspection Conclusion"
   atomic_attribute: "Inspection Conclusion Id"
@@ -34857,15 +34967,14 @@ attributes:
   atomic_entity: "External Tax Registration"
   atomic_attribute: "Primary Business Line Code"
   description: "Mã ngành nghề kinh doanh chính."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.BUSINESS_LINE_CODE"
-  comment: "Scheme: KNT_BUSINESS_LINE. Tái sử dụng scheme đã đăng ký (junction TAX_REG_BUSINESS_LINE)\
-    \ — đây là ngành nghề chính (scalar), khác với business_line_codes ARRAY (đầy\
-    \ đủ danh sách)."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value. Giữ nguyên giá trị text từ nguồn."
   classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
   etl_derived_value: null
   atomic_table: "et_registration"
@@ -35216,13 +35325,14 @@ attributes:
   atomic_entity: "External Tax Registration"
   atomic_attribute: "Domestic Capital Currency Code"
   description: "Loại tiền vốn điều lệ trong nước."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.DOMESTIC_CAPITAL_CURRENCY"
-  comment: "FK target: Currency.Currency Code."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
   classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
   etl_derived_value: null
   atomic_table: "et_registration"
@@ -35248,13 +35358,14 @@ attributes:
   atomic_entity: "External Tax Registration"
   atomic_attribute: "Foreign Capital Currency Code"
   description: "Loại tiền vốn điều lệ nước ngoài."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_CURRENCY"
-  comment: "FK target: Currency.Currency Code."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
   classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
   etl_derived_value: null
   atomic_table: "et_registration"
@@ -35424,22 +35535,42 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "External Tax Registration"
-  atomic_attribute: "Business Line Codes"
-  description: "Danh sách ngành nghề kinh doanh của doanh nghiệp."
-  data_domain: "Array<Text>"
+  atomic_attribute: "Secondary Business Line Code"
+  description: "Ngành nghề kinh doanh bổ sung của doanh nghiệp (từ TAX_REG_BUSINESS_LINE)."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REG_BUSINESS_LINE.BUSINESS_LINE_CODE"
-  comment: "Pure junction TAX_REG_BUSINESS_LINE (TAX_CODE + BUSINESS_LINE_CODE, không\
-    \ có attribute nghiệp vụ riêng) → denormalize thành ARRAY<Classification Value\
-    \ Code>. Scheme: KNT_BUSINESS_LINE. HLD decision: KNT_HLD_Overview.md mục 7d."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Array<Text>.\
+    \ Trước đây denormalize thành ARRAY do xem TAX_REG_BUSINESS_LINE là junction 1:N;\
+    \ nay map trực tiếp giả định 1 dòng/TAX_CODE. Không còn dùng scheme KNT_BUSINESS_LINE\
+    \ (đã revert về Text). HLD decision cũ (ARRAY): KNT_HLD_Overview.md mục 7d — cần\
+    \ cập nhật lại nếu áp dụng."
   classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
   etl_derived_value: null
   atomic_table: "et_registration"
-  atomic_column: "business_line_codes"
-  data_type: "array<string>"
+  atomic_column: "secondary_business_line_code"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "External Tax Registration"
+  atomic_attribute: "Message Packet Id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "TAX_REGISTRATION_INFO"
+  source_column: "KNT.TAX_REGISTRATION_INFO.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
+  classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+  etl_derived_value: null
+  atomic_table: "et_registration"
+  atomic_column: "message_packet_id"
+  data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "External Tax Registration Representative"
   atomic_attribute: "External Tax Registration Representative Id"
@@ -35544,20 +35675,21 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "External Tax Registration Representative"
-  atomic_attribute: "Position Code"
+  atomic_attribute: "Position"
   description: "Chức vụ (tên hoặc mã)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REG_REPRESENTATIVE"
   source_column: "KNT.TAX_REG_REPRESENTATIVE.POSITION"
-  comment: "Scheme: KNT_REPRESENTATIVE_POSITION. Cần profile dữ liệu — free text hay\
-    \ danh mục cố định (xem KNT_HLD_Overview.md mục 7e#5)."
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free text,\
+    \ không phải Classification Value cố định. Đổi tên từ \"Position Code\" vì mô\
+    \ tả nguồn là \"tên hoặc mã\", không chỉ mã."
   classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
   etl_derived_value: null
   atomic_table: "et_registration_representative"
-  atomic_column: "position_code"
+  atomic_column: "position"
   data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit"

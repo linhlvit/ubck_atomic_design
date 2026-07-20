@@ -77,13 +77,13 @@ graph TD
 |---|---|---|---|
 | TAX_REGISTRATION_INFO.OPERATION_STATUS | Trạng thái hoạt động doanh nghiệp (TrangThaiHoatDongEnum) | Classification Value | Scheme: `KNT_OPERATION_STATUS`. FK từ External Tax Registration. |
 | TAX_REGISTRATION_INFO.SUSPENSION_TYPE | Lý do ngừng hoạt động (LyDoNgungHoatDongEnum) | Classification Value | Scheme: `KNT_SUSPENSION_TYPE`. FK từ External Tax Registration. |
-| TAX_REG_BUSINESS_LINE (BUSINESS_LINE_CODE/NAME) | Ngành nghề kinh doanh của doanh nghiệp | Classification Value | Scheme: `KNT_BUSINESS_LINE`. Denormalize ARRAY trên External Tax Registration — xem 7d. |
+| TAX_REG_BUSINESS_LINE (BUSINESS_LINE_CODE/NAME) | Ngành nghề kinh doanh của doanh nghiệp | ~~Classification Value~~ | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value. Scheme `KNT_BUSINESS_LINE` deprecated. Map 1:1 (Text) — xem 7d. |
 | TAX_REPORT.PERIOD_TYPE | Kiểu kỳ báo cáo (Năm/Bán niên/Quý/Tháng) | Classification Value | Scheme: `KNT_REPORT_PERIOD_TYPE`. FK từ External Tax Declaration Report. |
-| TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_CODE/NAME, TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_CODE/NAME | Hình thức cưỡng chế | Classification Value | Scheme: `KNT_ENFORCEMENT_METHOD`. Dùng chung cho External Tax Enforcement Debt Decision + External Tax Enforcement Invoice Decision. |
+| TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_CODE/NAME, TAX_ENFORCEMENT_INVOICE.ENFORCEMENT_METHOD_CODE/NAME | Hình thức cưỡng chế | ~~Classification Value~~ | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value. Scheme `KNT_ENFORCEMENT_METHOD` deprecated. Map 1:1 (Text) cho cả 2 entity. |
 | TAX_REPORT_DETAIL.SHEET_NAME | Loại sheet báo cáo tài chính (BCDKT/KQKD/LCTT...) | Classification Value | Scheme: `KNT_REPORT_SHEET`. FK từ External Tax Declaration Report Detail. |
-| TAX_REG_REPRESENTATIVE.POSITION | Chức vụ/vai trò người đại diện | Classification Value | Scheme: `KNT_REPRESENTATIVE_POSITION`. FK từ External Tax Registration Representative — cần profile dữ liệu trước LLD (xem 7e#5). |
+| TAX_REG_REPRESENTATIVE.POSITION | Chức vụ/vai trò người đại diện | ~~Classification Value~~ | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Xác nhận là free text — không phải Classification Value. Scheme `KNT_REPRESENTATIVE_POSITION` deprecated. Map 1:1 (Text), đổi tên attribute thành "Position" (bỏ suffix Code). |
 | INFO_REQUEST_DETAIL.STATUS | Trạng thái phản hồi WebService (TrangThaiResponseWsEnum) | Classification Value | Scheme: `KNT_INFO_REQUEST_STATUS`. FK từ External Tax Information Request. |
-| INVOICE_DETAIL.INVOICE_TYPE | Loại hóa đơn bị cưỡng chế ngừng sử dụng | Classification Value | Scheme: `KNT_INVOICE_TYPE`. FK từ External Tax Invoice Detail — cần profile dữ liệu trước LLD. |
+| INVOICE_DETAIL.INVOICE_TYPE | Loại hóa đơn bị cưỡng chế ngừng sử dụng | ~~Classification Value~~ | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value. Scheme `KNT_INVOICE_TYPE` deprecated. Map 1:1 (Text). |
 | TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE | Loại giấy tờ định danh người đại diện | Classification Value (dùng chung dự án) | Tái sử dụng scheme `IP_ALT_ID_TYPE` đã có — không tạo scheme mới. |
 | TAX_REGISTRATION_INFO / TAX_REG_ADDRESS_TYPE / TAX_REG_REPRESENTATIVE (địa chỉ/điện thoại/fax/email) | Loại địa chỉ bưu chính / điện tử | Classification Value (dùng chung dự án) | Tái sử dụng scheme `IP_ADDR_TYPE` / `IP_ELEC_ADDR_TYPE` đã có — không tạo scheme mới. |
 
@@ -93,7 +93,7 @@ graph TD
 
 | Source Table | Mô tả | Entity chính | Xử lý trên Atomic |
 |---|---|---|---|
-| TAX_REG_BUSINESS_LINE | Ngành nghề kinh doanh trong hồ sơ đăng ký thuế | External Tax Registration | Pure junction (TAX_CODE + BUSINESS_LINE_CODE, không có attribute nghiệp vụ riêng) — denormalize thành `business_line_codes ARRAY<string>` trên entity External Tax Registration. |
+| TAX_REG_BUSINESS_LINE | Ngành nghề kinh doanh trong hồ sơ đăng ký thuế | External Tax Registration | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không denormalize ARRAY nữa — `BUSINESS_LINE_CODE` map 1:1 (Text) thành attribute `Secondary Business Line Code` scalar trên External Tax Registration (giả định 1 dòng/TAX_CODE). |
 
 ---
 
@@ -105,7 +105,7 @@ graph TD
 | 2 | 1 | `TAX_REPORT` (báo cáo tài chính do Cục Thuế cung cấp) có trùng lặp nghiệp vụ với `SSC_REPORT` (báo cáo tài chính do UBCKNN tổng hợp gửi Cục Thuế/BTC — đang pending, chưa thiết kế) không? | Ảnh hưởng thiết kế khi SSC_REPORT được đánh giá ở đợt sau — có thể cần entity riêng biệt (2 chiều dữ liệu in/out) hoặc gộp. |
 | 3 | 1 | `TAX_REGISTRATION_INFO` có trường địa chỉ/liên lạc inline (HQ_ADDRESS, PHONE, FAX, BUSINESS_*) trùng lặp ý nghĩa với `TAX_REG_ADDRESS_TYPE` (chi tiết theo loại). Nguồn nào authoritative cho IP Postal/Electronic Address? | Tạm nạp cả 2 nguồn (2 Address Type Code khác nhau) — cần Data Modeler xác nhận có dư thừa dữ liệu hay không trước khi LLD. |
 | 4 | 2 | **[ĐÃ GIẢI QUYẾT]** `INVOICE_DETAIL` đã thiết kế thành "External Tax Invoice Detail" (Tier 2, FK External Tax Enforcement Invoice Decision). | Không còn ảnh hưởng. |
-| 5 | 2 | `TAX_REG_REPRESENTATIVE.POSITION` là free text hay có danh mục cố định? `TAX_REG_ADDRESS_TYPE`/`TAX_REG_BUSINESS_LINE` không có PK — grain (TAX_CODE, TYPE)/(TAX_CODE, BUSINESS_LINE_CODE) có đảm bảo unique không? | Cần profile dữ liệu thực tế trước khi thiết kế LLD (ảnh hưởng source_type của `KNT_REPRESENTATIVE_POSITION` và cách sinh khóa dòng shared entity). |
+| 5 | 2 | **[MỘT PHẦN GIẢI QUYẾT 2026-07-20]** `TAX_REG_REPRESENTATIVE.POSITION` là free text hay có danh mục cố định? `TAX_REG_ADDRESS_TYPE`/`TAX_REG_BUSINESS_LINE` không có PK — grain (TAX_CODE, TYPE)/(TAX_CODE, BUSINESS_LINE_CODE) có đảm bảo unique không? | Xác nhận là free text — đã map 1:1 (Text), scheme `KNT_REPRESENTATIVE_POSITION` deprecated. Grain unique của `TAX_REG_BUSINESS_LINE` (TAX_CODE, BUSINESS_LINE_CODE) chưa profile chính thức — LLD tạm giả định 1 dòng/TAX_CODE khi map `Secondary Business Line Code` scalar (xem 7d). |
 | 6 | 1 | `HIGH_RISK_ENTERPRISE.ENTERPRISE_CODE` ("Mã số doanh nghiệp đăng ký kinh doanh") có cùng giá trị với `TAX_REGISTRATION_INFO.TAX_CODE` không? | Nếu có → dựng liên kết logic (business key) giữa `External Tax High Risk Enterprise` và `External Tax Registration` ở LLD. Hiện thiết kế 2 entity độc lập, không liên kết. |
 | 7 | 1 | **[ĐÃ GIẢI QUYẾT 2026-07-19]** `HIGH_RISK_ENTERPRISE` không có `ingestion.data_change_mode` khai báo trong `brd_KNT.yaml`. `MANAGING_TAX_AUTHORITY` là free text hay trùng danh mục `CAT_ORG_UNIT` (KNT-REF, đang pending)? | Đã bổ sung `ingestion.data_change_mode: Append` vào `brd_KNT.yaml`; BCO đổi sang Business Activity ([Business Activity] Involved Party Rating Activity), Table Type đổi sang Fact Append. `MANAGING_TAX_AUTHORITY` vẫn cần profile trước LLD. |
 | 8 | 2 | **[GHI NHẬN 2026-07-19]** `External Tax Invoice Detail` (đổi tên từ "Tax Enforcement Invoice Decision Item") không còn chứa đầy đủ tên entity cha `External Tax Enforcement Invoice Decision` — vi phạm rule #8 đặt tên entity con. | Giữ nguyên theo quyết định tường minh Data Modeler (đổi tên hàng loạt 10 entity nguồn KNT sang prefix "External Tax", 2026-07-19) — ghi nhận là ngoại lệ có chủ đích, không tự động sửa lại tên. |

@@ -144,12 +144,12 @@ erDiagram
 |---|---|---|---|---|
 | TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE | Loại giấy tờ định danh người đại diện | `IP_ALT_ID_TYPE` | etl_derived | Tái sử dụng scheme toàn dự án — 1010=CMND → `LEGACY_CMND`/`NATIONAL_ID`, 2080=CCCD → `CITIZEN_ID`, 1020=Hộ chiếu → `PASSPORT` |
 | TAX_REG_REPRESENTATIVE.PHONE/FAX/EMAIL | Liên lạc người đại diện | `IP_ELEC_ADDR_TYPE` | etl_derived | Tái sử dụng scheme toàn dự án — PHONE/FAX/EMAIL |
-| TAX_REG_REPRESENTATIVE.POSITION | Chức vụ/vai trò của người đại diện (tên hoặc mã) | `KNT_REPRESENTATIVE_POSITION` | source_table | Mô tả nguồn ghi "tên hoặc mã" — cần profile dữ liệu thực tế trước LLD để xác nhận có phải free text hay có danh mục cố định (xem 6f T2-03) |
+| TAX_REG_REPRESENTATIVE.POSITION | Chức vụ/vai trò của người đại diện (tên hoặc mã) | ~~`KNT_REPRESENTATIVE_POSITION`~~ (deprecated) | — | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Xác nhận free text — map 1:1 (Text), attribute đổi tên thành "Position" (xem 6f T2-03) |
 | TAX_REG_ADDRESS_TYPE.TYPE / ADDRESS_TYPE | Loại địa chỉ trong hồ sơ ĐKT | `IP_ADDR_TYPE` | etl_derived | Tái sử dụng scheme toàn dự án — 1=Trụ sở chính → `HEAD_OFFICE`, 2=Chi nhánh → `BRANCH`, 3=Địa điểm kinh doanh → `BUSINESS` |
 | TAX_REG_ADDRESS_TYPE.EMAIL/PHONE/FAX/WEBSITE | Liên lạc theo từng loại địa chỉ | `IP_ELEC_ADDR_TYPE` | etl_derived | Tái sử dụng scheme toàn dự án — EMAIL_BUSINESS/PHONE_BUSINESS/FAX_BUSINESS/WEBSITE |
-| TAX_REG_BUSINESS_LINE.BUSINESS_LINE_CODE/NAME | Ngành nghề kinh doanh | `KNT_BUSINESS_LINE` | source_table | Values load từ distinct BUSINESS_LINE_CODE/NAME |
+| TAX_REG_BUSINESS_LINE.BUSINESS_LINE_CODE/NAME | Ngành nghề kinh doanh | ~~`KNT_BUSINESS_LINE`~~ (deprecated) | — | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value — `BUSINESS_LINE_CODE` map 1:1 (Text) thành `Secondary Business Line Code` scalar trên External Tax Registration, không denormalize ARRAY. |
 | TAX_REPORT_DETAIL.SHEET_NAME | Loại sheet báo cáo tài chính (LoaiBaoCaoChiTietEnum) | `KNT_REPORT_SHEET` | source_table | 1=BCDKT, 2=KQKD, 3=KQKDHD, 4=LCTT-TT, 5=LCTT-GT, 6=CTTKC, 9=THBDVCSH |
-| INVOICE_DETAIL.INVOICE_TYPE | Loại hóa đơn bị cưỡng chế ngừng sử dụng | `KNT_INVOICE_TYPE` | source_table | Cần profile giá trị distinct trước LLD |
+| INVOICE_DETAIL.INVOICE_TYPE | Loại hóa đơn bị cưỡng chế ngừng sử dụng | ~~`KNT_INVOICE_TYPE`~~ (deprecated) | — | **[ĐÃ ĐIỀU CHỈNH 2026-07-20]** Không phải Classification Value — map 1:1 (Text). |
 
 ---
 
@@ -165,7 +165,7 @@ erDiagram
 |---|---|---|
 | T2-01 | `TAX_REG_ADDRESS_TYPE` không có cột PK/ID tự sinh — grain thực tế là (TAX_CODE, TYPE) hay có thể có nhiều dòng trùng (TAX_CODE, TYPE) khác nhau (VD: nhiều "Chi nhánh")? Ảnh hưởng đến cách sinh khóa dòng khi nạp vào IP Postal Address. | Chưa xác nhận — cần profile dữ liệu thực tế trước LLD. |
 | T2-02 | `TAX_REG_BUSINESS_LINE` không có PK — grain (TAX_CODE, BUSINESS_LINE_CODE) có đảm bảo unique không? | Chưa xác nhận — cần profile dữ liệu thực tế trước LLD. |
-| T2-03 | `TAX_REG_REPRESENTATIVE.POSITION` mô tả nguồn ghi "Chức vụ (tên hoặc mã)" — đây là free text hay có danh mục cố định? Quyết định `source_type` của `KNT_REPRESENTATIVE_POSITION` (source_table vs modeler_defined). | Chưa xác nhận — cần profile dữ liệu thực tế trước LLD. |
+| T2-03 | **[ĐÃ GIẢI QUYẾT 2026-07-20]** `TAX_REG_REPRESENTATIVE.POSITION` mô tả nguồn ghi "Chức vụ (tên hoặc mã)" — đây là free text hay có danh mục cố định? Quyết định `source_type` của `KNT_REPRESENTATIVE_POSITION` (source_table vs modeler_defined). | Xác nhận là free text theo quyết định Data Modeler — map 1:1 (Text), attribute đổi tên thành "Position". Scheme `KNT_REPRESENTATIVE_POSITION` deprecated. |
 | T2-04 | **[GHI NHẬN 2026-07-19]** `External Tax Invoice Detail` (INVOICE_DETAIL) không chứa đầy đủ tên entity cha `External Tax Enforcement Invoice Decision` — vi phạm rule #8 (entity con phải chứa substring liên tục tên entity cha). Có giữ nguyên ngoại lệ này hay đổi lại tên đầy đủ hơn (VD: `External Tax Enforcement Invoice Decision Detail`)? | Theo quyết định tường minh của Data Modeler (đổi tên hàng loạt 2026-07-19) — giữ nguyên `External Tax Invoice Detail`, ghi nhận là ngoại lệ có chủ đích, không tự động sửa lại. |
 
 ---

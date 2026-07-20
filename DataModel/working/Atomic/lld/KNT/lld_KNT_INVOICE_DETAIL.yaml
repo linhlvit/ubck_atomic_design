@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Documentation] Invoice"
   table_type: "Fact Append"
   group: "T2"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -132,15 +132,15 @@ attributes:
 - attribute_name: "Invoice Type Code"
   physical_name: "invoice_tp_code"
   description: "Loại hóa đơn bị cưỡng chế ngừng sử dụng."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.INVOICE_DETAIL.INVOICE_TYPE"
-  comment: "Scheme: KNT_INVOICE_TYPE. Cần profile dữ liệu để liệt kê values (xem KNT_HLD_Overview.md\
-    \ mục 7e#4 đã giải quyết — chỉ còn cần profile giá trị)."
-  classification_context: "KNT_INVOICE_TYPE"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification\
+    \ Value. Giữ nguyên giá trị text từ nguồn."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Object Id"

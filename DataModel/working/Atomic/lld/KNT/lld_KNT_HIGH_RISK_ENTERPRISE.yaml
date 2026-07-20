@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Business Activity] Involved Party Rating Activity"
   table_type: "Fact Append"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -115,6 +115,21 @@ attributes:
   - "KNT.HIGH_RISK_ENTERPRISE.RISK_ASSESSMENT_YEAR"
   comment: "Giữ Text theo data type nguồn (VARCHAR2) — cùng 1 DN có thể xuất hiện\
     \ lại ở nhiều năm khác nhau (grain Fact Append)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Message Packet Id"
+  physical_name: "message_packet_id"
+  description: "Mã gói tin trao đổi liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.HIGH_RISK_ENTERPRISE.MSG_PACKET_ID"
+  comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET\
+    \ (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER)\
+    \ — ETL cần convert sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

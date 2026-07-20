@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-et_registration_representative-KNT.TAX_REG_REPRESENTATIVE
+  logical_name: External Tax Registration Representative
+  physical_name: et_registration_representative
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Designated Representative"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: KNT
+  description: |
+    Người đại diện theo pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration: họ tên, chức vụ, giấy tờ định danh. Tách IP Alt Identification + IP Electronic Address. FK đến External Tax Registration. Table Type điều chỉnh 2026-07-19 (từ Relative sang Fundamental).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+
+attributes:
+  - name: External Tax Registration Representative Id
+    physical_name: et_registration_representative_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\". Người đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: External Tax Registration Representative Code
+    physical_name: et_registration_representative_code
+    business_meaning: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt, dùng PK kỹ thuật làm BK duy nhất."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    etl_derived_value: KNT.TAX_REG_REPRESENTATIVE
+
+  - name: External Tax Registration Id
+    physical_name: et_registration_id
+    business_meaning: "FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID
+    comment: "FK target: et_registration.et_registration_id. Nguồn lưu ID kỹ thuật của TAX_REGISTRATION_INFO — ETL join TAX_REGISTRATION_ID → KNT.TAX_REGISTRATION_INFO.ID để lấy TAX_CODE rồi hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: External Tax Registration Code
+    physical_name: et_registration_code
+    business_meaning: Mã số thuế hồ sơ đăng ký thuế liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID
+    comment: "Lookup pair: et_registration.et_registration_code. Pair with et_registration_id."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ tên người đại diện/chủ hộ kinh doanh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.REPRESENTATIVE_NAME
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Position
+    physical_name: position
+    business_meaning: Chức vụ (tên hoặc mã).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.POSITION
+    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — xác nhận là free text, không phải Classification Value cố định. Đổi tên từ \"Position Code\" vì mô tả nguồn là \"tên hoặc mã\", không chỉ mã."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE'"
+    etl_derived_value: null

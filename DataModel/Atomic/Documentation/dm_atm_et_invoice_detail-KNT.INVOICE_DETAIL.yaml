@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-et_invoice_detail-KNT.INVOICE_DETAIL
+  logical_name: External Tax Invoice Detail
+  physical_name: et_invoice_detail
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Invoice"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: KNT
+  description: |
+    1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng, thuộc 1 External Tax Enforcement Invoice Decision. Đổi tên từ "Tax Enforcement Invoice Decision Item" 2026-07-19 — tên không còn chứa đầy đủ tên entity cha, ngoại lệ có chủ đích, xem 7e#8.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-KNT-INVOICE_DETAIL
+
+attributes:
+  - name: External Tax Invoice Detail Id
+    physical_name: et_invoice_detail_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT.INVOICE_DETAIL', ID)."
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: External Tax Invoice Detail Code
+    physical_name: et_invoice_detail_code
+    business_meaning: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ đơn lẻ duy nhất (INVOICE_NUMBER cần kết hợp INVOICE_TEMPLATE_SYMBOL/INVOICE_SYMBOL mới đủ định danh), dùng PK kỹ thuật làm BK duy nhất."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: KNT.INVOICE_DETAIL
+
+  - name: External Tax Enforcement Invoice Decision Id
+    physical_name: et_enforcement_invoice_decision_id
+    business_meaning: "FK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng hóa đơn."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID
+    comment: "FK target: et_enforcement_invoice_decision.et_enforcement_invoice_decision_id. Nguồn lưu ID kỹ thuật của TAX_ENFORCEMENT_INVOICE — ETL join TAX_ENFORCEMENT_INVOICE_ID → KNT.TAX_ENFORCEMENT_INVOICE.ID để lấy DECISION_NUMBER rồi hash_id('KNT.TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: External Tax Enforcement Invoice Decision Code
+    physical_name: et_enforcement_invoice_decision_code
+    business_meaning: Số quyết định cưỡng chế ngừng sử dụng hóa đơn liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID
+    comment: "Lookup pair: et_enforcement_invoice_decision.et_enforcement_invoice_decision_code. Pair with et_enforcement_invoice_decision_id."
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: Invoice Template Symbol
+    physical_name: invoice_template_symbol
+    business_meaning: Ký hiệu mẫu hóa đơn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.INVOICE_TEMPLATE_SYMBOL
+    comment: null
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: Invoice Symbol
+    physical_name: invoice_symbol
+    business_meaning: Ký hiệu hóa đơn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.INVOICE_SYMBOL
+    comment: null
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: Invoice Number
+    physical_name: invoice_nbr
+    business_meaning: Số hóa đơn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.INVOICE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: Invoice Type Code
+    physical_name: invoice_tp_code
+    business_meaning: Loại hóa đơn bị cưỡng chế ngừng sử dụng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.INVOICE_TYPE
+    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value. Giữ nguyên giá trị text từ nguồn."
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null
+
+  - name: Object Id
+    physical_name: object_id
+    business_meaning: ID đối tượng trong hệ thống Cục Thuế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: INVOICE_DETAIL
+    source_column: KNT.INVOICE_DETAIL.OBJ_ID
+    comment: "Denormalized — nguồn không xác định rõ entity đích, không tạo FK."
+    classification_context: "Source System Code = 'KNT_INVOICE_DETAIL'"
+    etl_derived_value: null

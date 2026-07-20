@@ -1,0 +1,611 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-et_registration-KNT.TAX_REGISTRATION_INFO
+  logical_name: External Tax Registration
+  physical_name: et_registration
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: KNT
+  description: |
+    Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK do Cục Thuế cung cấp: địa chỉ, vốn điều lệ, người đại diện, trạng thái hoạt động, tạm ngừng kinh doanh. Tách IP Postal Address + IP Electronic Address; denormalize business_line_codes ARRAY.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-KNT-TAX_REGISTRATION_INFO
+
+attributes:
+  - name: External Tax Registration Id
+    physical_name: et_registration_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: External Tax Registration Code
+    physical_name: et_registration_code
+    business_meaning: Mã số thuế doanh nghiệp. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
+    comment: BK chính.
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: KNT.TAX_REGISTRATION_INFO
+
+  - name: Taxpayer Name
+    physical_name: taxpayer_nm
+    business_meaning: Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.TAXPAYER_NAME
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Charter Capital Amount
+    physical_name: charter_capital_amt
+    business_meaning: "Vốn điều lệ/vốn đầu tư của chủ sở hữu (đơn vị: đồng)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.CHARTER_CAPITAL
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Primary Business Line Code
+    physical_name: primary_business_line_code
+    business_meaning: Mã ngành nghề kinh doanh chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_LINE_CODE
+    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value. Giữ nguyên giá trị text từ nguồn."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Primary Business Line Name
+    physical_name: primary_business_line_nm
+    business_meaning: Ngành nghề kinh doanh chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_LINE
+    comment: Denormalized — tên tương ứng Primary Business Line Code.
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Business License Number
+    physical_name: business_license_nbr
+    business_meaning: Số giấy phép thành lập doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.LICENSE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Business License Issue Date
+    physical_name: business_license_issue_dt
+    business_meaning: Ngày cấp giấy phép thành lập.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.ISSUE_DATE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Business License Issuing Authority Name
+    physical_name: business_license_issuing_authority_nm
+    business_meaning: Cơ quan cấp giấy phép thành lập.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.ISSUING_AUTHORITY
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Establishment Decision Number
+    physical_name: establishment_decision_nbr
+    business_meaning: Số quyết định thành lập/xử phạt.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.DECISION_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Establishment Decision Issue Date
+    physical_name: establishment_decision_issue_dt
+    business_meaning: Ngày ban hành quyết định.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.ISSUED_DATE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Establishment Decision Issuing Organization Name
+    physical_name: establishment_decision_issuing_organization_nm
+    business_meaning: Cơ quan ban hành quyết định.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.ISSUING_ORG
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Supervising Unit Name
+    physical_name: supervising_unit_nm
+    business_meaning: Đơn vị chủ quản/quản lý trực tiếp doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUPERVISING_UNIT
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Supervising Unit Address
+    physical_name: supervising_unit_adr
+    business_meaning: Địa chỉ đơn vị chủ quản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUPERVISING_UNIT_ADDRESS
+    comment: "Denormalized — địa chỉ của 1 tổ chức khác (đơn vị chủ quản), không phải IP Postal Address của chính External Tax Registration."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Business Start Date
+    physical_name: business_start_dt
+    business_meaning: Ngày bắt đầu hoạt động kinh doanh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_START_DATE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Legal Representative Full Name
+    physical_name: legal_representative_full_nm
+    business_meaning: Họ tên người đại diện theo pháp luật.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.LEGAL_REPRESENTATIVE_NAME
+    comment: "Prefix chủ thể — thông tin người đại diện khác chủ thể chính (doanh nghiệp). Denormalized, không có FK link trực tiếp tới External Tax Registration Representative (entity riêng, Tier 2)."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Legal Representative Identification Number
+    physical_name: legal_representative_identification_nbr
+    business_meaning: Số CMND/hộ chiếu người đại diện theo pháp luật.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.ID_CARD_NUMBER
+    comment: Denormalized — không tách IP Alt Identification vì đây không phải grain chính của entity.
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Legal Representative Phone Number
+    physical_name: legal_representative_phone_nbr
+    business_meaning: Số điện thoại người đại diện theo pháp luật/chủ doanh nghiệp tư nhân.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SO_DIEN_THOAI
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Director Full Name
+    physical_name: director_full_nm
+    business_meaning: Họ tên Giám đốc/Tổng giám đốc ký báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.DIRECTOR_NAME
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Director Phone Number
+    physical_name: director_phone_nbr
+    business_meaning: Số điện thoại Giám đốc/Tổng giám đốc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.DIRECTOR_PHONE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Operation Status Code
+    physical_name: operation_status_code
+    business_meaning: Trạng thái hoạt động DN.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STATUS
+    comment: "Scheme: KNT_OPERATION_STATUS."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Operation Status Name
+    physical_name: operation_status_nm
+    business_meaning: Tên trạng thái người nộp thuế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.STATUS_NAME
+    comment: Denormalized — tên hiển thị tương ứng Operation Status Code.
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Suspension Reason Description
+    physical_name: suspension_reason_description
+    business_meaning: Lý do ngừng hoạt động (nhập sau khi chọn loại ngừng).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_REASON
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Suspension Type Code
+    physical_name: suspension_tp_code
+    business_meaning: Lý do ngừng hoạt động.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_TYPE
+    comment: "Scheme: KNT_SUSPENSION_TYPE."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Direct Supervising Authority Name
+    physical_name: direct_supervising_authority_nm
+    business_meaning: Cơ quan quản lý trực tiếp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.DIRECT_SUPERVISING_AUTHORITY
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Tax Authority Code
+    physical_name: tax_authority_code
+    business_meaning: Mã cơ quan thuế ban hành thông báo cưỡng chế.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.TAX_AUTHORITY_CODE
+    comment: Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết kế hiện tại.
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Domestic Capital Currency Code
+    physical_name: domestic_capital_currency_code
+    business_meaning: Loại tiền vốn điều lệ trong nước.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.DOMESTIC_CAPITAL_CURRENCY
+    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Foreign Capital Amount
+    physical_name: foreign_capital_amt
+    business_meaning: Vốn điều lệ nước ngoài (đơn vị theo loại tiền).
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_AMOUNT
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Foreign Capital Currency Code
+    physical_name: foreign_capital_currency_code
+    business_meaning: Loại tiền vốn điều lệ nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_CURRENCY
+    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Classification Value/FK Currency. Giữ nguyên giá trị text từ nguồn."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Foreign Capital Ratio
+    physical_name: foreign_capital_ratio
+    business_meaning: "Tỷ trọng vốn nước ngoài (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_RATIO
+    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(5,2). Cần validate không có giá trị non-numeric."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Temporary Suspension From Date
+    physical_name: temporary_suspension_from_dt
+    business_meaning: Tạm nghỉ/từ ngày.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_FROM_DATE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Temporary Suspension To Date
+    physical_name: temporary_suspension_to_dt
+    business_meaning: Tạm nghỉ/đến ngày.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_TO_DATE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Temporary Suspension Reason Description
+    physical_name: temporary_suspension_reason_description
+    business_meaning: Lý do tạm nghỉ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_REASON_TEXT
+    comment: "Khác Suspension Reason Description (lý do ngừng hoạt động vĩnh viễn) — đây là lý do tạm nghỉ có thời hạn, đi kèm Temporary Suspension From/To Date."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Temporary Suspension Notice Number
+    physical_name: temporary_suspension_notice_nbr
+    business_meaning: Số thông báo tạm nghỉ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_NOTICE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Temporary Suspension Notice Date
+    physical_name: temporary_suspension_notice_dt
+    business_meaning: Ngày thông báo tạm nghỉ.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.SUSPENSION_NOTICE_DATE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Operation Stop Date
+    physical_name: operation_stop_dt
+    business_meaning: Ngày ngừng hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_DATE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Operation Stop Reason Description
+    physical_name: operation_stop_reason_description
+    business_meaning: Lý do ngừng hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_REASON
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Operation Stop Note
+    physical_name: operation_stop_note
+    business_meaning: Ghi chú ngừng hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_NOTE
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Operation Stop Notice Number
+    physical_name: operation_stop_notice_nbr
+    business_meaning: Số thông báo ngừng hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.OPERATION_STOP_NOTICE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Secondary Business Line Code
+    physical_name: secondary_business_line_code
+    business_meaning: Ngành nghề kinh doanh bổ sung của doanh nghiệp (từ TAX_REG_BUSINESS_LINE).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REG_BUSINESS_LINE.BUSINESS_LINE_CODE
+    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không phải Array<Text>. Trước đây denormalize thành ARRAY do xem TAX_REG_BUSINESS_LINE là junction 1:N; nay map trực tiếp giả định 1 dòng/TAX_CODE. Không còn dùng scheme KNT_BUSINESS_LINE (đã revert về Text). HLD decision cũ (ARRAY): KNT_HLD_Overview.md mục 7d — cần cập nhật lại nếu áp dụng."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
+
+  - name: Message Packet Id
+    physical_name: message_packet_id
+    business_meaning: Mã gói tin trao đổi liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.MSG_PACKET_ID
+    comment: "Map 1:1 theo quyết định Data Modeler 2026-07-20 — không tạo FK sang MSG_PACKET (bảng kỹ thuật gói tin trao đổi, ngoài scope thiết kế). Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
+    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO'"
+    etl_derived_value: null
