@@ -382,7 +382,7 @@ flowchart LR
 > Atomic: `Securities Practitioner License Application` ← NHNCK.Applications — **READY**
 > Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY** (dùng cho K_NHNCK_7)
 > Atomic: `SP License Certificate Type` ← NHNCK.CERTIFICATES — **READY**
-> Ghi chú: `Certificate_Type_Unique_Key` (= CERTIFICATES.CERTIFICATE_CODE) lưu dư thừa trong Fact (filter/display nhanh không cần join). FK đến `SP License Certificate Type Dimension` qua surrogate Id `Certificate_Type_Dimension_Id`. Certificate Status không lưu trong Fact — staging đã lọc chỉ bản ghi hiệu lực.
+> Ghi chú: `Certificate_Type_Code` (= CERTIFICATES.CERTIFICATE_CODE) lưu dư thừa trong Fact (filter/display nhanh không cần join). FK đến `SP License Certificate Type Dimension` qua surrogate Id `Certificate_Type_Dimension_Id`. Certificate Status không lưu trong Fact — staging đã lọc chỉ bản ghi hiệu lực.
 
 **Mockup:**
 
@@ -391,8 +391,8 @@ flowchart LR
 | Chứng chỉ cấp mới (YTD) | 1,580 CCHN (Cấp mới: 1,290 / Cấp lại: 290) | +13.7% |
 | Bị thu hồi | 95 CCHN | +8% |
 | CCHN đang hoạt động | 20,180 CCHN | +7.7% |
-| CCHN Thu hồi 3 năm | 312 CCHN | -12.2% |
-| CCHN Thu hồi vĩnh viễn | 98 CCHN | +11.4% |
+| Thu hồi thuộc trường hợp được cấp lại | 312 CCHN | -12.2% |
+| Thu hồi thuộc trường hợp không được cấp lại | 98 CCHN | +11.4% |
 | CCHN Đã bị hủy | 750 CCHN | -5% |
 
 **Source:** `Fact Practitioner License Certificate Snapshot` → `Securities Practitioner Dimension`, `Calendar Date Dimension`, `SP License Certificate Type Dimension`
@@ -409,14 +409,14 @@ flowchart LR
 | K_NHNCK_3_YOY | So sánh cùng kỳ — Bị thu hồi | % | Phái sinh | (K_NHNCK_3[Y] − K_NHNCK_3[Y−1]) / K_NHNCK_3[Y−1] × 100% | |
 | K_NHNCK_5 | CCHN đang hoạt động (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) của các NHN có Practice Status Code = '1' (STATUS_WORK=1) AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot Date) trong Y (hiện tại) | (Sửa 2026-07-17) Bổ sung filter Practice Status Code — ghi chú cũ "staging đã lọc chỉ bản ghi hiệu lực" không đúng, staging/ODS không filter RECORD_STATUS |
 | K_NHNCK_5_YOY | So sánh cùng kỳ — CCHN đang hoạt động | % | Phái sinh | (K_NHNCK_5[Y] − K_NHNCK_5[Y−1]) / K_NHNCK_5[Y−1] × 100% | |
-| K_NHNCK_6 | CCHN Thu hồi 3 năm (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) của các NHN có Practice Status Code = '2' (STATUS_WORK=2) AND Decision Type = '2' AND Revocation Date ≤ 31/12/Y (quá khứ) hoặc ≤ MAX(Snapshot Date) trong Y (hiện tại) | (Sửa 2026-07-17) Đổi từ Reissuance Allowed Count về Practice Status Code='2' theo đúng BA gốc — xem O_NHNCK_1 (revised) |
-| K_NHNCK_6_YOY | So sánh cùng kỳ — Thu hồi 3 năm | % | Phái sinh | (K_NHNCK_6[Y] − K_NHNCK_6[Y−1]) / K_NHNCK_6[Y−1] × 100% | |
-| K_NHNCK_7 | CCHN Thu hồi vĩnh viễn (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) của các NHN có Practice Status Code = '3' (STATUS_WORK=3) AND Decision Type = '2' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot Date) trong Y (hiện tại) | (Sửa 2026-07-17) Bổ sung filter Decision Type = '2' theo BA gốc (trước đó thiếu điều kiện này). ETL: join securities_practitioner (Practice_Status_Code='3') AND Fact.decision_tp_code='2' |
-| K_NHNCK_7_YOY | So sánh cùng kỳ — Thu hồi vĩnh viễn | % | Phái sinh | (K_NHNCK_7[Y] − K_NHNCK_7[Y−1]) / K_NHNCK_7[Y−1] × 100% | |
+| K_NHNCK_6 | Thu hồi thuộc trường hợp được cấp lại (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) của các NHN có Practice Status Code = '2' (STATUS_WORK=2) AND Decision Type = '2' AND Revocation Date ≤ 31/12/Y (quá khứ) hoặc ≤ MAX(Snapshot Date) trong Y (hiện tại) | (Sửa 2026-07-20) Đổi tên theo BA mới — "CCHN Thu hồi 3 năm" là tên diễn giải cũ, dễ gây hiểu lầm về thời hạn cụ thể; tên mới bám sát đúng định nghĩa STATUS_WORK=2 (Thu hồi có cấp lại). Logic không đổi |
+| K_NHNCK_6_YOY | So sánh cùng kỳ — Thu hồi thuộc trường hợp được cấp lại | % | Phái sinh | (K_NHNCK_6[Y] − K_NHNCK_6[Y−1]) / K_NHNCK_6[Y−1] × 100% | |
+| K_NHNCK_7 | Thu hồi thuộc trường hợp không được cấp lại (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) của các NHN có Practice Status Code = '3' (STATUS_WORK=3) AND Decision Type = '2' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot Date) trong Y (hiện tại) | (Sửa 2026-07-20) Đổi tên theo BA mới — "CCHN Thu hồi vĩnh viễn" là tên diễn giải cũ; tên mới bám sát đúng định nghĩa STATUS_WORK=3 (Thu hồi không cấp lại). Logic không đổi |
+| K_NHNCK_7_YOY | So sánh cùng kỳ — Thu hồi thuộc trường hợp không được cấp lại | % | Phái sinh | (K_NHNCK_7[Y] − K_NHNCK_7[Y−1]) / K_NHNCK_7[Y−1] × 100% | |
 | K_NHNCK_8 | CCHN Đã bị hủy (lũy kế) | CCHN | Phái sinh | COUNT(DISTINCT License Certificate Document Code) WHERE Decision Type = '6' (Hủy CCHN) AND Revocation Date ≤ 31/12/Y (quá khứ) hoặc ≤ MAX(Snapshot Date) trong Y (hiện tại) | Nguồn: Certificate_Records JOIN DECISIONS |
 | K_NHNCK_8_YOY | So sánh cùng kỳ — Đã bị hủy | % | Phái sinh | (K_NHNCK_8[Y] − K_NHNCK_8[Y−1]) / K_NHNCK_8[Y−1] × 100% | |
 
-> **Ghi chú KPI:** K_NHNCK_7 đếm **CCHN** (không phải NHN) — nguồn `Professionals.STATUS_WORK='3'` nhưng đếm Certificate_Number. ETL join `securities_practitioner (Practice_Status_Code='3') → sp_license_certificate_document` để lấy danh sách CCHN của các NHN bị thu hồi vĩnh viễn. K_NHNCK_15 và K_NHNCK_16 không sử dụng — gap do điều chỉnh phân loại, không re-number.
+> **Ghi chú KPI:** K_NHNCK_7 đếm **CCHN** (không phải NHN) — nguồn `Professionals.STATUS_WORK='3'` nhưng đếm Certificate_Number. ETL join `securities_practitioner (Practice_Status_Code='3') → sp_license_certificate_document` để lấy danh sách CCHN của các NHN thuộc trường hợp thu hồi không được cấp lại. K_NHNCK_15 và K_NHNCK_16 không sử dụng — gap do điều chỉnh phân loại, không re-number.
 
 **Star Schema — Nhóm 1a (Fact Practitioner License Certificate Snapshot):**
 
@@ -432,7 +432,7 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         string Certificate_Type_Dimension_Id FK
         varchar License_Certificate_Document_Code
-        varchar Certificate_Type_Unique_Key
+        varchar Certificate_Type_Code
         varchar Is_Reissue_Indicator
         date Certificate_Issue_Date
         date Revocation_Date
@@ -461,15 +461,14 @@ erDiagram
     }
 
     SP_License_Certificate_Type_Dimension {
-        string SP_License_Certificate_Type_Dimension_Id PK
-        varchar SP_License_Certificate_Type_Code
-        varchar SP_License_Certificate_Type_Unique_Key
-        varchar Certificate_Name
+        string Certificate_Type_Dimension_Id PK
+        varchar Certificate_Type_Code
+        varchar Certificate_Type_Name
         string Source_System_Code
     }
 ```
 
-> **Ghi chú erDiagram:** Fact có FK đến `SP_License_Certificate_Type_Dimension` qua `Certificate_Type_Dimension_Id`. `Certificate_Type_Unique_Key` (= CERTIFICATES.CERTIFICATE_CODE) lưu dư thừa để filter/display nhanh không cần join. Certificate Status không lưu trong Fact — staging đã lọc chỉ bản ghi hiệu lực. `License_Certificate_Document_Code` là DD — đơn vị đếm `COUNT(DISTINCT ...)`. `Is_Reissue_Indicator` — Indicator (Y/N), ETL-derived: Y nếu Application_Type IN ('1','2','3'), N nếu Application_Type = '0'. `Decision_Type_Code` — Classification Value (scheme: LICENSE_CERTIFICATE_DECISION_TYPE: 2=Thu hồi, 6=Hủy CCHN), NULL nếu chưa có quyết định — phục vụ filter K_NHNCK_3, K_NHNCK_6, K_NHNCK_7, K_NHNCK_8. Fact có 2 FK date: `Issue_Date_Dimension_Id` (ngày cấp) và `Snapshot_Date_Dimension_Id` (ngày chụp trạng thái) — cả 2 đều trỏ về `Calendar_Date_Dimension`. (Sửa 2026-07-17) `Allow_Reissue_Indicator` đã loại khỏi schema — K_NHNCK_6 đổi sang dùng `Practice_Status_Code` (join `Securities_Practitioner_Dimension`), xem O_NHNCK_1 (revised).
+> **Ghi chú erDiagram:** Fact có FK đến `SP_License_Certificate_Type_Dimension` qua `Certificate_Type_Dimension_Id`. `Certificate_Type_Code` (= CERTIFICATES.CERTIFICATE_CODE) lưu dư thừa để filter/display nhanh không cần join. Certificate Status không lưu trong Fact — staging đã lọc chỉ bản ghi hiệu lực. `License_Certificate_Document_Code` là DD — đơn vị đếm `COUNT(DISTINCT ...)`. `Is_Reissue_Indicator` — Indicator (Y/N), ETL-derived: Y nếu Application_Type IN ('1','2','3'), N nếu Application_Type = '0'. `Decision_Type_Code` — Classification Value (scheme: LICENSE_CERTIFICATE_DECISION_TYPE: 2=Thu hồi, 6=Hủy CCHN), NULL nếu chưa có quyết định — phục vụ filter K_NHNCK_3, K_NHNCK_6, K_NHNCK_7, K_NHNCK_8. Fact có 2 FK date: `Issue_Date_Dimension_Id` (ngày cấp) và `Snapshot_Date_Dimension_Id` (ngày chụp trạng thái) — cả 2 đều trỏ về `Calendar_Date_Dimension`. (Sửa 2026-07-17) `Allow_Reissue_Indicator` đã loại khỏi schema — K_NHNCK_6 đổi sang dùng `Practice_Status_Code` (join `Securities_Practitioner_Dimension`), xem O_NHNCK_1 (revised).
 
 **Lineage Mart → Báo cáo — Nhóm 1a:**
 
@@ -713,9 +712,9 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức |
 |---|---|---|---|---|
-| K_NHNCK_17 | Số lượng CCHN là Môi giới | CCHN | Base | COUNT(DISTINCT License Certificate Document Code) WHERE Certificate Type Unique Key = 'MGCK' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot_Date) trong Y (hiện tại) — staging đã lọc bản ghi hiệu lực |
-| K_NHNCK_18 | Số lượng CCHN là Phân tích | CCHN | Base | COUNT(DISTINCT License Certificate Document Code) WHERE Certificate Type Unique Key = 'PTTC' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot_Date) trong Y (hiện tại) — staging đã lọc bản ghi hiệu lực |
-| K_NHNCK_19 | Số lượng CCHN là QLQ | CCHN | Base | COUNT(DISTINCT License Certificate Document Code) WHERE Certificate Type Unique Key = 'QLQ' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot_Date) trong Y (hiện tại) — staging đã lọc bản ghi hiệu lực |
+| K_NHNCK_17 | Số lượng CCHN là Môi giới | CCHN | Base | COUNT(DISTINCT License Certificate Document Code) WHERE Certificate Type Code = 'MGCK' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot_Date) trong Y (hiện tại) — staging đã lọc bản ghi hiệu lực |
+| K_NHNCK_18 | Số lượng CCHN là Phân tích | CCHN | Base | COUNT(DISTINCT License Certificate Document Code) WHERE Certificate Type Code = 'PTTC' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot_Date) trong Y (hiện tại) — staging đã lọc bản ghi hiệu lực |
+| K_NHNCK_19 | Số lượng CCHN là QLQ | CCHN | Base | COUNT(DISTINCT License Certificate Document Code) WHERE Certificate Type Code = 'QLQ' AND Snapshot Date = 31/12/Y (quá khứ) hoặc MAX(Snapshot_Date) trong Y (hiện tại) — staging đã lọc bản ghi hiệu lực |
 | K_NHNCK_20 | Tỷ lệ CCHN Môi giới | % | Derived | K_NHNCK_17 / K_NHNCK_5 × 100% |
 | K_NHNCK_21 | Tỷ lệ CCHN Phân tích | % | Derived | K_NHNCK_18 / K_NHNCK_5 × 100% |
 | K_NHNCK_22 | Tỷ lệ CCHN QLQ | % | Derived | K_NHNCK_19 / K_NHNCK_5 × 100% |
@@ -734,7 +733,7 @@ erDiagram
         string Snapshot_Date_Dimension_Id FK
         string Certificate_Type_Dimension_Id FK
         varchar License_Certificate_Document_Code DD
-        varchar Certificate_Type_Unique_Key
+        varchar Certificate_Type_Code
         varchar Is_Reissue_Indicator
         date Certificate_Issue_Date
         date Revocation_Date
@@ -763,15 +762,14 @@ erDiagram
     }
 
     SP_License_Certificate_Type_Dimension {
-        string SP_License_Certificate_Type_Dimension_Id PK
-        varchar SP_License_Certificate_Type_Code
-        varchar SP_License_Certificate_Type_Unique_Key
-        varchar Certificate_Name
+        string Certificate_Type_Dimension_Id PK
+        varchar Certificate_Type_Code
+        varchar Certificate_Type_Name
         string Source_System_Code
     }
 ```
 
-> **Ghi chú erDiagram Nhóm 3:** Dùng chung schema với Nhóm 1a. Fact có FK đến `SP_License_Certificate_Type_Dimension` (không dùng `Classification_Dimension`): `Certificate_Type_Dimension_Id` — chiều lọc chính cho KPI K_NHNCK_17–22. `Certificate_Type_Unique_Key` lưu dư thừa (= CERTIFICATES.CERTIFICATE_CODE) để filter nhanh không cần join. Không có trường trạng thái CCHN — staging đã lọc chỉ bản ghi hiệu lực.
+> **Ghi chú erDiagram Nhóm 3:** Dùng chung schema với Nhóm 1a. Fact có FK đến `SP_License_Certificate_Type_Dimension` (không dùng `Classification_Dimension`): `Certificate_Type_Dimension_Id` — chiều lọc chính cho KPI K_NHNCK_17–22. `Certificate_Type_Code` lưu dư thừa (= CERTIFICATES.CERTIFICATE_CODE) để filter nhanh không cần join. Không có trường trạng thái CCHN — staging đã lọc chỉ bản ghi hiệu lực.
 
 **Lineage Mart → Báo cáo — Nhóm 3:**
 
@@ -943,9 +941,9 @@ flowchart LR
 | K_NHNCK_35 | Tuổi | Int | Derived | ETL-derived: `COALESCE(YEAR(brth_dt), CAST(brth_yr AS INT))` → tính `YEAR(CURRENT_DATE) − giá_trị_đó` khi populate bảng |
 | K_NHNCK_36 | Quốc tịch | Text | Base | `Securities Practitioner`.Nationality Code — ETL denormalize Nationality Name từ `Geographic Area` khi populate bảng |
 | K_NHNCK_37 | Số định danh / Hộ chiếu | Text | Base | `Involved Party Alternative Identification`.Identification Number — join qua `ip_id = securities_practitioner_id`, lấy bản ghi `Identification Type Code` = CCCD hoặc PASSPORT |
-| K_NHNCK_38 | Nơi công tác hiện tại | Text | Base | `Securities Practitioner`.Workplace — text tự do từ `Professionals.WORKPLACE` |
-| K_NHNCK_39 | Loại CCHN hiện tại | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Type Code + Name — CCHN trạng thái ACTIVE |
-| K_NHNCK_40 | Số CCHN hiện tại | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Number — CCHN trạng thái ACTIVE |
+| K_NHNCK_38 | Nơi công tác hiện tại | Text | Base | (Sửa 2026-07-20 — BA v2) `Securities Practitioner Organization Employment Report`.Practitioner Workplace At Report — lấy bản ghi báo cáo tổ chức mới nhất (MAX Report Date ≤ ETL date) |
+| K_NHNCK_39 | Loại CCHN hiện tại | Text | Base | (Sửa 2026-07-20 — BA v2) `Securities Practitioner Organization Employment Report`.Certificate Type Code + Name — lấy bản ghi báo cáo tổ chức mới nhất (MAX Report Date ≤ ETL date), không dùng `revocation_dt IS NULL` |
+| K_NHNCK_40 | Số CCHN hiện tại | Text | Base | (Sửa 2026-07-20 — BA v2) `Securities Practitioner Organization Employment Report`.Certificate Number At Report — lấy bản ghi báo cáo tổ chức mới nhất (MAX Report Date ≤ ETL date), không dùng `revocation_dt IS NULL` |
 | K_NHNCK_41 | Trạng thái NHNCK | Text | Base | `Securities Practitioner`.Practice Status Code — ETL denormalize Practice Status Name; 0=Chưa HN, 1=Đang HN, 2=Thu hồi cấp lại, 3=Thu hồi không cấp lại, 4=Có thời hạn |
 
 **Schema bảng tác nghiệp:**
@@ -971,7 +969,7 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema:** `Nationality_Name`, `Practice_Status_Name`, `Active_Certificate_Type_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng, không join ở query time. `Workplace` lấy trực tiếp từ `Professionals.WORKPLACE` (text tự do) — để tra nơi công tác theo báo cáo tổ chức chính thức, dùng `Operational Practitioner Employment History` (Nhóm 8). `Active_Certificate_Type_Code/Name`, `Active_Certificate_Number` (K_NHNCK_39, K_NHNCK_40): CCHN "ACTIVE" xác định qua `revocation_dt IS NULL` — Atomic không có cột status riêng cho hiệu lực CCHN (chỉ có `Process Status Code` là trạng thái workflow cấp phát, khác nghĩa).
+> **Ghi chú schema:** `Nationality_Name`, `Practice_Status_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng, không join ở query time. (Sửa 2026-07-20 — BA v2) `Workplace`, `Active_Certificate_Type_Code/Name`, `Active_Certificate_Number` (K_NHNCK_38/39/40): đổi nguồn từ `PROFESSIONALS.WORKPLACE`/Certificate Document sang `Securities Practitioner Organization Employment Report` — bảng này là Fact Append (mỗi bản ghi = 1 lần báo cáo tổ chức), lấy bản ghi mới nhất theo `MAX(Report Date) ≤ ETL date` để phản ánh đúng trạng thái công tác/CCHN hiện tại tại thời điểm populate. Lý do đổi: `revocation_dt IS NULL` chỉ xác định CCHN CHƯA bị thu hồi, không đảm bảo đây là CCHN đang được báo cáo hiện tại (1 NHN có thể có nhiều Certificate Number qua các lần cấp/cấp lại khác nhau). RECORD_STATUS/STATUS ở nguồn (system field xác định bản ghi LIVE) không cần lưu attribute riêng trên Atomic — Bronze→Atomic đã filter LIVE sẵn theo quy ước T24.
 
 **Lineage Mart → Báo cáo — Nhóm 5:**
 
@@ -1077,7 +1075,7 @@ flowchart LR
 > Atomic chính: `Securities Practitioner Organization Employment Report` (`sp_organization_employment_report`) ← NHNCK.ORGANIZATION_REPORTS — **READY**
 > Atomic phụ: `Securities Organization Reference` (`securities_organization_reference`) ← NHNCK.ORGANIZATIONS — join để lấy tên tổ chức và lọc loại hình CTCK
 > Atomic phụ (K_NHNCK_85): `Securities Company Shareholder` (`securities_company_shareholder`) ← SCMS.SC_FIRM_SHAREHOLDER — **READY**; `Sc Insider Related Person` (`sc_insider_related_person`) ← SCMS.SC_FIRM_INSIDER_RELATION — **READY**; `Involved Party Alternative Identification` (`ip_alternative_identification`, cả nguồn NHNCK và SCMS) — **READY**, dùng làm cầu nối xác định đúng NHN theo CCCD giữa 2 hệ nguồn
-> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. Panel "Tài khoản & Số dư" (VSDC/MSS) PENDING — không thiết kế bảng riêng, gom PENDING KPI vào bảng `Operational Practitioner Listed Company Role` (còn lại K_NHNCK_87/88/89). K_NHNCK_85 "Số lượng cổ phiếu sở hữu" đã xác nhận nguồn thật là SCMS (không phải VSDC) — chuyển READY, xem O_NHNCK_6. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `sp_organization_employment_report`).
+> Ghi chú: Panel "Vai trò tại DN niêm yết" và panel "Mạng lưới người liên quan" là 2 bảng tác nghiệp độc lập. Panel "Tài khoản & Số dư" (VSDC/MSS) PENDING — không thiết kế bảng riêng, gom PENDING KPI vào bảng `Operational Practitioner Listed Company Role` (còn lại K_NHNCK_87/88/89/103). K_NHNCK_85 "Số lượng cổ phiếu sở hữu" đã xác nhận nguồn thật là SCMS (không phải VSDC) — chuyển READY, xem O_NHNCK_6. Sửa tên attribute: `Workplace Name` → `Practitioner Workplace At Report`; `Position Name` → `Practitioner Position At Report` (theo YAML `sp_organization_employment_report`). (Sửa 2026-07-20) Attributes bổ sung 4 cột PENDING (`account_nbr`, `account_holder_nm`, `main_held_securities_code`, `vsdc_held_securities_vol`, `etl_logic_type=pending`) theo đúng convention Nhóm 12 — không đưa vào mermaid schema (chỉ track trong Attributes + bảng KPI, chờ Atomic VSDC/MSS).
 
 **Bảng KPI:**
 
@@ -1095,6 +1093,7 @@ flowchart LR
 | K_NHNCK_87 | Số tài khoản | Base | PENDING — nguồn VSDC/MSS chưa có Atomic | — | |
 | K_NHNCK_88 | Tên chủ tài khoản | Base | PENDING — nguồn VSDC/MSS chưa có Atomic | — | |
 | K_NHNCK_89 | Mã CK nắm giữ chính | Base | PENDING — nguồn VSDC chưa có Atomic | — | |
+| K_NHNCK_103 | Số lượng chứng khoán VSDC sở hữu (Cuối kỳ) | Base | PENDING — nguồn VSDC chưa có Atomic | — | (Thêm 2026-07-20) BA row 60, cùng nguồn `VSDC_BM 8` với K_NHNCK_89 — BA quên điền tên KPI ở cột "Thông tin", đã bổ sung theo "Trường nguồn" |
 
 **Schema bảng tác nghiệp:**
 
@@ -1222,6 +1221,7 @@ flowchart LR
 > Phân loại: **Tác nghiệp**
 > Atomic chính: `Securities Practitioner License Certificate Document` (`sp_license_certificate_document`) ← NHNCK.CertificateRecords — **READY**
 > Atomic phụ: `Securities Practitioner License Decision Document` (`sp_license_decision_document`) ← NHNCK.Decisions — join để lấy số quyết định cấp và thu hồi
+> Atomic phụ (K_NHNCK_43 — Sửa 2026-07-20): `Securities Practitioner Organization Employment Report` (`sp_organization_employment_report`) ← NHNCK.OrganizationReports — join qua FK `Securities Practitioner License Certificate Document Id` để lấy Certificate Number denormalized tại báo cáo gần nhất, theo đúng BA v2
 > Ghi chú: Cột "Trạng thái" trong Mockup (K_NHNCK_48) — **PENDING**, xem O_NHNCK_16.
 
 **Mockup:**
@@ -1238,8 +1238,8 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Nguồn | Ghi chú |
 |---|---|---|---|---|---|
-| K_NHNCK_43 | Số CCHN | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Number | Khai sinh tại Nhóm 9 |
-| K_NHNCK_44 | Loại hình hành nghề | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Type Code — ETL denormalize Certificate Type Name (scheme: CERTIFICATE_TYPE) khi populate bảng | Khai sinh tại Nhóm 9 |
+| K_NHNCK_43 | Số CCHN | Text | Base | (Sửa 2026-07-20 — BA v2) `Securities Practitioner Organization Employment Report`.Certificate Number At Report — bản ghi báo cáo gần nhất theo Report Date CỦA CHÍNH CCHN đang xét (join qua FK Certificate Document Id trên ORGANIZATION_REPORTS, không phải gần nhất của NHN) | Khai sinh tại Nhóm 9 |
+| K_NHNCK_44 | Loại hình hành nghề | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Type Code — ETL join `SP License Certificate Type` (Fundamental entity), denormalize Certificate Type Name khi populate bảng | Khai sinh tại Nhóm 9 |
 | K_NHNCK_45 | Ngày cấp | Date | Base | `Securities Practitioner License Certificate Document`.Issue Date | Khai sinh tại Nhóm 9 |
 | K_NHNCK_46 | Ngày thu hồi | Date | Base | `Securities Practitioner License Certificate Document`.Revocation Date — NULL nếu chưa thu hồi | Khai sinh tại Nhóm 9 |
 | K_NHNCK_47 | Số quyết định cấp | Text | Base | `Securities Practitioner License Certificate Document`.Issue License Decision Code — ETL join `Securities Practitioner License Decision Document`.Decision Number theo `issu_license_dcsn_code` khi populate bảng | Khai sinh tại Nhóm 9 |
@@ -1296,11 +1296,11 @@ flowchart LR
 
 **Mockup:**
 
-| Đợt thi | Ngày thi | Điểm luật | Điểm CM | KQ luật | KQ CM | Số quyết định công bố | Trạng thái |
-|---|---|---|---|---|---|---|---|
-| Đợt 1/2025 | 15/03/2025 | 82 | 85 | Đạt | Đạt | 45/QĐ-UBCK · 20/03/2025 | Đạt |
-| Đợt 2/2024 | 10/09/2023 | 45 | 58 | Không đạt | Không đạt | — | Không đạt |
-| Đợt 1/2023 | 18/03/2023 | 75 | 80 | Đạt | Đạt | 28/QĐ-UBCK · 25/03/2023 | Đạt |
+| Đợt thi | Ngày thi | Điểm luật | KQ luật | KQ CM | Số quyết định công bố | Trạng thái |
+|---|---|---|---|---|---|---|
+| Đợt 1/2025 | 15/03/2025 | 82 | Đạt | Đạt | 45/QĐ-UBCK · 20/03/2025 | Đạt |
+| Đợt 2/2024 | 10/09/2023 | 45 | Không đạt | Không đạt | — | Không đạt |
+| Đợt 1/2023 | 18/03/2023 | 75 | Đạt | Đạt | 28/QĐ-UBCK · 25/03/2023 | Đạt |
 
 **Source:** `Operational Practitioner Exam History` (Tác nghiệp)
 
@@ -1312,7 +1312,6 @@ flowchart LR
 | K_NHNCK_102 | Kỳ thi | Text | Derived | `Securities Practitioner Qualification Examination Assessment`.Report Year + Examination Session Number — ETL concat thành chuỗi hiển thị (VD: "2025_1") khi populate bảng | Khai sinh tại Nhóm 10 |
 | K_NHNCK_60 | Ngày thi | Date | Base | `Securities Practitioner Qualification Examination Assessment`.Examination Start Date | Khai sinh tại Nhóm 10 |
 | K_NHNCK_61 | Điểm thi luật | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Law Score | Khai sinh tại Nhóm 10 |
-| K_NHNCK_93 | Điểm thi chuyên môn | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Specialization Score | Khai sinh tại Nhóm 10 |
 | K_NHNCK_94 | Kết quả thi luật | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Law Result Code — ETL denormalize Law Result Name (scheme: EXAM_RESULT: -1=Không thi, 0=Không đạt, 1=Đạt) khi populate bảng | Khai sinh tại Nhóm 10 |
 | K_NHNCK_95 | Kết quả thi chuyên môn | Text | Base | `Securities Practitioner Qualification Examination Assessment Result`.Specialization Result Code — ETL denormalize Specialization Result Name (scheme: EXAM_RESULT) khi populate bảng | Khai sinh tại Nhóm 10 |
 | K_NHNCK_62 | Số quyết định công bố | Text | Base | `Securities Practitioner Qualification Examination Assessment`.License Decision Code — ETL join `Securities Practitioner License Decision Document`.Decision Number theo `license_dcsn_code` khi populate bảng; NULL nếu chưa có quyết định | Khai sinh tại Nhóm 10 |
@@ -1331,7 +1330,6 @@ erDiagram
         varchar Examination_Period
         date Examination_Start_Date
         varchar Law_Score
-        varchar Specialization_Score
         varchar Law_Result_Code
         varchar Law_Result_Name
         varchar Specialization_Result_Code
@@ -1354,7 +1352,7 @@ flowchart LR
         G1["Operational Practitioner Exam History"]
     end
     subgraph RPT["Bao cao - Nhom 10"]
-        R1["K_NHNCK_59-63,93-95,103: Dot thi sat hach"]
+        R1["K_NHNCK_59-63,94-95,102: Dot thi sat hach"]
     end
     G1 --> R1
 ```
@@ -1514,7 +1512,7 @@ flowchart LR
 > Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
 > Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
 > Atomic: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
-> Ghi chú: Bảng flat denormalized ETL trực tiếp từ Atomic — không khai thác qua Fact/Dim. Grain = 1 CCHN per NHN (latest active state). Slicer Loại chứng chỉ và Trạng thái filter trực tiếp trên `Certificate_Type_Code` và `Certificate_Status_Code` trong bảng này.
+> Ghi chú: Bảng flat denormalized ETL trực tiếp từ Atomic — không khai thác qua Fact/Dim. (Sửa 2026-07-20) Grain = 1 CCHN per NHN — **toàn bộ CCHN** (không lọc chỉ CCHN active), giống Nhóm 9. Lý do: 1 NHN có thể có nhiều CCHN đồng thời (Môi giới + Phân tích + QLQ) — nếu gộp về 1 dòng/NHN, slicer "Loại hình" sẽ không hiển thị đúng khi NHN có nhiều loại CCHN. BA không có điều kiện lọc `revocation_dt`/active nào cho Nhóm này. Slicer Loại chứng chỉ và Trạng thái filter trực tiếp trên `Certificate_Type_Code` và `Practice_Status_Code` trong bảng này.
 
 **Mockup:**
 
@@ -1534,7 +1532,7 @@ flowchart LR
 | K_NHNCK_68 | Tên cán bộ | Text | Base | `Securities Practitioner`.Full Name |
 | K_NHNCK_69 | Số CCHN | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Number |
 | K_NHNCK_70 | Loại hình hành nghề | Text | Base | `Securities Practitioner License Certificate Document`.Certificate Type Code — ETL denormalize Certificate Type Name khi populate bảng |
-| K_NHNCK_71 | Công ty (nơi công tác hiện tại) | Text | Base | `Securities Practitioner Organization Employment Report`.Securities Organization Code — bản report mới nhất có Termination Date = NULL, ETL lookup Organization Name từ `Securities Organization Reference` |
+| K_NHNCK_71 | Công ty (nơi công tác hiện tại) | Text | Base | `Securities Practitioner Organization Employment Report` → `Securities Organization Reference`.Securities Organization Reference Name (`current_organization_nm`) — bản report mới nhất có Termination Date = NULL |
 | K_NHNCK_72 | Ngày cấp CCHN | Date | Base | `Securities Practitioner License Certificate Document`.Certificate Issue Date |
 | K_NHNCK_73 | Trạng thái NHN | Text | Base | `Securities Practitioner`.Practice Status Code (`securities_practitioner_dim.practice_status_code`) ← `PROFESSIONALS.STATUS_WORK` (scheme: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại) |
 | K_NHNCK_74 | Tổng số kết quả (NHN) | Int | Phái sinh | COUNT(DISTINCT Practitioner Code) sau khi áp slicer — hiển thị "KẾT QUẢ: N NHN" |
@@ -1628,7 +1626,7 @@ graph TB
 | `Operational Practitioner Certificate History` | 1 CCHN per NHN | K_NHNCK_43–48 READY; K_NHNCK_92 (Số quyết định thu hồi) READY | READY |
 | `Operational Practitioner Employment History` | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90 (Phân loại tổ chức), K_NHNCK_91 (Phòng ban) | READY |
 | `Operational Practitioner Violation History` | 1 vi phạm per NHN | K_NHNCK_54, K_NHNCK_55, K_NHNCK_56 READY; K_NHNCK_57 PENDING (O_NHNCK_17 — Atomic thiếu field Record Type Code); K_NHNCK_58 PENDING (O_NHNCK_15 — trường kỹ thuật) | PARTIAL |
-| `Operational Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_93 (Điểm CM), K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_102 (Kỳ thi) READY | READY |
+| `Operational Practitioner Exam History` | 1 lần thi per NHN | K_NHNCK_59–63 READY; K_NHNCK_94 (KQ luật), K_NHNCK_95 (KQ CM), K_NHNCK_102 (Kỳ thi) READY. (Sửa 2026-07-20) K_NHNCK_93 (Điểm CM) đã xóa — BA v2 không còn yêu cầu field này | READY |
 | `Operational Practitioner Training History` | 1 enrollment per NHN | K_NHNCK_100, K_NHNCK_96, K_NHNCK_97, K_NHNCK_98, K_NHNCK_99, K_NHNCK_66 READY; K_NHNCK_67 PENDING (O_NHNCK_9 — chờ Atomic entity cho `POST_CERT_TRAINING_RESULTS`) | PARTIAL |
 | `Operational Practitioner Related Party Profile` | 1 người liên quan per NHN | K_NHNCK_75–80 READY; K_NHNCK_86 (Địa chỉ) READY | READY |
 | `Operational Practitioner Listed Company Role` | 1 vai trò per NHN per DN niêm yết | K_NHNCK_81–85 READY; K_NHNCK_87–89 PENDING (VSDC/MSS) | PARTIAL |
@@ -1640,7 +1638,8 @@ graph TB
 |---|---|---|---|---|
 | `Calendar Date Dimension` | Conformed | Lịch ngày — năm/quý/tháng/ngày | — | READY |
 | `Securities Practitioner Dimension` | Reference per module (SCD4A) | NHN — định danh, trình độ, quốc tịch, ngày sinh, trạng thái | — | READY |
-| `Classification Dimension` | Conformed | Danh mục phân loại — toàn bộ `cv` Atomic. PK surrogate `cl_dim_id`. BK: `(scm_code, cl_code)`. Fact join qua surrogate Id, lưu dư thừa Code field | CERTIFICATE_TYPE, CERTIFICATE_STATUS, CONDUCT_VIOLATION_TYPE, VIOLATION_STATUS | READY |
+| `SP License Certificate Type Dimension` | Reference per module (SCD4A) | Loại CCHN (Môi giới, Phân tích, QLQ...) — Fundamental entity riêng, nguồn `NHNCK.CERTIFICATES` (Atomic: `sp_license_certificate_type`). Không còn là Classification Value scheme (scheme `CERTIFICATE_TYPE`/`NHNCK_CERTIFICATE_TYPE` đã bị xóa khỏi `classification_schemes.yaml` từ 2026-07-07) | — | READY |
+| `Classification Dimension` | Conformed | Danh mục phân loại — toàn bộ `cv` Atomic. PK surrogate `cl_dim_id`. BK: `(scm_code, cl_code)`. Fact join qua surrogate Id, lưu dư thừa Code field | CERTIFICATE_STATUS, CONDUCT_VIOLATION_TYPE, VIOLATION_STATUS | READY |
 
 ---
 
@@ -1650,6 +1649,7 @@ graph TB
 |---|---|---|---|
 | Calendar Date Dimension | cdr_dt_dim | new | Module đầu tiên — NHNCK thiết kế bảng này |
 | Securities Practitioner Dimension | securities_practitioner_dim | new | Chưa có trong datamart_model.yaml |
+| SP License Certificate Type Dimension | sp_license_certificate_type_dim | new | Khai sinh chính thức (2026-07-20) — trước đó chỉ xuất hiện trong mermaid/mô tả HLD, chưa có trong Entities.csv/datamart_model.yaml. Atomic nguồn `sp_license_certificate_type` (`DataModel/working/Atomic`) coi là READY theo quy ước Datamart |
 | Fact Practitioner License Certificate Snapshot | fct_practitioner_license_certificate_snpst | new | Chưa có trong datamart_model.yaml |
 | Fact Practitioner Daily Snapshot | fct_practitioner_daily_snpst | new | Chưa có trong datamart_model.yaml |
 | Classification Dimension | cl_dim | new | Chưa có trong datamart_model.yaml |
@@ -1686,3 +1686,4 @@ graph TB
 | O_NHNCK_15 | (Sửa 2026-07-17) K_NHNCK_58 "Trạng thái vi phạm": BA mapping về `VIOLATIONS.STATUS` (tên cột đúng theo BRD source là `STATUS`, không phải `RECORD_STATUS`) — chỉ có 2 giá trị kỹ thuật (1=Đang hoạt động/Hiệu lực, 0=Không hoạt động) xác định trạng thái bản ghi T24, không phải thông tin nghiệp vụ 6 trạng thái BA yêu cầu. Chờ BA xác nhận trường nghiệp vụ thay thế. (K_NHNCK_101 (cũ) tách ra — xem O_NHNCK_12, đã xóa và reuse K_NHNCK_66, không còn liên quan issue này. Lưu ý: sau renumber, "K_NHNCK_101" hiện dùng cho KPI khác — "Mã định danh".) | K_NHNCK_58 PENDING. | K_NHNCK_58 | Open |
 | O_NHNCK_16 | (Phát hiện review 2026-07-16) K_NHNCK_48 "Trạng thái CCHN" (Nhóm 9): BA ghi nguồn `CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS` (scheme 0-5: Chưa sử dụng/Đang sử dụng/Thu hồi có cấp lại/Thu hồi không cấp lại/Đã hủy/Hết hiệu lực — khớp đúng ý nghĩa Mockup "Đang hiệu lực/Thu hồi 3 năm/Thu hồi vĩnh viễn"), nhưng thiết kế trước đó dùng nhầm `Process Status Code` (scheme LICENSE_CERTIFICATE_PROCESS_STATUS: Đã cấp/Đã ký nháy/Đã ký/Đã trả — trạng thái workflow xử lý hồ sơ, khác ý nghĩa hoàn toàn). `CERTIFICATE_RECORD_STATUS_HISTORIES` đang out-of-scope Atomic (bảng audit log, xem `NHNCK_HLD_Human_Review.txt` dòng 35). | K_NHNCK_48 chuyển PENDING — chờ Atomic bổ sung entity cho `CERTIFICATE_RECORD_STATUS_HISTORIES`. | K_NHNCK_48 | Open |
 | O_NHNCK_17 | (Phát hiện review 2026-07-17) K_NHNCK_57 "Hình thức xử phạt" (Nhóm 12): thiết kế trước đó ghi nguồn `Securities Practitioner Conduct Violation.Record Type Code` (`record_tp_code`, scheme RECORD_TYPE) và đánh READY — nhưng Atomic entity `sp_conduct_violation` (YAML approved, NHNCK.VIOLATIONS) thực tế **không có** field `record_tp_code` (chỉ có 10 attribute: Id/Code, Source System Code, Practitioner Id/Code, License Decision Document Id/Code, Practitioner Name/Birth Date/Identity Number At Violation, Violation Record Date, Note). BA gốc ghi nguồn `VIOLATIONS.TYPE` (scheme: 1=Hành chính, 2=Pháp luật). Cần bổ sung Atomic attribute cho `VIOLATIONS.TYPE` trước khi thiết kế lại Datamart mapping. | K_NHNCK_57 chuyển PENDING — chờ Atomic bổ sung field cho `VIOLATIONS.TYPE`. | K_NHNCK_57 | Open |
+| O_NHNCK_18 | (Phát hiện review 2026-07-20) `SP License Certificate Type Dimension` — Atomic nguồn `sp_license_certificate_type` (NHNCK.CERTIFICATES, `DataModel/working/Atomic`) đã đổi pattern Id+Code+Unique Key → Id+Code (2026-07-13; Code nay = `sp_license_certificate_type_code` thay ID cũ) — coi là READY theo quy ước Datamart (working = đã review, chỉ chờ designer sign-off hành chính). Dimension đã có mermaid/grain trong HLD Section 3 nhưng chưa được khai sinh chính thức trong Entities.csv/datamart_model.yaml — đã bổ sung (2026-07-20). 5 dòng Attributes (`opr_practitioner_certificate_hist`, `opr_practitioner_data_explorer`, `opr_practitioner_360_profile` x2, `fct_practitioner_license_certificate_snpst`) đang tham chiếu `sp_license_certificate_type_unique_key` — cột không tồn tại trong Atomic YAML, đã sửa về `sp_license_certificate_type_code`. | Đã khai sinh Dimension + sửa Attributes map đúng cột. K_NHNCK_17/18/19/39/44/70 READY. | K_NHNCK_17, K_NHNCK_18, K_NHNCK_19, K_NHNCK_39, K_NHNCK_44, K_NHNCK_70 | Closed |

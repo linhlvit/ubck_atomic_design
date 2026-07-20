@@ -9,7 +9,7 @@
 -- ============================================================
 -- 1. FACT: nhnck_fct_practitioner_license_certificate_snpst_flat
 --    Periodic Snapshot CCHN × tháng
---    Joins: Calendar Date (snpst_dt JOIN + issue_dt LEFT JOIN) × securities_practitioner_dim × classification_dim ×2
+--    Joins: Calendar Date (snpst_dt JOIN + issue_dt LEFT JOIN) × securities_practitioner_dim × sp_license_certificate_type_dim
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_snpst_flat ON CLUSTER 'my_cluster'
 (
@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     snpst_dt_dim_id                 String              COMMENT 'FK → Calendar Date Dimension (ngày snapshot)',
     certificate_tp_dim_id           String              COMMENT 'FK → SP License Certificate Type Dimension',
     license_certificate_document_code    String              COMMENT 'DD — BK CCHN',
-    certificate_tp_unique_key       String              COMMENT 'Mã loại CCHN — dư thừa để filter/display nhanh',
-    allow_reissue_indicator         String              COMMENT 'Cho phép cấp lại (Y/N)',
+    certificate_tp_code             String              COMMENT 'Mã loại CCHN — dư thừa để filter/display nhanh',
     is_reissue_indicator            String              COMMENT 'Là CCHN cấp lại (Y/N)',
     certificate_issue_dt            Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt                   Nullable(Date)      COMMENT 'Ngày thu hồi CCHN — NULL nếu chưa thu hồi',
@@ -40,16 +39,14 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
     practitioner_birth_dt           Nullable(Date)      COMMENT 'Ngày sinh — từ Securities Practitioner Dimension',
     practitioner_practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — từ Securities Practitioner Dimension',
 
-    -- From: CLASSIFICATION DIMENSION (Certificate Type)
-    certificate_tp_scm_code         Nullable(String)    COMMENT 'Mã scheme loại CCHN — từ Classification Dimension',
-    certificate_tp_scm_nm           Nullable(String)    COMMENT 'Tên scheme loại CCHN — từ Classification Dimension',
-    certificate_tp_cl_code          Nullable(String)    COMMENT 'Mã loại CCHN — từ Classification Dimension',
-    certificate_tp_cl_nm            Nullable(String)    COMMENT 'Tên loại CCHN — từ Classification Dimension'
+    -- From: SP LICENSE CERTIFICATE TYPE DIMENSION
+    certificate_tp_dim_code         Nullable(String)    COMMENT 'Mã loại CCHN — từ SP License Certificate Type Dimension',
+    certificate_tp_dim_nm           Nullable(String)    COMMENT 'Tên loại CCHN — từ SP License Certificate Type Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), license_certificate_document_code)
-COMMENT 'Flat table — Fact Practitioner License Certificate Snapshot × Calendar Date × Securities Practitioner Dimension × Classification Dimension'
+COMMENT 'Flat table — Fact Practitioner License Certificate Snapshot × Calendar Date × Securities Practitioner Dimension × SP License Certificate Type Dimension'
 ;
 
 
@@ -100,7 +97,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON C
     workplace_nm        Nullable(String)    COMMENT 'Nơi công tác hiện tại',
     practice_status_code    Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTITIONER_PRACTICE_STATUS',
     practice_status_nm      Nullable(String)    COMMENT 'Tên trạng thái hành nghề',
-    active_certificate_tp_code    Nullable(String)    COMMENT 'Loại CCHN hiện tại — scheme: CERTIFICATE_TYPE',
+    active_certificate_tp_code    Nullable(String)    COMMENT 'Loại CCHN hiện tại — SP License Certificate Type (Fundamental entity, không phải Classification)',
     active_certificate_tp_nm      Nullable(String)    COMMENT 'Tên loại CCHN hiện tại',
     active_certificate_nbr        Nullable(String)    COMMENT 'Số CCHN hiện tại',
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
@@ -153,6 +150,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_list_company_role_fla
     employment_status           Nullable(String)    COMMENT 'Trạng thái vai trò (Active/Inactive)',
     hire_dt                 Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
     termination_dt                  Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
+    shares_held              Nullable(Int64)     COMMENT 'Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu không phải cổ đông/người nội bộ',
     src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -171,7 +169,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_certificate_hist_flat
     practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
     license_certificate_document_code    String              COMMENT 'PK (2/2) — Mã CCHN',
     certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
-    certificate_tp_code             Nullable(String)    COMMENT 'Loại CCHN — scheme: CERTIFICATE_TYPE',
+    certificate_tp_code             Nullable(String)    COMMENT 'Loại CCHN — SP License Certificate Type (Fundamental entity, không phải Classification)',
     certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại CCHN',
     issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     revocation_dt           Nullable(Date)      COMMENT 'Ngày thu hồi — NULL nếu chưa thu hồi',
@@ -251,7 +249,6 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_exam_hist_flat ON CLU
     examination_period                 Nullable(String)    COMMENT 'Kỳ thi dạng chuỗi (VD: 2025_1)',
     examination_start_dt                Nullable(Date)      COMMENT 'Ngày thi',
     law_score                    Nullable(String)    COMMENT 'Điểm thi pháp luật',
-    specialization_score         Nullable(String)    COMMENT 'Điểm thi chuyên môn',
     law_result_code               Nullable(String)    COMMENT 'Kết quả thi pháp luật — scheme: EXAM_RESULT',
     law_result_nm                 Nullable(String)    COMMENT 'Tên kết quả thi pháp luật',
     specialization_result_code    Nullable(String)    COMMENT 'Kết quả thi chuyên môn — scheme: EXAM_RESULT',
@@ -304,7 +301,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON
     license_certificate_document_code    String              COMMENT 'PK (2/2) — Mã CCHN',
     full_nm                 Nullable(String)    COMMENT 'Họ tên NHN',
     certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
-    certificate_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — scheme: CERTIFICATE_TYPE',
+    certificate_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — SP License Certificate Type (Fundamental entity, không phải Classification)',
     certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại hình hành nghề',
     practice_status_code        Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTITIONER_PRACTICE_STATUS',
     issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
