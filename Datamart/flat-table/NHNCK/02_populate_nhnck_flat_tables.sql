@@ -21,8 +21,7 @@ SELECT
     f.snpst_dt_dim_id,
     f.certificate_tp_dim_id,
     f.license_certificate_document_code,
-    f.certificate_tp_unique_key,
-    f.allow_reissue_indicator,
+    f.certificate_tp_code,
     f.is_reissue_indicator,
     f.certificate_issue_dt,
     f.revocation_dt,
@@ -42,11 +41,9 @@ SELECT
     prac_dim.birth_dt                   AS practitioner_birth_dt,
     prac_dim.practice_status_code       AS practitioner_practice_status_code,
 
-    -- From: CLASSIFICATION DIMENSION (Certificate Type)
-    certificate_tp_cls.scm_code         AS certificate_tp_scm_code,
-    certificate_tp_cls.scm_nm           AS certificate_tp_scm_nm,
-    certificate_tp_cls.cl_code          AS certificate_tp_cl_code,
-    certificate_tp_cls.cl_nm            AS certificate_tp_cl_nm
+    -- From: SP LICENSE CERTIFICATE TYPE DIMENSION
+    certificate_tp_dim.certificate_tp_code   AS certificate_tp_dim_code,
+    certificate_tp_dim.certificate_tp_nm     AS certificate_tp_dim_nm
 
 FROM datamart.fct_practitioner_license_certificate_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
@@ -55,8 +52,8 @@ LEFT JOIN datamart.cdr_dt_dim issu_cal
     ON issu_cal.cdr_dt_dim_id = f.issue_dt_dim_id
 LEFT JOIN datamart.securities_practitioner_dim prac_dim
     ON prac_dim.securities_practitioner_dim_id = f.practitioner_dim_id
-LEFT JOIN datamart.classification_dim certificate_tp_cls
-    ON certificate_tp_cls.cl_dim_id = f.certificate_tp_dim_id
+LEFT JOIN datamart.sp_license_certificate_type_dim certificate_tp_dim
+    ON certificate_tp_dim.certificate_tp_dim_id = f.certificate_tp_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
@@ -155,6 +152,7 @@ SELECT
     o.employment_status,
     o.hire_dt,
     o.termination_dt,
+    o.shares_held,
     o.src_stm_code
 FROM datamart.opr_practitioner_list_company_role o
 ;
@@ -237,7 +235,6 @@ SELECT
     o.examination_period,
     o.examination_start_dt,
     o.law_score,
-    o.specialization_score,
     o.law_result_code,
     o.law_result_nm,
     o.specialization_result_code,

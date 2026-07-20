@@ -39,7 +39,7 @@ entities:
     module: "SHARED"
     status: "draft"
     reuse_status: "new"
-    description: "Lịch ngày — năm/quý/tháng/ngày lễ. Conformed Dim dùng chung toàn Datamart. Grain: 1 ngày."
+    description: "Lịch ngày — năm/quý/tháng/ngày nghỉ. Conformed Dim dùng chung toàn Datamart. Grain: 1 ngày."
     source_atomic:
       - "cdr_dt"
     modules_using:
@@ -115,18 +115,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "(Sửa 2026-07-17) Cờ ngày lễ — Y nếu là ngày nghỉ lễ, N nếu không"
+        description: "(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không phân biệt loại nghỉ. Atomic cdr_dt hiện chỉ có Holiday Flag (hol_f — public holiday); ETL tạm map trực tiếp, chờ Atomic bổ sung nếu cần phân biệt thêm loại ngày nghỉ khác"
         source_atomic_table: "cdr_dt"
-        source_atomic_column: "cdr_dt.holiday_flag"
-      - logical_name: "Holiday Name"
-        physical_name: "holiday_nm"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: true
-        key: ""
-        description: "Tên ngày lễ — NULL nếu không phải ngày lễ"
-        source_atomic_table: "cdr_dt"
-        source_atomic_column: "cdr_dt.holiday_nm"
+        source_atomic_column: "cdr_dt.hol_f"
 
   - id: "DTM-securities_practitioner_dim"
     logical_name: "Securities Practitioner Dimension"
@@ -213,6 +204,56 @@ entities:
         description: "Mã hệ thống nguồn — ETL-derived"
         source_atomic_table: "securities_practitioner"
         source_atomic_column: "securities_practitioner.src_stm_code"
+
+  - id: "DTM-sp_license_certificate_type_dim"
+    logical_name: "SP License Certificate Type Dimension"
+    datamart_table: "sp_license_certificate_type_dim"
+    table_type: "dim"
+    module: "NHNCK"
+    status: "approved"
+    reuse_status: "new"
+    description: "Loại CCHN (Môi giới, Phân tích, QLQ...) — Fundamental entity riêng, không phải Classification Value. SCD4A (current state). Grain: 1 loại CCHN. Atomic nguồn sp_license_certificate_type (NHNCK.CERTIFICATES, DataModel/working/Atomic)."
+    source_atomic:
+      - "sp_license_certificate_type"
+    modules_using:
+      - "NHNCK"
+    columns:
+      - logical_name: "Certificate Type Dimension Id"
+        physical_name: "certificate_tp_dim_id"
+        data_domain: "Surrogate Key"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — Driving: sp_license_certificate_type (NHNCK.CERTIFICATES)"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Certificate Type Code"
+        physical_name: "certificate_tp_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "NK"
+        description: "NK — mã loại CCHN, dùng để join từ Fact/Operational"
+        source_atomic_table: "sp_license_certificate_type"
+        source_atomic_column: "sp_license_certificate_type.sp_license_certificate_type_code"
+      - logical_name: "Certificate Type Name"
+        physical_name: "certificate_tp_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Tên loại CCHN (VD: Môi giới, Phân tích, QLQ)"
+        source_atomic_table: "sp_license_certificate_type"
+        source_atomic_column: "sp_license_certificate_type.certificate_nm"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn — ETL-derived"
+        source_atomic_table: "sp_license_certificate_type"
+        source_atomic_column: "sp_license_certificate_type.src_stm_code"
 
   - id: "DTM-cl_dim"
     logical_name: "Classification Dimension"
@@ -329,7 +370,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK → SP License Certificate Type Dimension"
-        description: "FK loại CCHN — lookup sp_license_certificate_type_dim qua sp_license_certificate_type_unique_key"
+        description: "FK loại CCHN — lookup sp_license_certificate_type_dim qua sp_license_certificate_type_code"
         source_atomic_table: "sp_license_certificate_document"
         source_atomic_column: "sp_license_certificate_document.sp_license_certificate_type_code"
       - logical_name: "License Certificate Document Code"
@@ -341,8 +382,8 @@ entities:
         description: "DD — BK CCHN; đơn vị đếm COUNT(DISTINCT ...)"
         source_atomic_table: "sp_license_certificate_document"
         source_atomic_column: "sp_license_certificate_document.sp_license_certificate_document_code"
-      - logical_name: "Certificate Type Unique Key"
-        physical_name: "certificate_tp_unique_key"
+      - logical_name: "Certificate Type Code"
+        physical_name: "certificate_tp_code"
         data_domain: "Text"
         data_type: "string"
         nullable: false
@@ -398,7 +439,8 @@ entities:
     source_atomic:
       - "securities_practitioner"
       - "ip_alt_identn"
-      - "sp_license_certificate_document"
+      - "sp_organization_employment_report"
+      - "sp_license_certificate_type"
       - "cv"
     modules_using:
       - "NHNCK"
@@ -472,9 +514,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Nơi công tác hiện tại — text tự do từ PROFESSIONALS.WORKPLACE"
-        source_atomic_table: "securities_practitioner"
-        source_atomic_column: "securities_practitioner.workplace_nm"
+        description: "(Sửa 2026-07-20) Nơi công tác hiện tại — lấy từ báo cáo tổ chức mới nhất (MAX Report Date ≤ ETL date), không phải PROFESSIONALS.WORKPLACE"
+        source_atomic_table: "sp_organization_employment_report"
+        source_atomic_column: "sp_organization_employment_report.practitioner_workplace_at_rpt"
       - logical_name: "Practice Status Code"
         physical_name: "practice_status_code"
         data_domain: "Classification Value"
@@ -499,16 +541,16 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã loại CCHN (= CERTIFICATES.CERTIFICATE_CODE) — chỉ CCHN đang hiệu lực (revocation_dt IS NULL)"
-        source_atomic_table: "sp_license_certificate_type"
-        source_atomic_column: "sp_license_certificate_type.sp_license_certificate_type_unique_key"
+        description: "(Sửa 2026-07-20) Mã loại CCHN — lấy từ báo cáo tổ chức mới nhất (MAX Report Date ≤ ETL date), không phải Certificate Document lọc revocation_dt IS NULL"
+        source_atomic_table: "sp_organization_employment_report"
+        source_atomic_column: "sp_organization_employment_report.sp_license_certificate_type_code"
       - logical_name: "Active Certificate Type Name"
         physical_name: "active_certificate_tp_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên loại CCHN (= CERTIFICATES.CERTIFICATE_NAME) — chỉ CCHN đang hiệu lực (revocation_dt IS NULL)"
+        description: "(Sửa 2026-07-20) Tên loại CCHN — denormalize từ SP License Certificate Type theo Certificate Type Code lấy từ báo cáo tổ chức mới nhất"
         source_atomic_table: "sp_license_certificate_type"
         source_atomic_column: "sp_license_certificate_type.certificate_nm"
       - logical_name: "Active Certificate Number"
@@ -517,9 +559,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số CCHN (= CERTIFICATE_RECORDS.CERTIFICATE_NUMBER) — chỉ CCHN đang hiệu lực (revocation_dt IS NULL)"
-        source_atomic_table: "sp_license_certificate_document"
-        source_atomic_column: "sp_license_certificate_document.certificate_nbr"
+        description: "(Sửa 2026-07-20) Số CCHN — lấy từ báo cáo tổ chức mới nhất (MAX Report Date ≤ ETL date), không phải Certificate Document lọc revocation_dt IS NULL"
+        source_atomic_table: "sp_organization_employment_report"
+        source_atomic_column: "sp_organization_employment_report.certificate_nbr_at_rpt"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -813,6 +855,42 @@ entities:
         description: "(Bổ sung 2026-07-17) Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu NHN không phải cổ đông/người nội bộ của DN niêm yết đang xét. Join qua ip_alternative_identification (NHNCK CCCD = SCMS NATIONAL_ID) → sc_insider_related_person → securities_company_shareholder"
         source_atomic_table: "securities_company_shareholder"
         source_atomic_column: "securities_company_shareholder.shares_held"
+      - logical_name: "Account Number"
+        physical_name: "account_nbr"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "(Thêm 2026-07-20) PENDING (K_NHNCK_87 — Số tài khoản) — nguồn VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản, VSDC/MSS chưa có Atomic entity"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Account Holder Name"
+        physical_name: "account_holder_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "(Thêm 2026-07-20) PENDING (K_NHNCK_88 — Tên chủ tài khoản) — nguồn VSDC_BM 5_Thông tin và danh tính NĐT mở tài khoản, VSDC/MSS chưa có Atomic entity"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Main Held Securities Code"
+        physical_name: "main_held_securities_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "(Thêm 2026-07-20) PENDING (K_NHNCK_89 — Mã CK nắm giữ chính) — nguồn VSDC_BM 8_Danh sách cổ đông lớn, VSDC chưa có Atomic entity"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "VSDC Held Securities Volume"
+        physical_name: "vsdc_held_securities_vol"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "(Thêm 2026-07-20) PENDING (K_NHNCK_103 — Số lượng chứng khoán VSDC sở hữu Cuối kỳ) — nguồn VSDC_BM 8_Danh sách cổ đông lớn, VSDC chưa có Atomic entity"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -949,6 +1027,7 @@ entities:
     source_atomic:
       - "sp_license_certificate_document"
       - "sp_license_decision_document"
+      - "sp_organization_employment_report"
       - "cv"
     modules_using:
       - "NHNCK"
@@ -977,9 +1056,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số CCHN"
-        source_atomic_table: "sp_license_certificate_document"
-        source_atomic_column: "sp_license_certificate_document.certificate_nbr"
+        description: "(Sửa 2026-07-20) Số CCHN — lấy từ báo cáo tổ chức gần nhất CỦA CHÍNH CCHN đang xét (join qua FK Certificate Document Id trên ORGANIZATION_REPORTS), không phải direct từ Certificate Document"
+        source_atomic_table: "sp_organization_employment_report"
+        source_atomic_column: "sp_organization_employment_report.certificate_nbr_at_rpt"
       - logical_name: "Certificate Type Code"
         physical_name: "certificate_tp_code"
         data_domain: "Text"
@@ -988,7 +1067,7 @@ entities:
         key: ""
         description: "Mã loại hình hành nghề (= CERTIFICATES.CERTIFICATE_CODE)"
         source_atomic_table: "sp_license_certificate_type"
-        source_atomic_column: "sp_license_certificate_type.sp_license_certificate_type_unique_key"
+        source_atomic_column: "sp_license_certificate_type.sp_license_certificate_type_code"
       - logical_name: "Certificate Type Name"
         physical_name: "certificate_tp_nm"
         data_domain: "Text"
@@ -1132,15 +1211,6 @@ entities:
         description: "Điểm thi pháp luật"
         source_atomic_table: "sp_qualification_examination_assessment_result"
         source_atomic_column: "sp_qualification_examination_assessment_result.law_score"
-      - logical_name: "Specialization Score"
-        physical_name: "specialization_score"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: true
-        key: ""
-        description: "Điểm thi chuyên môn"
-        source_atomic_table: "sp_qualification_examination_assessment_result"
-        source_atomic_column: "sp_qualification_examination_assessment_result.specialization_score"
       - logical_name: "Law Result Code"
         physical_name: "law_result_code"
         data_domain: "Classification Value"
@@ -1506,7 +1576,7 @@ entities:
         key: ""
         description: "Mã loại hình hành nghề (= CERTIFICATES.CERTIFICATE_CODE) — slicer Loại hình filter trên cột này"
         source_atomic_table: "sp_license_certificate_type"
-        source_atomic_column: "sp_license_certificate_type.sp_license_certificate_type_unique_key"
+        source_atomic_column: "sp_license_certificate_type.sp_license_certificate_type_code"
       - logical_name: "Certificate Type Name"
         physical_name: "certificate_tp_nm"
         data_domain: "Text"
