@@ -25,8 +25,8 @@ description: |
   - [`reference/review_checklist.md`](reference/review_checklist.md) — checklist chi tiết 3 lớp HLD/Attributes/Detail Mapping
   - [`reference/issue_classification.md`](reference/issue_classification.md) — phân loại vấn đề và hành động tương ứng
 - **Skills liên quan (gọi khi cần):**
-  - `datamart-hld-design` — gọi khi nhóm HLD = PENDING nhưng BA = Done (cần thiết kế mới)
-  - `datamart-lld-design` — gọi khi logic BA thay đổi (cần cập nhật Attributes hoặc Detail Mapping)
+  - `datamart-hld-design` — gọi khi nhóm HLD = PENDING nhưng BA = Done (cần thiết kế mới), HOẶC khi HLD đã tồn tại nhưng sai do thiết kế/nguồn Atomic lỗi thời (Kịch bản D) — mọi thay đổi nội dung nghiệp vụ của HLD đều qua skill này, không tự Edit trực tiếp
+  - `datamart-lld-design` — gọi khi logic BA thay đổi (cần cập nhật Attributes hoặc Detail Mapping), HOẶC bất kỳ thay đổi nội dung nào vào Attributes/Detail Mapping/`datamart_model.yaml` (registry) — không tự Edit trực tiếp
 
 ---
 
@@ -53,13 +53,20 @@ Không so sánh BA trực tiếp với Datamart mà bỏ qua lớp Atomic.
 
 **Quy tắc bổ sung — không tin theo Attributes ghi gì, phải verify Atomic YAML thật:** Attributes ghi `atomic_table.atomic_column` không có nghĩa là field đó thực sự tồn tại trong Atomic approved. Một KPI có thể bị đánh dấu READY suốt nhiều tuần dù field tham chiếu chưa từng có trong YAML — vì không ai đối chiếu ngược lại approved YAML mà chỉ tin theo những gì Attributes/Detail Mapping đã ghi. Khi review Lớp 2, **luôn mở YAML approved và đếm số attribute thật** trước khi chấp nhận 1 cột Done/READY là đúng — không suy luận từ tên cột "nghe hợp lý" (VD: `record_tp_code`, `record_status_code` nghe rất hợp lý cho 1 entity Violation nhưng có thể chưa từng được thiết kế).
 
-### Phân biệt 3 kịch bản phát hiện vấn đề
+### Phân biệt 4 kịch bản phát hiện vấn đề
 
 | Kịch bản | Dấu hiệu | Hành động |
 |---|---|---|
 | **A — HLD thiếu / PENDING, BA đã Done** | HLD status = PENDING hoặc nhóm chưa có trong HLD, BA = Done với nguồn đầy đủ | Gọi `datamart-hld-design` để thiết kế/cập nhật |
 | **B — Logic BA thay đổi** | BA cập nhật công thức/nguồn/filter mới, Attributes hoặc Detail Mapping chưa phản ánh | Gọi `datamart-lld-design` để sửa LLD |
-| **C — Lỗi thiết kế** | Attributes/Detail Mapping sai về kỹ thuật (sai type, sai key, thiếu cột...) không liên quan BA thay đổi | Sửa trực tiếp file LLD tương ứng |
+| **C — Lỗi kỹ thuật thuần cấu trúc** | Lỗi không đụng logic nghiệp vụ/nguồn dữ liệu — thiếu Section, heading sai cấp, bảng KPI thiếu cột, CSV lệch cột do sed/replace_all... (Attributes/Detail Mapping HOẶC HLD) | Sửa trực tiếp file tương ứng — không cần gọi lại skill con |
+| **D — HLD sai do thiết kế/nguồn Atomic lỗi thời** | HLD đã tồn tại, đánh READY, nhưng trỏ nhầm nguồn Atomic đã deprecated/tái cấu trúc, sai grain, sai entity, hoặc logic nghiệp vụ không còn khớp Atomic hiện hành — khác Kịch bản A (không phải PENDING) và khác Kịch bản C (đây là lỗi nội dung/logic, không phải lỗi kỹ thuật thuần cấu trúc) | Gọi `datamart-hld-design` để thiết kế lại — KHÔNG tự sửa tay nội dung HLD (Fact, grain, nguồn Atomic, bảng KPI) dù đã xác định rõ hướng sửa |
+
+> **Nguyên tắc tổng quát — bắt buộc, áp dụng cho MỌI thay đổi nội dung (không chỉ 4 kịch bản trên):**
+> - Bất kỳ thay đổi nào chạm vào **nội dung nghiệp vụ/thiết kế của HLD** (thêm/sửa Nhóm, đổi nguồn Atomic, đổi Fact/Dimension/grain, đổi công thức KPI, thêm Cụm Data Lineage...) → luôn qua `datamart-hld-design`, dù đã tự xác định rõ cách sửa qua quá trình review. Không tự Edit trực tiếp các phần này.
+> - Bất kỳ thay đổi nào chạm vào **Attributes / Detail Mapping / `datamart_model.yaml` (registry)** — nội dung mapping, `etl_logic`, `column_role`, cột registry... → luôn qua `datamart-lld-design`.
+> - Chỉ Kịch bản C (lỗi kỹ thuật thuần cấu trúc — không đổi ý nghĩa nghiệp vụ) mới được sửa tay trực tiếp, cho cả 2 phía HLD và LLD. Ranh giới: nếu việc sửa làm thay đổi *ý nghĩa* của KPI/Fact/mapping (nguồn nào, công thức nào, filter nào) → không còn là Kịch bản C, phải qua skill con tương ứng.
+> - Khi không chắc 1 vấn đề thuộc Kịch bản C hay D/A/B — mặc định coi là D/A/B (qua skill con), không tự nhận là C để tiện sửa nhanh.
 
 ---
 
@@ -146,7 +153,10 @@ Section 5 — Vấn đề mở
 ```
 - Thiếu hẳn Section 4 Reuse Analysis, hoặc "Vấn đề mở" đang chiếm nhầm vị trí Section 4 → 🔴 Critical cấp toàn module (không chỉ riêng 1 nhóm) — ghi nhận 1 lần trong bảng vấn đề tổng hợp, action đề xuất: bổ sung Section 4 đúng chuẩn (đẩy "Vấn đề mở" xuống Section 5), liệt kê `reuse_status` cho mọi bảng Fact/Dim đã có trong Section 3.
 - Section 4 tồn tại nhưng thiếu dòng cho 1 bảng Fact/Dim nào đó trong Section 3 → 🟡 Warning, bổ sung dòng thiếu.
+- Cũng kiểm tra: heading `##### Cụm N` đúng cấp (không phải `###`/`####`), và bảng KPI khối READY đủ 6 cột (`... | Công thức | Ghi chú`) — không phải 5 cột thiếu "Ghi chú". Đây đều là lỗi cấu trúc cấp toàn module, gộp chung nhóm Critical/Warning với Section 4 ở trên, không tách issue riêng.
 - Không tự suy ra `reuse_status` — nếu chưa rõ, hỏi user xác nhận (theo GATE RULE của `datamart-hld-design`), không tự gán "reuse" hay "new" khi chưa chắc chắn.
+
+> **⚠️ Không được để kết quả kiểm tra cấu trúc "chìm" khi có việc khác chen ngang (bắt buộc):** Nếu quá trình review 0b phát sinh một phát hiện lớn hơn giữa chừng (VD: Critical gap Atomic khiến phải tạm dừng lập kế hoạch để điều tra, hoặc phải gọi `datamart-hld-design`/`datamart-lld-design` để sửa ngay một phần trước khi tiếp tục) — kết quả kiểm tra cấu trúc tài liệu ở bước này (Section/heading/cột) VẪN PHẢI được nêu lại tường minh trong bảng 0b.4 và câu hỏi gate 0b.5, không được để trôi mất trong lúc xử lý việc phát sinh. Lý do: gate 0b.5 mặc định chỉ hỏi "thứ tự review nhóm nào", không tự nhắc lại phát hiện cấu trúc — nếu người thực hiện bị cuốn theo nhánh phát sinh (điều tra gap Atomic, chuyển sang skill khác để sửa 1 Nhóm cụ thể) mà không chủ động quay lại, phát hiện cấu trúc dễ bị bỏ sót hoàn toàn cho đến khi user tự phát hiện và hỏi lại (case thực tế: module TT — phát hiện Critical gap Atomic THANHTRA schema cũ/mới ngay sau 0b, chuyển hướng gọi `datamart-hld-design` sửa Nhóm 1, nhưng bỏ luôn việc báo cáo thiếu Section 4/heading Cụm sai cấp/bảng KPI thiếu cột Ghi chú — dù các lỗi này đã có sẵn từ bản gốc và không liên quan gì đến nhánh phát sinh đang xử lý).
 
 ### 0b.3 — Đối chiếu SỐ LƯỢNG dòng BA ↔ số dòng KPI HLD (bắt buộc, không chỉ kiểm tra tồn tại)
 
@@ -429,6 +439,8 @@ Sau khi review tất cả nhóm trong scope, tổng hợp thành 2 bảng:
 | 1 | Nhóm 25 | HLD | 🔴 Critical | HLD = PENDING nhưng BA 100% Done với nguồn IDS | A | Gọi datamart-hld-design thiết kế nhóm 25 |
 | 2 | Nhóm 21 | Detail Mapping | 🟡 Warning | Formula K_GSDC_45 chưa phản ánh filter `entp_tp_code = 'dn'` | B | Gọi datamart-lld-design cập nhật Detail Mapping |
 | 3 | Nhóm 7 | Attributes | 🔵 Info | Cột `src_stm_code` thiếu WHERE filter (forward-compat) | C | Sửa trực tiếp Attributes.csv |
+| 4 | Nhóm 1 | HLD | 🔴 Critical | Fact dùng nguồn Atomic `TT_HO_SO`/`TT_QUYET_DINH` đã deprecated, schema THANHTRA đã tái cấu trúc sang `INSPECTION_TEAM` | D | Gọi datamart-hld-design thiết kế lại Nhóm 1 theo Atomic mới |
+| 5 | Toàn module | HLD | 🟡 Warning | Thiếu Section 4 Reuse Analysis, heading Cụm sai cấp | C | Sửa trực tiếp cấu trúc HLD.md (không đổi nội dung nghiệp vụ) |
 
 **Mức độ:**
 - 🔴 Critical: logic sai, thiếu thiết kế — báo cáo không chạy được
@@ -451,10 +463,12 @@ Sau khi trình bày bảng tổng hợp:
 
 1. **Hỏi user** muốn thực hiện action nào trước
 2. **Chỉ thực hiện** khi user xác nhận rõ ràng
-3. **Gọi skill tương ứng** khi action = Kịch bản A hoặc B:
-   - Kịch bản A → `/datamart-hld-design` với context nhóm cụ thể
-   - Kịch bản B → `/datamart-lld-design` với context thay đổi cụ thể
-4. **Sửa file trực tiếp** chỉ với Kịch bản C sau khi user xác nhận
+3. **Gọi skill tương ứng** khi action = Kịch bản A, B hoặc D:
+   - Kịch bản A → `/datamart-hld-design` với context nhóm cụ thể (HLD thiếu/PENDING)
+   - Kịch bản B → `/datamart-lld-design` với context thay đổi cụ thể (BA đổi logic)
+   - Kịch bản D → `/datamart-hld-design` với context nhóm cụ thể (HLD sai do thiết kế/nguồn Atomic lỗi thời) — cung cấp đầy đủ bằng chứng đã điều tra (entity Atomic cũ vs mới, nguồn deprecated...) để skill con không phải lặp lại việc tra cứu
+4. **Sửa file trực tiếp** chỉ với Kịch bản C sau khi user xác nhận — áp dụng cho cả HLD lẫn Attributes/Detail Mapping/registry, miễn là lỗi thuần kỹ thuật cấu trúc không đổi ý nghĩa nghiệp vụ
+5. **Không tự ý hạ cấp D/A/B xuống C để sửa nhanh** — nếu việc sửa chạm vào nội dung nghiệp vụ (nguồn Atomic, Fact/grain, công thức KPI, etl_logic, mapping) dù đã biết rõ hướng sửa, vẫn phải gọi đúng skill con tương ứng, không tự Edit trực tiếp
 
 ---
 

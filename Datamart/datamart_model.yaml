@@ -760,7 +760,6 @@ entities:
       - "sp_organization_employment_report"
       - "securities_organization_reference"
       - "ip_alternative_identification"
-      - "sc_insider_related_person"
       - "securities_company_shareholder"
     modules_using:
       - "NHNCK"
@@ -852,9 +851,9 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "(Bổ sung 2026-07-17) Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu NHN không phải cổ đông/người nội bộ của DN niêm yết đang xét. Join qua ip_alternative_identification (NHNCK CCCD = SCMS NATIONAL_ID) → sc_insider_related_person → securities_company_shareholder"
+        description: "(Sửa 2026-07-20) Số lượng cổ phiếu sở hữu (K_NHNCK_85) — nguồn thật SCMS, không phải NHNCK; NULL nếu NHN không phải cổ đông của DN niêm yết đang xét. Join qua ip_alternative_identification (NHNCK CCCD = SCMS NATIONAL_ID, nguồn SC_FIRM_SHAREHOLDER, bắt cầu qua sp_id trên driving table sp_organization_employment_report) → securities_company_shareholder.sc_shareholder_id trực tiếp. Đã fix 3 lỗi: (1) bỏ sc_insider_related_person — không có FK trực tiếp, join qua sc_id gây fan-out/sai người; (2) bỏ driving-placeholder securities_practitioner (không phải bảng khai báo của mapping này); (3) sửa tên PK sai securities_company_shareholder_id → sc_shareholder_id"
         source_atomic_table: "securities_company_shareholder"
-        source_atomic_column: "securities_company_shareholder.shares_held"
+        source_atomic_column: "securities_company_shareholder.sc_shareholder_id → shares_held"
       - logical_name: "Account Number"
         physical_name: "account_nbr"
         data_domain: "Text"

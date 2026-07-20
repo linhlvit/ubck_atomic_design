@@ -314,8 +314,15 @@ Tạo thư mục nếu chưa có. Thông báo đường dẫn file.
 
 > **Vì sao cần bước riêng:** Checklist "TRƯỚC KHI BÀN GIAO" ở dưới được áp dụng per-Nhóm trong lúc thiết kế — nhưng một số lỗi chỉ lộ ra khi nhìn **toàn file cùng lúc** (VD: 1 entity được định nghĩa đầy đủ ở Nhóm 1 nhưng bị tham chiếu rỗng ở Nhóm 2/3/6 vì mỗi khối `erDiagram`/`flowchart` là 1 render độc lập, không tự nhớ nội dung khối khác). Bước này quét lại toàn bộ file sau khi đã viết xong, dùng script thay vì đọc mắt để không bỏ sót.
 
-Chạy các kiểm tra sau (Python/grep) trên toàn file `DTM_{MODULE}_HLD.md` vừa xuất:
+> **Áp dụng cả khi CHỈNH SỬA/ĐIỀU CHỈNH một phần của HLD đã tồn tại** (không chỉ khi thiết kế mới từ đầu) — kể cả khi phạm vi yêu cầu chỉ là "sửa lại Nhóm N". Vì các mục kiểm tra dưới đây quét **toàn file**, một thay đổi cục bộ (thêm/sửa 1 Nhóm) vẫn có thể làm lộ ra hoặc để sót lỗi cấu trúc đã tồn tại từ trước ở phần không đụng tới — bỏ qua Bước 5B chỉ vì "task chỉ yêu cầu sửa 1 Nhóm" đã gây sót lỗi thực tế (TT — sửa lại Nhóm 1 theo Atomic schema mới nhưng không chạy mục #0 nên bỏ sót toàn bộ file thiếu Section 4 — Reuse Analysis, heading Cụm sai cấp, bảng KPI thiếu cột Ghi chú, vốn có từ bản gốc 20260427 và không liên quan gì đến thay đổi đang làm).
 
+Chạy các kiểm tra sau (Python/grep) trên toàn file `DTM_{MODULE}_HLD.md` vừa xuất/vừa sửa:
+
+0. **Cấu trúc Section đúng chuẩn `reference/section_structure.md`** — chạy TRƯỚC các mục kỹ thuật bên dưới, vì đây là kiểm tra cấp cao nhất:
+   - Đếm số Section (`## Section N`) — phải là 4 (`Data Lineage`/`Tổng quan báo cáo`/`Mô hình tổng thể`/`Vấn đề mở`) hoặc 5 nếu đủ điều kiện biến thể (`... + Reuse Analysis` trước `Vấn đề mở`). Thiếu hẳn 1 Section, hoặc "Vấn đề mở" nằm sai vị trí (không phải Section cuối) → lỗi cấu trúc, phải sửa trước khi hỏi GATE.
+   - Heading Cụm trong Section 1 phải đúng cấp `##### Cụm N: ...` (5 dấu `#`) — không phải `###`/`####`.
+   - Mọi bảng KPI khối READY phải đủ 6 cột theo `section_structure.md` (`KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú`) — không phải 5 cột thiếu "Ghi chú".
+   - Nếu dùng biến thể 5-Section: mỗi bảng Fact/Dim/Operational trong Section 3 phải có ít nhất 1 dòng tương ứng trong Section 4 — Reuse Analysis.
 1. **erDiagram — entity trong quan hệ phải có block định nghĩa cùng khối:** Với mỗi khối ` ```mermaid\nerDiagram `, liệt kê entity xuất hiện trong quan hệ (`A ||--o{ B`, `A }o--|| B`...) và entity có block `{ ... }` — báo lỗi nếu có entity ở quan hệ mà không có block. Đây là lỗi thực tế đã xảy ra (QLCB Nhóm 2/3/6 — xem `reference/erdiagram_rules.md`).
 2. **Section 1 flowchart — subgraph label đúng chuẩn:** mọi khối flowchart trong Section 1 phải có đúng 3 subgraph `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`.
 3. **Section 1 flowchart — mỗi Cụm đúng 1 bảng Datamart:** đếm entry trong subgraph GOLD trừ Dimension — phải bằng 1 (xem `reference/flowchart_rules.md`).
