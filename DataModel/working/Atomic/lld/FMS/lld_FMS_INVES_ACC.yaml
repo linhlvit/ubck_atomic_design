@@ -191,42 +191,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Management Fee Percentage"
-  physical_name: "management_fee_percentage"
-  description: "Phí quản lý danh mục (%/năm)."
-  data_domain: "Percentage"
+- attribute_name: "Management Fee Amount"
+  physical_name: "management_fee_amt"
+  description: "Phí quản lý danh mục."
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.INVES_ACC.MANAGER_FEE"
-  comment: null
+  comment: "[ĐỔI DOMAIN 2026-07-19] Đổi từ Percentage sang Currency Amount theo yêu\
+    \ cầu Data Modeler. Đổi tên từ 'Management Fee Percentage' cho khớp domain mới\
+    \ — cần Data Modeler xác nhận lại ý nghĩa thực của MANAGER_FEE (số tiền phí hay\
+    \ tỷ lệ %/năm) trước khi ETL, vì mô tả nguồn gốc gợi ý đây có thể vẫn là tỷ lệ\
+    \ phần trăm."
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.INVES_ACC.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.INVES_ACC.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
+  data_type: "decimal(23,2)"

@@ -1,0 +1,87 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "TRADINGREPRESENTATIVE"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Postal Address"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Trading Representative (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.ID"
+  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
+    \ ID)."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Trading Representative."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.ID"
+  comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
+    \ with Involved Party Id."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (thường trú) — hardcode\
+    \ PERMANENT."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: "PERMANENT"
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FIMS.TRADINGREPRESENTATIVE"
+  etl_derived_value: "FIMS.TRADINGREPRESENTATIVE"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ thường trú của đại diện giao dịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.ADDRESS"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"

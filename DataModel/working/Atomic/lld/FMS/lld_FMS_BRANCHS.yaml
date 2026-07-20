@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Tách IP Postal Address + IP Electronic Address (xem lld_FMS_BRANCHS_IP_*.yaml).\
-    \ TL_ID FK đến Fund Management Company Key Person (TL_PROFILES, cùng batch Tier\
+    \ TL_ID FK đến Fund Management Company Employee (TL_PROFILES, cùng batch Tier\
     \ 2). CREATED_BY, MODIFY_BY, FILE_NAME/FILE_DATA, DELETED, DATA_MIGRATION, BR_IDOWNER\
     \ document trong pending_design.yaml."
 attributes:
@@ -128,8 +128,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Fund Management Company Key Person Id"
-  physical_name: "fmc_key_person_id"
+- attribute_name: "Fund Management Company Employee Id"
+  physical_name: "fmc_employee_id"
   description: "FK -> TL_PROFILES: Người phụ trách/giám đốc chi nhánh."
   data_domain: "Surrogate Key"
   nullable: true
@@ -137,13 +137,13 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.TL_ID"
-  comment: "FK target: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TL_ID)."
+  comment: "FK target: Fund Management Company Employee.Fund Management Company Key\
+    \ Person Id. Hash: hash_id('FMS.TL_PROFILES', TL_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Code"
-  physical_name: "fmc_key_person_code"
+- attribute_name: "Fund Management Company Employee Code"
+  physical_name: "fmc_employee_code"
   description: "Mã người phụ trách/giám đốc chi nhánh."
   data_domain: "Text"
   nullable: true
@@ -151,8 +151,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.TL_ID"
-  comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Code. Pair with Fund Management Company Key Person Id."
+  comment: "Lookup pair: Fund Management Company Employee.Fund Management Company\
+    \ Key Person Code. Pair with Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -165,8 +165,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.BRANCHS.TL_NAME"
-  comment: "Denormalized snapshot — khác với FK Fund Management Company Key Person\
-    \ Id (giữ giá trị tại thời điểm ghi nhận, không tự cập nhật theo entity)."
+  comment: "Denormalized snapshot — khác với FK Fund Management Company Employee Id\
+    \ (giữ giá trị tại thời điểm ghi nhận, không tự cập nhật theo entity)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -316,29 +316,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.BRANCHS.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.BRANCHS.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

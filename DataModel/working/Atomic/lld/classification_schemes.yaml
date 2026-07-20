@@ -615,7 +615,7 @@ schemes:
     used_in_entities:
       - "Fund Management Company"
       - "Foreign Fund Management Organization Unit"
-      - "Fund Management Company Key Person"
+      - "Fund Management Company Employee"
     values: []
 
   - scheme_code: "FMS_CAPITAL_CHANGE_TYPE"
@@ -668,7 +668,7 @@ schemes:
     source_type: "source_table"
     source_table: "FMS.JOBTYPE"
     used_in_entities:
-      - "Fund Management Company Key Person"
+      - "Fund Management Company Employee"
       - "Foreign Fund Management Organization Unit Staff"
     values: []
 
@@ -741,6 +741,21 @@ schemes:
         name: "Tổ chức nước ngoài (BORF_FLAG=0 hoặc DORF=2)"
         source_table: null
 
+  - scheme_code: "FMS_BRANCH_TYPE"
+    name: "Loại hình chi nhánh/VPĐD (Chi nhánh / Văn phòng đại diện)"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Foreign Fund Management Organization Unit"
+      - "Foreign Fund Management Organization Unit Staff"
+    values:
+      - code: "BRANCH"
+        name: "Chi nhánh (FOR_BRCH.BRANCH_FLAG=1, STF_FG_BRCH.STAFF_BRANCH=1)"
+        source_table: null
+      - code: "REPRESENTATIVE_OFFICE"
+        name: "Văn phòng đại diện (FOR_BRCH.BRANCH_FLAG=0, STF_FG_BRCH.STAFF_BRANCH=0)"
+        source_table: null
+
   - scheme_code: "FMS_ORG_UNIT_TYPE"
     name: "Loại đơn vị trực thuộc: chi nhánh / văn phòng đại diện"
     source_type: "etl_derived"
@@ -760,7 +775,7 @@ schemes:
     source_type: "modeler_defined"
     source_table: "FMS.TL_PROFILES.SEX"
     used_in_entities:
-      - "Fund Management Company Key Person"
+      - "Fund Management Company Employee"
     values:
       - code: "MALE"
         name: "Nam"
@@ -815,7 +830,7 @@ schemes:
     source_table: "FMS.RELATION"
     used_in_entities:
       - "Investment Fund Investor Membership"
-      - "Fund Management Company Key Person Related Person"
+      - "Fund Management Company Employee Related Person"
     values: []
 
   - scheme_code: "FMS_STOCKHOLDER_TYPE"
@@ -1110,8 +1125,10 @@ schemes:
       - "Member Disclosure Announcement"
       - "Fund Management Company"
       - "Foreign Fund Management Organization Unit"
-      - "Fund Management Company Key Person"
+      - "Fund Management Company Employee"
     values: []
+    deprecated: true
+    deprecated_reason: "FMS.EVENT_TYPE đã nâng cấp thành Atomic entity thật 'Classification FMS Event Type' (table_type Relative, HLD bổ sung FMS Tier1 — xem FMS_HLD_Overview.md 7a/7c/Entities #46, Tier6 T6-06) — không còn dùng scheme này (2026-07-19). Entity tiêu thụ (Member Disclosure Announcement, Fund Management Company, Foreign Fund Management Organization Unit) đổi EVENT_TYPE_ID sang cặp FK Classification FMS Event Type Id + Code."
 
   - scheme_code: "FMS_WARNING_SYSTEM_OBJECT_TYPE"
     name: "Loại đối tượng áp dụng tham số cảnh báo giám sát — 1=QLQ, 2=Quỹ đầu tư, 3=NH LKGS, 4=ĐLPP, 5=ĐLCN (mô tả nguồn liệt kê '...', chưa đầy đủ)"
@@ -1151,6 +1168,88 @@ schemes:
       - code: "INACTIVE"
         name: "Ngừng hoạt động"
         source_value: "0"
+
+  - scheme_code: "FMS_POSITION_RECORD_STATUS"
+    name: "Trạng thái hoạt động Classification FMS Position: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+    source_type: "etl_derived"
+    source_table: "FMS.JOBS"
+    used_in_entities:
+      - "Classification FMS Position"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Ngừng hoạt động/Hết hiệu lực"
+        source_value: "0"
+
+  - scheme_code: "FMS_EVENT_TYPE_RECORD_STATUS"
+    name: "Trạng thái hoạt động Classification FMS Event Type: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+    source_type: "etl_derived"
+    source_table: "FMS.EVENT_TYPE"
+    used_in_entities:
+      - "Classification FMS Event Type"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Ngừng hoạt động/Hết hiệu lực"
+        source_value: "0"
+
+  - scheme_code: "FMS_EVENT_CATEGORY_TYPE"
+    name: "Phân loại sự vụ EVENT_TYPE: DINH_KY=Định kỳ, BAT_THUONG=Bất thường, THEO_YEU_CAU=Theo yêu cầu, KHAC=Khác"
+    source_type: "etl_derived"
+    source_table: "FMS.EVENT_TYPE"
+    used_in_entities:
+      - "Classification FMS Event Type"
+    values:
+      - code: "PERIODIC"
+        name: "Định kỳ"
+        source_value: "DINH_KY"
+      - code: "IRREGULAR"
+        name: "Bất thường"
+        source_value: "BAT_THUONG"
+      - code: "ON_REQUEST"
+        name: "Theo yêu cầu"
+        source_value: "THEO_YEU_CAU"
+      - code: "OTHER"
+        name: "Khác"
+        source_value: "KHAC"
+
+  - scheme_code: "FMS_EVENT_OBLIGATION_TYPE"
+    name: "Nghĩa vụ áp dụng của EVENT_TYPE: CHI_BAO_CAO=Chỉ báo cáo, CHI_CBTT=Chỉ CBTT, BAO_CAO_VA_CBTT=Cả hai, THAY_DOI=Thay đổi hồ sơ"
+    source_type: "etl_derived"
+    source_table: "FMS.EVENT_TYPE"
+    used_in_entities:
+      - "Classification FMS Event Type"
+    values:
+      - code: "REPORT_ONLY"
+        name: "Chỉ báo cáo"
+        source_value: "CHI_BAO_CAO"
+      - code: "DISCLOSURE_ONLY"
+        name: "Chỉ CBTT"
+        source_value: "CHI_CBTT"
+      - code: "REPORT_AND_DISCLOSURE"
+        name: "Cả báo cáo và CBTT"
+        source_value: "BAO_CAO_VA_CBTT"
+      - code: "PROFILE_CHANGE"
+        name: "Thay đổi hồ sơ"
+        source_value: "THAY_DOI"
+
+  - scheme_code: "FMS_EVENT_DEADLINE_CALC_METHOD"
+    name: "Cách tính thời hạn nộp của EVENT_TYPE: DINH_KY=Định kỳ cố định, SU_KIEN=Tính từ sự kiện phát sinh"
+    source_type: "etl_derived"
+    source_table: "FMS.EVENT_TYPE"
+    used_in_entities:
+      - "Classification FMS Event Type"
+    values:
+      - code: "FIXED_PERIODIC"
+        name: "Định kỳ cố định"
+        source_value: "DINH_KY"
+      - code: "EVENT_BASED"
+        name: "Tính từ sự kiện phát sinh"
+        source_value: "SU_KIEN"
 
   - scheme_code: "FMS_WARNING_COMPARE_TYPE"
     name: "Kiểu so sánh điều kiện cảnh báo: 1=Lớn hơn, 2=Nhỏ hơn, 3=Bằng"
@@ -3826,6 +3925,8 @@ schemes:
       - "Foreign FM Branch Organization"
       - "Info Disclosure Representative"
       - "Market Participant Key Person"
+      - "Trading Representative"
+      - "Trading Authorization"
     values: []
 
   - scheme_code: "FIMS_INVESTOR_TYPE"
@@ -3842,6 +3943,7 @@ schemes:
     source_table: "FIMS.COMPANYTYPE"
     used_in_entities:
       - "Market Participant Organization"
+      - "Foreign Investor"
     values: []
 
   - scheme_code: "FIMS_STOCKHOLDER_TYPE"
@@ -4041,6 +4143,7 @@ schemes:
     used_in_entities:
       - "Market Participant Key Person"
       - "Warning Parameter"
+      - "Trading Authorization"
     values:
       - code: "FUND_MANAGEMENT_COMPANY"
         name: "Công ty quản lý quỹ"
@@ -4475,7 +4578,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.TAX_REGISTRATION_INFO.OPERATION_STATUS"
     used_in_entities:
-      - "Tax Registration"
+      - "External Tax Registration"
     values:
       - code: "0"
         label: "Đang hoạt động"
@@ -4501,7 +4604,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.TAX_REGISTRATION_INFO.SUSPENSION_TYPE"
     used_in_entities:
-      - "Tax Registration"
+      - "External Tax Registration"
     values:
       - code: "1"
         label: "Giải thể"
@@ -4518,7 +4621,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.TAX_REG_BUSINESS_LINE"
     used_in_entities:
-      - "Tax Registration"
+      - "External Tax Registration"
     values: []
 
   - scheme_code: "KNT_REPORT_PERIOD_TYPE"
@@ -4526,7 +4629,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.TAX_REPORT.PERIOD_TYPE"
     used_in_entities:
-      - "Tax Declaration Report"
+      - "External Tax Declaration Report"
     values:
       - code: "Y"
         label: "Năm"
@@ -4546,8 +4649,8 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_CODE"
     used_in_entities:
-      - "Tax Enforcement Debt Decision"
-      - "Tax Enforcement Invoice Decision"
+      - "External Tax Enforcement Debt Decision"
+      - "External Tax Enforcement Invoice Decision"
     values: []
 
   - scheme_code: "KNT_REPORT_SHEET"
@@ -4555,7 +4658,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.TAX_REPORT_DETAIL.SHEET_NAME"
     used_in_entities:
-      - "Tax Declaration Report Indicator"
+      - "External Tax Declaration Report Detail"
     values:
       - code: "1"
         label: "Bảng cân đối kế toán (BCDKT)"
@@ -4584,7 +4687,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.TAX_REG_REPRESENTATIVE.POSITION"
     used_in_entities:
-      - "Tax Registration Representative"
+      - "External Tax Registration Representative"
     values: []
 
   - scheme_code: "KNT_INFO_REQUEST_STATUS"
@@ -4592,7 +4695,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.INFO_REQUEST_DETAIL.STATUS"
     used_in_entities:
-      - "Tax Information Request"
+      - "External Tax Information Request"
     values:
       - code: "1"
         label: "Thành công"
@@ -4609,7 +4712,7 @@ schemes:
     source_type: "source_table"
     source_table: "KNT.INVOICE_DETAIL.INVOICE_TYPE"
     used_in_entities:
-      - "Tax Enforcement Invoice Decision Item"
+      - "External Tax Invoice Detail"
     values: []
 
   - scheme_code: "IDS_OPERATING_STATUS"
@@ -5388,4 +5491,59 @@ schemes:
     source_table: "ECAT.OPERATIONAL_STATUS_TYPE"
     used_in_entities:
       - "Classification Enterprise Type"
+    values: []
+
+  - scheme_code: "FIMS_GENDER"
+    name: "Giới tính — dùng chung Foreign Investor (cá nhân) và Trading Representative"
+    source_type: "etl_derived"
+    source_table: null
+    used_in_entities:
+      - "Foreign Investor"
+      - "Trading Representative"
+    values:
+      - code: "MALE"
+        name: "Nam"
+        source_value: "1"
+      - code: "FEMALE"
+        name: "Nữ"
+        source_value: "2"
+
+  - scheme_code: "FIMS_INVESTOR_SYS_OBJECT_TYPE"
+    name: "Loại đối tượng NĐT NN trong hệ thống FIMS (INVESTOR.SysObjectType) — cần profile dữ liệu"
+    source_type: "modeler_defined"
+    source_table: "FIMS.INVESTOR.SysObjectType"
+    used_in_entities:
+      - "Foreign Investor"
+    values: []
+
+  - scheme_code: "FIMS_LO_TYPE"
+    name: "Loại hình ủy quyền giao dịch (FIMS.LO) — bảng LO chưa xác định rõ trong HLD, xem FIMS_HLD_Tier3.md mục T3-02"
+    source_type: "modeler_defined"
+    source_table: "FIMS.LO"
+    used_in_entities:
+      - "Trading Authorization"
+    values: []
+
+  - scheme_code: "KNT_DECLARATION_TYPE"
+    name: "Loại tờ khai thuế — KNT (cần profile)"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REPORT.DECLARATION_TYPE"
+    used_in_entities:
+      - "External Tax Declaration Report"
+    values: []
+
+  - scheme_code: "KNT_EXTENSION_REASON"
+    name: "Mã lý do gia hạn nộp báo cáo — KNT (cần profile)"
+    source_type: "source_table"
+    source_table: "KNT.TAX_REPORT.EXTENSION_REASON_CODE"
+    used_in_entities:
+      - "External Tax Declaration Report"
+    values: []
+
+  - scheme_code: "KNT_VIOLATION_DECISION_TYPE"
+    name: "Loại quyết định xử lý vi phạm thuế: xử phạt hành chính/truy thu/đình chỉ... — KNT (cần profile)"
+    source_type: "source_table"
+    source_table: "KNT.TAX_VIOLATION_HANDLING.DECISION_TYPE"
+    used_in_entities:
+      - "External Tax Violation Handling"
     values: []

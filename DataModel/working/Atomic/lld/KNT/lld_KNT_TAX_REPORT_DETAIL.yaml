@@ -1,0 +1,432 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "KNT"
+  source_table: "TAX_REPORT_DETAIL"
+  atomic_entity: "External Tax Declaration Report Detail"
+  entity_physical_name: "et_declaration_report_detail"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Reported Information"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "External Tax Declaration Report Detail Id"
+  physical_name: "et_declaration_report_detail_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Reported Information\". Dòng chỉ\
+    \ tiêu chi tiết trong 1 External Tax Declaration Report. Hash: hash_id('KNT.TAX_REPORT_DETAIL',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Declaration Report Detail Code"
+  physical_name: "et_declaration_report_detail_code"
+  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt\
+    \ (INDICATOR_CODE không unique đơn lẻ), dùng PK kỹ thuật làm BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.TAX_REPORT_DETAIL"
+  etl_derived_value: "KNT.TAX_REPORT_DETAIL"
+  data_type: "string"
+- attribute_name: "External Tax Declaration Report Id"
+  physical_name: "et_declaration_report_id"
+  description: "FK -> tax_report: Báo cáo tài chính TCT liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
+  comment: "FK target: External Tax Declaration Report.External Tax Declaration Report\
+    \ Id. Nguồn lưu ID kỹ thuật của TAX_REPORT — ETL join TAX_REPORT_ID → KNT.TAX_REPORT.ID\
+    \ để lấy DECLARATION_CODE rồi hash_id('KNT.TAX_REPORT', DECLARATION_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Declaration Report Code"
+  physical_name: "et_declaration_report_code"
+  description: "Mã tờ khai báo cáo tài chính liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
+  comment: "Lookup pair: External Tax Declaration Report.External Tax Declaration\
+    \ Report Code. Pair with External Tax Declaration Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Indicator Code"
+  physical_name: "indicator_code"
+  description: "Mã chỉ tiêu trong biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.INDICATOR_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Indicator Name"
+  physical_name: "indicator_nm"
+  description: "Tên chỉ tiêu trong biểu mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.INDICATOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Explanation Note"
+  physical_name: "explanation_note"
+  description: "Thuyết minh/ghi chú cho chỉ tiêu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.EXPLANATION_NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sheet Name Code"
+  physical_name: "sheet_nm_code"
+  description: "Mã sheet báo cáo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.SHEET_NAME"
+  comment: "Scheme: KNT_REPORT_SHEET."
+  classification_context: "KNT_REPORT_SHEET"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Year End Value"
+  physical_name: "year_end_val"
+  description: "Giá trị cuối năm báo cáo (đầu kỳ của năm sau)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.YEAR_END_VALUE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric (một số chỉ tiêu có thể là ghi chú thay vì số liệu)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Year Begin Value"
+  physical_name: "year_begin_val"
+  description: "Giá trị đầu năm báo cáo (số dư đầu kỳ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.YEAR_BEGIN_VALUE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Current Year Value"
+  physical_name: "current_year_val"
+  description: "Giá trị năm nay (kỳ hiện tại)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_VALUE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Prior Year Value"
+  physical_name: "prior_year_val"
+  description: "Giá trị năm trước (kỳ so sánh)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.PRIOR_YEAR_VALUE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Preparer Full Name"
+  physical_name: "preparer_full_nm"
+  description: "Họ tên người lập biểu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.PREPARER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Chief Accountant Full Name"
+  physical_name: "chief_accountant_full_nm"
+  description: "Họ tên kế toán trưởng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.CHIEF_ACCOUNTANT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Preparation Date"
+  physical_name: "preparation_dt"
+  description: "Ngày lập biểu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.PREPARATION_DATE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Director Full Name"
+  physical_name: "director_full_nm"
+  description: "Họ tên Giám đốc/Tổng giám đốc ký báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.DIRECTOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Practice Certificate Number"
+  physical_name: "practice_certificate_nbr"
+  description: "Số chứng chỉ hành nghề kiểm toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.PRACTICE_CERT_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Service Unit Name"
+  physical_name: "audit_service_unit_nm"
+  description: "Đơn vị cung cấp dịch vụ kiểm toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.AUDIT_SERVICE_UNIT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Going Concern Yes Flag"
+  physical_name: "going_concern_yes_flag"
+  description: "Cờ hoạt động liên tục: true/false."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.GOING_CONCERN_YES"
+  comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Going Concern No Flag"
+  physical_name: "going_concern_no_flag"
+  description: "Cờ không hoạt động liên tục: true/false."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.GOING_CONCERN_NO"
+  comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Increase Prior Year Amount"
+  physical_name: "increase_prior_year_amt"
+  description: "Số tăng năm trước."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.INCREASE_PRIOR_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Current Year Amount"
+  physical_name: "current_year_amt"
+  description: "Số tiền/giá trị năm nay."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_AMOUNT"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Previous Year Amount"
+  physical_name: "previous_year_amt"
+  description: "Số tiền/giá trị năm ngoái."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.PREVIOUS_YEAR_AMOUNT"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Begin Balance Current Year Amount"
+  physical_name: "begin_balance_current_year_amt"
+  description: "Số dư đầu năm nay."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_CURRENT_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "End Balance Current Year Amount"
+  physical_name: "end_balance_current_year_amt"
+  description: "Số dư cuối năm nay."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.END_BALANCE_CURRENT_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "End Balance Prior Year Amount"
+  physical_name: "end_balance_prior_year_amt"
+  description: "Số dư cuối năm trước."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.END_BALANCE_PRIOR_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Begin Balance Prior Year Amount"
+  physical_name: "begin_balance_prior_year_amt"
+  description: "Số dư đầu năm trước."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_PRIOR_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Increase Current Year Amount"
+  physical_name: "increase_current_year_amt"
+  description: "Số tăng năm nay."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.INCREASE_CURRENT_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Decrease Current Year Amount"
+  physical_name: "decrease_current_year_amt"
+  description: "Số giảm năm nay."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.DECREASE_CURRENT_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Decrease Prior Year Amount"
+  physical_name: "decrease_prior_year_amt"
+  description: "Số giảm năm trước."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT_DETAIL.DECREASE_PRIOR_YEAR"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"

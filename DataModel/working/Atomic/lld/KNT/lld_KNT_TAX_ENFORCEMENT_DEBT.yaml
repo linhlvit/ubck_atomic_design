@@ -1,0 +1,407 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "KNT"
+  source_table: "TAX_ENFORCEMENT_DEBT"
+  atomic_entity: "External Tax Enforcement Debt Decision"
+  entity_physical_name: "et_enforcement_debt_decision"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Fact Append"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "External Tax Enforcement Debt Decision Id"
+  physical_name: "et_enforcement_debt_decision_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết\
+    \ định cưỡng chế nợ thuế do Cục Thuế ban hành. Hash: hash_id('KNT.TAX_ENFORCEMENT_DEBT',\
+    \ DECISION_NUMBER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Enforcement Debt Decision Code"
+  physical_name: "et_enforcement_debt_decision_code"
+  description: "Số quyết định thành lập/xử phạt. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.DECISION_NUMBER"
+  comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.TAX_ENFORCEMENT_DEBT"
+  etl_derived_value: "KNT.TAX_ENFORCEMENT_DEBT"
+  data_type: "string"
+- attribute_name: "External Tax Registration Id"
+  physical_name: "et_registration_id"
+  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp bị cưỡng chế."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_TAX_CODE"
+  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
+    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Registration Code"
+  physical_name: "et_registration_code"
+  description: "Mã số thuế người nộp thuế bị cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_TAX_CODE"
+  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
+    \ Pair with External Tax Registration Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Name"
+  physical_name: "taxpayer_nm"
+  description: "Tên người nộp thuế (doanh nghiệp trên thị trường chứng khoán)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_NAME"
+  comment: "Denormalized snapshot tại thời điểm ban hành quyết định."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Tax Authority Code"
+  physical_name: "tax_authority_code"
+  description: "Mã cơ quan thuế ban hành thông báo cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.TAX_AUTHORITY_CODE"
+  comment: "Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết\
+    \ kế hiện tại."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Tax Authority Name"
+  physical_name: "tax_authority_nm"
+  description: "Tên cơ quan thuế ban hành thông báo cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.TAX_AUTHORITY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enforcement Method Code"
+  physical_name: "enforcement_method_code"
+  description: "Mã hình thức cưỡng chế."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_CODE"
+  comment: "Scheme: KNT_ENFORCEMENT_METHOD. Dùng chung với External Tax Enforcement\
+    \ Invoice Decision."
+  classification_context: "KNT_ENFORCEMENT_METHOD"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enforcement Method Name"
+  physical_name: "enforcement_method_nm"
+  description: "Tên hình thức cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ENFORCEMENT_METHOD_NAME"
+  comment: "Denormalized — tên tương ứng Enforcement Method Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Electronic Transaction Code"
+  physical_name: "electronic_transaction_code"
+  description: "Mã giao dịch điện tử trong hệ thống Cục Thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.E_TRANSACTION_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Date"
+  physical_name: "decision_dt"
+  description: "Ngày ban hành quyết định."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.DECISION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Enforced Amount"
+  physical_name: "enforced_amt"
+  description: "Số tiền bị cưỡng chế (đơn vị: đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ENFORCED_AMOUNT"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Enforced Entity Bank Account Number"
+  physical_name: "enforced_entity_bank_account_nbr"
+  description: "Số tài khoản ngân hàng của đối tượng bị cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ENFORCED_ENTITY_BANK_ACCOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Opening Place"
+  physical_name: "account_opening_place"
+  description: "Nơi mở tài khoản chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ACCOUNT_OPENING_PLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Income Managing Entity Name"
+  physical_name: "income_managing_entity_nm"
+  description: "Tên đối tượng quản lý thu nhập (VD: ngân hàng, đơn vị sử dụng lao\
+    \ động)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.INCOME_MANAGING_ENTITY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Income Managing Entity Address"
+  physical_name: "income_managing_entity_adr"
+  description: "Địa chỉ đối tượng quản lý thu nhập."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.INCOME_MANAGING_ENTITY_ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Seized Assets Description"
+  physical_name: "seized_assets_description"
+  description: "Mô tả tài sản bị kê biên trong biện pháp cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.SEIZED_ASSETS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Asset Value"
+  physical_name: "asset_val"
+  description: "Giá trị tài sản bị kê biên (đơn vị: đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ASSET_VALUE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Enforcement Date"
+  physical_name: "enforcement_dt"
+  description: "Thời gian thực hiện cưỡng chế."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ENFORCEMENT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Enforcement Location"
+  physical_name: "enforcement_location"
+  description: "Địa điểm thực hiện cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ENFORCEMENT_LOCATION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Asset Holder Name"
+  physical_name: "asset_holder_nm"
+  description: "Tên đối tượng đang giữ tài sản bị cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ASSET_HOLDER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Asset Holder Code"
+  physical_name: "asset_holder_code"
+  description: "Mã đối tượng đang giữ tài sản bị cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ASSET_HOLDER_CODE"
+  comment: "Denormalized — nguồn không xác định entity đích cụ thể trong scope."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Asset Holder Address"
+  physical_name: "asset_holder_adr"
+  description: "Địa chỉ đối tượng đang giữ tài sản bị cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ASSET_HOLDER_ADDRESS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Enforced Entity Business Line Name"
+  physical_name: "enforced_entity_business_line_nm"
+  description: "Ngành kinh doanh của đối tượng bị cưỡng chế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.ENFORCED_ENTITY_BUSINESS_LINE"
+  comment: "Denormalized snapshot — không phải FK Classification Value KNT_BUSINESS_LINE\
+    \ vì đây là mô tả tự do."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Effective From Date"
+  physical_name: "decision_effective_from_dt"
+  description: "Ngày bắt đầu hiệu lực quyết định cưỡng chế."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.DECISION_EFFECTIVE_FROM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Decision Effective To Date"
+  physical_name: "decision_effective_to_dt"
+  description: "Ngày kết thúc hiệu lực quyết định cưỡng chế."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.DECISION_EFFECTIVE_TO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Direct Tax Authority Code"
+  physical_name: "direct_tax_authority_code"
+  description: "Mã cơ quan thuế quản lý trực tiếp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.DIRECT_TAX_AUTHORITY_CODE"
+  comment: "Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết\
+    \ kế hiện tại."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Direct Tax Authority Name"
+  physical_name: "direct_tax_authority_nm"
+  description: "Tên cơ quan thuế quản lý trực tiếp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_ENFORCEMENT_DEBT.DIRECT_TAX_AUTHORITY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

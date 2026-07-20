@@ -1272,7 +1272,7 @@ entries:
   design_status: draft
 - source_system: FMS
   source_table: TL_PROFILES
-  atomic_entity: Fund Management Company Key Person
+  atomic_entity: Fund Management Company Employee
   group: T2
   lld_file: FMS/lld_FMS_TL_PROFILES.yaml
   design_status: draft
@@ -1578,7 +1578,7 @@ entries:
   design_status: draft
 - source_system: FMS
   source_table: TL_PRO_RELA
-  atomic_entity: Fund Management Company Key Person Related Person
+  atomic_entity: Fund Management Company Employee Related Person
   group: T5
   lld_file: FMS/lld_FMS_TL_PRO_RELA.yaml
   design_status: draft
@@ -1749,6 +1749,36 @@ entries:
   atomic_entity: Member Rating Ranking Criterion
   group: T7
   lld_file: FMS/lld_FMS_RNK_FACTOR.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: EVENT_TYPE
+  atomic_entity: Classification FMS Event Type
+  group: T1
+  lld_file: FMS/lld_FMS_EVENT_TYPE.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: JOBS
+  atomic_entity: Classification FMS Position
+  group: T1
+  lld_file: FMS/lld_FMS_JOBS.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: JOB_TL_PRO
+  atomic_entity: Fund Management Company Employee X Classification FMS Position Relationship
+  group: T3
+  lld_file: FMS/lld_FMS_JOB_TL_PRO.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: FUND_TL_PRO
+  atomic_entity: Investment Fund X Fund Management Company Employee Relationship
+  group: T3
+  lld_file: FMS/lld_FMS_FUND_TL_PRO.yaml
+  design_status: draft
+- source_system: FMS
+  source_table: AGEN_FUNDS
+  atomic_entity: Investment Fund X Fund Distribution Agent Relationship
+  group: T3
+  lld_file: FMS/lld_FMS_AGEN_FUNDS.yaml
   design_status: draft
 - source_system: ECAT
   source_table: COUNTRY
@@ -2284,3 +2314,153 @@ entries:
   group: T4
   lld_file: IDS/lld_IDS_SECURITIES_OFFERING_RESULT.yaml
   design_status: approved
+- source_system: FIMS
+  source_table: INVESTOR
+  atomic_entity: Foreign Investor
+  group: T1
+  lld_file: FIMS/lld_FIMS_INVESTOR.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: INVESTOR
+  atomic_entity: Involved Party Postal Address
+  group: T1
+  lld_file: FIMS/lld_FIMS_INVESTOR_IP_Postal_Address.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: INVESTOR
+  atomic_entity: Involved Party Electronic Address
+  group: T1
+  lld_file: FIMS/lld_FIMS_INVESTOR_IP_Electronic_Address.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: INVESTOR
+  atomic_entity: Involved Party Alternative Identification
+  group: T1
+  lld_file: FIMS/lld_FIMS_INVESTOR_IP_Alt_Identification.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: TRADINGREPRESENTATIVE
+  atomic_entity: Trading Representative
+  group: T1
+  lld_file: FIMS/lld_FIMS_TRADINGREPRESENTATIVE.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: TRADINGREPRESENTATIVE
+  atomic_entity: Involved Party Postal Address
+  group: T1
+  lld_file: FIMS/lld_FIMS_TRADINGREPRESENTATIVE_IP_Postal_Address.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: TRADINGREPRESENTATIVE
+  atomic_entity: Involved Party Electronic Address
+  group: T1
+  lld_file: FIMS/lld_FIMS_TRADINGREPRESENTATIVE_IP_Electronic_Address.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: TRADINGREPRESENTATIVE
+  atomic_entity: Involved Party Alternative Identification
+  group: T1
+  lld_file: FIMS/lld_FIMS_TRADINGREPRESENTATIVE_IP_Alt_Identification.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: SECURITIESACCOUNT
+  atomic_entity: Foreign Investor Securities Account
+  group: T3
+  lld_file: FIMS/lld_FIMS_SECURITIESACCOUNT.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: CATEGORIESSTOCK
+  atomic_entity: Foreign Investor Securities Account
+  group: T3
+  lld_file: FIMS/lld_FIMS_SECURITIESACCOUNT.yaml
+  design_status: draft
+- source_system: FIMS
+  source_table: TRADINGAUTHORIZATION
+  atomic_entity: Trading Authorization
+  group: T3
+  lld_file: FIMS/lld_FIMS_TRADINGAUTHORIZATION.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REGISTRATION_INFO
+  atomic_entity: External Tax Registration
+  group: T1
+  lld_file: KNT/lld_KNT_TAX_REGISTRATION_INFO.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REGISTRATION_INFO
+  atomic_entity: Involved Party Postal Address
+  group: T1
+  lld_file: KNT/lld_KNT_TAX_REGISTRATION_INFO_IP_Postal_Address.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REGISTRATION_INFO
+  atomic_entity: Involved Party Electronic Address
+  group: T1
+  lld_file: KNT/lld_KNT_TAX_REGISTRATION_INFO_IP_Electronic_Address.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REPORT
+  atomic_entity: External Tax Declaration Report
+  group: T1
+  lld_file: KNT/lld_KNT_TAX_REPORT.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_ENFORCEMENT_DEBT
+  atomic_entity: External Tax Enforcement Debt Decision
+  group: T1
+  lld_file: KNT/lld_KNT_TAX_ENFORCEMENT_DEBT.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_ENFORCEMENT_INVOICE
+  atomic_entity: External Tax Enforcement Invoice Decision
+  group: T1
+  lld_file: KNT/lld_KNT_TAX_ENFORCEMENT_INVOICE.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_VIOLATION_HANDLING
+  atomic_entity: External Tax Violation Handling
+  group: T1
+  lld_file: KNT/lld_KNT_TAX_VIOLATION_HANDLING.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: INFO_REQUEST_DETAIL
+  atomic_entity: External Tax Information Request
+  group: T1
+  lld_file: KNT/lld_KNT_INFO_REQUEST_DETAIL.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: HIGH_RISK_ENTERPRISE
+  atomic_entity: External Tax High Risk Enterprise
+  group: T1
+  lld_file: KNT/lld_KNT_HIGH_RISK_ENTERPRISE.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REG_REPRESENTATIVE
+  atomic_entity: External Tax Registration Representative
+  group: T2
+  lld_file: KNT/lld_KNT_TAX_REG_REPRESENTATIVE.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REG_REPRESENTATIVE
+  atomic_entity: Involved Party Alternative Identification
+  group: T2
+  lld_file: KNT/lld_KNT_TAX_REG_REPRESENTATIVE_IP_Alt_Identification.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REG_REPRESENTATIVE
+  atomic_entity: Involved Party Electronic Address
+  group: T2
+  lld_file: KNT/lld_KNT_TAX_REG_REPRESENTATIVE_IP_Electronic_Address.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: TAX_REPORT_DETAIL
+  atomic_entity: External Tax Declaration Report Detail
+  group: T2
+  lld_file: KNT/lld_KNT_TAX_REPORT_DETAIL.yaml
+  design_status: draft
+- source_system: KNT
+  source_table: INVOICE_DETAIL
+  atomic_entity: External Tax Invoice Detail
+  group: T2
+  lld_file: KNT/lld_KNT_INVOICE_DETAIL.yaml
+  design_status: draft

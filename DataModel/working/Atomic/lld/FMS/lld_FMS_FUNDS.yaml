@@ -411,60 +411,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Listing Market Code"
-  physical_name: "listing_market_code"
+- attribute_name: "Stock Exchange Name"
+  physical_name: "stock_exchange_nm"
   description: "Sàn giao dịch niêm yết CCQ: HOSE, HNX, UPCOM."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.FUNDS.STOCK_EXCHANGE"
-  comment: "Scheme: FMS_LISTING_MARKET (tái sử dụng — đã đăng ký Tier 1 từ SECURITIES.MARKET).\
-    \ Khác với SECURITIES.MARKET (numeric 1/2/3), cột này lưu trực tiếp literal HOSE/HNX/UPCOM\
-    \ — ETL passthrough, không cần bảng map."
-  classification_context: "FMS_LISTING_MARKET"
+  comment: "[ĐỔI 2026-07-19] Đổi từ Classification Value sang Text 1:1 theo yêu cầu\
+    \ Data Modeler — map trực tiếp từ nguồn, không qua classification. Đổi tên từ\
+    \ 'Listing Market Code' (tránh trùng tên với attribute cùng tên của SECURITIES.MARKET,\
+    \ vốn vẫn giữ Classification Value FMS_LISTING_MARKET, không đổi)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Distribution Agent Ids"
-  physical_name: "distribution_agent_ids"
-  description: "Danh sách đại lý phân phối CCQ của quỹ."
-  data_domain: "Array<Struct>"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.AGEN_FUNDS.FUND_ID"
-  comment: "Pure junction AGEN_FUNDS (AGENCY_ID + FUND_ID) → denormalize thành ARRAY.\
-    \ Struct: {distribution_agent_id: Surrogate Key; distribution_agent_code: Text}.\
-    \ HLD decision: FMS_HLD_Overview.md 7d. Hash mỗi phần tử: hash_id('FMS.AGENCIES',\
-    \ AGENCY_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "array<struct<...>>"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.FUNDS.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.FUNDS.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

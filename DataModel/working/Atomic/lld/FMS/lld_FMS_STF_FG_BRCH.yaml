@@ -19,10 +19,12 @@ metadata:
   approved_at: null
   notes: "[PHÁT HIỆN] HLD Tier3 6b/T3-01 mô tả FK TL_ID (kiêm nhiệm, nullable) đến\
     \ TL_PROFILES nhưng BRD columns thực tế của STF_FG_BRCH KHÔNG có cột TL_ID — chỉ\
-    \ có JOBS_ID (khác JOBTYPE). Không tạo FK Fund Management Company Key Person,\
-    \ cần xác nhận lại HLD. Tách IP Postal Address + IP Electronic Address (EMAIL/EMAIL_PERSONAL)\
-    \ + IP Alt Identification (NATIONAL_ID mặc định). CREATED_BY, MODIFY_BY, FILE_DATA,\
-    \ DELETED, DATA_MIGRATION document trong pending_design.yaml."
+    \ có JOBS_ID (khác JOBTYPE). Không tạo FK Fund Management Company Employee, cần\
+    \ xác nhận lại HLD. Tách IP Postal Address + IP Electronic Address (EMAIL/EMAIL_PERSONAL)\
+    \ + IP Alt Identification (NATIONAL_ID mặc định + PRACTICE_CERT_NO/PRACTICE_CERT_ISSUE_DATE\
+    \ — đẩy ra shared entity 2026-07-19, dùng lại Scheme value IP_ALT_ID_TYPE=PRACTITIONER_LICENSE\
+    \ thay vì tạo value mới, vì \"Chứng chỉ hành nghề (CCHN)\" đã có sẵn — xem lld_FMS_STF_FG_BRCH_IP_Alt_Identification.yaml).\
+    \ CREATED_BY, MODIFY_BY, FILE_DATA, DELETED, DATA_MIGRATION document trong pending_design.yaml."
 attributes:
 - attribute_name: "Foreign Fund Management Organization Unit Staff Id"
   physical_name: "foreign_fm_ou_staff_id"
@@ -137,19 +139,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Staff Branch Flag"
-  physical_name: "staff_branch_flag"
+- attribute_name: "Staff Branch Type Code"
+  physical_name: "staff_branch_tp_code"
   description: "Cờ là nhân sự chi nhánh: 1=Nhân sự CN, 0=Nhân sự VPĐD."
-  data_domain: "Boolean"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.STF_FG_BRCH.STAFF_BRANCH"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "boolean"
+  comment: "Scheme: FMS_BRANCH_TYPE (tái sử dụng từ FOR_BRCH.BRANCH_FLAG — cùng khái\
+    \ niệm Chi nhánh/VPĐD)."
+  classification_context: "FMS_BRANCH_TYPE"
+  etl_derived_value: "1=BRANCH;0=REPRESENTATIVE_OFFICE"
+  data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Staff Full Name"
   physical_name: "foreign_fm_ou_staff_full_nm"
   description: "Tên hiển thị chính."
@@ -255,32 +258,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Practice Certificate Number"
-  physical_name: "practice_certificate_nbr"
-  description: "Số chứng chỉ hành nghề của nhân sự chi nhánh/VPĐD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.STF_FG_BRCH.PRACTICE_CERT_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Practice Certificate Issue Date"
-  physical_name: "practice_certificate_issue_dt"
-  description: "Ngày cấp chứng chỉ hành nghề."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.STF_FG_BRCH.PRACTICE_CERT_ISSUE_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Branch Director Flag"
   physical_name: "branch_director_flag"
   description: "Cờ là Giám đốc chi nhánh: 1=Là GĐ CN, 0=Nhân viên thường."
@@ -320,29 +297,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.STF_FG_BRCH.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.STF_FG_BRCH.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "FMS"
   source_table: "TL_PRO_RELA"
-  atomic_entity: "Fund Management Company Key Person Related Person"
-  entity_physical_name: "fmc_key_person_related_person"
+  atomic_entity: "Fund Management Company Employee Related Person"
+  entity_physical_name: "fmc_employee_related_person"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Related Family Individual"
   table_type: "Fundamental"
@@ -20,8 +20,8 @@ metadata:
   notes: "Tách IP Postal Address + IP Alt Identification (NATIONAL_ID mặc định). CREATED_BY,\
     \ MODIFY_BY, DELETED document trong pending_design.yaml."
 attributes:
-- attribute_name: "Fund Management Company Key Person Related Person Id"
-  physical_name: "fmc_key_person_related_person_id"
+- attribute_name: "Fund Management Company Employee Related Person Id"
+  physical_name: "fmc_employee_related_person_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -34,8 +34,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Related Person Code"
-  physical_name: "fmc_key_person_related_person_code"
+- attribute_name: "Fund Management Company Employee Related Person Code"
+  physical_name: "fmc_employee_related_person_code"
   description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
   data_domain: "Text"
   nullable: false
@@ -59,8 +59,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=FMS.TL_PRO_RELA"
   etl_derived_value: "FMS.TL_PRO_RELA"
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Id"
-  physical_name: "fmc_key_person_id"
+- attribute_name: "Fund Management Company Employee Id"
+  physical_name: "fmc_employee_id"
   description: "FK -> TL_PROFILES: Người hành nghề liên quan."
   data_domain: "Surrogate Key"
   nullable: true
@@ -68,13 +68,13 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PRO_RELA.TLPRO_ID"
-  comment: "FK target: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
+  comment: "FK target: Fund Management Company Employee.Fund Management Company Key\
+    \ Person Id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Code"
-  physical_name: "fmc_key_person_code"
+- attribute_name: "Fund Management Company Employee Code"
+  physical_name: "fmc_employee_code"
   description: "Mã người hành nghề liên quan."
   data_domain: "Text"
   nullable: true
@@ -82,8 +82,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.TL_PRO_RELA.TLPRO_ID"
-  comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Code. Pair with Fund Management Company Key Person Id."
+  comment: "Lookup pair: Fund Management Company Employee.Fund Management Company\
+    \ Key Person Code. Pair with Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -127,29 +127,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PRO_RELA.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PRO_RELA.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

@@ -20,6 +20,8 @@
 | Involved Party | [Involved Party] Organization | Organization | AGENCIES | Update | Danh sách đại lý quỹ đầu tư | Fund Distribution Agent | Fundamental | (1) Term candidate: `Fund Distribution Agent` — BCV mô tả tổ chức phân phối chứng chỉ quỹ cho nhà đầu tư. (2) Cấu trúc trường: AGENCIES có tên, loại đại lý (AGENCY_TYPE FK), địa chỉ → entity tổ chức độc lập, có AGENCIES_BRA bảng con, FK từ AGEN_FUNDS. (3) Chọn `Fund Distribution Agent`. |
 | Business Activity | [Business Activity] Assessment Period | Period | RATING_PD | Update | Danh sách kỳ đánh giá xếp loại công ty QLQ | Member Rating Period | Fundamental | (1) Term candidate: `Assessment Period` — BCV mô tả một chu kỳ đánh giá có ngày bắt đầu/kết thúc, tên kỳ, trạng thái. (2) Cấu trúc trường: RATING_PD có tên kỳ, thời gian kỳ đánh giá, trạng thái → master entity kỳ đánh giá, được FK từ RANK. (3) BCO điều chỉnh theo review: `Business Activity` (kỳ đánh giá là 1 hoạt động nghiệp vụ định kỳ do UBCK tổ chức, không phải Event phát sinh tự nhiên). Term `Assessment Period` giữ nguyên — cần tra lại term BCV chính xác hơn ở lần review sau. |
 | Condition | [Condition] Scoring Criterion | Scoring Criterion | PARA_WARN | Update | Danh sách tham số cảnh báo giám sát công ty QLQ (định nghĩa chỉ tiêu theo dõi kèm công thức tính cho từng loại đối tượng) | Member Warning Parameter | Fundamental | (1) Term candidate: `Scoring Criterion` (BCV Condition) — tiêu chí/công thức chấm điểm dùng đánh giá đối tượng theo ngưỡng, không phải instance nghiệp vụ phát sinh theo thời gian. (2) Cấu trúc trường: PARA_WARN có ITEM_NAME, LEGAL_CODE (căn cứ pháp lý), FORMULA_INFO (NCLOB — công thức tính), SYSTEM_OBJECT (loại đối tượng áp dụng: QLQ/Quỹ đầu tư/NH LKGS/ĐLPP/ĐLCN...), RECORD_STATUS → định nghĩa tham số kỹ thuật kèm công thức. (3) Chọn `[Condition] Scoring Criterion`. Cấu trúc gần như trùng khớp FIMS.PARAWARN (Name/LegalCode/FormulaInfo/SystemObject) nhưng theo quyết định review, giữ **entity riêng cho FMS** (không gộp với FIMS) — đặt tên theo domain "Member" đã dùng xuyên suốt FMS (Member Rating, Member Inspection...). Đổi tên Atomic entity theo review: `Member Warning Parameter`. Domain Prefix: `Member Warning`. Trước đây bị đưa nhầm vào 7f nhóm Isolated (lý do cũ "không có FK đến bảng nghiệp vụ trong scope" — sai, vì VIOLT đã FK đến PARA_WARN từ trước). Là nền tảng cho Member Warning Condition (Tier 2). |
+| Common | [Common] Event Type | Classification | EVENT_TYPE | Update | Danh mục loại sự vụ báo cáo/CBTT (mở rộng — CATEGORY, OBLIGATION_TYPE, DEADLINE_CALC_METHOD, METADATA) | Classification FMS Event Type | Relative | **[MỚI 2026-07-19]** Promote từ Classification Value (scheme `FMS_EVENT_TYPE`, nay deprecated) lên entity riêng — theo quyết định Data Modeler, không dùng chung với entity "Classification Event Type" của SCMS (khác cấu trúc: METADATA/BUSINESS_RULE_CONFIG JSON CLOB đặc thù FMS). Domain Prefix: `Classification` (bare). Giải quyết Overview 7e#16/Tier6 T6-06. |
+| Common | [Common] Position | Classification | JOBS | Update | Danh mục chức danh/vị trí công việc | Classification FMS Position | Relative | **[MỚI 2026-07-19]** Trước đây chưa khảo sát trong HLD (chỉ JOB_TL_PRO — junction tham chiếu bảng này — được ghi nhận ở Overview 7f). FK ra JOB_TYPE (Classification Value, scheme `FMS_JOB_TYPE` — xem 6d, dùng chung với TL_PROFILES.JOB_TYPE). Domain Prefix: `Classification` (bare). |
 
 ---
 
@@ -36,9 +38,13 @@ graph LR
     PARA_WARN["**PARA_WARN**\nTham số cảnh báo giám sát"]:::src
     AGENCY_TYPE["**AGENCY_TYPE**\nLoại đại lý (Classification Value)"]:::src
     STATUS["**STATUS**\nTrạng thái (Classification Value)"]:::src
+    EVENT_TYPE["**EVENT_TYPE**\nLoại sự vụ báo cáo/CBTT"]:::src
+    JOBS["**JOBS**\nChức danh/vị trí công việc"]:::src
+    JOB_TYPE["**JOB_TYPE**\nLoại chức vụ (Classification Value)"]:::src
 
     AGENCIES -->|"AGENCYTYPE_ID"| AGENCY_TYPE
     SECURITIES -->|"STATUS_ID"| STATUS
+    JOBS -->|"JOB_TYPE_ID"| JOB_TYPE
 ```
 
 ---
@@ -55,6 +61,8 @@ graph TD
     FDA["**Fund Distribution Agent**\n[Involved Party] Organization\nAGENCIES"]:::atomic
     MRP["**Member Rating Period**\n[Business Activity] Assessment Period\nRATINGPD"]:::atomic
     WP["**Member Warning Parameter**\n[Condition] Scoring Criterion\nPARA_WARN"]:::atomic
+    CET["**Classification FMS Event Type**\n[Common] Event Type\nEVENT_TYPE"]:::atomic
+    CPOS["**Classification FMS Position**\n[Common] Position\nJOBS"]:::atomic
     ADDR["IP Postal Address"]:::shared
     EADDR["IP Electronic Address"]:::shared
     ALTID["IP Alt Identification"]:::shared
@@ -74,7 +82,7 @@ graph TD
 | Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
 |---|---|---|---|
 | BUSINESS | Danh mục ngành nghề kinh doanh của công ty QLQ | `FMS_BUSINESS_TYPE` | source_table — Values load từ BUSINESS.CODE + ITEM_NAME. |
-| JOBTYPE | Danh sách loại chức vụ nhân sự | `FMS_JOB_TYPE` | source_table — Values load từ JOBTYPE.CODE + ITEM_NAME. |
+| JOBTYPE (= JOB_TYPE) | Danh sách loại chức vụ nhân sự | `FMS_JOB_TYPE` | source_table — Values load từ JOB_TYPE.CODE + ITEM_NAME. **[MỚI 2026-07-19]** Dùng chung cho FK của Classification FMS Position (JOBS.JOB_TYPE_ID) ngoài TL_PROFILES.JOB_TYPE/STF_FG_BRCH đã có. |
 | RELATION | Danh mục loại quan hệ cổ đông | `FMS_RELATION_TYPE` | source_table — Values load từ RELATION.CODE + ITEM_NAME. |
 | STATUS | Danh sách trạng thái hoạt động | `FMS_OPERATION_STATUS` | source_table — Dùng chung cho SECURITIES, FUNDS, BANK_MONI, AGENCIES... |
 | STOCKHOLDER_TYPE | Danh sách loại hình NĐT/cổ đông | `FMS_STOCKHOLDER_TYPE` | source_table — Values load từ STOCKHOLDER_TYPE.CODE + ITEM_NAME. |

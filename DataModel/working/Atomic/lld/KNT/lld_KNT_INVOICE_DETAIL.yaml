@@ -1,0 +1,158 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "KNT"
+  source_table: "INVOICE_DETAIL"
+  atomic_entity: "External Tax Invoice Detail"
+  entity_physical_name: "et_invoice_detail"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Invoice"
+  table_type: "Fact Append"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "External Tax Invoice Detail Id"
+  physical_name: "et_invoice_detail_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Invoice\". 1 hóa đơn cụ thể bị áp\
+    \ dụng biện pháp cưỡng chế ngừng sử dụng. Hash: hash_id('KNT.INVOICE_DETAIL',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Invoice Detail Code"
+  physical_name: "et_invoice_detail_code"
+  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ đơn lẻ duy\
+    \ nhất (INVOICE_NUMBER cần kết hợp INVOICE_TEMPLATE_SYMBOL/INVOICE_SYMBOL mới\
+    \ đủ định danh), dùng PK kỹ thuật làm BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.INVOICE_DETAIL"
+  etl_derived_value: "KNT.INVOICE_DETAIL"
+  data_type: "string"
+- attribute_name: "External Tax Enforcement Invoice Decision Id"
+  physical_name: "et_enforcement_invoice_decision_id"
+  description: "FK -> tax_enforcement_invoice: Quyết định cưỡng chế ngừng hóa đơn."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID"
+  comment: "FK target: External Tax Enforcement Invoice Decision.External Tax Enforcement\
+    \ Invoice Decision Id. Nguồn lưu ID kỹ thuật của TAX_ENFORCEMENT_INVOICE — ETL\
+    \ join TAX_ENFORCEMENT_INVOICE_ID → KNT.TAX_ENFORCEMENT_INVOICE.ID để lấy DECISION_NUMBER\
+    \ rồi hash_id('KNT.TAX_ENFORCEMENT_INVOICE', DECISION_NUMBER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Enforcement Invoice Decision Code"
+  physical_name: "et_enforcement_invoice_decision_code"
+  description: "Số quyết định cưỡng chế ngừng sử dụng hóa đơn liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.TAX_ENFORCEMENT_INVOICE_ID"
+  comment: "Lookup pair: External Tax Enforcement Invoice Decision.External Tax Enforcement\
+    \ Invoice Decision Code. Pair with External Tax Enforcement Invoice Decision Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Invoice Template Symbol"
+  physical_name: "invoice_template_symbol"
+  description: "Ký hiệu mẫu hóa đơn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.INVOICE_TEMPLATE_SYMBOL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Invoice Symbol"
+  physical_name: "invoice_symbol"
+  description: "Ký hiệu hóa đơn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.INVOICE_SYMBOL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Invoice Number"
+  physical_name: "invoice_nbr"
+  description: "Số hóa đơn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.INVOICE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Invoice Type Code"
+  physical_name: "invoice_tp_code"
+  description: "Loại hóa đơn bị cưỡng chế ngừng sử dụng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.INVOICE_TYPE"
+  comment: "Scheme: KNT_INVOICE_TYPE. Cần profile dữ liệu để liệt kê values (xem KNT_HLD_Overview.md\
+    \ mục 7e#4 đã giải quyết — chỉ còn cần profile giá trị)."
+  classification_context: "KNT_INVOICE_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Id"
+  physical_name: "object_id"
+  description: "ID đối tượng trong hệ thống Cục Thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INVOICE_DETAIL.OBJ_ID"
+  comment: "Denormalized — nguồn không xác định rõ entity đích, không tạo FK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -1,0 +1,344 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "TRADINGAUTHORIZATION"
+  atomic_entity: "Trading Authorization"
+  entity_physical_name: "trading_authorization"
+  bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Authority Arrangement"
+  table_type: "Fundamental"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Trading Authorization Id"
+  physical_name: "trading_authorization_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Arrangement] Authority Arrangement\". Foreign Investor\
+    \ ủy quyền cho Trading Representative hành động thay mặt trong giao dịch. Hash:\
+    \ hash_id('FIMS.TRADINGAUTHORIZATION', Id)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Authorization Code"
+  physical_name: "trading_authorization_code"
+  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,\
+    \ dùng PK kỹ thuật làm BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.Id"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FIMS.TRADINGAUTHORIZATION"
+  etl_derived_value: "FIMS.TRADINGAUTHORIZATION"
+  data_type: "string"
+- attribute_name: "System Object Type Code"
+  physical_name: "stm_object_tp_code"
+  description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN\
+    \ QLQ NN."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.SystemObject"
+  comment: "Scheme: FIMS_SYSTEM_OBJECT_TYPE. Tái sử dụng scheme đã đăng ký (PARAWARN.SystemObject)\
+    \ — cùng bộ giá trị. Bổ sung Trading Authorization vào used_in_entities."
+  classification_context: "FIMS_SYSTEM_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Id"
+  physical_name: "fmc_id"
+  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.FundComId"
+  comment: "Pending — FK target: Market Participant Organization.Market Participant\
+    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.FUNDCOMPANY). Hash: hash_id('FIMS.FUNDCOMPANY',\
+    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
+    \ BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Management Company Code"
+  physical_name: "fmc_code"
+  description: "Mã QLQ nơi người hành nghề làm việc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.FundComId"
+  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
+    \ Code. Pending — xem ghi chú ở Fund Management Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Id"
+  physical_name: "sc_id"
+  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.SecComId"
+  comment: "Pending — FK target: Market Participant Organization.Market Participant\
+    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS.SECURITIESCOMPANY',\
+    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
+    \ BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Code"
+  physical_name: "sc_code"
+  description: "Mã CTCK nơi người hành nghề làm việc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.SecComId"
+  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
+    \ Code. Pending — xem ghi chú ở Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Id"
+  physical_name: "foreign_investor_id"
+  description: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong hợp đồng ủy quyền."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.InvestorId"
+  comment: "FK target: Foreign Investor.Foreign Investor Id. Nguồn lưu ID kỹ thuật\
+    \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode\
+    \ rồi hash_id('FIMS.INVESTOR', TransactionCode)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Code"
+  physical_name: "foreign_investor_code"
+  description: "Mã giao dịch NĐT NN (VSDC) trong hợp đồng ủy quyền."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.InvestorId"
+  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Foreign\
+    \ Investor Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Authorization Type Code"
+  physical_name: "authorization_tp_code"
+  description: "FK -> loại hình ủy quyền giao dịch (LO)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.AuthorizationTypeId"
+  comment: "Scheme: FIMS_LO_TYPE. [PROPOSE NEW SCHEME] — bảng LO chưa xác định rõ\
+    \ trong HLD (xem FIMS_HLD_Tier3.md mục T3-02). Tạm xử lý Classification Value\
+    \ chờ xác nhận; nếu LO là entity nghiệp vụ thật, cần đổi sang cặp Id+Code và review\
+    \ lại tier."
+  classification_context: "FIMS_LO_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Activity Status Code"
+  physical_name: "activity_status_code"
+  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.Status"
+  comment: "Scheme: FIMS_ACTIVITY_STATUS. Bổ sung Trading Authorization vào used_in_entities."
+  classification_context: "FIMS_ACTIVITY_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Attachment File Name"
+  physical_name: "attachment_file_nm"
+  description: "Tên file đính kèm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.FileName"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Effective Start Date"
+  physical_name: "effective_start_dt"
+  description: "Ngày bắt đầu hiệu lực hợp đồng ủy quyền."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.SDate"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Effective End Date"
+  physical_name: "effective_end_dt"
+  description: "Ngày kết thúc hiệu lực hợp đồng ủy quyền."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.EDate"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.Note"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Representative Id"
+  physical_name: "trading_representative_id"
+  description: "FK đến TRADINGREPRESENTATIVE — Người đại diện giao dịch được ủy quyền."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId"
+  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Representative Code"
+  physical_name: "trading_representative_code"
+  description: "Mã người đại diện giao dịch được ủy quyền."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId"
+  comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
+    \ with Trading Representative Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Authorized Investor Ids"
+  physical_name: "authorized_investor_ids"
+  description: "Danh sách nhà đầu tư nước ngoài bổ sung trong cùng hợp đồng ủy quyền\
+    \ giao dịch (ngoài Foreign Investor Id chính)."
+  data_domain: "Array<Struct>"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATIONINVES.InvestorId"
+  comment: "Pure junction TRADINGAUTHORIZATIONINVES → denormalize thành ARRAY. Struct:\
+    \ {investor_id: Surrogate Key; investor_code: Text}. HLD decision: FIMS_HLD_Overview.md\
+    \ mục 7d."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "array<struct<...>>"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.DateCreated"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Name"
+  physical_name: "created_by_user_nm"
+  description: "Tài khoản người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.CreatedBy"
+  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
+    \ data)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.DateModified"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated By User Name"
+  physical_name: "updated_by_user_nm"
+  description: "Tài khoản người dùng cập nhật lần cuối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGAUTHORIZATION.ModifyBy"
+  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
+    \ data)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

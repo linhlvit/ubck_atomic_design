@@ -20,8 +20,8 @@ metadata:
   notes: "[PHÁT HIỆN] HLD Tier3 6c mô tả FK 'Key Person FK' đến Fund Management Company\
     \ Key Person nhưng BRD columns thực tế của REPRESENT KHÔNG có cột TL_ID/TL_PROFILES\
     \ — entity lưu thông tin cá nhân độc lập (ITEM_NAME/ID_NO riêng), không phải quan\
-    \ hệ đến TL_PROFILES. Không tạo FK Fund Management Company Key Person, cần xác\
-    \ nhận lại HLD. Tách IP Postal Address + IP Electronic Address + IP Alt Identification\
+    \ hệ đến TL_PROFILES. Không tạo FK Fund Management Company Employee, cần xác nhận\
+    \ lại HLD. Tách IP Postal Address + IP Electronic Address + IP Alt Identification\
     \ (NATIONAL_ID mặc định). CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION document\
     \ trong pending_design.yaml."
 attributes:
@@ -269,29 +269,3 @@ attributes:
   classification_context: "FMS_BOARD_MEMBER_TYPE"
   etl_derived_value: "1=INDIVIDUAL_REPRESENTATIVE;2=ORGANIZATION_REPRESENTATIVE"
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.REPRESENT.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.REPRESENT.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

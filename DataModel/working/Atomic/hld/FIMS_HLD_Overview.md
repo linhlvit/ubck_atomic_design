@@ -20,7 +20,7 @@
 | 1 | Involved Party | [Involved Party] Organization | Organization | BANKMONI | Update | Danh sách ngân hàng lưu ký giám sát | Market Participant Organization | Fundamental | Organization — cùng entity với FUNDCOMPANY. Organization Type Code = CUSTODIAN_BANK. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | DEPOSITORYCENTER | Update | Danh sách Trung tâm lưu ký chứng khoán (VSDC) | Market Participant Organization | Fundamental | Organization — cùng entity với FUNDCOMPANY. Organization Type Code = DEPOSITORY_CENTER. |
 | 1 | Involved Party | [Involved Party] Organization | Organization | STOCKEXCHANGE | Update | Danh sách sở giao dịch chứng khoán | Market Participant Organization | Fundamental | Organization — cùng entity với FUNDCOMPANY. Organization Type Code = STOCK_EXCHANGE. |
-| 1 | Involved Party | [Involved Party] Individual | Individual | INVESTOR | Update | Danh sách nhà đầu tư nước ngoài (cá nhân và tổ chức) tại Việt Nam | Foreign Investor | Fundamental | Individual — NĐT nước ngoài cá nhân (ObjectType=1) và tổ chức (ObjectType=2) đăng ký hoạt động tại VN theo quy định UBCKNN. Có trường nhận dạng (IdNo/IdDate/IdAdd), địa chỉ, liên lạc. Tách IP Alt Identification. FK đến NATIONAL, SECURITIESCOMPANY, BANKMONI (Classification Value). |
+| 1 | Involved Party | [Involved Party] Individual | Individual | INVESTOR | Update | Danh sách nhà đầu tư nước ngoài (cá nhân và tổ chức) tại Việt Nam | Foreign Investor | Fundamental | Individual — NĐT nước ngoài cá nhân (ObjectType=1) và tổ chức (ObjectType=2) đăng ký hoạt động tại VN theo quy định UBCKNN. Có trường nhận dạng (IdNo/IdDate/IdAdd), địa chỉ, liên lạc. Tách IP Postal Address (Address) + IP Electronic Address (Telephone/Fax/Email/Website) + IP Alt Identification (IdNo/IdDate/IdAdd) — bổ sung 2026-07-19 khi thiết kế LLD, áp dụng quy tắc grain=Involved Party bắt buộc tách đủ 3 shared entity (xem Tier1.md mục T1-07). FK đến NATIONAL, SECURITIESCOMPANY, BANKMONI (Classification Value). |
 | 1 | Business Activity | [Business Activity] Business Activity | Business Activity | RPTTEMP | Update | Danh sách biểu mẫu báo cáo đầu vào do UBCKNN ban hành | Reporting Template | Fundamental | Business Activity — template biểu mẫu báo cáo định kỳ mà UBCKNN yêu cầu thành viên nộp. Master entity được FK từ RPTMEMBER. Cấu trúc trường: mã biểu mẫu, tên, loại báo cáo, trạng thái, phiên bản. |
 | 1 | Business Activity | [Business Activity] Assessment Period | Period | RPTPERIOD | Update | Danh sách kỳ của báo cáo đầu vào (kỳ tháng/quý/năm) | Reporting Period | Fundamental | Assessment Period — kỳ báo cáo định kỳ của biểu mẫu. Mỗi kỳ có ngày bắt đầu, ngày kết thúc, hạn nộp. FK đến RPTTEMP. |
 | 1 | Business Activity | [Business Activity] Business Activity | Business Activity | RPT_EVENT_TYPE | Update | Danh sách loại sự vụ/nghĩa vụ báo cáo (CBTT, hồ sơ, báo cáo định kỳ) | Reporting Obligation Type | Fundamental | Business Activity — danh mục loại nghĩa vụ mà thành viên thị trường phải thực hiện theo quy định pháp luật. Ghi nhận mã sự vụ, tên, phân loại, loại nghĩa vụ, căn cứ pháp lý và cờ cho phép tự thiết lập kỳ báo cáo. |
@@ -32,13 +32,13 @@
 | 2 | Involved Party | [Involved Party] Individual Employment Status | Employment Status | TLPROFILES | Update | Danh sách nhân sự chủ chốt tại các tổ chức thành viên thị trường | Market Participant Key Person | Fundamental | Individual Employment Status — nhân sự giữ vị trí quan trọng tại thành viên thị trường (cán bộ chủ chốt, đại diện pháp luật, người hành nghề). FK đa hướng đến FUNDCOMPANY / SECURITIESCOMPANY / BANKMONI / DEPOSITORYCENTER / STOCKEXCHANGE / INFODISCREPRES. Tách IP Alt Identification. |
 | 2 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTMEMBER | Update | Hồ sơ kỳ báo cáo thành viên thị trường — 1 bản ghi per thành viên per kỳ | Member Periodic Report | Fundamental | Gov. Registration Document — báo cáo định kỳ pháp lý của thành viên thị trường gửi UBCKNN. FK đa hướng đến 7 loại thành viên + RPTTEMP + RPTPERIOD + RPT_EVENT_TYPE. Grain = 1 thành viên × 1 kỳ × 1 biểu mẫu. |
 | 2 | Condition | [Condition] Scoring Criterion | Scoring Criterion | CDTWARN | Update | Danh sách điều kiện cảnh báo giám sát (ngưỡng min/max cho từng tham số) | Warning Condition | Fundamental | Scoring Criterion — điều kiện cảnh báo cụ thể (ngưỡng FromValue/ToValue, tham số so sánh kép). FK đến Warning Parameter. Là nền tảng cho Conduct Violation (Tier 3). |
-| 3 | Arrangement | [Arrangement] Investment Account | Investment Account | SECURITIESACCOUNT | Update | Danh sách tài khoản giao dịch chứng khoán của NĐT nước ngoài | Foreign Investor Securities Account | Relative | Investment Account — tài khoản chứng khoán của NĐT NN mở tại công ty CK. FK đến Foreign Investor + Market Participant Organization (SECURITIESCOMPANY). SCD2. |
-| 3 | Arrangement | [Arrangement] Investment Account | Investment Account | CATEGORIESSTOCK | Update | Số lượng và tỷ lệ sở hữu chứng khoán hiện tại của NĐT NN tại 1 CTCK | Foreign Investor Securities Account | Relative | Investment Account — cùng grain (Investor × Securities Company) với SECURITIESACCOUNT, chỉ khác thuộc tính. Gộp làm `current_holding_quantity` + `current_ownership_rate` trên entity đã có, không tạo entity riêng. |
+| 3 | Arrangement | [Arrangement] Investment Account | Investment Account | SECURITIESACCOUNT | Update | Danh sách tài khoản giao dịch chứng khoán của NĐT nước ngoài | Foreign Investor Securities Account | Fundamental | Investment Account — tài khoản chứng khoán của NĐT NN mở tại công ty CK. FK đến Foreign Investor + Market Participant Organization (SECURITIESCOMPANY). Table Type đổi từ Relative sang Fundamental (2026-07-19). |
+| 3 | Arrangement | [Arrangement] Investment Account | Investment Account | CATEGORIESSTOCK | Update | Số lượng và tỷ lệ sở hữu chứng khoán hiện tại của NĐT NN tại 1 CTCK | Foreign Investor Securities Account | Fundamental | Investment Account — cùng grain (Investor × Securities Company) với SECURITIESACCOUNT, chỉ khác thuộc tính. Gộp làm `current_holding_quantity` + `current_ownership_rate` trên entity đã có, không tạo entity riêng. |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | RPTVALUES | Update | Dữ liệu giá trị từng ô trong báo cáo thành viên (bảng phân vùng theo năm) | Report Import Value | Fact Append | Gov. Registration Document — giá trị chi tiết từng cell trong báo cáo định kỳ. FK đến Member Periodic Report + Sheet + Period. Grain = 1 field per báo cáo. ETL: bảng phân vùng năm RPTVALUES_YYYY → consolidate. |
 | 3 | Business Activity | [Business Activity] Status Log | Status Log | RPTPROCESS | Update | Lịch sử xử lý báo cáo của chuyên viên UBCKNN (duyệt/từ chối/yêu cầu gửi lại) | Report Processing Activity Log | Fact Append | Business Activity — ETL Pattern Status Log ghi nhận sự kiện xử lý báo cáo của cán bộ UBCKNN. FK đến Member Periodic Report + USERS. Mỗi hành động là 1 sự kiện insert-only. |
 | 3 | Business Activity | [Business Activity] Conduct Violation | Conduct Violation | VIOLT | Append | Danh sách vi phạm điều kiện cảnh báo của thành viên thị trường | Market Participant Conduct Violation | Fact Append | Conduct Violation — vi phạm tham số giám sát của thành viên thị trường (QLQ, CTCK, NHLK, VSDC, Sở GD, CN QLQ NN). FK đa hướng đến Market Participant Organization + Warning Parameter + Warning Condition. Source Mode=Append → Fact Append. |
 | 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | AUTHOANNOUNCE | Update | Danh sách ủy quyền CBTT — thành viên thị trường ủy quyền cho đại diện CBTT | Info Disclosure Authorization | Fundamental | Gov. Registration Document — giấy ủy quyền CBTT của thành viên thị trường cho Info Disclosure Representative. FK đa hướng đến Market Participant Organization + Info Disclosure Representative. |
-| 3 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | TRADINGAUTHORIZATION | Update | Danh sách ủy quyền giao dịch cho đại diện giao dịch | Trading Authorization | Fundamental | Gov. Registration Document — giấy ủy quyền giao dịch của NĐT NN ủy quyền cho đại diện giao dịch. FK đến Foreign Investor + Market Participant Organization + Trading Representative (T1). |
+| 3 | Arrangement | [Arrangement] Authority Arrangement | Authority Arrangement | TRADINGAUTHORIZATION | Update | Danh sách ủy quyền giao dịch cho đại diện giao dịch | Trading Authorization | Fundamental | Authority Arrangement — Foreign Investor ủy quyền cho Trading Representative hành động thay mặt trong giao dịch. FK đến Foreign Investor + Market Participant Organization + Trading Representative (T1). BCO đổi từ Documentation sang Arrangement (2026-07-19). |
 | 3 | Communication | [Communication] Announcement | Announcement | ANNOUNCE | Update | Tin công bố thông tin (CBTT) của thành viên thị trường | Info Disclosure Announcement | Fundamental | Announcement — bản tin CBTT cụ thể, FK đa hướng đến Market Participant Organization + Info Disclosure Representative + Foreign Investor + Member Periodic Report (T2) + Reporting Obligation Type (T1). |
 
 ---
@@ -88,6 +88,8 @@ graph TD
     FINV -->|Geographic Area FK| GEOAREA
     ADDR -.->|shared| MKT
     EADDR -.->|shared| MKT
+    ADDR -.->|shared| FINV
+    EADDR -.->|shared| FINV
     ALTID -.->|shared| FINV
 
     %% Tier 2
@@ -276,7 +278,7 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 ### 3. Foreign Investor
 **Tier:** 1 | **Source:** `INVESTOR` | **BCV Concept:** [Involved Party] Individual | **BCO:** Involved Party | **Table Type:** Fundamental
-**Description:** Nhà đầu tư nước ngoài (cá nhân và tổ chức) được UBCKNN quản lý tại Việt Nam. Ghi nhận loại đối tượng (cá nhân/tổ chức), mã giao dịch VSDC, thông tin nhân thân/doanh nghiệp, tài khoản lưu ký và trạng thái hoạt động.
+**Description:** Nhà đầu tư nước ngoài (cá nhân và tổ chức) được UBCKNN quản lý tại Việt Nam. Ghi nhận loại đối tượng (cá nhân/tổ chức), mã giao dịch VSDC, thông tin nhân thân/doanh nghiệp, tài khoản lưu ký và trạng thái hoạt động. Tách IP Postal Address + IP Electronic Address + IP Alt Identification (bổ sung 2026-07-19 khi thiết kế LLD).
 
 
 ### 4. Reporting Template
@@ -337,8 +339,8 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 
 ### 15. Foreign Investor Securities Account
-**Tier:** 3 | **Source:** `SECURITIESACCOUNT, CATEGORIESSTOCK` | **BCV Concept:** [Arrangement] Investment Account | **BCO:** Arrangement | **Table Type:** Relative
-**Description:** Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công ty chứng khoán. Ghi nhận số tài khoản, nơi mở, số lượng và tỷ lệ sở hữu chứng khoán hiện tại (từ CATEGORIESSTOCK — cùng grain Investor × Securities Company). FK đến Foreign Investor và Market Participant Organization (SECURITIESCOMPANY).
+**Tier:** 3 | **Source:** `SECURITIESACCOUNT, CATEGORIESSTOCK` | **BCV Concept:** [Arrangement] Investment Account | **BCO:** Arrangement | **Table Type:** Fundamental
+**Description:** Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công ty chứng khoán. Ghi nhận số tài khoản, nơi mở, số lượng và tỷ lệ sở hữu chứng khoán hiện tại (từ CATEGORIESSTOCK — cùng grain Investor × Securities Company). FK đến Foreign Investor và Market Participant Organization (SECURITIESCOMPANY). Table Type đổi từ Relative sang Fundamental (2026-07-19).
 
 
 ### 16. Report Import Value
@@ -362,8 +364,8 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 
 ### 20. Trading Authorization
-**Tier:** 3 | **Source:** `TRADINGAUTHORIZATION` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fundamental
-**Description:** Giấy ủy quyền giao dịch của nhà đầu tư nước ngoài cho đại diện giao dịch tại thành viên thị trường. Ghi nhận phạm vi ủy quyền, thời hạn và người được ủy quyền (Trading Representative). FK đến Foreign Investor, Market Participant Organization và Trading Representative.
+**Tier:** 3 | **Source:** `TRADINGAUTHORIZATION` | **BCV Concept:** [Arrangement] Authority Arrangement | **BCO:** Arrangement | **Table Type:** Fundamental
+**Description:** Thỏa thuận ủy quyền giao dịch — nhà đầu tư nước ngoài ủy quyền cho đại diện giao dịch tại thành viên thị trường hành động thay mặt. Ghi nhận phạm vi ủy quyền, thời hạn và người được ủy quyền (Trading Representative). FK đến Foreign Investor, Market Participant Organization và Trading Representative. BCO đổi từ Documentation sang Arrangement (2026-07-19).
 
 
 ### 21. Info Disclosure Announcement

@@ -1,0 +1,124 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "AGEN_FUNDS"
+  atomic_entity: "Investment Fund X Fund Distribution Agent Relationship"
+  entity_physical_name: "investment_fund_x_fund_distribution_agent_relationship"
+  bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Investment Fund"
+  table_type: "Relative"
+  group: "T3"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[ĐẢO NGƯỢC 2026-07-19] Trước đây denormalize thành `distribution_agent_ids`\
+    \ ARRAY<STRUCT> trên Investment Fund (Overview 7d cũ, xem lld_FMS_FUNDS.yaml)\
+    \ — theo quyết định Data Modeler, chuyển thành entity Relative riêng. Bảng nguồn\
+    \ chỉ có 2 FK (AGENCY_ID, FUND_ID) + DATA_MIGRATION (cờ migration kỹ thuật, không\
+    \ map — document pending_design.yaml). Không có PK/ID kỹ thuật riêng, không có\
+    \ audit fields. BK = composite AGENCY_ID+FUND_ID. FUD_AG_AGT (mở rộng 4-FK) cần\
+    \ rà soát gộp/tách — xem Overview 7e#19. BCV Concept tạm dùng — xem Overview 7e#20."
+attributes:
+- attribute_name: "Investment Fund X Fund Distribution Agent Relationship Id"
+  physical_name: "investment_fund_x_fund_distribution_agent_rltnp_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\" (tạm dùng). Quan\
+    \ hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund X Fund Distribution Agent Relationship Code"
+  physical_name: "investment_fund_x_fund_distribution_agent_rltnp_code"
+  description: "Mã quan hệ — composite AGENCY_ID+FUND_ID (bảng nguồn không có PK/mã\
+    \ nghiệp vụ riêng)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGEN_FUNDS.AGENCY_ID"
+  - "FMS.AGEN_FUNDS.FUND_ID"
+  comment: "BK composite: AGENCY_ID || '|' || FUND_ID. Không có PK/code kỹ thuật riêng\
+    \ trên bảng nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.AGEN_FUNDS"
+  etl_derived_value: "FMS.AGEN_FUNDS"
+  data_type: "string"
+- attribute_name: "Investment Fund Id"
+  physical_name: "investment_fund_id"
+  description: "FK -> FUNDS: Quỹ đầu tư liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGEN_FUNDS.FUND_ID"
+  comment: "FK target: Investment Fund.Investment Fund Id. Hash: hash_id('FMS.FUNDS',\
+    \ FUND_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investment Fund Code"
+  physical_name: "investment_fund_code"
+  description: "Mã quỹ đầu tư liên quan."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGEN_FUNDS.FUND_ID"
+  comment: "Lookup pair: Investment Fund.Investment Fund Code. Pair with Investment\
+    \ Fund Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Id"
+  physical_name: "fund_distribution_agent_id"
+  description: "FK -> AGENCIES: Đại lý phân phối liên quan."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGEN_FUNDS.AGENCY_ID"
+  comment: "FK target: Fund Distribution Agent.Fund Distribution Agent Id. Hash: hash_id('FMS.AGENCIES',\
+    \ AGENCY_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Fund Distribution Agent Code"
+  physical_name: "fund_distribution_agent_code"
+  description: "Mã đại lý phân phối liên quan."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.AGEN_FUNDS.AGENCY_ID"
+  comment: "Lookup pair: Fund Distribution Agent.Fund Distribution Agent Code. Pair\
+    \ with Fund Distribution Agent Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

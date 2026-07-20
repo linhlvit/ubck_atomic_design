@@ -3,8 +3,8 @@ schema_version: "2.0"
 metadata:
   source_system: "FMS"
   source_table: "TL_PROFILES"
-  atomic_entity: "Fund Management Company Key Person"
-  entity_physical_name: "fund_management_company_key_person"
+  atomic_entity: "Fund Management Company Employee"
+  entity_physical_name: "fund_management_company_employee"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
@@ -25,8 +25,8 @@ metadata:
     \ document trong pending_design.yaml. Gender/Political Information cần profile\
     \ dữ liệu thực tế do encoding nguồn không rõ ràng."
 attributes:
-- attribute_name: "Fund Management Company Key Person Id"
-  physical_name: "fmc_key_person_id"
+- attribute_name: "Fund Management Company Employee Id"
+  physical_name: "fmc_employee_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -38,8 +38,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Code"
-  physical_name: "fmc_key_person_code"
+- attribute_name: "Fund Management Company Employee Code"
+  physical_name: "fmc_employee_code"
   description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
   data_domain: "Text"
   nullable: false
@@ -120,8 +120,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Full Name"
-  physical_name: "fmc_key_person_full_nm"
+- attribute_name: "Fund Management Company Employee Full Name"
+  physical_name: "fmc_employee_full_nm"
   description: "Tên hiển thị chính."
   data_domain: "Text"
   nullable: true
@@ -133,8 +133,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Short Name"
-  physical_name: "fmc_key_person_short_nm"
+- attribute_name: "Fund Management Company Employee Short Name"
+  physical_name: "fmc_employee_short_nm"
   description: "Tên viết tắt."
   data_domain: "Text"
   nullable: true
@@ -666,29 +666,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TL_PROFILES.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

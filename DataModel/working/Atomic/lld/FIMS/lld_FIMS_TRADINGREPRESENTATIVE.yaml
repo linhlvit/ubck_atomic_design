@@ -1,0 +1,212 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "TRADINGREPRESENTATIVE"
+  atomic_entity: "Trading Representative"
+  entity_physical_name: "trading_representative"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Registered Representative"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Trading Representative Id"
+  physical_name: "trading_representative_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Registered Representative\". Cá\
+    \ nhân đại diện giao dịch cho NĐT NN tại công ty chứng khoán. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Representative Code"
+  physical_name: "trading_representative_code"
+  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,\
+    \ dùng PK kỹ thuật làm BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FIMS.TRADINGREPRESENTATIVE"
+  etl_derived_value: "FIMS.TRADINGREPRESENTATIVE"
+  data_type: "string"
+- attribute_name: "Full Name"
+  physical_name: "full_nm"
+  description: "Họ và tên đầy đủ của đại diện giao dịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.FULLNAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Gender Code"
+  physical_name: "gender_code"
+  description: "Giới tính: 1=Nam, 2=Nữ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.SEX"
+  comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — dùng chung scheme đăng ký\
+    \ ở lld_FIMS_INVESTOR.yaml."
+  classification_context: "FIMS_GENDER"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Date of Birth"
+  physical_name: "dt_of_birth"
+  description: "Ngày sinh của đại diện giao dịch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.DATEOFBIRTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK -> NATIONAL: Quốc tịch của đại diện giao dịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.NAID"
+  comment: "FK target: Geographic Area.Geographic Area Id. Nguồn Geographic Area đã\
+    \ chuyển sang ECAT (FIMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị:\
+    \ đối chiếu mã/tên quốc gia NAID với Geographic Area Unique Key (ECAT.COUNTRY.CODE)\
+    \ hoặc Name, không còn hash_id() trực tiếp theo FIMS.NATIONAL. Cần crosswalk nếu\
+    \ FIMS không cùng chuẩn mã với ECAT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.NAID"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Nationality Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Activity Status Code"
+  physical_name: "activity_status_code"
+  description: "Trạng thái hoạt động của đại diện giao dịch."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.STATUSID"
+  comment: "Scheme: FIMS_ACTIVITY_STATUS."
+  classification_context: "FIMS_ACTIVITY_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả/ghi chú về đại diện giao dịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.DATECREATED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Name"
+  physical_name: "created_by_user_nm"
+  description: "Tài khoản người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.CREATEDBY"
+  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
+    \ data)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.DATEMODIFIED"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated By User Name"
+  physical_name: "updated_by_user_nm"
+  description: "Tài khoản người dùng cập nhật lần cuối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.TRADINGREPRESENTATIVE.MODIFYBY"
+  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
+    \ data)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

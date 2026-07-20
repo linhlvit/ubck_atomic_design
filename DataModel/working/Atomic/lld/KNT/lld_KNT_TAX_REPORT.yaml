@@ -1,0 +1,789 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "KNT"
+  source_table: "TAX_REPORT"
+  atomic_entity: "External Tax Declaration Report"
+  entity_physical_name: "et_declaration_report"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Declaration Document"
+  table_type: "Fact Append"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "External Tax Declaration Report Id"
+  physical_name: "et_declaration_report_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Declaration Document\". Tờ khai/báo\
+    \ cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash: hash_id('KNT.TAX_REPORT',\
+    \ DECLARATION_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Declaration Report Code"
+  physical_name: "et_declaration_report_code"
+  description: "Mã tờ khai thuế trong hệ thống Cục Thuế. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_CODE"
+  comment: "BK chính. Cần profile dữ liệu xác nhận unique — Fact Append cho phép nộp\
+    \ bổ sung nhiều lần (ATTEMPT_COUNT); nếu DECLARATION_CODE không đổi giữa các lần\
+    \ nộp bổ sung, có thể cần ghép thêm ATTEMPT_COUNT vào business key trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.TAX_REPORT"
+  etl_derived_value: "KNT.TAX_REPORT"
+  data_type: "string"
+- attribute_name: "External Tax Registration Id"
+  physical_name: "et_registration_id"
+  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp nộp báo cáo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAX_CODE"
+  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
+    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Registration Code"
+  physical_name: "et_registration_code"
+  description: "Mã số thuế doanh nghiệp nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAX_CODE"
+  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
+    \ Pair with External Tax Registration Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Service Code"
+  physical_name: "service_code"
+  description: "Mã dịch vụ trao đổi dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.SERVICE_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Service Name"
+  physical_name: "service_nm"
+  description: "Tên dịch vụ trao đổi dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.SERVICE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Service Version"
+  physical_name: "service_version"
+  description: "Phiên bản dịch vụ trao đổi dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.SERVICE_VERSION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Service Provider Information"
+  physical_name: "service_provider_information"
+  description: "Thông tin nhà cung cấp dịch vụ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.SERVICE_PROVIDER_INFO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration Name"
+  physical_name: "declaration_nm"
+  description: "Tên tờ khai thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Description"
+  physical_name: "form_description"
+  description: "Mô tả biểu mẫu tờ khai."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.FORM_DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration XML Version"
+  physical_name: "declaration_xml_version"
+  description: "Phiên bản tờ khai dạng XML."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_XML_VERSION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration Type Code"
+  physical_name: "declaration_tp_code"
+  description: "Loại tờ khai thuế."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_TYPE"
+  comment: "Scheme: KNT_DECLARATION_TYPE. [PROPOSE NEW SCHEME] — chưa có trong HLD\
+    \ 7c, cần profile dữ liệu để liệt kê values."
+  classification_context: "KNT_DECLARATION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Attempt Count"
+  physical_name: "attempt_count"
+  description: "Số lần nộp tờ khai (lần đầu, bổ sung lần 1, 2...)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ATTEMPT_COUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Period Type Code"
+  physical_name: "period_tp_code"
+  description: "Kiểu kỳ báo cáo: Y=Năm, H=Bán niên, Q=Quý, M=Tháng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.PERIOD_TYPE"
+  comment: "Scheme: KNT_REPORT_PERIOD_TYPE."
+  classification_context: "KNT_REPORT_PERIOD_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration Period"
+  physical_name: "declaration_period"
+  description: "Kỳ kê khai thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration From Date"
+  physical_name: "declaration_from_dt"
+  description: "Kỳ kê khai từ ngày."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_FROM_DATE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format\
+    \ ngày thực tế."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Declaration To Date"
+  physical_name: "declaration_to_dt"
+  description: "Kỳ kê khai đến ngày."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_TO_DATE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format\
+    \ ngày thực tế."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Declaration From Month"
+  physical_name: "declaration_from_month"
+  description: "Kỳ kê khai từ tháng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_FROM_MONTH"
+  comment: "Giữ Text — nguồn có thể lưu dạng MM/YYYY không phải ngày đầy đủ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration To Month"
+  physical_name: "declaration_to_month"
+  description: "Kỳ kê khai đến tháng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_TO_MONTH"
+  comment: "Giữ Text — nguồn có thể lưu dạng MM/YYYY không phải ngày đầy đủ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Tax Office Code"
+  physical_name: "tax_office_code"
+  description: "Mã cơ quan thuế nơi nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAX_OFFICE_CODE"
+  comment: "Denormalized — nguồn không có danh mục cơ quan thuế trong scope thiết\
+    \ kế hiện tại."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Tax Office Name"
+  physical_name: "tax_office_nm"
+  description: "Tên cơ quan thuế nơi nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAX_OFFICE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration Date"
+  physical_name: "declaration_dt"
+  description: "Ngày lập tờ khai."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.DECLARATION_DATE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Extension Reason Code"
+  physical_name: "extension_reason_code"
+  description: "Mã lý do gia hạn nộp báo cáo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.EXTENSION_REASON_CODE"
+  comment: "Scheme: KNT_EXTENSION_REASON. [PROPOSE NEW SCHEME] — chưa có trong HLD\
+    \ 7c, cần profile dữ liệu để liệt kê values."
+  classification_context: "KNT_EXTENSION_REASON"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Extension Reason Description"
+  physical_name: "extension_reason_description"
+  description: "Nội dung lý do gia hạn nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.EXTENSION_REASON"
+  comment: "Denormalized — tên tương ứng Extension Reason Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signatory Full Name"
+  physical_name: "signatory_full_nm"
+  description: "Người ký báo cáo (Giám đốc/TGĐ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.SIGNATORY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Signed Date"
+  physical_name: "signed_dt"
+  description: "Ngày ký báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.SIGNED_AT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Business Line Name"
+  physical_name: "business_line_nm"
+  description: "Ngành nghề kinh doanh chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.BUSINESS_LINE"
+  comment: "Denormalized snapshot tại thời điểm báo cáo — không phải FK, grain của\
+    \ entity là Declaration Document."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Representative Full Name"
+  physical_name: "representative_full_nm"
+  description: "Họ tên người đại diện/chủ hộ kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.REPRESENTATIVE_NAME"
+  comment: "Prefix chủ thể — denormalized snapshot, không có FK link."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Address"
+  physical_name: "taxpayer_adr"
+  description: "Địa chỉ người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_ADDRESS"
+  comment: "Denormalized — grain của entity là Declaration Document, không phải Involved\
+    \ Party, không tách IP Postal Address."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Ward Name"
+  physical_name: "taxpayer_ward_nm"
+  description: "Phường/xã người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.WARD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer District Code"
+  physical_name: "taxpayer_district_code"
+  description: "Mã quận/huyện người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_DISTRICT_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer District Name"
+  physical_name: "taxpayer_district_nm"
+  description: "Tên quận/huyện người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_DISTRICT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Province Code"
+  physical_name: "taxpayer_province_code"
+  description: "Mã tỉnh/thành phố người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_PROVINCE_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Province Name"
+  physical_name: "taxpayer_province_nm"
+  description: "Tên tỉnh/thành phố người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_PROVINCE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Phone Number"
+  physical_name: "taxpayer_phone_nbr"
+  description: "Số điện thoại người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_PHONE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Fax Number"
+  physical_name: "taxpayer_fax_nbr"
+  description: "Số fax người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_FAX"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Taxpayer Email"
+  physical_name: "taxpayer_email"
+  description: "Email người nộp thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.TAXPAYER_EMAIL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Status Description"
+  physical_name: "audit_status_description"
+  description: "Trạng thái kiểm toán dạng văn bản (từ Cục Thuế)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDIT_STATUS_TEXT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Tax Code"
+  physical_name: "af_tax_code"
+  description: "Mã số thuế của tổ chức kiểm toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDIT_FIRM_TAX_CODE"
+  comment: "Denormalized — liên kết ngầm → AUDIT_FIRM (out of scope hiện tại), không\
+    \ tạo FK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Firm Name"
+  physical_name: "af_nm"
+  description: "Tên tổ chức kiểm toán thực hiện kiểm toán báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDIT_FIRM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Auditor Code"
+  physical_name: "auditor_code"
+  description: "Mã kiểm toán viên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDITOR_CODE"
+  comment: "Denormalized — liên kết ngầm → AUDITOR (out of scope hiện tại), không\
+    \ tạo FK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Auditor Full Name"
+  physical_name: "auditor_full_nm"
+  description: "Họ tên kiểm toán viên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDITOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audited Flag"
+  physical_name: "audited_flag"
+  description: "Cờ báo cáo tài chính đã được kiểm toán."
+  data_domain: "Boolean"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDITED"
+  comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "boolean"
+- attribute_name: "Audit Opinion Code"
+  physical_name: "audit_opinion_code"
+  description: "Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDIT_OPINION_CODE"
+  comment: "Denormalized — nguồn không có danh mục chuẩn hóa trong scope thiết kế\
+    \ hiện tại."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Opinion Description"
+  physical_name: "audit_opinion_description"
+  description: "Nội dung ý kiến kiểm toán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDIT_OPINION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Date"
+  physical_name: "audit_dt"
+  description: "Ngày ký báo cáo kiểm toán."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.AUDIT_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.CREATED_AT"
+  comment: "Nguồn lưu dạng số (epoch millis, NUMBER) — ETL cần convert sang timestamp."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Additional Info Submission Date"
+  physical_name: "additional_info_submission_dt"
+  description: "Thông tin bổ sung: ngày nộp tờ khai."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_SUBMISSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Additional Info Received Date"
+  physical_name: "additional_info_received_dt"
+  description: "Thông tin bổ sung: ngày tiếp nhận tờ khai."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_RECEIVED_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Additional Info Preparation Period"
+  physical_name: "additional_info_preparation_period"
+  description: "Thông tin bổ sung: kỳ lập bộ hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_PREPARATION_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Additional Info Source"
+  physical_name: "additional_info_src"
+  description: "Thông tin bổ sung: nguồn gốc tờ khai."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_SOURCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Additional Info Entered By Name"
+  physical_name: "additional_info_entered_by_nm"
+  description: "Thông tin bổ sung: người nhập tờ khai."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_ENTERED_BY"
+  comment: "Denormalized — không tạo FK, nguồn không có entity người dùng trong scope."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Additional Info Received At Date"
+  physical_name: "additional_info_received_at_dt"
+  description: "Thông tin bổ sung: ngày nhận tờ khai."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_RECEIVED_AT"
+  comment: "Khác Additional Info Received Date — nguồn lưu 2 cột ngày nhận riêng biệt."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Additional Info Declaration Id"
+  physical_name: "additional_info_declaration_id"
+  description: "Thông tin bổ sung: ID tờ khai trong hệ thống Cục Thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_DECLARATION_ID"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Additional Info Sent From Name"
+  physical_name: "additional_info_sent_from_nm"
+  description: "Thông tin bổ sung: nơi gửi tờ khai."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_SENT_FROM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Additional Info Received At Location"
+  physical_name: "additional_info_received_at_location"
+  description: "Thông tin bổ sung: nơi nhận tờ khai."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ADD_INFO_RECEIVED_AT_LOCATION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Global Unique Identifier"
+  physical_name: "global_unique_identifier"
+  description: "Định danh duy nhất toàn cục (GUID/UUID) của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.GUID"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

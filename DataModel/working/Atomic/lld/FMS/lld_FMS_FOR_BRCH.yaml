@@ -106,19 +106,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Branch Type Flag"
-  physical_name: "branch_tp_flag"
+- attribute_name: "Branch Type Code"
+  physical_name: "branch_tp_code"
   description: "Cờ là chi nhánh: 1=Chi nhánh, 0=Văn phòng đại diện."
-  data_domain: "Boolean"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.FOR_BRCH.BRANCH_FLAG"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "boolean"
+  comment: "Scheme: FMS_BRANCH_TYPE."
+  classification_context: "FMS_BRANCH_TYPE"
+  etl_derived_value: "1=BRANCH;0=REPRESENTATIVE_OFFICE"
+  data_type: "string"
 - attribute_name: "Foreign Fund Management Organization Unit Full Name"
   physical_name: "foreign_fm_ou_full_nm"
   description: "Tên hiển thị chính."
@@ -290,43 +290,33 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Event Type Id"
+  physical_name: "event_tp_id"
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.FOR_BRCH.EVENT_TYPE_ID"
-  comment: "Scheme: FMS_EVENT_TYPE. Nguồn EVENT_TYPE_ID là UUID FK — ETL resolve sang\
-    \ mã EVENT_TYPE tương ứng."
-  classification_context: "FMS_EVENT_TYPE"
+  comment: "FK target: Classification FMS Event Type.Classification FMS Event Type\
+    \ Id. [ĐỔI 2026-07-19] Đổi từ Classification Value đơn sang cặp FK Id/Code theo\
+    \ yêu cầu Data Modeler — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06).\
+    \ Hash: hash_id('FMS.EVENT_TYPE', EVENT_CODE resolve từ ID)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
+- attribute_name: "Event Type Code"
+  physical_name: "event_tp_code"
+  description: "Mã loại sự vụ áp dụng."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.FOR_BRCH.DATE_CREATED"
-  comment: null
+  - "FMS.FOR_BRCH.EVENT_TYPE_ID"
+  comment: "Lookup pair: Classification FMS Event Type.Classification FMS Event Type\
+    \ Code. Pair with Event Type Id."
   classification_context: null
   etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.FOR_BRCH.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
+  data_type: "string"

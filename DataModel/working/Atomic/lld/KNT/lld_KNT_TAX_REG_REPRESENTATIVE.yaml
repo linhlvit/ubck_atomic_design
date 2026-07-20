@@ -1,0 +1,117 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "KNT"
+  source_table: "TAX_REG_REPRESENTATIVE"
+  atomic_entity: "External Tax Registration Representative"
+  entity_physical_name: "et_registration_representative"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Designated Representative"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "External Tax Registration Representative Id"
+  physical_name: "et_registration_representative_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Designated Representative\". Người\
+    \ đại diện pháp luật/chủ hộ kinh doanh của 1 hồ sơ External Tax Registration.\
+    \ Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Registration Representative Code"
+  physical_name: "et_registration_representative_code"
+  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,\
+    \ dùng PK kỹ thuật làm BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.TAX_REG_REPRESENTATIVE"
+  etl_derived_value: "KNT.TAX_REG_REPRESENTATIVE"
+  data_type: "string"
+- attribute_name: "External Tax Registration Id"
+  physical_name: "et_registration_id"
+  description: "FK -> tax_registration_info: Hồ sơ đăng ký thuế liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID"
+  comment: "FK target: External Tax Registration.External Tax Registration Id. Nguồn\
+    \ lưu ID kỹ thuật của TAX_REGISTRATION_INFO — ETL join TAX_REGISTRATION_ID → KNT.TAX_REGISTRATION_INFO.ID\
+    \ để lấy TAX_CODE rồi hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Registration Code"
+  physical_name: "et_registration_code"
+  description: "Mã số thuế hồ sơ đăng ký thuế liên quan."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.TAX_REGISTRATION_ID"
+  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
+    \ Pair with External Tax Registration Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Full Name"
+  physical_name: "full_nm"
+  description: "Họ tên người đại diện/chủ hộ kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.REPRESENTATIVE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Position Code"
+  physical_name: "position_code"
+  description: "Chức vụ (tên hoặc mã)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REG_REPRESENTATIVE.POSITION"
+  comment: "Scheme: KNT_REPRESENTATIVE_POSITION. Cần profile dữ liệu — free text hay\
+    \ danh mục cố định (xem KNT_HLD_Overview.md mục 7e#5)."
+  classification_context: "KNT_REPRESENTATIVE_POSITION"
+  etl_derived_value: null
+  data_type: "string"

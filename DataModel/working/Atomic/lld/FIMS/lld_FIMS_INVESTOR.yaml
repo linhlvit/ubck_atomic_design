@@ -1,0 +1,436 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FIMS"
+  source_table: "INVESTOR"
+  atomic_entity: "Foreign Investor"
+  entity_physical_name: "foreign_investor"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "Foreign Investor Id"
+  physical_name: "foreign_investor_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài\
+    \ (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS.INVESTOR',\
+    \ TransactionCode)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Code"
+  physical_name: "foreign_investor_code"
+  description: "Mã số giao dịch của NĐT NN do VSDC cấp. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.TransactionCode"
+  comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (nguồn\
+    \ không khai báo ràng buộc)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FIMS.INVESTOR"
+  etl_derived_value: "FIMS.INVESTOR"
+  data_type: "string"
+- attribute_name: "Investor Object Type Code"
+  physical_name: "investor_object_tp_code"
+  description: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.ObjectType"
+  comment: "Scheme: FIMS_STOCKHOLDER_TYPE. Nguồn lưu dạng số — ETL cần convert sang\
+    \ string code."
+  classification_context: "FIMS_STOCKHOLDER_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Full Name"
+  physical_name: "full_nm"
+  description: "Tên đầy đủ (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.Name"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "English Name"
+  physical_name: "english_nm"
+  description: "Tên tiếng Anh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.EName"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Gender Code"
+  physical_name: "gender_code"
+  description: "Giới tính: 1=Nam, 2=Nữ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.Sex"
+  comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — chưa có trong HLD 6d, đăng\
+    \ ký bổ sung cùng lượt LLD này. Chỉ áp dụng NĐT cá nhân (ObjectType=1)."
+  classification_context: "FIMS_GENDER"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Date of Birth"
+  physical_name: "dt_of_birth"
+  description: "Ngày sinh (với NĐT cá nhân)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.DateOfBirth"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.NaId"
+  comment: "FK target: Geographic Area.Geographic Area Id. Nguồn Geographic Area đã\
+    \ chuyển sang ECAT (FIMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị:\
+    \ đối chiếu mã/tên quốc gia NaId với Geographic Area Unique Key (ECAT.COUNTRY.CODE)\
+    \ hoặc Name, không còn hash_id() trực tiếp theo FIMS.NATIONAL. Cần crosswalk nếu\
+    \ FIMS không cùng chuẩn mã với ECAT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.NaId"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
+    \ Nationality Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Registration Number"
+  physical_name: "business_registration_nbr"
+  description: "Số đăng ký kinh doanh/mã số doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.BusinessNumber"
+  comment: "Chỉ áp dụng NĐT tổ chức (ObjectType=2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Director Full Name"
+  physical_name: "director_full_nm"
+  description: "Họ tên Giám đốc/Tổng giám đốc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.Director"
+  comment: "Denormalized — không có FK, chỉ áp dụng NĐT tổ chức."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Type Code"
+  physical_name: "investor_tp_code"
+  description: "Loại nhà đầu tư nước ngoài."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.InvestorTypeId"
+  comment: "Scheme: FIMS_INVESTOR_TYPE."
+  classification_context: "FIMS_INVESTOR_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Depository Account Number"
+  physical_name: "depository_account_nbr"
+  description: "Số tài khoản lưu ký tại VSDC."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.DepAccountNumber"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor System Object Type Code"
+  physical_name: "investor_stm_object_tp_code"
+  description: "Loại đối tượng trong hệ thống (phân biệt giữa các loại NĐT NN)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.SysObjectType"
+  comment: "Scheme: FIMS_INVESTOR_SYS_OBJECT_TYPE. [PROPOSE NEW SCHEME] — chưa xuất\
+    \ hiện trong HLD 6d, chưa rõ giá trị cụ thể. Cần profile dữ liệu trước khi liệt\
+    \ kê values."
+  classification_context: "FIMS_INVESTOR_SYS_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Securities Company Id"
+  physical_name: "trading_sc_id"
+  description: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.INVESTOR.SecComAddId"
+  comment: "Pending — FK target: Market Participant Organization.Market Participant\
+    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS.SECURITIESCOMPANY',\
+    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
+    \ BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trading Securities Company Code"
+  physical_name: "trading_sc_code"
+  description: "Mã công ty CK nơi mở tài khoản."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.INVESTOR.SecComAddId"
+  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
+    \ Code. Pending — xem ghi chú ở Trading Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Id"
+  physical_name: "custodian_bank_id"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao dịch."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.INVESTOR.BankAddId"
+  comment: "Pending — FK target: Market Participant Organization.Market Participant\
+    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
+    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
+    \ BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Custodian Bank Code"
+  physical_name: "custodian_bank_code"
+  description: "Mã ngân hàng lưu ký đăng ký tài khoản giao dịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.INVESTOR.BankAddId"
+  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
+    \ Code. Pending — xem ghi chú ở Custodian Bank Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Capital Investment Account Number"
+  physical_name: "capital_investment_account_nbr"
+  description: "Số tài khoản đầu tư vốn của NĐT NN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.AccountInvesCapital"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Capital Custodian Bank Id"
+  physical_name: "capital_custodian_bank_id"
+  description: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.INVESTOR.BankAddCapId"
+  comment: "Pending — FK target: Market Participant Organization.Market Participant\
+    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI',\
+    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
+    \ BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Capital Custodian Bank Code"
+  physical_name: "capital_custodian_bank_code"
+  description: "Mã ngân hàng lưu ký đăng ký tài khoản vốn."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "FIMS.INVESTOR.BankAddCapId"
+  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
+    \ Code. Pending — xem ghi chú ở Capital Custodian Bank Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Company Type Code"
+  physical_name: "company_tp_code"
+  description: "Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.CompanyTypeId"
+  comment: "Scheme: FIMS_COMPANY_TYPE. Bổ sung Foreign Investor vào used_in_entities\
+    \ (trước đây chỉ Market Participant Organization)."
+  classification_context: "FIMS_COMPANY_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Activity Status Code"
+  physical_name: "activity_status_code"
+  description: "Trạng thái hoạt động của đối tượng."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.StatusId"
+  comment: "Scheme: FIMS_ACTIVITY_STATUS."
+  classification_context: "FIMS_ACTIVITY_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết / ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.Description"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Attachment File Name"
+  physical_name: "attachment_file_nm"
+  description: "Tên file đính kèm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.FileName"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Created Timestamp"
+  physical_name: "created_tms"
+  description: "Thời điểm tạo bản ghi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.DateCreated"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Created By User Name"
+  physical_name: "created_by_user_nm"
+  description: "Tài khoản người dùng tạo bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.CreatedBy"
+  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
+    \ data)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Updated Timestamp"
+  physical_name: "updated_tms"
+  description: "Thời điểm cập nhật lần cuối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.DateModified"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Updated By User Name"
+  physical_name: "updated_by_user_nm"
+  description: "Tài khoản người dùng cập nhật lần cuối."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FIMS.INVESTOR.ModifyBy"
+  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
+    \ data)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

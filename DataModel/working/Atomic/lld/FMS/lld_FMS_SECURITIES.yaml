@@ -497,7 +497,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.DIREC_NAME"
-  comment: "Denormalized — chưa có FK cấu trúc đến Fund Management Company Key Person\
+  comment: "Denormalized — chưa có FK cấu trúc đến Fund Management Company Employee\
     \ (Tier 2)."
   classification_context: null
   etl_derived_value: null
@@ -511,7 +511,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.DEPUT_NAME"
-  comment: "Denormalized — chưa có FK cấu trúc đến Fund Management Company Key Person\
+  comment: "Denormalized — chưa có FK cấu trúc đến Fund Management Company Employee\
     \ (Tier 2)."
   classification_context: null
   etl_derived_value: null
@@ -666,44 +666,33 @@ attributes:
   classification_context: "FMS_COMPANY_TYPE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Event Type Id"
+  physical_name: "event_tp_id"
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.EVENT_TYPE_ID"
-  comment: "Scheme: FMS_EVENT_TYPE. Theo quyết định HLD 7c (Classification Value mở\
-    \ rộng) — xem Tier6 T6-06 để xác nhận có cần entity riêng. Nguồn EVENT_TYPE_ID\
-    \ là UUID FK — ETL resolve sang mã EVENT_TYPE tương ứng."
-  classification_context: "FMS_EVENT_TYPE"
+  comment: "FK target: Classification FMS Event Type.Classification FMS Event Type\
+    \ Id. [ĐỔI 2026-07-19] Đổi từ Classification Value đơn sang cặp FK Id/Code theo\
+    \ yêu cầu Data Modeler — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06).\
+    \ Hash: hash_id('FMS.EVENT_TYPE', EVENT_CODE resolve từ ID)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
+- attribute_name: "Event Type Code"
+  physical_name: "event_tp_code"
+  description: "Mã loại sự vụ áp dụng."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.SECURITIES.DATE_CREATED"
-  comment: null
+  - "FMS.SECURITIES.EVENT_TYPE_ID"
+  comment: "Lookup pair: Classification FMS Event Type.Classification FMS Event Type\
+    \ Code. Pair with Event Type Id."
   classification_context: null
   etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.SECURITIES.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
+  data_type: "string"

@@ -147,8 +147,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Id"
-  physical_name: "fmc_key_person_id"
+- attribute_name: "Fund Management Company Employee Id"
+  physical_name: "fmc_employee_id"
   description: "FK -> TL_PROFILES: Người hành nghề liên quan."
   data_domain: "Surrogate Key"
   nullable: true
@@ -156,13 +156,13 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.TLPRO_ID"
-  comment: "FK target: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
+  comment: "FK target: Fund Management Company Employee.Fund Management Company Key\
+    \ Person Id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Code"
-  physical_name: "fmc_key_person_code"
+- attribute_name: "Fund Management Company Employee Code"
+  physical_name: "fmc_employee_code"
   description: "Mã người hành nghề liên quan."
   data_domain: "Text"
   nullable: true
@@ -170,8 +170,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.TLPRO_ID"
-  comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Code. Pair with Fund Management Company Key Person Id."
+  comment: "Lookup pair: Fund Management Company Employee.Fund Management Company\
+    \ Key Person Code. Pair with Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -215,8 +215,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
-- attribute_name: "Key Person In Company Flag"
-  physical_name: "key_person_in_company_flag"
+- attribute_name: "Practitioner Affiliated Fund Management Company Flag"
+  physical_name: "practitioner_affiliated_fmc_flag"
   description: "Cờ người hành nghề thuộc công ty QLQ này: 1=Thuộc, 0=Không."
   data_domain: "Boolean"
   nullable: true
@@ -224,7 +224,10 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.INSIDER.TL_PROFILE_IN_SEC"
-  comment: "Giá trị 1 → true; 0 → false."
+  comment: "Giá trị 1 → true; 0 → false. [ĐỔI TÊN 2026-07-19] Đổi từ 'Key Person In\
+    \ Company Flag' theo yêu cầu Data Modeler — tên cũ chưa sát nghĩa (cờ xác định\
+    \ practitioner liên kết (TL_PROFILE_LINKED) có thuộc chính Fund Management Company\
+    \ đang xét hay công ty khác)."
   classification_context: null
   etl_derived_value: null
   data_type: "boolean"
@@ -388,29 +391,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.INSIDER.DATE_CREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.INSIDER.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"

@@ -1,0 +1,120 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "JOBS"
+  atomic_entity: "Classification FMS Position"
+  entity_physical_name: "cl_fms_position"
+  bcv_core_object: "Common"
+  bcv_concept: "[Common] Position"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "[MỚI 2026-07-19] Trước đây chưa khảo sát trong HLD (chỉ JOB_TL_PRO — junction\
+    \ tham chiếu bảng này — được ghi nhận ở Overview 7f). Không có cột CODE riêng\
+    \ — dùng ID làm BK (cùng pattern MB_FUND). CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION\
+    \ document trong pending_design.yaml."
+attributes:
+- attribute_name: "Classification FMS Position Id"
+  physical_name: "cl_fms_position_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Common] Position\". Danh mục chức danh/vị trí công\
+    \ việc áp dụng cho nhân sự công ty QLQ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification FMS Position Code"
+  physical_name: "cl_fms_position_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOBS.ID"
+  comment: "BK chính. PK nguồn — không có cột mã nghiệp vụ riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FMS.JOBS"
+  etl_derived_value: "FMS.JOBS"
+  data_type: "string"
+- attribute_name: "Classification FMS Position Name"
+  physical_name: "cl_fms_position_nm"
+  description: "Tên hiển thị chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOBS.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Job Type Code"
+  physical_name: "job_tp_code"
+  description: "FK -> JOB_TYPE: Loại chức danh nghề nghiệp."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOBS.JOB_TYPE_ID"
+  comment: "Scheme: FMS_JOB_TYPE (tái sử dụng — đã đăng ký Tier 1, dùng chung với\
+    \ TL_PROFILES.JOB_TYPE/STF_FG_BRCH). Nguồn JOB_TYPE_ID là UUID FK — ETL resolve\
+    \ sang mã JOB_TYPE.CODE tương ứng."
+  classification_context: "FMS_JOB_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Position Record Status Code"
+  physical_name: "position_record_status_code"
+  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
+    \ lực."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOBS.RECORD_STATUS"
+  comment: "Scheme: FMS_POSITION_RECORD_STATUS. ETL derived: 1=ACTIVE;0=INACTIVE."
+  classification_context: "FMS_POSITION_RECORD_STATUS"
+  etl_derived_value: "1=ACTIVE;0=INACTIVE"
+  data_type: "string"
+- attribute_name: "System Object Type Code"
+  physical_name: "stm_object_tp_code"
+  description: "Đối tượng hệ thống: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=ĐLCN..."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.JOBS.SYSTEM_OBJECT"
+  comment: "Scheme: FMS_WARNING_SYSTEM_OBJECT_TYPE (tái sử dụng — đã đăng ký Tier\
+    \ 1 cho PARA_WARN.SYSTEM_OBJECT, cùng domain giá trị loại đối tượng hệ thống 1-5).\
+    \ Mô tả nguồn liệt kê \"...\" (chưa đầy đủ), cần profile dữ liệu thực tế để bổ\
+    \ sung."
+  classification_context: "FMS_WARNING_SYSTEM_OBJECT_TYPE"
+  etl_derived_value: null
+  data_type: "string"

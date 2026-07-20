@@ -113,3 +113,43 @@ attributes:
   classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ — chứng chỉ hành nghề."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode PRACTITIONER_LICENSE — tái sử dụng value\
+    \ đã có (\"Chứng chỉ hành nghề (CCHN)\"), không tạo value mới. [MỚI 2026-07-19]\
+    \ Đẩy ra từ lld_FMS_STF_FG_BRCH.yaml theo yêu cầu Data Modeler."
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: "PRACTITIONER_LICENSE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số chứng chỉ hành nghề của nhân sự chi nhánh/VPĐD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.PRACTICE_CERT_NO"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp chứng chỉ hành nghề."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.STF_FG_BRCH.PRACTICE_CERT_ISSUE_DATE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: null
+  data_type: "date"

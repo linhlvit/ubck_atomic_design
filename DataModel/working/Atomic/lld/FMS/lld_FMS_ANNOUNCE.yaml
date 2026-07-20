@@ -116,8 +116,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Id"
-  physical_name: "fmc_key_person_id"
+- attribute_name: "Fund Management Company Employee Id"
+  physical_name: "fmc_employee_id"
   description: "FK -> TL_PROFILES: Người hành nghề liên quan đến CBTT."
   data_domain: "Surrogate Key"
   nullable: true
@@ -125,13 +125,13 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.TL_PRO_ID"
-  comment: "FK target: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Id. Hash: hash_id('FMS.TL_PROFILES', TL_PRO_ID). Nullable — xem T6-05."
+  comment: "FK target: Fund Management Company Employee.Fund Management Company Key\
+    \ Person Id. Hash: hash_id('FMS.TL_PROFILES', TL_PRO_ID). Nullable — xem T6-05."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Fund Management Company Key Person Code"
-  physical_name: "fmc_key_person_code"
+- attribute_name: "Fund Management Company Employee Code"
+  physical_name: "fmc_employee_code"
   description: "Mã người hành nghề liên quan đến CBTT."
   data_domain: "Text"
   nullable: true
@@ -139,8 +139,8 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.TL_PRO_ID"
-  comment: "Lookup pair: Fund Management Company Key Person.Fund Management Company\
-    \ Key Person Code. Pair with Fund Management Company Key Person Id."
+  comment: "Lookup pair: Fund Management Company Employee.Fund Management Company\
+    \ Key Person Code. Pair with Fund Management Company Employee Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -231,17 +231,34 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Event Type Code"
-  physical_name: "event_tp_code"
+- attribute_name: "Event Type Id"
+  physical_name: "event_tp_id"
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
-  data_domain: "Classification Value"
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.EVENT_TYPE_ID"
-  comment: "Scheme: FMS_EVENT_TYPE (tái sử dụng — đã đăng ký)."
-  classification_context: "FMS_EVENT_TYPE"
+  comment: "FK target: Classification FMS Event Type.Classification FMS Event Type\
+    \ Id. [ĐỔI 2026-07-19] Đổi từ Classification Value đơn sang cặp FK Id/Code theo\
+    \ yêu cầu Data Modeler — EVENT_TYPE nay là entity riêng (giải quyết Tier6 T6-06).\
+    \ Hash: hash_id('FMS.EVENT_TYPE', EVENT_CODE resolve từ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Event Type Code"
+  physical_name: "event_tp_code"
+  description: "Mã loại sự vụ áp dụng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.ANNOUNCE.EVENT_TYPE_ID"
+  comment: "Lookup pair: Classification FMS Event Type.Classification FMS Event Type\
+    \ Code. Pair with Event Type Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Announcement Type Code"
@@ -430,29 +447,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày dữ liệu — dùng làm filter logic tải incremental cho bảng Append\
+    \ (nguồn insert-only)."
+  data_domain: "Date"
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.ANNOUNCE.DATE_CREATED"
-  comment: null
+  comment: "[ĐỔI 2026-07-19] Đổi từ 'Created Timestamp' theo yêu cầu Data Modeler\
+    \ — bảng Append dùng DATE_CREATED làm filter logic tải incremental, nên map vào\
+    \ Data Date (ETL truncate timestamp về granularity ngày) thay vì giữ nguyên như\
+    \ audit timestamp thông thường."
   classification_context: null
   etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.ANNOUNCE.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
+  data_type: "date"

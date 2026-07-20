@@ -1,0 +1,237 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "KNT"
+  source_table: "TAX_VIOLATION_HANDLING"
+  atomic_entity: "External Tax Violation Handling"
+  entity_physical_name: "et_violation_handling"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  table_type: "Fact Append"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "External Tax Violation Handling Id"
+  physical_name: "et_violation_handling_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Gov. Registration Document\". Quyết\
+    \ định xử lý vi phạm pháp luật về thuế do Cục Thuế cung cấp. Hash: hash_id('KNT.TAX_VIOLATION_HANDLING',\
+    \ HANDLING_DECISION_NUMBER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Violation Handling Code"
+  physical_name: "et_violation_handling_code"
+  description: "Số quyết định xử lý vi phạm pháp luật về thuế. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.HANDLING_DECISION_NUMBER"
+  comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.TAX_VIOLATION_HANDLING"
+  etl_derived_value: "KNT.TAX_VIOLATION_HANDLING"
+  data_type: "string"
+- attribute_name: "External Tax Registration Id"
+  physical_name: "et_registration_id"
+  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.TAX_CODE"
+  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
+    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Registration Code"
+  physical_name: "et_registration_code"
+  description: "Mã số thuế doanh nghiệp vi phạm."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.TAX_CODE"
+  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
+    \ Pair with External Tax Registration Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Name"
+  physical_name: "subject_nm"
+  description: "Tên tổ chức/cá nhân đối tượng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.SUBJECT_NAME"
+  comment: "Denormalized snapshot tại thời điểm ban hành quyết định."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Inspection Period"
+  physical_name: "inspection_period"
+  description: "Kỳ thanh tra/kiểm tra thuế tại trụ sở doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.INSPECTION_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Fine Amount"
+  physical_name: "violation_fine_amt"
+  description: "Số tiền phạt hành vi vi phạm."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.VIOLATION_FINE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Administrative Violation Fine Amount"
+  physical_name: "administrative_violation_fine_amt"
+  description: "Số tiền phạt hành vi vi phạm hành chính về thuế."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.ADMIN_VIOLATION_FINE"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Tax Recovery Amount"
+  physical_name: "tax_recovery_amt"
+  description: "Số tiền truy thu (thuế, tiền nộp chậm)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.TAX_RECOVERY_AMOUNT"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Issuing Organization Name"
+  physical_name: "issuing_organization_nm"
+  description: "Cơ quan ban hành quyết định."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.ISSUING_ORG"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Issuing Tax Authority Name"
+  physical_name: "issuing_tax_authority_nm"
+  description: "Tên cơ quan thuế ban hành quyết định xử lý."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.ISSUING_TAX_AUTHORITY_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Type Code"
+  physical_name: "decision_tp_code"
+  description: "Loại quyết định: xử phạt hành chính, truy thu, đình chỉ..."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.DECISION_TYPE"
+  comment: "Scheme: KNT_VIOLATION_DECISION_TYPE. [PROPOSE NEW SCHEME] — chưa có trong\
+    \ HLD 7c, cần profile dữ liệu để liệt kê values."
+  classification_context: "KNT_VIOLATION_DECISION_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Decision Date"
+  physical_name: "decision_dt"
+  description: "Ngày ban hành quyết định."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.DECISION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Total Fine Amount"
+  physical_name: "total_fine_amt"
+  description: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.TOTAL_FINE_AMOUNT"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Other Fine Amount"
+  physical_name: "other_fine_amt"
+  description: "Tổng tiền phạt khác (không phải phạt hành chính)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_VIOLATION_HANDLING.OTHER_FINE_AMOUNT"
+  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"

@@ -373,29 +373,20 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày dữ liệu — dùng làm filter logic tải incremental cho bảng Append\
+    \ (nguồn insert-only)."
+  data_domain: "Date"
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.TRS_FER_INDER.DATE_CREATED"
-  comment: null
+  comment: "[ĐỔI 2026-07-19] Đổi từ 'Created Timestamp' theo yêu cầu Data Modeler\
+    \ — bảng Append dùng DATE_CREATED làm filter logic tải incremental, nên map vào\
+    \ Data Date (ETL truncate timestamp về granularity ngày) thay vì giữ nguyên như\
+    \ audit timestamp thông thường."
   classification_context: null
   etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật bản ghi lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.TRS_FER_INDER.DATE_MODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
+  data_type: "date"

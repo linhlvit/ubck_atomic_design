@@ -1,0 +1,130 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "KNT"
+  source_table: "INFO_REQUEST_DETAIL"
+  atomic_entity: "External Tax Information Request"
+  entity_physical_name: "et_information_request"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Information Request"
+  table_type: "Fact Append"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: null
+attributes:
+- attribute_name: "External Tax Information Request Id"
+  physical_name: "et_information_request_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Communication] Information Request\". 1 lần trao\
+    \ đổi yêu cầu thông tin từ Cục Thuế gửi UBCKNN. Hash: hash_id('KNT.INFO_REQUEST_DETAIL',\
+    \ ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Information Request Code"
+  physical_name: "et_information_request_code"
+  description: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt,\
+    \ dùng PK kỹ thuật làm BK duy nhất."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INFO_REQUEST_DETAIL.ID"
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.INFO_REQUEST_DETAIL"
+  etl_derived_value: "KNT.INFO_REQUEST_DETAIL"
+  data_type: "string"
+- attribute_name: "External Tax Registration Id"
+  physical_name: "et_registration_id"
+  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp liên quan yêu cầu thông\
+    \ tin."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INFO_REQUEST_DETAIL.TAX_CODE"
+  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
+    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "External Tax Registration Code"
+  physical_name: "et_registration_code"
+  description: "Mã số thuế doanh nghiệp liên quan yêu cầu thông tin."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INFO_REQUEST_DETAIL.TAX_CODE"
+  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
+    \ Pair with External Tax Registration Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Request Name"
+  physical_name: "request_nm"
+  description: "Tên loại yêu cầu thông tin từ Cục Thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INFO_REQUEST_DETAIL.REQUEST_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Status Description"
+  physical_name: "status_description"
+  description: "Mô tả trạng thái xử lý yêu cầu thông tin."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INFO_REQUEST_DETAIL.STATUS_DESCRIPTION"
+  comment: "Denormalized — mô tả tương ứng Response Status Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Response Status Code"
+  physical_name: "response_status_code"
+  description: "Trạng thái phản hồi WebService."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.INFO_REQUEST_DETAIL.STATUS"
+  comment: "Scheme: KNT_INFO_REQUEST_STATUS. Nguồn lưu dạng số — ETL cần convert sang\
+    \ string code."
+  classification_context: "KNT_INFO_REQUEST_STATUS"
+  etl_derived_value: null
+  data_type: "string"
