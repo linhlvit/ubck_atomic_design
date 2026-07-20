@@ -35,6 +35,27 @@ entities:
   source_table: "FMS.MB_FUND"
   status: "draft"
 - bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Investment Fund"
+  atomic_entity: "Investment Fund X Fund Distribution Agent Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "investment_fund_x_fund_distribution_agent_relationship"
+  description: "Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược\
+    \ quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Investment Fund\
+    \ + Fund Distribution Agent."
+  source_table: "FMS.AGEN_FUNDS"
+  status: "draft"
+- bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Investment Fund"
+  atomic_entity: "Investment Fund X Fund Management Company Employee Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "investment_fund_x_fund_management_company_employee_relationship"
+  description: "Quan hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến\
+    \ quỹ đầu tư. FK đến Investment Fund + Fund Management Company Employee."
+  source_table: "FMS.FUND_TL_PRO"
+  status: "draft"
+- bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Ownership"
   atomic_entity: "Public Company Shareholding"
   table_type: "Fundamental"
@@ -65,7 +86,7 @@ entities:
     \ vi ủy quyền, thời hạn và người được ủy quyền (Trading Representative). FK đến\
     \ Foreign Investor, Market Participant Organization và Trading Representative.\
     \ BCO đổi từ Documentation"
-  source_table: "FIMS.TRADINGAUTHORIZATION"
+  source_table: "FIMS.TRADINGAUTHORIZATION, FIMS.TRADINGAUTHORIZATIONINVES"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Review"
@@ -1142,6 +1163,41 @@ entities:
   source_table: "FMS.SECURITIES"
   status: "draft"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Fund Management Company Employee"
+  table_type: "Fundamental"
+  domain_prefix: "Fund Management Company Employee"
+  entity_physical_name: "fund_management_company_employee"
+  description: "Cá nhân giữ vị trí chủ chốt (TGĐ/Phó TGĐ/HĐQT...) tại Fund Management\
+    \ Company. Domain prefix dùng chung với Fund Management Company Employee Related\
+    \ Person (Tier 5). Đổi tên từ 'Fund Management Company Key Person' theo yêu cầu\
+    \ Data Modeler (2026-07-19)."
+  source_table: "FMS.TL_PROFILES"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Related Family Individual"
+  atomic_entity: "Fund Management Company Employee Related Person"
+  table_type: "Fundamental"
+  domain_prefix: "Fund Management Company Employee"
+  entity_physical_name: "fmc_employee_related_person"
+  description: "Người có quan hệ gia đình/liên quan với Fund Management Company Employee.\
+    \ Domain prefix dùng chung với Fund Management Company Employee (Tier 2). Đổi\
+    \ tên từ 'Fund Management Company Key Person Related Person' theo yêu cầu Data\
+    \ Modeler (2026-07-19)."
+  source_table: "FMS.TL_PRO_RELA"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Fund Management Company Employee X Classification FMS Position Relationship"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "fund_management_company_employee_x_classification_fms_position_relationship"
+  description: "Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty\
+    \ QLQ (1 nhân sự có thể giữ nhiều chức danh). FK đến Fund Management Company Employee\
+    \ + Classification FMS Position."
+  source_table: "FMS.JOB_TL_PRO"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Fund Management Company Insider"
   table_type: "Fundamental"
@@ -1170,30 +1226,6 @@ entities:
   description: "Người đại diện theo ủy quyền của Fund Management Company Insider.\
     \ Domain prefix dùng chung với Fund Management Company Insider (Tier 5)."
   source_table: "FMS.INSDER_RPRST"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  atomic_entity: "Fund Management Company Employee"
-  table_type: "Fundamental"
-  domain_prefix: "Fund Management Company Employee"
-  entity_physical_name: "fund_management_company_employee"
-  description: "Cá nhân giữ vị trí chủ chốt (TGĐ/Phó TGĐ/HĐQT...) tại Fund Management\
-    \ Company. Domain prefix dùng chung với Fund Management Company Employee Related\
-    \ Person (Tier 5). Đổi tên từ 'Fund Management Company Key Person' theo yêu cầu\
-    \ Data Modeler (2026-07-19)."
-  source_table: "FMS.TL_PROFILES"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Related Family Individual"
-  atomic_entity: "Fund Management Company Employee Related Person"
-  table_type: "Fundamental"
-  domain_prefix: "Fund Management Company Employee"
-  entity_physical_name: "fmc_employee_related_person"
-  description: "Người có quan hệ gia đình/liên quan với Fund Management Company Employee.\
-    \ Domain prefix dùng chung với Fund Management Company Employee (Tier 2). Đổi\
-    \ tên từ 'Fund Management Company Key Person Related Person' theo yêu cầu Data\
-    \ Modeler (2026-07-19)."
-  source_table: "FMS.TL_PRO_RELA"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
@@ -1821,6 +1853,28 @@ entities:
     \ Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác\
     \ 3 entity Classification khác trong nhóm) theo chỉ đạo Data Modeler. Xem 7e #11/#13."
   source_table: "SCMS.CAT_EVENT_TYPE"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Event Type"
+  atomic_entity: "Classification FMS Event Type"
+  table_type: "Relative"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_fms_event_type"
+  description: "Danh mục loại sự vụ báo cáo/CBTT của thành viên thị trường FMS. Promote\
+    \ từ Classification Value (scheme FMS_EVENT_TYPE, nay deprecated) lên entity riêng\
+    \ — không dùng chung với Classification Event Type của SCMS do cấu trúc khác biệt\
+    \ (METADATA/BUSINESS_RULE_CONFIG đặc thù FMS)."
+  source_table: "FMS.EVENT_TYPE"
+  status: "draft"
+- bcv_core_object: "Common"
+  bcv_concept: "[Common] Position"
+  atomic_entity: "Classification FMS Position"
+  table_type: "Relative"
+  domain_prefix: "Classification"
+  entity_physical_name: "cl_fms_position"
+  description: "Danh mục chức danh/vị trí công việc áp dụng cho nhân sự công ty QLQ\
+    \ (FMS). FK ra JOB_TYPE (Classification Value, scheme FMS_JOB_TYPE)."
+  source_table: "FMS.JOBS"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Firm Status"
@@ -2612,58 +2666,4 @@ entities:
   description: "Tài khoản giao dịch chứng khoán của cổ đông mở tại công ty chứng khoán:\
     \ số tài khoản, mã CTCK, cờ tài khoản chính."
   source_table: "IDS.ACCOUNT_NUMBERS"
-  status: "draft"
-- bcv_core_object: "Common"
-  bcv_concept: "[Common] Event Type"
-  atomic_entity: "Classification FMS Event Type"
-  table_type: "Relative"
-  domain_prefix: "Classification"
-  entity_physical_name: "cl_fms_event_type"
-  description: "Danh mục loại sự vụ báo cáo/CBTT của thành viên thị trường FMS. Promote\
-    \ từ Classification Value (scheme FMS_EVENT_TYPE, nay deprecated) lên entity riêng\
-    \ — không dùng chung với Classification Event Type của SCMS do cấu trúc khác biệt\
-    \ (METADATA/BUSINESS_RULE_CONFIG đặc thù FMS)."
-  source_table: "FMS.EVENT_TYPE"
-  status: "draft"
-- bcv_core_object: "Common"
-  bcv_concept: "[Common] Position"
-  atomic_entity: "Classification FMS Position"
-  table_type: "Relative"
-  domain_prefix: "Classification"
-  entity_physical_name: "cl_fms_position"
-  description: "Danh mục chức danh/vị trí công việc áp dụng cho nhân sự công ty QLQ\
-    \ (FMS). FK ra JOB_TYPE (Classification Value, scheme FMS_JOB_TYPE)."
-  source_table: "FMS.JOBS"
-  status: "draft"
-- bcv_core_object: "Involved Party"
-  bcv_concept: "[Involved Party] Individual Employment Status"
-  atomic_entity: "Fund Management Company Employee X Classification FMS Position Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "fund_management_company_employee_x_classification_fms_position_relationship"
-  description: "Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty\
-    \ QLQ (1 nhân sự có thể giữ nhiều chức danh). FK đến Fund Management Company Employee\
-    \ + Classification FMS Position."
-  source_table: "FMS.JOB_TL_PRO"
-  status: "draft"
-- bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Fund"
-  atomic_entity: "Investment Fund X Fund Management Company Employee Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "investment_fund_x_fund_management_company_employee_relationship"
-  description: "Quan hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến\
-    \ quỹ đầu tư. FK đến Investment Fund + Fund Management Company Employee."
-  source_table: "FMS.FUND_TL_PRO"
-  status: "draft"
-- bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Fund"
-  atomic_entity: "Investment Fund X Fund Distribution Agent Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "investment_fund_x_fund_distribution_agent_relationship"
-  description: "Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược\
-    \ quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Investment Fund\
-    \ + Fund Distribution Agent."
-  source_table: "FMS.AGEN_FUNDS"
   status: "draft"

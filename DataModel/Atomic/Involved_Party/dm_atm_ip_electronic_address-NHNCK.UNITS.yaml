@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-NHNCK-UNITS
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Regulatory Authority Organization Unit
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: UNITS
-    source_column: NHNCK.UNITS.ID
-    comment: "FK target: ra_organization_unit.ra_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
-    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'EMAIL'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã đơn vị
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: UNITS
-    source_column: NHNCK.UNITS.UNIT_CODE
-    comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'EMAIL'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn
@@ -103,7 +75,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.ID
     comment: "FK target: ra_organization_unit.ra_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
-    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -117,7 +89,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.UNIT_CODE
     comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -173,7 +145,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.ID
     comment: "FK target: ra_organization_unit.ra_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
-    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'PHONE'"
+    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -187,7 +159,7 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.UNIT_CODE
     comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'PHONE'"
+    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -229,5 +201,33 @@ attributes:
     source_table: UNITS
     source_column: NHNCK.UNITS.PHONE_NUMBER
     comment: null
+    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Regulatory Authority Organization Unit
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: UNITS
+    source_column: NHNCK.UNITS.ID
+    comment: "FK target: ra_organization_unit.ra_organization_unit_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
+    classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'PHONE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã đơn vị
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: UNITS
+    source_column: NHNCK.UNITS.UNIT_CODE
+    comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'NHNCK_UNITS' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null

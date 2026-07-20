@@ -22,10 +22,10 @@ metadata:
     \ liệu\" phân loại — đặt tên Classification Document, không phải Document Type.\
     \ Nâng cấp từ Classification Value (scheme DOCUMENT_TYPE) lên entity thật — xem\
     \ NHNCK_HLD_Overview.md 7e #9. RECORD_STATUS (nguồn) loại khỏi thiết kế — trùng\
-    \ ý nghĩa với ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ ACTIVE làm\
-    \ chuẩn. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY loại khỏi thiết kế — theo\
-    \ đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml, lld_NHNCK_PROFESSIONALS.yaml),\
-    \ không giữ dạng pending."
+    \ ý nghĩa với IS_ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ IS_ACTIVE\
+    \ làm chuẩn (đổi tên từ ACTIVE theo DDL UAT 2026-07-15). CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY\
+    \ loại khỏi thiết kế — theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml,\
+    \ lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending."
 attributes:
 - attribute_name: "Classification Document Id"
   physical_name: "cl_document_id"
@@ -115,7 +115,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DOCUMENTS.ACTIVE"
+  - "NHNCK.DOCUMENTS.IS_ACTIVE"
   comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
   classification_context: null
   etl_derived_value: null
@@ -128,7 +128,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DOCUMENTS.ORIGINAL_DATA"
+  - "NHNCK.DOCUMENTS.IS_ORIGINAL_DATA"
   comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
   classification_context: null
   etl_derived_value: null

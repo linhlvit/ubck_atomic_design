@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-NHNCK-ORGANIZATIONS
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Organization Reference.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.ID
-    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã tổ chức.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: NHNCK
-    source_table: ORGANIZATIONS
-    source_column: NHNCK.ORGANIZATIONS.ID
-    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.
@@ -201,5 +173,33 @@ attributes:
     source_table: ORGANIZATIONS
     source_column: null
     comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng để tránh join nhiều tầng.
+    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Organization Reference.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATIONS
+    source_column: NHNCK.ORGANIZATIONS.ID
+    comment: "FK target: securities_organization_reference.securities_organization_reference_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."
+    classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã tổ chức.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: ORGANIZATIONS
+    source_column: NHNCK.ORGANIZATIONS.ID
+    comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'NHNCK_ORGANIZATIONS' | Address Type Code = 'HEAD_OFFICE'"
     etl_derived_value: null

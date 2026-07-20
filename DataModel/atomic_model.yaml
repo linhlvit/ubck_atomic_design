@@ -9497,16 +9497,19 @@ entities:
     etl_pattern_most: SCD2
     conflict_review: null
     sources:
+    - ECAT
     - IDS
     references:
       brd:
+      - BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_1
+      - BRD-SRC-ECAT-BUSINESS_LINE_LEVEL_2
       - BRD-SRC-IDS-CATEGORIES
   attributes:
   - name: Classification Business Line Id
     physical_name: cl_business_line_id
-    business_meaning_1st: Id tự sinh (surrogate key).
-    comment_1st: "PK surrogate. Hash: hash_id('IDS.CATEGORIES', INDUSTRY_CD). BCV\
-      \ Term: \"Industry Classification\" (Common). Shared entity với ECAT.BUSINESS_LINE_LEVEL_1/2."
+    business_meaning_1st: Id tự sinh (surrogate key)
+    comment_1st: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_1', CODE).\
+      \ BCV Term: \"Industry Classification\" (Common)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -9514,6 +9517,18 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_1', CODE).\
+          \ BCV Term: \"Industry Classification\" (Common)."
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.BUSINESS_LINE_LEVEL_2', CODE).\
+          \ BCV Term: \"Industry Classification\" (Common)."
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9523,15 +9538,28 @@ entities:
           \ Term: \"Industry Classification\" (Common). Shared entity với ECAT.BUSINESS_LINE_LEVEL_1/2."
   - name: Source System Code
     physical_name: src_stm_code
-    business_meaning_1st: Mã nguồn dữ liệu.
+    business_meaning_1st: Mã nguồn dữ liệu
     comment_1st: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: IDS.CATEGORIES
+    etl_derived_value:
+    - ECAT.BUSINESS_LINE_LEVEL_1
+    - ECAT.BUSINESS_LINE_LEVEL_2
+    - IDS.CATEGORIES
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9540,18 +9568,28 @@ entities:
         comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
   - name: Classification Business Line Level Code
     physical_name: cl_business_line_level_code
-    business_meaning_1st: Phân biệt cấp ngành nghề — Cấp 1 hoặc Cấp 2.
-    comment_1st: "Scheme: ECAT_BUSINESS_LINE_LEVEL (dùng chung với ECAT — shared entity).\
-      \ IDS.CATEGORIES không tách 2 bảng theo cấp như ECAT — level suy ra động từ\
-      \ PARENT_ID IS NULL (Cấp 1) / PARENT_ID IS NOT NULL (Cấp 2), khác cơ chế derive-từ-tên-bảng\
-      \ của ECAT. Xem IDS_HLD_Tier1.md T1-13."
+    business_meaning_1st: Phân biệt cấp ngành nghề — Cấp 1
+    comment_1st: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: PARENT_ID IS NULL=LEVEL_1;PARENT_ID IS NOT NULL=LEVEL_2
+    etl_derived_value:
+    - LEVEL_1
+    - LEVEL_2
+    - PARENT_ID IS NULL=LEVEL_1;PARENT_ID IS NOT NULL=LEVEL_2
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: Phân biệt cấp ngành nghề — Cấp 1
+        comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: null
+        business_meaning: Phân biệt cấp ngành nghề — Cấp 2
+        comment: "Scheme: ECAT_BUSINESS_LINE_LEVEL."
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9563,10 +9601,10 @@ entities:
           \ chế derive-từ-tên-bảng của ECAT. Xem IDS_HLD_Tier1.md T1-13."
   - name: Classification Business Line Code
     physical_name: cl_business_line_code
-    business_meaning_1st: Mã ngành nghề. BK duy nhất — Id hash từ trường này.
-    comment_1st: BK chính (mã nghiệp vụ), nhất quán pattern Classification Business
-      Line Code trên ECAT (dùng CODE nguồn, không dùng ID kỹ thuật). Cần profile dữ
-      liệu nguồn xác nhận NOT NULL/unique trước go-live.
+    business_meaning_1st: Mã ngành nghề cấp 1. BK duy nhất — Id hash từ trường này.
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique
+      Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận
+      NOT NULL/unique trước go-live.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -9574,6 +9612,20 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.CODE
+        business_meaning: Mã ngành nghề cấp 1. BK duy nhất — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique
+          Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận
+          NOT NULL/unique trước go-live.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.CODE
+        business_meaning: Mã ngành nghề cấp 2. BK duy nhất — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) + Unique
+          Key cũ — gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận
+          NOT NULL/unique trước go-live.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9584,7 +9636,7 @@ entities:
           dữ liệu nguồn xác nhận NOT NULL/unique trước go-live.
   - name: Classification Business Line Name
     physical_name: cl_business_line_nm
-    business_meaning_1st: Tên ngành nghề.
+    business_meaning_1st: Tên ngành nghề cấp 1
     comment_1st: null
     data_domain_most: Text
     data_type_most: string
@@ -9593,6 +9645,16 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.NAME
+        business_meaning: Tên ngành nghề cấp 1
+        comment: null
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.NAME
+        business_meaning: Tên ngành nghề cấp 2
+        comment: null
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9601,19 +9663,34 @@ entities:
         comment: null
   - name: Parent Classification Business Line Id
     physical_name: parent_cl_business_line_id
-    business_meaning_1st: FK đến ngành nghề cấp 1 cha (self-ref, Mã cha). NULL cho
-      cấp 1 — cấp cao nhất.
-    comment_1st: "FK target: cl_business_line.cl_business_line_id. PARENT_ID lưu ID\
-      \ kỹ thuật của bản ghi cha (không phải INDUSTRY_CD) — PHẢI join: PARENT_ID =\
-      \ IDS.CATEGORIES.ID để lấy INDUSTRY_CD của cha, rồi hash_id('IDS.CATEGORIES',\
-      \ INDUSTRY_CD_CHA). NULL khi PARENT_ID nguồn NULL (bản ghi cấp 1)."
+    business_meaning_1st: FK đến ngành nghề cấp 1 cha (self-ref). NULL cho cấp 1 —
+      cấp cao nhất
+    comment_1st: "FK target: cl_business_line.cl_business_line_id. NULL vì BUSINESS_LINE_LEVEL_1\
+      \ không có parent trong ECAT."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: null
+    conflict_review: "nullable: [False, True]"
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: FK đến ngành nghề cấp 1 cha (self-ref). NULL cho cấp 1 —
+          cấp cao nhất
+        comment: "FK target: cl_business_line.cl_business_line_id. NULL vì BUSINESS_LINE_LEVEL_1\
+          \ không có parent trong ECAT."
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID
+        business_meaning: FK đến ngành nghề cấp 1 cha (self-ref)
+        comment: "FK target: cl_business_line.cl_business_line_id. Parent luôn là\
+          \ bản ghi LEVEL_1. PARENT_LINE_ID lưu STABLE_ID của cha (không phải CODE)\
+          \ — nay Code/Id hash dựa trên CODE nên PHẢI join: match PARENT_LINE_ID =\
+          \ ECAT.BUSINESS_LINE_LEVEL_1.STABLE_ID để lấy CODE, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1',\
+          \ CODE_CHA). Trước đây không cần join do Code cũ = STABLE_ID; nay Code đổi\
+          \ sang CODE nên phát sinh thêm 1 bước resolve so với thiết kế cũ."
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9626,17 +9703,30 @@ entities:
           \ INDUSTRY_CD_CHA). NULL khi PARENT_ID nguồn NULL (bản ghi cấp 1)."
   - name: Parent Classification Business Line Code
     physical_name: parent_cl_business_line_code
-    business_meaning_1st: Mã ngành nghề cấp 1 cha.
+    business_meaning_1st: Mã ngành nghề cấp 1 cha
     comment_1st: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Parent\
-      \ Classification Business Line Id. Giá trị lấy qua join (xem Parent Classification\
-      \ Business Line Id). NULL cho cấp 1."
+      \ Classification Business Line Id. NULL cho cấp 1."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: null
+    conflict_review: "nullable: [False, True]"
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: Mã ngành nghề cấp 1 cha
+        comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Parent\
+          \ Classification Business Line Id. NULL cho cấp 1."
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.PARENT_LINE_ID
+        business_meaning: Mã ngành nghề cấp 1 cha
+        comment: "Lookup pair: cl_business_line.cl_business_line_code. Pair with Parent\
+          \ Classification Business Line Id. Giá trị lấy qua join (xem Parent Classification\
+          \ Business Line Id) — không còn dùng trực tiếp PARENT_LINE_ID vì Code cha\
+          \ nay là CODE, không phải STABLE_ID."
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9656,6 +9746,16 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9674,6 +9774,18 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9683,16 +9795,28 @@ entities:
           Indicator.
   - name: Active Indicator
     physical_name: active_indicator
-    business_meaning_1st: "Trạng thái hiệu lực: true = Active (Hiệu lực); false =\
-      \ Inactive (Hết hiệu lực)."
-    comment_1st: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    business_meaning_1st: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+    comment_1st: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+      Indicator.
     data_domain_most: Boolean
     data_type_most: boolean
-    nullable_most: true
+    nullable_most: false
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: null
+    conflict_review: "nullable: [False, True]"
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+          Indicator.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+          Indicator.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9712,6 +9836,18 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+          Indicator.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+          Indicator.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9730,6 +9866,16 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9747,6 +9893,16 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9765,6 +9921,18 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật
+          versioning của nguồn.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu — giữ nguyên, không loại bỏ dù là field kỹ thuật
+          versioning của nguồn.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9783,6 +9951,16 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9800,6 +9978,16 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: ECAT.BUSINESS_LINE_LEVEL_1.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: ECAT.BUSINESS_LINE_LEVEL_2.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Đẩy 1:1 theo yêu cầu.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9819,6 +10007,20 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: Mô tả.
+        comment: IDS.CATEGORIES có trường mô tả riêng, không có tương ứng trên ECAT.BUSINESS_LINE_LEVEL_1/2
+          (chỉ có DISPLAY_LABEL). Khi Entity Consolidation (Level 2) — cần nullable/để
+          trống cho source ECAT.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: null
+        business_meaning: Mô tả.
+        comment: IDS.CATEGORIES có trường mô tả riêng, không có tương ứng trên ECAT.BUSINESS_LINE_LEVEL_1/2
+          (chỉ có DISPLAY_LABEL). Khi Entity Consolidation (Level 2) — cần nullable/để
+          trống cho source ECAT.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9841,6 +10043,22 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: Chọn.
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1). Tên cột ACTIVE_FLG
+          gợi ý cờ hiệu lực nhưng mô tả nguồn (BRD) chỉ ghi "Chọn" (gợi ý cờ UI checked/selected)
+          — map 1:1 theo mô tả gốc, không suy diễn ý nghĩa khác. Không gộp với Active
+          Indicator (STATUS_FLG) dù tên cột gần giống — mô tả nguồn khác nhau rõ ràng.
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: null
+        business_meaning: Chọn.
+        comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1). Tên cột ACTIVE_FLG
+          gợi ý cờ hiệu lực nhưng mô tả nguồn (BRD) chỉ ghi "Chọn" (gợi ý cờ UI checked/selected)
+          — map 1:1 theo mô tả gốc, không suy diễn ý nghĩa khác. Không gộp với Active
+          Indicator (STATUS_FLG) dù tên cột gần giống — mô tả nguồn khác nhau rõ ràng.
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -9863,6 +10081,20 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: BUSINESS_LINE_LEVEL_1
+        source_column: null
+        business_meaning: Hệ thống con trong IDS.
+        comment: Denormalized — nguồn không có mô tả/FK annotation trong BRD (brd_IDS_CATEGORIES.yaml).
+          Giữ nguyên dạng Text theo DDL nguồn, nhất quán với System Code trên Financial
+          Report Catalog/Periodic Report Form (REPORT_CATALOG/REP_FORMS).
+      - source_table: BUSINESS_LINE_LEVEL_2
+        source_column: null
+        business_meaning: Hệ thống con trong IDS.
+        comment: Denormalized — nguồn không có mô tả/FK annotation trong BRD (brd_IDS_CATEGORIES.yaml).
+          Giữ nguyên dạng Text theo DDL nguồn, nhất quán với System Code trên Financial
+          Report Catalog/Periodic Report Form (REPORT_CATALOG/REP_FORMS).
     - source_system: IDS
       source_tables:
       - source_table: CATEGORIES
@@ -12599,7 +12831,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.ITEM_NAME
+        source_column: NHNCK.EXAM_SESSIONS.NAME
         business_meaning: Tên hiển thị đợt thi
         comment: null
   - name: Report Year
@@ -12616,7 +12848,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: EXAM_SESSIONS
-        source_column: NHNCK.EXAM_SESSIONS.REPORT_YEAR
+        source_column: NHNCK.EXAM_SESSIONS.YEAR
         business_meaning: Năm báo cáo (YYYY)
         comment: null
   - name: Examination Session Number
@@ -15455,7 +15687,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATIONS
-        source_column: NHNCK.APPLICATIONS.VIOLATED
+        source_column: NHNCK.APPLICATIONS.IS_VIOLATED
         business_meaning: Cờ người hành nghề vi phạm quy định.
         comment: "Nguồn lưu NUMBER(1): 1=Có vi phạm, 0=Không vi phạm."
   - name: Data Exploitable Indicator
@@ -15472,7 +15704,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATIONS
-        source_column: NHNCK.APPLICATIONS.DATA_EXPLOITABLE
+        source_column: NHNCK.APPLICATIONS.IS_DATA_EXPLOITABLE
         business_meaning: Cờ dữ liệu có thể khai thác.
         comment: "Nguồn lưu NUMBER(1): 1=Có thể dùng, 0=Không."
   - name: Reissue Hsm
@@ -16840,7 +17072,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.DISPLAYED
+        source_column: NHNCK.CERTIFICATES.IS_DISPLAYED
         business_meaning: "Cờ hiển thị trên giao diện người dùng: 1=Hiển thị, 0=Ẩn"
         comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag 1/0. Nguồn\
           \ NUMBER(1)."
@@ -16859,7 +17091,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATES
-        source_column: NHNCK.CERTIFICATES.ORIGINAL_DATA
+        source_column: NHNCK.CERTIFICATES.IS_ORIGINAL_DATA
         business_meaning: "Cờ dữ liệu gốc của hệ thống (không được xóa): 1=Dữ liệu\
           \ gốc, 0=Người dùng tạo"
         comment: "BCV: không có term riêng. Nguồn NUMBER(1)."
@@ -17163,7 +17395,7 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: DECISIONS
-        source_column: NHNCK.DECISIONS.ACTIVE
+        source_column: NHNCK.DECISIONS.IS_ACTIVE
         business_meaning: Cờ đánh dấu quyết định đang được sử dụng (1=Đang dùng; 0=Vô
           hiệu)
         comment: null
@@ -22380,10 +22612,9 @@ entities:
   - name: Exam End Date
     physical_name: exam_end_dt
     business_meaning_1st: Ngày kết thúc thi
-    comment_1st: "Conversion risk: cột nguồn kiểu VARCHAR2(200) — không cast sang\
-      \ Date do có thể chứa giá trị không chuẩn."
-    data_domain_most: Text
-    data_type_most: string
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -22394,8 +22625,7 @@ entities:
       - source_table: SPECIALIZATION_COURSES
         source_column: NHNCK.SPECIALIZATION_COURSES.EXAM_DATE_TO
         business_meaning: Ngày kết thúc thi
-        comment: "Conversion risk: cột nguồn kiểu VARCHAR2(200) — không cast sang\
-          \ Date do có thể chứa giá trị không chuẩn."
+        comment: null
   - name: Exam Location Address
     physical_name: exam_location_adr
     business_meaning_1st: Địa điểm tổ chức thi
@@ -22645,150 +22875,6 @@ entities:
       - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_REPRESENTATIVE
       - BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
   attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning_1st: FK đến Securities Practitioner.
-    comment_1st: "FK target: securities_practitioner.securities_practitioner_id. Shared\
-      \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS',\
-      \ ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONALS
-        source_column: NHNCK.PROFESSIONALS.ID
-        business_meaning: FK đến Securities Practitioner.
-        comment: "FK target: securities_practitioner.securities_practitioner_id. Shared\
-          \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS',\
-          \ ID)."
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_BRANCH
-        source_column: SCMS.SC_FIRM_BRANCH.ID
-        business_meaning: FK đến Securities Company Branch.
-        comment: "FK target: Securities Company Branch.Securities Company Org Unit\
-          \ Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_BRANCH', ID)."
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.ID
-        business_meaning: FK đến Securities Company.
-        comment: "FK target: securities_company.securities_company_id. Shared entity.\
-          \ Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
-      - source_table: SC_FIRM_INSIDER_RELATION
-        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
-        business_meaning: FK đến Securities Company Insider Related Person.
-        comment: "FK target: sc_insider_related_person.sc_insider_related_person_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INSIDER_RELATION',\
-          \ ID)."
-      - source_table: SC_FIRM_RELATED_PERSON
-        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
-        business_meaning: FK đến Securities Company Related Person.
-        comment: "FK target: sc_related_person.sc_related_person_id. Shared entity\
-          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON',\
-          \ ID)."
-      - source_table: SC_FIRM_SENIOR_PERSONNEL
-        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-        business_meaning: FK đến Securities Company Senior Personnel.
-        comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity\
-          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL',\
-          \ ID)."
-      - source_table: SC_FIRM_SHAREHOLDER
-        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
-        business_meaning: FK đến Securities Company Shareholder.
-        comment: "FK target: securities_company_shareholder.securities_company_shareholder_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER',\
-          \ ID)."
-      - source_table: SC_FIRM_SHAREHOLDER_RELATION
-        source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID
-        business_meaning: FK đến Securities Company Shareholder Relation.
-        comment: "FK target: sc_shareholder_relation.sc_shareholder_relation_id. Shared\
-          \ entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER_RELATION', ID)."
-      - source_table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
-        source_column: SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ID
-        business_meaning: FK đến Securities Company Shareholder Representative.
-        comment: "FK target: sc_shareholder_representative.sc_shareholder_representative_id.\
-          \ Shared entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE',\
-          \ ID)."
-    - source_system: THANHTRA
-      source_tables:
-      - source_table: PENALTY_DECISION_SUBJECT
-        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
-        business_meaning: FK đến Penalty Decision Subject.
-        comment: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT',\
-          \ ID)."
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning_1st: Mã người hành nghề.
-    comment_1st: "Lookup pair: securities_practitioner.securities_practitioner_code.\
-      \ Pair with Involved Party Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: PROFESSIONALS
-        source_column: NHNCK.PROFESSIONALS.ID
-        business_meaning: Mã người hành nghề.
-        comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
-          \ Pair with Involved Party Id."
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_BRANCH
-        source_column: SCMS.SC_FIRM_BRANCH.ID
-        business_meaning: Mã Securities Company Organization Unit.
-        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
-          \ with Involved Party Id."
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.ID
-        business_meaning: Mã Securities Company.
-        comment: "Lookup pair: securities_company.securities_company_code. Pair with\
-          \ Involved Party Id."
-      - source_table: SC_FIRM_INSIDER_RELATION
-        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
-        business_meaning: Mã Securities Company Insider Related Person.
-        comment: "Lookup pair: sc_insider_related_person.sc_insider_related_person_code.\
-          \ Pair with Involved Party Id."
-      - source_table: SC_FIRM_RELATED_PERSON
-        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
-        business_meaning: Mã Securities Company Related Person.
-        comment: "Lookup pair: sc_related_person.sc_related_person_code. Pair with\
-          \ Involved Party Id."
-      - source_table: SC_FIRM_SENIOR_PERSONNEL
-        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-        business_meaning: Mã Securities Company Senior Personnel.
-        comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair\
-          \ with Involved Party Id."
-      - source_table: SC_FIRM_SHAREHOLDER
-        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
-        business_meaning: Mã Securities Company Shareholder.
-        comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code.\
-          \ Pair with Involved Party Id."
-      - source_table: SC_FIRM_SHAREHOLDER_RELATION
-        source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID
-        business_meaning: Mã Securities Company Shareholder Relation.
-        comment: "Lookup pair: sc_shareholder_relation.sc_shareholder_relation_code.\
-          \ Pair with Involved Party Id."
-      - source_table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
-        source_column: SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ID
-        business_meaning: Mã Securities Company Shareholder Representative.
-        comment: "Lookup pair: sc_shareholder_representative.sc_shareholder_representative_code.\
-          \ Pair with Involved Party Id."
-    - source_system: THANHTRA
-      source_tables:
-      - source_table: PENALTY_DECISION_SUBJECT
-        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
-        business_meaning: Mã đối tượng bị xử phạt.
-        comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
-          \ Pair with Involved Party Id."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn.
@@ -23246,6 +23332,230 @@ entities:
         source_column: null
         business_meaning: Nơi cấp.
         comment: null
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning_1st: FK đến Securities Practitioner.
+    comment_1st: "FK target: securities_practitioner.securities_practitioner_id. Shared\
+      \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS',\
+      \ ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: NHNCK.PROFESSIONALS.ID
+        business_meaning: FK đến Securities Practitioner.
+        comment: "FK target: securities_practitioner.securities_practitioner_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ ID)."
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_BRANCH
+        source_column: SCMS.SC_FIRM_BRANCH.ID
+        business_meaning: FK đến Securities Company Branch.
+        comment: "FK target: Securities Company Branch.Securities Company Org Unit\
+          \ Id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_BRANCH', ID)."
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.ID
+        business_meaning: FK đến Securities Company.
+        comment: "FK target: securities_company.securities_company_id. Shared entity.\
+          \ Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
+      - source_table: SC_FIRM_INSIDER_RELATION
+        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
+        business_meaning: FK đến Securities Company Insider Related Person.
+        comment: "FK target: sc_insider_related_person.sc_insider_related_person_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INSIDER_RELATION',\
+          \ ID)."
+      - source_table: SC_FIRM_RELATED_PERSON
+        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
+        business_meaning: FK đến Securities Company Related Person.
+        comment: "FK target: sc_related_person.sc_related_person_id. Shared entity\
+          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON',\
+          \ ID)."
+      - source_table: SC_FIRM_SENIOR_PERSONNEL
+        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
+        business_meaning: FK đến Securities Company Senior Personnel.
+        comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity\
+          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL',\
+          \ ID)."
+      - source_table: SC_FIRM_SHAREHOLDER
+        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+        business_meaning: FK đến Securities Company Shareholder.
+        comment: "FK target: securities_company_shareholder.securities_company_shareholder_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER',\
+          \ ID)."
+      - source_table: SC_FIRM_SHAREHOLDER_RELATION
+        source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID
+        business_meaning: FK đến Securities Company Shareholder Relation.
+        comment: "FK target: sc_shareholder_relation.sc_shareholder_relation_id. Shared\
+          \ entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER_RELATION', ID)."
+      - source_table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+        source_column: SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ID
+        business_meaning: FK đến Securities Company Shareholder Representative.
+        comment: "FK target: sc_shareholder_representative.sc_shareholder_representative_id.\
+          \ Shared entity. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE',\
+          \ ID)."
+    - source_system: THANHTRA
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: FK đến Penalty Decision Subject.
+        comment: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT',\
+          \ ID)."
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning_1st: Mã người hành nghề.
+    comment_1st: "Lookup pair: securities_practitioner.securities_practitioner_code.\
+      \ Pair with Involved Party Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: NHNCK.PROFESSIONALS.ID
+        business_meaning: Mã người hành nghề.
+        comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
+          \ Pair with Involved Party Id."
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_BRANCH
+        source_column: SCMS.SC_FIRM_BRANCH.ID
+        business_meaning: Mã Securities Company Organization Unit.
+        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
+          \ with Involved Party Id."
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.ID
+        business_meaning: Mã Securities Company.
+        comment: "Lookup pair: securities_company.securities_company_code. Pair with\
+          \ Involved Party Id."
+      - source_table: SC_FIRM_INSIDER_RELATION
+        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
+        business_meaning: Mã Securities Company Insider Related Person.
+        comment: "Lookup pair: sc_insider_related_person.sc_insider_related_person_code.\
+          \ Pair with Involved Party Id."
+      - source_table: SC_FIRM_RELATED_PERSON
+        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
+        business_meaning: Mã Securities Company Related Person.
+        comment: "Lookup pair: sc_related_person.sc_related_person_code. Pair with\
+          \ Involved Party Id."
+      - source_table: SC_FIRM_SENIOR_PERSONNEL
+        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
+        business_meaning: Mã Securities Company Senior Personnel.
+        comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair\
+          \ with Involved Party Id."
+      - source_table: SC_FIRM_SHAREHOLDER
+        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+        business_meaning: Mã Securities Company Shareholder.
+        comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code.\
+          \ Pair with Involved Party Id."
+      - source_table: SC_FIRM_SHAREHOLDER_RELATION
+        source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID
+        business_meaning: Mã Securities Company Shareholder Relation.
+        comment: "Lookup pair: sc_shareholder_relation.sc_shareholder_relation_code.\
+          \ Pair with Involved Party Id."
+      - source_table: SC_FIRM_SHAREHOLDER_REPRESENTATIVE
+        source_column: SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE.ID
+        business_meaning: Mã Securities Company Shareholder Representative.
+        comment: "Lookup pair: sc_shareholder_representative.sc_shareholder_representative_code.\
+          \ Pair with Involved Party Id."
+    - source_system: THANHTRA
+      source_tables:
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: Mã đối tượng bị xử phạt.
+        comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
+          \ Pair with Involved Party Id."
+  - name: Alternative Identification Type Code
+    physical_name: alternative_identification_tp_code
+    business_meaning_1st: Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT
+      cá nhân, Giấy phép/Mã số DN với NĐT tổ chức).
+    comment_1st: "Scheme: IP_ALT_ID_TYPE. (source) — type xác định tại ETL dựa theo\
+      \ ObjectType (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE),\
+      \ không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận\
+      \ loại giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ\
+      \ chiếu). // Scheme: IP_ALT_ID_TYPE. (source) — tái sử dụng scheme dùng chung\
+      \ dự án. Expression mapping: 1010=NATIONAL_ID;2080=CITIZEN_ID;1020=PASSPORT."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: null
+        business_meaning: Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT
+          cá nhân, Giấy phép/Mã số DN với NĐT tổ chức).
+        comment: "Scheme: IP_ALT_ID_TYPE. (source) — type xác định tại ETL dựa theo\
+          \ ObjectType (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE),\
+          \ không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận\
+          \ loại giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ\
+          \ chiếu). // Scheme: IP_ALT_ID_TYPE. (source) — tái sử dụng scheme dùng\
+          \ chung dự án. Expression mapping: 1010=NATIONAL_ID;2080=CITIZEN_ID;1020=PASSPORT."
+  - name: Alternative Identification Number
+    physical_name: alternative_identification_nbr
+    business_meaning_1st: Số CMND/CCCD/Hộ chiếu/Giấy phép.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: null
+        business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
+        comment: null
+  - name: Alternative Identification Issue Date
+    physical_name: alternative_identification_issue_dt
+    business_meaning_1st: Ngày cấp giấy phép thành lập.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: null
+        business_meaning: Ngày cấp giấy phép thành lập.
+        comment: null
+  - name: Alternative Identification Issue Place
+    physical_name: alternative_identification_issue_place
+    business_meaning_1st: Nơi cấp giấy tờ định danh.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: PROFESSIONALS
+        source_column: null
+        business_meaning: Nơi cấp giấy tờ định danh.
+        comment: null
 - ldm:
     id: ATM-ip_electronic_address
     logical_name_1st: Involved Party Electronic Address
@@ -23280,159 +23590,6 @@ entities:
       - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
       - BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
   attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning_1st: FK đến Securities Organization Reference.
-    comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
-      \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-      \ ID)."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ID
-        business_meaning: FK đến Securities Organization Reference.
-        comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
-          \ ID)."
-      - source_table: PROFESSIONALS
-        source_column: NHNCK.PROFESSIONALS.ID
-        business_meaning: FK đến Securities Practitioner.
-        comment: "FK target: securities_practitioner.securities_practitioner_id. Shared\
-          \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS',\
-          \ ID)."
-      - source_table: UNITS
-        source_column: NHNCK.UNITS.ID
-        business_meaning: FK đến Regulatory Authority Organization Unit
-        comment: "FK target: ra_organization_unit.ra_organization_unit_id. Shared\
-          \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_BRANCH
-        source_column: SCMS.SC_FIRM_BRANCH.ID
-        business_meaning: FK đến Securities Company Organization Unit (Involved Party).
-        comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
-          \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_BRANCH',\
-          \ ID)."
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.ID
-        business_meaning: FK đến Securities Company (Involved Party).
-        comment: "FK target: securities_company.securities_company_id. Shared entity\
-          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
-      - source_table: SC_FIRM_INSIDER_RELATION
-        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
-        business_meaning: FK đến Securities Company Insider Related Person (Involved
-          Party).
-        comment: "FK target: sc_insider_related_person.sc_insider_related_person_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INSIDER_RELATION',\
-          \ ID)."
-      - source_table: SC_FIRM_RELATED_PERSON
-        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
-        business_meaning: FK đến Securities Company Related Person (Involved Party).
-        comment: "FK target: sc_related_person.sc_related_person_id. Shared entity\
-          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON',\
-          \ ID)."
-      - source_table: SC_FIRM_REP_OFFICE
-        source_column: SCMS.SC_FIRM_REP_OFFICE.ID
-        business_meaning: FK đến Securities Company Organization Unit (Involved Party).
-        comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
-          \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE',\
-          \ ID)."
-      - source_table: SC_FIRM_SENIOR_PERSONNEL
-        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-        business_meaning: FK đến Securities Company Senior Personnel (Involved Party).
-        comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity\
-          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL',\
-          \ ID)."
-      - source_table: SC_FIRM_SHAREHOLDER
-        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
-        business_meaning: FK đến Securities Company Shareholder (Involved Party).
-        comment: "FK target: securities_company_shareholder.securities_company_shareholder_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER',\
-          \ ID)."
-      - source_table: SC_FIRM_TRANSACTION_OFFICE
-        source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.ID
-        business_meaning: FK đến Securities Company Organization Unit (Involved Party).
-        comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
-          \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE',\
-          \ ID)."
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning_1st: Mã tổ chức.
-    comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-      \ Pair with Involved Party Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: ORGANIZATIONS
-        source_column: NHNCK.ORGANIZATIONS.ID
-        business_meaning: Mã tổ chức.
-        comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
-          \ Pair with Involved Party Id."
-      - source_table: PROFESSIONALS
-        source_column: NHNCK.PROFESSIONALS.ID
-        business_meaning: Mã người hành nghề.
-        comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
-          \ Pair with Involved Party Id."
-      - source_table: UNITS
-        source_column: NHNCK.UNITS.UNIT_CODE
-        business_meaning: Mã đơn vị
-        comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair\
-          \ with Involved Party Id."
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_BRANCH
-        source_column: SCMS.SC_FIRM_BRANCH.ID
-        business_meaning: Mã Securities Company Organization Unit.
-        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
-          \ with Involved Party Id."
-      - source_table: SC_FIRM_INFO
-        source_column: SCMS.SC_FIRM_INFO.ID
-        business_meaning: Mã Securities Company.
-        comment: "Lookup pair: securities_company.securities_company_code. Pair with\
-          \ Involved Party Id."
-      - source_table: SC_FIRM_INSIDER_RELATION
-        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
-        business_meaning: Mã Securities Company Insider Related Person.
-        comment: "Lookup pair: sc_insider_related_person.sc_insider_related_person_code.\
-          \ Pair with Involved Party Id."
-      - source_table: SC_FIRM_RELATED_PERSON
-        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
-        business_meaning: Mã Securities Company Related Person.
-        comment: "Lookup pair: sc_related_person.sc_related_person_code. Pair with\
-          \ Involved Party Id."
-      - source_table: SC_FIRM_REP_OFFICE
-        source_column: SCMS.SC_FIRM_REP_OFFICE.ID
-        business_meaning: Mã Securities Company Organization Unit.
-        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
-          \ with Involved Party Id."
-      - source_table: SC_FIRM_SENIOR_PERSONNEL
-        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-        business_meaning: Mã Securities Company Senior Personnel.
-        comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair\
-          \ with Involved Party Id."
-      - source_table: SC_FIRM_SHAREHOLDER
-        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
-        business_meaning: Mã Securities Company Shareholder.
-        comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code.\
-          \ Pair with Involved Party Id."
-      - source_table: SC_FIRM_TRANSACTION_OFFICE
-        source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.ID
-        business_meaning: Mã Securities Company Organization Unit.
-        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
-          \ with Involved Party Id."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn.
@@ -23804,43 +23961,6 @@ entities:
         source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.PHONE
         business_meaning: Số điện thoại.
         comment: null
-- ldm:
-    id: ATM-ip_postal_address
-    logical_name_1st: Involved Party Postal Address
-    physical_name_1st: ip_postal_address
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: approved
-    description_1st: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh
-      doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Involved Party
-    bcv_concept_most: Shared Entity
-    table_type_most: Fundamental
-    etl_pattern_most: SCD4A
-    conflict_review: null
-    sources:
-    - NHNCK
-    - SCMS
-    - THANHTRA
-    references:
-      brd:
-      - BRD-SRC-NHNCK-ORGANIZATIONS
-      - BRD-SRC-NHNCK-PROFESSIONALS
-      - BRD-SRC-NHNCK-UNITS
-      - BRD-SRC-SCMS-SC_FIRM_BRANCH
-      - BRD-SRC-SCMS-SC_FIRM_INFO
-      - BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
-      - BRD-SRC-SCMS-SC_FIRM_RELATED_PERSON
-      - BRD-SRC-SCMS-SC_FIRM_REP_OFFICE
-      - BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
-      - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
-      - BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
-      - BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
-      - BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
-  attributes:
   - name: Involved Party Id
     physical_name: ip_id
     business_meaning_1st: FK đến Securities Organization Reference.
@@ -23877,7 +23997,7 @@ entities:
       source_tables:
       - source_table: SC_FIRM_BRANCH
         source_column: SCMS.SC_FIRM_BRANCH.ID
-        business_meaning: FK đến Securities Company Organization Unit (chi nhánh CTCK).
+        business_meaning: FK đến Securities Company Organization Unit (Involved Party).
         comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
           \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_BRANCH',\
           \ ID)."
@@ -23888,55 +24008,40 @@ entities:
           \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
       - source_table: SC_FIRM_INSIDER_RELATION
         source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
-        business_meaning: FK đến Securities Company Insider Related Person.
+        business_meaning: FK đến Securities Company Insider Related Person (Involved
+          Party).
         comment: "FK target: sc_insider_related_person.sc_insider_related_person_id.\
           \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INSIDER_RELATION',\
           \ ID)."
       - source_table: SC_FIRM_RELATED_PERSON
         source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
-        business_meaning: FK đến Securities Company Related Person.
+        business_meaning: FK đến Securities Company Related Person (Involved Party).
         comment: "FK target: sc_related_person.sc_related_person_id. Shared entity\
           \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON',\
           \ ID)."
       - source_table: SC_FIRM_REP_OFFICE
         source_column: SCMS.SC_FIRM_REP_OFFICE.ID
-        business_meaning: FK đến Securities Company Organization Unit (VPDD CTCK nội
-          địa).
+        business_meaning: FK đến Securities Company Organization Unit (Involved Party).
         comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
           \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE',\
           \ ID)."
       - source_table: SC_FIRM_SENIOR_PERSONNEL
         source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-        business_meaning: FK đến Securities Company Senior Personnel.
+        business_meaning: FK đến Securities Company Senior Personnel (Involved Party).
         comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity\
           \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL',\
           \ ID)."
       - source_table: SC_FIRM_SHAREHOLDER
         source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
-        business_meaning: FK đến Securities Company Shareholder.
+        business_meaning: FK đến Securities Company Shareholder (Involved Party).
         comment: "FK target: securities_company_shareholder.securities_company_shareholder_id.\
           \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER',\
           \ ID)."
       - source_table: SC_FIRM_TRANSACTION_OFFICE
         source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.ID
-        business_meaning: FK đến Securities Company Organization Unit (phòng giao
-          dịch CTCK).
+        business_meaning: FK đến Securities Company Organization Unit (Involved Party).
         comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
           \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE',\
-          \ ID)."
-    - source_system: THANHTRA
-      source_tables:
-      - source_table: EXAMINATION_TEAM_TARGET
-        source_column: THANHTRA.EXAMINATION_TEAM_TARGET.ID
-        business_meaning: FK đến Examination Team Target.
-        comment: "FK target: examination_team_target.examination_team_target_id. Shared\
-          \ entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.EXAMINATION_TEAM_TARGET',\
-          \ ID)."
-      - source_table: PENALTY_DECISION_SUBJECT
-        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
-        business_meaning: FK đến Penalty Decision Subject.
-        comment: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
-          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT',\
           \ ID)."
   - name: Involved Party Code
     physical_name: ip_code
@@ -24009,18 +24114,43 @@ entities:
         business_meaning: Mã Securities Company Organization Unit.
         comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
           \ with Involved Party Id."
-    - source_system: THANHTRA
-      source_tables:
-      - source_table: EXAMINATION_TEAM_TARGET
-        source_column: THANHTRA.EXAMINATION_TEAM_TARGET.ID
-        business_meaning: Mã đối tượng được kiểm tra.
-        comment: "Lookup pair: examination_team_target.examination_team_target_code.\
-          \ Pair with Involved Party Id."
-      - source_table: PENALTY_DECISION_SUBJECT
-        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
-        business_meaning: Mã đối tượng bị xử phạt.
-        comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
-          \ Pair with Involved Party Id."
+- ldm:
+    id: ATM-ip_postal_address
+    logical_name_1st: Involved Party Postal Address
+    physical_name_1st: ip_postal_address
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh
+      doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Involved Party
+    bcv_concept_most: Shared Entity
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - NHNCK
+    - SCMS
+    - THANHTRA
+    references:
+      brd:
+      - BRD-SRC-NHNCK-ORGANIZATIONS
+      - BRD-SRC-NHNCK-PROFESSIONALS
+      - BRD-SRC-NHNCK-UNITS
+      - BRD-SRC-SCMS-SC_FIRM_BRANCH
+      - BRD-SRC-SCMS-SC_FIRM_INFO
+      - BRD-SRC-SCMS-SC_FIRM_INSIDER_RELATION
+      - BRD-SRC-SCMS-SC_FIRM_RELATED_PERSON
+      - BRD-SRC-SCMS-SC_FIRM_REP_OFFICE
+      - BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
+      - BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
+      - BRD-SRC-SCMS-SC_FIRM_TRANSACTION_OFFICE
+      - BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
+      - BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
+  attributes:
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn.
@@ -24819,6 +24949,186 @@ entities:
           CAT_WARD).
         comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu
           dự phòng để tránh join nhiều tầng.
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning_1st: FK đến Securities Organization Reference.
+    comment_1st: "FK target: securities_organization_reference.securities_organization_reference_id.\
+      \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+      \ ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: ORGANIZATIONS
+        source_column: NHNCK.ORGANIZATIONS.ID
+        business_meaning: FK đến Securities Organization Reference.
+        comment: "FK target: securities_organization_reference.securities_organization_reference_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.ORGANIZATIONS',\
+          \ ID)."
+      - source_table: PROFESSIONALS
+        source_column: NHNCK.PROFESSIONALS.ID
+        business_meaning: FK đến Securities Practitioner.
+        comment: "FK target: securities_practitioner.securities_practitioner_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS',\
+          \ ID)."
+      - source_table: UNITS
+        source_column: NHNCK.UNITS.ID
+        business_meaning: FK đến Regulatory Authority Organization Unit
+        comment: "FK target: ra_organization_unit.ra_organization_unit_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS', ID)."
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_BRANCH
+        source_column: SCMS.SC_FIRM_BRANCH.ID
+        business_meaning: FK đến Securities Company Organization Unit (chi nhánh CTCK).
+        comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_BRANCH',\
+          \ ID)."
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.ID
+        business_meaning: FK đến Securities Company (Involved Party).
+        comment: "FK target: securities_company.securities_company_id. Shared entity\
+          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
+      - source_table: SC_FIRM_INSIDER_RELATION
+        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
+        business_meaning: FK đến Securities Company Insider Related Person.
+        comment: "FK target: sc_insider_related_person.sc_insider_related_person_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INSIDER_RELATION',\
+          \ ID)."
+      - source_table: SC_FIRM_RELATED_PERSON
+        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
+        business_meaning: FK đến Securities Company Related Person.
+        comment: "FK target: sc_related_person.sc_related_person_id. Shared entity\
+          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_RELATED_PERSON',\
+          \ ID)."
+      - source_table: SC_FIRM_REP_OFFICE
+        source_column: SCMS.SC_FIRM_REP_OFFICE.ID
+        business_meaning: FK đến Securities Company Organization Unit (VPDD CTCK nội
+          địa).
+        comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_REP_OFFICE',\
+          \ ID)."
+      - source_table: SC_FIRM_SENIOR_PERSONNEL
+        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
+        business_meaning: FK đến Securities Company Senior Personnel.
+        comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity\
+          \ — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL',\
+          \ ID)."
+      - source_table: SC_FIRM_SHAREHOLDER
+        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+        business_meaning: FK đến Securities Company Shareholder.
+        comment: "FK target: securities_company_shareholder.securities_company_shareholder_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER',\
+          \ ID)."
+      - source_table: SC_FIRM_TRANSACTION_OFFICE
+        source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.ID
+        business_meaning: FK đến Securities Company Organization Unit (phòng giao
+          dịch CTCK).
+        comment: "FK target: sc_organization_unit.sc_organization_unit_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_TRANSACTION_OFFICE',\
+          \ ID)."
+    - source_system: THANHTRA
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: THANHTRA.EXAMINATION_TEAM_TARGET.ID
+        business_meaning: FK đến Examination Team Target.
+        comment: "FK target: examination_team_target.examination_team_target_id. Shared\
+          \ entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.EXAMINATION_TEAM_TARGET',\
+          \ ID)."
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: FK đến Penalty Decision Subject.
+        comment: "FK target: penalty_decision_subject.penalty_decision_subject_id.\
+          \ Shared entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT',\
+          \ ID)."
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning_1st: Mã tổ chức.
+    comment_1st: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+      \ Pair with Involved Party Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: ORGANIZATIONS
+        source_column: NHNCK.ORGANIZATIONS.ID
+        business_meaning: Mã tổ chức.
+        comment: "Lookup pair: securities_organization_reference.securities_organization_reference_code.\
+          \ Pair with Involved Party Id."
+      - source_table: PROFESSIONALS
+        source_column: NHNCK.PROFESSIONALS.ID
+        business_meaning: Mã người hành nghề.
+        comment: "Lookup pair: securities_practitioner.securities_practitioner_code.\
+          \ Pair with Involved Party Id."
+      - source_table: UNITS
+        source_column: NHNCK.UNITS.UNIT_CODE
+        business_meaning: Mã đơn vị
+        comment: "Lookup pair: ra_organization_unit.ra_organization_unit_code. Pair\
+          \ with Involved Party Id."
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_BRANCH
+        source_column: SCMS.SC_FIRM_BRANCH.ID
+        business_meaning: Mã Securities Company Organization Unit.
+        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
+          \ with Involved Party Id."
+      - source_table: SC_FIRM_INFO
+        source_column: SCMS.SC_FIRM_INFO.ID
+        business_meaning: Mã Securities Company.
+        comment: "Lookup pair: securities_company.securities_company_code. Pair with\
+          \ Involved Party Id."
+      - source_table: SC_FIRM_INSIDER_RELATION
+        source_column: SCMS.SC_FIRM_INSIDER_RELATION.ID
+        business_meaning: Mã Securities Company Insider Related Person.
+        comment: "Lookup pair: sc_insider_related_person.sc_insider_related_person_code.\
+          \ Pair with Involved Party Id."
+      - source_table: SC_FIRM_RELATED_PERSON
+        source_column: SCMS.SC_FIRM_RELATED_PERSON.ID
+        business_meaning: Mã Securities Company Related Person.
+        comment: "Lookup pair: sc_related_person.sc_related_person_code. Pair with\
+          \ Involved Party Id."
+      - source_table: SC_FIRM_REP_OFFICE
+        source_column: SCMS.SC_FIRM_REP_OFFICE.ID
+        business_meaning: Mã Securities Company Organization Unit.
+        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
+          \ with Involved Party Id."
+      - source_table: SC_FIRM_SENIOR_PERSONNEL
+        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
+        business_meaning: Mã Securities Company Senior Personnel.
+        comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair\
+          \ with Involved Party Id."
+      - source_table: SC_FIRM_SHAREHOLDER
+        source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+        business_meaning: Mã Securities Company Shareholder.
+        comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code.\
+          \ Pair with Involved Party Id."
+      - source_table: SC_FIRM_TRANSACTION_OFFICE
+        source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.ID
+        business_meaning: Mã Securities Company Organization Unit.
+        comment: "Lookup pair: sc_organization_unit.sc_organization_unit_code. Pair\
+          \ with Involved Party Id."
+    - source_system: THANHTRA
+      source_tables:
+      - source_table: EXAMINATION_TEAM_TARGET
+        source_column: THANHTRA.EXAMINATION_TEAM_TARGET.ID
+        business_meaning: Mã đối tượng được kiểm tra.
+        comment: "Lookup pair: examination_team_target.examination_team_target_code.\
+          \ Pair with Involved Party Id."
+      - source_table: PENALTY_DECISION_SUBJECT
+        source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
+        business_meaning: Mã đối tượng bị xử phạt.
+        comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code.\
+          \ Pair with Involved Party Id."
   - name: Country Id
     physical_name: country_id
     business_meaning_1st: FK đến Geographic Area — quốc gia.
@@ -34499,6 +34809,1833 @@ entities:
         source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.NOTE
         business_meaning: Ghi chú
         comment: null
+- ldm:
+    id: ATM-geographic_area
+    logical_name_1st: Geographic Area
+    physical_name_1st: geographic_area
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: "Đơn vị địa lý dùng làm FK tham chiếu: quốc gia/quốc tịch (COUNTRY),\
+      \ vùng/miền (REGION), tỉnh/thành phố mới/cũ (PROVINCE/PROVINCE_OLD), quận/huyện\
+      \ cũ (DISTRICT_OLD), phường/xã mới/cũ (WARD/WARD_OLD). Phân biệt bằng geographic_area_type_code.\
+      \ Hỗ trợ song song bộ danh mục pre- và post-sáp nhập hành chính 2025."
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Location
+    bcv_concept_most: "[Location] Geographic Area"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ECAT
+    references:
+      brd:
+      - BRD-SRC-ECAT-COUNTRY
+      - BRD-SRC-ECAT-PROVINCE_NEW
+      - BRD-SRC-ECAT-REGION
+      - BRD-SRC-ECAT-WARD_NEW
+  attributes:
+  - name: Geographic Area Id
+    physical_name: geographic_area_id
+    business_meaning_1st: Id tự sinh (surrogate key)
+    comment_1st: "PK surrogate. Hash: hash_id('ECAT.COUNTRY', CODE). BCV: \"Geographic\
+      \ Area\" (Location)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.COUNTRY', CODE). BCV: \"Geographic\
+          \ Area\" (Location)."
+      - source_table: PROVINCE_NEW
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.PROVINCE_NEW', CODE). BCV: \"\
+          Geographic Area\" (Location)."
+      - source_table: REGION
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.REGION', CODE). BCV: \"Geographic\
+          \ Area\" (Location)."
+      - source_table: WARD_NEW
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.WARD_NEW', CODE). BCV: \"Geographic\
+          \ Area\" (Location)."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã nguồn dữ liệu
+    comment_1st: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value:
+    - ECAT.COUNTRY
+    - ECAT.PROVINCE_NEW
+    - ECAT.REGION
+    - ECAT.WARD_NEW
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+      - source_table: PROVINCE_NEW
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+      - source_table: REGION
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+      - source_table: WARD_NEW
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  - name: Geographic Area Type Code
+    physical_name: geographic_area_tp_code
+    business_meaning_1st: Phân loại vùng địa lý — Quốc gia
+    comment_1st: null
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value:
+    - COUNTRY
+    - PROVINCE
+    - REGION
+    - WARD
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: null
+        business_meaning: Phân loại vùng địa lý — Quốc gia
+        comment: null
+      - source_table: PROVINCE_NEW
+        source_column: null
+        business_meaning: Phân loại vùng địa lý — Tỉnh/Thành phố hiện hành
+        comment: null
+      - source_table: REGION
+        source_column: null
+        business_meaning: Phân loại vùng địa lý — Vùng/miền
+        comment: null
+      - source_table: WARD_NEW
+        source_column: null
+        business_meaning: Phân loại vùng địa lý — Phường/Xã/Thị trấn hiện hành
+        comment: null
+  - name: Geographic Area Code
+    physical_name: geographic_area_code
+    business_meaning_1st: Mã quốc gia nghiệp vụ (do ECAT quản lý). BK duy nhất — Id
+      hash từ trường này.
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+      còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+      trước go-live.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.CODE
+        business_meaning: Mã quốc gia nghiệp vụ (do ECAT quản lý). BK duy nhất — Id
+          hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+          còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.CODE
+        business_meaning: Mã tỉnh/thành phố nghiệp vụ (do ECAT quản lý). BK duy nhất
+          — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+          còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
+      - source_table: REGION
+        source_column: ECAT.REGION.CODE
+        business_meaning: Mã vùng/miền nghiệp vụ (do ECAT quản lý). BK duy nhất —
+          Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+          còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.CODE
+        business_meaning: Mã phường/xã nghiệp vụ (do ECAT quản lý). BK duy nhất —
+          Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+          còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
+  - name: Geographic Area Name
+    physical_name: geographic_area_nm
+    business_meaning_1st: Tên quốc gia (tiếng Việt)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.NAME_VN
+        business_meaning: Tên quốc gia (tiếng Việt)
+        comment: null
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.NAME_VN
+        business_meaning: Tên tỉnh/thành phố (tiếng Việt)
+        comment: null
+      - source_table: REGION
+        source_column: ECAT.REGION.NAME
+        business_meaning: Tên vùng/miền
+        comment: REGION chỉ có 1 cột NAME (không có NAME_VN/NAME_EN như COUNTRY).
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.NAME_VN
+        business_meaning: Tên phường/xã/thị trấn (tiếng Việt)
+        comment: null
+  - name: Geographic Area English Name
+    physical_name: geographic_area_english_nm
+    business_meaning_1st: Tên quốc gia (tiếng Anh)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.NAME_EN
+        business_meaning: Tên quốc gia (tiếng Anh)
+        comment: null
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.NAME_EN
+        business_meaning: Tên tỉnh/thành phố (tiếng Anh)
+        comment: null
+      - source_table: REGION
+        source_column: null
+        business_meaning: Tên phường/xã/thị trấn (tiếng Anh)
+        comment: null
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.NAME_EN
+        business_meaning: Tên phường/xã/thị trấn (tiếng Anh)
+        comment: null
+  - name: Parent Geographic Area Id
+    physical_name: parent_geographic_area_id
+    business_meaning_1st: FK tự tham chiếu. NULL cho quốc gia — đỉnh phân cấp Geographic
+      Area
+    comment_1st: "FK target: geographic_area.geographic_area_id. NULL vì COUNTRY không\
+      \ có parent."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: null
+        business_meaning: FK tự tham chiếu. NULL cho quốc gia — đỉnh phân cấp Geographic
+          Area
+        comment: "FK target: geographic_area.geographic_area_id. NULL vì COUNTRY không\
+          \ có parent."
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.REGION_ID
+        business_meaning: FK đến vùng/miền cha
+        comment: "FK target: geographic_area.geographic_area_id. Parent là REGION.\
+          \ Resolve: join REGION_ID → ECAT.REGION.ID để lấy CODE, rồi hash_id('ECAT.REGION',\
+          \ CODE_CHA). COUNTRY_ID trên bảng nguồn là denormalized, suy ra được qua\
+          \ REGION → COUNTRY nên không map riêng."
+      - source_table: REGION
+        source_column: ECAT.REGION.COUNTRY_ID
+        business_meaning: FK đến quốc gia cha
+        comment: "FK target: geographic_area.geographic_area_id. Parent là COUNTRY.\
+          \ Resolve: join COUNTRY_ID → ECAT.COUNTRY.ID để lấy CODE, rồi hash_id('ECAT.COUNTRY',\
+          \ CODE_CHA)."
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.PROVINCE_NEW_ID
+        business_meaning: FK đến tỉnh/thành phố cha
+        comment: "FK target: geographic_area.geographic_area_id. Parent là PROVINCE_NEW\
+          \ (không qua cấp quận/huyện — đã bỏ sau sáp nhập 2025). Resolve: join PROVINCE_NEW_ID\
+          \ → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW', CODE_CHA)."
+  - name: Parent Geographic Area Code
+    physical_name: parent_geographic_area_code
+    business_meaning_1st: Mã cha — lookup pair với Parent Geographic Area Id
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code. NULL cho COUNTRY."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: null
+        business_meaning: Mã cha — lookup pair với Parent Geographic Area Id
+        comment: "Lookup pair: geographic_area.geographic_area_code. NULL cho COUNTRY."
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.REGION_ID
+        business_meaning: Mã vùng/miền cha
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Parent\
+          \ Geographic Area Id."
+      - source_table: REGION
+        source_column: ECAT.REGION.COUNTRY_ID
+        business_meaning: Mã quốc gia cha
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Parent\
+          \ Geographic Area Id."
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.PROVINCE_NEW_ID
+        business_meaning: Mã tỉnh/thành phố cha
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Parent\
+          \ Geographic Area Id."
+  - name: Effective Indicator
+    physical_name: effective_indicator
+    business_meaning_1st: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+    comment_1st: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+      Indicator.
+    data_domain_most: Boolean
+    data_type_most: boolean
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
+      - source_table: REGION
+        source_column: null
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
+  - name: Active Indicator
+    physical_name: active_indicator
+    business_meaning_1st: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+    comment_1st: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+      Indicator.
+    data_domain_most: Boolean
+    data_type_most: boolean
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+          Indicator.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+          Indicator.
+      - source_table: REGION
+        source_column: ECAT.REGION.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. REGION không có cột EFFECTIVE — không
+          có Effective Indicator.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+          Indicator.
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning_1st: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+    comment_1st: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+      Indicator.
+    data_domain_most: Boolean
+    data_type_most: boolean
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+          Indicator.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+          Indicator.
+      - source_table: REGION
+        source_column: ECAT.REGION.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+          Indicator.
+  - name: Effective Start Date
+    physical_name: effective_start_dt
+    business_meaning_1st: Ngày bắt đầu hiệu lực
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+      - source_table: REGION
+        source_column: ECAT.REGION.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+  - name: Effective End Date
+    physical_name: effective_end_dt
+    business_meaning_1st: Ngày kết thúc hiệu lực
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+      - source_table: REGION
+        source_column: ECAT.REGION.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning_1st: Số phiên bản bản ghi tại nguồn
+    comment_1st: Đẩy 1:1 theo yêu cầu.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: REGION
+        source_column: ECAT.REGION.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Display Label
+    physical_name: display_label
+    business_meaning_1st: Nhãn hiển thị
+    comment_1st: Đẩy 1:1 theo yêu cầu.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: REGION
+        source_column: null
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Active Reason
+    physical_name: active_reason
+    business_meaning_1st: Lý do thay đổi trạng thái sử dụng
+    comment_1st: Đẩy 1:1 theo yêu cầu.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: REGION
+        source_column: ECAT.REGION.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Deleted Reason
+    physical_name: deleted_reason
+    business_meaning_1st: Lý do xóa
+    comment_1st: Đẩy 1:1 theo yêu cầu.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: REGION
+        source_column: ECAT.REGION.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập
+          nhật — trước đây REGION tưởng không có DELETED_REASON.
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning_1st: Thời điểm bản ghi được tạo tại nguồn
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.CREATED_AT
+        business_meaning: Thời điểm bản ghi được tạo tại nguồn
+        comment: null
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.CREATED_AT
+        business_meaning: Thời điểm bản ghi được tạo tại nguồn
+        comment: null
+      - source_table: REGION
+        source_column: ECAT.REGION.CREATED_AT
+        business_meaning: Thời điểm bản ghi được tạo tại nguồn
+        comment: null
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.CREATED_AT
+        business_meaning: Thời điểm bản ghi được tạo tại nguồn
+        comment: null
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning_1st: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.UPDATED_AT
+        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+        comment: null
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.UPDATED_AT
+        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+        comment: null
+      - source_table: REGION
+        source_column: ECAT.REGION.UPDATED_AT
+        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+        comment: null
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.UPDATED_AT
+        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+        comment: null
+  - name: Created By Staff Id
+    physical_name: created_by_staff_id
+    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.CREATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.CREATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: REGION
+        source_column: ECAT.REGION.CREATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.CREATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+  - name: Created By Staff Code
+    physical_name: created_by_staff_code
+    business_meaning_1st: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+      Id
+    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+      \ Code. Pending — xem ghi chú ở Created By Staff Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.CREATED_BY_ID
+        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+          Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Created By Staff Id."
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.CREATED_BY_ID
+        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+          Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Created By Staff Id."
+      - source_table: REGION
+        source_column: ECAT.REGION.CREATED_BY_ID
+        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+          Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Created By Staff Id."
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.CREATED_BY_ID
+        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+          Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Created By Staff Id."
+  - name: Created By Staff Name
+    physical_name: created_by_staff_nm
+    business_meaning_1st: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+      tạo)
+    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+      hiển thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory
+      Authority Staff nếu cán bộ đổi tên sau đó.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.CREATED_BY_NAME
+        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+          tạo)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory
+          Authority Staff nếu cán bộ đổi tên sau đó.
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.CREATED_BY_NAME
+        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+          tạo)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: REGION
+        source_column: ECAT.REGION.CREATED_BY_NAME
+        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+          tạo)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.CREATED_BY_NAME
+        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+          tạo)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+  - name: Updated By Staff Id
+    physical_name: updated_by_staff_id
+    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+      ghi gần nhất
+    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.UPDATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+          ghi gần nhất
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.UPDATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+          ghi gần nhất
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: REGION
+        source_column: ECAT.REGION.UPDATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+          ghi gần nhất
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.UPDATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+          ghi gần nhất
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+  - name: Updated By Staff Code
+    physical_name: updated_by_staff_code
+    business_meaning_1st: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+      Staff Id
+    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+      \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.UPDATED_BY_ID
+        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+          Staff Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.UPDATED_BY_ID
+        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+          Staff Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+      - source_table: REGION
+        source_column: ECAT.REGION.UPDATED_BY_ID
+        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+          Staff Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.UPDATED_BY_ID
+        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+          Staff Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+  - name: Updated By Staff Name
+    physical_name: updated_by_staff_nm
+    business_meaning_1st: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+      hiển thị, không phải mã nhân viên).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: ECAT.COUNTRY.UPDATED_BY_NAME
+        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: PROVINCE_NEW
+        source_column: ECAT.PROVINCE_NEW.UPDATED_BY_NAME
+        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: REGION
+        source_column: ECAT.REGION.UPDATED_BY_NAME
+        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.UPDATED_BY_NAME
+        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+  - name: Geographic Area Category Code
+    physical_name: geographic_area_category_code
+    business_meaning_1st: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
+    comment_1st: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: COUNTRY
+        source_column: null
+        business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
+        comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
+      - source_table: PROVINCE_NEW
+        source_column: null
+        business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
+        comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
+      - source_table: REGION
+        source_column: null
+        business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
+        comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
+      - source_table: WARD_NEW
+        source_column: ECAT.WARD_NEW.CATEGORY
+        business_meaning: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
+        comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY."
+- ldm:
+    id: ATM-geographic_area_old
+    logical_name_1st: Geographic Area Old
+    physical_name_1st: geographic_area_old
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: draft
+    description_1st: Đơn vị địa lý lịch sử (pre-2025) — tỉnh/thành phố cũ (PROVINCE_OLD),
+      quận/huyện cũ (DISTRICT_OLD, cấp bị bỏ sau sáp nhập), phường/xã cũ (WARD_OLD).
+      Tách riêng khỏi Geographic Area vì cấu trúc phân cấp 3 cấp khác với 2 cấp hiện
+      hành. Chỉ phục vụ tra cứu lịch sử, có FK cross-entity sang Geographic Area (anchor
+      Region + successor mapping sau sáp nhập).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Location
+    bcv_concept_most: "[Location] Geographic Area"
+    table_type_most: Fundamental
+    etl_pattern_most: SCD4A
+    conflict_review: null
+    sources:
+    - ECAT
+    references:
+      brd:
+      - BRD-SRC-ECAT-DISTRICT_OLD
+      - BRD-SRC-ECAT-PROVINCE_OLD
+      - BRD-SRC-ECAT-WARD_OLD
+  attributes:
+  - name: Geographic Area Old Id
+    physical_name: geographic_area_old_id
+    business_meaning_1st: Id tự sinh (surrogate key)
+    comment_1st: "PK surrogate. Hash: hash_id('ECAT.DISTRICT_OLD', CODE). BCV: \"\
+      Geographic Area\" (Location) — entity riêng Geographic Area Old cho phân cấp\
+      \ lịch sử pre-2025."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.DISTRICT_OLD', CODE). BCV: \"\
+          Geographic Area\" (Location) — entity riêng Geographic Area Old cho phân\
+          \ cấp lịch sử pre-2025."
+      - source_table: PROVINCE_OLD
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.PROVINCE_OLD', CODE). BCV: \"\
+          Geographic Area\" (Location) — entity riêng Geographic Area Old cho phân\
+          \ cấp lịch sử pre-2025."
+      - source_table: WARD_OLD
+        source_column: null
+        business_meaning: Id tự sinh (surrogate key)
+        comment: "PK surrogate. Hash: hash_id('ECAT.WARD_OLD', CODE). BCV: \"Geographic\
+          \ Area\" (Location) — entity riêng Geographic Area Old cho phân cấp lịch\
+          \ sử pre-2025."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã nguồn dữ liệu
+    comment_1st: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value:
+    - ECAT.DISTRICT_OLD
+    - ECAT.PROVINCE_OLD
+    - ECAT.WARD_OLD
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+      - source_table: PROVINCE_OLD
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+      - source_table: WARD_OLD
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu
+        comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
+  - name: Geographic Area Old Type Code
+    physical_name: geographic_area_old_tp_code
+    business_meaning_1st: Phân loại vùng địa lý lịch sử — Quận/Huyện cũ
+    comment_1st: null
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value:
+    - DISTRICT_OLD
+    - PROVINCE_OLD
+    - WARD_OLD
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: Phân loại vùng địa lý lịch sử — Quận/Huyện cũ
+        comment: null
+      - source_table: PROVINCE_OLD
+        source_column: null
+        business_meaning: Phân loại vùng địa lý lịch sử — Tỉnh/Thành phố cũ
+        comment: null
+      - source_table: WARD_OLD
+        source_column: null
+        business_meaning: Phân loại vùng địa lý lịch sử — Phường/Xã/Thị trấn cũ
+        comment: null
+  - name: Geographic Area Old Code
+    physical_name: geographic_area_old_code
+    business_meaning_1st: Mã quận/huyện cũ nghiệp vụ (do ECAT quản lý). BK duy nhất
+      — Id hash từ trường này.
+    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+      còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+      trước go-live.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.CODE
+        business_meaning: Mã quận/huyện cũ nghiệp vụ (do ECAT quản lý). BK duy nhất
+          — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+          còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.CODE
+        business_meaning: Mã tỉnh/thành phố cũ nghiệp vụ (do ECAT quản lý). BK duy
+          nhất — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+          còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.CODE
+        business_meaning: Mã phường/xã cũ nghiệp vụ (do ECAT quản lý). BK duy nhất
+          — Id hash từ trường này.
+        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp
+          còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
+  - name: Geographic Area Old Name
+    physical_name: geographic_area_old_nm
+    business_meaning_1st: Tên quận/huyện cũ
+    comment_1st: DISTRICT_OLD chỉ có 1 cột NAME (không có NAME_VN/NAME_EN như PROVINCE_OLD/WARD_OLD).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.NAME
+        business_meaning: Tên quận/huyện cũ
+        comment: DISTRICT_OLD chỉ có 1 cột NAME (không có NAME_VN/NAME_EN như PROVINCE_OLD/WARD_OLD).
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.NAME_VN
+        business_meaning: Tên tỉnh/thành phố cũ (tiếng Việt)
+        comment: null
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.NAME_VN
+        business_meaning: Tên phường/xã/thị trấn cũ (tiếng Việt)
+        comment: null
+  - name: Geographic Area Old English Name
+    physical_name: geographic_area_old_english_nm
+    business_meaning_1st: Tên phường/xã/thị trấn cũ (tiếng Anh)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: Tên phường/xã/thị trấn cũ (tiếng Anh)
+        comment: null
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.NAME_EN
+        business_meaning: Tên tỉnh/thành phố cũ (tiếng Anh)
+        comment: null
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.NAME_EN
+        business_meaning: Tên phường/xã/thị trấn cũ (tiếng Anh)
+        comment: null
+  - name: Parent Geographic Area Old Id
+    physical_name: parent_geographic_area_old_id
+    business_meaning_1st: FK đến tỉnh/thành phố cũ cha (self-ref trong Geographic
+      Area Old)
+    comment_1st: "FK target: geographic_area_old.geographic_area_old_id. Parent là\
+      \ PROVINCE_OLD. Resolve: join PROVINCE_OLD_ID → ECAT.PROVINCE_OLD.ID để lấy\
+      \ CODE, rồi hash_id('ECAT.PROVINCE_OLD', CODE_CHA)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.PROVINCE_OLD_ID
+        business_meaning: FK đến tỉnh/thành phố cũ cha (self-ref trong Geographic
+          Area Old)
+        comment: "FK target: geographic_area_old.geographic_area_old_id. Parent là\
+          \ PROVINCE_OLD. Resolve: join PROVINCE_OLD_ID → ECAT.PROVINCE_OLD.ID để\
+          \ lấy CODE, rồi hash_id('ECAT.PROVINCE_OLD', CODE_CHA)."
+      - source_table: PROVINCE_OLD
+        source_column: null
+        business_meaning: FK tự tham chiếu trong Geographic Area Old. NULL cho tỉnh/thành
+          phố cũ — đỉnh phân cấp lịch sử
+        comment: "FK target: geographic_area_old.geographic_area_old_id. NULL vì PROVINCE_OLD\
+          \ không có parent nội bộ trong Geographic Area Old."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.DISTRICT_OLD_ID
+        business_meaning: FK đến quận/huyện cũ cha (self-ref trong Geographic Area
+          Old)
+        comment: "FK target: geographic_area_old.geographic_area_old_id. Parent là\
+          \ DISTRICT_OLD. Resolve: join DISTRICT_OLD_ID → ECAT.DISTRICT_OLD.ID để\
+          \ lấy CODE, rồi hash_id('ECAT.DISTRICT_OLD', CODE_CHA)."
+  - name: Parent Geographic Area Old Code
+    physical_name: parent_geographic_area_old_code
+    business_meaning_1st: Mã tỉnh/thành phố cũ cha
+    comment_1st: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair\
+      \ with Parent Geographic Area Old Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.PROVINCE_OLD_ID
+        business_meaning: Mã tỉnh/thành phố cũ cha
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair\
+          \ with Parent Geographic Area Old Id."
+      - source_table: PROVINCE_OLD
+        source_column: null
+        business_meaning: Mã cha trong Geographic Area Old
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code. NULL\
+          \ cho PROVINCE_OLD."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.DISTRICT_OLD_ID
+        business_meaning: Mã quận/huyện cũ cha
+        comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair\
+          \ with Parent Geographic Area Old Id."
+  - name: Region Geographic Area Id
+    physical_name: region_geographic_area_id
+    business_meaning_1st: FK anchor cross-entity sang Region trong Geographic Area
+      (hiện hành) — Region/Country dùng chung cho cả 2 hệ cũ/mới
+    comment_1st: "FK target: geographic_area.geographic_area_id (KHÁC entity — cross-entity\
+      \ anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID để\
+      \ lấy CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn denormalized\
+      \ qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: FK anchor cross-entity sang Region trong Geographic Area
+          (hiện hành) — Region/Country dùng chung cho cả 2 hệ cũ/mới
+        comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — cross-entity\
+          \ anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID\
+          \ để lấy CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn\
+          \ denormalized qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.REGION_ID
+        business_meaning: FK anchor cross-entity sang Region trong Geographic Area
+          (hiện hành) — Region/Country dùng chung cho cả 2 hệ cũ/mới
+        comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — cross-entity\
+          \ anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID\
+          \ để lấy CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn\
+          \ denormalized qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
+      - source_table: WARD_OLD
+        source_column: null
+        business_meaning: FK anchor cross-entity sang Region trong Geographic Area
+          (hiện hành) — Region/Country dùng chung cho cả 2 hệ cũ/mới
+        comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — cross-entity\
+          \ anchor, không phải self-ref). Resolve: join REGION_ID → ECAT.REGION.ID\
+          \ để lấy CODE, rồi hash_id('ECAT.REGION', CODE). COUNTRY_ID trên bảng nguồn\
+          \ denormalized qua REGION_ID → REGION.COUNTRY_ID, không map riêng."
+  - name: Region Geographic Area Code
+    physical_name: region_geographic_area_code
+    business_meaning_1st: Mã vùng/miền — lookup pair với Region Geographic Area Id
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Region\
+      \ Geographic Area Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: Mã vùng/miền — lookup pair với Region Geographic Area Id
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Region\
+          \ Geographic Area Id."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.REGION_ID
+        business_meaning: Mã vùng/miền — lookup pair với Region Geographic Area Id
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Region\
+          \ Geographic Area Id."
+      - source_table: WARD_OLD
+        source_column: null
+        business_meaning: Mã vùng/miền — lookup pair với Region Geographic Area Id
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Region\
+          \ Geographic Area Id."
+  - name: Successor Geographic Area Id
+    physical_name: successor_geographic_area_id
+    business_meaning_1st: FK cross-entity sang tỉnh/thành phố hiện hành tương ứng
+      sau sáp nhập 2025 (lateral mapping, không phải quan hệ cha-con)
+    comment_1st: "FK target: geographic_area.geographic_area_id (KHÁC entity — successor\
+      \ mapping sau sáp nhập hành chính, không phải hierarchy cha-con). Resolve: join\
+      \ PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW',\
+      \ CODE). // FK target: geographic_area.geographic_area_id (KHÁC entity — successor\
+      \ mapping sau sáp nhập hành chính). Resolve: join WARD_NEW_ID → ECAT.WARD_NEW.ID\
+      \ để lấy CODE, rồi hash_id('ECAT.WARD_NEW', CODE)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: FK cross-entity sang tỉnh/thành phố hiện hành tương ứng
+          sau sáp nhập 2025 (lateral mapping, không phải quan hệ cha-con)
+        comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — successor\
+          \ mapping sau sáp nhập hành chính, không phải hierarchy cha-con). Resolve:\
+          \ join PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW',\
+          \ CODE). // FK target: geographic_area.geographic_area_id (KHÁC entity —\
+          \ successor mapping sau sáp nhập hành chính). Resolve: join WARD_NEW_ID\
+          \ → ECAT.WARD_NEW.ID để lấy CODE, rồi hash_id('ECAT.WARD_NEW', CODE)."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.PROVINCE_NEW_ID
+        business_meaning: FK cross-entity sang tỉnh/thành phố hiện hành tương ứng
+          sau sáp nhập 2025 (lateral mapping, không phải quan hệ cha-con)
+        comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — successor\
+          \ mapping sau sáp nhập hành chính, không phải hierarchy cha-con). Resolve:\
+          \ join PROVINCE_NEW_ID → ECAT.PROVINCE_NEW.ID để lấy CODE, rồi hash_id('ECAT.PROVINCE_NEW',\
+          \ CODE)."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.WARD_NEW_ID
+        business_meaning: FK cross-entity sang phường/xã hiện hành tương ứng sau sáp
+          nhập 2025 (lateral mapping, không phải quan hệ cha-con)
+        comment: "FK target: geographic_area.geographic_area_id (KHÁC entity — successor\
+          \ mapping sau sáp nhập hành chính). Resolve: join WARD_NEW_ID → ECAT.WARD_NEW.ID\
+          \ để lấy CODE, rồi hash_id('ECAT.WARD_NEW', CODE)."
+  - name: Successor Geographic Area Code
+    physical_name: successor_geographic_area_code
+    business_meaning_1st: Mã tỉnh/thành phố hiện hành tương ứng — lookup pair với
+      Successor Geographic Area Id
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Successor\
+      \ Geographic Area Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: Mã tỉnh/thành phố hiện hành tương ứng — lookup pair với
+          Successor Geographic Area Id
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Successor\
+          \ Geographic Area Id."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.PROVINCE_NEW_ID
+        business_meaning: Mã tỉnh/thành phố hiện hành tương ứng — lookup pair với
+          Successor Geographic Area Id
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Successor\
+          \ Geographic Area Id."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.WARD_NEW_ID
+        business_meaning: Mã phường/xã hiện hành tương ứng — lookup pair với Successor
+          Geographic Area Id
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Successor\
+          \ Geographic Area Id."
+  - name: Effective Indicator
+    physical_name: effective_indicator
+    business_meaning_1st: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+    comment_1st: Giá trị 1 → true; 0 → false. Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv
+      bản cập nhật — trước đây DISTRICT_OLD tưởng không có EFFECTIVE. Đẩy 1:1, không
+      gộp với Active/Deleted Indicator.
+    data_domain_most: Boolean
+    data_type_most: boolean
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv
+          bản cập nhật — trước đây DISTRICT_OLD tưởng không có EFFECTIVE. Đẩy 1:1,
+          không gộp với Active/Deleted Indicator.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.EFFECTIVE
+        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
+          Indicator.
+  - name: Active Indicator
+    physical_name: active_indicator
+    business_meaning_1st: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+    comment_1st: Giá trị 1 → true; 0 → false.
+    data_domain_most: Boolean
+    data_type_most: boolean
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+          Indicator.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.ACTIVE
+        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
+          Indicator.
+  - name: Deleted Indicator
+    physical_name: deleted_indicator
+    business_meaning_1st: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+    comment_1st: Giá trị 1 → true; 0 → false.
+    data_domain_most: Boolean
+    data_type_most: boolean
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+          Indicator.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.DELETED
+        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
+        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
+          Indicator.
+  - name: Effective Start Date
+    physical_name: effective_start_dt
+    business_meaning_1st: Ngày bắt đầu hiệu lực
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.EFFECTIVE_START_DATE
+        business_meaning: Ngày bắt đầu hiệu lực
+        comment: null
+  - name: Effective End Date
+    physical_name: effective_end_dt
+    business_meaning_1st: Ngày kết thúc hiệu lực
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.EFFECTIVE_END_DATE
+        business_meaning: Ngày kết thúc hiệu lực
+        comment: null
+  - name: Version Number
+    physical_name: version_nbr
+    business_meaning_1st: Số phiên bản bản ghi tại nguồn
+    comment_1st: Đẩy 1:1 theo yêu cầu.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.VERSION
+        business_meaning: Số phiên bản bản ghi tại nguồn
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Display Label
+    physical_name: display_label
+    business_meaning_1st: Nhãn hiển thị
+    comment_1st: Đẩy 1:1 theo yêu cầu.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.DISPLAY_LABEL
+        business_meaning: Nhãn hiển thị
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Active Reason
+    physical_name: active_reason
+    business_meaning_1st: Lý do thay đổi trạng thái sử dụng
+    comment_1st: Đẩy 1:1 theo yêu cầu.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.ACTIVE_REASON
+        business_meaning: Lý do thay đổi trạng thái sử dụng
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Deleted Reason
+    physical_name: deleted_reason
+    business_meaning_1st: Lý do xóa
+    comment_1st: Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập
+      nhật — trước đây DISTRICT_OLD tưởng không có DELETED_REASON.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập
+          nhật — trước đây DISTRICT_OLD tưởng không có DELETED_REASON.
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Đẩy 1:1 theo yêu cầu.
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.DELETED_REASON
+        business_meaning: Lý do xóa
+        comment: Đẩy 1:1 theo yêu cầu.
+  - name: Created Timestamp
+    physical_name: created_tms
+    business_meaning_1st: Thời điểm bản ghi được tạo tại nguồn
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.CREATED_AT
+        business_meaning: Thời điểm bản ghi được tạo tại nguồn
+        comment: null
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.CREATED_AT
+        business_meaning: Thời điểm bản ghi được tạo tại nguồn
+        comment: null
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.CREATED_AT
+        business_meaning: Thời điểm bản ghi được tạo tại nguồn
+        comment: null
+  - name: Updated Timestamp
+    physical_name: updated_tms
+    business_meaning_1st: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+    comment_1st: null
+    data_domain_most: Timestamp
+    data_type_most: timestamp
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.UPDATED_AT
+        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+        comment: null
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.UPDATED_AT
+        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+        comment: null
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.UPDATED_AT
+        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
+        comment: null
+  - name: Created By Staff Id
+    physical_name: created_by_staff_id
+    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.CREATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.CREATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.CREATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+  - name: Created By Staff Code
+    physical_name: created_by_staff_code
+    business_meaning_1st: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+      Id
+    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+      \ Code. Pending — xem ghi chú ở Created By Staff Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.CREATED_BY_ID
+        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+          Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Created By Staff Id."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.CREATED_BY_ID
+        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+          Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Created By Staff Id."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.CREATED_BY_ID
+        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
+          Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Created By Staff Id."
+  - name: Created By Staff Name
+    physical_name: created_by_staff_nm
+    business_meaning_1st: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+      tạo)
+    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+      hiển thị, không phải mã nhân viên).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.CREATED_BY_NAME
+        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+          tạo)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.CREATED_BY_NAME
+        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+          tạo)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.CREATED_BY_NAME
+        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
+          tạo)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+  - name: Updated By Staff Id
+    physical_name: updated_by_staff_id
+    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+      ghi gần nhất
+    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.UPDATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+          ghi gần nhất
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.UPDATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+          ghi gần nhất
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.UPDATED_BY_ID
+        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
+          ghi gần nhất
+        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
+          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT.UBCK_STAFF',\
+          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
+  - name: Updated By Staff Code
+    physical_name: updated_by_staff_code
+    business_meaning_1st: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+      Staff Id
+    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+      \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.UPDATED_BY_ID
+        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+          Staff Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.UPDATED_BY_ID
+        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+          Staff Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.UPDATED_BY_ID
+        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
+          Staff Id
+        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
+          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
+  - name: Updated By Staff Name
+    physical_name: updated_by_staff_nm
+    business_meaning_1st: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+      hiển thị, không phải mã nhân viên).
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: ECAT.DISTRICT_OLD.UPDATED_BY_NAME
+        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: PROVINCE_OLD
+        source_column: ECAT.PROVINCE_OLD.UPDATED_BY_NAME
+        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.UPDATED_BY_NAME
+        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
+        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
+          hiển thị, không phải mã nhân viên).
+  - name: Geographic Area Old Category Code
+    physical_name: geographic_area_old_category_code
+    business_meaning_1st: Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)
+    comment_1st: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: ECAT
+      source_tables:
+      - source_table: DISTRICT_OLD
+        source_column: null
+        business_meaning: Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)
+        comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
+      - source_table: PROVINCE_OLD
+        source_column: null
+        business_meaning: Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)
+        comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
+      - source_table: WARD_OLD
+        source_column: ECAT.WARD_OLD.CATEGORY
+        business_meaning: Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)
+        comment: "Scheme: GEOGRAPHIC_AREA_WARD_CATEGORY (dùng chung với WARD_NEW)."
 - ldm:
     id: ATM-securities_trade
     logical_name_1st: Securities Trade
