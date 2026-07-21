@@ -1,142 +1,140 @@
 # DTM_TT_Entities — Data Mart: Phân hệ Thanh Tra (TT)
 
-**Phiên bản:** 1.0  
-**Ngày:** 28/04/2026  
-**Phạm vi:** 7 Datamart entities — 2 Fact + 2 Dim + 3 Tác nghiệp
+**Phạm vi:** 15 Datamart entities — 7 Fact + 4 Dim (2 Conformed reuse + 2 mới) + 4 Tác nghiệp
 
 ---
 
-## Nhóm 1: Tab TỔNG QUAN + KIỂM TRA — Phân tích vụ việc TT/KT
-
-Phục vụ **8 nhóm phân tích** thuộc Tab TỔNG QUAN (Nhóm 1–4) và Tab KIỂM TRA (Nhóm 6–9). Nhóm 5 (Tab TQ) và Nhóm 10 (Tab KT) là danh sách tác nghiệp — serve bởi `Inspection Case List`. Hai tab reuse cùng `Fact Inspection Case Activity` — phân biệt bằng filter `Inspection_Type_Code`.
-
-**Star schema:**
+## Cụm 1: Tab TỔNG QUAN — Thống kê chung, xu hướng theo tháng, cơ cấu vi phạm (Nhóm 1–3)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Activity : "Received Date Dimension Id"
-    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Subject Category Dimension Id"
-    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Violation Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Team_Activity : " "
+    Inspection_Team_Dimension ||--o{ Fact_Inspection_Team_Activity : " "
 ```
 
-**Bảng entity:**
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Inspection Case Activity | Event vụ việc TT/KT — 1 hồ sơ × 1 đối tượng | 1 row per `TT_HO_SO` × `TT_QUYET_DINH_DOI_TUONG`. Đếm hồ sơ: COUNT(DISTINCT Inspection_Case_Code) | K_TT_1–54 |
-| Calendar Date Dimension | Lịch ngày — slicer NĂM, GROUP BY tháng | 1 ngày | — |
-| Classification Dimension | Phân loại — scheme `TT_SUBJECT_CATEGORY` và `TT_VIOLATION_TYPE` | 1 row per (Scheme, Code) | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Inspection Team Activity | Fact — Event | new | 1 đoàn thanh tra | 1 row per `INSPECTION_TEAM` | K_TT_1–6b (Nhóm 1), K_TT_7–9 (Nhóm 2), K_TT_9b–15 (Nhóm 3) |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
+| Inspection Team Dimension | Dimension | new | Thuộc tính mô tả đoàn thanh tra | 1 row / đoàn thanh tra | — |
 
 ---
 
-## Nhóm 2: Danh sách vụ việc TT/KT — Tác nghiệp tra cứu hồ sơ
-
-Phục vụ Nhóm 5 (Tab TỔNG QUAN) và Nhóm 10 (Tab KIỂM TRA). Phân biệt TT vs KT bằng filter `Inspection_Type_Code` ở query time.
-
-**Schema tác nghiệp:**
+## Cụm 1b: Tab KIỂM TRA — Thống kê chung, xu hướng theo tháng, cơ cấu kiểm tra (Nhóm 6–8)
 
 ```mermaid
 erDiagram
-    Inspection_Case_List {
-        varchar Inspection_Case_Code PK
-        varchar Case_Number
-        varchar Display_Name
-        varchar Subject_Category_Code
-        varchar Inspection_Type_Code
-        varchar Inspection_Form_Type_Code
-        varchar Case_Status_Code
-        date Received_Date
-        int Received_Year
-        datetime Population_Date
-    }
+    Calendar_Date_Dimension ||--o{ Fact_Examination_Team_Activity : " "
+    Examination_Team_Dimension ||--o{ Fact_Examination_Team_Activity : " "
 ```
 
-**Bảng entity:**
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Inspection Case List | Hồ sơ TT/KT — latest state | 1 row per hồ sơ (`TT_HO_SO`) | Nhóm 5, Nhóm 10 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Examination Team Activity | Fact — Event | new | 1 vụ việc kiểm tra | 1 row per `EXAMINATION_TEAM` | K_TT_24–29b (Nhóm 6), K_TT_30–32 (Nhóm 7), K_TT_32b–44k (Nhóm 8) |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
+| Examination Team Dimension | Dimension | new | Thuộc tính mô tả vụ việc kiểm tra | 1 row / vụ việc kiểm tra | — |
 
 ---
 
-## Nhóm 3: Tab XỬ PHẠT — Phân tích quyết định xử phạt
-
-Phục vụ toàn bộ Tab XỬ PHẠT (Nhóm 11–15) và Báo cáo STT 20 (Nhóm 20). Reuse `Fact Penalty Decision` cho cả KPI dashboard và bảng pivot.
-
-**Star schema:**
+## Cụm 1c: Tab TỔNG QUAN — Cơ cấu vi phạm theo đối tượng (Nhóm 4)
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision : "Violation Report Date Dimension Id"
-    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Penalty Subject Category Dimension Id"
-    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Violation Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Team_Target_Activity : " "
 ```
 
-**Bảng entity:**
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Penalty Decision | Event quyết định xử phạt | 1 row per QĐ (`GS_VAN_BAN_XU_LY`) | K_TT_55–80, K_TT_89–100 |
-| Calendar Date Dimension | Lịch ngày — slicer NĂM, GROUP BY tháng | 1 ngày | — |
-| Classification Dimension | Phân loại — scheme `TT_PENALTY_SUBJECT_CATEGORY` và `TT_VIOLATION_TYPE` | 1 row per (Scheme, Code) | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Inspection Team Target Activity | Fact — Event | new | 1 đoàn thanh tra × 1 đối tượng — tách riêng để tránh fanout so với Fact Inspection Team Activity | 1 row per `INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET` (N:1) | K_TT_16–23b (Nhóm 4) |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (join qua Inspection Team) | 1 row / ngày | — |
 
 ---
 
-## Nhóm 4: Danh sách quyết định xử phạt — Tác nghiệp tra cứu QĐ
-
-Phục vụ Nhóm 15 (Tab XỬ PHẠT) — bảng danh sách QĐXP.
-
-**Schema tác nghiệp:**
+## Cụm 1d: Tab KIỂM TRA — Cơ cấu kiểm tra theo đối tượng (Nhóm 9)
 
 ```mermaid
 erDiagram
-    Penalty_Decision_List {
-        varchar Penalty_Decision_Code PK
-        varchar Penalty_Decision_Number
-        varchar Surveillance_Case_Code
-        varchar Subject_Name
-        varchar Penalty_Subject_Category_Code
-        varchar Violation_Type_Code
-        varchar Decision_Status_Code
-        date Violation_Report_Date
-        int Violation_Report_Year
-        float Total_Penalty_Amount
-        datetime Population_Date
-    }
+    Calendar_Date_Dimension ||--o{ Fact_Examination_Team_Target_Activity : " "
 ```
 
-**Bảng entity:**
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Penalty Decision List | Quyết định xử phạt — latest state | 1 row per QĐ (`GS_VAN_BAN_XU_LY`) | Nhóm 15 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Examination Team Target Activity | Fact — Event | new | 1 vụ kiểm tra × 1 đối tượng — tách riêng để tránh fanout so với Fact Examination Team Activity. Đóng O_TT_7 | 1 row per `EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET` (N:1) | K_TT_45–54, K_TT_49b (Nhóm 9) |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (join qua Examination Team) | 1 row / ngày | — |
 
 ---
 
-## Nhóm 5: Tab ĐƠN THƯ — Tác nghiệp đơn thư khiếu nại tố cáo
+## Cụm 2: Tab TỔNG QUAN — Danh sách vụ việc Thanh tra (Nhóm 5)
 
-Phục vụ toàn bộ Tab ĐƠN THƯ (Nhóm 16–19). Một bảng tác nghiệp serve cả KPI aggregate (COUNT theo loại đơn, theo tháng) và danh sách chi tiết.
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Inspection Case List | Tác nghiệp | new | Danh sách đoàn thanh tra × đối tượng — latest state. Không reuse `securities_company_compliance_history` (module QLKD, khác table_type/mục đích) | 1 row per `INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET` (N:1) | Nhóm 5 (TT) |
 
-**Schema tác nghiệp:**
+---
+
+## Cụm 2b: Tab KIỂM TRA — Danh sách vụ việc Kiểm tra (Nhóm 10)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Examination Case List | Tác nghiệp | new | Danh sách vụ kiểm tra × đối tượng — latest state | 1 row per `EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET` (N:1) | Nhóm 10 (KT) |
+
+---
+
+## Cụm 3: Tab XỬ PHẠT — Thống kê chung, xu hướng theo tháng (Nhóm 11–12)
 
 ```mermaid
 erDiagram
-    Complaint_Petition_List {
-        varchar Complaint_Petition_Code PK
-        varchar Petition_Type_Code
-        varchar Complainant_Name
-        varchar Petition_Status_Code
-        date Submission_Date
-        int Submission_Year
-        datetime Population_Date
-    }
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision : " "
 ```
 
-**Bảng entity:**
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Penalty Decision | Fact — Event | new | 1 quyết định xử phạt | 1 row per `PENALTY_DECISION` | K_TT_55–60, K_TT_55b (Nhóm 11, 12) |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Complaint Petition List | Đơn thư khiếu nại tố cáo — latest state | 1 row per đơn (`DT_DON_THU`) | K_TT_81–88b, Nhóm 16–19 |
+---
+
+## Cụm 3b: Tab XỬ PHẠT — Cơ cấu xử phạt theo loại hành vi + Báo cáo hoạt động vi phạm TTCK (Nhóm 13, STT 20)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision_Subject_Behavior : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Penalty Decision Subject Behavior | Fact — Event | new | 1 QĐ × 1 đối tượng × 1 hành vi — 4-way join. Đóng O_TT_8 | 1 row per `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` × `PENALTY_DECISION_SUBJECT_BEHAVIOR` × `VIOLATION_BEHAVIOR` | K_TT_60b–72k (Nhóm 13), K_TT_88c, K_TT_89–100c (Báo cáo STT 20 — reuse) |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (join qua Penalty Decision) | 1 row / ngày | — |
+
+---
+
+## Cụm 3c: Tab XỬ PHẠT — Cơ cấu xử phạt theo đối tượng (Nhóm 14)
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision_Subject : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Penalty Decision Subject | Fact — Event | new | 1 QĐ × 1 đối tượng. Đóng O_TT_9 | 1 row per `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` (N:1) | K_TT_72l, K_TT_73–80 (Nhóm 14) |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (join qua Penalty Decision) | 1 row / ngày | — |
+
+---
+
+## Cụm 3d: Tab XỬ PHẠT — Danh sách quyết định xử phạt (Nhóm 15)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Penalty Decision List | Tác nghiệp | new | Danh sách QĐ × đối tượng — latest state | 1 row per `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` (N:1) | Nhóm 15 (XP) |
+
+---
+
+## Cụm 4: Tab ĐƠN THƯ — KPI card, biểu đồ xu hướng, cơ cấu, danh sách chi tiết (Nhóm 16–19)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Petition List | Tác nghiệp | new | Đơn thư — latest state. Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19). Đóng O_TT_10 | 1 row per `PETITION` | Nhóm 16–19 (ĐT), K_TT_80b–88b |
 
 ---
 
@@ -144,22 +142,33 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Inspection_Case_Activity : "Received Date Dimension Id"
-    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Subject Category Dimension Id"
-    Classification_Dimension ||--o{ Fact_Inspection_Case_Activity : "Violation Type Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision : "Violation Report Date Dimension Id"
-    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Penalty Subject Category Dimension Id"
-    Classification_Dimension ||--o{ Fact_Penalty_Decision : "Violation Type Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Team_Activity : " "
+    Inspection_Team_Dimension ||--o{ Fact_Inspection_Team_Activity : " "
+    Calendar_Date_Dimension ||--o{ Fact_Examination_Team_Activity : " "
+    Examination_Team_Dimension ||--o{ Fact_Examination_Team_Activity : " "
+    Calendar_Date_Dimension ||--o{ Fact_Inspection_Team_Target_Activity : " "
+    Calendar_Date_Dimension ||--o{ Fact_Examination_Team_Target_Activity : " "
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision : " "
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision_Subject_Behavior : " "
+    Calendar_Date_Dimension ||--o{ Fact_Penalty_Decision_Subject : " "
 ```
 
 **Bảng tổng hợp:**
 
-| Datamart entity | Loại | Grain | Source Atomic | KPI phục vụ |
-|---|---|---|---|---|
-| Fact Inspection Case Activity | Fact — Event | 1 hồ sơ × 1 đối tượng | Inspection Case / Inspection Decision Subject / Inspection Case Conclusion | K_TT_1–54 |
-| Fact Penalty Decision | Fact — Event | 1 QĐXP | Surveillance Enforcement Decision | K_TT_55–80, K_TT_89–100 |
-| Calendar Date Dimension | Dim — Conformed | 1 ngày | Generated | — |
-| Classification Dimension | Dim — Conformed | 1 (Scheme, Code) | Generated — 3 scheme: TT_SUBJECT_CATEGORY / TT_PENALTY_SUBJECT_CATEGORY / TT_VIOLATION_TYPE | — |
-| Inspection Case List | Tác nghiệp | 1 hồ sơ (latest) | Inspection Case / Inspection Decision | Nhóm 5, 10 |
-| Penalty Decision List | Tác nghiệp | 1 QĐXP (latest) | Surveillance Enforcement Decision / Surveillance Enforcement Case | Nhóm 15 |
-| Complaint Petition List | Tác nghiệp | 1 đơn thư (latest) | Complaint Petition | K_TT_81–88b, Nhóm 16–19 |
+| Datamart Entity | Loại | Reuse | Grain | Source Atomic | KPI phục vụ |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dim — Conformed | reuse | 1 ngày | `cdr_dt` | — |
+| Classification Dimension | Dim — Conformed | reuse | 1 (Scheme, Code) | `cv` | — (không nhóm nào tham chiếu, giữ vì Conformed toàn hệ thống) |
+| Inspection Team Dimension | Dim — Reference per module | new | 1 đoàn thanh tra | `inspection_team` | — |
+| Examination Team Dimension | Dim — Reference per module | new | 1 vụ việc kiểm tra | `examination_team` | — |
+| Fact Inspection Team Activity | Fact — Event | new | 1 đoàn thanh tra | `inspection_team` | K_TT_1–6b, K_TT_7–9, K_TT_9b–15 |
+| Fact Examination Team Activity | Fact — Event | new | 1 vụ việc kiểm tra | `examination_team` | K_TT_24–29b, K_TT_30–32, K_TT_32b–44k |
+| Fact Inspection Team Target Activity | Fact — Event | new | 1 đoàn × 1 đối tượng | `inspection_team` / `inspection_team_target` | K_TT_16–23b |
+| Fact Examination Team Target Activity | Fact — Event | new | 1 vụ × 1 đối tượng | `examination_team` / `examination_team_target` | K_TT_45–54, K_TT_49b |
+| Fact Penalty Decision | Fact — Event | new | 1 QĐXP | `penalty_decision` | K_TT_55–60, K_TT_55b |
+| Fact Penalty Decision Subject Behavior | Fact — Event | new | 1 QĐ × 1 đối tượng × 1 hành vi | `penalty_decision` / `penalty_decision_subject` / `pd_subject_behavior` / `violation_behavior` | K_TT_60b–72k, K_TT_88c, K_TT_89–100c |
+| Fact Penalty Decision Subject | Fact — Event | new | 1 QĐ × 1 đối tượng | `penalty_decision` / `penalty_decision_subject` | K_TT_72l, K_TT_73–80 |
+| Inspection Case List | Tác nghiệp | new | 1 đoàn × 1 đối tượng (latest) | `inspection_team` / `inspection_team_target` | Nhóm 5 |
+| Examination Case List | Tác nghiệp | new | 1 vụ × 1 đối tượng (latest) | `examination_team` / `examination_team_target` | Nhóm 10 |
+| Penalty Decision List | Tác nghiệp | new | 1 QĐ × 1 đối tượng (latest) | `penalty_decision` / `penalty_decision_subject` / `violation_case` | Nhóm 15 |
+| Petition List | Tác nghiệp | new | 1 đơn thư (latest) | `petition` | Nhóm 16–19, K_TT_80b–88b |

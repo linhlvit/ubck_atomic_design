@@ -10,18 +10,16 @@
 
 ##### Cụm 1: Thống kê vụ việc Thanh tra (Fact Inspection Team Activity)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo Atomic THANHTRA schema mới (đã tái cấu trúc — xem `DataModel/working/Atomic/hld/THANHTRA_LinhLV_Reuse_Analysis.md`). Schema cũ (`TT_HO_SO`/`TT_QUYET_DINH`/`TT_QUYET_DINH_DOI_TUONG`/`TT_KET_LUAN`) đã deprecated, không còn tồn tại trong Atomic hiện hành. BA đã cập nhật mapping kỹ thuật (`BRD/BA/BA_analyst_TT.csv`, cột Bảng nguồn/Trường nguồn/Câu lệnh tham khảo) xác nhận nguồn mới: `INSPECTION_TEAM` (Thanh tra) và `EXAMINATION_TEAM` (Kiểm tra) — **2 bảng Atomic riêng biệt**, không còn dùng chung 1 Fact phân biệt bằng `Inspection_Type_Code` như thiết kế cũ. Cụm 1 phục vụ riêng Tab TỔNG QUAN (Thanh tra); Kiểm tra xem Cụm 1b.
-
-> **[TÁI CẤU TRÚC 2026-07-20]** Tách `Inspection Team Dimension` riêng khỏi Fact — grain Fact = 1 đoàn thanh tra, không có measure định lượng thật (mọi KPI là `COUNT` trên chính grain), nên các thuộc tính mô tả (`Start_Date`/`End_Date`/`Content`) đúng ra thuộc Dimension theo lý thuyết star schema (Kimball), không nằm trực tiếp trên Fact. Fact giờ chỉ giữ 2 FK: `Calendar Date Dimension` (qua `Decision_Date`) và `Inspection Team Dimension`.
+> Cụm 1 phục vụ riêng Tab TỔNG QUAN (Thanh tra, nguồn `INSPECTION_TEAM`); Kiểm tra dùng nguồn riêng `EXAMINATION_TEAM`, xem Cụm 1b.
+> `Inspection Team Dimension` tách riêng khỏi Fact — grain Fact = 1 đoàn thanh tra, không có measure định lượng thật (mọi KPI là `COUNT` trên chính grain), nên các thuộc tính mô tả (`Start_Date`/`End_Date`/`Content`) thuộc Dimension theo lý thuyết star schema (Kimball). Fact chỉ giữ 2 FK: `Calendar Date Dimension` (qua `Decision_Date`) và `Inspection Team Dimension`.
 
 Phục vụ Tab TỔNG QUAN — KPI cards Thống kê chung (Nhóm 1) và biểu đồ theo tháng (Nhóm 2).
 
 - **Grain Fact: 1 row per `INSPECTION_TEAM`** — 1 đoàn thanh tra. Đếm số đoàn dùng `COUNT(Inspection_Team_Dimension_Id)` qua Dimension (grain Fact/Dimension đều 1:1, không fanout).
 - **Grain Dimension: 1 row per `INSPECTION_TEAM`** — chứa `Inspection_Team_Code` (BK), `Start_Date`, `End_Date`, `Content` — mọi thuộc tính mô tả của đoàn thanh tra.
-- Date key: `Decision_Date` (`INSPECTION_TEAM.DECISION_DATE`) — theo đúng SQL tham khảo BA (STT 1), KHÔNG phải Received Date như thiết kế cũ (đóng O_TT_3 theo hướng dùng Decision Date). Fact join `Calendar Date Dimension` qua `Decision_Date`.
+- Date key: `Decision_Date` (`INSPECTION_TEAM.DECISION_DATE`). Fact join `Calendar Date Dimension` qua `Decision_Date`.
 - Trạng thái Hoàn thành/Đang thực hiện **ETL-derived trên `Inspection Team Dimension` từ `Start_Date`/`End_Date`** — không cần field status riêng trên Atomic: `End_Date IS NOT NULL AND Start_Date IS NOT NULL` → Hoàn thành; `End_Date IS NULL AND Start_Date IS NOT NULL` → Đang thực hiện. Atomic `Inspection Team` không có field `life_cycle_status_code`/`case_status_code` — BA tự giải quyết bằng logic 2 cột ngày này, không phải gap Atomic.
-- Nhóm 3 (Cơ cấu theo hành vi) đã điều chỉnh xong — reuse Fact + Dimension này, dùng `Content` trên Dimension để derive phân loại vi phạm bằng text-matching LIKE.
-- Nhóm 4 (Cơ cấu theo đối tượng) — nguồn Atomic cho `Subject_Category` **chưa được kiểm tra lại theo BA CSV mới** — xem Nhóm 4 khi review tiếp.
+- Nhóm 3 (Cơ cấu theo hành vi) reuse Fact + Dimension này, dùng `Content` trên Dimension để derive phân loại vi phạm bằng text-matching LIKE.
 
 ```mermaid
 flowchart LR
@@ -56,8 +54,7 @@ flowchart LR
 
 Phục vụ Tab KIỂM TRA — KPI cards Thống kê chung (Nhóm 6) và biểu đồ theo tháng (Nhóm 7). Nguồn Atomic riêng biệt hoàn toàn với Cụm 1 — `EXAMINATION_TEAM` (không phải `INSPECTION_TEAM` filter theo loại hình như thiết kế cũ).
 
-> **[TÁI CẤU TRÚC 2026-07-20]** Cùng kiến trúc Cụm 1 — tách `Examination Team Dimension` riêng khỏi Fact, giữ nhất quán cấu trúc star schema.
-> **[ĐIỀU CHỈNH 2026-07-20]** Nhóm 6 và Nhóm 7 đã review xong nội dung KPI theo BA CSV mới (xem Nhóm 6, Nhóm 7).
+> Cùng kiến trúc Cụm 1 — tách `Examination Team Dimension` riêng khỏi Fact, giữ nhất quán cấu trúc star schema.
 
 - **Grain Fact: 1 row per `EXAMINATION_TEAM`** — 1 vụ việc kiểm tra. Đếm dùng `COUNT(Examination_Team_Dimension_Id)` qua Dimension.
 - **Grain Dimension: 1 row per `EXAMINATION_TEAM`** — chứa `Examination_Team_Code` (BK), `Start_Date`, `End_Date`, `Content`.
@@ -95,7 +92,7 @@ flowchart LR
 
 ##### Cụm 1c: Cơ cấu vi phạm theo đối tượng (Fact Inspection Team Target Activity)
 
-> **[MỚI 2026-07-20]** Nhóm 4 (Cơ cấu vi phạm theo đối tượng) — thiết kế lại theo Atomic THANHTRA schema mới, thay thế thiết kế cũ dùng `Inspection Decision Subject`/`TT_QUYET_DINH_DOI_TUONG` + polymorphic FK (đã deprecated).
+> Phục vụ Nhóm 4 (Cơ cấu vi phạm theo đối tượng).
 
 Phục vụ Tab TỔNG QUAN — Biểu đồ cơ cấu vi phạm theo đối tượng (Nhóm 4). Grain khác Cụm 1 — `INSPECTION_TEAM_TARGET` quan hệ N:1 với `INSPECTION_TEAM` (1 đoàn có thể có nhiều đối tượng), nên tách Fact riêng grain 1 đoàn × 1 đối tượng, không gắn vào `Fact Inspection Team Activity` để tránh fanout ảnh hưởng K_TT_1-15 (Nhóm 1/2/3).
 
@@ -131,7 +128,7 @@ flowchart LR
 
 ##### Cụm 1d: Cơ cấu kiểm tra theo đối tượng (Fact Examination Team Target Activity)
 
-> **[MỚI 2026-07-20]** Nhóm 9 (Cơ cấu kiểm tra theo đối tượng) — thiết kế lại theo Atomic THANHTRA schema mới, thay thế thiết kế cũ dùng `Inspection Decision Subject`/`TT_QUYET_DINH_DOI_TUONG` (đã deprecated). Đóng O_TT_7.
+> Phục vụ Nhóm 9 (Cơ cấu kiểm tra theo đối tượng). Đóng O_TT_7.
 
 Phục vụ Tab KIỂM TRA — Biểu đồ cơ cấu kiểm tra theo đối tượng (Nhóm 9). Cùng kiến trúc Cụm 1c — `EXAMINATION_TEAM_TARGET` quan hệ N:1 với `EXAMINATION_TEAM` (1 vụ kiểm tra có thể có nhiều đối tượng), nên tách Fact riêng grain 1 vụ × 1 đối tượng, không gắn vào `Fact Examination Team Activity` để tránh fanout ảnh hưởng K_TT_24-44k (Nhóm 6/7/8).
 
@@ -167,7 +164,7 @@ flowchart LR
 
 ##### Cụm 2: Danh sách vụ việc Thanh tra (Inspection Case List)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo Atomic THANHTRA schema mới. Thiết kế cũ dùng `Inspection Case`/`Inspection Decision` ← `TT_HO_SO`/`TT_QUYET_DINH` — đã deprecated. Nguồn mới: `Inspection Team` + `Inspection Team Target` (cùng nguồn Cụm 1/1c), grain 1 đoàn × 1 đối tượng.
+> Nguồn: `Inspection Team` + `Inspection Team Target` (cùng nguồn Cụm 1/1c), grain 1 đoàn × 1 đối tượng.
 
 Phục vụ block Danh sách vụ việc Thanh tra (Nhóm 5, Tab TỔNG QUAN). Lấy dữ liệu trực tiếp từ Atomic — không qua Dimension. Tab KIỂM TRA (Nhóm 10) dùng nguồn Atomic riêng (`EXAMINATION_TEAM`/`EXAMINATION_TEAM_TARGET`), bảng riêng `Examination Case List` — xem Cụm 2b.
 
@@ -196,7 +193,7 @@ flowchart LR
 
 ##### Cụm 2b: Danh sách vụ việc Kiểm tra (Examination Case List)
 
-> **[MỚI 2026-07-20]** Nhóm 10 (Danh sách vụ việc Kiểm tra) — thiết kế lại theo Atomic THANHTRA schema mới, thay thế thiết kế cũ dùng `Inspection Case`/`Inspection Decision` ← `TT_HO_SO`/`TT_QUYET_DINH` + reuse sai `Inspection Case List` (Nhóm 5, nguồn TT khác luồng).
+> Phục vụ Nhóm 10 (Danh sách vụ việc Kiểm tra). Không reuse `Inspection Case List` (Nhóm 5) vì khác nguồn Atomic, khác luồng TT/KT.
 
 Phục vụ block Danh sách vụ việc Kiểm tra (Nhóm 10, Tab KIỂM TRA). Cùng cấu trúc Cụm 2 nhưng nguồn Atomic riêng biệt (`EXAMINATION_TEAM`/`EXAMINATION_TEAM_TARGET`, cùng nguồn Cụm 1b/1d), không reuse chung bảng với Nhóm 5 (`table_type` giống nhưng nguồn Atomic khác — theo Bước 3 Lớp 3).
 
@@ -223,80 +220,185 @@ flowchart LR
     SV2 --> G1
 ```
 
-##### Cụm 3: Xử phạt vi phạm (Fact Penalty Decision + Penalty Decision List)
+##### Cụm 3: Xử phạt vi phạm — KPI chung (Fact Penalty Decision)
 
-Phục vụ Tab XỬ PHẠT — KPI cards tổng hợp, biểu đồ dual axis theo tháng, donut cơ cấu hành vi và đối tượng, danh sách quyết định. Nguồn Atomic khác hoàn toàn với Cụm 1 — từ luồng Giám sát (`GS_*`), không phải luồng Thanh tra (`TT_*`).
+> Nguồn: `PENALTY_DECISION` (cùng luồng THANHTRA với Tab TT/KT).
+
+Phục vụ Tab XỬ PHẠT — KPI cards tổng hợp (Nhóm 11), biểu đồ dual axis theo tháng (Nhóm 12). Grain 1 quyết định xử phạt.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["THANHTRA.GS_VAN_BAN_XU_LY"]
-        S2["THANHTRA.GS_HO_SO"]
+        S1["INSPECT.PENALTY_DECISION"]
         ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Surveillance Enforcement Decision"]
-        SV2["Surveillance Enforcement Case"]
+        SV1["Penalty Decision"]
         Calendar_Date["Calendar Date"]
-        Classification_Value["Classification Value"]
     end
 
     subgraph GOLD["Datamart"]
-        G2["Fact Penalty Decision"]
-        G1["Penalty Decision List"]
-        G3["Calendar Date Dimension"]
-        G4["Classification Dimension"]
+        G1["Fact Penalty Decision"]
+        G2["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    ECAT_HolidayInfo --> Calendar_Date
+
+    SV1 --> G1
+    Calendar_Date --> G2
+    G2 --> G1
+```
+
+##### Cụm 3b: Xử phạt vi phạm — Cơ cấu theo hành vi (Fact Penalty Decision Subject Behavior)
+
+> Phục vụ Nhóm 13 (Cơ cấu xử phạt theo loại hành vi) + Nhóm 20 (Báo cáo hoạt động vi phạm TTCK) — cùng reuse 1 Fact. Đóng O_TT_8.
+
+Grain khác Cụm 3 — `PENALTY_DECISION_SUBJECT_BEHAVIOR` là 4-way join (1 QĐ có thể nhiều đối tượng × nhiều hành vi), nên tách Fact riêng, không gắn vào `Fact Penalty Decision` để tránh fanout ảnh hưởng K_TT_55-60 (Nhóm 11/12).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["INSPECT.PENALTY_DECISION"]
+        S2["INSPECT.PENALTY_DECISION_SUBJECT"]
+        S3["INSPECT.PENALTY_DECISION_SUBJECT_BEHAVIOR"]
+        S4["INSPECT.VIOLATION_BEHAVIOR"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Penalty Decision"]
+        SV2["Penalty Decision Subject"]
+        SV3["Penalty Decision Subject Behavior"]
+        SV4["Violation Behavior"]
+        Calendar_Date["Calendar Date"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Penalty Decision Subject Behavior"]
+        G2["Calendar Date Dimension"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+    S4 --> SV4
+    ECAT_HolidayInfo --> Calendar_Date
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+    SV4 --> G1
+    Calendar_Date --> G2
+    G2 --> G1
+```
+
+##### Cụm 3c: Xử phạt vi phạm — Cơ cấu theo đối tượng (Fact Penalty Decision Subject)
+
+> Phục vụ Nhóm 14 (Cơ cấu xử phạt theo đối tượng). Đóng O_TT_9.
+
+Grain khác Cụm 3/3b — `PENALTY_DECISION_SUBJECT` là 2-way join (1 QĐ có thể nhiều đối tượng, không có hành vi), tách Fact riêng để tránh fanout Cụm 3 và tránh đếm trùng nếu dùng chung Cụm 3b (1 đối tượng nhiều hành vi).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["INSPECT.PENALTY_DECISION"]
+        S2["INSPECT.PENALTY_DECISION_SUBJECT"]
+        ECAT_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Penalty Decision"]
+        SV2["Penalty Decision Subject"]
+        Calendar_Date["Calendar Date"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Fact Penalty Decision Subject"]
+        G2["Calendar Date Dimension"]
     end
 
     S1 --> SV1
     S2 --> SV2
     ECAT_HolidayInfo --> Calendar_Date
 
-    SV1 --> G2
-    SV2 --> G2
     SV1 --> G1
     SV2 --> G1
-
-    Calendar_Date --> G3
-    Classification_Value --> G4
-    G3 --> G2
-    G4 --> G2
+    Calendar_Date --> G2
+    G2 --> G1
 ```
 
-##### Cụm 4: Đơn thư khiếu nại tố cáo (Complaint Petition List)
+##### Cụm 3d: Danh sách quyết định xử phạt (Penalty Decision List)
 
-Phục vụ Tab ĐƠN THƯ — KPI aggregate (tổng, theo tháng, theo loại) và danh sách chi tiết. Toàn bộ KPI serve từ `Complaint Petition List` — không tạo Fact riêng vì grain giống hệt tác nghiệp, volume nhỏ, không có fanout.
+> Phục vụ Nhóm 15.
+
+Bảng Tác nghiệp, grain giống Cụm 3c nhưng thêm join `Violation Case` để lấy `Form_Type` qua Inspection/Examination Team — theo Bước 3 Lớp 3, `table_type` khác (`fact` vs `operational`) nên tách bảng riêng, không reuse Fact Penalty Decision Subject.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["THANHTRA.DT_DON_THU"]
+        S1["INSPECT.PENALTY_DECISION"]
+        S2["INSPECT.PENALTY_DECISION_SUBJECT"]
+        S3["INSPECT.VIOLATION_CASE"]
     end
 
     subgraph SIL["Atomic"]
-        SV1["Complaint Petition"]
+        SV1["Penalty Decision"]
+        SV2["Penalty Decision Subject"]
+        SV3["Violation Case"]
     end
 
     subgraph GOLD["Datamart"]
-        G1["Complaint Petition List"]
+        G1["Penalty Decision List"]
+    end
+
+    S1 --> SV1
+    S2 --> SV2
+    S3 --> SV3
+
+    SV1 --> G1
+    SV2 --> G1
+    SV3 --> G1
+```
+
+##### Cụm 4: Đơn thư khiếu nại tố cáo (Petition List)
+
+> Nguồn: `Petition` ← `PETITION` (cùng luồng THANHTRA với Tab TT/KT/XP).
+
+Phục vụ Tab ĐƠN THƯ — KPI aggregate (tổng, theo tháng, theo loại) và danh sách chi tiết. Toàn bộ KPI serve từ `Petition List` — không tạo Fact riêng vì grain giống hệt tác nghiệp, volume nhỏ, không có fanout.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["INSPECT.PETITION"]
+    end
+
+    subgraph SIL["Atomic"]
+        SV1["Petition"]
+    end
+
+    subgraph GOLD["Datamart"]
+        G1["Petition List"]
     end
 
     S1 --> SV1
     SV1 --> G1
 ```
 
-##### Cụm 5: Báo cáo hoạt động vi phạm TTCK (Fact Penalty Decision — reuse)
+##### Cụm 5: Báo cáo hoạt động vi phạm TTCK (Fact Penalty Decision Subject Behavior — reuse)
 
-Phục vụ Báo cáo STT 20 — bảng pivot nhóm đối tượng × loại vi phạm × (số lượng + số tiền). Reuse hoàn toàn `Fact Penalty Decision` từ Cụm 3 — không tạo Fact hay Atomic entity mới.
+> Reuse `Fact Penalty Decision Subject Behavior` (Cụm 3b, Nhóm 13) — không phải `Fact Penalty Decision` (Cụm 3), vì báo cáo cần phân loại theo hành vi (`VIOLATION_BEHAVIOR.NAME`), chỉ có trên Cụm 3b.
+
+Phục vụ Báo cáo STT 20 — bảng 7 nhóm Loại hình xử lý × (số lượng + số tiền). Reuse hoàn toàn `Fact Penalty Decision Subject Behavior` từ Cụm 3b — không tạo Fact hay Atomic entity mới.
 
 ```mermaid
 flowchart LR
-    subgraph Datamart["Datamart (reuse từ Cụm 3)"]
-        G1["Fact Penalty Decision"]
+    subgraph Datamart["Datamart (reuse từ Cụm 3b)"]
+        G1["Fact Penalty Decision Subject Behavior"]
     end
     subgraph RPT["Báo cáo STT 20"]
-        R1["Bảng pivot vi phạm TTCK"]
+        R1["Bảng 7 nhóm Loại hình xử lý vi phạm TTCK"]
     end
     G1 --> R1
 ```
@@ -313,14 +415,13 @@ flowchart LR
 
 #### Nhóm 1 — KPI cards Thống kê chung (STT 1)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới (cột Bảng nguồn/Trường nguồn/Câu lệnh tham khảo, Trạng thái mapping=Done) + Atomic THANHTRA schema mới.
-> **[TÁI CẤU TRÚC 2026-07-20]** Tách `Inspection Team Dimension` — Fact chỉ còn FK, mọi thuộc tính mô tả (`Start_Date`/`End_Date`/`Content`) chuyển sang Dimension. Công thức KPI giờ join Fact → Dimension trước khi filter.
+> Tách `Inspection Team Dimension` — Fact chỉ còn FK, mọi thuộc tính mô tả (`Start_Date`/`End_Date`/`Content`) chuyển sang Dimension. Công thức KPI join Fact → Dimension trước khi filter.
 > Phân loại: **Phân tích**
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_inspection_team-THANHTRA.INSPECTION_TEAM.yaml`)
 > Ghi chú:
-> - Không còn Fact dùng chung Thanh tra + Kiểm tra như thiết kế cũ — `INSPECTION_TEAM` là nguồn riêng cho Thanh tra; Kiểm tra dùng `EXAMINATION_TEAM` riêng (xem Nhóm 6). Không cần `Inspection_Type_Code` để lọc TT/KT nữa.
+> - Không dùng chung Fact cho Thanh tra + Kiểm tra — `INSPECTION_TEAM` là nguồn riêng cho Thanh tra; Kiểm tra dùng `EXAMINATION_TEAM` riêng (xem Nhóm 6). Không cần `Inspection_Type_Code` để lọc TT/KT.
 > - `Case_Status` (Hoàn thành/Đang thực hiện) **không tồn tại như 1 field riêng trên Atomic** — ETL-derived trên `Inspection Team Dimension` từ `Start_Date`/`End_Date`: `End_Date IS NOT NULL AND Start_Date IS NOT NULL` → Hoàn thành; `End_Date IS NULL AND Start_Date IS NOT NULL` → Đang thực hiện. Đúng theo SQL tham khảo BA STT 1.
-> - Date key dùng `Decision_Date` (không phải Received Date như thiết kế cũ) — đúng theo SQL tham khảo BA: `EXTRACT(YEAR FROM DECISION_DATE)`. Fact join `Calendar Date Dimension` qua `Decision_Date`.
+> - Date key dùng `Decision_Date` — đúng theo SQL tham khảo BA: `EXTRACT(YEAR FROM DECISION_DATE)`. Fact join `Calendar Date Dimension` qua `Decision_Date`.
 
 **Mockup:**
 
@@ -356,13 +457,11 @@ erDiagram
         string Calendar_Date_Dimension_Id PK
         date Calendar_Date
         int Year
-        int Month
         int Quarter
+        int Month
         int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
+        string Is_Weekend
+        string Holiday_Flag
     }
     Inspection_Team_Dimension {
         string Inspection_Team_Dimension_Id PK
@@ -404,8 +503,7 @@ flowchart LR
 
 #### Nhóm 2 — Biểu đồ Thống kê số vụ việc theo tháng (STT 2)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới — reuse 100% `Fact Inspection Team Activity` đã thiết kế ở Nhóm 1 (nguồn `INSPECTION_TEAM`, cùng entity, cùng field), không cần Atomic entity mới, không cần Fact mới.
-> **[TÁI CẤU TRÚC 2026-07-20]** Reuse cùng cấu trúc Fact + Inspection Team Dimension đã tách ở Nhóm 1 — công thức join Dimension trước khi filter.
+> Reuse 100% `Fact Inspection Team Activity` đã thiết kế ở Nhóm 1 (nguồn `INSPECTION_TEAM`, cùng entity, cùng field), không cần Atomic entity mới, không cần Fact mới. Reuse cùng cấu trúc Fact + Inspection Team Dimension đã tách ở Nhóm 1 — công thức join Dimension trước khi filter.
 > Phân loại: **Phân tích**
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_inspection_team-THANHTRA.INSPECTION_TEAM.yaml`)
 > Ghi chú: Reuse `Fact Inspection Team Activity` + `Inspection Team Dimension` — GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer. Trạng thái Hoàn thành/Đang thực hiện ETL-derived trên Dimension từ `Start_Date`/`End_Date` (giống Nhóm 1, xem SQL BA STT 2).
@@ -458,8 +556,7 @@ flowchart LR
 
 #### Nhóm 3 — Cơ cấu vi phạm theo loại hành vi (STT 3)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới — reuse 100% `Fact Inspection Team Activity` (Nhóm 1/2). Thiết kế cũ dùng `Inspection Case`/`Inspection Case Conclusion` (deprecated) + `Violation_Type_Dimension_Id` FK → Classification Dimension (scheme `TT_VIOLATION_TYPE`, 11 giá trị, ETL join Conclusion) — hoàn toàn không còn đúng.
-> **[TÁI CẤU TRÚC 2026-07-20]** `Content` giờ nằm trên `Inspection Team Dimension` (không phải Fact) — công thức join qua Dimension trước khi LIKE-match.
+> Reuse 100% `Fact Inspection Team Activity` (Nhóm 1/2). `Content` nằm trên `Inspection Team Dimension` (không phải Fact) — công thức join qua Dimension trước khi LIKE-match.
 > Phân loại: **Phân tích**
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (reuse Nhóm 1/2, không cần entity mới)
 > Ghi chú:
@@ -520,7 +617,7 @@ flowchart LR
 
 #### Nhóm 4 — Cơ cấu vi phạm theo đối tượng (STT 4)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Inspection Decision Subject` ← `TT_QUYET_DINH_DOI_TUONG` + polymorphic FK resolve qua 4 bảng danh mục (`DM_CONG_TY_CK`/`DM_CONG_TY_QLQ`/`DM_CONG_TY_DC`/`DM_DOI_TUONG_KHAC`) — toàn bộ các bảng này đã deprecated, không còn tồn tại trong Atomic hiện hành (xem `DataModel/working/Atomic/hld/THANHTRA_LinhLV_Reuse_Analysis.md`).
+> Xem `DataModel/working/Atomic/hld/THANHTRA_LinhLV_Reuse_Analysis.md` để biết chi tiết nguồn Atomic.
 > Phân loại: **Phân tích**
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (reuse Nhóm 1, không cần entity mới)
 > Atomic: `Inspection Team Target` ← THANHTRA.INSPECTION_TEAM_TARGET (`INSPECT.INSPECTION_TEAM_TARGET`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET.yaml`)
@@ -571,13 +668,11 @@ erDiagram
         string Calendar_Date_Dimension_Id PK
         date Calendar_Date
         int Year
-        int Month
         int Quarter
+        int Month
         int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
+        string Is_Weekend
+        string Holiday_Flag
     }
 ```
 
@@ -608,7 +703,6 @@ flowchart LR
 
 #### Nhóm 5 — Danh sách vụ việc Thanh tra (STT 5)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Inspection Case` ← `TT_HO_SO` + `Inspection Decision` ← `TT_QUYET_DINH` — cả 2 bảng đã deprecated, không còn tồn tại trong Atomic hiện hành.
 > Phân loại: **Tác nghiệp**
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (reuse Nhóm 1/4, không cần entity mới)
 > Atomic: `Inspection Team Target` ← THANHTRA.INSPECTION_TEAM_TARGET (`INSPECT.INSPECTION_TEAM_TARGET`) — **READY** (reuse Nhóm 4, không cần entity mới)
@@ -628,6 +722,16 @@ flowchart LR
 |---|---|---|---|---|
 | INS-2024-001 | Công ty ABC | Công ty chứng khoán | Đột xuất | Tại thực địa |
 | INS-2024-002 | Công ty XYZ | Quỹ đầu tư | Định kỳ | Đang thực hiện |
+
+**Bảng KPI (Attribute hiển thị — Tác nghiệp):**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
+|---|---|---|---|---|---|
+| K_TT_101 | Mã vụ việc | — | Attribute | `Inspection Team Target.Inspection Team Code` | |
+| K_TT_102 | Đối tượng | — | Attribute | `Inspection Team Target.Target Name` | |
+| K_TT_103 | Phân loại đối tượng | — | Attribute | `Inspection Team Target.Target Type Code` | |
+| K_TT_104 | Loại hình | — | Attribute | `Inspection Team.Form Type Code` (join qua Inspection Team) | scheme TT_REVIEW_FORM_TYPE |
+| K_TT_105 | Trạng thái | — | Attribute | ETL-derived từ `Inspection Team.Start Date`/`End Date` (join qua Inspection Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
 
 **Schema bảng tác nghiệp:**
 
@@ -676,13 +780,13 @@ flowchart LR
 
 **Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
 
-> **[Cập nhật 2026-07-20 — hoàn tất]** Ghi chú chung Tab KIỂM TRA cũ ghi "Toàn bộ 5 block reuse `Fact Inspection Case Activity` và `Inspection Case List`" — đã sai, được thay thế hoàn toàn: Nhóm 6-10 nay dùng nguồn Atomic riêng `EXAMINATION_TEAM`/`EXAMINATION_TEAM_TARGET` (tách biệt hoàn toàn với luồng Thanh tra `INSPECTION_TEAM`/`INSPECTION_TEAM_TARGET` của Tab TỔNG QUAN). Nhóm 6-9 reuse `Fact Examination Team Activity`/`Fact Examination Team Target Activity` (Cụm 1b/1d); Nhóm 10 dùng bảng Tác nghiệp riêng `Examination Case List` (Cụm 2b). Đã review xong toàn bộ Nhóm 6-10, đóng O_TT_4/O_TT_7.
+> Nhóm 6-10 dùng nguồn Atomic riêng `EXAMINATION_TEAM`/`EXAMINATION_TEAM_TARGET` (tách biệt hoàn toàn với luồng Thanh tra `INSPECTION_TEAM`/`INSPECTION_TEAM_TARGET` của Tab TỔNG QUAN). Nhóm 6-9 reuse `Fact Examination Team Activity`/`Fact Examination Team Target Activity` (Cụm 1b/1d); Nhóm 10 dùng bảng Tác nghiệp riêng `Examination Case List` (Cụm 2b). Đã review xong toàn bộ Nhóm 6-10, đóng O_TT_4/O_TT_7.
 
 ---
 
 #### Nhóm 6 — KPI cards Thống kê chung Kiểm tra (STT 6)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Inspection Case` ← `TT_HO_SO` (deprecated). Hoàn tất phần "chưa review lại nội dung KPI" đã ghi chú ở Cụm 1b — reuse cấu trúc Fact/Dimension Examination Team đã tạo sẵn (Nhóm 1b).
+> Reuse cấu trúc Fact/Dimension Examination Team đã tạo sẵn (Nhóm 1b).
 > Phân loại: **Phân tích**
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_examination_team-THANHTRA.EXAMINATION_TEAM.yaml`)
 > Ghi chú:
@@ -740,7 +844,7 @@ flowchart LR
 
 #### Nhóm 7 — Biểu đồ xu hướng số cuộc kiểm tra theo tháng (STT 7)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Inspection Case` ← `TT_HO_SO` (deprecated). Hoàn tất phần "chưa review lại nội dung KPI" đã ghi chú ở Cụm 1b — reuse 100% `Fact Examination Team Activity` + `Examination Team Dimension` đã tạo ở Nhóm 6.
+> Reuse 100% `Fact Examination Team Activity` + `Examination Team Dimension` đã tạo ở Nhóm 6.
 > Phân loại: **Phân tích**
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 1b/6, không cần entity mới)
 > Ghi chú: Reuse `Fact Examination Team Activity` + `Examination Team Dimension` — GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer. Trạng thái Hoàn thành/Đang thực hiện ETL-derived trên Dimension từ `Start_Date`/`End_Date` (giống Nhóm 6). *Lưu ý: BA STT 7 dòng 2/3 có cột Mô tả (cột 4) bị đảo ngược so với tên KPI (cột 3) — thiết kế theo đúng tên KPI + logic SQL, không theo Mô tả mâu thuẫn.*
@@ -793,7 +897,6 @@ flowchart LR
 
 #### Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi (STT 8)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Inspection Case Conclusion` ← `TT_KET_LUAN` + `Violation_Type_Dimension_Id` FK → Classification Dimension (scheme `TT_VIOLATION_TYPE`) — không khớp BA CSV mới, không phải Atomic hợp lệ cho Nhóm này.
 > Phân loại: **Phân tích**
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 1b/6/7, không cần entity mới)
 > Ghi chú:
@@ -878,7 +981,7 @@ flowchart LR
 
 #### Nhóm 9 — Cơ cấu kiểm tra theo đối tượng (STT 9)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới, đóng O_TT_7. Thiết kế cũ dùng `Inspection Decision Subject` ← `TT_QUYET_DINH_DOI_TUONG` + `Subject_Category_Dimension_Id` FK → Classification Dimension (scheme `TT_SUBJECT_CATEGORY`, 6 giá trị tạm) — đã deprecated.
+> Đóng O_TT_7.
 > Phân loại: **Phân tích**
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 1b/6/7/8, không cần entity mới)
 > Atomic: `Examination Team Target` ← THANHTRA.EXAMINATION_TEAM_TARGET (`INSPECT.EXAMINATION_TEAM_TARGET`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET.yaml`)
@@ -932,13 +1035,11 @@ erDiagram
         string Calendar_Date_Dimension_Id PK
         date Calendar_Date
         int Year
-        int Month
         int Quarter
+        int Month
         int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
+        string Is_Weekend
+        string Holiday_Flag
     }
 ```
 
@@ -948,10 +1049,6 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
-        S1["INSPECT.EXAMINATION_TEAM"]
-        S2["INSPECT.EXAMINATION_TEAM_TARGET"]
-    end
     subgraph SIL["Atomic"]
         SV1["Examination Team"]
         SV2["Examination Team Target"]
@@ -963,8 +1060,6 @@ flowchart LR
     subgraph RPT["Tab KIỂM TRA"]
         R1["K_TT_45-54, K_TT_49b: Cơ cấu kiểm tra theo đối tượng"]
     end
-    S1 --> SV1
-    S2 --> SV2
     SV1 --> G1
     SV2 --> G1
     G2 --> G1
@@ -981,7 +1076,7 @@ flowchart LR
 
 #### Nhóm 10 — Danh sách vụ việc Kiểm tra (STT 10)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Inspection Case` ← `TT_HO_SO` + `Inspection Decision` ← `TT_QUYET_DINH`, reuse `Inspection Case List` (bảng của Nhóm 5, nguồn `INSPECTION_TEAM`) — hoàn toàn sai: Nhóm 5 (TT) và Nhóm 10 (KT) dùng 2 nguồn Atomic khác nhau (`INSPECTION_TEAM` vs `EXAMINATION_TEAM`), không thể reuse chung 1 bảng bằng cách filter `Inspection_Type_Code` (field này không tồn tại ở kiến trúc mới — 2 luồng TT/KT tách nguồn riêng ngay từ Atomic).
+> Không reuse `Inspection Case List` (bảng của Nhóm 5, nguồn `INSPECTION_TEAM`) — Nhóm 5 (TT) và Nhóm 10 (KT) dùng 2 nguồn Atomic khác nhau (`INSPECTION_TEAM` vs `EXAMINATION_TEAM`), không thể reuse chung 1 bảng bằng cách filter `Inspection_Type_Code` (field này không tồn tại — 2 luồng TT/KT tách nguồn riêng ngay từ Atomic).
 > Phân loại: **Tác nghiệp**
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 1b/6/7/8/9, không cần entity mới)
 > Atomic: `Examination Team Target` ← THANHTRA.EXAMINATION_TEAM_TARGET (`INSPECT.EXAMINATION_TEAM_TARGET`) — **READY** (reuse Nhóm 9, không cần entity mới)
@@ -1003,6 +1098,16 @@ flowchart LR
 | EXM-2024-003 | Nguyễn Văn A | Cá nhân | Định kỳ | Chưa thực hiện |
 | EXM-2024-004 | Quỹ Đầu tư XYZ | CTQLQ | Định kỳ | Đang thực hiện |
 | EXM-2024-005 | Công ty Chứng khoán SSI | CTCK | Đột xuất | Đã hoàn thành |
+
+**Bảng KPI (Attribute hiển thị — Tác nghiệp):**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
+|---|---|---|---|---|---|
+| K_TT_106 | Mã vụ việc | — | Attribute | `Examination Team Target.Examination Team Code` | |
+| K_TT_107 | Đối tượng | — | Attribute | `Examination Team Target.Target Name` | |
+| K_TT_108 | Phân loại đối tượng | — | Attribute | `Examination Team Target.Target Type Code` | |
+| K_TT_109 | Loại hình | — | Attribute | `Examination Team.Form Type Code` (join qua Examination Team) | scheme TT_REVIEW_FORM_TYPE |
+| K_TT_110 | Trạng thái | — | Attribute | ETL-derived từ `Examination Team.Start Date`/`End Date` (join qua Examination Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
 
 **Schema bảng tác nghiệp:**
 
@@ -1051,7 +1156,7 @@ flowchart LR
 
 **Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại toàn bộ Tab XỬ PHẠT (Nhóm 11-15) theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Surveillance Enforcement Decision`/`Surveillance Enforcement Case` ← `GS_VAN_BAN_XU_LY`/`GS_HO_SO` (luồng Giám sát) — hoàn toàn deprecated, không còn tồn tại trong Atomic hiện hành. Nguồn mới: **`PENALTY_DECISION`** (quyết định xử phạt) + **`PENALTY_DECISION_SUBJECT`** (đối tượng bị xử phạt, 1:N với QĐ) + **`PENALTY_DECISION_SUBJECT_BEHAVIOR`** (hành vi vi phạm của từng đối tượng, 1:N với Subject) + **`VIOLATION_BEHAVIOR`** (danh mục hành vi vi phạm) + **`VIOLATION_CASE`** (hồ sơ VPHC, liên kết đoàn Thanh tra/Kiểm tra) — tất cả đã approved trong Atomic. Đóng O_TT_8, O_TT_9.
+> Nguồn Atomic Tab XỬ PHẠT (Nhóm 11-15): **`PENALTY_DECISION`** (quyết định xử phạt) + **`PENALTY_DECISION_SUBJECT`** (đối tượng bị xử phạt, 1:N với QĐ) + **`PENALTY_DECISION_SUBJECT_BEHAVIOR`** (hành vi vi phạm của từng đối tượng, 1:N với Subject) + **`VIOLATION_BEHAVIOR`** (danh mục hành vi vi phạm) + **`VIOLATION_CASE`** (hồ sơ VPHC, liên kết đoàn Thanh tra/Kiểm tra) — tất cả đã approved trong Atomic. Đóng O_TT_8, O_TT_9.
 > **3 grain khác nhau, tách 3 bảng riêng** để tránh fanout (theo đúng nguyên tắc đã áp dụng ở Nhóm 4/9 vs Nhóm 1/6):
 > - **Fact Penalty Decision** (grain 1 QĐ) — Nhóm 11, 12.
 > - **Fact Penalty Decision Subject Behavior** (grain 1 QĐ × 1 đối tượng × 1 hành vi, 4-way join) — Nhóm 13. KHÔNG gắn vào Fact Penalty Decision vì 1 QĐ có thể nhiều đối tượng × nhiều hành vi.
@@ -1062,7 +1167,6 @@ flowchart LR
 
 #### Nhóm 11 — KPI cards Thống kê chung Xử phạt (STT 11)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới.
 > Phân loại: **Phân tích**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION (`INSPECT.PENALTY_DECISION`) — **READY** (`DataModel/Atomic/Event/dm_atm_penalty_decision-THANHTRA.PENALTY_DECISION.yaml`)
 > Ghi chú:
@@ -1102,13 +1206,11 @@ erDiagram
         string Calendar_Date_Dimension_Id PK
         date Calendar_Date
         int Year
-        int Month
         int Quarter
+        int Month
         int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
+        string Is_Weekend
+        string Holiday_Flag
     }
 ```
 
@@ -1141,7 +1243,7 @@ flowchart LR
 
 #### Nhóm 12 — Biểu đồ thống kê xử phạt theo tháng (STT 12)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới — reuse 100% `Fact Penalty Decision` đã thiết kế ở Nhóm 11.
+> Reuse 100% `Fact Penalty Decision` đã thiết kế ở Nhóm 11.
 > Phân loại: **Phân tích**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION (`INSPECT.PENALTY_DECISION`) — **READY** (reuse Nhóm 11, không cần entity mới)
 > Ghi chú: Dual axis — bar = số QĐ, line = tổng tiền phạt. Reuse `Fact Penalty Decision` — GROUP BY `Calendar_Date_Dimension.Month` ở presentation layer.
@@ -1168,7 +1270,7 @@ flowchart LR
 
 #### Nhóm 13 — Cơ cấu xử phạt theo loại hành vi (STT 13)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Violation_Type_Dimension_Id` FK → Classification Dimension (scheme `TT_VIOLATION_TYPE` giả định, chưa xác nhận field nguồn — O_TT_8) — thay thế hoàn toàn.
+> Đóng O_TT_8.
 > Phân loại: **Phân tích**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION — **READY** (reuse Nhóm 11)
 > Atomic: `Penalty Decision Subject` ← THANHTRA.PENALTY_DECISION_SUBJECT (`INSPECT.PENALTY_DECISION_SUBJECT`) — **READY** (`DataModel/Atomic/Event/dm_atm_penalty_decision_subject-THANHTRA.PENALTY_DECISION_SUBJECT.yaml`)
@@ -1242,13 +1344,11 @@ erDiagram
         string Calendar_Date_Dimension_Id PK
         date Calendar_Date
         int Year
-        int Month
         int Quarter
+        int Month
         int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
+        string Is_Weekend
+        string Holiday_Flag
     }
 ```
 
@@ -1304,7 +1404,6 @@ flowchart LR
 
 #### Nhóm 14 — Cơ cấu xử phạt theo đối tượng (STT 14)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Penalty_Subject_Category_Dimension_Id` FK → Classification Dimension (scheme `TT_PENALTY_SUBJECT_CATEGORY` giả định — O_TT_9) — thay thế hoàn toàn.
 > Phân loại: **Phân tích**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION — **READY** (reuse Nhóm 11)
 > Atomic: `Penalty Decision Subject` ← THANHTRA.PENALTY_DECISION_SUBJECT — **READY** (reuse Nhóm 13)
@@ -1352,13 +1451,11 @@ erDiagram
         string Calendar_Date_Dimension_Id PK
         date Calendar_Date
         int Year
-        int Month
         int Quarter
+        int Month
         int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
+        string Is_Weekend
+        string Holiday_Flag
     }
 ```
 
@@ -1368,10 +1465,6 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    subgraph SRC["Staging"]
-        S1["INSPECT.PENALTY_DECISION"]
-        S2["INSPECT.PENALTY_DECISION_SUBJECT"]
-    end
     subgraph SIL["Atomic"]
         SV1["Penalty Decision"]
         SV2["Penalty Decision Subject"]
@@ -1383,8 +1476,6 @@ flowchart LR
     subgraph RPT["Tab XỬ PHẠT"]
         R1["K_TT_72l, K_TT_73-80: Cơ cấu xử phạt theo đối tượng"]
     end
-    S1 --> SV1
-    S2 --> SV2
     SV1 --> G1
     SV2 --> G1
     G2 --> G1
@@ -1401,7 +1492,6 @@ flowchart LR
 
 #### Nhóm 15 — Danh sách quyết định xử phạt (STT 15)
 
-> **[ĐIỀU CHỈNH 2026-07-20]** Thiết kế lại theo BA_analyst_TT.csv mới + Atomic THANHTRA schema mới. Thiết kế cũ dùng `Surveillance Enforcement Decision`/`Surveillance Enforcement Case` — thay thế hoàn toàn.
 > Phân loại: **Tác nghiệp**
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION — **READY** (reuse Nhóm 11)
 > Atomic: `Penalty Decision Subject` ← THANHTRA.PENALTY_DECISION_SUBJECT — **READY** (reuse Nhóm 13/14)
@@ -1475,18 +1565,19 @@ flowchart LR
 
 **Slicer chung:** Năm (NĂM 202X — góc trên phải dashboard)
 
-> Ghi chú chung Tab ĐƠN THƯ: Nguồn Atomic `Complaint Petition` (`DT_DON_THU`). Toàn bộ KPI aggregate (tổng/tháng/loại) và danh sách đều serve từ `Complaint Petition List` — không tạo Fact riêng vì grain giống hệt, volume nhỏ, không fanout.
+> Nguồn: **`PETITION`** (`DataModel/Atomic/Communication/dm_atm_petition-THANHTRA.PETITION.yaml`), cùng luồng THANHTRA với Tab TT/KT/XP. Toàn bộ KPI aggregate (tổng/tháng/loại) và danh sách đều serve từ `Petition List` — không tạo Fact riêng vì grain giống hệt, volume nhỏ, không fanout. Đóng O_TT_10: Atomic có `Petition_Category_Code` với đúng 3 giá trị (`FEEDBACK_SUGGESTION`/`COMPLAINT`/`DENUNCIATION`).
 
 ---
 
 #### Nhóm 16 — KPI card Tổng số đơn đã xử lý (STT 16)
 
 > Phân loại: **Tác nghiệp** (bảng tác nghiệp phục vụ cả KPI aggregate và danh sách)
-> Atomic: `Complaint Petition` ← THANHTRA.DT_DON_THU — **READY**
+> Atomic: `Petition` ← THANHTRA.PETITION (`INSPECT.PETITION`) — **READY**
 > Ghi chú:
-> - `Petition_Status_Code` ← `DT_DON_THU.TRANG_THAI`, scheme `TT_PETITION_STATUS` (MOI / DANG_XU_LY / HOAN_THANH / DONG)
-> - `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE` — 3 giá trị Datamart: KHIEU_NAI / TO_CAO / PHAN_ANH_KIEN_NGHI
-> - `Submission_Date` ← `DT_DON_THU.NGAY_TIEP_NHAN` — dùng `YEAR()` / `MONTH()` ở query time
+> - `Life_Cycle_Status_Code` ← `PETITION.STATUS` — **2 giá trị**: `RECEIVED` (Đã tiếp nhận), `PROCESSED` (Đã xử lý xong) — khác thiết kế cũ giả định 4 giá trị (MOI/DANG_XU_LY/HOAN_THANH/DONG).
+> - `Petition_Category_Code` ← `PETITION.PETITION_CATEGORY` — 3 giá trị: `FEEDBACK_SUGGESTION` (Phản ánh kiến nghị), `COMPLAINT` (Khiếu nại), `DENUNCIATION` (Tố cáo).
+> - Date key: `Received_Date` (← `PETITION.RECEIVED_DATE`) — đúng theo SQL tham khảo BA.
+> - SSCK (%) tính theo đúng SQL BA: `LEFT JOIN` sub-query năm trước cùng filter `STATUS='PROCESSED'`.
 
 **Mockup:**
 
@@ -1494,13 +1585,14 @@ flowchart LR
 |---|
 | 286 Đơn thư |
 
-**Source:** `Complaint Petition List`
+**Source:** `Petition List`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_81 | Tổng số đơn đã xử lý | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year | |
+| K_TT_80b | Thời gian (năm thống kê) | Năm | Chiều | Year(Received_Date) — slicer chọn năm thống kê | Chiều lọc dùng chung cho K_TT_81-82 |
+| K_TT_81 | Tổng số đơn đã xử lý | Đơn | Base | COUNT(Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year | |
 | K_TT_82 | Tổng đơn đã xử lý SSCK (%) | % | Derived | (K_TT_81[Y] − K_TT_81[Y−1]) / K_TT_81[Y−1] × 100% | |
 
 **Lineage Mart → Báo cáo:**
@@ -1508,10 +1600,10 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph SIL["Atomic"]
-        SV1["Complaint Petition"]
+        SV1["Petition"]
     end
     subgraph Datamart["Datamart"]
-        G1["Complaint Petition List"]
+        G1["Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
         R1["KPI card Tổng đơn đã xử lý"]
@@ -1528,14 +1620,16 @@ flowchart LR
 
 | Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Complaint Petition List | 1 đơn thư — mỗi row = 1 `DT_DON_THU` (latest state) | `Complaint Petition` | YEAR(Submission_Date)=selected_year | Serve cả KPI aggregate lẫn danh sách chi tiết |
+| Petition List | 1 đơn thư — mỗi row = 1 `PETITION` (latest state) | `Petition` | Year(Received_Date)=selected_year | Serve cả KPI aggregate lẫn danh sách chi tiết |
+
 ---
 
 #### Nhóm 17 — Biểu đồ Thống kê tình hình xử lý đơn thư (STT 17)
 
+> Reuse 100% `Petition List` đã thiết kế ở Nhóm 16.
 > Phân loại: **Phân tích**
-> Atomic: `Complaint Petition` ← THANHTRA.DT_DON_THU — **READY**
-> Ghi chú: Biểu đồ bar 1 series — số đơn đã xử lý theo tháng. Reuse `Complaint Petition List` — GROUP BY MONTH(Submission_Date) ở query time. BA STT 17 chỉ định nghĩa 1 KPI: "Số lượng đơn thư đã xử lý".
+> Atomic: `Petition` ← THANHTRA.PETITION — **READY** (reuse Nhóm 16, không cần entity mới)
+> Ghi chú: Biểu đồ bar 1 series — số đơn theo tháng. Reuse `Petition List` — GROUP BY MONTH(Received_Date) ở query time. BA STT 17 chỉ định nghĩa 1 KPI: "Số lượng đơn thư đã xử lý" — không filter theo `Life_Cycle_Status_Code` trong SQL tham khảo BA STT 17 gốc (khác Nhóm 16/18 có filter `PROCESSED`); giữ nhất quán filter `PROCESSED` theo đúng ý nghĩa tên KPI "đã xử lý".
 
 **Mockup:**
 
@@ -1543,23 +1637,24 @@ flowchart LR
 |---|---|---|---|---|
 | Số đơn đã xử lý (bar) | 9 | 11 | ... | 35 |
 
-**Source:** `Complaint Petition List`
+**Source:** `Petition List`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_83 | Số đơn đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) | |
+| K_TT_83 | Số đơn đã xử lý theo tháng | Đơn | Base | COUNT(Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
 
-**Bảng grain:** reuse `Complaint Petition List` — GROUP BY MONTH(Submission_Date) ở query time.
+**Bảng grain:** reuse `Petition List` — GROUP BY MONTH(Received_Date) ở query time.
 
 ---
 
 #### Nhóm 18 — Biểu đồ Cơ cấu theo loại đơn thư (STT 18)
 
+> Reuse 100% `Petition List`.
 > Phân loại: **Phân tích**
-> Atomic: `Complaint Petition` ← THANHTRA.DT_DON_THU — **READY**
-> Ghi chú: Biểu đồ bar grouped — 3 series theo tháng: Khiếu nại / Tố cáo / Phản ánh kiến nghị. `Petition_Type_Code` ← `DT_DON_THU.LOAI_DON`, scheme `TT_PETITION_TYPE`. *Lưu ý: BA STT 18 đặt tên block là "Biểu đồ cơ cấu theo đối tượng" nhưng KPI thực tế (Rows 132–137) là phân loại theo loại đơn (Khiếu nại/Tố cáo/Phản ánh kiến nghị) — thiết kế theo nội dung KPI, không theo tên block.* ETL map PHAN_ANH và KIEN_NGHI từ Atomic → 1 giá trị `PHAN_ANH_KIEN_NGHI` trên Datamart (O_TT_10 Closed).
+> Atomic: `Petition` ← THANHTRA.PETITION — **READY** (reuse Nhóm 16/17)
+> Ghi chú: Biểu đồ bar grouped — 3 series theo tháng: Khiếu nại / Tố cáo / Phản ánh kiến nghị. `Petition_Category_Code` ← `PETITION.PETITION_CATEGORY`, **3 giá trị trực tiếp** (`COMPLAINT`/`DENUNCIATION`/`FEEDBACK_SUGGESTION`), map 1:1 — không qua Classification Dimension, không cần gộp giá trị nào (khác thiết kế cũ phải gộp PHAN_ANH+KIEN_NGHI). *Lưu ý: BA STT 18 đặt tên KPI là "Phân loại vi phạm" (dòng Chiều) nhưng nội dung/SQL thực tế là phân loại theo loại đơn — thiết kế theo nội dung KPI/SQL, không theo tên dòng.* SQL BA không filter `Life_Cycle_Status_Code` — GROUP BY trực tiếp trên toàn bộ đơn trong năm, không giới hạn `PROCESSED` (khác Nhóm 16/17).
 
 **Mockup:**
 
@@ -1569,54 +1664,55 @@ flowchart LR
 | Tố cáo (cam) | 2 | 2 | ... | 8 |
 | Phản ánh kiến nghị (tím) | 2 | 2 | ... | 7 |
 
-**Source:** `Complaint Petition List`
+**Source:** `Petition List`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_86 | Số đơn Khiếu nại đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Type_Code=`KHIEU_NAI` AND Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) | |
-| K_TT_86b | Tỷ lệ % Khiếu nại | % | Derived | K_TT_86[Month=M] / K_TT_83[Month=M] × 100% | |
-| K_TT_87 | Số đơn Tố cáo đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Type_Code=`TO_CAO` AND Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) | |
-| K_TT_87b | Tỷ lệ % Tố cáo | % | Derived | K_TT_87[Month=M] / K_TT_83[Month=M] × 100% | |
-| K_TT_88 | Số đơn Phản ánh kiến nghị đã xử lý theo tháng | Đơn | Base | COUNT(DISTINCT Complaint_Petition_Code) WHERE Petition_Type_Code=`PHAN_ANH_KIEN_NGHI` AND Petition_Status_Code=`HOAN_THANH` AND YEAR(Submission_Date)=selected_year GROUP BY MONTH(Submission_Date) | |
-| K_TT_88b | Tỷ lệ % Phản ánh kiến nghị | % | Derived | K_TT_88[Month=M] / K_TT_83[Month=M] × 100% | |
+| K_TT_85b | Phân loại đơn thư | — | Chiều | `Petition_Category_Code` — `COMPLAINT`/`DENUNCIATION`/`FEEDBACK_SUGGESTION`, map hiển thị: Khiếu nại/Tố cáo/Phản ánh kiến nghị | Chiều lọc/nhóm dùng chung cho K_TT_86-88b |
+| K_TT_86 | Số đơn Khiếu nại theo tháng | Đơn | Base | COUNT(Petition_List) WHERE Petition_Category_Code=`COMPLAINT` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| K_TT_86b | Tỷ lệ % Khiếu nại | % | Derived | K_TT_86[Month=M] / (K_TT_86+K_TT_87+K_TT_88)[Month=M] × 100% | Mẫu số = tổng 3 KPI Base cùng tháng, theo đúng window function BA SQL |
+| K_TT_87 | Số đơn Tố cáo theo tháng | Đơn | Base | COUNT(Petition_List) WHERE Petition_Category_Code=`DENUNCIATION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| K_TT_87b | Tỷ lệ % Tố cáo | % | Derived | K_TT_87[Month=M] / (K_TT_86+K_TT_87+K_TT_88)[Month=M] × 100% | |
+| K_TT_88 | Số đơn Phản ánh kiến nghị theo tháng | Đơn | Base | COUNT(Petition_List) WHERE Petition_Category_Code=`FEEDBACK_SUGGESTION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| K_TT_88b | Tỷ lệ % Phản ánh kiến nghị | % | Derived | K_TT_88[Month=M] / (K_TT_86+K_TT_87+K_TT_88)[Month=M] × 100% | |
 
-**Bảng grain:** reuse `Complaint Petition List` — GROUP BY MONTH(Submission_Date) + Petition_Type_Code ở query time.
+**Bảng grain:** reuse `Petition List` — GROUP BY MONTH(Received_Date) + Petition_Category_Code ở query time.
 
 ---
 
 #### Nhóm 19 — Danh sách đơn thư chi tiết (STT 19)
 
 > Phân loại: **Tác nghiệp**
-> Atomic: `Complaint Petition` ← THANHTRA.DT_DON_THU — **READY**
+> Atomic: `Petition` ← THANHTRA.PETITION — **READY** (reuse Nhóm 16-18)
 > Ghi chú:
-> - Cột **"Mã đơn"** ← `DT_DON_THU.ID` (`Complaint_Petition_Code`)
-> - Cột **"Loại đơn"** ← `DT_DON_THU.LOAI_DON` (`Petition_Type_Code`, scheme `TT_PETITION_TYPE`)
-> - Cột **"Đối tượng"** ← `DT_DON_THU.TEN_TO_CHUC_CA_NHAN` (`Complaint Petition.Complainant_Name` — snapshot tại thời điểm tiếp nhận)
-> - Cột **"Trạng thái"** ← `DT_DON_THU.TRANG_THAI` (`Petition_Status_Code`, scheme `TT_PETITION_STATUS`)
+> - Cột **"Mã đơn"** ← `Petition.Petition Code` (`PETITION.CODE`)
+> - Cột **"Loại đơn"** ← `Petition.Petition Category Code` (`PETITION.PETITION_CATEGORY`)
+> - Cột **"Đối tượng"** ← `Petition.Content` (`PETITION.CONTENT`) — **xác nhận nghiệp vụ**: nguồn không có trường riêng cho tên đối tượng, `CONTENT` (nội dung tóm tắt đơn) chứa luôn tên đối tượng, dùng trực tiếp theo đúng data test đã xác nhận (không phải `Sender_Name`/`Complainant_Name` như thiết kế cũ).
+> - Cột **"Trạng thái"** ← `Petition.Life Cycle Status Code` (`PETITION.STATUS`, 2 giá trị: `RECEIVED`/`PROCESSED`)
 
 **Mockup:**
 
 | Mã đơn | Loại đơn | Đối tượng | Trạng thái |
 |---|---|---|---|
-| DT-2024-001 | Khiếu nại | Công ty A | Đã hoàn thành |
-| DT-2024-002 | Tố cáo | Ông Nguyễn Văn B | Đã hoàn thành |
-| DT-2024-003 | Phản ánh kiến nghị | Bà Lê Thị C | Đã hoàn thành |
-| DT-2024-004 | Khiếu nại | Quỹ X | Đã hoàn thành |
-| DT-2024-005 | Tố cáo | Công ty Y | Đã hoàn thành |
+| DA-2540 | Khiếu nại | Công ty A liên quan giao dịch bất thường | PROCESSED |
+| DA-2541 | Tố cáo | Ông Nguyễn Văn B thao túng giá cổ phiếu | PROCESSED |
+| DA-2542 | Phản ánh kiến nghị | Bà Lê Thị C phản ánh về CBTT | RECEIVED |
+| DA-2543 | Khiếu nại | Quỹ X khiếu nại quyết định xử phạt | PROCESSED |
+| DA-2544 | Tố cáo | Công ty Y vi phạm quy định giao dịch | PROCESSED |
 
 **Schema bảng tác nghiệp:**
 
 ```mermaid
 erDiagram
-    Complaint_Petition_List {
-        varchar Complaint_Petition_Code PK
-        varchar Petition_Type_Code
-        varchar Complainant_Name
-        varchar Petition_Status_Code
-        date Submission_Date
-        int Submission_Year
+    Petition_List {
+        varchar Petition_Code PK
+        varchar Petition_Category_Code
+        varchar Content
+        varchar Life_Cycle_Status_Code
+        date Received_Date
+        int Received_Year
         string Source_System_Code
     }
 ```
@@ -1626,10 +1722,10 @@ erDiagram
 ```mermaid
 flowchart LR
     subgraph SIL["Atomic"]
-        SV1["Complaint Petition"]
+        SV1["Petition"]
     end
     subgraph Datamart["Datamart"]
-        G1["Complaint Petition List"]
+        G1["Petition List"]
     end
     subgraph RPT["Tab ĐƠN THƯ"]
         R1["Danh sách đơn thư chi tiết"]
@@ -1642,75 +1738,71 @@ flowchart LR
 
 | Tên bảng | Grain | Nguồn chính | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Complaint Petition List | 1 đơn thư — mỗi row = 1 `DT_DON_THU` (latest state) | `Complaint Petition` (DT_DON_THU) | Year=selected_year | Phân trang ở presentation layer |
+| Petition List | 1 đơn thư — mỗi row = 1 `PETITION` (latest state) | `Petition` | Year(Received_Date)=selected_year | Phân trang ở presentation layer |
 
 ---
 
 ### Báo cáo: Hoạt động vi phạm trên TTCK (STT 20)
 
-**Slicer chung:** Năm (tương tự các tab dashboard)
+**Slicer chung:** Tháng/Năm (`filter_month` dạng `MM/YYYY`, khác slicer Năm của các tab dashboard khác)
 
-> Ghi chú chung: Báo cáo dạng bảng pivot — 6 nhóm đối tượng vi phạm × breakdown theo loại vi phạm × 2 measure (số lượng + số tiền). Reuse `Fact Penalty Decision` — GROUP BY `Penalty_Subject_Category_Dimension_Id` × `Violation_Type_Dimension_Id`. Xem O_TT_8, O_TT_9 về field nguồn trong Atomic.
-
----
-
-#### Nhóm 20 — Bảng báo cáo hoạt động vi phạm TTCK (STT 20)
-
+> Reuse 100% **`Fact Penalty Decision Subject Behavior`** đã thiết kế ở Nhóm 13 — cùng 4-way join `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` × `PENALTY_DECISION_SUBJECT_BEHAVIOR` × `VIOLATION_BEHAVIOR`, cùng grain, cùng text-matching trên `Violation_Behavior_Name`.
 > Phân loại: **Phân tích**
-> Atomic: `Surveillance Enforcement Decision` ← THANHTRA.GS_VAN_BAN_XU_LY — **READY**
-> Atomic: `Surveillance Enforcement Case` ← THANHTRA.GS_HO_SO — **READY**
-> Ghi chú: BA STT 20 định nghĩa 6 nhóm đối tượng (CTĐC+CBCK / CTCK / CTQLQ / CĐ nội bộ / Giao dịch thao túng+nội bộ / CBCK / Vi phạm khác) nhưng mỗi nhóm có "Độ chi tiết: Loại vi phạm". Phân tích BA: các nhóm này thực chất là phân nhóm theo **loại hành vi vi phạm** của đối tượng bị xử phạt (không phải Subject_Category của Fact). ETL cần phân biệt qua kết hợp `Penalty_Subject_Category_Dimension_Id` × `Violation_Type_Dimension_Id`. Phụ thuộc O_TT_8, O_TT_9.
+> Atomic: `Penalty Decision` + `Penalty Decision Subject` + `Penalty Decision Subject Behavior` + `Violation Behavior` — **READY** (reuse Nhóm 13, không cần entity/Fact mới)
+> Ghi chú:
+> - BA STT 20 SQL xác nhận: filter theo **tháng** (`LAST_DAY(a.ISSUED_DATE) = LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))`), khác slicer Năm của Nhóm 11-15 — báo cáo này lọc theo 1 tháng cụ thể, không phải cả năm.
+> - Phân loại **6 nhóm "Loại hình xử lý"** derive trực tiếp bằng text-matching trên `Violation_Behavior_Name` (không phải theo Subject_Type như tên cột "Loại hình xử lý" dễ gây nhầm là phân loại đối tượng): `CASE WHEN (LOWER(Name) LIKE '%công ty đại chúng%' OR LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm của CTCK' WHEN LIKE '%công ty quản lý quỹ%' THEN 'Vi phạm của CTQLQ' WHEN LIKE '%cổ đông%' THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ' WHEN LIKE '%giao dịch%' THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ' WHEN LIKE '%chào bán chứng khoán%' THEN 'Vi phạm về CBCK' ELSE 'Vi phạm khác' END` — đúng theo SQL tham khảo BA STT 20. Khác Nhóm 13 ở chỗ dùng `ELSE 'Vi phạm khác'` (không loại NULL) — mọi hành vi không khớp 6 mẫu đều gộp vào nhóm "Vi phạm khác", không mất dữ liệu.
+> - 2 measure mỗi nhóm: `COUNT(a.ID)` (số lượng) và `ROUND(SUM(a.TOTAL_FINE_AMOUNT)/1000000,2)` (số tiền, triệu đồng) — `TOTAL_FINE_AMOUNT` lấy từ `PENALTY_DECISION` (driving table), không phải từ Subject/Behavior.
+> - **Đóng O_TT_8, O_TT_9** — không còn phụ thuộc Classification Dimension scheme giả định. "Vi phạm khác" đã có công thức rõ ràng (nhánh `ELSE`), không còn PENDING.
 
 **Mockup:**
 
 | Loại hình xử lý | Số lượng vi phạm | Số tiền xử phạt (triệu đồng) |
 |---|---|---|
-| **Vi phạm của CTĐC, tổ chức CBCK** | | |
-| — Hành vi CBTT | N | X |
-| — Hành vi Chào bán | N | X |
-| — ... | ... | ... |
-| **Vi phạm của CTCK** | | |
-| **Vi phạm của CTQLQ** | | |
-| **Vi phạm của CĐ lớn, CĐ nội bộ** | | |
-| **Vi phạm giao dịch thao túng, giao dịch nội bộ** | | |
-| **Vi phạm về CBCK** | | |
-| **Vi phạm khác** | | |
+| Vi phạm của CTĐC, tổ chức CBCK | N | X |
+| Vi phạm của CTCK | N | X |
+| Vi phạm của CTQLQ | N | X |
+| Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ | N | X |
+| Vi phạm giao dịch thao túng, giao dịch nội bộ | N | X |
+| Vi phạm về CBCK | N | X |
+| Vi phạm khác | N | X |
 
-**Source:** `Fact Penalty Decision` → `Calendar Date Dimension`, `Classification Dimension`
+**Source:** `Fact Penalty Decision Subject Behavior` (reuse Nhóm 13) → `Calendar Date Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_89 | Số lượng vi phạm — CTĐC/CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category IN (`CTDC`, `CBCK`) GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 | |
-| K_TT_90 | Số tiền xử phạt — CTĐC/CBCK | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category IN (`CTDC`, `CBCK`) GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 | |
-| K_TT_91 | Số lượng vi phạm — CTCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTCK] GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 | |
-| K_TT_92 | Số tiền xử phạt — CTCK | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTCK] GROUP BY Violation_Type_Dimension_Id | |
-| K_TT_93 | Số lượng vi phạm — CTQLQ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTQLQ] GROUP BY Violation_Type_Dimension_Id — xem O_TT_9 | |
-| K_TT_94 | Số tiền xử phạt — CTQLQ | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CTQLQ] GROUP BY Violation_Type_Dimension_Id | |
-| K_TT_95 | Số lượng vi phạm — CĐ lớn/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CA_NHAN] AND Violation_Type_Dimension_Id IN [CO_DONG_NOI_BO, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id — xem O_TT_8, O_TT_9 | |
-| K_TT_96 | Số tiền xử phạt — CĐ lớn/nội bộ | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Penalty_Subject_Category_Dimension_Id=[CA_NHAN] AND Violation_Type_Dimension_Id IN [CO_DONG_NOI_BO, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id | |
-| K_TT_97 | Số lượng vi phạm — Giao dịch thao túng/nội bộ | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id IN [THAO_TUNG, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id — xem O_TT_8 | |
-| K_TT_98 | Số tiền xử phạt — Giao dịch thao túng/nội bộ | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Violation_Type_Dimension_Id IN [THAO_TUNG, GIAO_DICH] GROUP BY Violation_Type_Dimension_Id | |
-| K_TT_99 | Số lượng vi phạm — CBCK | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Code) WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CBTT] GROUP BY Violation_Type_Dimension_Id — xem O_TT_8 | |
-| K_TT_100 | Số tiền xử phạt — CBCK | Triệu VNĐ | Base | SUM(Total_Penalty_Amount) / 1_000_000 WHERE Year=selected_year AND Violation_Type_Dimension_Id=[CBTT] GROUP BY Violation_Type_Dimension_Id | |
+| K_TT_88c | Loại hình xử lý | — | Chiều | `CASE WHEN (LOWER(Violation_Behavior_Name) LIKE '%công ty đại chúng%' OR LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm của CTCK' WHEN LIKE '%công ty quản lý quỹ%' THEN 'Vi phạm của CTQLQ' WHEN LIKE '%cổ đông%' THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ' WHEN LIKE '%giao dịch%' THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ' WHEN LIKE '%chào bán chứng khoán%' THEN 'Vi phạm về CBCK' ELSE 'Vi phạm khác' END` | Chiều lọc/nhóm dùng chung cho K_TT_89-100. Khác K_TT_60b (Nhóm 13): dùng `ELSE 'Vi phạm khác'` thay vì `ELSE NULL` |
+| K_TT_89 | Số lượng vi phạm — CTĐC/tổ chức CBCK | QĐ | Base | COUNT(Fact_Penalty_Decision_Subject_Behavior) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | |
+| K_TT_90 | Số tiền xử phạt — CTĐC/tổ chức CBCK | Triệu VNĐ | Base | ROUND(SUM(Total_Fine_Amount)/1_000_000, 2) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | |
+| K_TT_91 | Số lượng vi phạm — CTCK | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTCK` | |
+| K_TT_92 | Số tiền xử phạt — CTCK | Triệu VNĐ | Base | ROUND(SUM(Total_Fine_Amount)/1_000_000, 2) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTCK` | |
+| K_TT_93 | Số lượng vi phạm — CTQLQ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTQLQ` | |
+| K_TT_94 | Số tiền xử phạt — CTQLQ | Triệu VNĐ | Base | ROUND(SUM(Total_Fine_Amount)/1_000_000, 2) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTQLQ` | |
+| K_TT_95 | Số lượng vi phạm — CĐ lớn/nội bộ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | |
+| K_TT_96 | Số tiền xử phạt — CĐ lớn/nội bộ | Triệu VNĐ | Base | ROUND(SUM(Total_Fine_Amount)/1_000_000, 2) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | |
+| K_TT_97 | Số lượng vi phạm — Giao dịch thao túng/nội bộ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | |
+| K_TT_98 | Số tiền xử phạt — Giao dịch thao túng/nội bộ | Triệu VNĐ | Base | ROUND(SUM(Total_Fine_Amount)/1_000_000, 2) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | |
+| K_TT_99 | Số lượng vi phạm — Về CBCK | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm về CBCK` | |
+| K_TT_100 | Số tiền xử phạt — Về CBCK | Triệu VNĐ | Base | ROUND(SUM(Total_Fine_Amount)/1_000_000, 2) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm về CBCK` | |
+| K_TT_100b | Số lượng vi phạm — Khác | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm khác` | Nhóm "Vi phạm khác" — nhánh `ELSE`, không còn PENDING (đóng O_TT_8) |
+| K_TT_100c | Số tiền xử phạt — Khác | Triệu VNĐ | Base | ROUND(SUM(Total_Fine_Amount)/1_000_000, 2) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm khác` | |
 
-*Ghi chú K_TT_89–100: BA STT 20 phân nhóm theo đối tượng bị xử phạt × loại hành vi vi phạm. Các giá trị `Penalty_Subject_Category` và `Violation_Type_Code` phụ thuộc giải quyết O_TT_8 và O_TT_9 — hiện dùng giá trị tạm thời. Nhóm "Vi phạm khác" chưa có KPI ID vì chờ BA xác nhận mapping scheme.*
+> Field mapping Atomic source: giống hệt Nhóm 13 (`Fact Penalty Decision Subject Behavior`) — `Total_Fine_Amount` lấy từ `Penalty Decision.Total Fine Amount` (driving table, không phải Subject/Behavior).
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    subgraph Datamart["Datamart"]
-        G1["Fact Penalty Decision"]
+    subgraph Datamart["Datamart (reuse từ Nhóm 13)"]
+        G1["Fact Penalty Decision Subject Behavior"]
         G2["Calendar Date Dimension"]
-        G3["Classification Dimension"]
     end
     subgraph RPT["Báo cáo vi phạm TTCK"]
-        R1["Bảng pivot: Nhóm đối tượng × Loại vi phạm × Số lượng + Số tiền"]
+        R1["K_TT_88c, K_TT_89-100c: Bảng 7 nhóm Loại hình xử lý × Số lượng + Số tiền"]
     end
     G2 --> G1
-    G3 --> G1
     G1 --> R1
 ```
 
@@ -1718,7 +1810,7 @@ flowchart LR
 
 | Tên bảng | Grain | Date key | Filter mặc định | Ghi chú |
 |---|---|---|---|---|
-| Fact Penalty Decision | reuse — 1 QĐ xử phạt | `Violation_Report_Date_Dimension_Id` | Year=selected_year | GROUP BY Penalty_Subject_Category_Dimension_Id × Violation_Type_Dimension_Id ở presentation layer — tạo bảng pivot |
+| Fact Penalty Decision Subject Behavior | reuse Nhóm 13 — 1 QĐ × 1 đối tượng × 1 hành vi | `Issued_Date_Dimension_Id` | Month/Year = selected_month (`MM/YYYY`) | GROUP BY Loại_hình_xử_lý (6 nhóm + Vi phạm khác) ở presentation layer |
 
 ---
 
@@ -1739,9 +1831,12 @@ graph TB
     FACT_INSPTARGET(["Fact Inspection Team Target Activity"]):::fact
     FACT_EXAMTARGET(["Fact Examination Team Target Activity"]):::fact
     FACT_PEN(["Fact Penalty Decision"]):::fact
+    FACT_PENBEHAVIOR(["Fact Penalty Decision Subject Behavior"]):::fact
+    FACT_PENSUBJECT(["Fact Penalty Decision Subject"]):::fact
     OPR_LIST(["Inspection Case List"]):::operational
+    OPR_EXAMLIST(["Examination Case List"]):::operational
     OPR_PEN(["Penalty Decision List"]):::operational
-    OPR_COMP(["Complaint Petition List"]):::operational
+    OPR_COMP(["Petition List"]):::operational
 
     DIM_DATE --> FACT_INSPTEAM
     DIM_INSPTEAM --> FACT_INSPTEAM
@@ -1750,27 +1845,30 @@ graph TB
     DIM_DATE --> FACT_INSPTARGET
     DIM_DATE --> FACT_EXAMTARGET
     DIM_DATE --> FACT_PEN
-    DIM_CLASS --> FACT_PEN
+    DIM_DATE --> FACT_PENBEHAVIOR
+    DIM_DATE --> FACT_PENSUBJECT
 ```
 
 **Bảng Phân tích (Star Schema):**
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–6b (Nhóm 1), K_TT_7–9 (Nhóm 2), K_TT_9b–15 (Nhóm 3) | READY — điều chỉnh + tái cấu trúc 2026-07-20 theo Atomic schema mới, xem Cụm 1 |
-| Fact Examination Team Activity | Event | 1 vụ việc kiểm tra (`EXAMINATION_TEAM`) — 2 FK: Calendar Date Dimension, Examination Team Dimension. Date key: Decision Date | K_TT_24–29b (Nhóm 6), K_TT_30–32 (Nhóm 7), K_TT_32b–44k (Nhóm 8) | READY — Nhóm 6, 7, 8 đã review xong 2026-07-20, xem Cụm 1b |
-| Fact Inspection Team Target Activity | Event | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) — degenerate key `Inspection_Team_Code` + `Target_Type_Code`. Date key: Decision Date (join qua Inspection Team) | K_TT_16–23b (Nhóm 4) | READY — mới 2026-07-20, xem Cụm 1c |
-| Fact Examination Team Target Activity | Event | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) — degenerate key `Examination_Team_Code` + `Target_Type_Code`. Date key: Decision Date (join qua Examination Team) | K_TT_45–54, K_TT_49b (Nhóm 9) | READY — mới 2026-07-20, xem Cụm 1d, đóng O_TT_7 |
-| Fact Penalty Decision | Event | 1 quyết định xử phạt (`GS_VAN_BAN_XU_LY`). Date key: Violation Report Date | K_TT_55–80 (XP dashboard, bao gồm sub-KPI K_TT_72b–72k) + K_TT_89–100 (Báo cáo STT 20) | READY — xem O_TT_8, O_TT_9 |
+| Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–6b (Nhóm 1), K_TT_7–9 (Nhóm 2), K_TT_9b–15 (Nhóm 3) | READY — xem Cụm 1 |
+| Fact Examination Team Activity | Event | 1 vụ việc kiểm tra (`EXAMINATION_TEAM`) — 2 FK: Calendar Date Dimension, Examination Team Dimension. Date key: Decision Date | K_TT_24–29b (Nhóm 6), K_TT_30–32 (Nhóm 7), K_TT_32b–44k (Nhóm 8) | READY — xem Cụm 1b |
+| Fact Inspection Team Target Activity | Event | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) — degenerate key `Inspection_Team_Code` + `Target_Type_Code`. Date key: Decision Date (join qua Inspection Team) | K_TT_16–23b (Nhóm 4) | READY — xem Cụm 1c |
+| Fact Examination Team Target Activity | Event | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) — degenerate key `Examination_Team_Code` + `Target_Type_Code`. Date key: Decision Date (join qua Examination Team) | K_TT_45–54, K_TT_49b (Nhóm 9) | READY — xem Cụm 1d, đóng O_TT_7 |
+| Fact Penalty Decision | Event | 1 quyết định xử phạt (`PENALTY_DECISION`). Date key: Issued Date | K_TT_55–60, K_TT_55b (Nhóm 11, 12) | READY — xem Cụm 3 |
+| Fact Penalty Decision Subject Behavior | Event | 1 QĐ × 1 đối tượng × 1 hành vi (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` × `PENALTY_DECISION_SUBJECT_BEHAVIOR` × `VIOLATION_BEHAVIOR`, 4-way join). Date key: Issued Date (join qua Penalty Decision) | K_TT_60b–72k (Nhóm 13), K_TT_88c, K_TT_89–100c (Báo cáo STT 20 — reuse) | READY — xem Cụm 3b, đóng O_TT_8 |
+| Fact Penalty Decision Subject | Event | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1). Date key: Issued Date (join qua Penalty Decision) | K_TT_72l, K_TT_73–80 (Nhóm 14) | READY — xem Cụm 3c, đóng O_TT_9 |
 
 **Bảng Tác nghiệp (Denormalized):**
 
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
-| Inspection Case List | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) | Nhóm 5 (TT) | READY — điều chỉnh 2026-07-20 theo Atomic schema mới, xem Cụm 2 |
-| Examination Case List | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) | Nhóm 10 (KT) | READY — mới 2026-07-20, xem Cụm 2b |
-| Penalty Decision List | 1 quyết định xử phạt (GS_VAN_BAN_XU_LY) — latest state | Nhóm 15 (XP) | READY |
-| Complaint Petition List | 1 đơn thư (DT_DON_THU) — latest state. Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19) | Nhóm 16–19 (ĐT), K_TT_81–88b | READY |
+| Inspection Case List | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) | Nhóm 5 (TT) | READY — xem Cụm 2 |
+| Examination Case List | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) | Nhóm 10 (KT) | READY — xem Cụm 2b |
+| Penalty Decision List | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) | Nhóm 15 (XP) | READY — xem Cụm 3d |
+| Petition List | 1 đơn thư (`PETITION`) — latest state. Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19) | Nhóm 16–19 (ĐT), K_TT_80b–88b | READY — xem Cụm 4, đóng O_TT_10 |
 
 **Bảng Dimension:**
 
@@ -1779,9 +1877,9 @@ graph TB
 | Dimension | Loại | Mô tả | Trạng thái |
 |---|---|---|---|
 | Calendar Date Dimension | Conformed | Lịch ngày — năm/quý/tháng | READY |
-| Classification Dimension | Conformed | Danh mục phân loại — phục vụ 2 scheme (đã bỏ hẳn `TT_SUBJECT_CATEGORY` — cả Nhóm 4 và Nhóm 9 nay dùng thẳng `Target_Type_Code` từ Atomic `Inspection Team Target`/`Examination Team Target`, không qua Classification Dimension, xem O_TT_4/O_TT_7 Closed): (1) scheme `TT_PENALTY_SUBJECT_CATEGORY` (4 giá trị Tab XP — xem O_TT_9); (2) scheme `TT_VIOLATION_TYPE` (11 giá trị — dùng chung TT/KT/XP — xem O_TT_8). Mọi query JOIN Classification Dimension phải kèm filter `WHERE Scheme='...'` đúng với FK tương ứng | READY |
-| Inspection Team Dimension | Reference per module | Thuộc tính mô tả đoàn thanh tra — `Inspection_Team_Code` (BK), `Start_Date`, `End_Date`, `Content`. Tách khỏi Fact Inspection Team Activity 2026-07-20 theo đúng lý thuyết star schema (Fact không có measure định lượng thật, mọi thuộc tính mô tả chuyển sang Dimension) | READY — tái cấu trúc 2026-07-20 |
-| Examination Team Dimension | Reference per module | Thuộc tính mô tả vụ việc kiểm tra — `Examination_Team_Code` (BK), `Start_Date`, `End_Date`, `Content`. Cùng kiến trúc Inspection Team Dimension | READY (draft) — tái cấu trúc 2026-07-20, chưa review nội dung KPI Nhóm 6/7 |
+| Classification Dimension | Conformed | Danh mục phân loại dùng chung hệ thống. Module TT hiện KHÔNG còn nhóm nào tham chiếu Classification Dimension — mọi phân loại đối tượng/hành vi (Nhóm 4, 9, 13, 14, 20) đều đã chuyển sang dùng thẳng field Atomic (`Target_Type_Code`) hoặc text-matching (`Content`/`Violation_Behavior_Name`), không qua Classification Value/scheme, xem O_TT_4/O_TT_7/O_TT_8/O_TT_9 (đều Closed). Giữ trong mô hình vì là Conformed Dim toàn hệ thống, sẵn sàng dùng khi có module khác cần | READY |
+| Inspection Team Dimension | Reference per module | Thuộc tính mô tả đoàn thanh tra — `Inspection_Team_Code` (BK), `Start_Date`, `End_Date`, `Content`. Tách khỏi Fact Inspection Team Activity theo đúng lý thuyết star schema (Fact không có measure định lượng thật, mọi thuộc tính mô tả chuyển sang Dimension) | READY |
+| Examination Team Dimension | Reference per module | Thuộc tính mô tả vụ việc kiểm tra — `Examination_Team_Code` (BK), `Start_Date`, `End_Date`, `Content`. Cùng kiến trúc Inspection Team Dimension | READY |
 
 ---
 
@@ -1791,16 +1889,19 @@ graph TB
 |---|---|---|---|
 | Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dim toàn hệ thống (Lớp 1 whitelist) |
 | Classification Dimension | cl_dim | reuse | Conformed Dim toàn hệ thống (Lớp 1 whitelist) |
-| Inspection Team Dimension | inspection_team_dim | new | Tách khỏi Fact Inspection Team Activity 2026-07-20 (tái cấu trúc star schema) — chưa có trong registry |
-| Examination Team Dimension | examination_team_dim | new | Tách khỏi Fact Examination Team Activity 2026-07-20 (tái cấu trúc star schema) — chưa có trong registry |
+| Inspection Team Dimension | inspection_team_dim | new | Tách khỏi Fact Inspection Team Activity (tái cấu trúc star schema) — chưa có trong registry |
+| Examination Team Dimension | examination_team_dim | new | Tách khỏi Fact Examination Team Activity (tái cấu trúc star schema) — chưa có trong registry |
 | Fact Inspection Team Activity | fct_inspection_team_activity | new | Module TT chưa có entity nào trong `datamart_model.yaml` — không tìm thấy source match (Lớp 3) |
-| Fact Inspection Team Target Activity | fct_inspection_team_target_activity | new | Mới 2026-07-20 (Nhóm 4 tách riêng khỏi Fact Inspection Case Activity do đổi nguồn Atomic) — chưa có trong registry |
-| Fact Examination Team Target Activity | fct_examination_team_target_activity | new | Mới 2026-07-20 (Nhóm 9 tách riêng khỏi Fact Inspection Case Activity do đổi nguồn Atomic, cùng kiến trúc Fact Inspection Team Target Activity) — chưa có trong registry. Đóng O_TT_7 |
-| Fact Penalty Decision | fct_penalty_decision | new | Chưa có trong registry. *Lưu ý: nguồn Atomic thiết kế cũ (`GS_VAN_BAN_XU_LY`/`GS_HO_SO`) đã deprecated — sẽ đổi khi review lại Nhóm 11-15/20* |
+| Fact Examination Team Activity | fct_examination_team_activity | new | Nguồn `EXAMINATION_TEAM` — chưa có trong registry |
+| Fact Inspection Team Target Activity | fct_inspection_team_target_activity | new | Nhóm 4 tách riêng grain 1 đoàn × 1 đối tượng — chưa có trong registry |
+| Fact Examination Team Target Activity | fct_examination_team_target_activity | new | Nhóm 9 tách riêng grain 1 vụ × 1 đối tượng, cùng kiến trúc Fact Inspection Team Target Activity — chưa có trong registry. Đóng O_TT_7 |
+| Fact Penalty Decision | fct_penalty_decision | new | Nguồn `PENALTY_DECISION` — chưa có trong registry |
+| Fact Penalty Decision Subject Behavior | fct_penalty_decision_subject_behavior | new | Nhóm 13 tách riêng grain 4-way join, đóng O_TT_8 — chưa có trong registry |
+| Fact Penalty Decision Subject | fct_penalty_decision_subject | new | Nhóm 14 tách riêng grain 2-way join, đóng O_TT_9 — chưa có trong registry |
 | Inspection Case List | opr_inspection_case_list | new | Chưa có trong registry. Đã kiểm tra `securities_company_compliance_history` (module QLKD) cùng dùng nguồn `inspection_team`/`inspection_team_target` nhưng khác `table_type` và mục đích (bảng tổng hợp cross-module, PK khác) → không reuse (Lớp 3: `new`) |
-| Examination Case List | opr_examination_case_list | new | Mới 2026-07-20 (Nhóm 10 tách riêng, thay thế reuse sai `Inspection Case List` của thiết kế cũ) — chưa có trong registry |
-| Penalty Decision List | opr_penalty_decision_list | new | Chưa có trong registry |
-| Complaint Petition List | opr_complaint_petition_list | new | Chưa có trong registry |
+| Examination Case List | opr_examination_case_list | new | Nhóm 10 tách riêng, không reuse `Inspection Case List` (khác nguồn Atomic) — chưa có trong registry |
+| Penalty Decision List | opr_penalty_decision_list | new | Nhóm 15, nguồn `PENALTY_DECISION`/`PENALTY_DECISION_SUBJECT`/`VIOLATION_CASE` — chưa có trong registry |
+| Petition List | opr_petition_list | new | Nguồn `PETITION` — chưa có trong registry |
 
 ---
 
@@ -1815,6 +1916,6 @@ graph TB
 | O_TT_5 | `TT_QUYET_DINH_DOI_TUONG` quan hệ 1:N với `TT_QUYET_DINH` — 1 hồ sơ có thể có nhiều đối tượng thanh tra gây fanout grain Fact. | **Phương án B:** đổi grain Fact thành 1 row per hồ sơ × đối tượng. Composite key: `Inspection_Case_Code` + `Inspection_Decision_Subject_Code`. Mọi KPI đếm hồ sơ dùng `COUNT(DISTINCT Inspection_Case_Code)`. | K_TT_1–23 | **Closed** |
 | O_TT_6 | Tab KIỂM TRA — cột "Loại hình" trong danh sách có xuất hiện giá trị `KIỂM TRA` bên cạnh ĐỊNH KỲ / ĐỘT XUẤT. | Xác nhận: chỉ có 2 giá trị ĐỊNH KỲ / ĐỘT XUẤT. Giá trị "KIỂM TRA" trong screenshot là dữ liệu mẫu sai — không phải giá trị nghiệp vụ. Mockup đã sửa. | Nhóm 10 | **Closed** |
 | O_TT_7 | **[Đã đóng 2026-07-20]** Scheme `TT_SUBJECT_CATEGORY` — Tab KIỂM TRA screenshot/BA STT 9 hiển thị 5 nhóm minh họa (CTCK/CTKT/CTQLQ+NHLK/CTĐC/TO_CHUC_PHTP) nhưng thiết kế cũ (`DM_DOI_TUONG_KHAC`) không phân biệt được CTKT/NHLK/TO_CHUC_PHTP. Đã thiết kế lại Nhóm 9 dùng `Examination Team Target.Target_Type_Code` (7 giá trị: SECURITIES_COMPANY/FUND_MANAGEMENT_COMPANY/PUBLIC_COMPANY/AUDIT_COMPANY/CRYPTO_SERVICE_PROVIDER/INDIVIDUAL/ORGANIZATION), tách riêng `Fact Examination Team Target Activity` (Cụm 1d), cùng kiến trúc Nhóm 4. Xác nhận nghiệp vụ: 5 nhóm BA liệt kê chỉ là mô tả minh họa — thiết kế lấy trực tiếp toàn bộ giá trị `Target_Type_Code` thực tế (GROUP BY động), không hardcode ánh xạ cố định. NHLK và Tổ chức PHTP không có giá trị riêng biệt trong Atomic — cả 2 gộp chung dưới `ORGANIZATION` (chấp nhận theo xác nhận nghiệp vụ, không phải gap chờ xử lý). | K_TT_45–54, K_TT_49b | **Closed** |
-| O_TT_8 | Tab XỬ PHẠT — `Violation_Type_Code` (hành vi vi phạm) cần thiết cho cột "Loại hình" trong danh sách và donut cơ cấu theo hành vi. Atomic `Surveillance Enforcement Decision` (`GS_VAN_BAN_XU_LY`) không có field này rõ ràng — `Penalty_Content` là text tự do. Atomic `Surveillance Enforcement Case` (`GS_HO_SO`) cũng không có field hành vi vi phạm có thể map về scheme. Source Analysis xác nhận `DM_HANH_VI_VI_PHAM` dùng ở B.2.2 nhưng chưa tìm thấy field FK tương ứng trong Atomic `GS_HO_SO` hay `GS_VAN_BAN_XU_LY`. | Cần xác nhận field nguồn trong `GS_VAN_BAN_XU_LY` hoặc `GS_HO_SO` lưu mã hành vi vi phạm. Nếu có → reuse scheme `TT_VIOLATION_TYPE`. Nếu không → PENDING. Tạm thời để `Violation_Type_Code` PENDING trên `Fact Penalty Decision`. | K_TT_61–72k, K_TT_89–100, Nhóm 15 | Open |
-| O_TT_9 | Tab XỬ PHẠT — `Penalty_Subject_Category_Code` (phân loại đối tượng: CTKT/Cá nhân/Giao dịch NĐT/Tổ chức khác) cần thiết cho donut và danh sách. Atomic `GS_HO_SO.TEN_DOI_TUONG` là text tự do — không có polymorphic FK như `TT_QUYET_DINH_DOI_TUONG`. Không rõ ETL resolve phân loại đối tượng từ field nào trong `GS_HO_SO`. | Cần BA/nghiệp vụ xác nhận field phân loại đối tượng trong `GS_HO_SO` hoặc bảng liên kết khác. Scheme `TT_PENALTY_SUBJECT_CATEGORY` tạm thời có 4 giá trị từ BA STT 14: TO_CHUC_KHAC / CTKT / GIAO_DICH_NDT / CA_NHAN. | K_TT_73–80, K_TT_89–96, Nhóm 15 | Open |
-| O_TT_10 | Tab ĐƠN THƯ — Atomic `TT_PETITION_TYPE` có 4 giá trị: KHIEU_NAI / TO_CAO / PHAN_ANH / KIEN_NGHI. Dashboard gộp PHAN_ANH và KIEN_NGHI thành 1 legend "Phản ánh kiến nghị". | **Closed:** Mart lưu 1 giá trị gộp `PHAN_ANH_KIEN_NGHI` theo BA. ETL map cả PHAN_ANH và KIEN_NGHI từ Atomic → `PHAN_ANH_KIEN_NGHI` trên Datamart. K_TT_88 đã cập nhật. | K_TT_88, Nhóm 19 | **Closed** |
+| O_TT_8 | **[Đã đóng 2026-07-20]** Tab XỬ PHẠT — `Violation_Type_Code` (hành vi vi phạm) cần thiết cho cột "Loại hình" trong danh sách và donut cơ cấu theo hành vi. Thiết kế cũ dùng `Surveillance Enforcement Decision`/`Surveillance Enforcement Case` (`GS_VAN_BAN_XU_LY`/`GS_HO_SO`) không có field này — đã deprecated. | Atomic mới xác nhận: `Violation Behavior.Violation Behavior Name` (← `VIOLATION_BEHAVIOR.NAME`, qua join `PENALTY_DECISION` → `PENALTY_DECISION_SUBJECT` → `PENALTY_DECISION_SUBJECT_BEHAVIOR` → `VIOLATION_BEHAVIOR`). Phân loại derive bằng text-matching (không qua Classification Dimension), cùng pattern Nhóm 3/8. | K_TT_60b, K_TT_61–72k (Nhóm 13), K_TT_88c, K_TT_89–100c (Nhóm 20) | **Closed** |
+| O_TT_9 | **[Đã đóng 2026-07-20]** Tab XỬ PHẠT — `Penalty_Subject_Category_Code` (phân loại đối tượng) cần thiết cho donut và danh sách. Thiết kế cũ dùng `GS_HO_SO.TEN_DOI_TUONG` (text tự do, không có polymorphic FK) — đã deprecated. | Atomic mới xác nhận: `Penalty Decision Subject.Subject Type Code` (← `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE`) — chỉ 2 giá trị `INDIVIDUAL`/`ORGANIZATION` (không phải 4 nhóm BA liệt kê minh họa). Lấy trực tiếp giá trị thực tế trong data (cùng nguyên tắc đã áp dụng ở O_TT_7/Nhóm 9), không hardcode ánh xạ 4 nhóm. | K_TT_72l, K_TT_73–80 (Nhóm 14) | **Closed** |
+| O_TT_10 | **[Đã đóng lại 2026-07-20 theo Atomic mới]** Tab ĐƠN THƯ — thiết kế cũ dùng `TT_PETITION_TYPE` giả định 4 giá trị (KHIEU_NAI/TO_CAO/PHAN_ANH/KIEN_NGHI), phải gộp PHAN_ANH+KIEN_NGHI qua ETL — đã deprecated. | Atomic mới `Petition.Petition_Category_Code` (← `PETITION.PETITION_CATEGORY`) có sẵn đúng **3 giá trị**: `FEEDBACK_SUGGESTION`/`COMPLAINT`/`DENUNCIATION` — map 1:1 trực tiếp sang Khiếu nại/Tố cáo/Phản ánh kiến nghị, không cần ETL gộp giá trị nào nữa. | K_TT_85b, K_TT_86–88b (Nhóm 18), Nhóm 19 | **Closed** |

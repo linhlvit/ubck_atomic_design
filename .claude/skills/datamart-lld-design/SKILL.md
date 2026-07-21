@@ -480,7 +480,14 @@ Sub-check B — JOIN sang bảng Atomic khác driving table:
 - Lý do (forward-compatibility): khi Atomic table sau này nhận thêm nguồn mới, ETL join không bị nhân bản dữ liệu sai nguồn.
 - Báo fail nếu thiếu: `❌ TC4B FAIL: [attribute] — join sang [atomic_table] thiếu AND src_stm_code filter`.
 
-Báo tổng: `✅ TC4 PASS` (cả A và B đều pass) hoặc liệt kê từng lỗi A/B.
+Sub-check C — Giá trị `src_stm_code` đúng format (không chép theo tên file Atomic):
+- Giá trị `src_stm_code` là data value (dùng dấu `_` nối module + table, VD `NHNCK_CERTIFICATES`) — **khác** với tên file Atomic YAML (dùng dấu `.`, VD `dm_atm_..._-NHNCK.CERTIFICATES.yaml`). Đây là 2 thứ khác nhau; nhầm lẫn giữa chúng là lỗi đã từng xảy ra thực tế (2026-07-21, module NHNCK/QLCB/QLKD).
+- Regex kiểm tra: mọi giá trị trong `src_stm_code = '...'` hoặc `src_stm_code IN (...)` **không được chứa dấu `.`** giữa 2 khối chữ hoa (pattern lỗi: `'[A-Z][A-Z0-9_]*\.[A-Z][A-Z0-9_]*'`).
+- Nếu phát hiện dấu chấm → tra lại `classification_context` của attribute "Source System Code" trong Atomic YAML tương ứng (theo quy trình tra cứu Atomic ở đầu skill) để lấy giá trị đúng, KHÔNG tự suy ra bằng cách thay `.` → `_`.
+- Áp dụng luôn cho tên file dim/operational: `DTM_{MODULE}_{mart_table}_{src_stm_code}.csv` — phần `{src_stm_code}` trong tên file cũng phải dùng dấu `_`, không dùng dấu `.`.
+- Báo fail nếu phát hiện: `❌ TC4C FAIL: [file/attribute] — src_stm_code = '[giá trị sai]' dùng dấu chấm, đúng phải là '[giá trị đúng]'`.
+
+Báo tổng: `✅ TC4 PASS` (A, B, C đều pass) hoặc liệt kê từng lỗi A/B/C.
 Nếu FAIL → sửa trước khi trình bày.
 
 **TC5 — Cấu trúc CSV hợp lệ (bắt buộc dùng Bash tool):**
@@ -701,6 +708,7 @@ ATTRIBUTES CHECK:
 □ src_stm_code: multi-source tách bộ (partition/UNION) → N bộ × M dòng, mỗi bộ có src_stm_code riêng
 □ src_stm_code: bộ chưa xác định Atomic source → etl_logic_type = pending toàn bộ bộ đó
 □ src_stm_code: fact No-Driving-Table → không thêm
+□ src_stm_code: giá trị dùng dấu `_` (VD NHNCK_CERTIFICATES) — KHÔNG dùng dấu `.` theo tên file Atomic YAML (VD NHNCK.CERTIFICATES); áp dụng cả tên file DTM_{MODULE}_{table}_{src_stm_code}.csv
 □ cl_dim: tên cột scm_code / cl_code / cl_nm (align Atomic cv); Detail Mapping dùng Scheme Code= / Classification Code=
 □ nullable = false cho PK / BK / NK / FK
 □ data_domain = Classification Value → key trống

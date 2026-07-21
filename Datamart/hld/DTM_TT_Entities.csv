@@ -1,8 +1,16 @@
-﻿datamart_entity,table_type,status,description,source_table,FKs
-Calendar Date Dimension,dim,draft,Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian,Generated,
-Classification Dimension,dim,draft,Danh mục phân loại — phục vụ 3 scheme trên 2 Fact: TT_SUBJECT_CATEGORY (6 giá trị tạm thời) / TT_PENALTY_SUBJECT_CATEGORY (4 giá trị) / TT_VIOLATION_TYPE (11 giá trị). Mọi query JOIN phải kèm WHERE Scheme='...',Generated,
-Fact Inspection Case Activity,fact,draft,Event vụ việc TT/KT — 1 row per hồ sơ × đối tượng. Đếm hồ sơ dùng COUNT(DISTINCT Inspection_Case_Code). Date key: Received Date (xem O_TT_3),Inspection Case / Inspection Decision Subject / Inspection Case Conclusion,Calendar Date Dimension.Received Date Dimension Id | Classification Dimension.Subject Category Dimension Id | Classification Dimension.Violation Type Dimension Id
-Fact Penalty Decision,fact,draft,Event quyết định xử phạt — 1 row per GS_VAN_BAN_XU_LY. Date key: Violation Report Date. Xem O_TT_8 (Violation Type) và O_TT_9 (Penalty Subject Category),Surveillance Enforcement Decision,Calendar Date Dimension.Violation Report Date Dimension Id | Classification Dimension.Penalty Subject Category Dimension Id | Classification Dimension.Violation Type Dimension Id
-Inspection Case List,operational,draft,Hồ sơ TT/KT — latest state per hồ sơ (1 row per TT_HO_SO). Phục vụ tra cứu danh sách Nhóm 5 (TT) và Nhóm 10 (KT),Inspection Case / Inspection Decision,
-Penalty Decision List,operational,draft,Quyết định xử phạt — latest state per QĐ (1 row per GS_VAN_BAN_XU_LY). Phục vụ tra cứu danh sách Nhóm 15 (XP),Surveillance Enforcement Decision / Surveillance Enforcement Case,
-Complaint Petition List,operational,draft,Đơn thư khiếu nại tố cáo — latest state per đơn (1 row per DT_DON_THU). Phục vụ cả KPI aggregate (Nhóm 16-18) và danh sách chi tiết (Nhóm 19),Complaint Petition,
+datamart_entity,table_type,reuse_status,status,description,source_table,FKs
+Calendar Date Dimension,dim,reuse,draft,Lịch ngày — năm/quý/tháng phục vụ slicer và phân tích theo thời gian,cdr_dt,
+Classification Dimension,dim,reuse,draft,Danh mục phân loại dùng chung hệ thống — module TT hiện không còn nhóm nào tham chiếu (xem O_TT_4/O_TT_7/O_TT_8/O_TT_9),cv,
+Inspection Team Dimension,dim,new,draft,Thuộc tính mô tả đoàn thanh tra — Inspection_Team_Code (BK)/Start_Date/End_Date/Content,inspection_team,
+Examination Team Dimension,dim,new,draft,Thuộc tính mô tả vụ việc kiểm tra — Examination_Team_Code (BK)/Start_Date/End_Date/Content,examination_team,
+Fact Inspection Team Activity,fact,new,draft,Event 1 đoàn thanh tra — date key Decision Date,inspection_team,Calendar Date Dimension.Calendar Date Dimension Id | Inspection Team Dimension.Inspection Team Dimension Id
+Fact Examination Team Activity,fact,new,draft,Event 1 vụ việc kiểm tra — date key Decision Date,examination_team,Calendar Date Dimension.Calendar Date Dimension Id | Examination Team Dimension.Examination Team Dimension Id
+Fact Inspection Team Target Activity,fact,new,draft,Event 1 đoàn thanh tra × 1 đối tượng — degenerate key Inspection_Team_Code + Target_Type_Code. Date key: Decision Date (join qua Inspection Team),inspection_team / inspection_team_target,Calendar Date Dimension.Calendar Date Dimension Id
+Fact Examination Team Target Activity,fact,new,draft,Event 1 vụ kiểm tra × 1 đối tượng — degenerate key Examination_Team_Code + Target_Type_Code. Date key: Decision Date (join qua Examination Team). Đóng O_TT_7,examination_team / examination_team_target,Calendar Date Dimension.Calendar Date Dimension Id
+Fact Penalty Decision,fact,new,draft,Event 1 quyết định xử phạt — date key Issued Date,penalty_decision,Calendar Date Dimension.Calendar Date Dimension Id
+Fact Penalty Decision Subject Behavior,fact,new,draft,Event 1 QĐ × 1 đối tượng × 1 hành vi — 4-way join penalty_decision/penalty_decision_subject/pd_subject_behavior/violation_behavior. Date key: Issued Date (join qua Penalty Decision). Đóng O_TT_8,penalty_decision / penalty_decision_subject / pd_subject_behavior / violation_behavior,Calendar Date Dimension.Calendar Date Dimension Id
+Fact Penalty Decision Subject,fact,new,draft,Event 1 QĐ × 1 đối tượng — date key Issued Date (join qua Penalty Decision). Đóng O_TT_9,penalty_decision / penalty_decision_subject,Calendar Date Dimension.Calendar Date Dimension Id
+Inspection Case List,operational,new,draft,1 đoàn thanh tra × 1 đối tượng — latest state. Đã kiểm tra không reuse securities_company_compliance_history (module QLKD),inspection_team / inspection_team_target,
+Examination Case List,operational,new,draft,1 vụ kiểm tra × 1 đối tượng — latest state,examination_team / examination_team_target,
+Penalty Decision List,operational,new,draft,1 QĐ × 1 đối tượng — latest state,penalty_decision / penalty_decision_subject / violation_case,
+Petition List,operational,new,draft,1 đơn thư — latest state. Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19). Đóng O_TT_10,petition,
