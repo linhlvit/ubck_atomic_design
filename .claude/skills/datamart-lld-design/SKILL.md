@@ -73,7 +73,7 @@ Loop mỗi nhóm N — Phase 1 (HOÀN THÀNH TOÀN BỘ NHÓM TRƯỚC KHI CHUY�
                → đủ cột → bỏ qua (reuse) | thiếu cột → báo delta, DỪNG chờ approve delta
              → bảng new/partial: đọc datamart_model.yaml lấy baseline (nếu partial)
              → xác định driving table + src_stm_code → sinh từng file
-             → SELF-REVIEW 7 TC (TC6/TC7 quét lại TOÀN BỘ master + các nguồn khác, không chỉ file vừa sinh) → sửa nếu FAIL → trình bày SELF-REVIEW + file
+             → SELF-REVIEW 8 TC (TC6/TC7 quét lại TOÀN BỘ master + các nguồn khác, không chỉ file vừa sinh) → sửa nếu FAIL → trình bày SELF-REVIEW + file
              → DỪNG chờ human duyệt từng file
              → hỏi merge master → DỪNG chờ human xác nhận merge
              → ghi datamart_model.yaml (upsert new / append delta)
@@ -307,7 +307,7 @@ Mọi `src_stm_code` attribute **luôn phải có điều kiện lọc** — k�
 
 Cách xử lý tách bộ:
 1. **Tách thành N bộ attribute** — 1 bộ per partition value (scheme) hoặc per Atomic table
-2. **Mỗi bộ** gồm đầy đủ tất cả attribute của bảng (PK/NK/BK + các cột + `src_stm_code`)
+2. **Mỗi bộ** gồm đầy đủ tất cả attribute của bảng (PK/BK + các cột + `src_stm_code`)
 3. **`src_stm_code`** của mỗi bộ map từ Atomic source tương ứng
 4. Nếu Atomic source chưa xác định → `etl_logic_type = pending` toàn bộ bộ đó
 5. **Tên cột** `datamart_column` align với tên cột Atomic source tương ứng
@@ -447,7 +447,7 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
-**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 7 testcase sau và báo kết quả:
+**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 8 testcase sau (TC1, TC2, TC2b, TC3, TC4, TC5, TC6, TC7) và báo kết quả:
 
 **TC1 — Số cột khớp HLD:**
 - Đếm số attribute trong file CSV vừa sinh (theo `datamart_attribute` unique, không đếm multi-source row).
@@ -456,16 +456,27 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 - Nếu FAIL → sửa trước khi trình bày.
 
 **TC2 — etl_logic_type hợp lệ:**
-- Kiểm tra mọi row không phải PK/NK/BK: `etl_logic_type` không được trống.
+- Kiểm tra mọi row không phải PK: `etl_logic_type` không được trống (BK vẫn phải điền).
 - **Sub-check bắt buộc:** Với mỗi row có `etl_logic_type ∈ {direct, computed}`: kiểm tra `atomic_table` của row đó có phải driving table không. Nếu `atomic_table` khác driving table → phải đổi thành `join_atomic`. Ngoại lệ: `lookup_dim`, `lookup_date`, `pivot`, `pending` không áp dụng sub-check này.
 - Kiểm tra đặc biệt: khi file CSV có nhiều `atomic_table` khác nhau (ký hiệu ` / ` hoặc nhiều row khác nhau) → bảng nào không phải driving phải dùng `join_atomic`.
 - Báo: `✅ TC2 PASS` hoặc `❌ TC2 FAIL: [danh sách row sai etl_logic_type — ghi rõ atomic_table và driving table]`.
 - Nếu FAIL → sửa trước khi trình bày.
 
-**TC3 — Đầy đủ prefix table_name.column_name:**
+**TC2b — `key` hợp lệ theo loại bảng (bắt buộc, dùng bảng `examples/key_constraints.md`):**
+- Xác định loại bảng (`fact` / `dim` / `operational`) từ `datamart_entity`/tên file.
+- **Fact:** không được có bất kỳ row nào `key = PK`. Chỉ `FK → <Dim>` / `DD` / (trống) hợp lệ.
+- **Dimension:** `key ∈ {PK, BK, (trống)}` — cấm `FK`, `DD`. Bắt buộc có ít nhất 1 `PK` và ít nhất 1 `BK`.
+- **Operational:** `key ∈ {PK, BK, (trống)}` — cấm `FK`, `DD`. Bắt buộc có đúng 1 `PK` (thường là `_code` đóng vai trò PK, không tạo `_id` riêng).
+- Với mọi row `key = BK`: `etl_logic` và `etl_logic_type` không được trống (BK là business key thật, map từ Atomic — không phải surrogate generated).
+- Với mọi row `key = PK`: `description` không được lẫn chữ "BK" hoặc ngược lại — token trong `description` (nếu có nhắc lại key) phải khớp đúng giá trị cột `key` của chính dòng đó.
+- Báo: `✅ TC2b PASS` hoặc `❌ TC2b FAIL: [danh sách row vi phạm — ghi rõ key hiện tại, loại bảng, và vi phạm cụ thể]`.
+- Nếu FAIL → sửa trước khi trình bày (Fact có PK → xóa row; Dim/Operational thiếu etl_logic cho BK → điền đầy đủ).
+
+**TC3 — Đầy đủ prefix table_name.column_name + thứ tự JOIN đúng:**
 - Kiểm tra mọi column reference trong `etl_logic` có dạng `<table>.<col>`.
 - Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), NULL, ETL runtime parameter (`{etl_date}`).
-- Báo: `✅ TC3 PASS` hoặc `❌ TC3 FAIL: [danh sách etl_logic thiếu prefix]`.
+- **Sub-check thứ tự JOIN (bắt buộc):** Với mọi row có `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` mà `etl_logic` chứa từ khóa `JOIN`: kiểm tra `etl_logic` có chứa dấu `→` (hoặc `->`), và toàn bộ JOIN clause phải nằm TRƯỚC dấu `→`, cột giá trị nằm SAU. Vi phạm khi: (a) có `JOIN` nhưng không có `→`/`->`, hoặc (b) cột giá trị xuất hiện trước từ khóa `JOIN` đầu tiên trong chuỗi.
+- Báo: `✅ TC3 PASS` hoặc `❌ TC3 FAIL: [danh sách etl_logic thiếu prefix hoặc sai thứ tự JOIN — ghi rõ loại lỗi]`.
 - Nếu FAIL → sửa trước khi trình bày.
 
 **TC4 — Lọc src_stm_code đầy đủ:**
@@ -655,7 +666,7 @@ Nếu FAIL → sửa trước khi trình bày.
 - Báo: `✅ TC7 PASS: 0 issue giữa 5 nguồn` hoặc `❌ TC7 FAIL: [danh sách issue theo nguồn]` — phân loại rõ nguồn nào lệch, giá trị nào đúng (anchor = `datamart_attributes.csv`).
 - Nếu FAIL → xác định nguồn đang sai (không phải anchor — anchor luôn đúng vì là nguồn sự thật) → sửa theo Kịch bản C → **đồng thời `grep -rn "tên_cũ" Datamart/hld/DTM_{MODULE}_HLD.md` để rà soát HLD thủ công** (không tự động qua TC7) → chạy lại TC7 → báo kết quả.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 7 TC đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 8 TC (TC1, TC2, TC2b, TC3, TC4, TC5, TC6, TC7) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 
@@ -687,8 +698,9 @@ OUTPUT CHECK:
 ATTRIBUTES CHECK:
 □ Driving Table ghi rõ trong description của PK/BK
 □ Mọi mapping tra từ entity YAML files trong DataModel/Atomic/ — không đoán
-□ etl_logic_type điền mọi row — kể cả pending row, trừ PK/NK/BK
-□ etl_logic (content) trống chỉ khi key ∈ {PK, NK, BK} hoặc etl_logic_type = pending
+□ etl_logic_type điền mọi row — kể cả pending row, trừ PK (BK vẫn phải điền)
+□ etl_logic (content) trống chỉ khi key = PK hoặc etl_logic_type = pending — BK KHÔNG được để trống
+□ etl_logic có JOIN (join_atomic/lookup_dim/lookup_date): JOIN clause đặt TRƯỚC, cột giá trị SAU dấu → (không được ngược thứ tự)
 □ etl_logic: mọi column reference có table_name. prefix
 □ etl_logic có dấu phẩy bên trong → đã double-quote trong CSV
 □ computed chỉ dùng khi TẤT CẢ input đều từ driving table — nếu dùng bảng khác (kể cả EXISTS, CASE WHEN, aggregate có điều kiện) → đổi thành join_atomic
@@ -699,8 +711,9 @@ ATTRIBUTES CHECK:
 □ Pivot: số branch + thứ tự đồng nhất; mọi branch có -- BRANCH_NAME
 □ Branch residual (OTHER) flatten hoàn toàn xuống Atomic
 □ Operational ≥2 BK: driving = entity con; entity cha lấy direct từ FK trong entity con
-□ Mọi Dimension có ≥1 NK
+□ Mọi Dimension có ≥1 BK (join anchor cho Fact lookup)
 □ Mọi Operational dùng trường _code làm PK duy nhất — không tạo surrogate key (_id)
+□ Fact KHÔNG có dòng key = PK (dù có cột surrogate id kỹ thuật — để key trống)
 □ Không thiết kế Effective Date / Expiry Date / Population Date
 □ Mọi bảng dim/operational có attribute src_stm_code (cuối danh sách)
 □ src_stm_code: mọi bảng (kể cả single-source) → luôn có WHERE filter trong etl_logic (forward-compatibility)
@@ -710,7 +723,7 @@ ATTRIBUTES CHECK:
 □ src_stm_code: fact No-Driving-Table → không thêm
 □ src_stm_code: giá trị dùng dấu `_` (VD NHNCK_CERTIFICATES) — KHÔNG dùng dấu `.` theo tên file Atomic YAML (VD NHNCK.CERTIFICATES); áp dụng cả tên file DTM_{MODULE}_{table}_{src_stm_code}.csv
 □ cl_dim: tên cột scm_code / cl_code / cl_nm (align Atomic cv); Detail Mapping dùng Scheme Code= / Classification Code=
-□ nullable = false cho PK / BK / NK / FK
+□ nullable = false cho PK / BK / FK
 □ data_domain = Classification Value → key trống
 □ data_domain = Surrogate Dimension Key → key = FK → <Dim>
 □ data_domain = Surrogate Key không xuất hiện trên Fact table

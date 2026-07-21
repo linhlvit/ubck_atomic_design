@@ -33,7 +33,7 @@ erDiagram
 - Mở bằng ` ```mermaid ` — có từ `mermaid`
 - Types hợp lệ: `string`, `date`, `int`, `float`, `boolean`
 - `PK` chỉ trên Dimension; `FK` chỉ trên Fact và có `||--o{` tương ứng
-- Không có `NK` trong erDiagram (NK chỉ ghi trong Attributes CSV)
+- Không có `BK` trong erDiagram (BK chỉ ghi trong Attributes CSV)
 - Tên entity dùng underscore: `Fund_Management_Company_Dimension`
 - Tên cột dùng Title_Case: `Snapshot_Date_Dimension_Id`
 - Label quan hệ: `" "` (space)

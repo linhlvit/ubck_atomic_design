@@ -113,7 +113,21 @@ etl_logic_type = direct
 etl_logic      = fnd_mgt_co.co_nm
 ```
 
-**Vấn đề:** `etl_logic` chỉ được để trống khi `key ∈ {PK, NK, BK}` hoặc `etl_logic_type = pending`. Attribute READY khác phải có `etl_logic` đầy đủ.
+**Vấn đề:** `etl_logic` chỉ được để trống khi `key = PK` (Surrogate Key, `source_entity = Generated`) hoặc `etl_logic_type = pending`. **`BK` (business key, mọi loại bảng) vẫn phải có `etl_logic`/`etl_logic_type` đầy đủ** như attribute thường — BK là cột lấy giá trị thật từ Atomic (thường `direct` từ driving table), không phải cột generated.
+
+```
+❌ Sai — BK bị để trống vì nhầm tưởng giống PK:
+datamart_entity = Inspection Team Dimension
+datamart_attribute = Inspection Team Code
+key             = BK
+etl_logic_type  =            ← trống — SAI
+etl_logic       =            ← trống — SAI
+
+✅ Đúng:
+key             = BK
+etl_logic_type  = direct
+etl_logic       = inspection_team.inspection_team_code
+```
 
 ---
 
@@ -128,5 +142,28 @@ nullable   = false   ← sai — LEFT JOIN có thể trả NULL
 etl_logic  = LEFT JOIN cstd_bnk ON cstd_bnk.cstd_bnk_id = frgn_ivsr.cstd_bnk_id → cstd_bnk.cstd_bnk_nm
 nullable   = true
 ```
+
+---
+
+## SAI 8 — Thứ tự etl_logic ngược: giá trị trước, JOIN sau, thiếu `→`
+
+```
+❌ Sai (bài học module TT, 2026-07-21 — 19 dòng lỗi này lọt qua SELF-REVIEW):
+etl_logic_type = join_atomic
+etl_logic      = penalty_decision.issued_dt INNER JOIN penalty_decision_subject ON penalty_decision_subject.pd_subject_id = pd_subject_behavior.pd_subject_id AND penalty_decision_subject.src_stm_code = 'THANHTRA_PENALTY_DECISION_SUBJECT' INNER JOIN penalty_decision ON penalty_decision.pd_id = penalty_decision_subject.pd_id AND penalty_decision.src_stm_code = 'THANHTRA_PENALTY_DECISION'
+
+Vấn đề: giá trị đích (penalty_decision.issued_dt) bị đặt Ở ĐẦU, JOIN clause đặt SAU — ngược thứ tự
+đọc tự nhiên (ETL developer phải đọc hết JOIN mới quay lại đầu câu để biết cột nào được lấy).
+Không có dấu `→` phân tách JOIN clause và cột giá trị — không phân biệt được đâu là điều kiện
+join, đâu là cột trả về.
+
+✅ Đúng — JOIN clause trước, cột giá trị SAU dấu →:
+etl_logic_type = join_atomic
+etl_logic      = INNER JOIN penalty_decision_subject ON penalty_decision_subject.pd_subject_id = pd_subject_behavior.pd_subject_id AND penalty_decision_subject.src_stm_code = 'THANHTRA_PENALTY_DECISION_SUBJECT'
+                 INNER JOIN penalty_decision ON penalty_decision.pd_id = penalty_decision_subject.pd_id AND penalty_decision.src_stm_code = 'THANHTRA_PENALTY_DECISION'
+                 → penalty_decision.issued_dt
+```
+
+**Vấn đề:** Mọi `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` có JOIN clause phải theo đúng thứ tự: **(1) JOIN clause(s) trước, theo đúng thứ tự hop; (2) dấu `→`; (3) cột giá trị cuối cùng sau `→`**. Đây không phải khác biệt văn phong — đọc ngược thứ tự khiến ETL developer dễ nhầm bảng nguồn của điều kiện JOIN với bảng nguồn của giá trị trả về, đặc biệt khi có multi-hop.
 
 **Vấn đề:** LEFT JOIN → bảng con có thể không có record → cột phải nullable.

@@ -41,7 +41,7 @@ Thiếu `mermaid` → render thành plain text trên mọi renderer.
 | `FK` | **Chỉ** Fact entity block | Phải có `\|\|--o{` tương ứng |
 | (trống) | Mọi attribute còn lại | Measure, Classification Value, date, boolean, DD, metadata |
 
-❌ `NK`, `BK`, `DD` — không bao giờ xuất hiện trong erDiagram.
+❌ `BK`, `DD` — không bao giờ xuất hiện trong erDiagram.
 ❌ `FK` không được gắn cho Classification Value field, date field, hay measure.
 ❌ `FK` trên Dimension hoặc Tác nghiệp → parse error.
 
@@ -73,6 +73,34 @@ Calendar_Date_Dimension ||--o{ Fact_FMS_Snapshot : " "
 ```
 
 Label quan hệ: `" "` (space) — không để trống, không viết text.
+
+---
+
+## Cấm Fact-to-Fact reference — mọi FK phải trỏ tới Dimension
+
+**Rule cứng:** Trong Kimball star schema, **không tồn tại khái niệm FK trực tiếp giữa 2 Fact**. Nếu Fact con (grain mịn hơn) cần liên kết ngược lên định danh của 1 entity mà entity đó hiện đang là Fact (grain thô hơn, có measure riêng) — **không được** vẽ quan hệ `Fact_A ||--o{ Fact_B` hay đặt FK trên Fact_B trỏ thẳng `Fact_A_Id`. Thay vào đó: **tách thêm 1 Dimension chứa business key** của entity đó (chỉ chứa key + thuộc tính định danh, KHÔNG chứa measure — measure ở lại Fact gốc), rồi Fact con join tới Dimension mới này.
+
+> ❌ **Sai (đã xảy ra thực tế — module TT, sửa lỗi FK cha lần 1):**
+> ```
+> Fact_Penalty_Decision ||--o{ Fact_Penalty_Decision_Subject_Behavior : " "
+> Fact_Penalty_Decision_Subject_Behavior {
+>     varchar Penalty_Decision_Code FK
+> }
+> ```
+> Lý do sai: `Penalty Decision` đã là 1 Fact (có measure `Total_Fine_Amount`) — không thể vừa là Fact vừa đóng vai Dimension cho Fact khác join tới bằng quan hệ Fact-Fact.
+
+> ✅ **Đúng (sửa lại lần 2):** tách `Penalty_Decision_Dimension` chỉ chứa `Penalty_Decision_Code` (không chứa `Total_Fine_Amount` — measure đó ở lại `Fact_Penalty_Decision`), rồi cả `Fact_Penalty_Decision` lẫn `Fact_Penalty_Decision_Subject_Behavior` đều join tới Dimension mới này:
+> ```
+> Penalty_Decision_Dimension ||--o{ Fact_Penalty_Decision : " "
+> Penalty_Decision_Dimension ||--o{ Fact_Penalty_Decision_Subject_Behavior : " "
+> Penalty_Decision_Dimension {
+>     string Penalty_Decision_Dimension_Id PK
+>     varchar Penalty_Decision_Code
+>     string Source_System_Code
+> }
+> ```
+
+**Self-check trước khi xuất file:** với mọi quan hệ trong erDiagram, vế bên trái của `||--o{` phải luôn là 1 Dimension hoặc Calendar Date Dimension — **không bao giờ** là 1 entity có tên bắt đầu bằng `Fact_`. Nếu phát hiện `Fact_X ||--o{ Fact_Y`, đây luôn là lỗi — dừng lại, đánh giá xem entity X có cần tách Dimension riêng không (xem quy trình BƯỚC 4B trong SKILL.md).
 
 ---
 

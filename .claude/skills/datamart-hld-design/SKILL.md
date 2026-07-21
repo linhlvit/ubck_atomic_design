@@ -299,6 +299,24 @@ Thêm section này vào cuối file HLD, sau Section 3:
 | **Phân tích** | KPI aggregate nhiều đối tượng / nhiều kỳ | Star Schema — Fact + Dim |
 | **Tác nghiệp** | Lookup 1 đối tượng cụ thể | Denormalized Table — 1 row per đối tượng |
 
+### BƯỚC 4B — GRAIN-MATCHING CHO MEASURE (bắt buộc, trước khi đặt bất kỳ measure nào lên Fact)
+
+> **Bài học (module TT, 2026-07-21):** Đã quen kiểm tra fanout cho **key/business code** khi tách Fact grain N (Nhóm 4/9/13/14 — degenerate key của bảng cha bị lặp lại per-row, phải tách Dimension riêng có BK per-row unique). Nhưng **measure (số đo, cột định lượng) cũng bị fanout y hệt khi SUM**, và lỗi này KHÔNG bị bất kỳ TC nào ở trên bắt được vì nó không liên quan đến key — nó nằm ở việc chọn sai **cấp grain của con số**. Phát hiện thực tế: `Fact Penalty Decision Subject Behavior` (grain 1 QĐ × 1 đối tượng × 1 hành vi) gắn `Total_Fine_Amount` lấy từ driving table `Penalty Decision` (grain 1 QĐ) — khi 1 QĐ có nhiều đối tượng/hành vi, Fact sinh nhiều dòng đều mang cùng 1 số tiền của QĐ đó, khiến `SUM(Total_Fine_Amount)` ở Nhóm dùng chung (Nhóm 20 — Báo cáo) đếm lặp gấp nhiều lần số tiền phạt thật.
+
+**Nguyên tắc:** 1 measure chỉ được đặt lên Fact có grain **đúng bằng** grain phát sinh ra số đó — không mịn hơn (finer). Nếu Fact có grain mịn hơn cấp phát sinh của con số (do 4-way join, N:1 join...), measure đó **không được copy thẳng từ driving table cha** vào Fact.
+
+**Quy trình bắt buộc khi thiết kế Fact có measure:**
+
+1. Với mỗi measure định lượng (Currency Amount, số đo cộng dồn...) định đưa vào Fact: xác định measure đó phát sinh ở **Atomic entity nào**, và entity đó có grain gì (1 dòng đại diện cho gì).
+2. So sánh grain của measure với grain của Fact đang thiết kế:
+   - Grain measure = grain Fact → đặt measure trực tiếp lên Fact, an toàn.
+   - Grain measure **thô hơn** grain Fact (Fact có thêm N lớp join so với entity chứa measure) → **KHÔNG đặt measure đó lên Fact này**. Xử lý một trong các cách:
+     - Tìm measure cùng ý nghĩa nghiệp vụ nhưng lưu ở đúng cấp grain hơn (VD: Atomic có sẵn cả `Penalty_Decision.Total_Fine_Amount` (per-QĐ) VÀ `Penalty_Decision_Subject.Total_Fine_Amount` (per-đối tượng) — ưu tiên cái khớp gần nhất với grain Fact).
+     - Nếu vẫn còn lệch grain sau khi đổi nguồn (VD: measure per-đối tượng nhưng Fact per-đối tượng×hành vi) → **không SUM trực tiếp trên Fact**; công thức KPI phải pre-aggregate (GROUP BY/DISTINCT theo key ở đúng cấp grain của measure) trước khi SUM ở tầng ngoài. Ghi rõ công thức pre-aggregate này trong Ghi chú Nhóm, không chỉ ghi "SUM(measure)" trơn.
+     - Nếu không tìm được nguồn nào khớp — tách 1 Fact riêng đúng grain của measure đó (như đã làm cho key ở Bước tách Dimension), không gộp chung với Fact đang thiết kế.
+3. Trường hợp measure ở cấp grain thô hơn không thể chia tách chính xác về cấp mịn hơn khi 1 bản ghi cha có nhiều bản ghi con thuộc **các nhóm phân loại khác nhau** (VD: 1 đối tượng có 2 hành vi thuộc 2 nhóm "Loại hình xử lý" khác nhau, nhưng chỉ có 1 số tiền phạt chung cho cả đối tượng) — đây là giới hạn dữ liệu nguồn, không phải lỗi thiết kế. Ghi nhận rõ trong Ghi chú Nhóm (không phải Open Issue) để BA/nghiệp vụ biết và chấp nhận.
+4. **Không tự tin measure "chắc an toàn" chỉ vì đang COUNT, không SUM`** — quy tắc này áp dụng cho MỌI measure định lượng cộng dồn, độc lập với việc Fact đó có đang bị lỗi fanout key (COUNT/DISTINCT) hay không. 2 vấn đề (key fanout khi COUNT, measure fanout khi SUM) độc lập nhau và phải kiểm tra riêng.
+
 ## BƯỚC 5 — THIẾT KẾ VÀ XUẤT FILE
 
 Đọc [`reference/section_structure.md`](reference/section_structure.md) để biết format 4 section.
@@ -323,15 +341,19 @@ Chạy các kiểm tra sau (Python/grep) trên toàn file `DTM_{MODULE}_HLD.md` 
    - Heading Cụm trong Section 1 phải đúng cấp `##### Cụm N: ...` (5 dấu `#`) — không phải `###`/`####`.
    - Mọi bảng KPI khối READY phải đủ 6 cột theo `section_structure.md` (`KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú`) — không phải 5 cột thiếu "Ghi chú".
    - Nếu dùng biến thể 5-Section: mỗi bảng Fact/Dim/Operational trong Section 3 phải có ít nhất 1 dòng tương ứng trong Section 4 — Reuse Analysis.
-1. **erDiagram — entity trong quan hệ phải có block định nghĩa cùng khối:** Với mỗi khối ` ```mermaid\nerDiagram `, liệt kê entity xuất hiện trong quan hệ (`A ||--o{ B`, `A }o--|| B`...) và entity có block `{ ... }` — báo lỗi nếu có entity ở quan hệ mà không có block. Đây là lỗi thực tế đã xảy ra (QLCB Nhóm 2/3/6 — xem `reference/erdiagram_rules.md`).
-2. **Section 1 flowchart — subgraph label đúng chuẩn:** mọi khối flowchart trong Section 1 phải có đúng 3 subgraph `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`.
-3. **Section 1 flowchart — mỗi Cụm đúng 1 bảng Datamart:** đếm entry trong subgraph GOLD trừ Dimension — phải bằng 1 (xem `reference/flowchart_rules.md`).
-4. **Node ID Staging không chứa dấu chấm** (`\w+\.\w+\[` trong node ID là lỗi parse mermaid).
-5. **Code fence cân bằng:** đếm số dòng ` ``` ` trong toàn file — phải là số chẵn.
-6. **KPI_ID liên tục, không trùng lặp:** trích toàn bộ `K_{MODULE}_\d+`, kiểm tra dải số liên tục từ 1 đến max, không có ID nào xuất hiện ở ≥2 dòng bảng KPI khác nhau (trừ dòng ghi chú "Reuse từ Nhóm X" — đó là tham chiếu, không phải khai sinh trùng).
-7. **Mọi node Atomic dùng làm nguồn Dimension/Fact có tồn tại thật trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/`** — không suy diễn theo tên nghe hợp lý (VD: "Classification Value" — nếu module không có entity Atomic nào tên này, không được vẽ node đó dù nghe đúng khái niệm nghiệp vụ; xem case thực tế QLCB `Offering Method Dimension` — code nằm trực tiếp trên `Public Company Securities Offering Plan.offering_method_code`, không có bảng CV riêng).
+1. **erDiagram — entity trong quan hệ phải có block định nghĩa cùng khối:** Với mỗi khối ` ```mermaid\nerDiagram `, liệt kê entity xuất hiện trong quan hệ (`A ||--o{ B`, `A }o--|| B`...) và entity có block `{ ... }` — báo lỗi nếu có entity ở quan hệ mà không có block. Đây là lỗi thực tế đã xảy ra (QLCB Nhóm 2/3/6, TT Nhóm 4/9/13/14 — xem `reference/erdiagram_rules.md`). Viết script quét **per-block** (tách từng khối erDiagram trước khi tìm entity bên trong) — quét bằng 1 regex `[^}]*` chạy xuyên suốt toàn file sẽ nhầm ranh giới khi ≥2 entity nằm trong cùng khối, cho kết quả false positive/negative.
+2. **erDiagram — không có Fact-to-Fact reference:** với mỗi dòng quan hệ `A ||--o{ B`, entity A (vế trái) không được có tên bắt đầu bằng `Fact_`/`Fact ` — vế trái luôn phải là Dimension (xem `reference/erdiagram_rules.md`, mục "Cấm Fact-to-Fact reference"). Nếu phát hiện `Fact_X ||--o{ Fact_Y`, đây là lỗi thiết kế thật (đã xảy ra ở TT — Fact-to-Fact reference thay vì tách Dimension riêng), không phải lỗi cú pháp — phải quay lại BƯỚC 4B đánh giá tách Dimension cho entity X.
+3. **erDiagram — mọi Dimension/Operational entity có `Source_System_Code`:** với mỗi block `{ ... }` có tên kết thúc bằng `_Dimension` (trừ `Calendar_Date_Dimension`, có schema cố định riêng — xem mục "Calendar Date Dimension — schema chuẩn bắt buộc") hoặc là bảng Operational, phải chứa dòng `string Source_System_Code`. Thiếu cột này ở 1 Dimension mới tách ra giữa chừng (không qua flow BƯỚC 4B đầy đủ) là lỗi thực tế đã xảy ra ở TT (5 Dimension mới tách thiếu `Source_System_Code` dù rule đã có sẵn ở `erdiagram_rules.md`) — nguyên nhân: rule tồn tại ở reference nhưng không nằm trong checklist tự động này, nên bị bỏ sót khi chỉnh sửa cục bộ thay vì generate lại từ đầu.
+4. **Section 1 flowchart — subgraph label đúng chuẩn:** mọi khối flowchart trong Section 1 phải có đúng 3 subgraph `SRC["Staging"]` / `SIL["Atomic"]` / `GOLD["Datamart"]`.
+5. **Section 1 flowchart — mỗi Cụm đúng 1 bảng Datamart:** đếm entry trong subgraph GOLD trừ Dimension — phải bằng 1 (xem `reference/flowchart_rules.md`).
+6. **Node ID Staging không chứa dấu chấm** (`\w+\.\w+\[` trong node ID là lỗi parse mermaid).
+7. **Code fence cân bằng:** đếm số dòng ` ``` ` trong toàn file — phải là số chẵn.
+8. **KPI_ID liên tục, không trùng lặp:** trích toàn bộ `K_{MODULE}_\d+`, kiểm tra dải số liên tục từ 1 đến max, không có ID nào xuất hiện ở ≥2 dòng bảng KPI khác nhau (trừ dòng ghi chú "Reuse từ Nhóm X" — đó là tham chiếu, không phải khai sinh trùng).
+9. **Mọi node Atomic dùng làm nguồn Dimension/Fact có tồn tại thật trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/`** — không suy diễn theo tên nghe hợp lý (VD: "Classification Value" — nếu module không có entity Atomic nào tên này, không được vẽ node đó dù nghe đúng khái niệm nghiệp vụ; xem case thực tế QLCB `Offering Method Dimension` — code nằm trực tiếp trên `Public Company Securities Offering Plan.offering_method_code`, không có bảng CV riêng).
 
 Nếu phát hiện lỗi ở bất kỳ mục nào trên — sửa ngay trong file, chạy lại kiểm tra đến khi sạch, rồi mới tiếp tục tới GATE bên dưới.
+
+> **Bắt buộc chạy lại Bước 5B sau MỖI lần chỉnh sửa cục bộ giữa hội thoại** (thêm/sửa 1 Nhóm, tách 1 Dimension, đổi FK...), không chỉ 1 lần duy nhất sau khi viết xong toàn bộ HLD lần đầu. Lý do thực tế: 1 chuỗi sửa liên tiếp trên module TT (đánh giá measure fanout → tách Dimension → phát hiện Fact-to-Fact sai → sửa lại lần 2) chỉ chạy self-check thủ công một phần (chỉ mục #1, bỏ sót mục #3 vì lúc đó chưa tồn tại trong checklist) — mỗi lần chỉnh sửa cục bộ là 1 điểm có thể lộ lỗi mới hoặc để sót lỗi cũ, không đợi đến "xong hẳn" mới quét 1 lần.
 
 > **GATE — bắt buộc dừng:** Sau khi xuất file và hoàn tất Bước 5B, đặt câu hỏi: "HLD.md đã được tạo tại [đường dẫn], đã chạy review cuối (Bước 5B). Bạn xác nhận để chuyển sang Phase 2?"
 > ❌ **KHÔNG được tự chuyển sang Phase 2** khi chưa có xác nhận của human.
@@ -438,6 +460,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 - [ ] Bảng Phân tích: chỉ liệt kê Fact (không liệt kê Dimension)
 - [ ] Bảng Dimension: chỉ liệt kê Dimension, có ghi chú "Tất cả Dimension áp dụng SCD Type 4A"
 - [ ] Cột Conformed điền đúng (Có/Không)
+- [ ] **Mọi measure trên Fact có grain N (kết quả của N-way join) đã qua grain-matching (BƯỚC 4B)** — measure không copy thẳng từ driving table cha có grain thô hơn Fact; nếu measure lệch grain, công thức SUM ở Section 2 phải pre-aggregate theo đúng cấp grain của measure, không SUM trực tiếp trên Fact
 
 ### Section 4 — Reuse Analysis
 - [ ] Có bảng với 4 cột: Datamart Entity / datamart_table / reuse_status / Ghi chú
@@ -448,7 +471,7 @@ Graph TB trong Section 3 dùng mũi tên `DIM_X --> FACT_Y`. Với mỗi mũi t�
 ### erDiagram
 - [ ] Mở bằng ` ```mermaid ` — KHÔNG phải ` ```erDiagram `
 - [ ] Types chỉ dùng: `int` / `float` / `string` / `varchar` / `boolean` / `date` / `datetime`
-- [ ] Chỉ dùng label `PK` và `FK` — không có NK/BK/DD
+- [ ] Chỉ dùng label `PK` và `FK` — không có BK/DD
 - [ ] `FK` chỉ xuất hiện trong Fact entity block và phải có `||--o{` tương ứng
 - [ ] Tên entity dùng underscore (không dấu cách)
 - [ ] Tên cột dùng Title_Case_With_Underscore

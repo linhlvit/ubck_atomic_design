@@ -3,8 +3,8 @@
 ## `direct` — map thẳng từ driving table
 
 ```csv
-"Fund Management Company Dimension","fnd_mgt_co_dim","Company Code","co_code","false","Text","string","NK",
-"Mã CTQLQ — NK join anchor ETL",
+"Fund Management Company Dimension","fnd_mgt_co_dim","Company Code","co_code","false","Text","string","BK",
+"Mã CTQLQ — BK join anchor ETL",
 "fnd_mgt_co.fnd_mgt_co_code","direct","Fund Management Company","fnd_mgt_co","Fund Management Company Code","fnd_mgt_co_code"
 ```
 
@@ -42,7 +42,7 @@
 
 ---
 
-## `lookup_dim` — FK → SCD4A Dimension qua NK (current state)
+## `lookup_dim` — FK → SCD4A Dimension qua BK (current state)
 
 ```csv
 "Fact Fund Management Company Snapshot","fct_fnd_mgt_co_snpst","Fund Management Company Dimension Id","fnd_mgt_co_dim_id","false","Surrogate Dimension Key","string","FK → Fund Management Company Dimension",

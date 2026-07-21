@@ -83,7 +83,7 @@ Checklist chi tiết dùng trong Bước 2 của skill `datamart-review`.
 
 □ Key constraints:
   → FK nullable = false?
-  → PK/NK/BK nullable = false?
+  → PK/BK nullable = false?
   → Cột từ LEFT JOIN nullable = true?
   → Vi phạm → Warning
 

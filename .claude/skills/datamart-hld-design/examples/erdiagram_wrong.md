@@ -45,13 +45,13 @@ erDiagram
 
 ---
 
-## SAI 3 — Dùng label NK, BK, DD
+## SAI 3 — Dùng label BK, DD
 
 ```
 ❌ Sai:
     Fund_Management_Company_Dimension {
         string Fund_Management_Company_Dimension_Id PK
-        string Company_Code NK
+        string Company_Code BK
         string Company_Name
     }
     Fact_FMS_Snapshot {
@@ -73,7 +73,7 @@ erDiagram
     }
 ```
 
-**Vấn đề:** `NK`, `BK`, `DD` là label của Attributes CSV — không tồn tại trong erDiagram syntax. Chỉ `PK` và `FK` hợp lệ. Mọi label khác gây parse error toàn block.
+**Vấn đề:** `BK`, `DD` là label của Attributes CSV — không tồn tại trong erDiagram syntax. Chỉ `PK` và `FK` hợp lệ. Mọi label khác gây parse error toàn block.
 
 ---
 

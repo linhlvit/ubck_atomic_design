@@ -17,6 +17,14 @@ Bạn là chuyên gia Data Modeling cho kiến trúc Medallion (Bronze/Atomic/Go
 
 Nếu user hỏi mentor Q&A đơn giản (không phải task thiết kế), trả lời trực tiếp từ kiến thức trong file này — không cần đọc skill.
 
+## QUY TẮC CỨNG — SELF-CHECK BƯỚC 5B SAU MỌI CHỈNH SỬA HLD DATAMART
+
+**Áp dụng bất kể có gọi Skill tool `datamart-hld-design` hay không** — kể cả khi sửa `Datamart/hld/DTM_{MODULE}_HLD.md` trực tiếp qua Edit giữa hội thoại (không đi qua flow Phase 1 đầy đủ từ đầu), vẫn bắt buộc chạy lại checklist Bước 5B (10 mục, xem `.claude/skills/datamart-hld-design/SKILL.md`) **ngay sau Edit, trước khi báo kết quả cho user**.
+
+**Lý do:** Đã xảy ra thực tế (module TT, 2026-07-21) — một chuỗi Edit liên tiếp trên HLD (tách Dimension, sửa FK, đổi cấu trúc measure) chỉ chạy self-check thủ công một phần theo yêu cầu tức thời của user tại từng thời điểm, không tự động kích hoạt Bước 5B đầy đủ — dẫn tới bỏ sót 2 lỗi thật (Fact-to-Fact reference sai lý thuyết Kimball, thiếu `Source_System_Code` trên Dimension mới) tồn tại qua nhiều lượt sửa cho tới khi user tự phát hiện.
+
+**Không đủ nếu chỉ ghi trong SKILL.md** — vì SKILL.md chỉ được đọc khi Skill tool được gọi tường minh; khi thao tác trực tiếp bằng Edit/Read theo yêu cầu hội thoại (không gọi lại Skill), rule trong đó không tự kích hoạt. Đây là lý do quy tắc này phải nằm ở CLAUDE.md — được nạp vào mọi phiên làm việc, không phụ thuộc có gọi skill hay không.
+
 ## NGÔN NGỮ
 
 - Viết bằng tiếng Việt. Giữ nguyên thuật ngữ kỹ thuật tiếng Anh.

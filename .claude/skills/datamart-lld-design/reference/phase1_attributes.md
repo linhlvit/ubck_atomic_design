@@ -106,22 +106,30 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 
 ## Cột `key` — ràng buộc theo loại bảng
 
+> **Đổi quy ước 2026-07-21:** `NK` và `BK` đã gộp thành **1 token `BK`** dùng chung cho cả Dimension
+> và Operational (trước đây tách riêng NK=Dimension / BK=Operational, gây nhầm lẫn description ghi
+> "BK" nhưng `key` ghi "NK"). Ý nghĩa join-anchor của NK cũ vẫn giữ nguyên, ghi trong `description`.
+> Xem chi tiết [`examples/key_constraints.md`](../examples/key_constraints.md).
+
 | key | Chỉ dùng trên | Không dùng trên |
 |---|---|---|
 | `PK` | Dimension, Operational | Fact |
-| `NK` | Dimension | Fact, Operational |
+| `BK` | Dimension, Operational | Fact |
 | `FK → <Dim>` | Fact | Dimension, Operational |
 | `DD` | Fact | — |
 | (trống) | Mọi loại | — |
 
-> **Operational:** trường `_code` đóng vai trò PK (`key = PK`) — không dùng `key = BK`, không tạo surrogate key `_id`.
+> **Operational:** trường `_code` đóng vai trò PK (`key = PK`) — không tạo surrogate key `_id` riêng khi `_code` đã unique.
+> **Dimension:** bắt buộc ít nhất 1 `BK` mỗi Dimension — đây là join anchor để Fact lookup vào Dimension qua business code (không qua Atomic surrogate Id).
 
-❌ `nullable = true` cho PK / BK / NK / FK.
+❌ `nullable = true` cho PK / BK / FK.
 ❌ `data_domain = Classification Value` mà `key` không trống.
 ❌ `data_domain = Surrogate Dimension Key` mà `key` không phải `FK → <Dim>`.
-❌ `data_domain = Surrogate Key` trên Fact table.
+❌ `data_domain = Surrogate Key` trên Fact table — Fact **không có `key = PK`** dù có cột surrogate id kỹ thuật cho ETL merge/upsert (cột đó để `key` trống).
 ❌ `key = FK → Classification Dimension (scheme: X)` — không hợp lệ ở bất kỳ đâu.
 ❌ `key = DD` trên Operational — DD chỉ hợp lệ trên Fact. Branch key của pivot trên Operational dùng `key` trống.
+❌ `key = BK` mà `etl_logic`/`etl_logic_type` để trống — BK là business key thật (map từ Atomic), không phải surrogate generated; chỉ `PK` mới hợp lệ để trống (`source_entity = Generated`). Xem Vi phạm 5 trong `key_constraints.md`.
+❌ `description` dùng chữ khác với token `key` thực tế của chính dòng đó (VD: `key="BK"` nhưng description viết "NK — ...", hoặc ngược lại) — nhất quán 1 token duy nhất.
 
 ---
 
@@ -132,7 +140,7 @@ etl_logic_type, source_entity, atomic_table, source_attribute, atomic_column
 | `direct` | Map thẳng 1 Atomic col **có trong driving table** | `atomic_table.atomic_column` |
 | `computed` | Arithmetic từ nhiều Atomic cols | `atomic_table.col_a * atomic_table.col_b` |
 | `lookup_date` | FK → Calendar Date Dimension | `LOOKUP cdr_dt_dim ON cdr_dt_dim.dt = atomic_table.date_col` |
-| `lookup_dim` | FK → SCD4A Dimension qua NK (current state, không dùng date range) | `LOOKUP dim ON dim.nk_col = driving.bk_col` |
+| `lookup_dim` | FK → SCD4A Dimension qua BK (current state, không dùng date range) | `LOOKUP dim ON dim.bk_col = driving.bk_col` |
 | `join_atomic` | Cột từ Atomic table **khác** driving table | `JOIN atomic_b ON atomic_b.fk_col = driving.join_col → atomic_b.target_col` |
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
 | `pending` | Chưa có Atomic source | *(để trống)* |
@@ -142,7 +150,7 @@ Mọi tham chiếu đến ngày ETL chạy (snapshot date, population date, runt
 Ví dụ đúng: `LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = {etl_date}`, `YEAR({etl_date}) - scr_prac.brth_yr`
 
 ❌ `etl_logic_type = framework` — không tồn tại.
-❌ `etl_logic` để trống cho attribute READY không phải PK/NK/BK.
+❌ `etl_logic` để trống cho attribute READY không phải `key = PK` (Surrogate, `Generated`). **`BK` KHÔNG được để trống** — xem mục "Cột `key`" bên trên.
 ❌ `etl_logic_type = direct` mà `etl_logic` bắt đầu bằng `=`.
 ❌ `join_atomic` tham chiếu Dimension entity — phải là Atomic entity.
 
@@ -162,6 +170,21 @@ Nếu logic tính toán (`computed`) sử dụng cột từ bảng **khác** dri
 
 **Quy tắc bắt buộc `table_name.column_name`:** Mọi column reference trong `etl_logic` phải có đủ prefix.
 Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), ETL runtime parameter (`{etl_date}`), keyword `NULL`.
+
+**Quy tắc bắt buộc thứ tự JOIN clause trước, giá trị sau `→` (bài học module TT, 2026-07-21):**
+Khi `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` và có JOIN clause, `etl_logic` phải viết theo đúng thứ tự:
+1. JOIN clause(s) trước — theo đúng thứ tự hop nếu multi-hop
+2. Dấu `→`
+3. Cột giá trị cuối cùng trả về, sau `→`
+
+```
+✅ Đúng: JOIN atomic_b ON atomic_b.fk_col = driving.join_col → atomic_b.target_col
+❌ Sai:  atomic_b.target_col JOIN atomic_b ON atomic_b.fk_col = driving.join_col
+```
+
+❌ Giá trị đích đặt trước JOIN clause (đọc ngược).
+❌ Có JOIN nhưng không có dấu `→` phân tách JOIN clause và cột giá trị.
+Xem ví dụ đầy đủ trong [`examples/etl_logic_wrong.md`](../examples/etl_logic_wrong.md) mục "SAI 8".
 
 ---
 
@@ -198,11 +221,12 @@ Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `C
 
 ---
 
-## Quy tắc NK
+## Quy tắc BK trên Dimension (join anchor)
 
-`NK` = trường ETL dùng để join từ driving table vào Dimension.
-- Chỉ dùng trên **Dimension** — bắt buộc ít nhất 1 NK mỗi Dimension
-- Join từ Fact sang Dimension luôn qua business code (NK), không qua Atomic surrogate Id
+`BK` trên **Dimension** = trường ETL dùng để join từ driving table vào Dimension (vai trò trước đây gọi là "NK" — đã gộp vào `BK` từ 2026-07-21, xem `key_constraints.md`).
+- Bắt buộc ít nhất 1 `BK` mỗi Dimension
+- Join từ Fact sang Dimension luôn qua business code (`BK`), không qua Atomic surrogate Id
+- `BK` bắt buộc có `etl_logic`/`etl_logic_type` đầy đủ (thường `direct` từ driving table) — không được để trống dù vai trò là join anchor.
 
 ---
 
@@ -283,7 +307,7 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 | Attribute | etl_logic_type | etl_logic |
 |---|---|---|
 | PK (`cdr_dt_dim_id`) | `direct` | `cdr_dt.cdr_dt_id` |
-| NK (`Calendar Date`) | `direct` | `cdr_dt.cdr_dt` |
+| BK (`Calendar Date`) | `direct` | `cdr_dt.cdr_dt` |
 | `Year` | `computed` | `YEAR(cdr_dt.cdr_dt)` |
 | `Quarter` | `computed` | `QUARTER(cdr_dt.cdr_dt)` |
 | `Month` | `computed` | `MONTH(cdr_dt.cdr_dt)` |

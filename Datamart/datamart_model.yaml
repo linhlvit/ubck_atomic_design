@@ -708,9 +708,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số CMND/CCCD người liên quan — từ PROFESSIONAL_RELATIONSHIPS.IDENTITY_ID"
-        source_atomic_table: "sp_related_party"
-        source_atomic_column: "sp_related_party.related_individual_identity_nbr"
+        description: "PENDING — nguồn thật IDENTITY_INFO_C06S.IDENTITY_NUMBER chưa có Atomic entity (out-of-scope). sp_related_party.related_individual_identity_nbr chỉ là FK (IDENTITY_ID), không phải số CCCD/CMND thật — không dùng trực tiếp"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Country Code"
         physical_name: "country_code"
         data_domain: "Text"
@@ -1112,6 +1112,24 @@ entities:
         description: "Số quyết định thu hồi CCHN — NULL nếu chưa thu hồi"
         source_atomic_table: "sp_license_decision_document"
         source_atomic_column: "sp_license_decision_document.decision_nbr"
+      - logical_name: "Process Status Code"
+        physical_name: "process_status_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "PENDING — BA yêu cầu trạng thái hiệu lực CCHN từ CERTIFICATE_RECORD_STATUS_HISTORIES.NEW_STATUS (0-5), nhưng bảng này out-of-scope Atomic (audit log). Process Status Code (scheme LICENSE_CERTIFICATE_PROCESS_STATUS) là trạng thái workflow xử lý hồ sơ — KHÁC ý nghĩa, không dùng thay thế"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Process Status Name"
+        physical_name: "process_status_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "PENDING — xem ghi chú Process Status Code"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -4828,6 +4846,15 @@ entities:
         description: "Tên hành vi vi phạm — dùng text-matching phân loại. Đóng O_TT_8"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
+      - logical_name: "Total Fine Amount"
+        physical_name: "total_fine_amt"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: ""
+        description: "Tổng mức phạt tiền — lấy từ Penalty Decision (driving table gốc). Delta column bổ sung cho Báo cáo STT 20 (reuse Nhóm 13)"
+        source_atomic_table: "penalty_decision"
+        source_atomic_column: "penalty_decision.total_fine_amt"
 
   - id: "DTM-fct_penalty_decision_subject"
     logical_name: "Fact Penalty Decision Subject"
