@@ -19,6 +19,7 @@ flowchart LR
         NHNCK_Applications["NHNCK.Applications"]
         NHNCK_Professionals["NHNCK.Professionals"]
         NHNCK_ProfessionalHistories["NHNCK.ProfessionalHistories"]
+        NHNCK_Certificates["NHNCK.Certificates"]
         ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
@@ -27,31 +28,32 @@ flowchart LR
         Securities_Practitioner_License_Application["Securities Practitioner License Application"]
         Securities_Practitioner["Securities Practitioner"]
         Calendar_Date["Calendar Date"]
-        Classification_Value["Classification Value"]
+        SP_License_Certificate_Type["SP License Certificate Type"]
     end
 
     subgraph GOLD["Datamart"]
         fct_practitioner_license_certificate_snpst["Fact Practitioner License Certificate Snapshot"]
         securities_practitioner_dim["Securities Practitioner Dimension"]
         cdr_dt_dim["Calendar Date Dimension"]
-        cl_dim["Classification Dimension"]
+        sp_license_certificate_type_dim["SP License Certificate Type Dimension"]
     end
 
     NHNCK_CertificateRecords --> Securities_Practitioner_License_Certificate_Document
     NHNCK_Applications --> Securities_Practitioner_License_Application
     NHNCK_Professionals --> Securities_Practitioner
     NHNCK_ProfessionalHistories --> Securities_Practitioner
+    NHNCK_Certificates --> SP_License_Certificate_Type
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
     Securities_Practitioner_License_Certificate_Document --> fct_practitioner_license_certificate_snpst
     Securities_Practitioner_License_Application --> fct_practitioner_license_certificate_snpst
     Securities_Practitioner --> securities_practitioner_dim
     Calendar_Date --> cdr_dt_dim
-    Classification_Value --> cl_dim
+    SP_License_Certificate_Type --> sp_license_certificate_type_dim
 
     securities_practitioner_dim --> fct_practitioner_license_certificate_snpst
     cdr_dt_dim --> fct_practitioner_license_certificate_snpst
-    cl_dim --> fct_practitioner_license_certificate_snpst
+    sp_license_certificate_type_dim --> fct_practitioner_license_certificate_snpst
 ```
 
 ---
@@ -1590,7 +1592,7 @@ graph TB
 
     DIM_DATE["Calendar Date Dimension"]:::dim
     DIM_PRAC["Securities Practitioner Dimension"]:::dim
-    DIM_CLASS["Classification Dimension"]:::dim
+    DIM_CTFTP["SP License Certificate Type Dimension"]:::dim
 
     FACT_CERT["Fact Practitioner License Certificate Snapshot"]:::fact
     FACT_ANN["Fact Practitioner Daily Snapshot"]:::fact
@@ -1608,7 +1610,7 @@ graph TB
     DIM_DATE --> FACT_ANN
     DIM_PRAC --> FACT_CERT
     DIM_PRAC --> FACT_ANN
-    DIM_CLASS --> FACT_CERT
+    DIM_CTFTP --> FACT_CERT
 ```
 
 **Bảng Phân tích (Star Schema):**
@@ -1639,7 +1641,6 @@ graph TB
 | `Calendar Date Dimension` | Conformed | Lịch ngày — năm/quý/tháng/ngày | — | READY |
 | `Securities Practitioner Dimension` | Reference per module (SCD4A) | NHN — định danh, trình độ, quốc tịch, ngày sinh, trạng thái | — | READY |
 | `SP License Certificate Type Dimension` | Reference per module (SCD4A) | Loại CCHN (Môi giới, Phân tích, QLQ...) — Fundamental entity riêng, nguồn `NHNCK.CERTIFICATES` (Atomic: `sp_license_certificate_type`). Không còn là Classification Value scheme (scheme `CERTIFICATE_TYPE`/`NHNCK_CERTIFICATE_TYPE` đã bị xóa khỏi `classification_schemes.yaml` từ 2026-07-07) | — | READY |
-| `Classification Dimension` | Conformed | Danh mục phân loại — toàn bộ `cv` Atomic. PK surrogate `cl_dim_id`. BK: `(scm_code, cl_code)`. Fact join qua surrogate Id, lưu dư thừa Code field | CERTIFICATE_STATUS, CONDUCT_VIOLATION_TYPE, VIOLATION_STATUS | READY |
 
 ---
 
@@ -1652,7 +1653,6 @@ graph TB
 | SP License Certificate Type Dimension | sp_license_certificate_type_dim | new | Khai sinh chính thức (2026-07-20) — trước đó chỉ xuất hiện trong mermaid/mô tả HLD, chưa có trong Entities.csv/datamart_model.yaml. Atomic nguồn `sp_license_certificate_type` (`DataModel/working/Atomic`) coi là READY theo quy ước Datamart |
 | Fact Practitioner License Certificate Snapshot | fct_practitioner_license_certificate_snpst | new | Chưa có trong datamart_model.yaml |
 | Fact Practitioner Daily Snapshot | fct_practitioner_daily_snpst | new | Chưa có trong datamart_model.yaml |
-| Classification Dimension | cl_dim | new | Chưa có trong datamart_model.yaml |
 | Operational Practitioner 360 Profile | prac_360_prfl | new | Chưa có trong datamart_model.yaml |
 | Operational Practitioner Certificate History | prac_ctf_hist | new | Chưa có trong datamart_model.yaml |
 | Operational Practitioner Employment History | prac_emp_hist | new | Chưa có trong datamart_model.yaml |
