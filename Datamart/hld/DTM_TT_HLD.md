@@ -1515,6 +1515,16 @@ flowchart LR
 | QD-2024-004 | Công ty Quản lý Quỹ Z | Tổ chức | Định kỳ | APPROVED |
 | QD-2024-005 | CTCP Thương mại M | Tổ chức | — | ENFORCED |
 
+**Bảng KPI (Attribute hiển thị — Tác nghiệp):**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
+|---|---|---|---|---|---|
+| K_TT_111 | Mã vụ việc | — | Attribute | `Penalty Decision Subject.Penalty Decision Code` | |
+| K_TT_112 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | |
+| K_TT_113 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | |
+| K_TT_114 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team` | nullable nếu hồ sơ không từ đoàn TT/KT |
+| K_TT_115 | Trạng thái | — | Attribute | `Penalty Decision.Life Cycle Status Code` | scheme PENALTY_DECISION_STATUS, 7 giá trị |
+
 **Schema bảng tác nghiệp:**
 
 ```mermaid
