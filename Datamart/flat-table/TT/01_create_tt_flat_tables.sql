@@ -9,16 +9,16 @@
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_activity_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT INSPECTION TEAM ACTIVITY
-    fct_inspection_team_activity_id    String          COMMENT 'PK',
+    fct_inspection_team_activity_id    String              COMMENT 'Surrogate id kỹ thuật',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                              Nullable(Date)  COMMENT 'Ngày quyết định — từ Calendar Date Dimension',
+    cdr_dt                              Nullable(Date)      COMMENT 'Ngày quyết định thanh tra — từ Calendar Date Dimension',
 
     -- From: INSPECTION TEAM DIMENSION
-    inspection_team_code               String          COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
-    start_dt                           Nullable(Date)   COMMENT 'Ngày bắt đầu — từ Inspection Team Dimension',
-    end_dt                             Nullable(Date)   COMMENT 'Ngày kết thúc — từ Inspection Team Dimension',
-    content                            Nullable(String) COMMENT 'Nội dung tổng quát — từ Inspection Team Dimension'
+    inspection_team_code                String              COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
+    start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
+    end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
+    content                             Nullable(String)    COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -32,16 +32,16 @@ COMMENT 'Flat table — Fact Inspection Team Activity × Calendar Date Dimension
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_activity_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT EXAMINATION TEAM ACTIVITY
-    fct_examination_team_activity_id   String          COMMENT 'PK',
+    fct_examination_team_activity_id   String              COMMENT 'Surrogate id kỹ thuật',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                              Nullable(Date)  COMMENT 'Ngày quyết định — từ Calendar Date Dimension',
+    cdr_dt                              Nullable(Date)      COMMENT 'Ngày quyết định kiểm tra — từ Calendar Date Dimension',
 
     -- From: EXAMINATION TEAM DIMENSION
-    examination_team_code              String          COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
-    start_dt                           Nullable(Date)   COMMENT 'Ngày bắt đầu — từ Examination Team Dimension',
-    end_dt                             Nullable(Date)   COMMENT 'Ngày kết thúc — từ Examination Team Dimension',
-    content                            Nullable(String) COMMENT 'Nội dung tổng quát — từ Examination Team Dimension'
+    examination_team_code               String              COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
+    start_dt                            Nullable(Date)       COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
+    end_dt                               Nullable(Date)       COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
+    content                             Nullable(String)    COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -55,17 +55,25 @@ COMMENT 'Flat table — Fact Examination Team Activity × Calendar Date Dimensio
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT INSPECTION TEAM TARGET ACTIVITY
-    fct_inspection_team_target_activity_id  String           COMMENT 'PK',
-    inspection_team_code                    String           COMMENT 'Degenerate key — mã đoàn thanh tra',
-    target_tp_code                          Nullable(String) COMMENT 'Loại đối tượng — map 1:1 từ nguồn',
+    fct_inspection_team_target_activity_id  String          COMMENT 'Surrogate id kỹ thuật',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                                   Nullable(Date)   COMMENT 'Ngày quyết định — từ Calendar Date Dimension'
+    cdr_dt                                   Nullable(Date)  COMMENT 'Ngày quyết định thanh tra (join qua Inspection Team) — từ Calendar Date Dimension',
+
+    -- From: INSPECTION TEAM TARGET DIMENSION
+    inspection_team_target_code             String           COMMENT 'BK per-row unique — từ Inspection Team Target Dimension',
+    target_tp_code                          Nullable(String) COMMENT 'Loại đối tượng — từ Inspection Team Target Dimension',
+
+    -- From: INSPECTION TEAM DIMENSION (Dimension cha)
+    inspection_team_code                    String           COMMENT 'BK — mã hồ sơ đoàn thanh tra — từ Inspection Team Dimension',
+    start_dt                                Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn thanh tra — từ Inspection Team Dimension',
+    end_dt                                    Nullable(Date)   COMMENT 'Ngày kết thúc đoàn thanh tra — từ Inspection Team Dimension',
+    content                                 Nullable(String) COMMENT 'Nội dung tổng quát cuộc thanh tra — từ Inspection Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), inspection_team_code, target_tp_code)
-COMMENT 'Flat table — Fact Inspection Team Target Activity × Calendar Date Dimension'
+ORDER BY (assumeNotNull(cdr_dt), inspection_team_target_code)
+COMMENT 'Flat table — Fact Inspection Team Target Activity × Calendar Date Dimension × Inspection Team Target Dimension × Inspection Team Dimension'
 ;
 
 -- ------------------------------------------------------------
@@ -74,17 +82,25 @@ COMMENT 'Flat table — Fact Inspection Team Target Activity × Calendar Date Di
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_target_activity_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT EXAMINATION TEAM TARGET ACTIVITY
-    fct_examination_team_target_activity_id String           COMMENT 'PK',
-    examination_team_code                   String           COMMENT 'Degenerate key — mã vụ kiểm tra',
-    target_tp_code                          Nullable(String) COMMENT 'Loại đối tượng — map 1:1 từ nguồn',
+    fct_examination_team_target_activity_id  String          COMMENT 'Surrogate id kỹ thuật',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                                   Nullable(Date)   COMMENT 'Ngày quyết định — từ Calendar Date Dimension'
+    cdr_dt                                    Nullable(Date)  COMMENT 'Ngày quyết định kiểm tra (join qua Examination Team) — từ Calendar Date Dimension',
+
+    -- From: EXAMINATION TEAM TARGET DIMENSION
+    examination_team_target_code             String           COMMENT 'BK per-row unique — từ Examination Team Target Dimension',
+    target_tp_code                           Nullable(String) COMMENT 'Loại đối tượng — từ Examination Team Target Dimension',
+
+    -- From: EXAMINATION TEAM DIMENSION (Dimension cha)
+    examination_team_code                    String           COMMENT 'BK — mã hồ sơ đoàn kiểm tra — từ Examination Team Dimension',
+    start_dt                                 Nullable(Date)   COMMENT 'Ngày bắt đầu đoàn kiểm tra — từ Examination Team Dimension',
+    end_dt                                     Nullable(Date)   COMMENT 'Ngày kết thúc đoàn kiểm tra — từ Examination Team Dimension',
+    content                                  Nullable(String) COMMENT 'Nội dung kiểm tra tổng quát — từ Examination Team Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), examination_team_code, target_tp_code)
-COMMENT 'Flat table — Fact Examination Team Target Activity × Calendar Date Dimension'
+ORDER BY (assumeNotNull(cdr_dt), examination_team_target_code)
+COMMENT 'Flat table — Fact Examination Team Target Activity × Calendar Date Dimension × Examination Team Target Dimension × Examination Team Dimension'
 ;
 
 -- ------------------------------------------------------------
@@ -93,17 +109,19 @@ COMMENT 'Flat table — Fact Examination Team Target Activity × Calendar Date D
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT PENALTY DECISION
-    fct_penalty_decision_id     String                     COMMENT 'PK',
-    pd_code                     String                     COMMENT 'Degenerate key — mã quyết định xử phạt',
-    total_fine_amt               Nullable(Decimal(23,2))    COMMENT 'Tổng mức phạt tiền',
+    fct_penalty_decision_id             String                      COMMENT 'Surrogate id kỹ thuật',
+    total_fine_amt                      Nullable(Decimal(23,2))     COMMENT 'Tổng mức phạt tiền — measure',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                       Nullable(Date)             COMMENT 'Ngày ban hành quyết định — từ Calendar Date Dimension'
+    cdr_dt                              Nullable(Date)              COMMENT 'Ngày ban hành quyết định xử phạt — từ Calendar Date Dimension',
+
+    -- From: PENALTY DECISION DIMENSION
+    penalty_decision_code               String                      COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), pd_code)
-COMMENT 'Flat table — Fact Penalty Decision × Calendar Date Dimension'
+ORDER BY (assumeNotNull(cdr_dt), penalty_decision_code)
+COMMENT 'Flat table — Fact Penalty Decision × Calendar Date Dimension × Penalty Decision Dimension'
 ;
 
 -- ------------------------------------------------------------
@@ -112,19 +130,26 @@ COMMENT 'Flat table — Fact Penalty Decision × Calendar Date Dimension'
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT PENALTY DECISION SUBJECT BEHAVIOR
-    fct_penalty_decision_subject_behavior_id String                  COMMENT 'PK',
-    pd_code                                  String                  COMMENT 'Degenerate key — mã quyết định xử phạt',
-    pd_subject_code                          String                  COMMENT 'Degenerate key — mã đối tượng bị xử phạt',
-    violation_behavior_nm                    Nullable(String)        COMMENT 'Tên hành vi vi phạm — dùng text-matching phân loại',
-    total_fine_amt                            Nullable(Decimal(23,2)) COMMENT 'Tổng mức phạt tiền — từ Penalty Decision',
+    fct_penalty_decision_subject_behavior_id  String           COMMENT 'Surrogate id kỹ thuật',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                                    Nullable(Date)          COMMENT 'Ngày ban hành quyết định — từ Calendar Date Dimension'
+    cdr_dt                                     Nullable(Date)   COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision Subject → Penalty Decision) — từ Calendar Date Dimension',
+
+    -- From: PENALTY DECISION SUBJECT BEHAVIOR DIMENSION
+    penalty_decision_subject_behavior_code    String           COMMENT 'BK per-row unique — từ Penalty Decision Subject Behavior Dimension',
+    violation_behavior_nm                     Nullable(String) COMMENT 'Tên hành vi vi phạm — từ Penalty Decision Subject Behavior Dimension',
+
+    -- From: PENALTY DECISION DIMENSION
+    penalty_decision_code                     String           COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension',
+
+    -- From: PENALTY DECISION SUBJECT DIMENSION
+    penalty_decision_subject_code             String           COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension',
+    subject_tp_code                           Nullable(String) COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), pd_code, pd_subject_code)
-COMMENT 'Flat table — Fact Penalty Decision Subject Behavior × Calendar Date Dimension'
+ORDER BY (assumeNotNull(cdr_dt), penalty_decision_subject_behavior_code)
+COMMENT 'Flat table — Fact Penalty Decision Subject Behavior × Calendar Date Dimension × Penalty Decision Subject Behavior Dimension × Penalty Decision Dimension × Penalty Decision Subject Dimension'
 ;
 
 -- ------------------------------------------------------------
@@ -133,101 +158,107 @@ COMMENT 'Flat table — Fact Penalty Decision Subject Behavior × Calendar Date 
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT PENALTY DECISION SUBJECT
-    fct_penalty_decision_subject_id  String            COMMENT 'PK',
-    pd_code                          String            COMMENT 'Degenerate key — mã quyết định xử phạt',
-    subject_tp_code                  Nullable(String)  COMMENT 'Loại đối tượng — INDIVIDUAL/ORGANIZATION',
+    fct_penalty_decision_subject_id      String            COMMENT 'Surrogate id kỹ thuật',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                            Nullable(Date)    COMMENT 'Ngày ban hành quyết định — từ Calendar Date Dimension'
+    cdr_dt                                Nullable(Date)    COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision) — từ Calendar Date Dimension',
+
+    -- From: PENALTY DECISION SUBJECT DIMENSION
+    penalty_decision_subject_code        String            COMMENT 'BK per-row unique — từ Penalty Decision Subject Dimension',
+    subject_tp_code                      Nullable(String)  COMMENT 'Loại đối tượng — từ Penalty Decision Subject Dimension',
+
+    -- From: PENALTY DECISION DIMENSION
+    penalty_decision_code                String            COMMENT 'BK — mã quyết định xử phạt — từ Penalty Decision Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), pd_code)
-COMMENT 'Flat table — Fact Penalty Decision Subject × Calendar Date Dimension'
+ORDER BY (assumeNotNull(cdr_dt), penalty_decision_subject_code)
+COMMENT 'Flat table — Fact Penalty Decision Subject × Calendar Date Dimension × Penalty Decision Subject Dimension × Penalty Decision Dimension'
 ;
 
 -- ------------------------------------------------------------
--- 8. Inspection Case List (Operational)
+-- 8. Operational Inspection Case List
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_opr_inspection_case_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL INSPECTION CASE LIST
-    opr_inspection_case_list_id    String            COMMENT 'PK',
-    inspection_team_target_code    String            COMMENT 'BK — mã lượt đoàn×đối tượng',
-    inspection_team_code           String            COMMENT 'Mã vụ việc — mã đoàn thanh tra',
-    target_nm                      Nullable(String)  COMMENT 'Tên đối tượng được thanh tra',
-    target_tp_code                 Nullable(String)  COMMENT 'Phân loại đối tượng',
-    form_tp_code                   Nullable(String)  COMMENT 'Loại hình — scheme TT_REVIEW_FORM_TYPE',
-    status_code                    Nullable(String)  COMMENT 'Trạng thái — ETL-derived',
-    decision_dt                    Nullable(Date)     COMMENT 'Ngày ban hành quyết định',
-    decision_year                  Nullable(Int64)    COMMENT 'Năm ban hành quyết định'
+    inspection_team_target_code   String              COMMENT 'PK — mã lượt đoàn×đối tượng, unique per dòng',
+    inspection_team_code          String              COMMENT 'Mã vụ việc — mã đoàn thanh tra',
+    target_nm                     Nullable(String)    COMMENT 'Tên đối tượng được thanh tra',
+    target_tp_code                Nullable(String)    COMMENT 'Phân loại đối tượng',
+    form_tp_code                  Nullable(String)    COMMENT 'Loại hình — scheme TT_REVIEW_FORM_TYPE',
+    status_code                   Nullable(String)    COMMENT 'Trạng thái — ETL-derived từ Start_Date/End_Date',
+    decision_dt                   Nullable(Date)      COMMENT 'Ngày ban hành quyết định thanh tra',
+    decision_year                 Nullable(Int64)     COMMENT 'Năm ban hành quyết định — slicer',
+    src_stm_code                  String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
 ORDER BY (assumeNotNull(decision_dt), inspection_team_target_code)
-COMMENT 'Flat table — Inspection Case List (Operational)'
+COMMENT 'Flat table — Operational Inspection Case List'
 ;
 
 -- ------------------------------------------------------------
--- 9. Examination Case List (Operational)
+-- 9. Operational Examination Case List
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_opr_examination_case_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL EXAMINATION CASE LIST
-    opr_examination_case_list_id   String            COMMENT 'PK',
-    examination_team_target_code   String            COMMENT 'BK — mã lượt vụ×đối tượng',
-    examination_team_code          String            COMMENT 'Mã vụ việc — mã đoàn kiểm tra',
-    target_nm                      Nullable(String)  COMMENT 'Tên đối tượng được kiểm tra',
-    target_tp_code                 Nullable(String)  COMMENT 'Phân loại đối tượng',
-    form_tp_code                   Nullable(String)  COMMENT 'Loại hình — scheme TT_REVIEW_FORM_TYPE',
-    status_code                    Nullable(String)  COMMENT 'Trạng thái — ETL-derived',
-    decision_dt                    Nullable(Date)     COMMENT 'Ngày ban hành quyết định',
-    decision_year                  Nullable(Int64)    COMMENT 'Năm ban hành quyết định'
+    examination_team_target_code   String              COMMENT 'PK — mã lượt vụ×đối tượng, unique per dòng',
+    examination_team_code          String              COMMENT 'Mã vụ việc — mã đoàn kiểm tra',
+    target_nm                      Nullable(String)    COMMENT 'Tên đối tượng được kiểm tra',
+    target_tp_code                 Nullable(String)    COMMENT 'Phân loại đối tượng',
+    form_tp_code                   Nullable(String)    COMMENT 'Loại hình — scheme TT_REVIEW_FORM_TYPE',
+    status_code                    Nullable(String)    COMMENT 'Trạng thái — ETL-derived từ Start_Date/End_Date',
+    decision_dt                    Nullable(Date)      COMMENT 'Ngày ban hành quyết định kiểm tra',
+    decision_year                  Nullable(Int64)     COMMENT 'Năm ban hành quyết định — slicer',
+    src_stm_code                   String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
 ORDER BY (assumeNotNull(decision_dt), examination_team_target_code)
-COMMENT 'Flat table — Examination Case List (Operational)'
+COMMENT 'Flat table — Operational Examination Case List'
 ;
 
 -- ------------------------------------------------------------
--- 10. Penalty Decision List (Operational)
+-- 10. Operational Penalty Decision List
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_opr_penalty_decision_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL PENALTY DECISION LIST
-    opr_penalty_decision_list_id   String                    COMMENT 'PK',
-    pd_subject_code                String                    COMMENT 'BK — mã lượt QĐ×đối tượng',
-    pd_code                        String                    COMMENT 'Mã vụ việc — mã quyết định xử phạt',
-    subject_nm                     Nullable(String)          COMMENT 'Tên đối tượng bị xử phạt',
-    subject_tp_code                Nullable(String)          COMMENT 'Phân loại đối tượng',
-    form_tp_code                   Nullable(String)          COMMENT 'Loại hình — ETL-derived qua Violation Case',
-    life_cycle_status_code         String                    COMMENT 'Trạng thái — scheme PENALTY_DECISION_STATUS',
-    issued_dt                      Nullable(Date)             COMMENT 'Ngày ban hành quyết định',
-    issued_year                    Nullable(Int64)            COMMENT 'Năm ban hành quyết định',
-    total_fine_amt                  Nullable(Decimal(23,2))   COMMENT 'Tổng mức phạt tiền'
+    pd_subject_code            String                      COMMENT 'PK — mã lượt QĐ×đối tượng, unique per dòng',
+    pd_code                    String                      COMMENT 'Mã vụ việc — mã quyết định xử phạt',
+    subject_nm                 Nullable(String)            COMMENT 'Tên đối tượng bị xử phạt',
+    subject_tp_code            Nullable(String)            COMMENT 'Phân loại đối tượng (INDIVIDUAL/ORGANIZATION)',
+    form_tp_code                Nullable(String)            COMMENT 'Loại hình — ETL-derived qua Violation Case → Inspection/Examination Team, nullable nếu không từ đoàn TT/KT',
+    life_cycle_status_code     String                      COMMENT 'Trạng thái — scheme PENALTY_DECISION_STATUS (7 giá trị)',
+    issued_dt                  Nullable(Date)              COMMENT 'Ngày ban hành quyết định',
+    issued_year                Nullable(Int64)             COMMENT 'Năm ban hành quyết định — slicer',
+    total_fine_amt              Nullable(Decimal(23,2))     COMMENT 'Tổng mức phạt tiền đối với đối tượng này',
+    src_stm_code                String                      COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
 ORDER BY (assumeNotNull(issued_dt), pd_subject_code)
-COMMENT 'Flat table — Penalty Decision List (Operational)'
+COMMENT 'Flat table — Operational Penalty Decision List'
 ;
 
 -- ------------------------------------------------------------
--- 11. Petition List (Operational)
+-- 11. Operational Petition List
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_opr_petition_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL PETITION LIST
-    petition_code                  String            COMMENT 'PK — mã đơn thư',
-    petition_category_code         Nullable(String)  COMMENT 'Loại đơn — FEEDBACK_SUGGESTION/COMPLAINT/DENUNCIATION',
-    content                        Nullable(String)  COMMENT 'Nội dung tóm tắt đơn thư',
-    life_cycle_status_code         Nullable(String)  COMMENT 'Trạng thái — RECEIVED/PROCESSED',
-    received_dt                    Nullable(Date)     COMMENT 'Ngày tiếp nhận đơn thư',
-    received_year                  Nullable(Int64)    COMMENT 'Năm tiếp nhận'
+    petition_code            String              COMMENT 'BK — mã đơn thư tự sinh UNIQUE',
+    petition_category_code   Nullable(String)    COMMENT 'Loại đơn — 3 giá trị FEEDBACK_SUGGESTION/COMPLAINT/DENUNCIATION',
+    content                  Nullable(String)    COMMENT 'Nội dung tóm tắt đơn thư',
+    life_cycle_status_code   Nullable(String)    COMMENT 'Trạng thái — 2 giá trị RECEIVED/PROCESSED',
+    received_dt              Nullable(Date)      COMMENT 'Ngày tiếp nhận đơn thư',
+    received_year            Nullable(Int64)     COMMENT 'Năm tiếp nhận — slicer',
+    src_stm_code              String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(received_dt))
 ORDER BY (assumeNotNull(received_dt), petition_code)
-COMMENT 'Flat table — Petition List (Operational)'
+COMMENT 'Flat table — Operational Petition List'
 ;

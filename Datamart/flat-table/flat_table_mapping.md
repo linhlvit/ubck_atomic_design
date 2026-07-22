@@ -1681,17 +1681,73 @@ _Không có dim join (operational / self-contained table)._
 
 ## TT
 
-**5 bảng flat** · **123 KPI unique**
+_Cập nhật 2026-07-22: thiết kế lại theo `DTM_TT_HLD.md` hiện hành (redesign Phương án B — 6 nhóm GROUP BY động) — nội dung bảng dưới đây thay thế hoàn toàn bản cũ (5 bảng, tên/cấu trúc không còn khớp thiết kế)._
+
+**11 bảng flat** · **84 KPI unique**
 
 ---
 
-### `datamart.tt_fact_inspection_case_activity_flat`
+### `datamart.tt_fct_inspection_team_activity_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `fact` |
-| **Entity nguồn** | Fact Inspection Case Activity |
-| **Bảng fact/operational** | `datamart.tt_fact_inspection_case_activity` |
+| **Entity nguồn** | Fact Inspection Team Activity |
+| **Bảng fact/operational** | `datamart.fct_inspection_team_activity` |
+| **PK** | `—` |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `calendar_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Inspection Team Dimension | `datamart.inspection_team_dim` | `inspection_team_dim_id` | `inspection_team_dim_id` | ✗ (SCD4A) |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 1 — KPI cards Thống kê chung | 7 |
+| Nhóm 2 — Biểu đồ Thống kê số vụ việc theo tháng | 3 |
+| Nhóm 3 — Cơ cấu vi phạm theo loại hành vi | 2 |
+
+---
+
+### `datamart.tt_fct_examination_team_activity_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Examination Team Activity |
+| **Bảng fact/operational** | `datamart.fct_examination_team_activity` |
+| **PK** | `—` |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `calendar_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Examination Team Dimension | `datamart.examination_team_dim` | `examination_team_dim_id` | `examination_team_dim_id` | ✗ (SCD4A) |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 6 — KPI cards Thống kê chung Kiểm tra | 7 |
+| Nhóm 7 — Biểu đồ xu hướng số cuộc kiểm tra theo tháng | 3 |
+| Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi | 2 |
+
+---
+
+### `datamart.tt_fct_inspection_team_target_activity_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Inspection Team Target Activity |
+| **Bảng fact/operational** | `datamart.fct_inspection_team_target_activity` |
 | **PK** | `—` |
 | **Số dim join** | 3 |
 
@@ -1699,37 +1755,107 @@ _Không có dim join (operational / self-contained table)._
 
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.tt_calendar_date_dimension` | `received_date_dimension_id` | `date_dimension_id` | ✗ |
-| Classification Dimension | `datamart.tt_classification_dimension` | `subject_category_dimension_id` | `classification_dimension_id` | ✗ |
-| Classification Dimension | `datamart.tt_classification_dimension` | `violation_type_dimension_id` | `classification_dimension_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `calendar_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Inspection Team Target Dimension | `datamart.inspection_team_target_dim` | `inspection_team_target_dim_id` | `inspection_team_target_dim_id` | ✗ |
+| Inspection Team Dimension (cha) | `datamart.inspection_team_dim` | `inspection_team_dim_id` | `inspection_team_dim_id` | ✗ (SCD4A) |
 
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 1 — KPI cards Thống kê chung | 6 |
-| Nhóm 2 — Biểu đồ thống kê số vụ việc theo tháng | 3 |
-| Nhóm 3 — Cơ cấu vi phạm theo loại hành vi | 6 |
-| Nhóm 4 — Cơ cấu vi phạm theo đối tượng | 8 |
-| Nhóm 6 — KPI cards Thống kê chung Kiểm tra | 6 |
-| Nhóm 7 — Biểu đồ xu hướng số cuộc kiểm tra theo tháng | 3 |
-| Nhóm 8 — Cơ cấu kiểm tra theo loại hành vi | 22 |
-| Nhóm 9 — Cơ cấu kiểm tra theo đối tượng | 11 |
-| Nhóm 11 — KPI cards Thống kê xử phạt | 2 |
-| Nhóm 13 — Cơ cấu xử phạt theo loại hành vi | 11 |
-| Nhóm 14 — Cơ cấu xử phạt theo đối tượng | 4 |
-| Nhóm 16 — KPI card Tổng đơn đã xử lý | 1 |
-| Nhóm 18 — Cơ cấu đơn thư theo loại | 3 |
+| Nhóm 4 — Cơ cấu vi phạm theo đối tượng | 2 |
 
 ---
 
-### `datamart.tt_fact_penalty_decision_flat`
+### `datamart.tt_fct_examination_team_target_activity_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Examination Team Target Activity |
+| **Bảng fact/operational** | `datamart.fct_examination_team_target_activity` |
+| **PK** | `—` |
+| **Số dim join** | 3 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `calendar_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Examination Team Target Dimension | `datamart.examination_team_target_dim` | `examination_team_target_dim_id` | `examination_team_target_dim_id` | ✗ |
+| Examination Team Dimension (cha) | `datamart.examination_team_dim` | `examination_team_dim_id` | `examination_team_dim_id` | ✗ (SCD4A) |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 9 — Cơ cấu kiểm tra theo đối tượng | 2 |
+
+---
+
+### `datamart.tt_fct_penalty_decision_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `fact` |
 | **Entity nguồn** | Fact Penalty Decision |
-| **Bảng fact/operational** | `datamart.tt_fact_penalty_decision` |
+| **Bảng fact/operational** | `datamart.fct_penalty_decision` |
+| **PK** | `—` |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `calendar_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Penalty Decision Dimension | `datamart.penalty_decision_dim` | `penalty_decision_dim_id` | `penalty_decision_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 11 — KPI cards Thống kê chung Xử phạt | 5 |
+| Nhóm 12 — Biểu đồ thống kê xử phạt theo tháng | 2 |
+
+---
+
+### `datamart.tt_fct_penalty_decision_subject_behavior_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Penalty Decision Subject Behavior |
+| **Bảng fact/operational** | `datamart.fct_penalty_decision_subject_behavior` |
+| **PK** | `—` |
+| **Số dim join** | 4 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `calendar_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Penalty Decision Subject Behavior Dimension | `datamart.penalty_decision_subject_behavior_dim` | `penalty_decision_subject_behavior_dim_id` | `penalty_decision_subject_behavior_dim_id` | ✗ |
+| Penalty Decision Dimension | `datamart.penalty_decision_dim` | `penalty_decision_dim_id` | `penalty_decision_dim_id` | ✗ |
+| Penalty Decision Subject Dimension | `datamart.penalty_decision_subject_dim` | `penalty_decision_subject_dim_id` | `penalty_decision_subject_dim_id` | ✗ |
+
+> `Total_Fine_Amount` KHÔNG có trên bảng này (grain per-hành vi mịn hơn per-đối tượng — đặt measure sẽ fanout khi SUM). Xem Nhóm 20 / `tt_opr_penalty_decision_list_flat` để lấy đúng số tiền per-subject.
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 13 — Cơ cấu xử phạt theo loại hành vi | 2 |
+| Nhóm 20 — Báo cáo hoạt động vi phạm trên TTCK (reuse) | 15 |
+
+---
+
+### `datamart.tt_fct_penalty_decision_subject_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Penalty Decision Subject |
+| **Bảng fact/operational** | `datamart.fct_penalty_decision_subject` |
 | **PK** | `—` |
 | **Số dim join** | 3 |
 
@@ -1737,30 +1863,26 @@ _Không có dim join (operational / self-contained table)._
 
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.tt_calendar_date_dimension` | `violation_report_date_dimension_id` | `date_dimension_id` | ✗ |
-| Classification Dimension | `datamart.tt_classification_dimension` | `penalty_subject_category_dimension_id` | `classification_dimension_id` | ✗ |
-| Classification Dimension | `datamart.tt_classification_dimension` | `violation_type_dimension_id` | `classification_dimension_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `calendar_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Penalty Decision Subject Dimension | `datamart.penalty_decision_subject_dim` | `penalty_decision_subject_dim_id` | `penalty_decision_subject_dim_id` | ✗ |
+| Penalty Decision Dimension | `datamart.penalty_decision_dim` | `penalty_decision_dim_id` | `penalty_decision_dim_id` | ✗ |
 
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 11 — KPI cards Thống kê xử phạt | 2 |
-| Nhóm 12 — Biểu đồ thống kê xử phạt theo tháng | 2 |
-| Nhóm 13 — Cơ cấu xử phạt theo loại hành vi | 11 |
-| Nhóm 14 — Cơ cấu xử phạt theo đối tượng | 4 |
-| STT 20 — Báo cáo hoạt động vi phạm TTCK | 12 |
+| Nhóm 14 — Cơ cấu xử phạt theo đối tượng | 2 |
 
 ---
 
-### `datamart.tt_inspection_case_list_flat`
+### `datamart.tt_opr_inspection_case_list_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Inspection Case List |
-| **Bảng fact/operational** | `datamart.tt_inspection_case_list` |
-| **PK** | `inspection_case_code` |
+| **Entity nguồn** | Operational Inspection Case List |
+| **Bảng fact/operational** | `datamart.opr_inspection_case_list` |
+| **PK** | `inspection_team_target_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -1769,19 +1891,18 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 5 — Danh sách vụ việc thanh tra | 1 |
-| Nhóm 10 — Danh sách vụ việc kiểm tra | 1 |
+| Nhóm 5 — Danh sách vụ việc Thanh tra | 5 |
 
 ---
 
-### `datamart.tt_penalty_decision_list_flat`
+### `datamart.tt_opr_examination_case_list_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Penalty Decision List |
-| **Bảng fact/operational** | `datamart.tt_penalty_decision_list` |
-| **PK** | `penalty_decision_code` |
+| **Entity nguồn** | Operational Examination Case List |
+| **Bảng fact/operational** | `datamart.opr_examination_case_list` |
+| **PK** | `examination_team_target_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -1790,18 +1911,18 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 15 — Danh sách quyết định xử phạt | 1 |
+| Nhóm 10 — Danh sách vụ việc Kiểm tra | 5 |
 
 ---
 
-### `datamart.tt_complaint_petition_list_flat`
+### `datamart.tt_opr_penalty_decision_list_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
-| **Entity nguồn** | Complaint Petition List |
-| **Bảng fact/operational** | `datamart.tt_complaint_petition_list` |
-| **PK** | `complaint_petition_code` |
+| **Entity nguồn** | Operational Penalty Decision List |
+| **Bảng fact/operational** | `datamart.opr_penalty_decision_list` |
+| **PK** | `pd_subject_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -1810,7 +1931,27 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 16 — KPI card Tổng đơn đã xử lý | 1 |
-| Nhóm 17 — Biểu đồ số đơn đã xử lý theo tháng | 1 |
-| Nhóm 18 — Cơ cấu đơn thư theo loại | 3 |
-| Nhóm 19 — Danh sách đơn thư | 1 |
+| Nhóm 15 — Danh sách quyết định xử phạt | 5 |
+
+---
+
+### `datamart.tt_opr_petition_list_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Operational Petition List |
+| **Bảng fact/operational** | `datamart.opr_petition_list` |
+| **PK** | `petition_code` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table). Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 16 — KPI card Tổng số đơn đã xử lý | 3 |
+| Nhóm 17 — Biểu đồ Thống kê tình hình xử lý đơn thư | 1 |
+| Nhóm 18 — Biểu đồ Cơ cấu theo loại đơn thư | 7 |
+| Nhóm 19 — Danh sách đơn thư chi tiết | 4 |

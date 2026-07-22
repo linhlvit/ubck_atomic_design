@@ -2,7 +2,7 @@
 
 **Phiên bản:** 2.4
 **Ngày:** 27/04/2026
-**Phạm vi:** Tab **TỔNG QUAN** + **KIỂM TRA** + **XỬ PHẠT** + **ĐƠN THƯ** + **Báo cáo hoạt động vi phạm TTCK** — 4 tab dashboard + 1 báo cáo, 20 nhóm (K_TT_1–150)
+**Phạm vi:** Tab **TỔNG QUAN** + **KIỂM TRA** + **XỬ PHẠT** + **ĐƠN THƯ** + **Báo cáo hoạt động vi phạm TTCK** — 4 tab dashboard + 1 báo cáo, 20 nhóm (K_TT_1–84)
 
 ---
 
@@ -127,7 +127,7 @@ flowchart LR
 
 ##### Cụm 1d: Cơ cấu kiểm tra theo đối tượng (Fact Examination Team Target Activity)
 
-Phục vụ Nhóm 9. Cùng kiến trúc Cụm 1c — `EXAMINATION_TEAM_TARGET` quan hệ N:1 với `EXAMINATION_TEAM` → tách Fact riêng grain 1 vụ × 1 đối tượng, không gắn vào `Fact Examination Team Activity` để tránh fanout K_TT_32-64. `Examination Team Target Dimension` tách riêng khỏi Fact (BK per-row unique, không lưu `Examination_Team_Code` — FK cha `Examination_Team_Dimension_Id` đặt thẳng trên Fact, trỏ tới `Examination Team Dimension` đã tách ở Cụm 1b).
+Phục vụ Nhóm 9. Cùng kiến trúc Cụm 1c — `EXAMINATION_TEAM_TARGET` quan hệ N:1 với `EXAMINATION_TEAM` → tách Fact riêng grain 1 vụ × 1 đối tượng, không gắn vào `Fact Examination Team Activity` để tránh fanout K_TT_20-57. `Examination Team Target Dimension` tách riêng khỏi Fact (BK per-row unique, không lưu `Examination_Team_Code` — FK cha `Examination_Team_Dimension_Id` đặt thẳng trên Fact, trỏ tới `Examination Team Dimension` đã tách ở Cụm 1b).
 
 ```mermaid
 flowchart LR
@@ -254,7 +254,7 @@ flowchart LR
 
 ##### Cụm 3b: Xử phạt vi phạm — Cơ cấu theo hành vi (Fact Penalty Decision Subject Behavior)
 
-Phục vụ Nhóm 13 + Nhóm 20 (reuse chung 1 Fact). Grain khác Cụm 3 — `PENALTY_DECISION_SUBJECT_BEHAVIOR` là 4-way join (1 QĐ có thể nhiều đối tượng × nhiều hành vi) → tách Fact riêng, không gắn vào `Fact Penalty Decision` để tránh fanout K_TT_82-87. 2 FK trên Fact trỏ tới `Penalty Decision Dimension` (reuse Cụm 3) và `Penalty Decision Subject Dimension` (reuse Cụm 3c); `Penalty Decision Subject Behavior Dimension` tách riêng khỏi Fact chứa `Violation_Behavior_Name`.
+Phục vụ Nhóm 13 + Nhóm 20 (reuse chung 1 Fact). Grain khác Cụm 3 — `PENALTY_DECISION_SUBJECT_BEHAVIOR` là 4-way join (1 QĐ có thể nhiều đối tượng × nhiều hành vi) → tách Fact riêng, không gắn vào `Fact Penalty Decision` để tránh fanout K_TT_40-45. 2 FK trên Fact trỏ tới `Penalty Decision Dimension` (reuse Cụm 3) và `Penalty Decision Subject Dimension` (reuse Cụm 3c); `Penalty Decision Subject Behavior Dimension` tách riêng khỏi Fact chứa `Violation_Behavior_Name`.
 
 ```mermaid
 flowchart LR
@@ -566,6 +566,7 @@ flowchart LR
 > Ghi chú:
 > - Phân loại hành vi derive bằng text-matching trên `Inspection Team Dimension.Content` — không qua Classification Dimension/scheme: `CASE WHEN LOWER(Content) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường' WHEN LOWER(Content) LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản' WHEN LOWER(Content) LIKE '%công bố thông tin%' THEN 'Công bố thông tin' ELSE NULL END`. Không khớp cả 3 mẫu → `NULL`, loại khỏi thống kê.
 > - "CBTT" là tên viết tắt hiển thị của "Công bố thông tin" — dùng `'Công bố thông tin'` làm giá trị so khớp/lưu trữ.
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — 3 pattern LIKE trong Mô tả BA chỉ là danh sách minh họa/suy đoán nghiệp vụ, không phải danh sách đầy đủ chắc chắn khớp mọi giá trị Content thực tế. Đồng bộ hoá với Nhóm 4/9 (cùng là pie chart group theo chiều): thiết kế lại 1 KPI Base tổng quát GROUP BY động (số lát/dòng kết quả tùy dữ liệu, không cố định N cặp Base/Derived) + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm khớp ELSE NULL cùng năm × 100%).
 
 **Mockup:**
 
@@ -576,19 +577,16 @@ pie title Cơ cấu vi phạm theo loại hành vi
     "Thao túng thị trường" : 25
 ```
 
+> Số lát pie chart thực tế tùy nội dung `Content` khớp pattern nào (tối đa 3 pattern BA định nghĩa, dòng không khớp bị loại khỏi thống kê) — mockup chỉ minh họa trường hợp phổ biến.
+
 **Source:** `Fact Inspection Team Activity` → `Calendar Date Dimension`, `Inspection Team Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_11 | Phân loại vi phạm | — | Chiều | `CASE WHEN LOWER(Inspection Team Dimension.Content) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường' WHEN LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản' WHEN LIKE '%công bố thông tin%' THEN 'Công bố thông tin' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_12-17 |
-| K_TT_12 | Số vi phạm Thao túng thị trường | Vụ | Base | COUNT(Fact_Inspection_Team_Activity JOIN Inspection Team Dimension) WHERE Year(Decision_Date)=selected_year AND LOWER(Inspection Team Dimension.Content) LIKE '%thao túng thị trường%' | |
-| K_TT_13 | Tỷ lệ % Thao túng thị trường | % | Derived | K_TT_12 / K_TT_1 × 100% | |
-| K_TT_14 | Số vi phạm Cho mượn tài khoản | Vụ | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Inspection Team Dimension.Content) LIKE '%cho mượn tài khoản%' | |
-| K_TT_15 | Tỷ lệ % Cho mượn tài khoản | % | Derived | K_TT_14 / K_TT_1 × 100% | |
-| K_TT_16 | Số vi phạm CBTT (Công bố thông tin) | Vụ | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Inspection Team Dimension.Content) LIKE '%công bố thông tin%' | |
-| K_TT_17 | Tỷ lệ % CBTT (Công bố thông tin) | % | Derived | K_TT_16 / K_TT_1 × 100% | |
+| K_TT_11 | Số vi phạm theo loại hành vi | Vụ | Base | COUNT(Fact_Inspection_Team_Activity JOIN Inspection Team Dimension) WHERE Year(Decision_Date)=selected_year AND [Content khớp 1 trong 3 pattern] GROUP BY CASE WHEN LOWER(Content) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường' WHEN LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản' WHEN LIKE '%công bố thông tin%' THEN 'Công bố thông tin' ELSE NULL END | GROUP BY động — số dòng kết quả tùy Content khớp pattern nào (tối đa 3). Không khớp → NULL, loại khỏi thống kê. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm khớp cùng năm) × 100%, không phải KPI Derived |
+| K_TT_12 | Phân loại vi phạm | — | Chiều | `CASE WHEN LOWER(Inspection Team Dimension.Content) LIKE '%thao túng thị trường%' THEN 'Thao túng thị trường' WHEN LIKE '%cho mượn tài khoản%' THEN 'Cho mượn tài khoản' WHEN LIKE '%công bố thông tin%' THEN 'Công bố thông tin' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_11 |
 
 **Star Schema:** giống Nhóm 1 (reuse 100%, `Content` đã có sẵn trên Dimension từ Nhóm 1).
 
@@ -602,7 +600,7 @@ flowchart LR
         G3["Inspection Team Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 3"]
-        R1["K_TT_11-17: Cơ cấu vi phạm theo loại hành vi"]
+        R1["K_TT_11-12: Cơ cấu vi phạm theo loại hành vi"]
     end
     G2 --> G1
     G3 --> G1
@@ -624,11 +622,11 @@ flowchart LR
 > Atomic: `Inspection Team` ← THANHTRA.INSPECTION_TEAM (`INSPECT.INSPECTION_TEAM`) — **READY** (reuse Nhóm 1)
 > Atomic: `Inspection Team Target` ← THANHTRA.INSPECTION_TEAM_TARGET (`INSPECT.INSPECTION_TEAM_TARGET`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET.yaml`)
 > Ghi chú:
-> - Grain khác Nhóm 1/2/3 — `INSPECTION_TEAM_TARGET` quan hệ N:1 với `INSPECTION_TEAM`. Đếm theo số lượt đối tượng (không DISTINCT theo đoàn), tách riêng **Fact Inspection Team Target Activity** (grain 1 đoàn × 1 đối tượng).
-> - `Target_Type_Code` (← `INSPECTION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn — KHÔNG phải Classification Value. Giá trị: `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION`.
-> - Mapping 4 nhóm BA STT 4 → Target Type Code: Cá nhân=`INDIVIDUAL`, CTĐC=`PUBLIC_COMPANY`, CTCK=`SECURITIES_COMPANY`, CTQLQ=`FUND_MANAGEMENT_COMPANY`.
+> - Grain khác Nhóm 1/2/3 — `INSPECTION_TEAM_TARGET` quan hệ N:1 với `INSPECTION_TEAM`. Đếm theo số lượt đối tượng (không DISTINCT theo đoàn), tách riêng **Fact Inspection Team Target Activity** (grain 1 đoàn × 1 đối tượng — dữ liệu chi tiết từng lượt, chưa aggregate).
+> - `Target_Type_Code` (← `INSPECTION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn — KHÔNG phải Classification Value. Giá trị thực tế trong Atomic: `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION` (7 giá trị).
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 4 cặp KPI Base/Derived cố định (Cá nhân/CTĐC/CTCK/CTQLQ) — bỏ sót 3 giá trị Atomic thật (`AUDIT_COMPANY`, `CRYPTO_SERVICE_PROVIDER`, `ORGANIZATION`) trong cả tử số lẫn mẫu số %, không khớp SQL BA tham khảo (`COUNT(a.ID)*100/SUM(COUNT(a.ID)) OVER (PARTITION BY Year)` — GROUP BY động theo toàn bộ `TARGET_TYPE` thực tế phát sinh, không giới hạn ở 4 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại: 1 KPI Base tổng quát GROUP BY động (số dòng kết quả tùy dữ liệu, tối đa 7) + 1 KPI Chiều — không cố định N cặp Base/Derived. Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%).
 > - Date key: `Decision_Date` (← `INSPECTION_TEAM.DECISION_DATE`, qua join với Inspection Team).
-> - Công thức % (window function `PARTITION BY Year`): tỷ lệ tính trên tổng số lượt đối tượng cùng năm (SUM của 4 KPI Base K_TT_18/20/22/24), KHÔNG chia cho K_TT_1 (khác grain).
+> - Mapping hiển thị tham khảo (label UI, không phải filter cố định): `INDIVIDUAL`=Cá nhân, `PUBLIC_COMPANY`=CTĐC, `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `AUDIT_COMPANY`=CTKT, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác.
 
 **Mockup:**
 
@@ -640,21 +638,16 @@ pie title Cơ cấu vi phạm theo đối tượng
     "CTQLQ" : 20
 ```
 
+> Số lát pie chart thực tế tùy số giá trị `Target_Type_Code` phát sinh trong data (tối đa 7) — mockup chỉ minh họa trường hợp phổ biến.
+
 **Source:** `Fact Inspection Team Target Activity` → `Calendar Date Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_18 | Số vi phạm đối tượng Cá nhân | Vụ | Base | COUNT(Fact_Inspection_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`INDIVIDUAL` | |
-| K_TT_19 | Tỷ lệ % Cá nhân | % | Derived | K_TT_18 / (K_TT_18+K_TT_20+K_TT_22+K_TT_24) × 100% | |
-| K_TT_20 | Số vi phạm đối tượng CTĐC | Vụ | Base | COUNT(Fact_Inspection_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`PUBLIC_COMPANY` | |
-| K_TT_21 | Tỷ lệ % CTĐC | % | Derived | K_TT_20 / (K_TT_18+K_TT_20+K_TT_22+K_TT_24) × 100% | |
-| K_TT_22 | Số vi phạm đối tượng CTCK | Vụ | Base | COUNT(Fact_Inspection_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`SECURITIES_COMPANY` | |
-| K_TT_23 | Tỷ lệ % CTCK | % | Derived | K_TT_22 / (K_TT_18+K_TT_20+K_TT_22+K_TT_24) × 100% | |
-| K_TT_24 | Số vi phạm đối tượng CTQLQ | Vụ | Base | COUNT(Fact_Inspection_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`FUND_MANAGEMENT_COMPANY` | |
-| K_TT_25 | Tỷ lệ % CTQLQ | % | Derived | K_TT_24 / (K_TT_18+K_TT_20+K_TT_22+K_TT_24) × 100% | |
-| K_TT_26 | Phân loại đối tượng | — | Chiều | `Target_Type_Code` — giá trị: `INDIVIDUAL`/`PUBLIC_COMPANY`/`SECURITIES_COMPANY`/`FUND_MANAGEMENT_COMPANY` (map hiển thị: Cá nhân/CTĐC/CTCK/CTQLQ) | Chiều lọc/nhóm dùng chung cho K_TT_18-25 |
+| K_TT_13 | Số vi phạm theo đối tượng | Vụ | Base | COUNT(Fact_Inspection_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year GROUP BY Target_Type_Code | GROUP BY động trên dữ liệu chi tiết từng lượt — số dòng kết quả tùy giá trị `Target_Type_Code` thực tế phát sinh (tối đa 7). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_14 | Phân loại đối tượng | — | Chiều | `Target_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data, GROUP BY động (không hardcode danh sách cố định) | Chiều lọc/nhóm dùng chung cho K_TT_13 |
 
 **Star Schema:**
 
@@ -709,7 +702,7 @@ flowchart LR
         G4["Inspection Team Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 4"]
-        R1["K_TT_18-26: Cơ cấu vi phạm theo đối tượng"]
+        R1["K_TT_13-14: Cơ cấu vi phạm theo đối tượng"]
     end
     G2 --> G1
     G3 --> G1
@@ -751,11 +744,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_27 | Mã vụ việc | — | Attribute | `Inspection Team Target.Inspection Team Code` | |
-| K_TT_28 | Đối tượng | — | Attribute | `Inspection Team Target.Target Name` | |
-| K_TT_29 | Phân loại đối tượng | — | Attribute | `Inspection Team Target.Target Type Code` | |
-| K_TT_30 | Loại hình | — | Attribute | `Inspection Team.Form Type Code` (join qua Inspection Team) | scheme TT_REVIEW_FORM_TYPE |
-| K_TT_31 | Trạng thái | — | Attribute | ETL-derived từ `Inspection Team.Start Date`/`End Date` (join qua Inspection Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
+| K_TT_15 | Mã vụ việc | — | Attribute | `Inspection Team Target.Inspection Team Code` | |
+| K_TT_16 | Đối tượng | — | Attribute | `Inspection Team Target.Target Name` | |
+| K_TT_17 | Phân loại đối tượng | — | Attribute | `Inspection Team Target.Target Type Code` | |
+| K_TT_18 | Loại hình | — | Attribute | `Inspection Team.Form Type Code` (join qua Inspection Team) | scheme TT_REVIEW_FORM_TYPE |
+| K_TT_19 | Trạng thái | — | Attribute | ETL-derived từ `Inspection Team.Start Date`/`End Date` (join qua Inspection Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
 
 **Schema bảng tác nghiệp:**
 
@@ -822,13 +815,13 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_32 | Tổng số cuộc kiểm tra | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Calendar Date Dimension.Decision_Date)=selected_year | |
-| K_TT_33 | Tổng số kiểm tra SSCK (%) | % | Derived | (K_TT_32[Y] − K_TT_32[Y−1]) / K_TT_32[Y−1] × 100% | |
-| K_TT_34 | Số cuộc kiểm tra đã hoàn thành | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NOT NULL AND Examination Team Dimension.Start_Date IS NOT NULL | |
-| K_TT_35 | Số cuộc kiểm tra hoàn thành SSCK (%) | % | Derived | (K_TT_34[Y] − K_TT_34[Y−1]) / K_TT_34[Y−1] × 100% | |
-| K_TT_36 | Số cuộc kiểm tra đang thực hiện | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NULL AND Examination Team Dimension.Start_Date IS NOT NULL | |
-| K_TT_37 | Số cuộc kiểm tra đang thực hiện SSCK (%) | % | Derived | (K_TT_36[Y] − K_TT_36[Y−1]) / K_TT_36[Y−1] × 100% | |
-| K_TT_38 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Decision_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_32-37 |
+| K_TT_20 | Tổng số cuộc kiểm tra | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Calendar Date Dimension.Decision_Date)=selected_year | |
+| K_TT_21 | Tổng số kiểm tra SSCK (%) | % | Derived | (K_TT_20[Y] − K_TT_20[Y−1]) / K_TT_20[Y−1] × 100% | |
+| K_TT_22 | Số cuộc kiểm tra đã hoàn thành | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NOT NULL AND Examination Team Dimension.Start_Date IS NOT NULL | |
+| K_TT_23 | Số cuộc kiểm tra hoàn thành SSCK (%) | % | Derived | (K_TT_22[Y] − K_TT_22[Y−1]) / K_TT_22[Y−1] × 100% | |
+| K_TT_24 | Số cuộc kiểm tra đang thực hiện | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NULL AND Examination Team Dimension.Start_Date IS NOT NULL | |
+| K_TT_25 | Số cuộc kiểm tra đang thực hiện SSCK (%) | % | Derived | (K_TT_24[Y] − K_TT_24[Y−1]) / K_TT_24[Y−1] × 100% | |
+| K_TT_26 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Decision_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_20-25 |
 
 **Star Schema:**
 
@@ -860,7 +853,7 @@ erDiagram
     }
 ```
 
-> Field mapping Atomic source: `Examination_Team_Code` ← `Examination Team.Examination Team Code` (`EXAMINATION_TEAM.CODE`, BK); `Start_Date`/`End_Date` ← `Examination Team.Start Date`/`End Date` (`EXAMINATION_TEAM.START_DATE`/`END_DATE`); `Content` ← `Examination Team.Content` (`EXAMINATION_TEAM.CONTENT`, CLOB — dùng derive `Phân loại hành vi` K_TT_42 ở Nhóm 8).
+> Field mapping Atomic source: `Examination_Team_Code` ← `Examination Team.Examination Team Code` (`EXAMINATION_TEAM.CODE`, BK); `Start_Date`/`End_Date` ← `Examination Team.Start Date`/`End Date` (`EXAMINATION_TEAM.START_DATE`/`END_DATE`); `Content` ← `Examination Team.Content` (`EXAMINATION_TEAM.CONTENT`, CLOB — dùng derive `Phân loại hành vi` K_TT_30 ở Nhóm 8).
 
 **Lineage Mart → Báo cáo:**
 
@@ -872,7 +865,7 @@ flowchart LR
         G3["Examination Team Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 6"]
-        R1["K_TT_32-38: KPI cards Thống kê chung Kiểm tra"]
+        R1["K_TT_20-26: KPI cards Thống kê chung Kiểm tra"]
     end
     G2 --> G1
     G3 --> G1
@@ -909,9 +902,9 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_39 | Số lượng vụ việc kiểm tra theo tháng (tổng) | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Decision_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | |
-| K_TT_40 | Số vụ việc đã hoàn thành theo tháng | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NOT NULL AND Examination Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
-| K_TT_41 | Số vụ việc đang thực hiện theo tháng | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NULL AND Examination Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
+| K_TT_27 | Số lượng vụ việc kiểm tra theo tháng (tổng) | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Decision_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | |
+| K_TT_28 | Số vụ việc đã hoàn thành theo tháng | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NOT NULL AND Examination Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
+| K_TT_29 | Số vụ việc đang thực hiện theo tháng | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND Examination Team Dimension.End_Date IS NULL AND Examination Team Dimension.Start_Date IS NOT NULL GROUP BY Month | |
 
 **Star Schema:** giống Nhóm 6 (reuse 100%, không thêm FK/measure mới).
 
@@ -925,7 +918,7 @@ flowchart LR
         G3["Examination Team Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 7"]
-        R1["K_TT_39-41: Biểu đồ xu hướng số cuộc kiểm tra theo tháng"]
+        R1["K_TT_27-29: Biểu đồ xu hướng số cuộc kiểm tra theo tháng"]
     end
     G2 --> G1
     G3 --> G1
@@ -947,7 +940,7 @@ flowchart LR
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 6/7)
 > Ghi chú:
 > - Phân loại hành vi derive bằng text-matching trên `Examination Team Dimension.Content` — không qua Classification Dimension/scheme: `CASE WHEN LOWER(Content) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT' WHEN LOWER(Content) LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LOWER(Content) LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn' WHEN LOWER(Content) LIKE '%giao dịch%' THEN 'Giao dịch' WHEN LOWER(Content) LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng' WHEN LOWER(Content) LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán' WHEN LOWER(Content) LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LOWER(Content) LIKE '%thao túng%' THEN 'Thao túng' WHEN LOWER(Content) LIKE '%cho mượn%' THEN 'Cho mượn' WHEN LOWER(Content) LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LOWER(Content) LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END`. Không khớp mẫu nào → `NULL`, loại khỏi thống kê.
-> - Công thức % KHÔNG chia cho K_TT_32 (khác grain) — mẫu số là tổng 11 KPI Base cùng năm.
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — 11 pattern LIKE trong Mô tả BA chỉ là danh sách minh họa/suy đoán nghiệp vụ, không phải danh sách đầy đủ chắc chắn khớp mọi giá trị Content thực tế. Đồng bộ hoá với Nhóm 4/9/3 (cùng là pie chart group theo chiều): thiết kế lại 1 KPI Base tổng quát GROUP BY động (số lát/dòng kết quả tùy dữ liệu, không cố định N cặp Base/Derived) + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm khớp ELSE NULL cùng năm × 100%).
 
 **Mockup:**
 
@@ -966,35 +959,16 @@ pie title Cơ cấu kiểm tra theo loại hành vi
     "Sở giao dịch" : 5
 ```
 
+> Số lát pie chart thực tế tùy nội dung `Content` khớp pattern nào (tối đa 11 pattern BA định nghĩa, dòng không khớp bị loại khỏi thống kê) — mockup chỉ minh họa trường hợp phổ biến.
+
 **Source:** `Fact Examination Team Activity` → `Calendar Date Dimension`, `Examination Team Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_42 | Phân loại hành vi | — | Chiều | `CASE WHEN LOWER(Examination Team Dimension.Content) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Thao túng' WHEN LIKE '%cho mượn%' THEN 'Cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_43-64 |
-| K_TT_43 | Số vi phạm CBTT (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%công bố thông tin%' | |
-| K_TT_44 | Tỷ lệ % CBTT (KT) | % | Derived | K_TT_43 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | Mẫu số = tổng 11 KPI Base cùng năm |
-| K_TT_45 | Số vi phạm Hoạt động chào bán (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%hoạt động chào bán%' | |
-| K_TT_46 | Tỷ lệ % Hoạt động chào bán (KT) | % | Derived | K_TT_45 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_47 | Số vi phạm Cổ đông nội bộ/lớn (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%hoạt động của cổ động%' | |
-| K_TT_48 | Tỷ lệ % Cổ đông nội bộ/lớn (KT) | % | Derived | K_TT_47 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_49 | Số vi phạm Giao dịch (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%giao dịch%' | |
-| K_TT_50 | Tỷ lệ % Giao dịch (KT) | % | Derived | K_TT_49 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_51 | Số vi phạm CTĐC (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%công ty đại chúng%' | |
-| K_TT_52 | Tỷ lệ % CTĐC (KT) | % | Derived | K_TT_51 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_53 | Số vi phạm CTCK (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%công ty chứng khoán%' | |
-| K_TT_54 | Tỷ lệ % CTCK (KT) | % | Derived | K_TT_53 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_55 | Số vi phạm Tổ chức phát hành TP (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%tổ chức phát hành trái phiếu%' | |
-| K_TT_56 | Tỷ lệ % Tổ chức PHTP (KT) | % | Derived | K_TT_55 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_57 | Số vi phạm Thao túng (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%thao túng%' | |
-| K_TT_58 | Tỷ lệ % Thao túng (KT) | % | Derived | K_TT_57 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_59 | Số vi phạm Cho mượn tài khoản (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%cho mượn%' | |
-| K_TT_60 | Tỷ lệ % Cho mượn (KT) | % | Derived | K_TT_59 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_61 | Số vi phạm Tổ chức kiểm toán (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%tổ chức kiểm toán%' | |
-| K_TT_62 | Tỷ lệ % Tổ chức kiểm toán (KT) | % | Derived | K_TT_61 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
-| K_TT_63 | Số vi phạm Sở giao dịch (KT) | Cuộc | Base | COUNT(...) WHERE Year(Decision_Date)=selected_year AND LOWER(Examination Team Dimension.Content) LIKE '%sở giao dịch%' | |
-| K_TT_64 | Tỷ lệ % Sở giao dịch (KT) | % | Derived | K_TT_63 / (K_TT_43+45+47+49+51+53+55+57+59+61+63) × 100% | |
+| K_TT_30 | Số vi phạm theo loại hành vi (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Activity JOIN Examination Team Dimension) WHERE Year(Decision_Date)=selected_year AND [Content khớp 1 trong 11 pattern] GROUP BY CASE WHEN LOWER(Content) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Thao túng' WHEN LIKE '%cho mượn%' THEN 'Cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END | GROUP BY động — số dòng kết quả tùy Content khớp pattern nào (tối đa 11). Không khớp → NULL, loại khỏi thống kê. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm khớp cùng năm) × 100%, không phải KPI Derived |
+| K_TT_31 | Phân loại hành vi | — | Chiều | `CASE WHEN LOWER(Examination Team Dimension.Content) LIKE '%công bố thông tin%' THEN 'Vi phạm CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%hoạt động của cổ động%' THEN 'Vi phạm hoạt động của Cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của Công ty đại chúng' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của Công ty chứng khoán' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Thao túng' WHEN LIKE '%cho mượn%' THEN 'Cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_30 |
 
 **Star Schema:** giống Nhóm 6/7 (reuse 100%, `Content` đã có sẵn trên Dimension).
 
@@ -1008,7 +982,7 @@ flowchart LR
         G3["Examination Team Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 8"]
-        R1["K_TT_42-64: Cơ cấu kiểm tra theo loại hành vi"]
+        R1["K_TT_30-31: Cơ cấu kiểm tra theo loại hành vi"]
     end
     G2 --> G1
     G3 --> G1
@@ -1030,11 +1004,11 @@ flowchart LR
 > Atomic: `Examination Team` ← THANHTRA.EXAMINATION_TEAM (`INSPECT.EXAMINATION_TEAM`) — **READY** (reuse Nhóm 6/7/8)
 > Atomic: `Examination Team Target` ← THANHTRA.EXAMINATION_TEAM_TARGET (`INSPECT.EXAMINATION_TEAM_TARGET`) — **READY** (`DataModel/Atomic/Business_Activity/dm_atm_examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET.yaml`)
 > Ghi chú:
-> - Cùng kiến trúc Nhóm 4 — `EXAMINATION_TEAM_TARGET` quan hệ N:1 với `EXAMINATION_TEAM`. Tách riêng **Fact Examination Team Target Activity** (grain 1 vụ kiểm tra × 1 đối tượng).
+> - Cùng kiến trúc Nhóm 4 — `EXAMINATION_TEAM_TARGET` quan hệ N:1 với `EXAMINATION_TEAM`. Tách riêng **Fact Examination Team Target Activity** (grain 1 vụ kiểm tra × 1 đối tượng — dữ liệu chi tiết từng lượt, chưa aggregate).
 > - `Target_Type_Code` (← `EXAMINATION_TEAM_TARGET.TARGET_TYPE`) map 1:1 trực tiếp từ nguồn — KHÔNG phải Classification Value. Giá trị thực tế trong Atomic: `SECURITIES_COMPANY, FUND_MANAGEMENT_COMPANY, PUBLIC_COMPANY, AUDIT_COMPANY, CRYPTO_SERVICE_PROVIDER, INDIVIDUAL, ORGANIZATION` (7 giá trị).
-> - Thiết kế lấy trực tiếp toàn bộ giá trị `Target_Type_Code` thực tế trong data (GROUP BY động), không hardcode ánh xạ cố định. Mapping tham khảo hiển thị: CTCK=`SECURITIES_COMPANY`, CTQLQ=`FUND_MANAGEMENT_COMPANY`, CTĐC=`PUBLIC_COMPANY`, CTKT=`AUDIT_COMPANY`, "Tổ chức khác" (gồm NHLK/Tổ chức PHTP/Organization khác)=`ORGANIZATION`, Cá nhân=`INDIVIDUAL`.
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Thiết kế cũ hardcode 5 cặp KPI Base/Derived cố định (CTCK/CTKT/CTQLQ/CTĐC/Tổ chức khác-gộp) — bỏ sót 2 giá trị Atomic thật (`INDIVIDUAL`, `CRYPTO_SERVICE_PROVIDER`) hoàn toàn không xuất hiện ở bất kỳ KPI nào dù ghi chú cũ nói "Cá nhân=INDIVIDUAL". Mâu thuẫn với chính SQL BA (`GROUP BY b.TARGET_TYPE` động theo toàn bộ giá trị thực tế phát sinh, không giới hạn 5 loại BA liệt kê minh họa trong Mô tả). Thiết kế lại theo đúng bản chất GROUP BY động: 1 KPI Base tổng quát (số dòng kết quả tùy dữ liệu, tối đa 7) + 1 KPI Chiều — không cố định N cặp Base/Derived, không gộp "Tổ chức khác". Tỷ lệ % không còn là KPI Derived ở tầng Datamart; tính ở tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm cùng năm × 100%).
 > - Date key: `Decision_Date` (← `EXAMINATION_TEAM.DECISION_DATE`, qua join với Examination Team).
-> - Công thức % (window function `PARTITION BY Year`): tỷ lệ tính trên tổng số lượt đối tượng cùng năm, KHÔNG chia cho K_TT_32 (khác grain).
+> - Mapping hiển thị tham khảo (label UI, không phải filter cố định): `SECURITIES_COMPANY`=CTCK, `FUND_MANAGEMENT_COMPANY`=CTQLQ, `PUBLIC_COMPANY`=CTĐC, `AUDIT_COMPANY`=CTKT, `INDIVIDUAL`=Cá nhân, `CRYPTO_SERVICE_PROVIDER`=Tổ chức cung cấp dịch vụ tài sản mã hoá, `ORGANIZATION`=Tổ chức khác (gồm NHLK/Tổ chức PHTP/Organization khác — Atomic không phân biệt riêng).
 
 **Mockup:**
 
@@ -1047,23 +1021,16 @@ pie title Cơ cấu kiểm tra theo đối tượng
     "Tổ chức khác (NHLK/PHTP/...)" : 10
 ```
 
+> Số lát pie chart thực tế tùy số giá trị `Target_Type_Code` phát sinh trong data (tối đa 7) — mockup chỉ minh họa trường hợp phổ biến.
+
 **Source:** `Fact Examination Team Target Activity` → `Calendar Date Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_65 | Số vi phạm đối tượng CTCK (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`SECURITIES_COMPANY` | |
-| K_TT_66 | Tỷ lệ % CTCK (KT) | % | Derived | K_TT_65 / SUM(tất cả KPI Base K_TT_65/67/69/71/73 cùng năm) × 100% | |
-| K_TT_67 | Số vi phạm đối tượng CTKT (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`AUDIT_COMPANY` | |
-| K_TT_68 | Tỷ lệ % CTKT (KT) | % | Derived | K_TT_67 / SUM(tất cả KPI Base K_TT_65/67/69/71/73 cùng năm) × 100% | |
-| K_TT_69 | Số vi phạm đối tượng CTQLQ (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`FUND_MANAGEMENT_COMPANY` | |
-| K_TT_70 | Tỷ lệ % CTQLQ (KT) | % | Derived | K_TT_69 / SUM(tất cả KPI Base K_TT_65/67/69/71/73 cùng năm) × 100% | |
-| K_TT_71 | Số vi phạm đối tượng CTĐC (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`PUBLIC_COMPANY` | |
-| K_TT_72 | Tỷ lệ % CTĐC (KT) | % | Derived | K_TT_71 / SUM(tất cả KPI Base K_TT_65/67/69/71/73 cùng năm) × 100% | |
-| K_TT_73 | Số vi phạm đối tượng khác — NHLK/Tổ chức PHTP/Organization khác (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year AND Target_Type_Code=`ORGANIZATION` | Gộp mọi giá trị `ORGANIZATION` — Atomic không phân biệt riêng NHLK/Tổ chức PHTP |
-| K_TT_74 | Tỷ lệ % Tổ chức khác (KT) | % | Derived | K_TT_73 / SUM(tất cả KPI Base K_TT_65/67/69/71/73 cùng năm) × 100% | |
-| K_TT_75 | Phân loại đối tượng | — | Chiều | `Target_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data, GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_65-74 |
+| K_TT_32 | Số vi phạm theo đối tượng (KT) | Cuộc | Base | COUNT(Fact_Examination_Team_Target_Activity) WHERE Year(Decision_Date)=selected_year GROUP BY Target_Type_Code | GROUP BY động trên dữ liệu chi tiết từng lượt — số dòng kết quả tùy giá trị `Target_Type_Code` thực tế phát sinh (tối đa 7). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_33 | Phân loại đối tượng (KT) | — | Chiều | `Target_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data, GROUP BY động (không hardcode danh sách cố định) | Chiều lọc/nhóm dùng chung cho K_TT_32 |
 
 **Star Schema:**
 
@@ -1118,7 +1085,7 @@ flowchart LR
         G4["Examination Team Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 9"]
-        R1["K_TT_65-74, K_TT_75: Cơ cấu kiểm tra theo đối tượng"]
+        R1["K_TT_32-33: Cơ cấu kiểm tra theo đối tượng"]
     end
     G2 --> G1
     G3 --> G1
@@ -1163,11 +1130,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_76 | Mã vụ việc | — | Attribute | `Examination Team Target.Examination Team Code` | |
-| K_TT_77 | Đối tượng | — | Attribute | `Examination Team Target.Target Name` | |
-| K_TT_78 | Phân loại đối tượng | — | Attribute | `Examination Team Target.Target Type Code` | |
-| K_TT_79 | Loại hình | — | Attribute | `Examination Team.Form Type Code` (join qua Examination Team) | scheme TT_REVIEW_FORM_TYPE |
-| K_TT_80 | Trạng thái | — | Attribute | ETL-derived từ `Examination Team.Start Date`/`End Date` (join qua Examination Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
+| K_TT_34 | Mã vụ việc | — | Attribute | `Examination Team Target.Examination Team Code` | |
+| K_TT_35 | Đối tượng | — | Attribute | `Examination Team Target.Target Name` | |
+| K_TT_36 | Phân loại đối tượng | — | Attribute | `Examination Team Target.Target Type Code` | |
+| K_TT_37 | Loại hình | — | Attribute | `Examination Team.Form Type Code` (join qua Examination Team) | scheme TT_REVIEW_FORM_TYPE |
+| K_TT_38 | Trạng thái | — | Attribute | ETL-derived từ `Examination Team.Start Date`/`End Date` (join qua Examination Team) | 3 giá trị: Chưa thực hiện/Đang thực hiện/Đã hoàn thành |
 
 **Schema bảng tác nghiệp:**
 
@@ -1240,11 +1207,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_81 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Issued_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_82-85 |
-| K_TT_82 | Tổng số quyết định xử phạt | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year | |
-| K_TT_83 | Tổng số QĐXP SSCK (%) | % | Derived | (K_TT_82[Y] − K_TT_82[Y−1]) / K_TT_82[Y−1] × 100% | |
-| K_TT_84 | Tổng tiền xử phạt | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | |
-| K_TT_85 | Tổng tiền xử phạt SSCK (%) | % | Derived | (K_TT_84[Y] − K_TT_84[Y−1]) / K_TT_84[Y−1] × 100% | |
+| K_TT_39 | Thời gian (năm thống kê) | Năm | Chiều | Year(Calendar Date Dimension.Calendar_Date) — slicer chọn năm thống kê, join qua `Issued_Date_Dimension_Id` | Chiều lọc dùng chung cho K_TT_40-43 |
+| K_TT_40 | Tổng số quyết định xử phạt | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year | |
+| K_TT_41 | Tổng số QĐXP SSCK (%) | % | Derived | (K_TT_40[Y] − K_TT_40[Y−1]) / K_TT_40[Y−1] × 100% | |
+| K_TT_42 | Tổng tiền xử phạt | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year | |
+| K_TT_43 | Tổng tiền xử phạt SSCK (%) | % | Derived | (K_TT_42[Y] − K_TT_42[Y−1]) / K_TT_42[Y−1] × 100% | |
 
 **Star Schema:**
 
@@ -1288,7 +1255,7 @@ flowchart LR
         G3["Penalty Decision Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 11"]
-        R1["K_TT_82-85: KPI cards Thống kê chung"]
+        R1["K_TT_40-43: KPI cards Thống kê chung"]
     end
     G2 --> G1
     G3 --> G1
@@ -1323,8 +1290,8 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_86 | Số QĐ xử phạt theo tháng | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | |
-| K_TT_87 | Tổng tiền xử phạt theo tháng | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year GROUP BY Month | |
+| K_TT_44 | Số QĐ xử phạt theo tháng | QĐ | Base | COUNT(DISTINCT Penalty_Decision_Dimension_Id) WHERE Year(Issued_Date)=selected_year GROUP BY Calendar_Date_Dimension.Month | |
+| K_TT_45 | Tổng tiền xử phạt theo tháng | Tỷ VNĐ | Base | SUM(Total_Fine_Amount) / 1_000_000_000 WHERE Year(Issued_Date)=selected_year GROUP BY Month | |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1335,7 +1302,7 @@ flowchart LR
         G2["Calendar Date Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 12"]
-        R1["K_TT_86-87: Biểu đồ bar+line theo tháng"]
+        R1["K_TT_44-45: Biểu đồ bar+line theo tháng"]
     end
     G2 --> G1
     G1 --> R1
@@ -1355,8 +1322,8 @@ flowchart LR
 > Ghi chú:
 > - Field nguồn: `Violation Behavior.Violation Behavior Name` (← `VIOLATION_BEHAVIOR.NAME`). Phân loại hành vi derive bằng text-matching trên `Violation_Behavior_Name` (không qua Classification Dimension): `CASE WHEN LOWER(Name) LIKE '%công bố thông tin%' THEN 'CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng' WHEN LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END`.
 > - Grain khác Nhóm 11/12 — 4-way join `PENALTY_DECISION` → `PENALTY_DECISION_SUBJECT` → `PENALTY_DECISION_SUBJECT_BEHAVIOR` → `VIOLATION_BEHAVIOR`. Tách riêng **Fact Penalty Decision Subject Behavior**.
-> - Công thức % (window function `PARTITION BY Year`): mẫu số là tổng 11 KPI Base cùng năm, KHÔNG chia cho K_TT_82 (khác grain).
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`, qua join với Penalty Decision).
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đây là biểu đồ tròn GROUP BY theo 1 chiều phân loại — 11 pattern LIKE trong Mô tả BA chỉ là danh sách minh họa/suy đoán nghiệp vụ, không phải danh sách đầy đủ chắc chắn khớp mọi giá trị `Violation_Behavior_Name` thực tế. Đồng bộ hoá với Nhóm 3/4/8/9 (cùng là pie chart group theo chiều): thiết kế lại 1 KPI Base tổng quát GROUP BY động (số lát/dòng kết quả tùy dữ liệu, không cố định N cặp Base/Derived) + 1 KPI Chiều. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo (COUNT theo nhóm / SUM COUNT toàn bộ nhóm khớp ELSE NULL cùng năm × 100%).
 
 **Mockup:**
 
@@ -1375,35 +1342,16 @@ pie title Cơ cấu xử phạt theo loại hành vi
     "Sở giao dịch" : 2
 ```
 
+> Số lát pie chart thực tế tùy `Violation_Behavior_Name` khớp pattern nào (tối đa 11 pattern BA định nghĩa, dòng không khớp bị loại khỏi thống kê) — mockup chỉ minh họa trường hợp phổ biến.
+
 **Source:** `Fact Penalty Decision Subject Behavior` → `Calendar Date Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_88 | Phân loại hành vi | — | Chiều | `CASE WHEN LOWER(Violation Behavior.Violation_Behavior_Name) LIKE '%công bố thông tin%' THEN 'CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng' WHEN LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_89-110 |
-| K_TT_89 | Số QĐ XP hành vi CBTT | Cuộc | Base | COUNT(Fact_Penalty_Decision_Subject_Behavior) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%công bố thông tin%' | |
-| K_TT_90 | Tỷ lệ % CBTT (XP) | % | Derived | K_TT_89 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | Mẫu số = tổng 11 KPI Base cùng năm |
-| K_TT_91 | Số QĐ XP Hoạt động chào bán | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%hoạt động chào bán%' | |
-| K_TT_92 | Tỷ lệ % Chào bán (XP) | % | Derived | K_TT_91 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_93 | Số QĐ XP Cổ đông nội bộ/lớn | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%cổ đông%' | |
-| K_TT_94 | Tỷ lệ % Cổ đông nội bộ/lớn (XP) | % | Derived | K_TT_93 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_95 | Số QĐ XP Giao dịch | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%giao dịch%' | |
-| K_TT_96 | Tỷ lệ % Giao dịch (XP) | % | Derived | K_TT_95 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_97 | Số QĐ XP CTĐC | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%công ty đại chúng%' | |
-| K_TT_98 | Tỷ lệ % CTĐC (XP) | % | Derived | K_TT_97 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_99 | Số QĐ XP CTCK | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%công ty chứng khoán%' | |
-| K_TT_100 | Tỷ lệ % CTCK (XP) | % | Derived | K_TT_99 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_101 | Số QĐ XP Tổ chức PHTP | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%tổ chức phát hành trái phiếu%' | |
-| K_TT_102 | Tỷ lệ % Tổ chức PHTP (XP) | % | Derived | K_TT_101 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_103 | Số QĐ XP Thao túng | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%thao túng%' | |
-| K_TT_104 | Tỷ lệ % Thao túng (XP) | % | Derived | K_TT_103 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_105 | Số QĐ XP Cho mượn tài khoản | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%cho mượn%' | |
-| K_TT_106 | Tỷ lệ % Cho mượn (XP) | % | Derived | K_TT_105 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_107 | Số QĐ XP Tổ chức kiểm toán | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%tổ chức kiểm toán%' | |
-| K_TT_108 | Tỷ lệ % Tổ chức kiểm toán (XP) | % | Derived | K_TT_107 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
-| K_TT_109 | Số QĐ XP Sở giao dịch | Cuộc | Base | COUNT(...) WHERE Year(Issued_Date)=selected_year AND LOWER(Violation_Behavior_Name) LIKE '%sở giao dịch%' | |
-| K_TT_110 | Tỷ lệ % Sở giao dịch (XP) | % | Derived | K_TT_109 / (K_TT_89+91+93+95+97+99+101+103+105+107+109) × 100% | |
+| K_TT_46 | Số QĐ XP theo loại hành vi | Cuộc | Base | COUNT(Fact_Penalty_Decision_Subject_Behavior) WHERE Year(Issued_Date)=selected_year AND [Violation_Behavior_Name khớp 1 trong 11 pattern] GROUP BY CASE WHEN LOWER(Violation_Behavior_Name) LIKE '%công bố thông tin%' THEN 'CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng' WHEN LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END | GROUP BY động — số dòng kết quả tùy Violation_Behavior_Name khớp pattern nào (tối đa 11). Không khớp → NULL, loại khỏi thống kê. Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm khớp cùng năm) × 100%, không phải KPI Derived |
+| K_TT_47 | Phân loại hành vi | — | Chiều | `CASE WHEN LOWER(Violation Behavior.Violation_Behavior_Name) LIKE '%công bố thông tin%' THEN 'CBTT' WHEN LIKE '%hoạt động chào bán%' THEN 'Vi phạm hoạt động chào bán' WHEN LIKE '%cổ đông%' THEN 'Vi phạm hoạt động của cổ đông nội bộ, cổ đông lớn' WHEN LIKE '%giao dịch%' THEN 'Vi phạm hoạt động giao dịch' WHEN LIKE '%công ty đại chúng%' THEN 'Vi phạm hoạt động của CTĐC' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm hoạt động của CTCK' WHEN LIKE '%tổ chức phát hành trái phiếu%' THEN 'Vi phạm hoạt động của tổ chức PHTP' WHEN LIKE '%thao túng%' THEN 'Vi phạm hoạt động thao túng' WHEN LIKE '%cho mượn%' THEN 'Vi phạm hoạt động cho mượn' WHEN LIKE '%tổ chức kiểm toán%' THEN 'Vi phạm hoạt động của tổ chức kiểm toán' WHEN LIKE '%sở giao dịch%' THEN 'Vi phạm hoạt động của sở giao dịch' ELSE NULL END` | Chiều lọc/nhóm dùng chung cho K_TT_46 |
 
 **Star Schema:**
 
@@ -1466,7 +1414,7 @@ flowchart LR
         G5["Penalty Decision Subject Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 13"]
-        R1["K_TT_88-110: Cơ cấu xử phạt theo loại hành vi"]
+        R1["K_TT_46-47: Cơ cấu xử phạt theo loại hành vi"]
     end
     G2 --> G1
     G3 --> G1
@@ -1489,10 +1437,10 @@ flowchart LR
 > Atomic: `Penalty Decision` ← THANHTRA.PENALTY_DECISION — **READY** (reuse Nhóm 11)
 > Atomic: `Penalty Decision Subject` ← THANHTRA.PENALTY_DECISION_SUBJECT — **READY** (reuse Nhóm 13)
 > Ghi chú:
-> - Field nguồn: `Penalty Decision Subject.Subject Type Code` (← `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE`) — chỉ 2 giá trị: `INDIVIDUAL` (Cá nhân), `ORGANIZATION` (Tổ chức). BA STT 14 chỉ `GROUP BY b.SUBJECT_TYPE` (không filter cứng theo 4 nhóm minh họa) — lấy trực tiếp toàn bộ giá trị thực tế trong data. Atomic chỉ có 2 giá trị nên không thiết kế 4 KPI riêng cho "Tổ chức khác/CTKT/Giao dịch NĐT/Cá nhân" — gộp toàn bộ nhóm tổ chức vào 1 cặp Base+Derived (K_TT_112/113).
+> - Field nguồn: `Penalty Decision Subject.Subject Type Code` (← `PENALTY_DECISION_SUBJECT.SUBJECT_TYPE`) — chỉ 2 giá trị thực tế trong Atomic: `INDIVIDUAL` (Cá nhân), `ORGANIZATION` (Tổ chức). BA STT 14 chỉ `GROUP BY b.SUBJECT_TYPE` (không filter cứng theo 4 nhóm minh họa "Tổ chức khác/CTKT/Giao dịch NĐT/Cá nhân") — lấy trực tiếp toàn bộ giá trị thực tế trong data.
 > - Grain khác Nhóm 13 — 2-way join `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` (không có hành vi). Tách riêng **Fact Penalty Decision Subject**.
-> - Công thức % (window function `PARTITION BY Year`): mẫu số là tổng lượt đối tượng cùng năm (SUM 2 KPI Base), KHÔNG chia cho K_TT_82 (khác grain).
 > - Date key: `Issued_Date` (← `PENALTY_DECISION.ISSUED_DATE`, qua join với Penalty Decision).
+> - **Sửa 2026-07-21 (phát hiện qua `/datamart-review`):** Đồng bộ hoá format với Nhóm 3/4/8/9/13 (cùng là pie chart GROUP BY theo 1 chiều phân loại). Dù Atomic chỉ có đúng 2 giá trị (không thiếu sót dữ liệu như Nhóm 4/9 cũ), vẫn đổi sang 1 KPI Base tổng quát GROUP BY động + 1 KPI Chiều cho nhất quán style toàn module — không hardcode 2 cặp Base/Derived riêng biệt. Tỷ lệ % chuyển xuống tầng Detail Mapping/Báo cáo.
 
 **Mockup:**
 
@@ -1508,11 +1456,8 @@ pie title Cơ cấu xử phạt theo đối tượng
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_111 | Phân loại đối tượng | — | Chiều | `Subject_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data (INDIVIDUAL/ORGANIZATION), GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_112-115 |
-| K_TT_112 | Số QĐ XP đối tượng Tổ chức | QĐ | Base | COUNT(Fact_Penalty_Decision_Subject) WHERE Year(Issued_Date)=selected_year AND Subject_Type_Code=`ORGANIZATION` | Gộp "Tổ chức khác/CTKT/Giao dịch NĐT" (BA mô tả) — Atomic chỉ có 1 giá trị ORGANIZATION |
-| K_TT_113 | Tỷ lệ % Tổ chức (XP) | % | Derived | K_TT_112 / (K_TT_112+K_TT_114) × 100% | |
-| K_TT_114 | Số QĐ XP đối tượng Cá nhân | QĐ | Base | COUNT(Fact_Penalty_Decision_Subject) WHERE Year(Issued_Date)=selected_year AND Subject_Type_Code=`INDIVIDUAL` | |
-| K_TT_115 | Tỷ lệ % Cá nhân (XP) | % | Derived | K_TT_114 / (K_TT_112+K_TT_114) × 100% | |
+| K_TT_48 | Số QĐ XP theo đối tượng | QĐ | Base | COUNT(Fact_Penalty_Decision_Subject) WHERE Year(Issued_Date)=selected_year GROUP BY Subject_Type_Code | GROUP BY động — số dòng kết quả tùy giá trị `Subject_Type_Code` thực tế (INDIVIDUAL/ORGANIZATION — chỉ 2 giá trị trong Atomic hiện tại). Tỷ lệ % tính ở tầng Báo cáo: COUNT(nhóm)/SUM(COUNT toàn bộ nhóm cùng năm) × 100%, không phải KPI Derived |
+| K_TT_49 | Phân loại đối tượng | — | Chiều | `Subject_Type_Code` — lấy trực tiếp toàn bộ giá trị thực tế trong data (INDIVIDUAL/ORGANIZATION), GROUP BY động | Chiều lọc/nhóm dùng chung cho K_TT_48 |
 
 **Star Schema:**
 
@@ -1564,7 +1509,7 @@ flowchart LR
         G4["Penalty Decision Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 14"]
-        R1["K_TT_111-115: Cơ cấu xử phạt theo đối tượng"]
+        R1["K_TT_48-49: Cơ cấu xử phạt theo đối tượng"]
     end
     G2 --> G1
     G3 --> G1
@@ -1609,11 +1554,11 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_116 | Mã vụ việc | — | Attribute | `Penalty Decision Subject.Penalty Decision Code` | |
-| K_TT_117 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | |
-| K_TT_118 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | |
-| K_TT_119 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team` | nullable nếu hồ sơ không từ đoàn TT/KT |
-| K_TT_120 | Trạng thái | — | Attribute | `Penalty Decision.Life Cycle Status Code` | scheme PENALTY_DECISION_STATUS, 7 giá trị |
+| K_TT_50 | Mã vụ việc | — | Attribute | `Penalty Decision Subject.Penalty Decision Code` | |
+| K_TT_51 | Đối tượng | — | Attribute | `Penalty Decision Subject.Subject Name` | |
+| K_TT_52 | Phân loại đối tượng | — | Attribute | `Penalty Decision Subject.Subject Type Code` | |
+| K_TT_53 | Loại hình | — | Attribute | ETL-derived qua `Violation Case` → `Inspection Team`/`Examination Team` | nullable nếu hồ sơ không từ đoàn TT/KT |
+| K_TT_54 | Trạng thái | — | Attribute | `Penalty Decision.Life Cycle Status Code` | scheme PENALTY_DECISION_STATUS, 7 giá trị |
 
 **Schema bảng tác nghiệp:**
 
@@ -1683,9 +1628,9 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_121 | Thời gian (năm thống kê) | Năm | Chiều | Year(Received_Date) — slicer chọn năm thống kê | Chiều lọc dùng chung cho K_TT_122-123 |
-| K_TT_122 | Tổng số đơn đã xử lý | Đơn | Base | COUNT(Operational_Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year | |
-| K_TT_123 | Tổng đơn đã xử lý SSCK (%) | % | Derived | (K_TT_122[Y] − K_TT_122[Y−1]) / K_TT_122[Y−1] × 100% | |
+| K_TT_55 | Thời gian (năm thống kê) | Năm | Chiều | Year(Received_Date) — slicer chọn năm thống kê | Chiều lọc dùng chung cho K_TT_56-57 |
+| K_TT_56 | Tổng số đơn đã xử lý | Đơn | Base | COUNT(Operational_Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year | |
+| K_TT_57 | Tổng đơn đã xử lý SSCK (%) | % | Derived | (K_TT_56[Y] − K_TT_56[Y−1]) / K_TT_56[Y−1] × 100% | |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1695,7 +1640,7 @@ flowchart LR
         G1["Operational Petition List"]
     end
     subgraph RPT["Báo cáo — Nhóm 16"]
-        R1["K_TT_121-123: KPI card Tổng đơn đã xử lý"]
+        R1["K_TT_55-57: KPI card Tổng đơn đã xử lý"]
     end
     G1 --> R1
 ```
@@ -1727,7 +1672,7 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_124 | Số đơn đã xử lý theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| K_TT_58 | Số đơn đã xử lý theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Life_Cycle_Status_Code=`PROCESSED` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1737,7 +1682,7 @@ flowchart LR
         G1["Operational Petition List"]
     end
     subgraph RPT["Báo cáo — Nhóm 17"]
-        R1["K_TT_124: Biểu đồ Thống kê tình hình xử lý đơn thư"]
+        R1["K_TT_58: Biểu đồ Thống kê tình hình xử lý đơn thư"]
     end
     G1 --> R1
 ```
@@ -1767,13 +1712,13 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_125 | Phân loại đơn thư | — | Chiều | `Petition_Category_Code` — `COMPLAINT`/`DENUNCIATION`/`FEEDBACK_SUGGESTION`, map hiển thị: Khiếu nại/Tố cáo/Phản ánh kiến nghị | Chiều lọc/nhóm dùng chung cho K_TT_126-131 |
-| K_TT_126 | Số đơn Khiếu nại theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`COMPLAINT` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
-| K_TT_127 | Tỷ lệ % Khiếu nại | % | Derived | K_TT_126[Month=M] / (K_TT_126+K_TT_128+K_TT_130)[Month=M] × 100% | Mẫu số = tổng 3 KPI Base cùng tháng |
-| K_TT_128 | Số đơn Tố cáo theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`DENUNCIATION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
-| K_TT_129 | Tỷ lệ % Tố cáo | % | Derived | K_TT_128[Month=M] / (K_TT_126+K_TT_128+K_TT_130)[Month=M] × 100% | |
-| K_TT_130 | Số đơn Phản ánh kiến nghị theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`FEEDBACK_SUGGESTION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
-| K_TT_131 | Tỷ lệ % Phản ánh kiến nghị | % | Derived | K_TT_130[Month=M] / (K_TT_126+K_TT_128+K_TT_130)[Month=M] × 100% | |
+| K_TT_59 | Phân loại đơn thư | — | Chiều | `Petition_Category_Code` — `COMPLAINT`/`DENUNCIATION`/`FEEDBACK_SUGGESTION`, map hiển thị: Khiếu nại/Tố cáo/Phản ánh kiến nghị | Chiều lọc/nhóm dùng chung cho K_TT_60-65 |
+| K_TT_60 | Số đơn Khiếu nại theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`COMPLAINT` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| K_TT_61 | Tỷ lệ % Khiếu nại | % | Derived | K_TT_60[Month=M] / (K_TT_60+K_TT_62+K_TT_64)[Month=M] × 100% | Mẫu số = tổng 3 KPI Base cùng tháng |
+| K_TT_62 | Số đơn Tố cáo theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`DENUNCIATION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| K_TT_63 | Tỷ lệ % Tố cáo | % | Derived | K_TT_62[Month=M] / (K_TT_60+K_TT_62+K_TT_64)[Month=M] × 100% | |
+| K_TT_64 | Số đơn Phản ánh kiến nghị theo tháng | Đơn | Base | COUNT(Operational_Petition_List) WHERE Petition_Category_Code=`FEEDBACK_SUGGESTION` AND Year(Received_Date)=selected_year GROUP BY MONTH(Received_Date) | |
+| K_TT_65 | Tỷ lệ % Phản ánh kiến nghị | % | Derived | K_TT_64[Month=M] / (K_TT_60+K_TT_62+K_TT_64)[Month=M] × 100% | |
 
 **Lineage Mart → Báo cáo:**
 
@@ -1783,7 +1728,7 @@ flowchart LR
         G1["Operational Petition List"]
     end
     subgraph RPT["Báo cáo — Nhóm 18"]
-        R1["K_TT_125-131: Biểu đồ Cơ cấu theo loại đơn thư"]
+        R1["K_TT_59-65: Biểu đồ Cơ cấu theo loại đơn thư"]
     end
     G1 --> R1
 ```
@@ -1816,10 +1761,10 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_132 | Mã đơn | — | Attribute | `Petition.Petition Code` | |
-| K_TT_133 | Loại đơn | — | Attribute | `Petition.Petition Category Code` | |
-| K_TT_134 | Đối tượng | — | Attribute | `Petition.Content` | Content chứa tên đối tượng |
-| K_TT_135 | Trạng thái | — | Attribute | `Petition.Life Cycle Status Code` | 2 giá trị: RECEIVED/PROCESSED |
+| K_TT_66 | Mã đơn | — | Attribute | `Petition.Petition Code` | |
+| K_TT_67 | Loại đơn | — | Attribute | `Petition.Petition Category Code` | |
+| K_TT_68 | Đối tượng | — | Attribute | `Petition.Content` | Content chứa tên đối tượng |
+| K_TT_69 | Trạng thái | — | Attribute | `Petition.Life Cycle Status Code` | 2 giá trị: RECEIVED/PROCESSED |
 
 **Schema bảng tác nghiệp:**
 
@@ -1844,7 +1789,7 @@ flowchart LR
         G1["Operational Petition List"]
     end
     subgraph RPT["Báo cáo — Nhóm 19"]
-        R1["K_TT_132-135: Danh sách đơn thư chi tiết"]
+        R1["K_TT_66-69: Danh sách đơn thư chi tiết"]
     end
     G1 --> R1
 ```
@@ -1904,21 +1849,21 @@ flowchart LR
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
 |---|---|---|---|---|---|
-| K_TT_136 | Loại hình xử lý | — | Chiều | `CASE WHEN (LOWER(Violation_Behavior_Name) LIKE '%công ty đại chúng%' OR LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm của CTCK' WHEN LIKE '%công ty quản lý quỹ%' THEN 'Vi phạm của CTQLQ' WHEN LIKE '%cổ đông%' THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ' WHEN LIKE '%giao dịch%' THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ' WHEN LIKE '%chào bán chứng khoán%' THEN 'Vi phạm về CBCK' ELSE 'Vi phạm khác' END` | Chiều lọc/nhóm dùng chung cho K_TT_137-148. Khác K_TT_88 (Nhóm 13): dùng `ELSE 'Vi phạm khác'` thay vì `ELSE NULL` |
-| K_TT_137 | Số lượng vi phạm — CTĐC/tổ chức CBCK | QĐ | Base | COUNT(Fact_Penalty_Decision_Subject_Behavior) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | |
-| K_TT_138 | Số tiền xử phạt — CTĐC/tổ chức CBCK | Triệu VNĐ | Base | Pre-aggregate SUM(subject_total_fine_amount)/1_000_000, ROUND 2 — xem công thức pre-aggregate ở ghi chú trên, filter Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | |
-| K_TT_139 | Số lượng vi phạm — CTCK | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTCK` | |
-| K_TT_140 | Số tiền xử phạt — CTCK | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm của CTCK` | |
-| K_TT_141 | Số lượng vi phạm — CTQLQ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTQLQ` | |
-| K_TT_142 | Số tiền xử phạt — CTQLQ | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm của CTQLQ` | |
-| K_TT_143 | Số lượng vi phạm — CĐ lớn/nội bộ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | |
-| K_TT_144 | Số tiền xử phạt — CĐ lớn/nội bộ | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | |
-| K_TT_145 | Số lượng vi phạm — Giao dịch thao túng/nội bộ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | |
-| K_TT_146 | Số tiền xử phạt — Giao dịch thao túng/nội bộ | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | |
-| K_TT_147 | Số lượng vi phạm — Về CBCK | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm về CBCK` | |
-| K_TT_148 | Số tiền xử phạt — Về CBCK | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm về CBCK` | |
-| K_TT_149 | Số lượng vi phạm — Khác | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm khác` | Nhóm "Vi phạm khác" — nhánh `ELSE` |
-| K_TT_150 | Số tiền xử phạt — Khác | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm khác` | |
+| K_TT_70 | Loại hình xử lý | — | Chiều | `CASE WHEN (LOWER(Violation_Behavior_Name) LIKE '%công ty đại chúng%' OR LIKE '%tổ chức chào bán chứng khoán%') THEN 'Vi phạm của CTĐC, tổ chức CBCK' WHEN LIKE '%công ty chứng khoán%' THEN 'Vi phạm của CTCK' WHEN LIKE '%công ty quản lý quỹ%' THEN 'Vi phạm của CTQLQ' WHEN LIKE '%cổ đông%' THEN 'Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ' WHEN LIKE '%giao dịch%' THEN 'Vi phạm giao dịch thao túng, giao dịch nội bộ' WHEN LIKE '%chào bán chứng khoán%' THEN 'Vi phạm về CBCK' ELSE 'Vi phạm khác' END` | Chiều lọc/nhóm dùng chung cho K_TT_71-82. Khác K_TT_46 (Nhóm 13): dùng `ELSE 'Vi phạm khác'` thay vì `ELSE NULL` |
+| K_TT_71 | Số lượng vi phạm — CTĐC/tổ chức CBCK | QĐ | Base | COUNT(Fact_Penalty_Decision_Subject_Behavior) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | |
+| K_TT_72 | Số tiền xử phạt — CTĐC/tổ chức CBCK | Triệu VNĐ | Base | Pre-aggregate SUM(subject_total_fine_amount)/1_000_000, ROUND 2 — xem công thức pre-aggregate ở ghi chú trên, filter Loại_hình_xử_lý=`Vi phạm của CTĐC, tổ chức CBCK` | |
+| K_TT_73 | Số lượng vi phạm — CTCK | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTCK` | |
+| K_TT_74 | Số tiền xử phạt — CTCK | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm của CTCK` | |
+| K_TT_75 | Số lượng vi phạm — CTQLQ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CTQLQ` | |
+| K_TT_76 | Số tiền xử phạt — CTQLQ | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm của CTQLQ` | |
+| K_TT_77 | Số lượng vi phạm — CĐ lớn/nội bộ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | |
+| K_TT_78 | Số tiền xử phạt — CĐ lớn/nội bộ | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm của CĐ lớn, CĐ nội bộ, người có liên quan của CĐ nội bộ` | |
+| K_TT_79 | Số lượng vi phạm — Giao dịch thao túng/nội bộ | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | |
+| K_TT_80 | Số tiền xử phạt — Giao dịch thao túng/nội bộ | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm giao dịch thao túng, giao dịch nội bộ` | |
+| K_TT_81 | Số lượng vi phạm — Về CBCK | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm về CBCK` | |
+| K_TT_82 | Số tiền xử phạt — Về CBCK | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm về CBCK` | |
+| K_TT_83 | Số lượng vi phạm — Khác | QĐ | Base | COUNT(...) WHERE MONTH/YEAR(Issued_Date)=selected_month AND Loại_hình_xử_lý=`Vi phạm khác` | Nhóm "Vi phạm khác" — nhánh `ELSE` |
+| K_TT_84 | Số tiền xử phạt — Khác | Triệu VNĐ | Base | Pre-aggregate, filter Loại_hình_xử_lý=`Vi phạm khác` | |
 
 > Field mapping Atomic source: giống hệt Nhóm 13 cho phần COUNT/Chiều. Riêng SUM số tiền: `subject_total_fine_amount` lấy từ `Penalty Decision Subject.Total Fine Amount` (grain per-đối tượng, join qua `Penalty_Decision_Subject_Code`), KHÔNG lấy từ `Penalty Decision.Total Fine Amount` (grain per-QĐ, sẽ fanout khi SUM trên Fact grain mịn hơn).
 
@@ -1931,7 +1876,7 @@ flowchart LR
         G2["Calendar Date Dimension"]
     end
     subgraph RPT["Báo cáo — Nhóm 20"]
-        R1["K_TT_136-150: Bảng 7 nhóm Loại hình xử lý × Số lượng + Số tiền"]
+        R1["K_TT_70-84: Bảng 7 nhóm Loại hình xử lý × Số lượng + Số tiền"]
     end
     G2 --> G1
     G1 --> R1
@@ -1999,13 +1944,13 @@ graph TB
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2), K_TT_11–17 (Nhóm 3) | READY — xem Cụm 1 |
-| Fact Examination Team Activity | Event | 1 vụ việc kiểm tra (`EXAMINATION_TEAM`) — 2 FK: Calendar Date Dimension, Examination Team Dimension. Date key: Decision Date | K_TT_32–38 (Nhóm 6), K_TT_39–41 (Nhóm 7), K_TT_42–64 (Nhóm 8) | READY — xem Cụm 1b |
-| Fact Inspection Team Target Activity | Event | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Inspection Team Target Dimension, Inspection Team Dimension. Date key: Decision Date (join qua Inspection Team) | K_TT_18–26 (Nhóm 4) | READY — xem Cụm 1c |
-| Fact Examination Team Target Activity | Event | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Examination Team Target Dimension, Examination Team Dimension. Date key: Decision Date (join qua Examination Team) | K_TT_65–74, K_TT_75 (Nhóm 9) | READY — xem Cụm 1d |
-| Fact Penalty Decision | Event | 1 quyết định xử phạt (`PENALTY_DECISION`) — 2 FK: Calendar Date Dimension, Penalty Decision Dimension. Date key: Issued Date | K_TT_82–87, K_TT_81 (Nhóm 11, 12) | READY — xem Cụm 3 |
-| Fact Penalty Decision Subject Behavior | Event | 1 QĐ × 1 đối tượng × 1 hành vi (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` × `PENALTY_DECISION_SUBJECT_BEHAVIOR` × `VIOLATION_BEHAVIOR`, 4-way join) — 4 FK: Calendar Date Dimension, Penalty Decision Subject Behavior Dimension, Penalty Decision Dimension, Penalty Decision Subject Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_88–110 (Nhóm 13), K_TT_136–150 (Nhóm 20 — reuse) | READY — xem Cụm 3b |
-| Fact Penalty Decision Subject | Event | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) — 3 FK: Calendar Date Dimension, Penalty Decision Subject Dimension, Penalty Decision Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_111–115 (Nhóm 14) | READY — xem Cụm 3c |
+| Fact Inspection Team Activity | Event | 1 đoàn thanh tra (`INSPECTION_TEAM`) — 2 FK: Calendar Date Dimension, Inspection Team Dimension. Date key: Decision Date | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2), K_TT_11–12 (Nhóm 3) | READY — xem Cụm 1 |
+| Fact Examination Team Activity | Event | 1 vụ việc kiểm tra (`EXAMINATION_TEAM`) — 2 FK: Calendar Date Dimension, Examination Team Dimension. Date key: Decision Date | K_TT_20–26 (Nhóm 6), K_TT_27–29 (Nhóm 7), K_TT_30–31 (Nhóm 8) | READY — xem Cụm 1b |
+| Fact Inspection Team Target Activity | Event | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Inspection Team Target Dimension, Inspection Team Dimension. Date key: Decision Date (join qua Inspection Team) | K_TT_13–14 (Nhóm 4) | READY — xem Cụm 1c |
+| Fact Examination Team Target Activity | Event | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) — 3 FK: Calendar Date Dimension, Examination Team Target Dimension, Examination Team Dimension. Date key: Decision Date (join qua Examination Team) | K_TT_32–33 (Nhóm 9) | READY — xem Cụm 1d |
+| Fact Penalty Decision | Event | 1 quyết định xử phạt (`PENALTY_DECISION`) — 2 FK: Calendar Date Dimension, Penalty Decision Dimension. Date key: Issued Date | K_TT_39–43 (Nhóm 11), K_TT_44–45 (Nhóm 12) | READY — xem Cụm 3 |
+| Fact Penalty Decision Subject Behavior | Event | 1 QĐ × 1 đối tượng × 1 hành vi (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` × `PENALTY_DECISION_SUBJECT_BEHAVIOR` × `VIOLATION_BEHAVIOR`, 4-way join) — 4 FK: Calendar Date Dimension, Penalty Decision Subject Behavior Dimension, Penalty Decision Dimension, Penalty Decision Subject Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_46–47 (Nhóm 13), K_TT_70–84 (Nhóm 20 — reuse) | READY — xem Cụm 3b |
+| Fact Penalty Decision Subject | Event | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) — 3 FK: Calendar Date Dimension, Penalty Decision Subject Dimension, Penalty Decision Dimension. Date key: Issued Date (join qua Penalty Decision) | K_TT_48–49 (Nhóm 14) | READY — xem Cụm 3c |
 
 **Bảng Tác nghiệp (Denormalized):**
 
@@ -2014,7 +1959,7 @@ graph TB
 | Operational Inspection Case List | 1 đoàn thanh tra × 1 đối tượng (`INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET`, N:1) | Nhóm 5 (TT) | READY — xem Cụm 2 |
 | Operational Examination Case List | 1 vụ kiểm tra × 1 đối tượng (`EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET`, N:1) | Nhóm 10 (KT) | READY — xem Cụm 2b |
 | Operational Penalty Decision List | 1 QĐ × 1 đối tượng (`PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT`, N:1) | Nhóm 15 (XP) | READY — xem Cụm 3d |
-| Operational Petition List | 1 đơn thư (`PETITION`) — latest state. Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19) | Nhóm 16–19 (ĐT), K_TT_121–131 | READY — xem Cụm 4 |
+| Operational Petition List | 1 đơn thư (`PETITION`) — latest state. Serve cả KPI aggregate (Nhóm 16–18) lẫn danh sách chi tiết (Nhóm 19) | Nhóm 16–19 (ĐT), K_TT_55–69 | READY — xem Cụm 4 |
 
 **Bảng Dimension:**
 
@@ -2065,13 +2010,13 @@ graph TB
 
 | ID | Vấn đề | Kết luận | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_TT_1 | `Violation_Type_Code` — 1 hồ sơ có thể có nhiều kết luận (sơ bộ/chính thức/bổ sung). | ETL lấy kết luận có `MAX(Conclusion_Sequence_Number)` per hồ sơ — grain Fact không fanout. | K_TT_12–17 | **Closed** |
+| O_TT_1 | `Violation_Type_Code` — 1 hồ sơ có thể có nhiều kết luận (sơ bộ/chính thức/bổ sung). | ETL lấy kết luận có `MAX(Conclusion_Sequence_Number)` per hồ sơ — grain Fact không fanout. | K_TT_11–12 | **Closed** |
 | O_TT_2 | "Số ngày trễ" — BA không có KPI này. | Out of scope — đã loại khỏi thiết kế. | — | **Closed (Out of scope)** |
 | O_TT_3 | Trục thời gian biểu đồ bar: `Received Date` hay `Issue Date`? | Tạm giữ `Received Date` từ `Inspection Case` làm date key. Chờ BA xác nhận. | K_TT_8–10 | Open |
-| O_TT_4 | `Subject_Category_Code` — polymorphic FK không phân biệt CTKT/NHLK/TO_CHUC_PHTP. | Nhóm 4 (TT) và Nhóm 9 (KT) dùng thẳng `Target_Type_Code` (`Inspection Team Target`/`Examination Team Target`) — map 1:1 trực tiếp, không cần polymorphic resolve. | K_TT_18–26 (TT), K_TT_65–74 + K_TT_75 (KT) | **Closed** |
-| O_TT_5 | 1 hồ sơ có thể có nhiều đối tượng thanh tra gây fanout grain Fact. | Đổi grain Fact thành 1 row per hồ sơ × đối tượng. Mọi KPI đếm hồ sơ dùng `COUNT(DISTINCT ...)`. | K_TT_1–25 | **Closed** |
+| O_TT_4 | `Subject_Category_Code` — polymorphic FK không phân biệt CTKT/NHLK/TO_CHUC_PHTP. | Nhóm 4 (TT) và Nhóm 9 (KT) dùng thẳng `Target_Type_Code` (`Inspection Team Target`/`Examination Team Target`) — map 1:1 trực tiếp, không cần polymorphic resolve. | K_TT_13–14 (TT), K_TT_32–33 (KT) | **Closed** |
+| O_TT_5 | 1 hồ sơ có thể có nhiều đối tượng thanh tra gây fanout grain Fact. | Đổi grain Fact thành 1 row per hồ sơ × đối tượng. Mọi KPI đếm hồ sơ dùng `COUNT(DISTINCT ...)`. | K_TT_1–14 | **Closed** |
 | O_TT_6 | Tab KIỂM TRA — cột "Loại hình" có xuất hiện giá trị `KIỂM TRA` bên cạnh ĐỊNH KỲ/ĐỘT XUẤT. | Xác nhận chỉ có 2 giá trị ĐỊNH KỲ/ĐỘT XUẤT — "KIỂM TRA" là dữ liệu mẫu sai. | Nhóm 10 | **Closed** |
-| O_TT_7 | Scheme `TT_SUBJECT_CATEGORY` — BA STT 9 hiển thị 5 nhóm minh họa nhưng Atomic cũ không phân biệt được CTKT/NHLK/TO_CHUC_PHTP. | Nhóm 9 dùng `Examination Team Target.Target_Type_Code` (7 giá trị thực tế), lấy trực tiếp GROUP BY động, không hardcode ánh xạ cố định. NHLK và Tổ chức PHTP gộp chung dưới `ORGANIZATION`. | K_TT_65–74, K_TT_75 | **Closed** |
-| O_TT_8 | Tab XỬ PHẠT — `Violation_Type_Code` cần cho cột "Loại hình" và donut cơ cấu theo hành vi. | `Violation Behavior.Violation Behavior Name` (← `VIOLATION_BEHAVIOR.NAME`), phân loại bằng text-matching. | K_TT_88, K_TT_89–110 (Nhóm 13), K_TT_136–150 (Nhóm 20) | **Closed** |
-| O_TT_9 | Tab XỬ PHẠT — `Penalty_Subject_Category_Code` cần cho donut và danh sách. | `Penalty Decision Subject.Subject Type Code` — chỉ 2 giá trị `INDIVIDUAL`/`ORGANIZATION`, lấy trực tiếp giá trị thực tế. Atomic chỉ 2 giá trị nên không thiết kế riêng 4 nhóm minh họa BA — gộp toàn bộ tổ chức vào 1 cặp KPI. | K_TT_111–115 (Nhóm 14) | **Closed** |
-| O_TT_10 | Tab ĐƠN THƯ — thiết kế cũ giả định 4 giá trị loại đơn. | `Petition.Petition_Category_Code` có sẵn đúng 3 giá trị: `FEEDBACK_SUGGESTION`/`COMPLAINT`/`DENUNCIATION` — map 1:1 trực tiếp, không cần ETL gộp giá trị. | K_TT_125–131 (Nhóm 18), Nhóm 19 | **Closed** |
+| O_TT_7 | Scheme `TT_SUBJECT_CATEGORY` — BA STT 9 hiển thị 5 nhóm minh họa nhưng Atomic cũ không phân biệt được CTKT/NHLK/TO_CHUC_PHTP. | Nhóm 9 dùng `Examination Team Target.Target_Type_Code` (7 giá trị thực tế), lấy trực tiếp GROUP BY động thật (1 KPI Base tổng quát, không hardcode N cặp cố định). NHLK và Tổ chức PHTP không phân biệt được trong Atomic — cùng gộp dưới giá trị `ORGANIZATION` (không phải lỗi thiết kế, giới hạn dữ liệu nguồn). | K_TT_32–33 | **Closed** |
+| O_TT_8 | Tab XỬ PHẠT — `Violation_Type_Code` cần cho cột "Loại hình" và donut cơ cấu theo hành vi. | `Violation Behavior.Violation Behavior Name` (← `VIOLATION_BEHAVIOR.NAME`), phân loại bằng text-matching. | K_TT_46–47 (Nhóm 13), K_TT_70–84 (Nhóm 20) | **Closed** |
+| O_TT_9 | Tab XỬ PHẠT — `Penalty_Subject_Category_Code` cần cho donut và danh sách. | `Penalty Decision Subject.Subject Type Code` — chỉ 2 giá trị `INDIVIDUAL`/`ORGANIZATION`, lấy trực tiếp giá trị thực tế. Atomic chỉ 2 giá trị nên không thiết kế riêng 4 nhóm minh họa BA — gộp toàn bộ tổ chức vào 1 cặp KPI. | K_TT_48–49 (Nhóm 14) | **Closed** |
+| O_TT_10 | Tab ĐƠN THƯ — thiết kế cũ giả định 4 giá trị loại đơn. | `Petition.Petition_Category_Code` có sẵn đúng 3 giá trị: `FEEDBACK_SUGGESTION`/`COMPLAINT`/`DENUNCIATION` — map 1:1 trực tiếp, không cần ETL gộp giá trị. | K_TT_59–65 (Nhóm 18), Nhóm 19 | **Closed** |
