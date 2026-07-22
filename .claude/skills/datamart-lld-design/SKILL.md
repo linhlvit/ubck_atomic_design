@@ -470,7 +470,8 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 - Với mọi row `key = BK`: `etl_logic` và `etl_logic_type` không được trống (BK là business key thật, map từ Atomic — không phải surrogate generated).
 - Với mọi row `key = PK`: `description` không được lẫn chữ "BK" hoặc ngược lại — token trong `description` (nếu có nhắc lại key) phải khớp đúng giá trị cột `key` của chính dòng đó.
 - Báo: `✅ TC2b PASS` hoặc `❌ TC2b FAIL: [danh sách row vi phạm — ghi rõ key hiện tại, loại bảng, và vi phạm cụ thể]`.
-- Nếu FAIL → sửa trước khi trình bày (Fact có PK → xóa row; Dim/Operational thiếu etl_logic cho BK → điền đầy đủ).
+- Nếu FAIL → sửa trước khi trình bày (Dim/Operational thiếu etl_logic cho BK → điền đầy đủ).
+- **Fact có `key = PK` → XÓA HẲN TOÀN BỘ DÒNG (row) khỏi CSV — không phải chỉ đổi giá trị cột `key` thành trống và giữ nguyên dòng.** Bài học thực tế (module GSDC, 2026-07-22): đã từng chỉ đổi `key: PK` → `key: ''` mà giữ nguyên dòng `fct_..._id`, khiến cột surrogate thừa vẫn tồn tại trong Attributes/registry/SQL sau khi báo "đã fix" — human phải tự phát hiện lại. Trước khi xóa, kiểm tra cột đó có được tham chiếu ở nơi khác không (`grep` trong `Detail_Mapping.csv` và `HLD.md`): nếu KHÔNG có tham chiếu nào → xóa hẳn dòng; nếu có bằng chứng ETL cần cột đó cho merge/upsert kỹ thuật → giữ dòng nhưng `key` để trống (ngoại lệ hiếm, cần nêu rõ lý do). Khi xóa, đồng bộ đủ 4 nơi: (1) file Attributes detail, (2) master `datamart_attributes.csv`, (3) `datamart_model.yaml` — xóa cả block `columns` tương ứng bằng text-replace theo block, KHÔNG dùng `yaml.dump`, (4) file SQL Phase 3 đã sinh nếu có (`01_create_*.sql` dòng CREATE, `02_populate_*.sql` dòng SELECT).
 
 **TC3 — Đầy đủ prefix table_name.column_name + thứ tự JOIN đúng:**
 - Kiểm tra mọi column reference trong `etl_logic` có dạng `<table>.<col>`.

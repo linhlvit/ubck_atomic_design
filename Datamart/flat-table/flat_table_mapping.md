@@ -1402,13 +1402,13 @@ _Không có dim join (operational / self-contained table)._
 
 ---
 
-### `datamart.qlkd_securities_company_compliance_history_flat`
+### `datamart.qlkd_securities_company_compliance_hist_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
 | **Entity nguồn** | Securities Company Compliance History |
-| **Bảng fact/operational** | `datamart.qlkd_securities_company_compliance_history` |
+| **Bảng fact/operational** | `datamart.qlkd_securities_company_compliance_hist` |
 | **PK** | `compliance_history_id` |
 | **Số dim join** | 0 |
 
@@ -1520,13 +1520,13 @@ _Không có dim join (operational / self-contained table)._
 
 ---
 
-### `datamart.qlkd_individual_work_history_flat`
+### `datamart.qlkd_individual_work_hist_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
 | **Entity nguồn** | Individual Work History |
-| **Bảng fact/operational** | `datamart.qlkd_individual_work_history` |
+| **Bảng fact/operational** | `datamart.qlkd_individual_work_hist` |
 | **PK** | `work_history_id` |
 | **Số dim join** | 0 |
 
@@ -1540,13 +1540,13 @@ _Không có dim join (operational / self-contained table)._
 
 ---
 
-### `datamart.qlkd_individual_violation_history_flat`
+### `datamart.qlkd_individual_violation_hist_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `operational` |
 | **Entity nguồn** | Individual Violation History |
-| **Bảng fact/operational** | `datamart.qlkd_individual_violation_history` |
+| **Bảng fact/operational** | `datamart.qlkd_individual_violation_hist` |
 | **PK** | `violation_history_id` |
 | **Số dim join** | 0 |
 

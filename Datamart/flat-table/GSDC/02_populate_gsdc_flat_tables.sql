@@ -14,7 +14,6 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_risk_score_snpst_flat 
 INSERT INTO datamart.gsdc_fct_public_company_risk_score_snpst_flat
 SELECT
     -- From: FACT Public Company Risk Score Snapshot
-    f.fct_public_company_risk_score_snpst_id,
     f.public_company_dim_id,
     f.cdr_dt_dim_id,
     f.total_score_percentage,
@@ -51,7 +50,6 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_compliance_score_snpst
 INSERT INTO datamart.gsdc_fct_public_company_compliance_score_snpst_flat
 SELECT
     -- From: FACT Public Company Compliance Score Snapshot
-    f.fct_public_company_compliance_score_snpst_id,
     f.public_company_dim_id,
     f.cdr_dt_dim_id,
     f.disclosure_bctc_score,
@@ -97,7 +95,6 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_issuance_score_snpst_f
 INSERT INTO datamart.gsdc_fct_public_company_issuance_score_snpst_flat
 SELECT
     -- From: FACT Public Company Issuance Score Snapshot
-    f.fct_public_company_issuance_score_snpst_id,
     f.public_company_dim_id,
     f.cdr_dt_dim_id,
     f.rapid_capital_increase_score,
@@ -136,7 +133,6 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_financial_score_snpst_
 INSERT INTO datamart.gsdc_fct_public_company_financial_score_snpst_flat
 SELECT
     -- From: FACT Public Company Financial Score Snapshot
-    f.fct_public_company_financial_score_snpst_id,
     f.public_company_dim_id,
     f.cdr_dt_dim_id,
     f.audit_opinion_score,
@@ -178,7 +174,6 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_nonfinancial_score_snp
 INSERT INTO datamart.gsdc_fct_public_company_nonfinancial_score_snpst_flat
 SELECT
     -- From: FACT Public Company Non-Financial Score Snapshot
-    f.fct_public_company_nonfinancial_score_snpst_id,
     f.public_company_dim_id,
     f.cdr_dt_dim_id,
     f.business_registration_status_score,
@@ -212,7 +207,6 @@ TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_financial_summary_snps
 INSERT INTO datamart.gsdc_fct_public_company_financial_summary_snpst_flat
 SELECT
     -- From: FACT Public Company Financial Summary Snapshot
-    f.fct_public_company_financial_summary_snpst_id,
     f.public_company_dim_id,
     f.cdr_dt_dim_id,
     f.submission_deadline_dt,

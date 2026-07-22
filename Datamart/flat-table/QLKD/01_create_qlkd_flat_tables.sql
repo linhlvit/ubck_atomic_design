@@ -6,11 +6,11 @@
 -- ============================================================
 
 -- ============================================================
--- 1. FACT: qlkd_fct_sc_status_snpst_flat
+-- 1. FACT: qlkd_fct_securities_company_status_snpst_flat
 --    Fact Securities Company Status Snapshot
 --    Joins: Calendar Date × Securities Company Dimension
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_status_snpst_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_status_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Company Status Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D — date-spine từ MIN(License_Issue_Date)',
@@ -36,16 +36,16 @@ COMMENT 'Flat table — Fact Securities Company Status Snapshot × Calendar Date
 
 
 -- ============================================================
--- 2. FACT: qlkd_fct_sc_service_registration_flat
+-- 2. FACT: qlkd_fct_securities_company_service_registration_flat
 --    Fact Securities Company Service Registration
 --    Joins: Calendar Date × Securities Company Dimension × Service Type Dimension
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_service_registration_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_service_registration_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Company Service Registration
     registration_dt_dim_id          String                  COMMENT 'FK ngày đăng ký dịch vụ',
     securities_company_dim_id       String                  COMMENT 'FK CTCK',
-    service_type_dim_id             String                  COMMENT 'FK dịch vụ',
+    service_tp_dim_id             String                  COMMENT 'FK dịch vụ',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'FK ngày đăng ký dịch vụ — từ Calendar Date Dimension',
@@ -65,17 +65,17 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_service_registration_flat ON CLU
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, service_type_dim_id)
+ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, service_tp_dim_id)
 COMMENT 'Flat table — Fact Securities Company Service Registration × Calendar Date × Securities Company Dimension × Service Type Dimension'
 ;
 
 
 -- ============================================================
--- 3. FACT: qlkd_fct_sc_license_condition_snpst_flat
+-- 3. FACT: qlkd_fct_securities_company_license_condition_snpst_flat
 --    Fact Securities Company License Condition Snapshot
 --    Joins: Calendar Date × Securities Company Dimension
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_license_condition_snpst_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Company License Condition Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D (Processing Date)',
@@ -103,11 +103,11 @@ COMMENT 'Flat table — Fact Securities Company License Condition Snapshot × Ca
 
 
 -- ============================================================
--- 4. FACT: qlkd_fct_sc_capital_raising_event_flat
+-- 4. FACT: qlkd_fct_securities_company_capital_raising_event_flat
 --    Fact Securities Company Capital Raising Event
 --    Joins: Calendar Date × Offering Form Dimension
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_sc_capital_raising_event_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_capital_raising_event_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Company Capital Raising Event
     event_dt_dim_id                 String                  COMMENT 'FK tháng của đợt chào bán/phát hành (Result Report Date)',
@@ -201,10 +201,10 @@ COMMENT 'Flat table — Securities Company Organization Unit Profile'
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlkd_securities_company_compliance_history_flat
+-- 8. OPERATIONAL: qlkd_securities_company_compliance_hist_flat
 --    Securities Company Compliance History
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_compliance_history_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Securities Company Compliance History
     pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt (Bảng Tác nghiệp). Bộ Admin Penalty Decision dùng sc_administrative_pd_code làm PK riêng.',
@@ -314,10 +314,10 @@ COMMENT 'Flat table — Individual Trading Account'
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlkd_individual_work_history_flat
+-- 13. OPERATIONAL: qlkd_individual_work_hist_flat
 --    Individual Work History
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_work_history_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_work_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Work History
     sc_senior_personnel_code        String                  COMMENT 'PK — mã lần bổ nhiệm (Bảng Tác nghiệp)',
@@ -336,10 +336,10 @@ COMMENT 'Flat table — Individual Work History'
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlkd_individual_violation_history_flat
+-- 14. OPERATIONAL: qlkd_individual_violation_hist_flat
 --    Individual Violation History
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_violation_history_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_violation_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Violation History
     pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt cá nhân (Bảng Tác nghiệp)',

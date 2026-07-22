@@ -14,7 +14,6 @@
 CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_risk_score_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Public Company Risk Score Snapshot
-    fct_public_company_risk_score_snpst_id     String              COMMENT 'PK — surrogate key',
     public_company_dim_id                  String              COMMENT 'FK → Public Company Dimension',
     cdr_dt_dim_id                   String              COMMENT 'FK → Calendar Date Dimension (kỳ đánh giá)',
     total_score_percentage         Nullable(Decimal(5,2))   COMMENT 'Tổng điểm phân loại (%)',
@@ -51,7 +50,6 @@ COMMENT 'Flat table — Fact Public Company Risk Score Snapshot × Calendar Date
 CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_compliance_score_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Public Company Compliance Score Snapshot
-    fct_public_company_compliance_score_snpst_id            String              COMMENT 'PK — surrogate key',
     public_company_dim_id                                String              COMMENT 'FK → Public Company Dimension',
     cdr_dt_dim_id                                 String              COMMENT 'FK → Calendar Date Dimension (kỳ đánh giá)',
     disclosure_bctc_score                         Nullable(Int64)     COMMENT 'Công bố BCTC',
@@ -97,7 +95,6 @@ COMMENT 'Flat table — Fact Public Company Compliance Score Snapshot × Calenda
 CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_issuance_score_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Public Company Issuance Score Snapshot
-    fct_public_company_issuance_score_snpst_id      String              COMMENT 'PK — surrogate key',
     public_company_dim_id                       String              COMMENT 'FK → Public Company Dimension',
     cdr_dt_dim_id                        String              COMMENT 'FK → Calendar Date Dimension (kỳ đánh giá)',
     rapid_capital_increase_score         Nullable(Int64)     COMMENT 'Phát hành tăng vốn nhanh',
@@ -136,7 +133,6 @@ COMMENT 'Flat table — Fact Public Company Issuance Score Snapshot × Calendar 
 CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_score_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Public Company Financial Score Snapshot
-    fct_public_company_financial_score_snpst_id      String              COMMENT 'PK — surrogate key',
     public_company_dim_id                        String              COMMENT 'FK → Public Company Dimension',
     cdr_dt_dim_id                         String              COMMENT 'FK → Calendar Date Dimension (kỳ đánh giá)',
     audit_opinion_score                   Nullable(Int64)     COMMENT 'Kiểm toán — Ý kiến kiểm toán',
@@ -178,7 +174,6 @@ COMMENT 'Flat table — Fact Public Company Financial Score Snapshot × Calendar
 CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_nonfinancial_score_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Public Company Non-Financial Score Snapshot
-    fct_public_company_nonfinancial_score_snpst_id     String              COMMENT 'PK — surrogate key',
     public_company_dim_id                          String              COMMENT 'FK → Public Company Dimension',
     cdr_dt_dim_id                           String              COMMENT 'FK → Calendar Date Dimension (kỳ đánh giá)',
     business_registration_status_score      Nullable(Int64)     COMMENT 'Trạng thái đăng ký kinh doanh',
@@ -212,7 +207,6 @@ COMMENT 'Flat table — Fact Public Company Non-Financial Score Snapshot × Cale
 CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_summary_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Public Company Financial Summary Snapshot
-    fct_public_company_financial_summary_snpst_id     String              COMMENT 'PK — surrogate key',
     public_company_dim_id                      String              COMMENT 'FK → Public Company Dimension',
     cdr_dt_dim_id                       String              COMMENT 'FK → Calendar Date Dimension (kỳ báo cáo)',
     submission_deadline_dt              Nullable(Date)      COMMENT 'Ngày hạn nộp BCTC',

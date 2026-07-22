@@ -1999,7 +1999,7 @@ graph TB
 | Fact Penalty Decision | fct_penalty_decision | partial | Nguồn `PENALTY_DECISION`. FK `Penalty_Decision_Dimension_Id` trỏ tới Penalty Decision Dimension; `Total_Fine_Amount` là measure trên Fact |
 | Fact Penalty Decision Subject Behavior | fct_penalty_decision_subject_behavior | partial | Nhóm 13 tách riêng grain 4-way join. 2 FK trên Fact trỏ tới Penalty Decision Dimension và Penalty Decision Subject Dimension. Không có measure `Total_Fine_Amount` (thuộc grain QĐ/đối tượng, không phải grain Fact này — xem Nhóm 20 cách tính số tiền qua pre-aggregate) |
 | Fact Penalty Decision Subject | fct_penalty_decision_subject | partial | Nhóm 14 tách riêng grain 2-way join. FK `Penalty_Decision_Dimension_Id` trên Fact trỏ tới Penalty Decision Dimension |
-| Operational Inspection Case List | opr_inspection_case_list | new | Không reuse `securities_company_compliance_history` (module QLKD) — khác `table_type` và mục đích. Đã merge vào registry qua Phase 1 LLD |
+| Operational Inspection Case List | opr_inspection_case_list | new | Không reuse `securities_company_compliance_hist` (module QLKD) — khác `table_type` và mục đích. Đã merge vào registry qua Phase 1 LLD |
 | Operational Examination Case List | opr_examination_case_list | new | Nhóm 10 tách riêng, không reuse `Operational Inspection Case List` (khác nguồn Atomic). Đã merge vào registry qua Phase 1 LLD |
 | Operational Penalty Decision List | opr_penalty_decision_list | new | Nhóm 15, nguồn `PENALTY_DECISION`/`PENALTY_DECISION_SUBJECT`/`VIOLATION_CASE`. Đã merge vào registry qua Phase 1 LLD |
 | Operational Petition List | opr_petition_list | new | Nguồn `PETITION`. Đã merge vào registry qua Phase 1 LLD |

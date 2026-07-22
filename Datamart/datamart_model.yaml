@@ -1745,9 +1745,9 @@ entities:
         source_atomic_table: "securities_company"
         source_atomic_column: "securities_company.src_stm_code"
 
-  - id: "DTM-fct_sc_status_snpst"
+  - id: "DTM-fct_securities_company_status_snpst"
     logical_name: "Fact Securities Company Status Snapshot"
-    datamart_table: "fct_sc_status_snpst"
+    datamart_table: "fct_securities_company_status_snpst"
     table_type: "fact"
     module: "QLKD"
     status: "draft"
@@ -1778,9 +1778,9 @@ entities:
         source_atomic_table: "securities_company"
         source_atomic_column: "securities_company.sc_code"
 
-  - id: "DTM-service_type_dim"
+  - id: "DTM-service_tp_dim"
     logical_name: "Service Type Dimension"
-    datamart_table: "service_type_dim"
+    datamart_table: "service_tp_dim"
     table_type: "dim"
     module: "QLKD"
     status: "draft"
@@ -1792,7 +1792,7 @@ entities:
       - "QLKD"
     columns:
       - logical_name: "Service Type Dimension Id"
-        physical_name: "service_type_dim_id"
+        physical_name: "service_tp_dim_id"
         data_domain: "Surrogate Key"
         data_type: "string"
         nullable: false
@@ -1828,9 +1828,9 @@ entities:
         source_atomic_table: "cl_service"
         source_atomic_column: "cl_service.src_stm_code"
 
-  - id: "DTM-fct_sc_service_registration"
+  - id: "DTM-fct_securities_company_service_registration"
     logical_name: "Fact Securities Company Service Registration"
-    datamart_table: "fct_sc_service_registration"
+    datamart_table: "fct_securities_company_service_registration"
     table_type: "fact"
     module: "QLKD"
     status: "draft"
@@ -1860,7 +1860,7 @@ entities:
         source_atomic_table: "sc_licensed_service"
         source_atomic_column: "sc_licensed_service.sc_code"
       - logical_name: "Service Type Dimension Id"
-        physical_name: "service_type_dim_id"
+        physical_name: "service_tp_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
         nullable: false
@@ -1869,9 +1869,9 @@ entities:
         source_atomic_table: "sc_licensed_service"
         source_atomic_column: "sc_licensed_service.cl_service_code"
 
-  - id: "DTM-fct_sc_license_condition_snpst"
+  - id: "DTM-fct_securities_company_license_condition_snpst"
     logical_name: "Fact Securities Company License Condition Snapshot"
-    datamart_table: "fct_sc_license_condition_snpst"
+    datamart_table: "fct_securities_company_license_condition_snpst"
     table_type: "fact"
     module: "QLKD"
     status: "draft"
@@ -1970,9 +1970,9 @@ entities:
         source_atomic_table: "sc_disclosure_securities_offering"
         source_atomic_column: "sc_disclosure_securities_offering.src_stm_code"
 
-  - id: "DTM-fct_sc_capital_raising_event"
+  - id: "DTM-fct_securities_company_capital_raising_event"
     logical_name: "Fact Securities Company Capital Raising Event"
-    datamart_table: "fct_sc_capital_raising_event"
+    datamart_table: "fct_securities_company_capital_raising_event"
     table_type: "fact"
     module: "QLKD"
     status: "draft"
@@ -2262,9 +2262,9 @@ entities:
         source_atomic_table: "sc_organization_unit"
         source_atomic_column: "sc_organization_unit.src_stm_code"
 
-  - id: "DTM-securities_company_compliance_history"
+  - id: "DTM-securities_company_compliance_hist"
     logical_name: "Securities Company Compliance History"
-    datamart_table: "securities_company_compliance_history"
+    datamart_table: "securities_company_compliance_hist"
     table_type: "operational"
     module: "QLKD"
     status: "draft"
@@ -2687,9 +2687,9 @@ entities:
         source_atomic_table: "securities_company_shareholder"
         source_atomic_column: "securities_company_shareholder.src_stm_code"
 
-  - id: "DTM-individual_work_history"
+  - id: "DTM-individual_work_hist"
     logical_name: "Individual Work History"
-    datamart_table: "individual_work_history"
+    datamart_table: "individual_work_hist"
     table_type: "operational"
     module: "QLKD"
     status: "draft"
@@ -2764,9 +2764,9 @@ entities:
         source_atomic_table: "sc_senior_personnel"
         source_atomic_column: "sc_senior_personnel.src_stm_code"
 
-  - id: "DTM-individual_violation_history"
+  - id: "DTM-individual_violation_hist"
     logical_name: "Individual Violation History"
-    datamart_table: "individual_violation_history"
+    datamart_table: "individual_violation_hist"
     table_type: "operational"
     module: "QLKD"
     status: "draft"
@@ -2967,15 +2967,6 @@ entities:
     modules_using:
       - "GSDC"
     columns:
-      - logical_name: "Fact Public Company Risk Score Snapshot Id"
-        physical_name: "fct_public_company_risk_score_snpst_id"
-        data_domain: "Surrogate Key"
-        data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "PK — Driving: public_company_evaluation"
-        source_atomic_table: "public_company_evaluation"
-        source_atomic_column: null
       - logical_name: "Public Company Dimension Id"
         physical_name: "public_company_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -3065,15 +3056,6 @@ entities:
     modules_using:
       - "GSDC"
     columns:
-      - logical_name: "Fact Public Company Compliance Score Snapshot Id"
-        physical_name: "fct_public_company_compliance_score_snpst_id"
-        data_domain: "Surrogate Key"
-        data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "Khóa đại diện (surrogate key). Driving Table: Public Company Evaluation (public_company_evaluation)."
-        source_atomic_table: " "
-        source_atomic_column: null
       - logical_name: "Public Company Dimension Id"
         physical_name: "public_company_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -3244,15 +3226,6 @@ entities:
     modules_using:
       - "GSDC"
     columns:
-      - logical_name: "Fact Public Company Issuance Score Snapshot Id"
-        physical_name: "fct_public_company_issuance_score_snpst_id"
-        data_domain: "Surrogate Key"
-        data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "Khóa đại diện (surrogate key). Driving Table: Public Company Evaluation (public_company_evaluation)."
-        source_atomic_table: " "
-        source_atomic_column: null
       - logical_name: "Public Company Dimension Id"
         physical_name: "public_company_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -3360,15 +3333,6 @@ entities:
     modules_using:
       - "GSDC"
     columns:
-      - logical_name: "Fact Public Company Financial Score Snapshot Id"
-        physical_name: "fct_public_company_financial_score_snpst_id"
-        data_domain: "Surrogate Key"
-        data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "Khóa đại diện (surrogate key). Driving Table: Public Company Evaluation (public_company_evaluation)."
-        source_atomic_table: " "
-        source_atomic_column: null
       - logical_name: "Public Company Dimension Id"
         physical_name: "public_company_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -3503,15 +3467,6 @@ entities:
     modules_using:
       - "GSDC"
     columns:
-      - logical_name: "Fact Public Company Non-Financial Score Snapshot Id"
-        physical_name: "fct_public_company_nonfinancial_score_snpst_id"
-        data_domain: "Surrogate Key"
-        data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "Khóa đại diện (surrogate key). Driving Table: Public Company Evaluation (public_company_evaluation)."
-        source_atomic_table: " "
-        source_atomic_column: null
       - logical_name: "Public Company Dimension Id"
         physical_name: "public_company_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -3572,15 +3527,6 @@ entities:
     modules_using:
       - "GSDC"
     columns:
-      - logical_name: "Fact Public Company Financial Summary Snapshot Id"
-        physical_name: "fct_public_company_financial_summary_snpst_id"
-        data_domain: "Surrogate Key"
-        data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "PK — Driving: pc_report_submission"
-        source_atomic_table: "pc_report_submission"
-        source_atomic_column: null
       - logical_name: "Public Company Dimension Id"
         physical_name: "public_company_dim_id"
         data_domain: "Surrogate Dimension Key"

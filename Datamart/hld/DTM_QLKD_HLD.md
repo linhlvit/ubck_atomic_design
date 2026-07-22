@@ -2933,7 +2933,7 @@ graph TB
 | Service Type Dimension | sv_tp_dim (mới) | new | Nguồn Atomic `Classification Service` (physical_name `cl_service`) là entity riêng — không phải `cv` — nên KHÔNG reuse `cl_dim` (đúng Lớp 2, điều kiện `physical_name ≠ cv`) |
 | Offering Form Dimension | ofr_form_dim (mới) | new | ETL-derived, chưa có trong master |
 | Report Indicator Dimension | rpt_ind_dim (mới) | new | Chưa có trong master |
-| Fact Securities Company Status Snapshot | fct_sc_status_snpst (mới) | new | Chưa có trong master |
+| Fact Securities Company Status Snapshot | fct_securities_company_status_snpst (mới) | new | Chưa có trong master |
 | Fact Securities Company Service Registration | fct_sc_svc_reg (mới) | new | Chưa có trong master |
 | Fact Securities Company License Condition Snapshot | fct_sc_license_cond_snpst (mới) | new | Chưa có trong master |
 | Fact Securities Company Capital Raising Event | fct_sc_cap_raising_evt (mới) | new | Chưa có trong master |
