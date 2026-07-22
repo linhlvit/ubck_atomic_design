@@ -271,6 +271,9 @@ FROM datamart.opr_practitioner_training_hist o
 
 -- ============================================================
 -- 11. OPERATIONAL: opr_practitioner_data_explorer_flat
+--    (Sửa 2026-07-22) LEFT JOIN Practitioner 360 Profile (1-1) + Exam History (1-N)
+--    + Violation History (1-N) theo practitioner_code — chấp nhận cartesian
+--    khi 1 NHN vừa có nhiều đợt thi vừa có nhiều vi phạm đồng thời.
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.nhnck_opr_practitioner_data_explorer_flat
@@ -282,9 +285,29 @@ SELECT
     o.certificate_tp_code,
     o.certificate_tp_nm,
     o.practice_status_code,
+    o.practice_status_nm,
     o.issue_dt,
     o.current_organization_nm,
     o.identification_tp_code,
-    o.src_stm_code
+    o.src_stm_code,
+    p360.birth_dt                      AS birth_dt,
+    p360.identification_nbr            AS identification_nbr,
+    p360.education_level_nm            AS education_level_nm,
+    p360.age                           AS age,
+    p360.nationality_nm                AS nationality_nm,
+    exam.assessment_nm                 AS exam_assessment_nm,
+    exam.examination_period            AS exam_examination_period,
+    exam.examination_start_dt          AS exam_examination_start_dt,
+    exam.examination_end_dt            AS exam_examination_end_dt,
+    exam.overall_result_nm             AS exam_overall_result_nm,
+    viol.decision_nbr                  AS violation_decision_nbr,
+    viol.decision_signed_dt            AS violation_decision_signed_dt,
+    viol.note                          AS violation_note
 FROM datamart.opr_practitioner_data_explorer o
+LEFT JOIN datamart.opr_practitioner_360_profile p360
+    ON p360.practitioner_code = o.practitioner_code
+LEFT JOIN datamart.opr_practitioner_exam_hist exam
+    ON exam.practitioner_code = o.practitioner_code
+LEFT JOIN datamart.opr_practitioner_violation_hist viol
+    ON viol.practitioner_code = o.practitioner_code
 ;

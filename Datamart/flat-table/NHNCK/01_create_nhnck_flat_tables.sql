@@ -293,6 +293,10 @@ COMMENT 'Flat table — Practitioner Training History (1 enrollment per NHN)'
 
 -- ============================================================
 -- 11. OPERATIONAL: opr_practitioner_data_explorer_flat
+--    (Sửa 2026-07-22) Tái cấu trúc theo yêu cầu BA bổ sung — JOIN thêm
+--    Practitioner 360 Profile (1-1) + Exam History (1-N) + Violation History (1-N).
+--    Grain: 1 CCHN × 1 đợt thi × 1 vi phạm — chấp nhận cartesian khi 1 NHN
+--    vừa có nhiều đợt thi vừa có nhiều vi phạm đồng thời (theo xác nhận người thiết kế).
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster'
 (
@@ -304,13 +308,33 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON
     certificate_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — SP License Certificate Type (Fundamental entity, không phải Classification)',
     certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại hình hành nghề',
     practice_status_code        Nullable(String)    COMMENT 'Trạng thái hành nghề — scheme: PRACTITIONER_PRACTICE_STATUS',
+    practice_status_nm          Nullable(String)    COMMENT '(Sửa 2026-07-22) Tên trạng thái hành nghề — K_NHNCK_109',
     issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
     current_organization_nm          Nullable(String)    COMMENT 'Tên tổ chức công tác hiện tại',
     identification_tp_code          Nullable(String)    COMMENT 'Loại giấy tờ định danh — scheme: IP_ALT_ID_TYPE',
-    src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
+    src_stm_code            String              COMMENT 'Mã hệ thống nguồn',
+
+    -- From: OPERATIONAL Practitioner 360 Profile (Sửa 2026-07-22 — LEFT JOIN theo practitioner_code, 1-1)
+    birth_dt                     Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày sinh NHN — K_NHNCK_104, từ Practitioner 360 Profile',
+    identification_nbr           Nullable(String)    COMMENT '(Sửa 2026-07-22) Số CCCD/Hộ chiếu — K_NHNCK_105, từ Practitioner 360 Profile',
+    education_level_nm           Nullable(String)    COMMENT '(Sửa 2026-07-22) Trình độ học vấn — K_NHNCK_106, từ Practitioner 360 Profile',
+    age                          Nullable(Int64)     COMMENT '(Sửa 2026-07-22) Tuổi NHN — K_NHNCK_107, từ Practitioner 360 Profile',
+    nationality_nm                Nullable(String)    COMMENT '(Sửa 2026-07-22) Quốc tịch — K_NHNCK_108, từ Practitioner 360 Profile',
+
+    -- From: OPERATIONAL Practitioner Exam History (Sửa 2026-07-22 — LEFT JOIN theo practitioner_code, 1-N — fan-out)
+    exam_assessment_nm           Nullable(String)    COMMENT '(Sửa 2026-07-22) Đợt thi — K_NHNCK_110, từ Practitioner Exam History',
+    exam_examination_period      Nullable(String)    COMMENT '(Sửa 2026-07-22) Kỳ thi — K_NHNCK_111, từ Practitioner Exam History',
+    exam_examination_start_dt    Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày bắt đầu thi — K_NHNCK_112, từ Practitioner Exam History',
+    exam_examination_end_dt      Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày kết thúc thi — K_NHNCK_113, từ Practitioner Exam History',
+    exam_overall_result_nm       Nullable(String)    COMMENT '(Sửa 2026-07-22) Kết quả thi — K_NHNCK_114, từ Practitioner Exam History',
+
+    -- From: OPERATIONAL Practitioner Violation History (Sửa 2026-07-22 — LEFT JOIN theo practitioner_code, 1-N — fan-out)
+    violation_decision_nbr       Nullable(String)    COMMENT '(Sửa 2026-07-22) Số QĐ vi phạm — K_NHNCK_115, từ Practitioner Violation History',
+    violation_decision_signed_dt Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày QĐ vi phạm — K_NHNCK_116, từ Practitioner Violation History',
+    violation_note                Nullable(String)    COMMENT '(Sửa 2026-07-22) Nội dung vi phạm — K_NHNCK_117, từ Practitioner Violation History'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issue_dt))
 ORDER BY (assumeNotNull(issue_dt), practitioner_code, license_certificate_document_code)
-COMMENT 'Flat table — Practitioner Data Explorer (1 CCHN per NHN — toàn bộ trạng thái)'
+COMMENT 'Flat table — Practitioner Data Explorer × Practitioner 360 Profile × Practitioner Exam History × Practitioner Violation History (Sửa 2026-07-22: grain mở rộng 1 CCHN × 1 đợt thi × 1 vi phạm, chấp nhận cartesian)'
 ;

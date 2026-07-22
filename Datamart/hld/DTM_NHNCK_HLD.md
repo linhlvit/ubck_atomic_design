@@ -960,6 +960,8 @@ erDiagram
         varchar Nationality_Code
         varchar Nationality_Name
         varchar Identification_Number
+        varchar Education_Level_Code
+        varchar Education_Level_Name
         varchar Workplace
         varchar Practice_Status_Code
         varchar Practice_Status_Name
@@ -971,7 +973,7 @@ erDiagram
     }
 ```
 
-> **Ghi chú schema:** `Nationality_Name`, `Practice_Status_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng, không join ở query time. (Sửa 2026-07-20 — BA v2) `Workplace`, `Active_Certificate_Type_Code/Name`, `Active_Certificate_Number` (K_NHNCK_38/39/40): đổi nguồn từ `PROFESSIONALS.WORKPLACE`/Certificate Document sang `Securities Practitioner Organization Employment Report` — bảng này là Fact Append (mỗi bản ghi = 1 lần báo cáo tổ chức), lấy bản ghi mới nhất theo `MAX(Report Date) ≤ ETL date` để phản ánh đúng trạng thái công tác/CCHN hiện tại tại thời điểm populate. Lý do đổi: `revocation_dt IS NULL` chỉ xác định CCHN CHƯA bị thu hồi, không đảm bảo đây là CCHN đang được báo cáo hiện tại (1 NHN có thể có nhiều Certificate Number qua các lần cấp/cấp lại khác nhau). RECORD_STATUS/STATUS ở nguồn (system field xác định bản ghi LIVE) không cần lưu attribute riêng trên Atomic — Bronze→Atomic đã filter LIVE sẵn theo quy ước T24.
+> **Ghi chú schema:** `Nationality_Name`, `Practice_Status_Name` là ETL-derived — denormalize từ Classification tại thời điểm populate bảng, không join ở query time. (Sửa 2026-07-20 — BA v2) `Workplace`, `Active_Certificate_Type_Code/Name`, `Active_Certificate_Number` (K_NHNCK_38/39/40): đổi nguồn từ `PROFESSIONALS.WORKPLACE`/Certificate Document sang `Securities Practitioner Organization Employment Report` — bảng này là Fact Append (mỗi bản ghi = 1 lần báo cáo tổ chức), lấy bản ghi mới nhất theo `MAX(Report Date) ≤ ETL date` để phản ánh đúng trạng thái công tác/CCHN hiện tại tại thời điểm populate. Lý do đổi: `revocation_dt IS NULL` chỉ xác định CCHN CHƯA bị thu hồi, không đảm bảo đây là CCHN đang được báo cáo hiện tại (1 NHN có thể có nhiều Certificate Number qua các lần cấp/cấp lại khác nhau). RECORD_STATUS/STATUS ở nguồn (system field xác định bản ghi LIVE) không cần lưu attribute riêng trên Atomic — Bronze→Atomic đã filter LIVE sẵn theo quy ước T24. `Education_Level_Code/Name` (Sửa 2026-07-22) — ETL denormalize từ Classification (scheme EDUCATION_LEVEL) tại thời điểm populate, cùng pattern với `Nationality_Name`/`Practice_Status_Name`. Không có KPI riêng ở Nhóm 5 (BA không yêu cầu hiển thị trên dashboard 360°) — cột này tồn tại để phục vụ JOIN từ Nhóm 13 (Data Explorer), nơi khai sinh K_NHNCK_106.
 
 **Lineage Mart → Báo cáo — Nhóm 5:**
 
@@ -1041,6 +1043,7 @@ erDiagram
         varchar Country_Code
         varchar Country_Name
         varchar Related_Individual_Address
+        string Source_System_Code
 
     }
 ```
@@ -1112,6 +1115,7 @@ erDiagram
         date Hire_Date
         date Termination_Date
         int Shares_Held
+        string Source_System_Code
 
     }
 
@@ -1191,6 +1195,7 @@ erDiagram
         varchar Practitioner_Department_At_Report
         date Hire_Date
         date Termination_Date
+        string Source_System_Code
 
     }
 ```
@@ -1262,6 +1267,7 @@ erDiagram
         date Revocation_Date
         varchar Issuance_Decision_Number
         varchar Revocation_Decision_Number
+        string Source_System_Code
 
     }
 ```
@@ -1331,6 +1337,7 @@ erDiagram
         int Examination_Session_Number
         varchar Examination_Period
         date Examination_Start_Date
+        date Examination_End_Date
         varchar Law_Score
         varchar Law_Result_Code
         varchar Law_Result_Name
@@ -1340,11 +1347,12 @@ erDiagram
         varchar Overall_Result_Name
         varchar Decision_Number
         date Decision_Signed_Date
+        string Source_System_Code
 
     }
 ```
 
-> **Ghi chú schema Nhóm 10:** `Law_Result_Name`, `Specialization_Result_Name`, `Overall_Result_Name` là ETL-derived — denormalize từ Classification (scheme: EXAM_RESULT, giá trị: -1=Không thi, 0=Không đạt, 1=Đạt) tại thời điểm populate bảng. `Decision_Number` NULL nếu đợt thi chưa có quyết định công bố. Presentation layer đọc trực tiếp, không join ở query time.
+> **Ghi chú schema Nhóm 10:** `Law_Result_Name`, `Specialization_Result_Name`, `Overall_Result_Name` là ETL-derived — denormalize từ Classification (scheme: EXAM_RESULT, giá trị: -1=Không thi, 0=Không đạt, 1=Đạt) tại thời điểm populate bảng. `Decision_Number` NULL nếu đợt thi chưa có quyết định công bố. Presentation layer đọc trực tiếp, không join ở query time. `Examination_End_Date` (Sửa 2026-07-22) — direct từ Atomic driving-phụ `sp_qualification_examination_assessment`, cùng pattern JOIN với `Examination_Start_Date`. Không có KPI riêng ở Nhóm 10 (BA không yêu cầu hiển thị trên dashboard 360°) — cột này tồn tại để phục vụ JOIN từ Nhóm 13 (Data Explorer), nơi khai sinh K_NHNCK_113.
 
 **Lineage Mart → Báo cáo — Nhóm 10:**
 
@@ -1412,6 +1420,7 @@ erDiagram
         decimal Exam_Score
         varchar Training_Result_Code
         varchar Training_Result_Name
+        string Source_System_Code
 
     }
 ```
@@ -1475,6 +1484,7 @@ erDiagram
         varchar Note
         varchar Decision_Number
         date Decision_Signed_Date
+        string Source_System_Code
 
     }
 ```
@@ -1515,17 +1525,18 @@ flowchart LR
 > Atomic: `Securities Practitioner` ← NHNCK.Professionals / NHNCK.ProfessionalHistories — **READY**
 > Atomic: `Securities Practitioner Organization Employment Report` ← NHNCK.OrganizationReports — **READY**
 > Ghi chú: Bảng flat denormalized ETL trực tiếp từ Atomic — không khai thác qua Fact/Dim. (Sửa 2026-07-20) Grain = 1 CCHN per NHN — **toàn bộ CCHN** (không lọc chỉ CCHN active), giống Nhóm 9. Lý do: 1 NHN có thể có nhiều CCHN đồng thời (Môi giới + Phân tích + QLQ) — nếu gộp về 1 dòng/NHN, slicer "Loại hình" sẽ không hiển thị đúng khi NHN có nhiều loại CCHN. BA không có điều kiện lọc `revocation_dt`/active nào cho Nhóm này. Slicer Loại chứng chỉ và Trạng thái filter trực tiếp trên `Certificate_Type_Code` và `Practice_Status_Code` trong bảng này.
+> **(Sửa 2026-07-22 — BA bổ sung nhóm Người hành nghề/Đợt thi/Vi phạm, tương tự dữ liệu Tab TRA CỨU HỒ SƠ 360°):** Không denormalize toàn bộ trường mới vào cùng 1 bảng flat này. Các trường 1-1 với NHN (ngày sinh, số định danh, học vấn, tuổi, quốc tịch) đã có sẵn ở `Operational Practitioner 360 Profile` — chỉ Education Level là gap thật, bổ sung trực tiếp vào bảng đó (xem Nhóm 5). Các trường 1-N với NHN (đợt thi, vi phạm) đã có sẵn ở `Operational Practitioner Exam History` (Nhóm 10) và `Operational Practitioner Violation History` (Nhóm 12) — **không** đưa vào Data Explorer để tránh fan-out phá vỡ grain 1 CCHN/NHN của bảng chính. Bước Datamart → Chỉ tiêu báo cáo sẽ JOIN `Operational Practitioner Data Explorer` với 3 bảng trên theo `Practitioner Code` tại query time — chấp nhận fan-out (1 NHN có N đợt thi × M vi phạm sẽ nhân dòng khi hiển thị đồng thời cả 2 lịch sử). Riêng `Practice Status Name` (tên hiển thị của `Practice_Status_Code` đã có sẵn) bổ sung trực tiếp vào chính bảng này (1-1, không fan-out).
 
 **Mockup:**
 
-| Tên cán bộ | Số CCHN | Loại hình | Công ty | Ngày cấp | Trạng thái |
-|---|---|---|---|---|---|
-| Nguyễn Văn A | CCHN-2023-001 | Môi giới chứng khoán | TESLA | 12/05/2023 | Đang hoạt động |
-| Lê Thị Thu B | CCHN-2024-045 | Phân tích chứng khoán | META | 20/10/2022 | Đang hoạt động |
-| Trần Minh C | CCHN-QLQ-2019-112 | Quản lý quỹ | GOOGLE | 05/01/2019 | Đang hoạt động |
-| Đinh Quốc G | CCHN-QLQ-2020-055 | Quản lý quỹ | DEEPSEEK | 22/07/2020 | Đang hoạt động |
+| Tên cán bộ | Ngày sinh | Số định danh/Hộ chiếu | Học vấn | Tuổi | Quốc tịch | Số CCHN | Loại hình | Trạng thái CCHN | Công ty | Ngày cấp |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Nguyễn Văn A | 12/05/1985 | 001085012345 | Đại học | 40 | Việt Nam | CCHN-2023-001 | Môi giới chứng khoán | Đang hành nghề | TESLA | 12/05/2023 |
+| Lê Thị Thu B | 20/10/1990 | 001190067890 | Thạc sĩ | 35 | Việt Nam | CCHN-2024-045 | Phân tích chứng khoán | Đang hành nghề | META | 20/10/2022 |
 
-**Source:** `Operational Practitioner Data Explorer` (Tác nghiệp — trực tiếp từ Atomic)
+> Đợt thi sát hạch và Vi phạm (nếu có) hiển thị dạng bảng con khi drill-down 1 dòng NHN — xem Mockup Nhóm 10 / Nhóm 12.
+
+**Source:** `Operational Practitioner Data Explorer` (Tác nghiệp — trực tiếp từ Atomic) JOIN `Operational Practitioner 360 Profile` + `Operational Practitioner Exam History` + `Operational Practitioner Violation History` theo `Practitioner Code` (JOIN thực hiện tại bước Chỉ tiêu báo cáo, không denormalize vật lý)
 
 **Bảng KPI:**
 
@@ -1539,6 +1550,20 @@ flowchart LR
 | K_NHNCK_73 | Trạng thái NHN | Text | Base | `Securities Practitioner`.Practice Status Code (`securities_practitioner_dim.practice_status_code`) ← `PROFESSIONALS.STATUS_WORK` (scheme: 0=Chưa hành nghề, 1=Đang hành nghề, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại) |  |
 | K_NHNCK_74 | Tổng số kết quả (NHN) | Int | Phái sinh | COUNT(DISTINCT Practitioner Code) sau khi áp slicer — hiển thị "KẾT QUẢ: N NHN" |  |
 | K_NHNCK_101 | Mã định danh | Text | Base | `Involved Party Alternative Identification`.Identification Type Code (Classification Value, scheme: IP_ALT_ID_TYPE — 1=CMND, 2=CCCD, 3=PASSPORT) ← `PROFESSIONALS.IDENTITY_TYPE` |  |
+| K_NHNCK_104 | Ngày sinh | Date | Base | `Operational Practitioner 360 Profile`.Birth Date — JOIN theo Practitioner Code | (Sửa 2026-07-22) Khai sinh tại Nhóm 13, reuse cột có sẵn Nhóm 5 |
+| K_NHNCK_105 | Số định danh/Hộ chiếu | Text | Base | `Operational Practitioner 360 Profile`.Identification Number — JOIN theo Practitioner Code | (Sửa 2026-07-22) Khai sinh tại Nhóm 13, reuse cột có sẵn Nhóm 5. Khác K_NHNCK_101 (Identification Type Code — loại giấy tờ) |
+| K_NHNCK_106 | Trình độ học vấn | Text | Base | `Operational Practitioner 360 Profile`.Education Level Name — JOIN theo Practitioner Code | (Sửa 2026-07-22) Khai sinh tại Nhóm 13. Gap cột vật lý — bổ sung `Education Level Code/Name` vào schema bảng `Operational Practitioner 360 Profile` (Nhóm 5, chỉ để phục vụ JOIN, không có KPI riêng ở Nhóm 5) vì trước đây chưa có ở bất kỳ bảng operational nào, chỉ có ở `securities_practitioner_dim` |
+| K_NHNCK_107 | Tuổi | Int | Derived | `Operational Practitioner 360 Profile`.Age — JOIN theo Practitioner Code | (Sửa 2026-07-22) Khai sinh tại Nhóm 13, reuse cột có sẵn Nhóm 5 |
+| K_NHNCK_108 | Quốc tịch | Text | Base | `Operational Practitioner 360 Profile`.Nationality Name — JOIN theo Practitioner Code | (Sửa 2026-07-22) Khai sinh tại Nhóm 13, reuse cột có sẵn Nhóm 5 |
+| K_NHNCK_109 | Trạng thái CCHN | Text | Base | `Operational Practitioner Data Explorer`.Practice Status Name — denormalize từ `Practice_Status_Code` đã có sẵn trong chính bảng này | (Sửa 2026-07-22) Gap nhỏ — bổ sung cặp Name cho cột Code đã có |
+| K_NHNCK_110 | Đợt thi | Text | Base | `Operational Practitioner Exam History`.Assessment Name — JOIN theo Practitioner Code | (Sửa 2026-07-22) 1-N — hiển thị toàn bộ lịch sử, fan-out khi kết hợp Nhóm vi phạm |
+| K_NHNCK_111 | Kỳ thi | Text | Derived | `Operational Practitioner Exam History`.Examination Period — JOIN theo Practitioner Code | (Sửa 2026-07-22) 1-N, cùng dòng fan-out với K_NHNCK_110 |
+| K_NHNCK_112 | Ngày bắt đầu thi | Date | Base | `Operational Practitioner Exam History`.Examination Start Date — JOIN theo Practitioner Code | (Sửa 2026-07-22) 1-N, cùng dòng fan-out với K_NHNCK_110 |
+| K_NHNCK_113 | Ngày kết thúc thi | Date | Base | `Operational Practitioner Exam History`.Examination End Date — JOIN theo Practitioner Code | (Sửa 2026-07-22) Khai sinh tại Nhóm 13. Gap cột vật lý — bổ sung `examination_end_dt` vào schema bảng `Operational Practitioner Exam History` (Nhóm 10, chỉ để phục vụ JOIN, không có KPI riêng ở Nhóm 10) vì Atomic có sẵn nhưng chưa đưa vào Mart |
+| K_NHNCK_114 | Kết quả thi | Text | Base | `Operational Practitioner Exam History`.Overall Result Name — JOIN theo Practitioner Code | (Sửa 2026-07-22) 1-N, cùng dòng fan-out với K_NHNCK_110 |
+| K_NHNCK_115 | Số QĐ vi phạm | Text | Base | `Operational Practitioner Violation History`.Decision Number — JOIN theo Practitioner Code | (Sửa 2026-07-22) 1-N — hiển thị toàn bộ lịch sử, fan-out khi kết hợp Nhóm đợt thi |
+| K_NHNCK_116 | Ngày QĐ vi phạm | Date | Base | `Operational Practitioner Violation History`.Decision Signed Date — JOIN theo Practitioner Code | (Sửa 2026-07-22) 1-N, cùng dòng fan-out với K_NHNCK_115 |
+| K_NHNCK_117 | Nội dung vi phạm | Text | Base | `Operational Practitioner Violation History`.Note — JOIN theo Practitioner Code | (Sửa 2026-07-22) 1-N, cùng dòng fan-out với K_NHNCK_115 |
 
 **Schema bảng tác nghiệp:**
 
@@ -1552,14 +1577,17 @@ erDiagram
         varchar Certificate_Type_Code
         varchar Certificate_Type_Name
         varchar Practice_Status_Code
+        varchar Practice_Status_Name
         date Certificate_Issue_Date
         varchar Current_Organization_Name
         varchar Identification_Type_Code
+        string Source_System_Code
 
     }
 ```
 
-> **Ghi chú schema:** Grain = 1 CCHN per NHN. Slicer "Loại hình" filter trên `Certificate_Type_Code`; slicer "Trạng thái" filter trên `Practice_Status_Code` — cả hai filter tại query time, không pre-filter khi ETL populate. `Practice_Status_Code` phục vụ đồng thời K_NHNCK_73 (hiển thị) và slicer Trạng thái (filter) — 1 cột duy nhất, không tạo cột riêng cho slicer. `Certificate_Type_Name` ETL-denormalized từ Classification khi populate — presentation không join ở query time. `Current_Organization_Name` ETL-derived từ `Organization Employment Report` mới nhất có Termination Date = NULL. `Identification_Type_Code` (K_NHNCK_101) lấy từ `ip_alt_identn` join qua `securities_practitioner_id`.
+> **Ghi chú schema:** Grain = 1 CCHN per NHN. Slicer "Loại hình" filter trên `Certificate_Type_Code`; slicer "Trạng thái" filter trên `Practice_Status_Code` — cả hai filter tại query time, không pre-filter khi ETL populate. `Practice_Status_Code` phục vụ đồng thời K_NHNCK_73 (hiển thị) và slicer Trạng thái (filter) — 1 cột duy nhất, không tạo cột riêng cho slicer. `Practice_Status_Name` (K_NHNCK_109, Sửa 2026-07-22) ETL-denormalized từ Classification (scheme PRACTITIONER_PRACTICE_STATUS) khi populate — cặp Code/Name cho cùng 1 cột, không phải slicer riêng. `Certificate_Type_Name` ETL-denormalized từ Classification khi populate — presentation không join ở query time. `Current_Organization_Name` ETL-derived từ `Organization Employment Report` mới nhất có Termination Date = NULL. `Identification_Type_Code` (K_NHNCK_101) lấy từ `ip_alt_identn` join qua `securities_practitioner_id`.
+> **(Sửa 2026-07-22)** K_NHNCK_104–108 (Ngày sinh, Số định danh, Học vấn, Tuổi, Quốc tịch) và K_NHNCK_110–117 (Đợt thi, Vi phạm) **không phải cột vật lý của bảng này** — lấy bằng JOIN sang `Operational Practitioner 360 Profile` / `Operational Practitioner Exam History` / `Operational Practitioner Violation History` theo `Practitioner Code` tại bước Chỉ tiêu báo cáo, do đó không xuất hiện trong mermaid schema trên. Xem Detail Mapping để biết logic JOIN đầy đủ.
 
 **Lineage Mart → Báo cáo — Nhóm 13:**
 
@@ -1567,11 +1595,20 @@ erDiagram
 flowchart LR
     subgraph Datamart["Datamart"]
         G1["Operational Practitioner Data Explorer"]
+        G2["Operational Practitioner 360 Profile"]
+        G3["Operational Practitioner Exam History"]
+        G4["Operational Practitioner Violation History"]
     end
     subgraph RPT["Bao cao - Nhom 13"]
-        R1["K_NHNCK_68-74,101: Bang tra cuu CCHN"]
+        R1["K_NHNCK_68-74,101,109: Bang tra cuu CCHN"]
+        R2["K_NHNCK_104-108: Thong tin NHN"]
+        R3["K_NHNCK_110-114: Dot thi sat hach"]
+        R4["K_NHNCK_115-117: Vi pham"]
     end
     G1 --> R1
+    G2 -- "JOIN theo Practitioner Code" --> R2
+    G3 -- "JOIN theo Practitioner Code, fan-out" --> R3
+    G4 -- "JOIN theo Practitioner Code, fan-out" --> R4
 ```
 
 **Bảng grain — Nhóm 13:**
@@ -1579,6 +1616,8 @@ flowchart LR
 | Tên bảng | Grain |
 |---|---|
 | `Operational Practitioner Data Explorer` | 1 CCHN per NHN (toàn bộ trạng thái — slicer filter tại query time) |
+
+> Grain hiển thị thực tế tại bước Chỉ tiêu báo cáo có thể lớn hơn 1 CCHN/NHN khi JOIN đồng thời Exam History và Violation History (N đợt thi × M vi phạm) — xem ghi chú JOIN ở đầu Nhóm 13.
 
 ---
 
