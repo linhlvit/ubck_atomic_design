@@ -14,9 +14,54 @@ columns:
     description: "Số tài khoản (từ VSDC)"
     key: null
     fk_note: null
+  - name: ACCOUNT_NAME
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Họ và tên"
+    key: null
+    fk_note: null
   - name: CONTACT_ADDRESS
     data_type: "VARCHAR2(500 CHAR)"
     description: "Địa chỉ liên lạc (từ CTCK, có thể sửa)"
+    key: null
+    fk_note: null
+  - name: IDENTITY_NUMBER
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Số CCCD/Số đăng ký sở hữu"
+    key: null
+    fk_note: null
+  - name: IDENTITY_ISSUE_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày cấp"
+    key: null
+    fk_note: null
+  - name: IDENTITY_ISSUE_PLACE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Nơi cấp"
+    key: null
+    fk_note: null
+  - name: OPEN_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày mở tài khoản"
+    key: null
+    fk_note: null
+  - name: CLOSE_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày đóng tài khoản"
+    key: null
+    fk_note: null
+  - name: LAST_MODIFIED_DATE
+    data_type: "TIMESTAMP"
+    description: "Ngày thay đổi thông tin"
+    key: null
+    fk_note: null
+  - name: NATIONALITY
+    data_type: "VARCHAR2(100 CHAR)"
+    description: "Quốc tịch"
+    key: null
+    fk_note: null
+  - name: INVESTOR_TYPE
+    data_type: "NUMBER(2)"
+    description: "Loại hình NĐT: 1=Cá nhân, 2=Tổ chức"
     key: null
     fk_note: null
   - name: DATE_OF_BIRTH
@@ -24,9 +69,39 @@ columns:
     description: "Ngày tháng năm sinh/ngày thành lập DN (từ CTCK, có thể sửa)"
     key: null
     fk_note: null
+  - name: LEGAL_REPRESENTATIVE
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Người đại diện theo pháp luật. Trùng cột với INVESTOR_ACCOUNT_EXTEND_INFO.LEGAL_REPRESENTATIVE — cần xác nhận bảng master trước LLD."
+    key: null
+    fk_note: null
   - name: PERMANENT_ADDRESS
     data_type: "VARCHAR2(500 CHAR)"
     description: "Địa chỉ thường trú (từ CTCK, có thể sửa)"
+    key: null
+    fk_note: null
+  - name: PHONE_NUMBER
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Số điện thoại. Trùng cột với INVESTOR_ACCOUNT_EXTEND_INFO.PHONE_NUMBER — cần xác nhận bảng master trước LLD."
+    key: null
+    fk_note: null
+  - name: EMAIL
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Email. Trùng cột với INVESTOR_ACCOUNT_EXTEND_INFO.EMAIL — cần xác nhận bảng master trước LLD."
+    key: null
+    fk_note: null
+  - name: BANK_ACCOUNT_HOLDER_NAME
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Tên chủ tài khoản ngân hàng. Trùng cột với INVESTOR_ACCOUNT_EXTEND_INFO.BANK_ACCOUNT_HOLDER_NAME — cần xác nhận bảng master trước LLD."
+    key: null
+    fk_note: null
+  - name: BANK_ACCOUNT_NUMBER
+    data_type: "VARCHAR2(50 CHAR)"
+    description: "Số tài khoản ngân hàng. Trùng cột với INVESTOR_ACCOUNT_EXTEND_INFO.BANK_ACCOUNT_NUMBER — cần xác nhận bảng master trước LLD."
+    key: null
+    fk_note: null
+  - name: BANK_ACCOUNT_NAME
+    data_type: "VARCHAR2(200 CHAR)"
+    description: "Tên ngân hàng. Trùng cột với INVESTOR_ACCOUNT_EXTEND_INFO.BANK_ACCOUNT_NAME — cần xác nhận bảng master trước LLD."
     key: null
     fk_note: null
   - name: MARGIN_ACCOUNT_OPEN_DATE
@@ -64,6 +139,16 @@ columns:
     description: "Trạng thái phê duyệt tài khoản"
     key: null
     fk_note: null
+  - name: ACCOUNT_STATUS
+    data_type: "NUMBER(1)"
+    description: "Trạng thái: 0=Đóng, 1=Mở"
+    key: null
+    fk_note: null
+  - name: DOMESTIC_FOREIGN_FLAG
+    data_type: "NUMBER(1)"
+    description: "Trong nước/Nước ngoài: 0=Trong nước, 1=Nước ngoài"
+    key: null
+    fk_note: null
   - name: DATA_SOURCE
     data_type: "VARCHAR2(20 CHAR)"
     description: "Nguồn dữ liệu chính: VSDC, CTCK"
@@ -97,6 +182,11 @@ columns:
   - name: UPDATED_BY_NAME
     data_type: "VARCHAR2(250)"
     description: "Tên người cập nhật"
+    key: null
+    fk_note: null
+  - name: VERSION
+    data_type: "NUMBER(10)"
+    description: "Version control (optimistic locking)"
     key: null
     fk_note: null
   - name: DELETED

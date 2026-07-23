@@ -167,10 +167,10 @@ attributes:
   - "IDS.COMPANY_PROFILES.CATEGORY_L1_ID"
   comment: "FK target: Classification Business Line.Classification Business Line Id.\
     \ CATEGORY_L1_ID lưu ID kỹ thuật của IDS.CATEGORIES (không phải INDUSTRY_CD) —\
-    \ PHẢI join: CATEGORY_L1_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('IDS.CATEGORIES',\
-    \ INDUSTRY_CD). IDS.CATEGORIES đã promote thành Atomic entity shared với ECAT\
-    \ (2026-07-17) — thay thế Classification Value scheme IDS_INDUSTRY_CATEGORY cũ\
-    \ bằng cặp FK Id+Code (CLAUDE.md #3). Xem IDS_HLD_Tier1.md T1-13."
+    \ PHẢI join: CATEGORY_L1_ID = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_1',\
+    \ INDUSTRY_CD) — Id phải trùng với Id đã sinh từ chính ECAT.BUSINESS_LINE_LEVEL_1\
+    \ (IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định lại\
+    \ 2026-07-23). Xem IDS_HLD_Tier1.md T1-13."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -200,8 +200,10 @@ attributes:
   - "IDS.COMPANY_PROFILES.CATEGORY_L2_ID"
   comment: "FK target: Classification Business Line.Classification Business Line Id.\
     \ CATEGORY_L2_ID lưu ID kỹ thuật của IDS.CATEGORIES — PHẢI join: CATEGORY_L2_ID\
-    \ = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('IDS.CATEGORIES', INDUSTRY_CD).\
-    \ Xem ghi chú tại Business Line Level 1 Id."
+    \ = IDS.CATEGORIES.ID để lấy INDUSTRY_CD, rồi hash_id('ECAT.BUSINESS_LINE_LEVEL_2',\
+    \ INDUSTRY_CD) — Id phải trùng với Id đã sinh từ chính ECAT.BUSINESS_LINE_LEVEL_2\
+    \ (IDS.CATEGORIES chỉ dùng làm bảng join, không tự sinh entity — quyết định lại\
+    \ 2026-07-23). Xem ghi chú tại Business Line Level 1 Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

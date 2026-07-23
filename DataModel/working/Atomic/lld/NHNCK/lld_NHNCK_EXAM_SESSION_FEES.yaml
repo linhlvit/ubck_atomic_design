@@ -69,8 +69,9 @@ attributes:
   source_columns:
   - "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
   comment: "FK target: Securities Practitioner Qualification Examination Assessment.Securities\
-    \ Practitioner Qualification Examination Assessment Id. Hash: hash_id('NHNCK.EXAM_SESSIONS',\
-    \ EXAM_SESSION_ID)."
+    \ Practitioner Qualification Examination Assessment Id. Nguồn lưu ID kỹ thuật\
+    \ của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy\
+    \ CODE, rồi hash_id('NHNCK.EXAM_SESSIONS', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

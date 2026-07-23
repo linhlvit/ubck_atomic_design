@@ -14,7 +14,7 @@ ldm:
   etl_pattern: SCD2
   source: ECAT
   description: |
-    Danh mục ngành nghề kinh doanh 2 cấp (cấp 1 + cấp 2), self-referencing qua Parent Business Line. Gộp từ ECAT.BUSINESS_LINE_LEVEL_1 + BUSINESS_LINE_LEVEL_2 theo quy tắc "Gộp entity khi hợp lý" (CLAUDE.md #10). Table Type = Relative theo quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification Value) — xem ECAT_HLD_Tier1.md T1-07. Tên bỏ tiền tố nguồn (ECAT) theo rule đặt tên Classification mới (CLAUDE.md #7). Bổ sung nguồn IDS.CATEGORIES (shared entity) theo quyết định tường minh Data Modeler (2026-07-17) — IDS.CATEGORIES và ECAT.BUSINESS_LINE_LEVEL_1/2 xác nhận cùng 1 concept nghiệp vụ, xem IDS_HLD_Tier1.md T1-13 / IDS_HLD_Overview.md mục 7e #12.
+    Danh mục ngành nghề kinh doanh 2 cấp (cấp 1 + cấp 2), self-referencing qua Parent Business Line. Gộp từ ECAT.BUSINESS_LINE_LEVEL_1 + BUSINESS_LINE_LEVEL_2 theo quy tắc "Gộp entity khi hợp lý" (CLAUDE.md #10). Table Type = Relative theo quyết định tường minh của Data Modeler (khác rule mặc định Common→Classification Value) — xem ECAT_HLD_Tier1.md T1-07. Tên bỏ tiền tố nguồn (ECAT) theo rule đặt tên Classification mới (CLAUDE.md #7). IDS.CATEGORIES chỉ dùng làm bảng join nội bộ (COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID) — không tự sinh entity (quyết định lại 2026-07-23, thay thế quyết định 2026-07-17).
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
@@ -243,47 +243,5 @@ attributes:
     source_table: BUSINESS_LINE_LEVEL_1
     source_column: ECAT.BUSINESS_LINE_LEVEL_1.DELETED_REASON
     comment: "Đẩy 1:1 theo yêu cầu."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-    etl_derived_value: null
-
-  - name: Description
-    physical_name: description
-    business_meaning: Mô tả.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: BUSINESS_LINE_LEVEL_1
-    source_column: null
-    comment: "IDS.CATEGORIES có trường mô tả riêng, không có tương ứng trên ECAT.BUSINESS_LINE_LEVEL_1/2 (chỉ có DISPLAY_LABEL). Khi Entity Consolidation (Level 2) — cần nullable/để trống cho source ECAT."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-    etl_derived_value: null
-
-  - name: Selected Indicator
-    physical_name: selected_indicator
-    business_meaning: Chọn.
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: BUSINESS_LINE_LEVEL_1
-    source_column: null
-    comment: "Giá trị 1 → true; 0 → false. Nguồn NUMBER(1). Tên cột ACTIVE_FLG gợi ý cờ hiệu lực nhưng mô tả nguồn (BRD) chỉ ghi \"Chọn\" (gợi ý cờ UI checked/selected) — map 1:1 theo mô tả gốc, không suy diễn ý nghĩa khác. Không gộp với Active Indicator (STATUS_FLG) dù tên cột gần giống — mô tả nguồn khác nhau rõ ràng."
-    classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
-    etl_derived_value: null
-
-  - name: System Code
-    physical_name: stm_code
-    business_meaning: Hệ thống con trong IDS.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: ECAT
-    source_table: BUSINESS_LINE_LEVEL_1
-    source_column: null
-    comment: "Denormalized — nguồn không có mô tả/FK annotation trong BRD (brd_IDS_CATEGORIES.yaml). Giữ nguyên dạng Text theo DDL nguồn, nhất quán với System Code trên Financial Report Catalog/Periodic Report Form (REPORT_CATALOG/REP_FORMS)."
     classification_context: "Source System Code = 'ECAT_BUSINESS_LINE_LEVEL_1'"
     etl_derived_value: null
