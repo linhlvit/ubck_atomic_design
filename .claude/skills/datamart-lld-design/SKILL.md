@@ -818,9 +818,9 @@ TC2 — KPI_ID hợp lệ (thuộc HLD, kể cả Chiều và Pending):
 □ KPI_ID xuất hiện trong Detail Mapping nhưng chưa khai sinh trong HLD → DỪNG, báo danh sách, chờ human phê duyệt quyết định trước khi tiếp tục
 □ Báo: ✅ TC2 PASS hoặc ❌ TC2 FAIL: [danh sách kpi_id chưa khai sinh trong HLD]
 
-TC3 — Logic dùng tên logical (không phải snake_case):
-□ Kiểm tra cột `logic`: tên bảng và cột phải là tên logical (ví dụ "Fact Market Risk Snapshot", "Inspection Date") — không phải snake_case (fct_mkt_rsk_snpst, insp_dt)
-□ Báo: ✅ TC3 PASS hoặc ❌ TC3 FAIL: [danh sách kpi_id có logic dùng snake_case]
+TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_name:
+□ Kiểm tra cột `logic`: tên bảng và cột phải là tên physical/snake_case (ví dụ "fct_mkt_rsk_snpst.compliance_score", "cdr_dt_dim.cdr_dt") — không phải tên logical ("Fact Market Risk Snapshot", "Inspection Date")
+□ Báo: ✅ TC3 PASS hoặc ❌ TC3 FAIL: [danh sách kpi_id có logic dùng tên logical thay vì physical]
 □ Nếu FAIL → sửa trước khi trình bày
 
 TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml:
@@ -901,8 +901,9 @@ FILE 01 (CREATE):
 □ Số bảng CREATE = số fact + số operational
 □ Naming fact flat: datamart.{module}_{datamart_table}_flat
 □ Naming operational flat: datamart.{module}_{datamart_table}_flat (có module prefix — giống fact)
-□ Thứ tự cột: fact columns → Calendar Date columns → dim columns → technical metadata
-□ Operational: chỉ operational columns → technical metadata (không có Calendar Date, không có dim)
+□ Thứ tự cột: fact columns → Calendar Date columns → dim columns
+□ Operational: chỉ operational columns (không có Calendar Date, không có dim)
+□ Không có technical metadata (ds_batch_date, ds_population_timestamp) trong flat table
 □ Data type dùng ClickHouse types (Nullable wrapper theo nullable=true/false trong Attributes)
 □ Calendar Date: chỉ lấy cột cdr_dt (có thể alias theo vai trò: snpst_cdr_dt, issue_cdr_dt, event_cdr_dt)
 □ Cột fact/operational: lấy ĐÚNG các cột có trong Attributes.csv — không thêm, không bớt
@@ -916,12 +917,11 @@ FILE 01 (CREATE):
 FILE 02 (POPULATE):
 □ Số TRUNCATE + INSERT block = số bảng trong file 01
 □ SELECT list đủ cột, đúng thứ tự khớp với CREATE TABLE
-□ Đếm cột SELECT = đếm cột CREATE (kể cả ds_batch_date, ds_population_timestamp)
+□ Đếm cột SELECT = đếm cột CREATE
 □ Tên bảng nguồn fact: datamart.{module}_{datamart_table} (có prefix module)
 □ Tên bảng nguồn operational: datamart.{datamart_table} (không có prefix module)
 □ Calendar Date join: datamart.{module}_calendar_date_dimension / date_dimension_id = f.{fk_col}
 □ Dim join: alias rõ ràng, ON {dim_pk} = f.{fk_col}
-□ today() AS ds_batch_date, now() AS ds_population_timestamp
 □ Operational: không có LEFT JOIN nào
 
 POST-CHECK (sau khi sinh):
