@@ -5,7 +5,7 @@
 - Màn hình 1: **Phân loại & Xếp hạng Rủi ro Doanh nghiệp Đại chúng** (5 tab: Tổng hợp / Tuân thủ / Phát hành / Tài chính / Phi tài chính & M-Score)
 - Màn hình 2: **Giám sát Tổng hợp** (5 tab sàn: Tổng hợp / HOSE / HNX / UPCoM / Chưa niêm yết — 3 nhóm nội dung)
 - Màn hình 3 *(PENDING — cập nhật 2026-07-15)*: **Data Explorer — Dữ liệu tài chính doanh nghiệp** (DB21–32 + DB39: chi tiết BCTC theo loại hình DN + hệ số tài chính cơ bản — dùng `Fact Public Company Financial Report Value`, Atomic READY nhưng 100% dòng BA là "Dữ liệu động" → toàn bộ PENDING theo gate rule, xem O_GSDC_5)
-- Màn hình 4: **Báo cáo giám sát CTDC** (DB40–43: BC01.1 / BC01.2 / BC01.3 / BC22 — phục vụ bởi `Fact Public Company Financial Summary Snapshot`)
+- Màn hình 4: **Báo cáo giám sát CTDC** (DB40–43: BC01.1 / BC01.2 / BC01.3 / BC22 — phần READY query trực tiếp `Public Company Dimension`, không qua Fact riêng; xem O_GSDC_5 mục (10) — `Fact Public Company Financial Summary Snapshot` đã bị xoá 2026-07-23)
 - Màn hình 5 *(PENDING)*: **Data Explorer — Dữ liệu thông tin niêm yết** (DB33 — nguồn MSS chưa có Atomic)
 - Màn hình 6 *(READY — Atomic draft, cập nhật 2026-07-15)*: **Data Explorer — Dữ liệu chấm điểm phân loại CTDC** (DB34–38 — BA đã bổ sung nguồn, reuse KPI từ Nhóm 1–5, xem O_GSDC_1 Closed)
 
@@ -213,40 +213,31 @@ flowchart LR
 
 ### Cụm 3 — Báo cáo tài chính & Nộp báo cáo
 
-Phục vụ toàn bộ KPI tài chính tổng hợp và theo ngành (Màn hình 2).
+Phục vụ toàn bộ KPI tài chính tổng hợp và theo ngành (Màn hình 2). **Cập nhật 2026-07-23 (rà soát LLD):** `Fact Public Company Financial Summary Snapshot` đã bị xoá (không còn cột nào READY — nguồn `Public Company Report Submission`/`IDS.company_data` là dữ liệu động, `Public Company Financial Report Value`/`IDS.data` Gap Atomic, xem O_GSDC_5). Toàn bộ KPI READY của Cụm này (Nhóm 6/9/10/12/14/16/38/39/40/41) nay query trực tiếp trên `Public Company Dimension`/`Calendar Date Dimension`, không qua Fact trung gian.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         IDS_company_profiles["IDS.company_profiles"]
         IDS_company_detail["IDS.company_detail"]
-        IDS_company_data["IDS.company_data"]
-        IDS_data["IDS.data"]
         ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
         Public_Company["Public Company"]
-        Public_Company_Report_Submission["Public Company Report Submission"]
-        Public_Company_Financial_Report_Value["Public Company Financial Report Value"]
         Calendar_Date["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"]
         public_company_dim["Public Company Dimension"]
         cdr_dt_dim["Calendar Date Dimension"]
     end
     IDS_company_profiles --> Public_Company
     IDS_company_detail --> Public_Company
-    IDS_company_data --> Public_Company_Report_Submission
-    IDS_data --> Public_Company_Financial_Report_Value
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
     Public_Company --> public_company_dim
-    Public_Company_Report_Submission --> fct_public_company_financial_summary_snpst
-    Public_Company_Financial_Report_Value --> fct_public_company_financial_summary_snpst
     Calendar_Date --> cdr_dt_dim
-    public_company_dim --> fct_public_company_financial_summary_snpst
-    cdr_dt_dim --> fct_public_company_financial_summary_snpst
 ```
+
+> **Nguồn PENDING (chưa có Fact):** `Public Company Report Submission` (`IDS.company_data`, dữ liệu động — K_GSDC_702/703/704 PENDING) và `Public Company Financial Report Value` (`IDS.data`/`report_catalog`/`rrow`/`rcol`, Gap Atomic — K_GSDC_48/49/705-708 và toàn bộ Nhóm 7/8/11/13/15/17/37 PENDING). Xem O_GSDC_5.
 
 ### Cụm 4 — Chi tiết BCTC từng CTDC & Danh mục template (DB21–32 + DB39)
 
@@ -370,6 +361,7 @@ erDiagram
         string Enterprise_Type_Code
         string Life_Cycle_Status_Code
         date IDS_Registration_Date
+        string Source_System_Code
     }
 
     Calendar_Date_Dimension {
@@ -529,8 +521,6 @@ flowchart LR
 | K_GSDC_44 | M-Score | Base | Public Company Evaluation Detail | pc_evaluation_detail | evaluation_score | PHI_TAI_CHINH_M_SCORE |
 | K_GSDC_45 | Tổng điểm Phi tài chính & M-Score | Base | Public Company Evaluation Detail | pc_evaluation_detail | SUM(evaluation_score) | group_cd = 'PHI_TAI_CHINH' |
 
-**Ghi chú thay đổi phạm vi KPI:** **K_GSDC_45** "Sở hữu giữa các bên liên quan" — **loại khỏi phạm vi**, BA không còn dòng tương ứng (chỉ còn 3 chỉ tiêu Base: Tình trạng DN, M-Score, Tổng điểm).
-
 **Ghi chú lọc chung:** Mọi KPI Base join `Public Company Evaluation Detail (ed)` → `Public Company Evaluation Criterion (ec)` qua `pc_evaluation_criterion_id`, filter theo `pc_evaluation_criterion_code` tương ứng cột "Điều kiện lọc" ở trên.
 
 **Mart:** `Fact Public Company Non-Financial Score Snapshot` (grain: 1 row / CTDC / kỳ đánh giá)
@@ -552,15 +542,16 @@ Màn hình có bộ lọc **Năm / Quý** và 5 tab sàn. Mỗi tab hiển thị
 > **Ghi chú gating (Loại dữ liệu):** BA đánh dấu K_GSDC_48 "Tỷ lệ nộp BCTC" và K_GSDC_49 "Số DN báo lãi" là **"Dữ liệu động"** → theo gate rule bắt buộc PENDING dù đã xác định được nguồn, không đưa vào READY (xem O_GSDC_5).
 > **Gap Atomic K_GSDC_48:** BA SQL thực tế dùng bảng `violation_report` JOIN `forms` (filter `news_type_cd='DINH_KY'`) — khớp Atomic entity `Public Company Violation Report` (`pc_violation_report`, `design_status: draft`), KHÔNG phải `Public Company Report Submission` (`pc_report_submission`, từ `IDS.company_data`) như thiết kế cũ. Đã sửa lại entity tham chiếu.
 > **Gap Atomic K_GSDC_49:** Nguồn `IDS.data`/`report_catalog`/`rrow`/`rcol` (Public Company Financial Report Value) hiện **chưa có Atomic LLD** — xem O_GSDC_5.
+> **Cập nhật 2026-07-23 (rà soát LLD) — bỏ `Fact Public Company Financial Summary Snapshot`:** Fact này ban đầu thiết kế cho K_GSDC_46/47 + K_GSDC_700-704 (Nhóm 38), nhưng rà soát phát hiện K_GSDC_47 tự đủ bằng `COUNT(DISTINCT ...)` trực tiếp trên `Public Company Dimension` (không cần grain snapshot theo kỳ), còn 4 cột còn lại của Fact (2 FK + `submission_deadline_dt`/`submission_dt`, phục vụ K_GSDC_702/703) PENDING toàn bộ vì nguồn `pc_report_submission` thật ra là `IDS.COMPANY_DATA` — dữ liệu động (xem O_GSDC_5 mục (10)). Fact không còn cột nào READY → xoá khỏi Entities/Attributes/model theo đúng pattern "bảng PENDING toàn bộ không tạo file" (giống `Fact Public Company Financial Report Value`, Nhóm 7). K_GSDC_46/47 nay dùng thẳng `Calendar Date Dimension`/`Public Company Dimension`, không qua Fact trung gian.
 
-**Source:** `Fact Public Company Financial Summary Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+**Source:** `Public Company Dimension`, `Calendar Date Dimension` (không qua Fact — xem ghi chú rà soát 2026-07-23 ở trên)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Atomic Entity | Atomic Table | Atomic Attribute | Atomic Column | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
 | K_GSDC_46 | Kỳ thống kê (Năm/Quý) | Text | Chiều (Slicer) | — | — | — | — | Tham số `:year` / `:quarter` |
-| K_GSDC_47 | Số doanh nghiệp | DN | Phái sinh | Public Company | public_company | Ids Registration Date | ids_registration_dt | COUNT DISTINCT WHERE ids_registration_dt <= cuối kỳ — xem O_GSDC_2 |
+| K_GSDC_47 | Số doanh nghiệp | DN | Phái sinh | Public Company | public_company | Ids Registration Date | ids_registration_dt | COUNT DISTINCT trực tiếp trên Public Company Dimension WHERE ids_registration_dt <= cuối kỳ — xem O_GSDC_2 |
 | K_GSDC_48 | Tỷ lệ nộp BCTC | % | **PENDING** | Public Company Violation Report | pc_violation_report | Deadline Date / Actual Submit Date | deadline_dt / actual_submit_dt | **Dữ liệu động** — PENDING theo gate rule (xem O_GSDC_5). Công thức dự kiến: COUNT(CASE WHEN actual_submit_dt <= deadline_dt) / COUNT(*) × 100, filter `rpt_period_tp_code`/`rpt_period_year` theo kỳ, JOIN Disclosure Form Definition filter loại "định kỳ" |
 | K_GSDC_49 | Số DN báo lãi | DN | **PENDING** | — (Gap Atomic) | — | — | — | **Dữ liệu động** — PENDING theo gate rule; đồng thời nguồn `Public Company Financial Report Value` (IDS.data) chưa có Atomic LLD (xem O_GSDC_5) |
 
@@ -568,13 +559,6 @@ Màn hình có bộ lọc **Năm / Quý** và 5 tab sàn. Mỗi tab hiển thị
 
 ```mermaid
 erDiagram
-    Fact_Public_Company_Financial_Summary_Snapshot {
-        string Public_Company_Dimension_Id FK
-        string Calendar_Date_Dimension_Id FK
-        date Submission_Deadline_Date
-        date Submission_Date
-    }
-
     Public_Company_Dimension {
         string Public_Company_Dimension_Id PK
         string Public_Company_Code
@@ -584,6 +568,7 @@ erDiagram
         string Enterprise_Type_Code
         string Industry_Category_Level1_Code
         date IDS_Registration_Date
+        string Source_System_Code
     }
 
     Calendar_Date_Dimension {
@@ -593,32 +578,22 @@ erDiagram
         int Quarter
         int Month
     }
-
-    Public_Company_Dimension ||--o{ Fact_Public_Company_Financial_Summary_Snapshot : ""
-    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Financial_Summary_Snapshot : ""
 ```
 
-> **Ghi chú thiết kế Fact Summary Snapshot:**
-> - `Submission_Date` / `Submission_Deadline_Date`: từ `Public Company Report Submission` (`pc_report_submission`).`submission_dt` / `submission_deadline_dt` — phục vụ K_GSDC_702/703 (Nhóm 38).
-> - `Equity_Listing_Exchange_Code` / `Industry_Category_Level1_Code` dùng để filter/GROUP BY (Sàn, Ngành) lấy trực tiếp từ `Public Company Dimension`, KHÔNG denormalize vào Fact — Fact này chỉ chứa cột thực sự có KPI trace tới (xem Attributes `DTM_GSDC_fct_public_company_financial_summary_snpst.csv`).
-> - Các cột đo lường tài chính (Tổng tài sản, VCSH, ROA/ROE...) thuộc `Fact Public Company Financial Report Value` (Nhóm 7/8/11/13/15/17), KHÔNG thuộc Fact này — xem O_GSDC_5.
+> **Ghi chú:** K_GSDC_46/47 truy vấn trực tiếp trên `Public Company Dimension`/`Calendar Date Dimension` — không có Fact trung gian (xem ghi chú rà soát 2026-07-23 ở đầu Nhóm). K_GSDC_48/49 PENDING, chưa có Atomic source sẵn sàng.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"] --> R1["Thẻ Số doanh nghiệp"]
-    fct_public_company_financial_summary_snpst --> R2["Thẻ Tỷ lệ nộp BCTC"]
-    fct_public_company_financial_summary_snpst --> R3["Thẻ Công ty báo lãi"]
-    public_company_dim["Public Company Dimension"] --> fct_public_company_financial_summary_snpst
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_public_company_financial_summary_snpst
+    public_company_dim["Public Company Dimension"] --> R1["Thẻ Số doanh nghiệp"]
+    cdr_dt_dim["Calendar Date Dimension"] --> R1
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Financial Summary Snapshot | 1 row / CTDC / kỳ báo cáo (năm × quý) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD2) |
 | Calendar Date Dimension | 1 row / ngày (Conformed) |
 
@@ -707,9 +682,10 @@ flowchart LR
 ##### READY
 
 > Phân loại: **Phân tích**
-> Source: `Fact Public Company Financial Summary Snapshot` — filter `Public Company Status Code = 'APPROVED_PUBLIC'` AND `Equity Listing Exchange Code NOT IN ('HOSE', 'HNX')` (bao gồm NULL, UPCOM, OTC)
+> Source: `Public Company Dimension` (không qua Fact — xem ghi chú rà soát 2026-07-23 ở Nhóm 6) — filter `Public Company Status Code = 'APPROVED_PUBLIC'` AND `Equity Listing Exchange Code NOT IN ('HOSE', 'HNX')` (bao gồm NULL, UPCOM, OTC)
 > **Cập nhật 2026-07-15 (BA renumber):** Nội dung cũ Nhóm 11 (STT 11) — đổi số theo STT mới (BA gộp STT 8+9+10 thành 1, mọi STT phía sau lùi 2), không đổi nội dung/KPI_ID.
 > **Rà soát gap (giữ nguyên từ Nhóm 11 cũ):** Sửa 2 gap so với BA thực tế: (1) bổ sung filter `Public Company Status Code = 'APPROVED_PUBLIC'` (Atomic: `pc_status_code`, nguồn `IDS.COMPANY_PROFILES.STATUS_IDS_CD`) — trước đây thiếu, khiến COUNT tính cả DN không phải CTĐC. (2) Điều kiện sàn sửa từ `equity_listing_exchange_code IS NULL` thành `NOT IN ('HOSE', 'HNX')` — BA định nghĩa "chưa niêm yết" là loại trừ 2 sàn niêm yết chính thức (HOSE/HNX), không chỉ riêng NULL; UPCOM/OTC/giá trị khác đều tính là chưa niêm yết.
+> **Cập nhật 2026-07-23 (rà soát LLD):** `Fact Public Company Financial Summary Snapshot` đã bị xoá (xem Nhóm 6) — K_GSDC_77 tự đủ bằng COUNT DISTINCT trực tiếp trên `Public Company Dimension`, không cần Fact.
 
 **Bảng KPI:**
 
@@ -717,24 +693,32 @@ flowchart LR
 |---|---|---|---|---|---|---|---|---|
 | K_GSDC_77 | Số CTDC chưa niêm yết | DN | Phái sinh | Public Company | public_company | IDS Registration Date | ids_registration_dt | COUNT(DISTINCT pc_id) WHERE ids_registration_dt <= cuối kỳ AND pc_status_code = 'APPROVED_PUBLIC' AND equity_listing_exchange_code NOT IN ('HOSE', 'HNX') |
 
-**Star Schema:** dùng chung `Fact_Public_Company_Financial_Summary_Snapshot`.
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Public_Company_Dimension {
+        string Public_Company_Dimension_Id PK
+        string Public_Company_Code
+        string Public_Company_Status_Code
+        string Equity_Listing_Exchange_Code
+        date IDS_Registration_Date
+        string Source_System_Code
+    }
+```
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"] --> R9["Thẻ CTDC chưa niêm yết"]
-    public_company_dim["Public Company Dimension"] --> fct_public_company_financial_summary_snpst
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_public_company_financial_summary_snpst
+    public_company_dim["Public Company Dimension"] --> R9["Thẻ CTDC chưa niêm yết"]
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Financial Summary Snapshot | 1 row / CTDC / kỳ báo cáo (năm × quý) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD2) |
-| Calendar Date Dimension | 1 row / ngày (Conformed) |
 
 ---
 
@@ -770,7 +754,7 @@ flowchart LR
 > Filter: `Equity_Listing_Exchange_Code = 'HNX'` (xem Nhóm 6 K_GSDC_78 "Sàn", reuse KPI_ID).
 > **Cập nhật 2026-07-15 (BA renumber):** Nội dung cũ Nhóm 13 (STT 13) — đổi số theo STT mới, không đổi nội dung/KPI_ID.
 > **Ghi chú nội dung:** STT 11 = 26 KPI giống Nhóm 7 (filter thêm sàn HNX) + 14 dòng mới: 1 Chiều "Ngành" + 13 chỉ tiêu "theo ngành" (GROUP BY `Business Line Level 1 Code`).
-> **Cập nhật (rà soát LLD):** K_GSDC_79 "Ngành" trước đây đánh READY do field `business_line_level_1_code` tồn tại trên `public_company`, nhưng **Fact duy nhất của Nhóm này (`Fact Public Company Financial Report Value`) 100% PENDING** — không có Fact nào sẵn sàng để đặt cột này vào. Chuyển K_GSDC_79 sang PENDING, đồng bộ với việc Fact đã loại khỏi Entities.csv (khác Nhóm 8 — dùng chung `Fact Public Company Financial Summary Snapshot` đã duyệt nên K_GSDC_63 vẫn READY).
+> **Cập nhật (rà soát LLD):** K_GSDC_79 "Ngành" trước đây đánh READY do field `business_line_level_1_code` tồn tại trên `public_company`, nhưng **Fact duy nhất của Nhóm này (`Fact Public Company Financial Report Value`) 100% PENDING** — không có Fact nào sẵn sàng để đặt cột này vào. Chuyển K_GSDC_79 sang PENDING, đồng bộ với việc Fact đã loại khỏi Entities.csv (khác Nhóm 8 — K_GSDC_63 query trực tiếp `public_company.business_line_level_1_code`, không qua Fact nào, nên vẫn READY dù `Fact Public Company Financial Summary Snapshot` đã bị xoá 2026-07-23, xem O_GSDC_5 mục (10)).
 > **Gap Atomic (toàn bộ 40 KPI):** `Public Company Financial Report Value` chưa có Atomic LLD, xem O_GSDC_5.
 
 **Bảng KPI:**
@@ -2040,11 +2024,12 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 
 #### Nhóm 38 — STT 38: BC01.1 — Báo cáo vĩ mô theo sàn
 
-##### READY (thu hẹp) — 4/9 KPI PENDING do nguồn report động (Gap Atomic)
+##### READY (thu hẹp) — 7/9 KPI PENDING do nguồn report động (Gap Atomic + gate rule)
 
 > Phân loại: **Phân tích**
-> Source: `Fact Public Company Financial Summary Snapshot` → `Public Company Dimension`, `Calendar Date Dimension`
+> Source: `Public Company Dimension` (không qua Fact — xem ghi chú rà soát 2026-07-23 bên dưới)
 > **Cập nhật 2026-07-15 (rà soát Nhóm 38):** K_GSDC_705 (Số CTDC báo lãi) lấy nguồn `Public Company Financial Report Value` — entity này **không có Atomic LLD** (100% Gap Atomic, xem O_GSDC_5) → PENDING. K_GSDC_706-708 là phái sinh trực tiếp từ K_GSDC_705 (tỷ lệ/kỳ N-1) → PENDING theo, dù bản thân không tham chiếu bảng nguồn nào khác. Áp dụng nguyên tắc: KPI lấy từ báo cáo động hoặc phái sinh từ dữ liệu report động đó đều PENDING.
+> **Cập nhật 2026-07-23 (rà soát LLD):** K_GSDC_702/703 chuyển từ "Cơ sở" (READY) sang **PENDING** — rà soát LLD phát hiện `Public Company Report Submission` (`pc_report_submission`) có nguồn thật là `IDS.COMPANY_DATA` (xem file Atomic `dm_atm_pc_report_submission-IDS.COMPANY_DATA.yaml`), thuộc nhóm bảng **"dữ liệu động"** theo gate rule O_GSDC_5 — không chỉ riêng `report_catalog`/`rrow`/`rcol`/`data`, mà cả họ bảng `company_data` cũng bị gate. K_GSDC_704 (phái sinh từ 702/703) PENDING theo. K_GSDC_700/701 vẫn READY vì dùng thẳng `public_company`, không qua `pc_report_submission`. **`Fact Public Company Financial Summary Snapshot` đã bị xoá khỏi Entities/Attributes/model** — không còn cột nào READY để giữ Fact (K_GSDC_700/701 tự đủ bằng COUNT DISTINCT trực tiếp trên `Public Company Dimension`, giống Nhóm 6).
 
 **Bảng KPI:**
 
@@ -2052,43 +2037,52 @@ Data Explorer cho phép tra cứu BCTC chi tiết theo từng CTDC, kỳ báo c�
 |---|---|---|---|---|---|---|---|---|
 | K_GSDC_700 | Sàn NY/ĐKGD | Text | Chiều (Group By) | Public Company | public_company | Equity Listing Exchange Code | equity_listing_exchange_code | — |
 | K_GSDC_701 | Số lượng DN | DN | Phái sinh | Public Company | public_company | IDS Registration Date | ids_registration_dt | COUNT DISTINCT WHERE ids_registration_dt <= cuối kỳ GROUP BY sàn — xem O_GSDC_2 |
-| K_GSDC_702 | Số lượng BCTC đến hạn nộp | Báo cáo | Cơ sở | Public Company Report Submission | pc_report_submission | Submission Deadline Date | submission_deadline_dt | COUNT(*) WHERE submission_deadline_dt <= sysdate GROUP BY sàn |
-| K_GSDC_703 | Số báo cáo (BCTC) đã nộp | Báo cáo | Cơ sở | Public Company Report Submission | pc_report_submission | Submission Date | submission_dt | COUNT WHERE submission_dt IS NOT NULL AND submission_dt <= submission_deadline_dt GROUP BY sàn |
-| K_GSDC_704 | Tỷ lệ nộp BCTC (%) | % | Phái sinh | — | — | — | — | K_GSDC_703 / NULLIF(K_GSDC_702,0) × 100 |
 
 **Bảng KPI PENDING:**
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
+| K_GSDC_702 | Số lượng BCTC đến hạn nộp | Cơ sở | **PENDING** |
+| K_GSDC_703 | Số báo cáo (BCTC) đã nộp | Cơ sở | **PENDING** |
+| K_GSDC_704 | Tỷ lệ nộp BCTC (%) | Phái sinh | **PENDING** |
 | K_GSDC_705 | Số CTDC báo lãi Năm N | Phái sinh | **PENDING** |
 | K_GSDC_706 | Tỷ lệ DN báo lãi Năm N (%) | Phái sinh | **PENDING** |
 | K_GSDC_707 | Số CTDC báo lãi Năm N-1 | Phái sinh | **PENDING** |
 | K_GSDC_708 | Tỷ lệ DN báo lãi Năm N-1 (%) | Phái sinh | **PENDING** |
 
-**Lý do PENDING:** K_GSDC_705 nguồn `Public Company Financial Report Value` — Gap Atomic (không có LLD, xem O_GSDC_5). K_GSDC_706-708 phái sinh trực tiếp/gián tiếp từ K_GSDC_705.
+**Lý do PENDING:** K_GSDC_702/703 nguồn `Public Company Report Submission` (`pc_report_submission`, thật ra từ `IDS.COMPANY_DATA`) — thuộc nhóm "dữ liệu động" theo gate rule O_GSDC_5 (rà soát 2026-07-23). K_GSDC_704 phái sinh từ 702/703. K_GSDC_705 nguồn `Public Company Financial Report Value` — Gap Atomic (không có LLD, xem O_GSDC_5). K_GSDC_706-708 phái sinh trực tiếp/gián tiếp từ K_GSDC_705.
 
 **Atomic cần bổ sung:** `Public Company Financial Report Value` (`public_company_financial_report_val`) — xem O_GSDC_5.
 
 **Mart dự kiến:** `Fact Public Company Financial Report Value` (reuse khi Atomic sẵn sàng).
 
-**Star Schema:** dùng chung `Fact_Public_Company_Financial_Summary_Snapshot` (chỉ áp dụng cho K_GSDC_700-704).
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Public_Company_Dimension {
+        string Public_Company_Dimension_Id PK
+        string Public_Company_Code
+        string Equity_Listing_Exchange_Code
+        date IDS_Registration_Date
+        string Source_System_Code
+    }
+```
+
+> **Ghi chú:** K_GSDC_700/701 truy vấn trực tiếp trên `Public Company Dimension` (GROUP BY sàn) — không có Fact trung gian (xem ghi chú rà soát 2026-07-23 ở đầu Nhóm).
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
-    fct_public_company_financial_summary_snpst["Fact Public Company Financial Summary Snapshot"] --> R40["K_GSDC_700-704: BC01.1 — Số DN, Tỷ lệ nộp BCTC theo sàn"]
-    public_company_dim["Public Company Dimension"] --> fct_public_company_financial_summary_snpst
-    cdr_dt_dim["Calendar Date Dimension"] --> fct_public_company_financial_summary_snpst
+    public_company_dim["Public Company Dimension"] --> R40["K_GSDC_700-701: BC01.1 — Số DN theo sàn (K_GSDC_702-704 PENDING)"]
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Financial Summary Snapshot | 1 row / CTDC / kỳ báo cáo (năm × quý) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD2) |
-| Calendar Date Dimension | 1 row / ngày (Conformed) |
 
 ---
 
@@ -2097,8 +2091,9 @@ flowchart LR
 ##### READY (thu hẹp) — 8/9 KPI PENDING do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> Source: `Fact Public Company Financial Summary Snapshot` — GROUP BY `Business Line Level 1 Code`
+> Source: `Public Company Dimension` — GROUP BY `Business Line Level 1 Code` (không qua Fact — xem ghi chú rà soát 2026-07-23 ở Nhóm 6)
 > **Cập nhật 2026-07-15 (rà soát Nhóm 39, tên cũ Nhóm 41):** BA đánh dấu chỉ dòng "Ngành" là Dữ liệu tĩnh (READY); 8 chỉ tiêu đo lường còn lại (DTT/LNST/ROA/ROE năm N và N-1) đều Dữ liệu động → PENDING theo gate rule — tách theo pattern "block có cả tĩnh lẫn động" (không gộp chung 1 bảng). Đồng thời sửa field group-by-ngành: đúng tên `Business Line Level 1 Code` (`business_line_level_1_code`), không phải `Industry Category Level1 Code`/`idy_cgy_level1_code` — xem O_GSDC_5 mục (3). *(Số nhóm đã đổi 41→39 do BA renumber toàn bộ STT 6-43, xem bảng mapping Section 4)*
+> **Cập nhật 2026-07-23 (rà soát LLD):** `Fact Public Company Financial Summary Snapshot` đã bị xoá (xem Nhóm 6) — K_GSDC_709 tự đủ bằng field `business_line_level_1_code` trực tiếp trên `Public Company Dimension`, không cần Fact.
 
 **Bảng KPI (READY):**
 
@@ -2119,9 +2114,29 @@ flowchart LR
 | K_GSDC_716 | ROA Năm N-1 | Phái sinh | **PENDING** |
 | K_GSDC_717 | ROE Năm N-1 | Phái sinh | **PENDING** |
 
-**Star Schema:** dùng chung `Fact_Public_Company_Financial_Summary_Snapshot`.
+**Star Schema:**
 
-**Bảng grain:** giống Nhóm 40.
+```mermaid
+erDiagram
+    Public_Company_Dimension {
+        string Public_Company_Dimension_Id PK
+        string Business_Line_Level1_Code
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    public_company_dim["Public Company Dimension"] --> R39["K_GSDC_709: BC01.2 — Ngành kinh tế (K_GSDC_710-717 PENDING)"]
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Public Company Dimension | 1 row / công ty đại chúng (SCD2) |
 
 ---
 
@@ -2130,8 +2145,9 @@ flowchart LR
 ##### READY (thu hẹp) — 21/22 KPI PENDING do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> Source: `Fact Public Company Financial Summary Snapshot` — join 3 kỳ (N, N-1, N-2) tại query layer
+> Source: K_GSDC_718 là tham số UI thuần (không map bảng nào)
 > **Cập nhật 2026-07-15 (rà soát Nhóm 40, tên cũ Nhóm 42):** BA đánh dấu chỉ dòng "Kỳ báo cáo" (tham số, không map bảng) là Dữ liệu tĩnh (READY); toàn bộ 21 chỉ tiêu đo lường (Tổng tài sản/Nợ phải trả/VCSH/Vốn điều lệ/LNST/ROA/ROE × 3 kỳ N/N-1/N-2) đều Dữ liệu động → PENDING theo gate rule. *(Số nhóm đã đổi 42→40 do BA renumber toàn bộ STT 6-43)*
+> **Cập nhật 2026-07-23 (rà soát LLD):** `Fact Public Company Financial Summary Snapshot` đã bị xoá (xem Nhóm 6). K_GSDC_718 không tham chiếu bảng nào — không cần Star Schema/Lineage.
 
 **Bảng KPI (READY):**
 
@@ -2165,9 +2181,7 @@ flowchart LR
 | K_GSDC_738 | ROA Năm N-2 | Phái sinh | **PENDING** |
 | K_GSDC_739 | ROE Năm N-2 | Phái sinh | **PENDING** |
 
-**Star Schema:** dùng chung `Fact_Public_Company_Financial_Summary_Snapshot`.
-
-**Bảng grain:** giống Nhóm 40.
+**Star Schema:** K_GSDC_718 không tham chiếu bảng nào (xem ghi chú rà soát 2026-07-23 ở trên).
 
 ---
 
@@ -2176,8 +2190,9 @@ flowchart LR
 ##### READY (thu hẹp) — 22/23 KPI PENDING do "Dữ liệu động"
 
 > Phân loại: **Phân tích**
-> Source: `Fact Public Company Financial Summary Snapshot` — GROUP BY `Equity_Listing_Exchange_Code`
+> Source: `Public Company Dimension` — GROUP BY `Equity_Listing_Exchange_Code` (không qua Fact — xem ghi chú rà soát 2026-07-23 ở Nhóm 6)
 > **Cập nhật 2026-07-15 (rà soát Nhóm 41, tên cũ Nhóm 43):** BA đánh dấu chỉ dòng "Theo sàn" là Dữ liệu tĩnh (READY); toàn bộ 22 chỉ tiêu đo lường (Tổng tài sản/Hàng tồn kho/Nợ phải trả/VCSH/... + YoY %) đều Dữ liệu động → PENDING theo gate rule. *(Số nhóm đã đổi 43→41 do BA renumber toàn bộ STT 6-43)*
+> **Cập nhật 2026-07-23 (rà soát LLD):** `Fact Public Company Financial Summary Snapshot` đã bị xoá (xem Nhóm 6) — K_GSDC_740 tự đủ bằng field `equity_listing_exchange_code` trực tiếp trên `Public Company Dimension`, không cần Fact.
 
 **Bảng KPI (READY):**
 
@@ -2212,16 +2227,29 @@ flowchart LR
 | K_GSDC_751 | ROE theo sàn | Phái sinh | **PENDING** |
 | K_GSDC_751_YOY | ROE — YoY theo sàn | Phái sinh | **PENDING** |
 
-**Star Schema:** dùng chung `Fact_Public_Company_Financial_Summary_Snapshot`.
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Public_Company_Dimension {
+        string Public_Company_Dimension_Id PK
+        string Equity_Listing_Exchange_Code
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    public_company_dim["Public Company Dimension"] --> R41["K_GSDC_740: BC22 — Theo sàn (K_GSDC_741-751+YOY PENDING)"]
+```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Public Company Financial Summary Snapshot | 1 row / CTDC / kỳ báo cáo (năm × quý) |
 | Public Company Dimension | 1 row / công ty đại chúng (SCD2) |
-| Calendar Date Dimension | 1 row / ngày (Conformed) |
-
 
 ---
 
@@ -2241,7 +2269,6 @@ graph TB
     FACT_ISS["Fact Public Company Issuance Score Snapshot"]:::fact
     FACT_FIN["Fact Public Company Financial Score Snapshot"]:::fact
     FACT_NONFIN["Fact Public Company Non-Financial Score Snapshot"]:::fact
-    FACT_SUMRY["Fact Public Company Financial Summary Snapshot"]:::fact
     FACT_RPTVAL["Fact Public Company Financial Report Value"]:::fact
     FACT_LIST["Fact Public Company Listing Info Snapshot"]:::fact
 
@@ -2255,14 +2282,14 @@ graph TB
     DIM_DATE --> FACT_FIN
     DIM_CO --> FACT_NONFIN
     DIM_DATE --> FACT_NONFIN
-    DIM_CO --> FACT_SUMRY
-    DIM_DATE --> FACT_SUMRY
     DIM_CO --> FACT_RPTVAL
     DIM_DATE --> FACT_RPTVAL
     DIM_CTLG --> FACT_RPTVAL
     DIM_CO --> FACT_LIST
     DIM_DATE --> FACT_LIST
 ```
+
+> **Cập nhật 2026-07-23 (rà soát LLD):** `Fact Public Company Financial Summary Snapshot` đã bị xoá khỏi mô hình (không còn cột nào READY, xem Nhóm 6/O_GSDC_5 mục (10)). Các KPI READY trước đây gán cho Fact này (Nhóm 6/9/10/12/14/16/38/39/40/41) nay query trực tiếp `Public Company Dimension`/`Calendar Date Dimension`, không có node Fact riêng trong graph.
 
 **Bảng Phân tích (Star Schema):**
 
@@ -2273,9 +2300,10 @@ graph TB
 | `Fact Public Company Issuance Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_24–31 (Nhóm 3); reuse toàn bộ (Nhóm 35) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_32–42 (Nhóm 4); reuse toàn bộ (Nhóm 34) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Non-Financial Score Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ đánh giá | K_GSDC_43–45 (Nhóm 5); reuse toàn bộ (Nhóm 36) | READY (Atomic draft — chưa approved) |
-| `Fact Public Company Financial Summary Snapshot` | Periodic Snapshot | 1 CTDC × 1 kỳ báo cáo (năm × quý) | K_GSDC_46–49 (Nhóm 6); reuse Nhóm 9/10/12/14/16; K_GSDC_700–704 (Nhóm 38, K_GSDC_705-708 PENDING — Gap Atomic Financial Report Value); K_GSDC_709–717 (Nhóm 39); K_GSDC_718–739 (Nhóm 40); K_GSDC_740–751+YOY (Nhóm 41) | READY (Atomic draft — chưa approved) |
 | `Fact Public Company Financial Report Value` | Event | 1 CTDC × 1 kỳ × Row_Code × Column_Code | K_GSDC_50–92 (Nhóm 7, 8, 11, 13, 15, 17); K_GSDC_99–689 (Nhóm 19-30); K_GSDC_50-62 reuse (Nhóm 37) | PENDING (Gap Atomic — không có Atomic LLD nào trong `DataModel/working/Atomic/lld/IDS/`, xem O_GSDC_5; 100% KPI dùng Fact này đều PENDING — K_GSDC_63/79 READY thuộc `public_company`, không thuộc Fact này) |
 | `Fact Public Company Listing Info Snapshot` | Periodic Snapshot | 1 CTDC × 1 ngày | K_GSDC_690–699 (Nhóm 31) | PENDING |
+
+> **Đã xoá 2026-07-23:** `Fact Public Company Financial Summary Snapshot` — không còn cột nào READY (xem Nhóm 6/O_GSDC_5 mục (10)). KPI trước đây gán cho Fact này (K_GSDC_46–49 Nhóm 6; reuse Nhóm 9/10/12/14/16; K_GSDC_700–708 Nhóm 38; K_GSDC_709–717 Nhóm 39; K_GSDC_718–739 Nhóm 40; K_GSDC_740–751+YOY Nhóm 41) nay dùng trực tiếp `Public Company Dimension`/`Calendar Date Dimension` cho phần READY; phần PENDING giữ nguyên trạng thái.
 
 **Bảng Tác nghiệp:** Không có.
 
@@ -2293,7 +2321,6 @@ graph TB
 
 | Datamart Entity | datamart_table | reuse_status | Ghi chú |
 |---|---|---|---|
-| Fact Public Company Financial Summary Snapshot | fct_public_company_financial_summary_snpst | new | Fact mới cho MH2/MH4 |
 | Fact Public Company Financial Report Value | fct_public_company_financial_report_val | pending | Fact placeholder cho MH3 Data Explorer BCTC chi tiết + Nhóm 7/13/15/17/19 (MH2) — **PENDING**: Atomic nguồn (`Public Company Financial Report Value`) chưa có LLD, xem O_GSDC_5 |
 | Fact Public Company Risk Score Snapshot | fct_public_company_risk_score_snpst | new | Fact mới cho Nhóm 1 (MH1 Tab Tổng hợp) — nguồn Atomic draft |
 | Fact Public Company Compliance Score Snapshot | fct_public_company_compliance_score_snpst | new | Fact mới cho Nhóm 2 (MH1 Tab Tuân thủ) — nguồn Atomic draft |
@@ -2317,8 +2344,8 @@ graph TB
 
 | ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_GSDC_1 | Nhóm 1–5 (Màn hình 1) có nguồn thật từ `IDS.EVALUATIONS` / `EVALUATION_DETAILS` / `EVALUATION_CRITERIA` / `EVALUATION_GROUPS` / `EVALUATION_PERIODS`. Atomic tương ứng (`Public Company Evaluation` + 4 entity con) đã có LLD tại `DataModel/working/Atomic/lld/IDS/` nhưng `design_status: draft`, chưa approved. K_GSDC_38 "VCSH" (Nhóm 4) — **rà soát LLD 2026-07-15 xác nhận vẫn còn trong BA** (ghi chú "loại khỏi phạm vi" trước đây sai, đã sửa). K_GSDC_33 đổi nghĩa "Khả năng hoạt động liên tục"→"ROA". Nhóm 3 K_GSDC_29 đổi nghĩa "Tỷ lệ TP vi phạm nghĩa vụ thanh toán"→"Xếp hạng tín nhiệm". Nhóm 5 loại K_GSDC_45 (BA không còn). Nhóm 32–36 (Data Explorer, reuse KPI từ Nhóm 1–5) READY (Atomic draft), reuse KPI_ID đầy đủ, không có KPI mới. | Nhóm 1–5 + 32–36: chờ approve Atomic entity draft. | K_GSDC_1 — K_GSDC_45 (trừ K_GSDC_45 đã loại), K_GSDC_14, K_GSDC_7-8 (dùng chung Nhóm 1-5 + 32-36) | Closed |
-| O_GSDC_2 | KPI Số doanh nghiệp (K_GSDC_7, K_GSDC_34) có nguồn từ `IDS.company_detail` với điều kiện `ids_reg_date <= cuối kỳ` — không join qua `company_data` hay `data`. COUNT DISTINCT từ `Fact Public Company Financial Summary Snapshot` sẽ thiếu DN đăng ký IDS nhưng chưa nộp BCTC trong kỳ. | Cần xác nhận: KPI Số DN tính trên toàn bộ DN đăng ký IDS hay chỉ DN có nộp BCTC trong kỳ? Nếu toàn bộ DN đăng ký thì cần thêm `IDS_Registration_Date` vào Fact hoặc tính riêng từ `Public Company Dimension`. | K_GSDC_7, K_GSDC_34 | Open |
+| O_GSDC_1 | Nhóm 1–5 (Màn hình 1) có nguồn thật từ `IDS.EVALUATIONS` / `EVALUATION_DETAILS` / `EVALUATION_CRITERIA` / `EVALUATION_GROUPS` / `EVALUATION_PERIODS`. Atomic tương ứng (`Public Company Evaluation` + 4 entity con) đã có LLD tại `DataModel/working/Atomic/lld/IDS/` nhưng `design_status: draft`, chưa approved. K_GSDC_38 "VCSH" (Nhóm 4) — **rà soát LLD 2026-07-15 xác nhận vẫn còn trong BA** (ghi chú "loại khỏi phạm vi" trước đây sai, đã sửa). K_GSDC_33 đổi nghĩa "Khả năng hoạt động liên tục"→"ROA". Nhóm 3 K_GSDC_29 đổi nghĩa "Tỷ lệ TP vi phạm nghĩa vụ thanh toán"→"Xếp hạng tín nhiệm". **Cập nhật 2026-07-23 (rà soát datamart-review):** ghi chú cũ "Nhóm 5 loại K_GSDC_45 (BA không còn)" là **sai** — K_GSDC_45 vẫn active, là "Tổng điểm Phi tài chính & M-Score" trong bảng KPI Nhóm 5 hiện hành; đã xoá ghi chú gây hiểu lầm này khỏi Nhóm 5. Nhóm 32–36 (Data Explorer, reuse KPI từ Nhóm 1–5) READY (Atomic draft), reuse KPI_ID đầy đủ, không có KPI mới. | Nhóm 1–5 + 32–36: chờ approve Atomic entity draft. | K_GSDC_1 — K_GSDC_45, K_GSDC_14, K_GSDC_7-8 (dùng chung Nhóm 1-5 + 32-36) | Closed |
+| O_GSDC_2 | KPI Số doanh nghiệp (K_GSDC_7, K_GSDC_34) có nguồn từ `IDS.company_detail` với điều kiện `ids_reg_date <= cuối kỳ` — không join qua `company_data` hay `data`. **Cập nhật 2026-07-23:** Vấn đề đã tự giải quyết — `Fact Public Company Financial Summary Snapshot` đã bị xoá (xem O_GSDC_5 mục (10)), mọi KPI Số DN (K_GSDC_47/77/701...) nay tính trực tiếp `COUNT DISTINCT` trên `Public Company Dimension.IDS_Registration_Date`, không qua Fact nào — không còn rủi ro thiếu DN đăng ký IDS nhưng chưa nộp BCTC. | Đã tính trực tiếp trên `Public Company Dimension` cho toàn bộ Nhóm 6/9/10/12/14/16 — không cần Fact riêng. | K_GSDC_7, K_GSDC_34 | Closed |
 | O_GSDC_3 | **Cập nhật 2026-07-16 (rà soát cross-check BA↔Atomic):** BA SQL DB25 xác nhận `rr.row_desc` và `rc2.col_desc` dùng làm mã hiển thị nghiệp vụ và filter điều kiện trong mọi dashboard DB21–32. Rà soát lại `DataModel/working/Atomic/lld/IDS/lld_IDS_RROW.yaml` / `lld_IDS_RCOL.yaml` cho thấy 2 field này **đã có mapping 1-1** (`Row Description`/`row_description` ← `IDS.RROW.ROW_DESC`, `Column Description`/`column_description` ← `IDS.RCOL.COL_DESC`) — nhận định trước đây "chưa có field" là **sai**, chỉ là tên gọi khác `Row_Display_Code`/`Column_Display_Code`. Tuy nhiên, theo xác nhận Data Modeler (2026-07-16): **toàn bộ cấu trúc EAV nguồn (RROW/RCOL/REPORT_CATALOG/`IDS.data`) sẽ KHÔNG được tái sử dụng trực tiếp** — team Atomic sẽ chuẩn hoá lại thành 1 bộ entity dùng chung cho mọi module (chưa thiết kế, sẽ bổ sung sau). Do đó gap thực chất **không phải "thiếu field"** mà là "chờ entity Atomic chuẩn hoá mới thay thế hoàn toàn cấu trúc EAV hiện có". | Không cần bổ sung field vào `frf_row_template`/`frf_column_template` hiện tại (cấu trúc này sẽ không dùng làm nền thiết kế Fact). Chờ Data Modeler thiết kế entity Atomic chuẩn hoá mới cho Financial Report Value (dùng chung nhiều module) qua `atomic-lld-design`, sau đó Datamart mới thiết kế lại Fact Public Company Financial Report Value dựa trên entity mới. | K_GSDC_33, K_GSDC_D8–D11 | Open |
-| O_GSDC_4 | DB43 BC22 có KPI "Lợi nhuận kế toán trước thuế" — không có trường tương ứng trong `Fact Public Company Financial Summary Snapshot` hiện tại (chỉ có `Net_Profit_Amount` = LNST). LNKT trước thuế là row khác trong BCTC. | **Confirmed:** Bổ sung `Pre_Tax_Profit_Amount` vào Fact Summary — map từ BCKQKD `row_desc='50'` (dn/bh) / `row_desc='17'` (td), `col_desc='1'`. Đã cập nhật erDiagram và K_GSDC_58. | K_GSDC_58 | Closed |
-| O_GSDC_5 | (1) **Gate rule "Loại dữ liệu":** BA đánh dấu "Dữ liệu động" hoặc "Dữ liệu tĩnh - Chưa có CSDL" → PENDING dù `Trạng thái mapping = Done`. Áp dụng: Nhóm 6 (K_GSDC_48/49), Nhóm 7/11/13/15/17/37 (100% dòng động), Nhóm 8/9/10, Nhóm 18 (10/10 dòng), Nhóm 19-30 (391 KPI DN thông thường/bảo hiểm/TCTD), Nhóm 38-41 (measure động, 1 KPI Chiều/nhóm giữ READY). (2) **Gap Atomic — `Public Company Financial Report Value`** (nguồn `IDS.data` + `report_catalog` + `rrow` + `rcol`, dùng cho K_GSDC_49 và toàn bộ Nhóm 7/8/9/10/11/13/15/17/37): bảng giá trị số liệu (`IDS.data`, chứa `data_value`) **hoàn toàn chưa có Atomic LLD** (xác nhận qua rà soát `DataModel/working/Atomic/lld/IDS/` — không có file YAML nào cho bảng này). Bảng catalog/template (`REPORT_CATALOG`/`RROW`/`RCOL`) tuy đã có LLD draft (`financial_report_catalog`/`frf_row_template`/`frf_column_template`), nhưng **rà soát 2026-07-16 xác nhận với Data Modeler: cấu trúc EAV nguồn này sẽ KHÔNG được dùng làm nền tảng thiết kế** — team Atomic sẽ chuẩn hoá lại thành 1 bộ entity Financial Report Value dùng chung cho nhiều module (chưa thiết kế, cần `atomic-lld-design` làm mới hoàn toàn, không phải bổ sung field vào entity hiện có). (3) **Field group-by-ngành:** tồn tại trong `Public Company` (`public_company`) — tên đúng `Business Line Level 1 Code` (`business_line_level_1_code`, Classification Value scheme `IDS_INDUSTRY_CATEGORY`). Áp dụng cho K_GSDC_63 (Nhóm 8), K_GSDC_709 (Nhóm 39) — cả 2 vẫn READY vì Fact chứa chúng (`Fact Public Company Financial Summary Snapshot`) đã duyệt. **K_GSDC_79 (Nhóm 11/13/15/17) đã chuyển PENDING** (rà soát LLD 2026-07-15) — dù field tồn tại đúng trên `public_company`, Fact duy nhất của các Nhóm này (`Fact Public Company Financial Report Value`) 100% PENDING nên không có Fact để populate. BA còn ghi điều kiện `c.active_flg = 1` (bảng `categories` riêng) — cần xác nhận có bổ sung Active Flag hay dùng trực tiếp field trên `public_company` (không có entity `categories` riêng theo quyết định 2026-07-14). (4) **Entity đúng cho K_GSDC_48** "Tỷ lệ nộp BCTC": map `Public Company Violation Report` (`pc_violation_report`) — BA SQL dùng `violation_report`/`forms` filter `news_type_cd='DINH_KY'`, KHÔNG phải `Public Company Report Submission` (`pc_report_submission`, entity Fact Append cho tin tức CBTT chung). Áp dụng Nhóm 6/10/12/14/16. (5) **Nhóm 18** (Metadata BCTC): 10/10 dòng PENDING do "Dữ liệu động" — 4 KPI Chiều reuse (K_GSDC_46/K_GSDC_78/K_GSDC_63/K_GSDC_7-8) vẫn READY tại nhóm gốc nhưng PENDING khi dùng trong Nhóm 18; 6 KPI gốc K_GSDC_93–98 PENDING (Atomic Row/Column Template cũng có gap tên bảng, xem O_GSDC_3 — không cần sửa vì đằng nào PENDING). (6)+(7) **MH3 Data Explorer** (Nhóm 19-30, DN thông thường + bảo hiểm + TCTD, 391 KPI): PENDING toàn bộ do 100% "Dữ liệu động". Bảng KPI rút gọn 4 cột chuẩn (KPI ID/Tên KPI/Tính chất/Trạng thái) theo `datamart-hld-design` — chi tiết mapping Atomic đầy đủ xem git history bản trước 2026-07-15. (8) **Nhóm 37**: 13/13 KPI (K_GSDC_50-62, reuse từ Nhóm 7) PENDING — nhất quán với Nhóm 7 (reuse KPI_ID cùng trạng thái với gốc). (9) **Nhóm 39-41**: mỗi nhóm 1 KPI Chiều (Ngành/Kỳ báo cáo/Theo sàn, Dữ liệu tĩnh) giữ READY, toàn bộ measure còn lại (51 KPI) PENDING do Dữ liệu động. | (1) Rà soát gate rule — hoàn tất toàn bộ Nhóm 6-41. (2) Chờ atomic-lld-design bổ sung entity `Public Company Financial Report Value`. (3) Đã sửa tên field group-by-ngành cho Nhóm 8/11/13/15/17/39 — Closed. (4) Đã sửa entity tham chiếu cho Nhóm 6/10/12/14/16 — cần đồng bộ Detail Mapping khi tới bước LLD. (5) Đã bổ sung KPI thiếu cho Nhóm 18, PENDING toàn bộ — cần đồng bộ Detail Mapping khi tới bước LLD. (6)-(9) Đã gate PENDING Nhóm 19-30 + 37 + phần động của Nhóm 39-41 — cần đồng bộ Detail Mapping khi tới bước LLD. | K_GSDC_48, K_GSDC_49 (Nhóm 6/10/12/14/16); K_GSDC_50-62+YOY, K_GSDC_80-92 (Nhóm 7/11/13/15/17/37); K_GSDC_64-76 (Nhóm 8); K_GSDC_93-98+46+78+63+7-8 (Nhóm 18, PENDING toàn bộ); K_GSDC_99-303 (Nhóm 19-22); K_GSDC_304-689 (Nhóm 23-30); K_GSDC_710-717, K_GSDC_719-739, K_GSDC_741-751+YOY (Nhóm 39-41) | Open |
+| O_GSDC_4 | DB43 BC22 có KPI "Lợi nhuận kế toán trước thuế" — không có trường tương ứng trong `Fact Public Company Financial Summary Snapshot` (khi đó còn tồn tại). LNKT trước thuế là row khác trong BCTC. | **Confirmed (lịch sử):** Bổ sung `Pre_Tax_Profit_Amount` vào Fact Summary — map từ BCKQKD `row_desc='50'` (dn/bh) / `row_desc='17'` (td), `col_desc='1'`. **Lưu ý 2026-07-23:** Fact này đã bị xoá hoàn toàn (xem O_GSDC_5 mục (10)); K_GSDC_58 nay nằm ở Nhóm 41 (K_GSDC_748, LNKT trước thuế theo sàn) — vẫn PENDING vì thuộc measure động, không map field nào từ Fact đã xoá. | K_GSDC_58 | Closed |
+| O_GSDC_5 | (1) **Gate rule "Loại dữ liệu":** BA đánh dấu "Dữ liệu động" hoặc "Dữ liệu tĩnh - Chưa có CSDL" → PENDING dù `Trạng thái mapping = Done`. Áp dụng: Nhóm 6 (K_GSDC_48/49), Nhóm 7/11/13/15/17/37 (100% dòng động), Nhóm 8/9/10, Nhóm 18 (10/10 dòng), Nhóm 19-30 (391 KPI DN thông thường/bảo hiểm/TCTD), Nhóm 38-41 (measure động, 1 KPI Chiều/nhóm giữ READY; Nhóm 38 nay 2 KPI Cơ sở K_GSDC_702/703 cũng PENDING — xem mục (10)). (2) **Gap Atomic — `Public Company Financial Report Value`** (nguồn `IDS.data` + `report_catalog` + `rrow` + `rcol`, dùng cho K_GSDC_49 và toàn bộ Nhóm 7/8/9/10/11/13/15/17/37): bảng giá trị số liệu (`IDS.data`, chứa `data_value`) **hoàn toàn chưa có Atomic LLD** (xác nhận qua rà soát `DataModel/working/Atomic/lld/IDS/` — không có file YAML nào cho bảng này). Bảng catalog/template (`REPORT_CATALOG`/`RROW`/`RCOL`) tuy đã có LLD draft (`financial_report_catalog`/`frf_row_template`/`frf_column_template`), nhưng **rà soát 2026-07-16 xác nhận với Data Modeler: cấu trúc EAV nguồn này sẽ KHÔNG được dùng làm nền tảng thiết kế** — team Atomic sẽ chuẩn hoá lại thành 1 bộ entity Financial Report Value dùng chung cho nhiều module (chưa thiết kế, cần `atomic-lld-design` làm mới hoàn toàn, không phải bổ sung field vào entity hiện có). (3) **Field group-by-ngành:** tồn tại trong `Public Company` (`public_company`) — tên đúng `Business Line Level 1 Code` (`business_line_level_1_code`, Classification Value scheme `IDS_INDUSTRY_CATEGORY`). Áp dụng cho K_GSDC_63 (Nhóm 8), K_GSDC_709 (Nhóm 39) — cả 2 vẫn READY vì query trực tiếp `public_company.business_line_level_1_code`, không qua Fact nào (từ 2026-07-23, `Fact Public Company Financial Summary Snapshot` đã bị xoá — xem mục (10)). **K_GSDC_79 (Nhóm 11/13/15/17) đã chuyển PENDING** (rà soát LLD 2026-07-15) — dù field tồn tại đúng trên `public_company`, Fact duy nhất của các Nhóm này (`Fact Public Company Financial Report Value`) 100% PENDING nên không có Fact để populate. BA còn ghi điều kiện `c.active_flg = 1` (bảng `categories` riêng) — cần xác nhận có bổ sung Active Flag hay dùng trực tiếp field trên `public_company` (không có entity `categories` riêng theo quyết định 2026-07-14). (4) **Entity đúng cho K_GSDC_48** "Tỷ lệ nộp BCTC": map `Public Company Violation Report` (`pc_violation_report`) — BA SQL dùng `violation_report`/`forms` filter `news_type_cd='DINH_KY'`, KHÔNG phải `Public Company Report Submission` (`pc_report_submission`, entity Fact Append cho tin tức CBTT chung). Áp dụng Nhóm 6/10/12/14/16. (5) **Nhóm 18** (Metadata BCTC): 10/10 dòng PENDING do "Dữ liệu động" — 4 KPI Chiều reuse (K_GSDC_46/K_GSDC_78/K_GSDC_63/K_GSDC_7-8) vẫn READY tại nhóm gốc nhưng PENDING khi dùng trong Nhóm 18; 6 KPI gốc K_GSDC_93–98 PENDING (Atomic Row/Column Template cũng có gap tên bảng, xem O_GSDC_3 — không cần sửa vì đằng nào PENDING). (6)+(7) **MH3 Data Explorer** (Nhóm 19-30, DN thông thường + bảo hiểm + TCTD, 391 KPI): PENDING toàn bộ do 100% "Dữ liệu động". Bảng KPI rút gọn 4 cột chuẩn (KPI ID/Tên KPI/Tính chất/Trạng thái) theo `datamart-hld-design` — chi tiết mapping Atomic đầy đủ xem git history bản trước 2026-07-15. (8) **Nhóm 37**: 13/13 KPI (K_GSDC_50-62, reuse từ Nhóm 7) PENDING — nhất quán với Nhóm 7 (reuse KPI_ID cùng trạng thái với gốc). (9) **Nhóm 39-41**: mỗi nhóm 1 KPI Chiều (Ngành/Kỳ báo cáo/Theo sàn, Dữ liệu tĩnh) giữ READY, toàn bộ measure còn lại (51 KPI) PENDING do Dữ liệu động. (10) **Gate rule mở rộng — `pc_report_submission`/`company_data` cũng là dữ liệu động, dẫn tới xoá Fact (rà soát LLD 2026-07-23):** Rà soát cột `etl_logic` phát hiện `Public Company Report Submission` (`pc_report_submission`) có nguồn thật là `IDS.COMPANY_DATA` (xem `DataModel/Atomic/Documentation/dm_atm_pc_report_submission-IDS.COMPANY_DATA.yaml`) — Data Modeler xác nhận họ bảng `company_data`/`data` (không chỉ riêng `report_catalog`/`rrow`/`rcol`/`data` như mục (2) đã nêu) đều thuộc "dữ liệu động" theo gate rule (1). Ảnh hưởng: K_GSDC_702/703 (Nhóm 38, trước đây "Cơ sở"/READY) → PENDING; K_GSDC_704 (phái sinh) → PENDING theo. `Fact Public Company Financial Summary Snapshot` mất toàn bộ 2 measure gốc (`submission_deadline_dt`/`submission_dt`) + cả 2 FK dự kiến từ bảng này. Rà soát tiếp theo phát hiện: K_GSDC_46/47 (Nhóm 6), K_GSDC_77 (Nhóm 9), K_GSDC_700/701 (Nhóm 38), K_GSDC_709 (Nhóm 39), K_GSDC_740 (Nhóm 41) — mọi KPI READY còn lại gán cho Fact này — thực chất đều query trực tiếp (COUNT DISTINCT / field GROUP BY) trên `Public Company Dimension`/`Calendar Date Dimension`, không cần grain snapshot của Fact. K_GSDC_718 (Nhóm 40) là tham số UI thuần, không map bảng nào. Kết luận: Fact không còn cột nào READY → **xoá hẳn** `Fact Public Company Financial Summary Snapshot` khỏi Entities.csv/datamart_attributes.csv/datamart_model.yaml (đúng pattern "bảng PENDING toàn bộ không tạo file", giống `Fact Public Company Financial Report Value`) — không giữ lại dạng PENDING. Toàn bộ Nhóm 6/9/10/12/14/16/38/39/40/41 đã cập nhật Source/Star Schema/Lineage sang query trực tiếp Dimension. | (1) Rà soát gate rule — hoàn tất toàn bộ Nhóm 6-41. (2) Chờ atomic-lld-design bổ sung entity `Public Company Financial Report Value`. (3) Đã sửa tên field group-by-ngành cho Nhóm 8/11/13/15/17/39 — Closed. (4) Đã sửa entity tham chiếu cho Nhóm 6/10/12/14/16 — cần đồng bộ Detail Mapping khi tới bước LLD. (5) Đã bổ sung KPI thiếu cho Nhóm 18, PENDING toàn bộ — cần đồng bộ Detail Mapping khi tới bước LLD. (6)-(9) Đã gate PENDING Nhóm 19-30 + 37 + phần động của Nhóm 39-41 — cần đồng bộ Detail Mapping khi tới bước LLD. (10) Đã xoá hẳn `Fact Public Company Financial Summary Snapshot` (Entities/Attributes/model) + cập nhật Source/Star Schema toàn bộ Nhóm liên quan (6/9/10/12/14/16/38/39/40/41) — cần đồng bộ Detail Mapping nếu có dòng tham chiếu bảng/cột của Fact đã xoá (K_GSDC_46/47/77/700/701/702-704/709/718/740). | K_GSDC_48, K_GSDC_49 (Nhóm 6/10/12/14/16); K_GSDC_50-62+YOY, K_GSDC_80-92 (Nhóm 7/11/13/15/17/37); K_GSDC_64-76 (Nhóm 8); K_GSDC_93-98+46+78+63+7-8 (Nhóm 18, PENDING toàn bộ); K_GSDC_99-303 (Nhóm 19-22); K_GSDC_304-689 (Nhóm 23-30); K_GSDC_710-717, K_GSDC_719-739, K_GSDC_741-751+YOY (Nhóm 39-41); K_GSDC_702, K_GSDC_703, K_GSDC_704 (Nhóm 38) | Open |

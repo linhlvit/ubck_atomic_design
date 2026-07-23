@@ -3549,57 +3549,6 @@ entities:
         source_atomic_table: "pc_evaluation_detail"
         source_atomic_column: "pc_evaluation_detail.evaluation_score"
 
-  - id: "DTM-fct_public_company_financial_summary_snpst"
-    logical_name: "Fact Public Company Financial Summary Snapshot"
-    datamart_table: "fct_public_company_financial_summary_snpst"
-    table_type: "fact"
-    module: "GSDC"
-    status: "draft"
-    reuse_status: "new"
-    description: "Tổng hợp tài chính CTDC theo kỳ báo cáo (Số DN, Tỷ lệ nộp BCTC, Số DN báo lãi...) — 1 row / CTDC / kỳ báo cáo (năm x quý). Phục vụ Nhóm 6/9/10/12/14/16 + MH4 Nhóm 38-41. Chỉ chứa các cột READY (K_GSDC_46/47/63/77/700-704/709/718/740); measure PENDING (Financial Report Value) chưa thiết kế."
-    source_atomic:
-      - "pc_report_submission"
-      - "public_company"
-    modules_using:
-      - "GSDC"
-    columns:
-      - logical_name: "Public Company Dimension Id"
-        physical_name: "public_company_dim_id"
-        data_domain: "Surrogate Dimension Key"
-        data_type: "string"
-        nullable: false
-        key: "FK -> Public Company Dimension"
-        description: "FK tới Public Company Dimension"
-        source_atomic_table: "pc_report_submission"
-        source_atomic_column: "pc_report_submission.pc_id"
-      - logical_name: "Calendar Date Dimension Id"
-        physical_name: "cdr_dt_dim_id"
-        data_domain: "Surrogate Dimension Key"
-        data_type: "string"
-        nullable: false
-        key: "FK -> Calendar Date Dimension"
-        description: "FK tới Calendar Date Dimension — resolve qua Report Year/Report Quarter"
-        source_atomic_table: "pc_report_submission"
-        source_atomic_column: "pc_report_submission.rpt_year"
-      - logical_name: "Submission Deadline Date"
-        physical_name: "submission_deadline_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: true
-        key: ""
-        description: "K_GSDC_702 Số lượng BCTC đến hạn nộp"
-        source_atomic_table: "pc_report_submission"
-        source_atomic_column: "pc_report_submission.submission_deadline_dt"
-      - logical_name: "Submission Date"
-        physical_name: "submission_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: true
-        key: ""
-        description: "K_GSDC_703 Số báo cáo BCTC đã nộp"
-        source_atomic_table: "pc_report_submission"
-        source_atomic_column: "pc_report_submission.submission_dt"
-
   - id: "DTM-fct_securities_offering"
     logical_name: "Fact Securities Offering"
     datamart_table: "fct_securities_offering"
@@ -4268,15 +4217,6 @@ entities:
     modules_using:
       - "TT"
     columns:
-      - logical_name: "Fact Inspection Team Activity Id"
-        physical_name: "fct_inspection_team_activity_id"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Surrogate id kỹ thuật (ETL merge/upsert + COUNT distinct) — Driving: inspection_team, grain 1 row per đoàn thanh tra"
-        source_atomic_table: "inspection_team"
-        source_atomic_column: "inspection_team.inspection_team_id"
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "calendar_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -4360,15 +4300,6 @@ entities:
     modules_using:
       - "TT"
     columns:
-      - logical_name: "Fact Inspection Team Target Activity Id"
-        physical_name: "fct_inspection_team_target_activity_id"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Surrogate id kỹ thuật (ETL merge/upsert + COUNT distinct) — Driving: inspection_team_target, grain 1 đoàn × 1 đối tượng"
-        source_atomic_table: "inspection_team_target"
-        source_atomic_column: "inspection_team_target.inspection_team_target_id"
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "calendar_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -4574,15 +4505,6 @@ entities:
     modules_using:
       - "TT"
     columns:
-      - logical_name: "Fact Examination Team Activity Id"
-        physical_name: "fct_examination_team_activity_id"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Surrogate id kỹ thuật (ETL merge/upsert + COUNT distinct) — Driving: examination_team, grain 1 row per vụ việc kiểm tra"
-        source_atomic_table: "examination_team"
-        source_atomic_column: "examination_team.examination_team_id"
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "calendar_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -4666,15 +4588,6 @@ entities:
     modules_using:
       - "TT"
     columns:
-      - logical_name: "Fact Examination Team Target Activity Id"
-        physical_name: "fct_examination_team_target_activity_id"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Surrogate id kỹ thuật (ETL merge/upsert + COUNT distinct) — Driving: examination_team_target, grain 1 vụ × 1 đối tượng"
-        source_atomic_table: "examination_team_target"
-        source_atomic_column: "examination_team_target.examination_team_target_id"
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "calendar_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -4853,15 +4766,6 @@ entities:
     modules_using:
       - "TT"
     columns:
-      - logical_name: "Fact Penalty Decision Id"
-        physical_name: "fct_penalty_decision_id"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Surrogate id kỹ thuật (ETL merge/upsert + COUNT distinct) — Driving: penalty_decision, grain 1 row per quyết định xử phạt"
-        source_atomic_table: "penalty_decision"
-        source_atomic_column: "penalty_decision.pd_id"
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "calendar_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -5007,15 +4911,6 @@ entities:
     modules_using:
       - "TT"
     columns:
-      - logical_name: "Fact Penalty Decision Subject Behavior Id"
-        physical_name: "fct_penalty_decision_subject_behavior_id"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Surrogate id kỹ thuật (ETL merge/upsert + COUNT distinct) — Driving: pd_subject_behavior, grain 1 QĐ × 1 đối tượng × 1 hành vi"
-        source_atomic_table: "pd_subject_behavior"
-        source_atomic_column: "pd_subject_behavior.pd_subject_behavior_id"
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "calendar_dt_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -5067,15 +4962,6 @@ entities:
     modules_using:
       - "TT"
     columns:
-      - logical_name: "Fact Penalty Decision Subject Id"
-        physical_name: "fct_penalty_decision_subject_id"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: ""
-        description: "Surrogate id kỹ thuật (ETL merge/upsert + COUNT distinct) — Driving: penalty_decision_subject, grain 1 QĐ × 1 đối tượng"
-        source_atomic_table: "penalty_decision_subject"
-        source_atomic_column: "penalty_decision_subject.pd_subject_id"
       - logical_name: "Calendar Date Dimension Id"
         physical_name: "calendar_dt_dim_id"
         data_domain: "Surrogate Dimension Key"

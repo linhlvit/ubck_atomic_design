@@ -8,9 +8,6 @@
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_activity_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT INSPECTION TEAM ACTIVITY
-    fct_inspection_team_activity_id    String              COMMENT 'Surrogate id kỹ thuật',
-
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)      COMMENT 'Ngày quyết định thanh tra — từ Calendar Date Dimension',
 
@@ -31,9 +28,6 @@ COMMENT 'Flat table — Fact Inspection Team Activity × Calendar Date Dimension
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_activity_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT EXAMINATION TEAM ACTIVITY
-    fct_examination_team_activity_id   String              COMMENT 'Surrogate id kỹ thuật',
-
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                              Nullable(Date)      COMMENT 'Ngày quyết định kiểm tra — từ Calendar Date Dimension',
 
@@ -54,9 +48,6 @@ COMMENT 'Flat table — Fact Examination Team Activity × Calendar Date Dimensio
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_target_activity_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT INSPECTION TEAM TARGET ACTIVITY
-    fct_inspection_team_target_activity_id  String          COMMENT 'Surrogate id kỹ thuật',
-
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                   Nullable(Date)  COMMENT 'Ngày quyết định thanh tra (join qua Inspection Team) — từ Calendar Date Dimension',
 
@@ -81,9 +72,6 @@ COMMENT 'Flat table — Fact Inspection Team Target Activity × Calendar Date Di
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_target_activity_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT EXAMINATION TEAM TARGET ACTIVITY
-    fct_examination_team_target_activity_id  String          COMMENT 'Surrogate id kỹ thuật',
-
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                    Nullable(Date)  COMMENT 'Ngày quyết định kiểm tra (join qua Examination Team) — từ Calendar Date Dimension',
 
@@ -109,7 +97,6 @@ COMMENT 'Flat table — Fact Examination Team Target Activity × Calendar Date D
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT PENALTY DECISION
-    fct_penalty_decision_id             String                      COMMENT 'Surrogate id kỹ thuật',
     total_fine_amt                      Nullable(Decimal(23,2))     COMMENT 'Tổng mức phạt tiền — measure',
 
     -- From: CALENDAR DATE DIMENSION
@@ -129,9 +116,6 @@ COMMENT 'Flat table — Fact Penalty Decision × Calendar Date Dimension × Pena
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_behavior_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT PENALTY DECISION SUBJECT BEHAVIOR
-    fct_penalty_decision_subject_behavior_id  String           COMMENT 'Surrogate id kỹ thuật',
-
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                     Nullable(Date)   COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision Subject → Penalty Decision) — từ Calendar Date Dimension',
 
@@ -157,9 +141,6 @@ COMMENT 'Flat table — Fact Penalty Decision Subject Behavior × Calendar Date 
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT PENALTY DECISION SUBJECT
-    fct_penalty_decision_subject_id      String            COMMENT 'Surrogate id kỹ thuật',
-
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                Nullable(Date)    COMMENT 'Ngày ban hành quyết định xử phạt (join qua Penalty Decision) — từ Calendar Date Dimension',
 

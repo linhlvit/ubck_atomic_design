@@ -447,7 +447,7 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
-**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 8 testcase sau (TC1, TC2, TC2b, TC3, TC4, TC5, TC6, TC7) và báo kết quả:
+**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy 8 testcase sau (TC1, TC2, TC2b, TC3 gồm cả sub-check TC3b, TC4, TC5, TC6, TC7) và báo kết quả:
 
 **TC1 — Số cột khớp HLD:**
 - Đếm số attribute trong file CSV vừa sinh (theo `datamart_attribute` unique, không đếm multi-source row).
@@ -478,6 +478,14 @@ Nếu phát hiện `datamart_column` hoặc `datamart_table` dùng từ viết t
 - Ngoại lệ không cần prefix: literal values, SQL functions (`YEAR(...)`, `COUNT(...)`), NULL, ETL runtime parameter (`{etl_date}`).
 - **Sub-check thứ tự JOIN (bắt buộc):** Với mọi row có `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` mà `etl_logic` chứa từ khóa `JOIN`: kiểm tra `etl_logic` có chứa dấu `→` (hoặc `->`), và toàn bộ JOIN clause phải nằm TRƯỚC dấu `→`, cột giá trị nằm SAU. Vi phạm khi: (a) có `JOIN` nhưng không có `→`/`->`, hoặc (b) cột giá trị xuất hiện trước từ khóa `JOIN` đầu tiên trong chuỗi.
 - Báo: `✅ TC3 PASS` hoặc `❌ TC3 FAIL: [danh sách etl_logic thiếu prefix hoặc sai thứ tự JOIN — ghi rõ loại lỗi]`.
+- Nếu FAIL → sửa trước khi trình bày.
+
+**Sub-check TC3b — Cú pháp `LOOKUP <dim> ON ...` bắt buộc cho mọi lookup FK sang Dimension (bắt buộc):**
+- Bài học thực tế (module QLCB, 2026-07-23): sub-check thứ tự JOIN ở trên chỉ kích hoạt khi `etl_logic` chứa từ khóa `JOIN` — 4/6 file LLD của QLCB dùng dạng `<dim>.<col> WHERE <dim>.<col> = <driving>.<col>` (không có `JOIN` keyword, chỉ có `WHERE`) hoặc multi-hop `INNER JOIN ... WHERE <dim>.<col> = ... → <dim>.<col>` (JOIN đúng thứ tự trước `→`, nhưng hop lookup cuối vẫn dùng `WHERE` thay vì `LOOKUP...ON`) — cả 2 pattern đều PASS sub-check thứ tự JOIN vì không vi phạm quy tắc "JOIN trước, giá trị sau `→`", nhưng vẫn sai format chuẩn. Xem `examples/etl_logic_wrong.md` mục SAI 9.
+- Với mọi row có `etl_logic_type ∈ {lookup_dim, lookup_date}`: kiểm tra hop lookup (không JOIN clause phía trước thì là toàn bộ `etl_logic`; có JOIN clause phía trước thì là phần sau dấu `→`) phải khớp cú pháp `LOOKUP <dim_table> ON <dim_table>.<col> = <table>.<col>` — bắt đầu bằng từ khóa `LOOKUP`, có `ON`, không chứa `WHERE` value-first trong chính hop đó.
+- Vi phạm khi: (a) toàn bộ `etl_logic` là `<dim>.<col> WHERE <dim>.<col> = ...` (thiếu `LOOKUP`, giá trị đặt trước điều kiện); (b) có JOIN clause hợp lệ trước `→` nhưng phần sau `→` là `<dim>.<col>` trần hoặc dùng `WHERE` thay vì `LOOKUP <dim> ON ...`.
+- Khi phát hiện vi phạm (b), kiểm tra thêm: `etl_logic_type` của row đó có đang để `join_atomic` thay vì `lookup_dim`/`lookup_date` không — nếu hop cuối là lookup dimension thì bắt buộc đổi `etl_logic_type` cho khớp.
+- Báo: `✅ TC3b PASS` hoặc `❌ TC3b FAIL: [danh sách attribute thiếu LOOKUP...ON — ghi rõ pattern (a) hay (b), và etl_logic_type có cần đổi không]`.
 - Nếu FAIL → sửa trước khi trình bày.
 
 **TC4 — Lọc src_stm_code đầy đủ:**
@@ -674,7 +682,7 @@ Nếu FAIL → sửa trước khi trình bày.
 - Báo: `✅ TC7 PASS: 0 issue giữa 5 nguồn` hoặc `❌ TC7 FAIL: [danh sách issue theo nguồn]` — phân loại rõ nguồn nào lệch, giá trị nào đúng (anchor = `datamart_attributes.csv`).
 - Nếu FAIL → xác định nguồn đang sai (không phải anchor — anchor luôn đúng vì là nguồn sự thật) → sửa theo Kịch bản C → **đồng thời `grep -rn "tên_cũ" Datamart/hld/DTM_{MODULE}_HLD.md` để rà soát HLD thủ công** (không tự động qua TC7) → chạy lại TC7 → báo kết quả.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 8 TC (TC1, TC2, TC2b, TC3, TC4, TC5, TC6, TC7) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 8 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 
@@ -810,9 +818,9 @@ TC2 — KPI_ID hợp lệ (thuộc HLD, kể cả Chiều và Pending):
 □ KPI_ID xuất hiện trong Detail Mapping nhưng chưa khai sinh trong HLD → DỪNG, báo danh sách, chờ human phê duyệt quyết định trước khi tiếp tục
 □ Báo: ✅ TC2 PASS hoặc ❌ TC2 FAIL: [danh sách kpi_id chưa khai sinh trong HLD]
 
-TC3 — Logic dùng tên logical (không phải snake_case):
-□ Kiểm tra cột `logic`: tên bảng và cột phải là tên logical (ví dụ "Fact Market Risk Snapshot", "Inspection Date") — không phải snake_case (fct_mkt_rsk_snpst, insp_dt)
-□ Báo: ✅ TC3 PASS hoặc ❌ TC3 FAIL: [danh sách kpi_id có logic dùng snake_case]
+TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_name:
+□ Kiểm tra cột `logic`: tên bảng và cột phải là tên physical/snake_case (ví dụ "fct_mkt_rsk_snpst.compliance_score", "cdr_dt_dim.cdr_dt") — không phải tên logical ("Fact Market Risk Snapshot", "Inspection Date")
+□ Báo: ✅ TC3 PASS hoặc ❌ TC3 FAIL: [danh sách kpi_id có logic dùng tên logical thay vì physical]
 □ Nếu FAIL → sửa trước khi trình bày
 
 TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml:
@@ -893,8 +901,9 @@ FILE 01 (CREATE):
 □ Số bảng CREATE = số fact + số operational
 □ Naming fact flat: datamart.{module}_{datamart_table}_flat
 □ Naming operational flat: datamart.{module}_{datamart_table}_flat (có module prefix — giống fact)
-□ Thứ tự cột: fact columns → Calendar Date columns → dim columns → technical metadata
-□ Operational: chỉ operational columns → technical metadata (không có Calendar Date, không có dim)
+□ Thứ tự cột: fact columns → Calendar Date columns → dim columns
+□ Operational: chỉ operational columns (không có Calendar Date, không có dim)
+□ Không có technical metadata (ds_batch_date, ds_population_timestamp) trong flat table
 □ Data type dùng ClickHouse types (Nullable wrapper theo nullable=true/false trong Attributes)
 □ Calendar Date: chỉ lấy cột cdr_dt (có thể alias theo vai trò: snpst_cdr_dt, issue_cdr_dt, event_cdr_dt)
 □ Cột fact/operational: lấy ĐÚNG các cột có trong Attributes.csv — không thêm, không bớt
@@ -908,12 +917,11 @@ FILE 01 (CREATE):
 FILE 02 (POPULATE):
 □ Số TRUNCATE + INSERT block = số bảng trong file 01
 □ SELECT list đủ cột, đúng thứ tự khớp với CREATE TABLE
-□ Đếm cột SELECT = đếm cột CREATE (kể cả ds_batch_date, ds_population_timestamp)
+□ Đếm cột SELECT = đếm cột CREATE
 □ Tên bảng nguồn fact: datamart.{module}_{datamart_table} (có prefix module)
 □ Tên bảng nguồn operational: datamart.{datamart_table} (không có prefix module)
 □ Calendar Date join: datamart.{module}_calendar_date_dimension / date_dimension_id = f.{fk_col}
 □ Dim join: alias rõ ràng, ON {dim_pk} = f.{fk_col}
-□ today() AS ds_batch_date, now() AS ds_population_timestamp
 □ Operational: không có LEFT JOIN nào
 
 POST-CHECK (sau khi sinh):

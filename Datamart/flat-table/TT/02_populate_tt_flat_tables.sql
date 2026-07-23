@@ -9,7 +9,6 @@
 TRUNCATE TABLE IF EXISTS datamart.tt_fct_inspection_team_activity_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.tt_fct_inspection_team_activity_flat
 SELECT
-    f.fct_inspection_team_activity_id,
     cal.cdr_dt                          AS cdr_dt,
     dim.inspection_team_code,
     dim.start_dt,
@@ -28,7 +27,6 @@ JOIN datamart.inspection_team_dim dim
 TRUNCATE TABLE IF EXISTS datamart.tt_fct_examination_team_activity_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.tt_fct_examination_team_activity_flat
 SELECT
-    f.fct_examination_team_activity_id,
     cal.cdr_dt                          AS cdr_dt,
     dim.examination_team_code,
     dim.start_dt,
@@ -47,7 +45,6 @@ JOIN datamart.examination_team_dim dim
 TRUNCATE TABLE IF EXISTS datamart.tt_fct_inspection_team_target_activity_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.tt_fct_inspection_team_target_activity_flat
 SELECT
-    f.fct_inspection_team_target_activity_id,
     cal.cdr_dt                          AS cdr_dt,
     target_dim.inspection_team_target_code,
     target_dim.target_tp_code,
@@ -70,7 +67,6 @@ JOIN datamart.inspection_team_dim team_dim
 TRUNCATE TABLE IF EXISTS datamart.tt_fct_examination_team_target_activity_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.tt_fct_examination_team_target_activity_flat
 SELECT
-    f.fct_examination_team_target_activity_id,
     cal.cdr_dt                          AS cdr_dt,
     target_dim.examination_team_target_code,
     target_dim.target_tp_code,
@@ -93,7 +89,6 @@ JOIN datamart.examination_team_dim team_dim
 TRUNCATE TABLE IF EXISTS datamart.tt_fct_penalty_decision_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.tt_fct_penalty_decision_flat
 SELECT
-    f.fct_penalty_decision_id,
     f.total_fine_amt,
     cal.cdr_dt                          AS cdr_dt,
     dim.penalty_decision_code
@@ -110,7 +105,6 @@ JOIN datamart.penalty_decision_dim dim
 TRUNCATE TABLE IF EXISTS datamart.tt_fct_penalty_decision_subject_behavior_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.tt_fct_penalty_decision_subject_behavior_flat
 SELECT
-    f.fct_penalty_decision_subject_behavior_id,
     cal.cdr_dt                          AS cdr_dt,
     behavior_dim.penalty_decision_subject_behavior_code,
     behavior_dim.violation_behavior_nm,
@@ -134,7 +128,6 @@ JOIN datamart.penalty_decision_subject_dim subject_dim
 TRUNCATE TABLE IF EXISTS datamart.tt_fct_penalty_decision_subject_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.tt_fct_penalty_decision_subject_flat
 SELECT
-    f.fct_penalty_decision_subject_id,
     cal.cdr_dt                          AS cdr_dt,
     subject_dim.penalty_decision_subject_code,
     subject_dim.subject_tp_code,

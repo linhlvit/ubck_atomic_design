@@ -167,3 +167,43 @@ etl_logic      = INNER JOIN penalty_decision_subject ON penalty_decision_subject
 **Vấn đề:** Mọi `etl_logic_type ∈ {join_atomic, lookup_dim, lookup_date}` có JOIN clause phải theo đúng thứ tự: **(1) JOIN clause(s) trước, theo đúng thứ tự hop; (2) dấu `→`; (3) cột giá trị cuối cùng sau `→`**. Đây không phải khác biệt văn phong — đọc ngược thứ tự khiến ETL developer dễ nhầm bảng nguồn của điều kiện JOIN với bảng nguồn của giá trị trả về, đặc biệt khi có multi-hop.
 
 **Vấn đề:** LEFT JOIN → bảng con có thể không có record → cột phải nullable.
+
+---
+
+## SAI 9 — `lookup_dim`/`lookup_date` thiếu từ khóa `LOOKUP...ON`, dùng `WHERE` value-first hoặc `WHERE` sau `→`
+
+```
+❌ Sai (bài học module QLCB, 2026-07-23 — không có JOIN keyword nên sub-check thứ tự JOIN cũ không bắt được):
+etl_logic_type = lookup_dim
+etl_logic      = public_company_dim.public_company_dim_id WHERE public_company_dim.public_company_code = pc_securities_offering.pc_code
+
+Vấn đề: không có JOIN keyword nên nhìn qua tưởng "hợp lệ" (không vi phạm thứ tự JOIN), nhưng đây
+vẫn là lookup FK sang Dimension — thiếu từ khóa LOOKUP, và cột giá trị (public_company_dim_id) bị
+đặt TRƯỚC điều kiện WHERE thay vì dùng cú pháp LOOKUP...ON chuẩn.
+
+✅ Đúng:
+etl_logic_type = lookup_dim
+etl_logic      = LOOKUP public_company_dim ON public_company_dim.public_company_code = pc_securities_offering.pc_code
+```
+
+```
+❌ Sai — multi-hop: JOIN clause đúng thứ tự (trước dấu →), nhưng hop lookup CUỐI (sau →) lại dùng
+WHERE thay vì LOOKUP...ON (bài học module QLCB, 2026-07-23):
+etl_logic_type = join_atomic
+etl_logic      = INNER JOIN pc_securities_offering ON pc_securities_offering.pc_securities_offering_id = pc_securities_offering_result.pc_securities_offering_id
+                 WHERE cdr_dt_dim.cdr_dt = pc_securities_offering.official_letter_dt
+                 → cdr_dt_dim.cdr_dt_dim_id
+
+Vấn đề: sub-check thứ tự JOIN cũ chỉ kiểm tra "JOIN nằm trước →" — pattern này PASS check đó vì
+JOIN đúng thứ tự, nhưng phần lookup dimension cuối cùng (cdr_dt_dim) vẫn viết dạng WHERE value-first
+thay vì LOOKUP...ON. Đồng thời etl_logic_type sai — hop cuối là lookup dimension nên phải là
+lookup_date, không phải join_atomic.
+
+✅ Đúng:
+etl_logic_type = lookup_date
+etl_logic      = INNER JOIN pc_securities_offering ON pc_securities_offering.pc_securities_offering_id = pc_securities_offering_result.pc_securities_offering_id
+                 AND pc_securities_offering.src_stm_code = 'IDS_SECURITIES_OFFERING'
+                 → LOOKUP cdr_dt_dim ON cdr_dt_dim.cdr_dt = pc_securities_offering.official_letter_dt
+```
+
+**Vấn đề:** `LOOKUP <dim> ON <dim>.<col> = <driving_or_joined_table>.<col>` là cú pháp bắt buộc cho MỌI lookup FK sang Dimension (`lookup_dim`/`lookup_date`) — kể cả khi không có JOIN clause phía trước (lookup trực tiếp từ driving table) lẫn khi có multi-hop JOIN phía trước (hop lookup luôn là hop cuối, ngay sau dấu `→`). Viết dạng `<dim>.<col> WHERE ...` (value-first, thiếu `LOOKUP`) hoặc `→ WHERE ...` (thiếu `LOOKUP...ON` ở hop cuối) đều sai format, kể cả khi không vi phạm sub-check thứ tự JOIN (vì bản thân không chứa `JOIN` keyword — chỉ chứa `WHERE`). Đồng thời khi hop cuối là lookup dimension, `etl_logic_type` phải phản ánh đúng (`lookup_dim`/`lookup_date`), không dùng `join_atomic`.

@@ -43,8 +43,6 @@ Cụm Tác nghiệp (không có Fact) → không cần Calendar Date Dimension.
 ```
 ### Tab [Tên tab]
 #### Nhóm {STT} - [Tên nhóm]
-##### READY (chỉ hiện khi Nhóm có cả READY lẫn PENDING)
-##### PENDING (chỉ hiện khi Nhóm có cả READY lẫn PENDING)
 ```
 
 **Quy tắc đặt tên từ cột "Dashboard/báo cáo" trong BA:**
@@ -58,25 +56,28 @@ Cụm Tác nghiệp (không có Fact) → không cần Calendar Date Dimension.
 | `Dashboard Giám sát rủi ro/ Phân tích đóng góp rủi ro` | 2 | (đã có Tab) | `#### Nhóm 2 - Phân tích đóng góp rủi ro` |
 | `Dashboard Sức khỏe thị trường và vĩ mô/ Chỉ số vĩ mô – tiền tệ` | 4 | `### Tab Dashboard Sức khỏe thị trường và vĩ mô` | `#### Nhóm 4 - Chỉ số vĩ mô – tiền tệ` |
 
-Nếu Nhóm chỉ có READY hoặc chỉ có PENDING → không cần header `##### READY` / `##### PENDING`.
+> ⚠️ **KHÔNG tách header con `##### READY` / `##### PENDING` bên trong 1 Nhóm.** Mỗi Nhóm chỉ có **1 bảng KPI duy nhất**, chứa cả dòng READY lẫn dòng PENDING, phân biệt bằng cột `Trạng thái`. Đây áp dụng cho MỌI Nhóm — kể cả Nhóm 100% PENDING hoặc 100% READY vẫn dùng đúng 1 format bảng KPI này (không có "2 loại block" khác nhau về cấu trúc cột).
 
-### Block READY — thứ tự bắt buộc
+### Block Nhóm — thứ tự bắt buộc
 
 ```markdown
 > Phân loại: **Phân tích** hoặc **Tác nghiệp**
-> Atomic: `<Entity>` ← SOURCE.table — **READY**
+> Atomic: `<Entity>` ← SOURCE.table — **READY** / **PENDING**
 
 **Mockup:** <markdown table hoặc ASCII>
 
-**Source:** `<Fact>` → `<Dim1>`, `<Dim2>`
+**Source:** `<Fact>` → `<Dim1>`, `<Dim2>` *(bỏ qua nếu toàn bộ Nhóm PENDING — chưa có Fact/Dim thật)*
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú |
-|---|---|---|---|---|---|
-| K_{MODULE}_N | ... | ... | Cơ sở / Phái sinh / Chiều | ... | *(để trống nếu KPI mới; điền "Reuse từ Nhóm X" nếu reuse)* |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_{MODULE}_N | ... | ... | Cơ sở / Phái sinh / Chiều | ... | *(để trống nếu KPI mới; "Reuse từ Nhóm X" nếu reuse)* | READY |
+| K_{MODULE}_M | ... | — | Cơ sở / Phái sinh / Chiều | *(để trống hoặc ghi "TBD — chờ Atomic")* | **Lý do pending:** [...]. **Atomic cần bổ sung:** [...]. **Mart dự kiến:** [tên bảng] — grain: [...] | PENDING |
 
-> ⚠️ **1 bảng duy nhất cho cả KPI mới lẫn reuse** — KHÔNG tách thành `*KPI mới:*` / `*KPI reuse:*` riêng biệt.
+> ⚠️ **1 bảng KPI duy nhất cho cả Nhóm** — không tách theo trạng thái, không tách `*KPI mới:*` / `*KPI reuse:*` riêng biệt. Mọi dòng KPI của Nhóm (mới, reuse, READY, PENDING) nằm chung 1 bảng 7 cột.
+> ⚠️ **Đơn vị/Công thức của dòng PENDING:** để trống hoặc ghi "TBD — chờ Atomic" — không bịa công thức khi chưa xác nhận nguồn.
+> ⚠️ **Cột Ghi chú của dòng PENDING chứa toàn bộ nội dung trước đây nằm ở block PENDING riêng:** Lý do pending (bắt buộc), Atomic cần bổ sung (bắt buộc), Mart dự kiến — chỉ tên bảng + grain (bắt buộc). Viết súc tích, mỗi phần 1 câu.
 
 **Star Schema:**
 
@@ -85,6 +86,8 @@ erDiagram
     ...
 ```
 
+> Chỉ vẽ nếu Nhóm có ít nhất 1 dòng READY. Nhóm 100% PENDING → bỏ qua Star Schema/erDiagram hoàn toàn.
+
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
@@ -92,9 +95,11 @@ flowchart LR
     ...
 ```
 
+> Chỉ vẽ nếu Nhóm có ít nhất 1 dòng READY — cùng điều kiện với Star Schema.
+>
 > ⚠️ **Chỉ vẽ từ GOLD (Datamart) lên báo cáo** — KHÔNG vẽ Atomic entities (SIL layer) trong flowchart này. Node bắt đầu phải là bảng Fact/Dim/Operational thuộc GOLD layer.
 >
-> ⚠️ **Gộp 1 report node duy nhất cho toàn bộ Nhóm** — KHÔNG tách report node riêng theo từng Chiều/KPI/measure. Node báo cáo ghi dạng `"K_{MODULE}_N-M,X,Y: {Tên Nhóm ngắn gọn}"` (liệt kê dải/danh sách KPI ID trong cùng 1 node), không phải 1 node cho measure + 1 node riêng cho mỗi Chiều.
+> ⚠️ **Gộp 1 report node duy nhất cho toàn bộ Nhóm** — KHÔNG tách report node riêng theo từng Chiều/KPI/measure. Node báo cáo ghi dạng `"K_{MODULE}_N-M,X,Y: {Tên Nhóm ngắn gọn}"` (liệt kê dải/danh sách KPI ID trong cùng 1 node, chỉ liệt kê KPI READY — không đưa ID PENDING vào node báo cáo vì chưa có dữ liệu thật để lên báo cáo), không phải 1 node cho measure + 1 node riêng cho mỗi Chiều.
 
 ```
 ✅ Đúng:
@@ -121,59 +126,43 @@ D3 --> R3
 | ... | ... |
 ```
 
-**Bảng grain** liệt kê TẤT CẢ bảng tham gia Star Schema (Fact + mọi Dimension).
+**Bảng grain** liệt kê TẤT CẢ bảng tham gia Star Schema (Fact + mọi Dimension). Bỏ qua nếu Nhóm 100% PENDING.
 
-### Block PENDING — thứ tự bắt buộc
+**Bảng mapping nguồn (Atomic Placeholder)** — chỉ thêm khi Nhóm có ít nhất 1 dòng PENDING, đặt ngay sau Bảng grain (hoặc ngay sau Bảng KPI nếu Nhóm 100% PENDING không có Bảng grain):
 
 ```markdown
-**KPI liên quan:** K_{MODULE}_N (mới); K_{MODULE}_X, K_{MODULE}_Y (reuse từ Nhóm M)
-
-**Lý do pending:** [Mô tả ngắn lý do Atomic chưa sẵn sàng]
-
-**Atomic cần bổ sung:** [Tên entity Atomic cần thiết kế/hoàn thiện]
-
-**Mart dự kiến:**
-- [Tên bảng] — grain: [mô tả grain dự kiến]
-
 **Bảng mapping nguồn (Atomic Placeholder):**
 
 | Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
 | [Tên KPI] | [SOURCE.table từ cột Bảng nguồn BA] | [Tên logical entity Atomic] | [tên_vật_lý_dự_kiến] |
-
-**Bảng KPI PENDING:**
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_{MODULE}_N | ... | Cơ sở / Phái sinh / Chiều | PENDING |
-| K_{MODULE}_X | ... (reuse từ Nhóm M) | Cơ sở / Phái sinh | PENDING |
 ```
-
-> ⚠️ **KPI reuse trong PENDING thêm vào bảng 4 cột bình thường** — KHÔNG tách thành bảng reuse riêng. Cột Tên KPI ghi thêm "(reuse từ Nhóm M)" để phân biệt nguồn gốc.
 
 **Hướng dẫn điền Bảng mapping nguồn (Atomic Placeholder):**
 - `Bảng nguồn (BA)`: chép trực tiếp từ cột **Bảng nguồn** của BA file (ví dụ: `MDDS.IDXInfor`, `QLRR.risk_indicator_value`)
 - `Atomic entity dự kiến`: tên logical entity Atomic dự kiến sẽ được tạo (ví dụ: `Market Index Snapshot`)
 - `Atomic table dự kiến`: tên vật lý snake_case dự kiến (ví dụ: `mdds_mkt_idx_snpst`) — có thể để `TBD` nếu chưa xác định
 - Mỗi dòng = 1 Atomic entity riêng biệt (không gộp nhiều entity vào 1 dòng)
-- Bảng này là **thông tin thiết kế tham chiếu** — khi Atomic bổ sung entity, người thiết kế tra bảng này để verify tên table thực tế rồi chuyển block sang READY, không cần đọc lại BA
+- Chỉ liệt kê các KPI đang PENDING trong bảng KPI chung ở trên — không lặp lại KPI READY
+- Bảng này là **thông tin thiết kế tham chiếu** — khi Atomic bổ sung entity, người thiết kế tra bảng này để verify tên table thực tế rồi đổi cột Trạng thái dòng đó sang READY trong bảng KPI, không cần đọc lại BA
 
-❌ Bảng KPI PENDING chỉ có **4 cột** — KHÔNG có Đơn vị, Công thức.
-❌ KHÔNG thiết kế Star Schema, erDiagram, Lineage cho block PENDING.
-❌ KHÔNG tạo Open Issue về grain/schema/logic cho bảng PENDING — chỉ issue xác nhận thiếu Atomic.
+❌ KHÔNG thiết kế Star Schema, erDiagram, Lineage cho dòng/Nhóm PENDING.
+❌ KHÔNG tạo Open Issue về grain/schema/logic cho KPI PENDING — chỉ issue xác nhận thiếu Atomic.
 
-**Quy tắc "KPI liên quan" trong PENDING header:**
-- Liệt kê đúng và đủ các ID thực sự xuất hiện trong bảng KPI bên dưới (cả mới lẫn reuse)
-- Sau khi sửa bảng KPI → cập nhật dòng này ngay, không để lệch
+**Quy tắc đồng bộ khi 1 KPI chuyển PENDING → READY:**
+- Đổi cột Trạng thái của dòng đó từ `PENDING` sang `READY` ngay trong bảng KPI hiện có — KHÔNG tạo dòng mới, KHÔNG tạo bảng mới.
+- Điền đủ Đơn vị/Công thức thật, xóa nội dung "Lý do pending/Atomic cần bổ sung/Mart dự kiến" khỏi cột Ghi chú (thay bằng ghi chú nghiệp vụ thật nếu cần).
+- Xóa dòng KPI đó khỏi Bảng mapping nguồn (Atomic Placeholder) nếu bảng đó chỉ còn KPI đã READY.
+- Bổ sung Star Schema/Lineage/Bảng grain nếu Nhóm trước đó 100% PENDING (chưa có, giờ cần vẽ mới) hoặc mở rộng Star Schema hiện có nếu Nhóm đã có phần READY khác.
 
 **Pattern: Nhóm lặp lại cùng cấu trúc KPI (VD: HĐTL VN30 / VN100 / TPCP):**
 - Nhóm đầu tiên → khai sinh KPI ID mới đầy đủ
-- Nhóm tiếp theo cùng cấu trúc → block PENDING chỉ chứa bảng reuse, KHÔNG cấp ID mới
-- Mart dự kiến ghi "(reuse)" để rõ không tạo Fact mới
+- Nhóm tiếp theo cùng cấu trúc → dòng KPI PENDING trong bảng chung, KHÔNG cấp ID mới
+- Cột Ghi chú ghi "Mart dự kiến (reuse)" để rõ không tạo Fact mới
 - Lý do pending và Atomic cần bổ sung ghi ngắn "xem Nhóm [tên nhóm đầu tiên]"
 
 **Pattern: Nhóm READY reuse toàn bộ Fact/KPI từ Nhóm khác (VD: Data Explorer reuse Fact chấm điểm gốc):**
-- **Bảng KPI vẫn bắt buộc đầy đủ** — liệt kê lại toàn bộ KPI_ID reuse với đủ 6 cột (KPI ID | Tên KPI | Đơn vị | Tính chất | Atomic Entity/Table/Attribute/Column | Ghi chú "Reuse từ Nhóm X"). KHÔNG được thay bằng 1 dòng văn xuôi "KPI liên quan: liệt kê ID" — đây là căn cứ duy nhất để trace KPI Done trong BA → KPI_ID trong HLD ở Lớp 1 review.
+- **Bảng KPI vẫn bắt buộc đầy đủ** — liệt kê lại toàn bộ KPI_ID reuse với đủ 7 cột (KPI ID | Tên KPI | Đơn vị | Tính chất | Atomic Entity/Table/Attribute/Column | Ghi chú "Reuse từ Nhóm X" | Trạng thái). KHÔNG được thay bằng 1 dòng văn xuôi "KPI liên quan: liệt kê ID" — đây là căn cứ duy nhất để trace KPI Done trong BA → KPI_ID trong HLD ở Lớp 1 review.
 - Chỉ **Star Schema / Lineage / Bảng grain** được phép rút gọn thành "giống Nhóm X" khi Fact/Dim dùng chung 100% với Nhóm gốc — không cần vẽ lại mermaid.
 - Mockup/Source có thể refer ngắn gọn nếu giao diện Data Explorer chỉ là bảng dữ liệu thô (không có chart riêng).
 
