@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_fms_event_type-FMS.EVENT_TYPE
+  logical_name: Classification FMS Event Type
+  physical_name: cl_fms_event_type
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Event Type"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Danh mục loại sự vụ báo cáo/CBTT của thành viên thị trường FMS. Promote từ Classification Value (scheme FMS_EVENT_TYPE, nay deprecated) lên entity riêng — không dùng chung với Classification Event Type của SCMS do cấu trúc khác biệt (METADATA/BUSINESS_RULE_CONFIG đặc thù FMS).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-EVENT_TYPE
+
+attributes:
+  - name: Classification FMS Event Type Id
+    physical_name: cl_fms_event_type_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự vụ báo cáo/CBTT của thành viên thị trường FMS."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Classification FMS Event Type Code
+    physical_name: cl_fms_event_type_code
+    business_meaning: Mã sự vụ duy nhất (do hệ thống hoặc người dùng định nghĩa). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.EVENT_CODE
+    comment: BK chính — mã nghiệp vụ EVENT_CODE (không dùng ID kỹ thuật).
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: FMS.EVENT_TYPE
+
+  - name: Classification FMS Event Type Name
+    physical_name: cl_fms_event_type_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.ITEM_NAME
+    comment: null
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Event Category Description
+    physical_name: event_category_description
+    business_meaning: "Danh mục phân nhóm sự vụ (VD: CBTT_CONG_TY_QLQ, CBTT_QUY_DAU_TU...)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.CATEGORY
+    comment: "Denormalized text — chưa xác nhận enum đóng hay mở, cần profile dữ liệu thực tế trước khi cân nhắc chuyển sang Classification Value."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Event Category Type Code
+    physical_name: event_category_tp_code
+    business_meaning: "Phân loại sự vụ: DINH_KY=Định kỳ, BAT_THUONG=Bất thường, THEO_YEU_CAU=Theo yêu cầu, KHAC=Khác."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.EVENT_CATEGORY
+    comment: "Scheme: FMS_EVENT_CATEGORY_TYPE."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: "DINH_KY=PERIODIC;BAT_THUONG=IRREGULAR;THEO_YEU_CAU=ON_REQUEST;KHAC=OTHER"
+
+  - name: Obligation Type Code
+    physical_name: obligation_tp_code
+    business_meaning: "Nghĩa vụ: CHI_BAO_CAO=Chỉ báo cáo, CHI_CBTT=Chỉ CBTT, BAO_CAO_VA_CBTT=Cả hai, THAY_DOI=Thay đổi hồ sơ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.OBLIGATION_TYPE
+    comment: "Scheme: FMS_EVENT_OBLIGATION_TYPE."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: "CHI_BAO_CAO=REPORT_ONLY;CHI_CBTT=DISCLOSURE_ONLY;BAO_CAO_VA_CBTT=REPORT_AND_DISCLOSURE;THAY_DOI=PROFILE_CHANGE"
+
+  - name: Deadline Calc Method Code
+    physical_name: deadline_calc_method_code
+    business_meaning: "Cách tính thời hạn nộp: DINH_KY=Định kỳ cố định, SU_KIEN=Tính từ sự kiện phát sinh."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.DEADLINE_CALC_METHOD
+    comment: "Scheme: FMS_EVENT_DEADLINE_CALC_METHOD."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: "DINH_KY=FIXED_PERIODIC;SU_KIEN=EVENT_BASED"
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.NOTE
+    comment: null
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Metadata Config
+    physical_name: metadata_config
+    business_meaning: "Metadata bổ sung của sự vụ (JSON CLOB: cấu hình form, tham số riêng)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.METADATA
+    comment: "Nguồn lưu dạng CLOB (JSON) — ETL cần cast/parse sang string. Không structured-parse nội dung JSON ở Atomic layer."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Business Rule Config
+    physical_name: business_rule_config
+    business_meaning: "Cấu hình nghiệp vụ bổ sung của sự vụ: điều kiện áp dụng, biểu mẫu, lịch gửi, tham số (JSON CLOB)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.BUSINESS_RULE_CONFIG
+    comment: "Nguồn lưu dạng CLOB (JSON) — ETL cần cast/parse sang string. Không structured-parse nội dung JSON ở Atomic layer."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: null
+
+  - name: Event Type Record Status Code
+    physical_name: event_tp_record_status_code
+    business_meaning: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: EVENT_TYPE
+    source_column: FMS.EVENT_TYPE.RECORD_STATUS
+    comment: "Scheme: FMS_EVENT_TYPE_RECORD_STATUS. ETL derived: 1=ACTIVE;0=INACTIVE."
+    classification_context: "Source System Code = 'FMS_EVENT_TYPE'"
+    etl_derived_value: "1=ACTIVE;0=INACTIVE"

@@ -116,7 +116,7 @@ attributes:
 - attribute_name: "Founder Shareholder Indicator"
   physical_name: "founder_shareholder_indicator"
   description: "Là cổ đông sáng lập."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -125,7 +125,7 @@ attributes:
   comment: "Encoding nguồn: 1 = Có, 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Founder Shareholder Active Date"
   physical_name: "founder_shareholder_active_dt"
   description: "Ngày hoạt động của cổ đông sáng lập."
@@ -155,7 +155,7 @@ attributes:
 - attribute_name: "Major Shareholder Indicator"
   physical_name: "major_shareholder_indicator"
   description: "Là cổ đông lớn."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -164,7 +164,7 @@ attributes:
   comment: "Encoding nguồn: 1 = Có, 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Major Shareholder Active Date"
   physical_name: "major_shareholder_active_dt"
   description: "Ngày hoạt động của cổ đông lớn."
@@ -194,7 +194,7 @@ attributes:
 - attribute_name: "Strategic Shareholder Indicator"
   physical_name: "strategic_shareholder_indicator"
   description: "Là cổ đông chiến lược."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -203,7 +203,7 @@ attributes:
   comment: "Encoding nguồn: 1 = CDCL (cổ đông chiến lược), 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Strategic Shareholder Active Date"
   physical_name: "strategic_shareholder_active_dt"
   description: "Ngày bắt đầu là cổ đông chiến lược."
@@ -233,7 +233,7 @@ attributes:
 - attribute_name: "Insider Shareholder Indicator"
   physical_name: "insider_shareholder_indicator"
   description: "Là cổ đông nội bộ."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -242,7 +242,7 @@ attributes:
   comment: "Encoding nguồn: 1 = Có, 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Insider Shareholder Active Date"
   physical_name: "insider_shareholder_active_dt"
   description: "Ngày hoạt động của cổ đông nội bộ."
@@ -274,7 +274,7 @@ attributes:
 - attribute_name: "Government Shareholder Indicator"
   physical_name: "government_shareholder_indicator"
   description: "Là cổ đông nhà nước."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -283,7 +283,7 @@ attributes:
   comment: "Encoding nguồn: 1 = CDNN (cổ đông nhà nước), 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Government Shareholder Active Date"
   physical_name: "government_shareholder_active_dt"
   description: "Ngày hoạt động của cổ đông nhà nước."
@@ -313,7 +313,7 @@ attributes:
 - attribute_name: "Related Shareholder Indicator"
   physical_name: "related_shareholder_indicator"
   description: "Là cổ đông liên quan."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -322,7 +322,7 @@ attributes:
   comment: "Encoding nguồn: 1 = Có, 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Related Shareholder Active Date"
   physical_name: "related_shareholder_active_dt"
   description: "Ngày hoạt động của cổ đông liên quan."
@@ -352,7 +352,7 @@ attributes:
 - attribute_name: "Other Shareholder Indicator"
   physical_name: "other_shareholder_indicator"
   description: "Cổ đông khác (không thuộc các nhóm phân loại chuẩn)."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -361,7 +361,7 @@ attributes:
   comment: "Encoding nguồn: 1 = Có, 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Other Shareholder Active Date"
   physical_name: "other_shareholder_active_dt"
   description: "Ngày bắt đầu là cổ đông khác."
@@ -458,7 +458,7 @@ attributes:
 - attribute_name: "Approval Indicator"
   physical_name: "approval_indicator"
   description: "Trạng thái phê duyệt thông tin cổ đông."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -467,7 +467,7 @@ attributes:
   comment: "Encoding nguồn: 0 = Chưa duyệt, 1 = Đã duyệt."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Data Source Code"
   physical_name: "data_src_code"
   description: "Nguồn cập nhật dữ liệu cổ đông (trung tâm lưu ký hay thủ công)."
@@ -498,7 +498,7 @@ attributes:
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Đánh dấu xóa mềm."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -507,4 +507,4 @@ attributes:
   comment: "Encoding nguồn: 1 = Xóa, 0 = Không xóa."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"

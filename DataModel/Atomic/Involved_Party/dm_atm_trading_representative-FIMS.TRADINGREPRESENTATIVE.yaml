@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-trading_representative-FIMS.TRADINGREPRESENTATIVE
+  logical_name: Trading Representative
+  physical_name: trading_representative
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Registered Representative"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Cá nhân đại diện giao dịch cho nhà đầu tư nước ngoài tại công ty chứng khoán. Ghi nhận thông tin nhân thân, quốc tịch, địa chỉ, liên lạc và trạng thái hoạt động. Được tham chiếu từ Member Periodic Report và Trading Authorization.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-TRADINGREPRESENTATIVE
+
+attributes:
+  - name: Trading Representative Id
+    physical_name: trading_representative_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Registered Representative\". Cá nhân đại diện giao dịch cho NĐT NN tại công ty chứng khoán. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE', ID)."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Trading Representative Code
+    physical_name: trading_representative_code
+    business_meaning: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt, dùng PK kỹ thuật làm BK duy nhất."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.ID
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: FIMS.TRADINGREPRESENTATIVE
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Họ và tên đầy đủ của đại diện giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.FULLNAME
+    comment: null
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Gender Code
+    physical_name: gender_code
+    business_meaning: "Giới tính: 1=Nam, 2=Nữ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.SEX
+    comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — dùng chung scheme đăng ký ở lld_FIMS_INVESTOR.yaml."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Date of Birth
+    physical_name: dt_of_birth
+    business_meaning: Ngày sinh của đại diện giao dịch.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.DATEOFBIRTH
+    comment: null
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: FK đến Geographic Area (quốc tịch của đại diện giao dịch).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.NAID
+    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (FIMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NAID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo FIMS.NATIONAL. Cần crosswalk nếu FIMS không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.NAID
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Activity Status Code
+    physical_name: activity_status_code
+    business_meaning: Trạng thái hoạt động của đại diện giao dịch.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.STATUSID
+    comment: "Scheme: FIMS_ACTIVITY_STATUS."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả/ghi chú về đại diện giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
+    etl_derived_value: null

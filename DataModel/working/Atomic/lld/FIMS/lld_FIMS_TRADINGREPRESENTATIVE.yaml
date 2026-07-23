@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Registered Representative"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -101,7 +101,7 @@ attributes:
   data_type: "date"
 - attribute_name: "Nationality Id"
   physical_name: "nationality_id"
-  description: "FK -> NATIONAL: Quốc tịch của đại diện giao dịch."
+  description: "FK đến Geographic Area (quốc tịch của đại diện giao dịch)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
@@ -153,60 +153,6 @@ attributes:
   source_columns:
   - "FIMS.TRADINGREPRESENTATIVE.DESCRIPTION"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.DATECREATED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Name"
-  physical_name: "created_by_user_nm"
-  description: "Tài khoản người dùng tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.CREATEDBY"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.DATEMODIFIED"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated By User Name"
-  physical_name: "updated_by_user_nm"
-  description: "Tài khoản người dùng cập nhật lần cuối."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.MODIFYBY"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

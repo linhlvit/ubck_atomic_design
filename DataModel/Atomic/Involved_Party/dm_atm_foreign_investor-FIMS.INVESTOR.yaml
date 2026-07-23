@@ -1,0 +1,387 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-foreign_investor-FIMS.INVESTOR
+  logical_name: Foreign Investor
+  physical_name: foreign_investor
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Nhà đầu tư nước ngoài (cá nhân và tổ chức) được UBCKNN quản lý tại Việt Nam. Ghi nhận loại đối tượng (cá nhân/tổ chức), mã giao dịch VSDC, thông tin nhân thân/doanh nghiệp, tài khoản lưu ký và trạng thái hoạt động. Tách IP Postal Address + IP Electronic Address + IP Alt Identification (bổ sung 2026-07-19 khi thiết kế LLD).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-INVESTOR
+
+attributes:
+  - name: Foreign Investor Id
+    physical_name: foreign_investor_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS.INVESTOR', TransactionCode)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Code
+    physical_name: foreign_investor_code
+    business_meaning: Mã số giao dịch của NĐT NN do VSDC cấp. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.TransactionCode
+    comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (nguồn không khai báo ràng buộc)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: FIMS.INVESTOR
+
+  - name: Investor Object Type Code
+    physical_name: investor_object_tp_code
+    business_meaning: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.ObjectType
+    comment: "Scheme: FIMS_STOCKHOLDER_TYPE. Nguồn lưu dạng số — ETL cần convert sang string code."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên đầy đủ (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.Name
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: English Name
+    physical_name: english_nm
+    business_meaning: Tên tiếng Anh.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.EName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Gender Code
+    physical_name: gender_code
+    business_meaning: "Giới tính: 1=Nam, 2=Nữ."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.Sex
+    comment: "Scheme: FIMS_GENDER. [PROPOSE NEW SCHEME] — chưa có trong HLD 6d, đăng ký bổ sung cùng lượt LLD này. Chỉ áp dụng NĐT cá nhân (ObjectType=1)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Date of Birth
+    physical_name: dt_of_birth
+    business_meaning: Ngày sinh (với NĐT cá nhân).
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.DateOfBirth
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Nationality Id
+    physical_name: nationality_id
+    business_meaning: FK đến Geographic Area (quốc tịch).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.NaId
+    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (FIMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NaId với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo FIMS.NATIONAL. Cần crosswalk nếu FIMS không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Nationality Code
+    physical_name: nationality_code
+    business_meaning: Mã quốc gia/quốc tịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.NaId
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Nationality Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Business Registration Number
+    physical_name: business_registration_nbr
+    business_meaning: Số đăng ký kinh doanh/mã số doanh nghiệp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.BusinessNumber
+    comment: "Chỉ áp dụng NĐT tổ chức (ObjectType=2)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Director Full Name
+    physical_name: director_full_nm
+    business_meaning: Họ tên Giám đốc/Tổng giám đốc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.Director
+    comment: "Denormalized — không có FK, chỉ áp dụng NĐT tổ chức."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Investor Type Code
+    physical_name: investor_tp_code
+    business_meaning: Loại nhà đầu tư nước ngoài.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.InvestorTypeId
+    comment: "Scheme: FIMS_INVESTOR_TYPE."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Depository Account Number
+    physical_name: depository_account_nbr
+    business_meaning: Số tài khoản lưu ký tại VSDC.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.DepAccountNumber
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Investor System Object Type Code
+    physical_name: investor_stm_object_tp_code
+    business_meaning: Loại đối tượng trong hệ thống (phân biệt giữa các loại NĐT NN).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.SysObjectType
+    comment: "Không phải Classification Value — map 1:1 nguyên giá trị nguồn (quyết định Data Modeler 2026-07-20). Không tạo classification_context/scheme."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Trading Securities Company Id
+    physical_name: trading_sc_id
+    business_meaning: "FK -> SECURITIESCOMPANY: Công ty CK nơi mở tài khoản."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.SecComAddId
+    comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS.SECURITIESCOMPANY', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Trading Securities Company Code
+    physical_name: trading_sc_code
+    business_meaning: Mã công ty CK nơi mở tài khoản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.SecComAddId
+    comment: "Lookup pair: Market Participant Organization.Market Participant Organization Code. Pending — xem ghi chú ở Trading Securities Company Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Id
+    physical_name: custodian_bank_id
+    business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản giao dịch."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.BankAddId
+    comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning: Mã ngân hàng lưu ký đăng ký tài khoản giao dịch.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.BankAddId
+    comment: "Lookup pair: Market Participant Organization.Market Participant Organization Code. Pending — xem ghi chú ở Custodian Bank Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Capital Investment Account Number
+    physical_name: capital_investment_account_nbr
+    business_meaning: Số tài khoản đầu tư vốn của NĐT NN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.AccountInvesCapital
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Capital Custodian Bank Id
+    physical_name: capital_custodian_bank_id
+    business_meaning: "FK -> BANKMONI: Ngân hàng lưu ký đăng ký tài khoản vốn."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.BankAddCapId
+    comment: "Pending — FK target: Market Participant Organization.Market Participant Organization Id (chưa thiết kế LLD — nguồn FIMS.BANKMONI). Hash: hash_id('FIMS.BANKMONI', CODE) sau khi Market Participant Organization được thiết kế và xác định cột BK."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Capital Custodian Bank Code
+    physical_name: capital_custodian_bank_code
+    business_meaning: Mã ngân hàng lưu ký đăng ký tài khoản vốn.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.BankAddCapId
+    comment: "Lookup pair: Market Participant Organization.Market Participant Organization Code. Pending — xem ghi chú ở Capital Custodian Bank Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Company Type Code
+    physical_name: company_tp_code
+    business_meaning: Loại hình doanh nghiệp (chỉ áp dụng NĐT tổ chức).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.CompanyTypeId
+    comment: "Scheme: FIMS_COMPANY_TYPE. Bổ sung Foreign Investor vào used_in_entities (trước đây chỉ Market Participant Organization)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Activity Status Code
+    physical_name: activity_status_code
+    business_meaning: Trạng thái hoạt động của đối tượng.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.StatusId
+    comment: "Scheme: FIMS_ACTIVITY_STATUS."
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết / ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.Description
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null
+
+  - name: Attachment File Name
+    physical_name: attachment_file_nm
+    business_meaning: Tên file đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.FileName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR'"
+    etl_derived_value: null

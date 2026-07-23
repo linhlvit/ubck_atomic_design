@@ -1,0 +1,317 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-trading_authorization-FIMS.TRADINGAUTHORIZATION
+  logical_name: Trading Authorization
+  physical_name: trading_authorization
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Authority Arrangement"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Thỏa thuận ủy quyền giao dịch — nhà đầu tư nước ngoài ủy quyền cho đại diện giao dịch tại thành viên thị trường hành động thay mặt. Ghi nhận phạm vi ủy quyền, thời hạn và người được ủy quyền (Trading Representative). FK đến Foreign Investor, Market Participant Organization và Trading Representative. BCO đổi từ Documentation
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-TRADINGAUTHORIZATION
+
+attributes:
+  - name: Trading Authorization Id
+    physical_name: trading_authorization_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Authority Arrangement\". Foreign Investor ủy quyền cho Trading Representative hành động thay mặt trong giao dịch. Hash: hash_id('FIMS.TRADINGAUTHORIZATION', Id)."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Trading Authorization Code
+    physical_name: trading_authorization_code
+    business_meaning: "Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ riêng biệt, dùng PK kỹ thuật làm BK duy nhất."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.Id
+    comment: BK chính. PK nguồn.
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: FIMS.TRADINGAUTHORIZATION
+
+  - name: System Object Type Code
+    physical_name: stm_object_tp_code
+    business_meaning: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN QLQ NN."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.SystemObject
+    comment: "Scheme: FIMS_SYSTEM_OBJECT_TYPE. Tái sử dụng scheme đã đăng ký (PARAWARN.SystemObject) — cùng bộ giá trị. Bổ sung Trading Authorization vào used_in_entities."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning: "FK đến Fund Management Company: QLQ nơi người hành nghề làm việc."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.FundComId
+    comment: "FK target: fund_management_company.fund_management_company_id. Nguồn lưu ID kỹ thuật của FMS.SECURITIES — ETL join FundComId → FMS.SECURITIES.ID để lấy giá trị rồi hash_id('FMS.SECURITIES', ID). Quyết định Data Modeler 2026-07-20 — thay thế placeholder Market Participant Organization/FIMS.FUNDCOMPANY trước đây."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning: Mã QLQ nơi người hành nghề làm việc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.FundComId
+    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with fund_management_company_id."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: "FK đến Securities Company: CTCK nơi người hành nghề làm việc."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.SecComId
+    comment: "FK target: securities_company.securities_company_id. Nguồn lưu ID kỹ thuật của SCMS.SC_FIRM_INFO — ETL join SecComId → SCMS.SC_FIRM_INFO.ID để lấy CODE rồi hash_id('SCMS.SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-20 — thay thế placeholder Market Participant Organization/FIMS.SECURITIESCOMPANY trước đây."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã CTCK nơi người hành nghề làm việc.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.SecComId
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Id
+    physical_name: foreign_investor_id
+    business_meaning: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong hợp đồng ủy quyền."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.InvestorId
+    comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ thuật của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode rồi hash_id('FIMS.INVESTOR', TransactionCode)."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Code
+    physical_name: foreign_investor_code
+    business_meaning: Mã giao dịch NĐT NN (VSDC) trong hợp đồng ủy quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.InvestorId
+    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with foreign_investor_id."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Authorization Type Code
+    physical_name: authorization_tp_code
+    business_meaning: "FK -> loại hình ủy quyền giao dịch (LO)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.AuthorizationTypeId
+    comment: "Scheme: FIMS_LO_TYPE. [PROPOSE NEW SCHEME] — bảng LO chưa xác định rõ trong HLD (xem FIMS_HLD_Tier3.md mục T3-02). Tạm xử lý Classification Value chờ xác nhận; nếu LO là entity nghiệp vụ thật, cần đổi sang cặp Id+Code và review lại tier."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Activity Status Code
+    physical_name: activity_status_code
+    business_meaning: Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.Status
+    comment: "Scheme: FIMS_ACTIVITY_STATUS. Bổ sung Trading Authorization vào used_in_entities."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Attachment File Name
+    physical_name: attachment_file_nm
+    business_meaning: Tên file đính kèm.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.FileName
+    comment: null
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Effective Start Date
+    physical_name: effective_start_dt
+    business_meaning: Ngày bắt đầu hiệu lực hợp đồng ủy quyền.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.SDate
+    comment: null
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Effective End Date
+    physical_name: effective_end_dt
+    business_meaning: Ngày kết thúc hiệu lực hợp đồng ủy quyền.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.EDate
+    comment: null
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú bổ sung.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.Note
+    comment: null
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Trading Representative Id
+    physical_name: trading_representative_id
+    business_meaning: FK đến TRADINGREPRESENTATIVE — Người đại diện giao dịch được ủy quyền.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId
+    comment: "FK target: trading_representative.trading_representative_id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE', ID)."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Trading Representative Code
+    physical_name: trading_representative_code
+    business_meaning: Mã người đại diện giao dịch được ủy quyền.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId
+    comment: "Lookup pair: trading_representative.trading_representative_code. Pair with trading_representative_id."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Authorized Investor Id
+    physical_name: authorized_investor_id
+    business_meaning: "FK đến Foreign Investor: nhà đầu tư nước ngoài trong bản ghi ủy quyền giao dịch (TRADINGAUTHORIZATIONINVES)."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATIONINVES.InvestorId
+    comment: "FK target: foreign_investor.foreign_investor_id. TRADINGAUTHORIZATIONINVES là quan hệ 1:1 với TRADINGAUTHORIZATION (không phải junction nhiều-nhiều — quyết định Data Modeler 2026-07-20, thay thế quyết định denormalize ARRAY trước đây tại FIMS_HLD_Overview.md mục 7d). Nguồn lưu ID kỹ thuật của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode rồi hash_id('FIMS.INVESTOR', TransactionCode)."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Authorized Investor Code
+    physical_name: authorized_investor_code
+    business_meaning: Mã giao dịch NĐT NN (VSDC) trong bản ghi ủy quyền giao dịch (TRADINGAUTHORIZATIONINVES).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATIONINVES.InvestorId
+    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Authorized Investor Id."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null
+
+  - name: Authorized Investor Data Date
+    physical_name: authorized_investor_data_dt
+    business_meaning: Ngày dữ liệu bản ghi ủy quyền NĐT NN (TRADINGAUTHORIZATIONINVES) — dùng cho filter logic incremental extract.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGAUTHORIZATION
+    source_column: FIMS.TRADINGAUTHORIZATIONINVES.DateCreated
+    comment: "TRADINGAUTHORIZATIONINVES là bảng Append (chỉ có DateCreated/CreatedBy, không có DateModified/ModifyBy) — DateCreated map vào Data Date theo quyết định cụm trường kỹ thuật FIMS 2026-07-20, thay vì loại bỏ như bảng Update."
+    classification_context: "Source System Code = 'FIMS_TRADINGAUTHORIZATION'"
+    etl_derived_value: null

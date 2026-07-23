@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-FIMS.INVESTOR
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-INVESTOR
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: FIMS.INVESTOR
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 loại địa chỉ (trụ sở/văn phòng) — hardcode HEAD_OFFICE."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: HEAD_OFFICE
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ trụ sở/văn phòng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.Address
+    comment: null
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: province_id
+    business_meaning: FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_PROVINCE ngừng thiết kế — chưa từng là entity riêng, chỉ là ý định extend chưa triển khai) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic Area Business Code (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() theo SCMS.CAT_PROVINCE. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT. // FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. IDS.PROVINCES ngoài scope (xem HLD 7f) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không hash_id() trực tiếp theo IDS.PROVINCES. Cần crosswalk nếu IDS không cùng chuẩn mã với ECAT. Nguồn PROVINCE_ID VARCHAR2(50) dù tên cột gợi ý ID — cần profile giá trị thực tế."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã tỉnh/thành phố (trụ sở chính).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: District Id
+    physical_name: district_id
+    business_meaning: FK đến Geographic Area Old cấp quận/huyện (cũ).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: District Code
+    physical_name: district_code
+    business_meaning: Mã quận/huyện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: District Name
+    physical_name: district_nm
+    business_meaning: Tên quận/huyện (denormalized để tiện query mà không cần join CAT_DISTRICT).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Denormalized — nguồn Geographic Area Old (ECAT.DISTRICT_OLD.geographic_area_old_nm), không còn CAT_DISTRICT.DISTRICT_NAME. ETL lookup theo District Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Id
+    physical_name: ward_id
+    business_meaning: FK đến Geographic Area cấp phường/xã.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = WARD. Nguồn Geographic Area đã chuyển sang ECAT (SCMS.CAT_WARD ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên phường/xã WARD_ID với Geographic Area Business Code (ECAT.WARD_NEW.CODE) hoặc Name, không còn hash_id() theo SCMS.CAT_WARD. Cần crosswalk nếu SCMS không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Code
+    physical_name: ward_code
+    business_meaning: Mã phường/xã.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Ward Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Ward Name
+    physical_name: ward_nm
+    business_meaning: Tên phường/xã (denormalized để tiện query mà không cần join CAT_WARD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: null
+    comment: Denormalized từ CAT_WARD.WARD_NAME — ETL lookup theo WARD_ID. Lưu dự phòng để tránh join nhiều tầng.
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Foreign Investor (Involved Party).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.TransactionCode
+    comment: "FK target: foreign_investor.foreign_investor_id. Hash: hash_id('FIMS.INVESTOR', TransactionCode)."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Foreign Investor.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: INVESTOR
+    source_column: FIMS.INVESTOR.TransactionCode
+    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FIMS_INVESTOR' | Address Type Code = 'HEAD_OFFICE'"
+    etl_derived_value: null

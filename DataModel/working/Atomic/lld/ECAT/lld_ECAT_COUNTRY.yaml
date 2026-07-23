@@ -1,6 +1,5 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "ECAT"
   source_table: "COUNTRY"
@@ -21,14 +20,13 @@ metadata:
   notes: "Thiết kế lại (regenerate) 2026-07-18 sau khi đối chiếu Source/ECAT_Columns.csv\
     \ bản cập nhật (reconcile) — phát hiện cột mới ID_SYNC (loại trừ, kỹ thuật lineage\
     \ BTC sync). ECAT là nguồn duy nhất cho Geographic Area (thay thế NHNCK/FMS/SCMS/FIMS\
-    \ — xem ECAT_HLD_Tier1.md). Loại bỏ khỏi mapping: ID/STABLE_ID/OLD_ID/ID_SYNC (kỹ\
-    \ thuật, chỉ dùng nội bộ để resolve FK/join hoặc lineage sync — BK dùng CODE), IDX_*\
-    \ (không phải cột thật, xem pending_design.yaml). CREATED_AT/UPDATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_BY_ID/UPDATED_BY_NAME\
+    \ — xem ECAT_HLD_Tier1.md). Loại bỏ khỏi mapping: ID/STABLE_ID/OLD_ID/ID_SYNC\
+    \ (kỹ thuật, chỉ dùng nội bộ để resolve FK/join hoặc lineage sync — BK dùng CODE),\
+    \ IDX_* (không phải cột thật, xem pending_design.yaml). CREATED_AT/UPDATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_BY_ID/UPDATED_BY_NAME\
     \ map vào audit block chuẩn (Created/Updated Timestamp + Created/Updated By Staff\
     \ Id/Code/Name) — FK Staff Id/Code status=pending vì Regulatory Authority Staff\
     \ (ECAT.UBCK_STAFF) là Tier 3, chưa thiết kế. Giữ 1:1 (không gộp): EFFECTIVE/ACTIVE/DELETED\
     \ (3 indicator riêng), VERSION, DISPLAY_LABEL, ACTIVE_REASON, DELETED_REASON."
-
 attributes:
 - attribute_name: "Geographic Area Id"
   physical_name: "geographic_area_id"
@@ -43,7 +41,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã nguồn dữ liệu"
@@ -56,7 +53,6 @@ attributes:
   classification_context: "SOURCE_SYSTEM=ECAT.COUNTRY"
   etl_derived_value: "ECAT.COUNTRY"
   data_type: "string"
-
 - attribute_name: "Geographic Area Type Code"
   physical_name: "geographic_area_tp_code"
   description: "Phân loại vùng địa lý — Quốc gia"
@@ -69,24 +65,22 @@ attributes:
   classification_context: "GEOGRAPHIC_AREA_TYPE=COUNTRY"
   etl_derived_value: "COUNTRY"
   data_type: "string"
-
 - attribute_name: "Geographic Area Code"
   physical_name: "geographic_area_code"
-  description: "Mã quốc gia nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ trường\
-    \ này."
+  description: "Mã quốc gia nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash từ\
+    \ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ECAT.COUNTRY.CODE"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn 1\
-    \ trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước\
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn\
+    \ 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước\
     \ go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Geographic Area Name"
   physical_name: "geographic_area_nm"
   description: "Tên quốc gia (tiếng Việt)"
@@ -100,7 +94,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Geographic Area English Name"
   physical_name: "geographic_area_english_nm"
   description: "Tên quốc gia (tiếng Anh)"
@@ -114,7 +107,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Parent Geographic Area Id"
   physical_name: "parent_geographic_area_id"
   description: "FK tự tham chiếu. NULL cho quốc gia — đỉnh phân cấp Geographic Area"
@@ -128,7 +120,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Parent Geographic Area Code"
   physical_name: "parent_geographic_area_code"
   description: "Mã cha — lookup pair với Parent Geographic Area Id"
@@ -141,11 +132,10 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Effective Indicator"
   physical_name: "effective_indicator"
   description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -154,26 +144,25 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
-
+  data_type: "int"
 - attribute_name: "Active Indicator"
   physical_name: "active_indicator"
   description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ECAT.COUNTRY.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted Indicator."
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
-
+  data_type: "int"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -182,8 +171,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
-
+  data_type: "int"
 - attribute_name: "Effective Start Date"
   physical_name: "effective_start_dt"
   description: "Ngày bắt đầu hiệu lực"
@@ -197,7 +185,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Effective End Date"
   physical_name: "effective_end_dt"
   description: "Ngày kết thúc hiệu lực"
@@ -211,7 +198,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Version Number"
   physical_name: "version_nbr"
   description: "Số phiên bản bản ghi tại nguồn"
@@ -225,7 +211,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-
 - attribute_name: "Display Label"
   physical_name: "display_label"
   description: "Nhãn hiển thị"
@@ -239,7 +224,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Active Reason"
   physical_name: "active_reason"
   description: "Lý do thay đổi trạng thái sử dụng"
@@ -253,7 +237,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Deleted Reason"
   physical_name: "deleted_reason"
   description: "Lý do xóa"
@@ -267,7 +250,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Created Timestamp"
   physical_name: "created_tms"
   description: "Thời điểm bản ghi được tạo tại nguồn"
@@ -281,7 +263,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Updated Timestamp"
   physical_name: "updated_tms"
   description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
@@ -295,7 +276,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Created By Staff Id"
   physical_name: "created_by_staff_id"
   description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
@@ -311,7 +291,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Created By Staff Code"
   physical_name: "created_by_staff_code"
   description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
@@ -326,7 +305,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Created By Staff Name"
   physical_name: "created_by_staff_nm"
   description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
@@ -337,12 +315,11 @@ attributes:
   source_columns:
   - "ECAT.COUNTRY.CREATED_BY_NAME"
   comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory Authority\
-    \ Staff nếu cán bộ đổi tên sau đó."
+    \ thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory\
+    \ Authority Staff nếu cán bộ đổi tên sau đó."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Updated By Staff Id"
   physical_name: "updated_by_staff_id"
   description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
@@ -358,7 +335,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Updated By Staff Code"
   physical_name: "updated_by_staff_code"
   description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
@@ -373,7 +349,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Updated By Staff Name"
   physical_name: "updated_by_staff_nm"
   description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"

@@ -318,7 +318,7 @@ attributes:
 - attribute_name: "Legal Representative Indicator"
   physical_name: "legal_representative_indicator"
   description: "Là người đại diện theo pháp luật: 1=Có; 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -327,11 +327,11 @@ attributes:
   comment: "NUMBER(1)."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Statutory Representative Indicator"
   physical_name: "statutory_representative_indicator"
   description: "Là người đại diện theo điều lệ."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -341,11 +341,11 @@ attributes:
     \ — cần xác nhận team."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Disclosure Person Indicator"
   physical_name: "disclosure_person_indicator"
   description: "Là người công bố thông tin (NGUOI_CONG_BO_TT): 1=Có; 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -354,7 +354,7 @@ attributes:
   comment: "NUMBER(1). Cột tên tiếng Việt — mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Disclosure Person Id"
   physical_name: "disclosure_person_id"
   description: "FK đến người dùng đại diện công bố thông tin (IAM.USERS)."
@@ -497,7 +497,7 @@ attributes:
 - attribute_name: "Securities License Indicator"
   physical_name: "securities_license_indicator"
   description: "Có chứng chỉ hành nghề chứng khoán: 1=Có; 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -507,7 +507,7 @@ attributes:
     \ dùng SECURITIES_LICENSE làm canonical."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Securities License Number"
   physical_name: "securities_license_nbr"
   description: "Số chứng chỉ hành nghề chứng khoán (CCHN)."
@@ -631,7 +631,7 @@ attributes:
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -640,7 +640,7 @@ attributes:
   comment: "NUMBER(1). Soft delete flag — ETL filter DELETED=0 trước khi load Atomic."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Attachment Path"
   physical_name: "attachment_path"
   description: "Đường dẫn file đính kèm."

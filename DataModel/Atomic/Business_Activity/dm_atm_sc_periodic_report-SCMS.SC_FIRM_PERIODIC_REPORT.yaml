@@ -93,7 +93,7 @@ attributes:
     etl_derived_value: null
 
   - name: Securities Company Form Report Id
-    physical_name: sc_form_rpt_id
+    physical_name: sc_form_report_id
     business_meaning: FK đến biểu mẫu báo cáo liên quan (FORM_REPORT).
     data_domain: Surrogate Key
     data_type: string
@@ -102,12 +102,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
-    comment: "FK target: Securities Company Form Report.Securities Company Form Report Id. Hash: hash_id('SCMS.FORM_REPORT', FORM_REPORT_ID)."
+    comment: "FK target: sc_form_report.sc_form_report_id. Hash: hash_id('SCMS.FORM_REPORT', FORM_REPORT_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
   - name: Securities Company Form Report Code
-    physical_name: sc_form_rpt_code
+    physical_name: sc_form_report_code
     business_meaning: Mã biểu mẫu báo cáo liên quan (FORM_REPORT).
     data_domain: Text
     data_type: string
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.FORM_REPORT_ID
-    comment: "Lookup pair: Securities Company Form Report.Securities Company Form Report Code. Pair with Securities Company Form Report Id."
+    comment: "Lookup pair: sc_form_report.sc_form_report_code. Pair with sc_form_report_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
@@ -289,7 +289,7 @@ attributes:
     etl_derived_value: null
 
   - name: Classification Event Type Id
-    physical_name: cl_event_tp_id
+    physical_name: cl_event_type_id
     business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
     data_domain: Surrogate Key
     data_type: string
@@ -298,12 +298,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
-    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
   - name: Classification Event Type Code
-    physical_name: cl_event_tp_code
+    physical_name: cl_event_type_code
     business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
     data_domain: Text
     data_type: string
@@ -312,7 +312,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_PERIODIC_REPORT
     source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
-    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with cl_event_type_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_PERIODIC_REPORT'"
     etl_derived_value: null
 
@@ -445,8 +445,8 @@ attributes:
   - name: Valid Digital Signature Indicator
     physical_name: valid_digital_signature_indicator
     business_meaning: "Chữ ký số hợp lệ: 1=Hợp lệ; 0=Không hợp lệ."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -459,8 +459,8 @@ attributes:
   - name: Valid Data Indicator
     physical_name: valid_data_indicator
     business_meaning: "Dữ liệu hợp lệ (vượt qua kiểm tra nghiệp vụ): 1=Hợp lệ; 0=Không hợp lệ."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS

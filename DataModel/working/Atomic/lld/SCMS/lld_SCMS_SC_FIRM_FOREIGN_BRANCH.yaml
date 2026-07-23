@@ -4,7 +4,7 @@ metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH"
   atomic_entity: "Securities Company Foreign Branch"
-  entity_physical_name: "securities_company_foreign_branch"
+  entity_physical_name: "sc_foreign_branch"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Branch"
   table_type: "Relative"
@@ -370,7 +370,7 @@ attributes:
 - attribute_name: "Amendment Declaration Indicator"
   physical_name: "amendment_declaration_indicator"
   description: "Cờ có khai bổ sung/sửa đổi: 1=Có; 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -379,7 +379,7 @@ attributes:
   comment: "NUMBER(1) — ETL convert sang boolean."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Amendment Document Number"
   physical_name: "amendment_document_nbr"
   description: "Số văn bản sửa đổi."
@@ -422,7 +422,7 @@ attributes:
 - attribute_name: "Synced From Admin Process Indicator"
   physical_name: "synced_from_admin_process_indicator"
   description: "Cờ đồng bộ từ thủ tục hành chính."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -431,7 +431,7 @@ attributes:
   comment: "NUMBER(1) — ETL convert sang boolean. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Service Type Codes"
   physical_name: "service_tp_codes"
   description: "Danh sách loại dịch vụ được cấp phép cho chi nhánh (denormalized từ\

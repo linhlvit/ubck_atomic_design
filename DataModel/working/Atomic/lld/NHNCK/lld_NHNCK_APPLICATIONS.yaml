@@ -4,12 +4,12 @@ metadata:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   atomic_entity: "Securities Practitioner License Application"
-  entity_physical_name: "securities_practitioner_license_application"
+  entity_physical_name: "sp_license_application"
   bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -361,7 +361,7 @@ attributes:
 - attribute_name: "Violated Indicator"
   physical_name: "violated_indicator"
   description: "Cờ người hành nghề vi phạm quy định."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -370,11 +370,11 @@ attributes:
   comment: "Nguồn lưu NUMBER(1): 1=Có vi phạm, 0=Không vi phạm."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Data Exploitable Indicator"
   physical_name: "data_exploitable_indicator"
   description: "Cờ dữ liệu có thể khai thác."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -383,7 +383,7 @@ attributes:
   comment: "Nguồn lưu NUMBER(1): 1=Có thể dùng, 0=Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Reissue Hsm"
   physical_name: "reissue_hsm"
   description: "Thông tin HSM khi cấp CCHN điện tử."

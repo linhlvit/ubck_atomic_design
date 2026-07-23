@@ -49,18 +49,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ: AUDITOR_CERT=Chứng chỉ hành nghề kiểm toán."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode AUDITOR_CERT — chỉ có 1 cột CERTIFICATE_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERT"
-  etl_derived_value: "AUDITOR_CERT"
-  data_type: "string"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -72,6 +60,18 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=SCMS.AUDITOR"
   etl_derived_value: "SCMS.AUDITOR"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ: AUDITOR_CERT=Chứng chỉ hành nghề kiểm toán."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode AUDITOR_CERT — chỉ có 1 cột CERTIFICATE_NUMBER."
+  classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERT"
+  etl_derived_value: "AUDITOR_CERT"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"

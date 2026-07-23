@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Penalty Decision Subject.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: PENALTY_DECISION_SUBJECT
-    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
-    comment: "FK target: penalty_decision_subject.penalty_decision_subject_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.PENALTY_DECISION_SUBJECT', ID)."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã đối tượng bị xử phạt.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: PENALTY_DECISION_SUBJECT
-    source_column: THANHTRA.PENALTY_DECISION_SUBJECT.ID
-    comment: "Lookup pair: penalty_decision_subject.penalty_decision_subject_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION_SUBJECT' | Identification Type Code = 'TAX_ID'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.

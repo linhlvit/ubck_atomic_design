@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Examination Team Target.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_TEAM_TARGET
-    source_column: THANHTRA.EXAMINATION_TEAM_TARGET.ID
-    comment: "FK target: examination_team_target.examination_team_target_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('THANHTRA.EXAMINATION_TEAM_TARGET', ID)."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET' | Address Type Code = 'ADDRESS'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã đối tượng được kiểm tra.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_TEAM_TARGET
-    source_column: THANHTRA.EXAMINATION_TEAM_TARGET.ID
-    comment: "Lookup pair: examination_team_target.examination_team_target_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET' | Address Type Code = 'ADDRESS'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn.

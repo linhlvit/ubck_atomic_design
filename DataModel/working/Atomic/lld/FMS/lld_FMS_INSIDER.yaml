@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
   group: "T5"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -118,7 +118,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Nationality Id"
   physical_name: "nationality_id"
-  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  description: "FK đến Geographic Area (quốc tịch)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
@@ -205,7 +205,7 @@ attributes:
   physical_name: "key_person_linked_flag"
   description: "Cờ cổ đông nội bộ là người hành nghề (TL_PROFILES): 1=Có liên kết,\
     \ 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -214,11 +214,11 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Practitioner Affiliated Fund Management Company Flag"
   physical_name: "practitioner_affiliated_fmc_flag"
   description: "Cờ người hành nghề thuộc công ty QLQ này: 1=Thuộc, 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -230,7 +230,7 @@ attributes:
     \ đang xét hay công ty khác)."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Insider Type Code"
   physical_name: "insider_tp_code"
   description: "Loại cổ đông nội bộ: 1=Cổ đông lớn, 2=Ban điều hành, 3=HĐQT..."
@@ -301,7 +301,7 @@ attributes:
   physical_name: "active_status_flag"
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
     \ lực."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -310,7 +310,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Description"
   physical_name: "description"
   description: "Mô tả chi tiết."

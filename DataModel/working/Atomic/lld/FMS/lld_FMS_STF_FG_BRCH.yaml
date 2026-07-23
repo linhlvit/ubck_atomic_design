@@ -110,7 +110,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Nationality Id"
   physical_name: "nationality_id"
-  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  description: "FK đến Geographic Area (quốc tịch)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
@@ -183,7 +183,7 @@ attributes:
   physical_name: "active_status_flag"
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
     \ lực."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -192,11 +192,11 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Legal Representative Flag"
   physical_name: "legal_representative_flag"
   description: "Cờ là người đại diện theo pháp luật: 1=Có, 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -205,7 +205,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Operating License Number"
   physical_name: "operating_license_nbr"
   description: "Số giấy phép hoạt động."
@@ -261,7 +261,7 @@ attributes:
 - attribute_name: "Branch Director Flag"
   physical_name: "branch_director_flag"
   description: "Cờ là Giám đốc chi nhánh: 1=Là GĐ CN, 0=Nhân viên thường."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -270,7 +270,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Director Appointment License Number"
   physical_name: "director_appointment_license_nbr"
   description: "Số GP/QĐ bổ nhiệm Giám đốc chi nhánh."

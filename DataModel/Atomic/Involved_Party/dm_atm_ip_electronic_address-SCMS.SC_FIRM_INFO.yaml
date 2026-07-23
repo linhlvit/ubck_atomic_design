@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-SCMS-SC_FIRM_INFO
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "FK target: securities_company.securities_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'EMAIL'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'EMAIL'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -103,7 +75,7 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.ID
     comment: "FK target: securities_company.securities_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -117,7 +89,7 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.ID
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'EMAIL'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -173,7 +145,7 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.ID
     comment: "FK target: securities_company.securities_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -187,7 +159,7 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.ID
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -243,7 +215,7 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.ID
     comment: "FK target: securities_company.securities_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -257,7 +229,7 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.ID
     comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -299,5 +271,33 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.WEBSITE
     comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Company (Involved Party).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ID
+    comment: "FK target: securities_company.securities_company_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Securities Company.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ID
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Electronic Address Type Code = 'WEBSITE'"
     etl_derived_value: null

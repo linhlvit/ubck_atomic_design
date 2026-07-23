@@ -732,7 +732,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID
-    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10) tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa thêm Hash."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10) tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa thêm Hash."
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
     etl_derived_value: null
 
@@ -746,7 +746,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID
-    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Approver User Id. Pending — xem ghi chú ở Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approver User Id. Pending — xem ghi chú ở Id."
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
     etl_derived_value: null
 
@@ -774,7 +774,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID
-    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver User Id."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: xem ghi chú ở Approver User Id."
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
     etl_derived_value: null
 
@@ -788,7 +788,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING_RESULT
     source_column: IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID
-    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Processor User Id. Pending — xem ghi chú ở Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Processor User Id. Pending — xem ghi chú ở Id."
     classification_context: "Source System Code = 'IDS_SECURITIES_OFFERING_RESULT'"
     etl_derived_value: null
 
@@ -907,8 +907,8 @@ attributes:
   - name: Synced From External System Indicator
     physical_name: synced_from_external_stm_indicator
     business_meaning: Đánh dấu đồng bộ dữ liệu từ hệ thống CBTT hay tạo mới tại IDS.
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -921,8 +921,8 @@ attributes:
   - name: Deleted Indicator
     physical_name: deleted_indicator
     business_meaning: Đánh dấu trạng thái xóa mềm.
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: IDS

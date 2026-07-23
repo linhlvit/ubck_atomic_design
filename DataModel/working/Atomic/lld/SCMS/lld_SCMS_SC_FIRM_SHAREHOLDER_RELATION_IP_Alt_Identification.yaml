@@ -51,6 +51,18 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_RELATION"
+  etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER_RELATION"
+  data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ (ID_NUMBER)."
@@ -64,18 +76,6 @@ attributes:
     \ viết tắt."
   classification_context: "IP_ALT_ID_TYPE=LEGACY_CMND"
   etl_derived_value: "LEGACY_CMND"
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER_RELATION"
-  etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER_RELATION"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"

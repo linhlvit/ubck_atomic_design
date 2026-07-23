@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
-    comment: "FK target: securities_company_alert_indicator.securities_company_alert_indicator_id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
+    comment: "FK target: sc_alert_indicator.sc_alert_indicator_id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
-    comment: "Lookup pair: securities_company_alert_indicator.securities_company_alert_indicator_code. Pair with securities_company_alert_indicator_id."
+    comment: "Lookup pair: sc_alert_indicator.sc_alert_indicator_code. Pair with sc_alert_indicator_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -144,7 +144,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
-    comment: "FK target: Securities Company Alert Indicator Condition.Securities Company Alert Indicator Condition Id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION', ALERT_CONDITION_ID)."
+    comment: "FK target: sc_alert_indicator_condition.sc_alert_indicator_condition_id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION', ALERT_CONDITION_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -158,7 +158,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
-    comment: "Lookup pair: Securities Company Alert Indicator Condition.Securities Company Alert Indicator Condition Code. Pair with Securities Company Alert Indicator Condition Id."
+    comment: "Lookup pair: sc_alert_indicator_condition.sc_alert_indicator_condition_code. Pair with sc_alert_indicator_condition_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -172,7 +172,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID
-    comment: "FK target: Securities Company Alert Run.Securities Company Alert Run Id. Hash: hash_id('SCMS.ALERT_RUN', ALERT_RUN_ID). Resolved 2026-07-12 — ALERT_RUN đã được đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml)."
+    comment: "FK target: sc_alert_run.sc_alert_run_id. Hash: hash_id('SCMS.ALERT_RUN', ALERT_RUN_ID). Resolved 2026-07-12 — ALERT_RUN đã được đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID
-    comment: "Lookup pair: Securities Company Alert Run.Securities Company Alert Run Code. Pair with Securities Company Alert Run Id."
+    comment: "Lookup pair: sc_alert_run.sc_alert_run_code. Pair with sc_alert_run_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -389,8 +389,8 @@ attributes:
   - name: Resolved Indicator
     physical_name: resolved_indicator
     business_meaning: "Cờ đánh dấu vi phạm đã được xử lý: 1=Đã xử lý; 0=Chưa xử lý."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS

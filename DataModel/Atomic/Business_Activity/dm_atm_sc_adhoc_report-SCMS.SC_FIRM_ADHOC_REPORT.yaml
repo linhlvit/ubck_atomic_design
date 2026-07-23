@@ -102,7 +102,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
-    comment: "FK target: Securities Company Foreign Branch.Securities Company Foreign Branch Id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
+    comment: "FK target: sc_foreign_branch.sc_foreign_branch_id. Hash: hash_id('SCMS.SC_FIRM_FOREIGN_BRANCH', SC_FIRM_FOREIGN_BRANCH_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
     etl_derived_value: null
 
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID
-    comment: "Lookup pair: Securities Company Foreign Branch.Securities Company Foreign Branch Code. Pair with Securities Company Foreign Branch Id."
+    comment: "Lookup pair: sc_foreign_branch.sc_foreign_branch_code. Pair with sc_foreign_branch_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
     etl_derived_value: null
 
@@ -319,8 +319,8 @@ attributes:
   - name: Allow Import Indicator
     physical_name: allow_import_indicator
     business_meaning: "Cho phép nhập dữ liệu qua file Excel: 1=Cho phép; 0=Không cho phép."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -333,8 +333,8 @@ attributes:
   - name: Requires Disclosure Indicator
     physical_name: requires_disclosure_indicator
     business_meaning: "Phải công bố thông tin khi nộp báo cáo: 1=Có; 0=Không."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -345,7 +345,7 @@ attributes:
     etl_derived_value: null
 
   - name: Classification Event Type Id
-    physical_name: cl_event_tp_id
+    physical_name: cl_event_type_id
     business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
     data_domain: Surrogate Key
     data_type: string
@@ -354,12 +354,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
-    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
     etl_derived_value: null
 
   - name: Classification Event Type Code
-    physical_name: cl_event_tp_code
+    physical_name: cl_event_type_code
     business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
     data_domain: Text
     data_type: string
@@ -368,7 +368,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ADHOC_REPORT
     source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
-    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with cl_event_type_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ADHOC_REPORT'"
     etl_derived_value: null
 

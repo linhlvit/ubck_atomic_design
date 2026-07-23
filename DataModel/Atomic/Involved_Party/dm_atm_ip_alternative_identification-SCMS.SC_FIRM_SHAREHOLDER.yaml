@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company Shareholder.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SHAREHOLDER
-    source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
-    comment: "FK target: securities_company_shareholder.securities_company_shareholder_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company Shareholder.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SHAREHOLDER
-    source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
-    comment: "Lookup pair: securities_company_shareholder.securities_company_shareholder_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -151,6 +123,62 @@ attributes:
   - name: Issuing Authority Name
     physical_name: issuing_authority_nm
     business_meaning: Nơi cấp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Company Shareholder.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+    comment: "FK target: sc_shareholder.sc_shareholder_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SHAREHOLDER', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Securities Company Shareholder.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: SCMS.SC_FIRM_SHAREHOLDER.ID
+    comment: "Lookup pair: sc_shareholder.sc_shareholder_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Alternative Identification Type Code
+    physical_name: alternative_identification_tp_code
+    business_meaning: Loại giấy tờ tùy thân.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột phân biệt loại giấy tờ (CMND/CCCD/Hộ chiếu) — mặc định NATIONAL_ID. Document pending_design.yaml, cần profile dữ liệu thực tế trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Alternative Identification Number
+    physical_name: alternative_identification_nbr
+    business_meaning: Số CMND/CCCD/Hộ chiếu của đại diện giao dịch.
     data_domain: Text
     data_type: string
     nullable: true

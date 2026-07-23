@@ -107,7 +107,7 @@ attributes:
   data_type: "string"
 - attribute_name: "Nationality Id"
   physical_name: "nationality_id"
-  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  description: "FK đến Geographic Area (quốc tịch)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
@@ -180,7 +180,7 @@ attributes:
   physical_name: "active_status_flag"
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
     \ lực."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -189,7 +189,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Education Level Description"
   physical_name: "education_level_description"
   description: "Trình độ học vấn (cử nhân, thạc sĩ, tiến sĩ...)."

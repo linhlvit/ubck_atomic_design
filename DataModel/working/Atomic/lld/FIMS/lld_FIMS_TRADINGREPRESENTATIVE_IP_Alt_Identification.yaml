@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Alternative Identification"
   table_type: "Relative"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -47,6 +47,18 @@ attributes:
   classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FIMS.TRADINGREPRESENTATIVE"
+  etl_derived_value: "FIMS.TRADINGREPRESENTATIVE"
+  data_type: "string"
 - attribute_name: "Alternative Identification Type Code"
   physical_name: "alternative_identification_tp_code"
   description: "Loại giấy tờ tùy thân."
@@ -60,18 +72,6 @@ attributes:
     \ liệu thực tế trước go-live."
   classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
   etl_derived_value: "NATIONAL_ID"
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FIMS.TRADINGREPRESENTATIVE"
-  etl_derived_value: "FIMS.TRADINGREPRESENTATIVE"
   data_type: "string"
 - attribute_name: "Alternative Identification Number"
   physical_name: "alternative_identification_nbr"

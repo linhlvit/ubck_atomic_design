@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.COMPANY_PROFILE_ID
-    comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    comment: "FK target: public_company.public_company_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
     classification_context: "Source System Code = 'IDS_COMPANY_DATA'"
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.COMPANY_PROFILE_ID
-    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    comment: "Lookup pair: public_company.public_company_code. Pair with public_company_id."
     classification_context: "Source System Code = 'IDS_COMPANY_DATA'"
     etl_derived_value: null
 
@@ -116,7 +116,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.FORM_ID
-    comment: "FK target: Disclosure Form Definition.Disclosure Form Definition Id. Resolve: join FORM_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD)."
+    comment: "FK target: disclosure_form_definition.disclosure_form_definition_id. Resolve: join FORM_ID → IDS.FORMS.ID để lấy FORM_CD, rồi hash_id('IDS.FORMS', FORM_CD)."
     classification_context: "Source System Code = 'IDS_COMPANY_DATA'"
     etl_derived_value: null
 
@@ -130,7 +130,7 @@ attributes:
     source_system: IDS
     source_table: COMPANY_DATA
     source_column: IDS.COMPANY_DATA.FORM_ID
-    comment: "Lookup pair: Disclosure Form Definition.Disclosure Form Definition Code. Pair with Disclosure Form Definition Id."
+    comment: "Lookup pair: disclosure_form_definition.disclosure_form_definition_code. Pair with disclosure_form_definition_id."
     classification_context: "Source System Code = 'IDS_COMPANY_DATA'"
     etl_derived_value: null
 
@@ -375,8 +375,8 @@ attributes:
   - name: Digital Signature Indicator
     physical_name: digital_signature_indicator
     business_meaning: File đính kèm có chữ ký số hay không.
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: IDS

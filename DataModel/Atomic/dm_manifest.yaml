@@ -2,184 +2,210 @@ schema_type: dm_manifest
 schema_version: "1.0"
 entries:
 - subfolder: Business_Activity
-  file_name: dm_atm_et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE.yaml
-  id: ATM-et_high_risk_enterprise-KNT.HIGH_RISK_ENTERPRISE
-  physical_name: et_high_risk_enterprise
-  logical_name: External Tax High Risk Enterprise
+  file_name: dm_atm_examination_team-THANHTRA.EXAMINATION_TEAM.yaml
+  id: ATM-examination_team-THANHTRA.EXAMINATION_TEAM
+  physical_name: examination_team
+  logical_name: Examination Team
   bcv_core_object: Business Activity
-  bcv_concept: "[Business Activity] Involved Party Rating Activity"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
   status: draft
-  attribute_count: 8
-  brd_ref: BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
-- subfolder: Communication
-  file_name: dm_atm_et_information_request-KNT.INFO_REQUEST_DETAIL.yaml
-  id: ATM-et_information_request-KNT.INFO_REQUEST_DETAIL
-  physical_name: et_information_request
-  logical_name: External Tax Information Request
-  bcv_core_object: Communication
-  bcv_concept: "[Communication] Information Request"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
+  attribute_count: 21
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM
+- subfolder: Business_Activity
+  file_name: dm_atm_examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET.yaml
+  id: ATM-examination_team_target-THANHTRA.EXAMINATION_TEAM_TARGET
+  physical_name: examination_team_target
+  logical_name: Examination Team Target
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
+- subfolder: Business_Activity
+  file_name: dm_atm_inspection_team-THANHTRA.INSPECTION_TEAM.yaml
+  id: ATM-inspection_team-THANHTRA.INSPECTION_TEAM
+  physical_name: inspection_team
+  logical_name: Inspection Team
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 21
+  brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM
+- subfolder: Business_Activity
+  file_name: dm_atm_inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET.yaml
+  id: ATM-inspection_team_target-THANHTRA.INSPECTION_TEAM_TARGET
+  physical_name: inspection_team_target
+  logical_name: Inspection Team Target
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Review"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-THANHTRA-INSPECTION_TEAM_TARGET
+- subfolder: Business_Activity
+  file_name: dm_atm_violation_behavior-THANHTRA.VIOLATION_BEHAVIOR.yaml
+  id: ATM-violation_behavior-THANHTRA.VIOLATION_BEHAVIOR
+  physical_name: violation_behavior
+  logical_name: Violation Behavior
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-THANHTRA-VIOLATION_BEHAVIOR
+- subfolder: Business_Activity
+  file_name: dm_atm_violation_case-THANHTRA.VIOLATION_CASE.yaml
+  id: ATM-violation_case-THANHTRA.VIOLATION_CASE
+  physical_name: violation_case
+  logical_name: Violation Case
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Conduct Violation"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 20
+  brd_ref: BRD-SRC-THANHTRA-VIOLATION_CASE
+- subfolder: Business_Direction
+  file_name: dm_atm_examination_annual_plan-THANHTRA.EXAMINATION_ANNUAL_PLAN.yaml
+  id: ATM-examination_annual_plan-THANHTRA.EXAMINATION_ANNUAL_PLAN
+  physical_name: examination_annual_plan
+  logical_name: Examination Annual Plan
+  bcv_core_object: Business Direction
+  bcv_concept: "[Business Direction] Business Plan"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
   status: draft
   attribute_count: 9
-  brd_ref: BRD-SRC-KNT-INFO_REQUEST_DETAIL
-- subfolder: Documentation
-  file_name: dm_atm_et_declaration_report-KNT.TAX_REPORT.yaml
-  id: ATM-et_declaration_report-KNT.TAX_REPORT
-  physical_name: et_declaration_report
-  logical_name: External Tax Declaration Report
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Declaration Document"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_ANNUAL_PLAN
+- subfolder: Business_Direction
+  file_name: dm_atm_inspection_annual_plan-THANHTRA.INSPECTION_ANNUAL_PLAN.yaml
+  id: ATM-inspection_annual_plan-THANHTRA.INSPECTION_ANNUAL_PLAN
+  physical_name: inspection_annual_plan
+  logical_name: Inspection Annual Plan
+  bcv_core_object: Business Direction
+  bcv_concept: "[Business Direction] Business Plan"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
   status: draft
-  attribute_count: 59
-  brd_ref: BRD-SRC-KNT-TAX_REPORT
-- subfolder: Documentation
-  file_name: dm_atm_et_declaration_report_detail-KNT.TAX_REPORT_DETAIL.yaml
-  id: ATM-et_declaration_report_detail-KNT.TAX_REPORT_DETAIL
-  physical_name: et_declaration_report_detail
-  logical_name: External Tax Declaration Report Detail
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Reported Information"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
+  attribute_count: 9
+  brd_ref: BRD-SRC-THANHTRA-INSPECTION_ANNUAL_PLAN
+- subfolder: Business_Direction
+  file_name: dm_atm_penalty_type-THANHTRA.PENALTY_TYPE.yaml
+  id: ATM-penalty_type-THANHTRA.PENALTY_TYPE
+  physical_name: penalty_type
+  logical_name: Penalty Type
+  bcv_core_object: Business Direction
+  bcv_concept: "[Business Direction] Law"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: THANHTRA
   status: draft
-  attribute_count: 31
-  brd_ref: BRD-SRC-KNT-TAX_REPORT_DETAIL
-- subfolder: Documentation
-  file_name: dm_atm_et_enforcement_debt_decision-KNT.TAX_ENFORCEMENT_DEBT.yaml
-  id: ATM-et_enforcement_debt_decision-KNT.TAX_ENFORCEMENT_DEBT
-  physical_name: et_enforcement_debt_decision
-  logical_name: External Tax Enforcement Debt Decision
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
-  status: draft
-  attribute_count: 30
-  brd_ref: BRD-SRC-KNT-TAX_ENFORCEMENT_DEBT
-- subfolder: Documentation
-  file_name: dm_atm_et_enforcement_invoice_decision-KNT.TAX_ENFORCEMENT_INVOICE.yaml
-  id: ATM-et_enforcement_invoice_decision-KNT.TAX_ENFORCEMENT_INVOICE
-  physical_name: et_enforcement_invoice_decision
-  logical_name: External Tax Enforcement Invoice Decision
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
+  attribute_count: 9
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_TYPE
+- subfolder: Communication
+  file_name: dm_atm_petition-THANHTRA.PETITION.yaml
+  id: ATM-petition-THANHTRA.PETITION
+  physical_name: petition
+  logical_name: Petition
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Feedback"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
   status: draft
   attribute_count: 26
-  brd_ref: BRD-SRC-KNT-TAX_ENFORCEMENT_INVOICE
-- subfolder: Documentation
-  file_name: dm_atm_et_invoice_detail-KNT.INVOICE_DETAIL.yaml
-  id: ATM-et_invoice_detail-KNT.INVOICE_DETAIL
-  physical_name: et_invoice_detail
-  logical_name: External Tax Invoice Detail
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Invoice"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
-  status: draft
-  attribute_count: 10
-  brd_ref: BRD-SRC-KNT-INVOICE_DETAIL
-- subfolder: Documentation
-  file_name: dm_atm_et_violation_handling-KNT.TAX_VIOLATION_HANDLING.yaml
-  id: ATM-et_violation_handling-KNT.TAX_VIOLATION_HANDLING
-  physical_name: et_violation_handling
-  logical_name: External Tax Violation Handling
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Fact Append
-  etl_pattern: Fact Append
-  source: KNT
-  status: draft
-  attribute_count: 17
-  brd_ref: BRD-SRC-KNT-TAX_VIOLATION_HANDLING
-- subfolder: Involved_Party
-  file_name: dm_atm_et_registration-KNT.TAX_REGISTRATION_INFO.yaml
-  id: ATM-et_registration-KNT.TAX_REGISTRATION_INFO
-  physical_name: et_registration
-  logical_name: External Tax Registration
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Organization"
+  brd_ref: BRD-SRC-THANHTRA-PETITION
+- subfolder: Event
+  file_name: dm_atm_pd_subject-THANHTRA.PENALTY_DECISION_SUBJECT.yaml
+  id: ATM-pd_subject-THANHTRA.PENALTY_DECISION_SUBJECT
+  physical_name: pd_subject
+  logical_name: Penalty Decision Subject
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: THANHTRA
   status: draft
-  attribute_count: 42
-  brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
-- subfolder: Involved_Party
-  file_name: dm_atm_et_registration_representative-KNT.TAX_REG_REPRESENTATIVE.yaml
-  id: ATM-et_registration_representative-KNT.TAX_REG_REPRESENTATIVE
-  physical_name: et_registration_representative
-  logical_name: External Tax Registration Representative
-  bcv_core_object: Involved Party
-  bcv_concept: "[Involved Party] Designated Representative"
+  attribute_count: 20
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
+- subfolder: Event
+  file_name: dm_atm_pd_subject_behavior-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.yaml
+  id: ATM-pd_subject_behavior-THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR
+  physical_name: pd_subject_behavior
+  logical_name: Penalty Decision Subject Behavior
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: THANHTRA
   status: draft
-  attribute_count: 7
-  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+  attribute_count: 16
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT_BEHAVIOR
+- subfolder: Event
+  file_name: dm_atm_penalty_decision-THANHTRA.PENALTY_DECISION.yaml
+  id: ATM-penalty_decision-THANHTRA.PENALTY_DECISION
+  physical_name: penalty_decision
+  logical_name: Penalty Decision
+  bcv_core_object: Event
+  bcv_concept: "[Event] Event"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: draft
+  attribute_count: 30
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_alternative_identification-KNT.TAX_REG_REPRESENTATIVE.yaml
-  id: ATM-ip_alternative_identification-KNT.TAX_REG_REPRESENTATIVE
+  file_name: dm_atm_ip_alternative_identification-THANHTRA.PENALTY_DECISION_SUBJECT.yaml
+  id: ATM-ip_alternative_identification-THANHTRA.PENALTY_DECISION_SUBJECT
   physical_name: ip_alternative_identification
   logical_name: Involved Party Alternative Identification
   bcv_core_object: Involved Party
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: THANHTRA
   status: approved
-  attribute_count: 14
-  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
+  attribute_count: 4
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT
 - subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-KNT.TAX_REG_REPRESENTATIVE.yaml
-  id: ATM-ip_electronic_address-KNT.TAX_REG_REPRESENTATIVE
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: KNT
-  status: approved
-  attribute_count: 15
-  brd_ref: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_electronic_address-KNT.TAX_REGISTRATION_INFO.yaml
-  id: ATM-ip_electronic_address-KNT.TAX_REGISTRATION_INFO
-  physical_name: ip_electronic_address
-  logical_name: Involved Party Electronic Address
-  bcv_core_object: Involved Party
-  bcv_concept: Shared Entity
-  table_type: Fundamental
-  etl_pattern: SCD4A
-  source: KNT
-  status: approved
-  attribute_count: 25
-  brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
-- subfolder: Involved_Party
-  file_name: dm_atm_ip_postal_address-KNT.TAX_REGISTRATION_INFO.yaml
-  id: ATM-ip_postal_address-KNT.TAX_REGISTRATION_INFO
+  file_name: dm_atm_ip_postal_address-THANHTRA.EXAMINATION_TEAM_TARGET.yaml
+  id: ATM-ip_postal_address-THANHTRA.EXAMINATION_TEAM_TARGET
   physical_name: ip_postal_address
   logical_name: Involved Party Postal Address
   bcv_core_object: Involved Party
   bcv_concept: Shared Entity
   table_type: Fundamental
   etl_pattern: SCD4A
-  source: KNT
+  source: THANHTRA
   status: approved
-  attribute_count: 24
-  brd_ref: BRD-SRC-KNT-TAX_REGISTRATION_INFO
+  attribute_count: 3
+  brd_ref: BRD-SRC-THANHTRA-EXAMINATION_TEAM_TARGET
+- subfolder: Involved_Party
+  file_name: dm_atm_ip_postal_address-THANHTRA.PENALTY_DECISION_SUBJECT.yaml
+  id: ATM-ip_postal_address-THANHTRA.PENALTY_DECISION_SUBJECT
+  physical_name: ip_postal_address
+  logical_name: Involved Party Postal Address
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: THANHTRA
+  status: approved
+  attribute_count: 3
+  brd_ref: BRD-SRC-THANHTRA-PENALTY_DECISION_SUBJECT

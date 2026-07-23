@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Arrangement] Investment Account"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -19,8 +19,10 @@ metadata:
   approved_at: null
   notes: "Gộp 2 bảng nguồn 1-1 cùng grain (InvesId, SecId): SECURITIESACCOUNT (primary\
     \ — số tài khoản, nơi mở) + CATEGORIESSTOCK (current_holding_quantity/current_ownership_rate).\
-    \ Theo quyết định Data Modeler 2026-07-19 (FIMS_HLD_Tier3.md). Cột trùng lặp (InvesId/SecId/audit\
-    \ fields) của CATEGORIESSTOCK document trong pending_design.yaml theo Bước 3j."
+    \ Theo quyết định Data Modeler 2026-07-19 (FIMS_HLD_Tier3.md). Cột trùng lặp (Id/InvesId/SecId)\
+    \ và cụm trường kỹ thuật (Deleted/DateCreated/CreatedBy/DateModified/ModifyBy)\
+    \ của cả 2 bảng nguồn document đầy đủ trong pending_design.yaml theo Bước 3j +\
+    \ quyết định 2026-07-20 (loại trừ cụm kỹ thuật FIMS khỏi bảng Update)."
 attributes:
 - attribute_name: "Foreign Investor Securities Account Id"
   physical_name: "foreign_investor_securities_account_id"
@@ -96,13 +98,14 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.SECURITIESACCOUNT.SecId"
-  comment: "Pending — FK target: Market Participant Organization.Market Participant\
-    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS.SECURITIESCOMPANY',\
-    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-    \ BK."
+  comment: "FK target: Securities Company.Securities Company Id. Nguồn lưu ID kỹ thuật\
+    \ của SCMS.SC_FIRM_INFO — ETL join SecId → SCMS.SC_FIRM_INFO.ID để lấy CODE rồi\
+    \ hash_id('SCMS.SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-21 — thay\
+    \ thế placeholder Market Participant Organization/FIMS.SECURITIESCOMPANY trước\
+    \ đây (đồng bộ với FIMS.TRADINGAUTHORIZATION.SecComId)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -112,11 +115,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.SECURITIESACCOUNT.SecId"
-  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
-    \ Code. Pending — xem ghi chú ở Securities Company Id."
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -160,57 +163,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.SECURITIESACCOUNT.DateCreated"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Name"
-  physical_name: "created_by_user_nm"
-  description: "Tài khoản người dùng tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.SECURITIESACCOUNT.CreatedBy"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.SECURITIESACCOUNT.DateModified"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated By User Name"
-  physical_name: "updated_by_user_nm"
-  description: "Tài khoản người dùng cập nhật lần cuối."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.SECURITIESACCOUNT.ModifyBy"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"

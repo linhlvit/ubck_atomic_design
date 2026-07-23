@@ -47,6 +47,18 @@ attributes:
   classification_context: "IP_ALT_ID_TYPE=(source)"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=KNT.TAX_REG_REPRESENTATIVE"
+  etl_derived_value: "KNT.TAX_REG_REPRESENTATIVE"
+  data_type: "string"
 - attribute_name: "Alternative Identification Type Code"
   physical_name: "alternative_identification_tp_code"
   description: "Loại giấy tờ: 1010=CMND, 2080=CCCD, 1020=Hộ chiếu."
@@ -60,18 +72,6 @@ attributes:
     \ Expression mapping: 1010=NATIONAL_ID;2080=CITIZEN_ID;1020=PASSPORT."
   classification_context: "IP_ALT_ID_TYPE=(source)"
   etl_derived_value: "1010=NATIONAL_ID;2080=CITIZEN_ID;1020=PASSPORT"
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=KNT.TAX_REG_REPRESENTATIVE"
-  etl_derived_value: "KNT.TAX_REG_REPRESENTATIVE"
   data_type: "string"
 - attribute_name: "Alternative Identification Number"
   physical_name: "alternative_identification_nbr"

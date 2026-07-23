@@ -93,7 +93,7 @@ attributes:
     etl_derived_value: null
 
   - name: Classification Event Type Id
-    physical_name: cl_event_tp_id
+    physical_name: cl_event_type_id
     business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Surrogate Key
     data_type: string
@@ -102,12 +102,12 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
-    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
     etl_derived_value: null
 
   - name: Classification Event Type Code
-    physical_name: cl_event_tp_code
+    physical_name: cl_event_type_code
     business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Text
     data_type: string
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
-    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with cl_event_type_id."
     classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
     etl_derived_value: null
 
@@ -697,8 +697,8 @@ attributes:
   - name: Collateral Required Indicator
     physical_name: collateral_required_indicator
     business_meaning: "Có tài sản bảo đảm: 1=Có; 0=Không."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -711,8 +711,8 @@ attributes:
   - name: Synced From Admin Procedure Indicator
     physical_name: synced_from_admin_procedure_indicator
     business_meaning: "Dữ liệu đồng bộ từ phân hệ TTHC: 1=Đồng bộ; 0=Nhập tay."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS

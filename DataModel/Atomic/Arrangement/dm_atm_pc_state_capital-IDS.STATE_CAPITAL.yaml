@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.COMPANY_PROFILE_ID
-    comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
+    comment: "FK target: public_company.public_company_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_PROFILE_ID)."
     classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: STATE_CAPITAL
     source_column: IDS.STATE_CAPITAL.COMPANY_PROFILE_ID
-    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    comment: "Lookup pair: public_company.public_company_code. Pair with public_company_id."
     classification_context: "Source System Code = 'IDS_STATE_CAPITAL'"
     etl_derived_value: null
 
@@ -179,8 +179,8 @@ attributes:
   - name: Deleted Indicator
     physical_name: deleted_indicator
     business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: IDS

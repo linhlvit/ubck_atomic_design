@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Arrangement] Authority Arrangement"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Gộp thêm TRADINGAUTHORIZATIONINVES (quan hệ 1:1 với TRADINGAUTHORIZATION,\
+    \ không phải junction nhiều-nhiều) — quyết định Data Modeler 2026-07-20, thay\
+    \ thế quyết định denormalize ARRAY trước đây (FIMS_HLD_Overview.md mục 7d). InvestorId\
+    \ map thành cặp FK Authorized Investor Id/Code. Cột trùng lặp (Id/TradingAuthorizationId)\
+    \ và Deleted/CreatedBy của TRADINGAUTHORIZATIONINVES document trong pending_design.yaml\
+    \ theo Bước 3j; DateCreated map vào Authorized Investor Data Date (bảng Append)."
 attributes:
 - attribute_name: "Trading Authorization Id"
   physical_name: "trading_authorization_id"
@@ -76,17 +81,18 @@ attributes:
   data_type: "string"
 - attribute_name: "Fund Management Company Id"
   physical_name: "fmc_id"
-  description: "FK -> FUNDCOMPANY: QLQ nơi người hành nghề làm việc."
+  description: "FK đến Fund Management Company: QLQ nơi người hành nghề làm việc."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.FundComId"
-  comment: "Pending — FK target: Market Participant Organization.Market Participant\
-    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.FUNDCOMPANY). Hash: hash_id('FIMS.FUNDCOMPANY',\
-    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-    \ BK."
+  comment: "FK target: Fund Management Company.Fund Management Company Id. Nguồn lưu\
+    \ ID kỹ thuật của FMS.SECURITIES — ETL join FundComId → FMS.SECURITIES.ID để lấy\
+    \ giá trị rồi hash_id('FMS.SECURITIES', ID). Quyết định Data Modeler 2026-07-20\
+    \ — thay thế placeholder Market Participant Organization/FIMS.FUNDCOMPANY trước\
+    \ đây."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -96,27 +102,28 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.FundComId"
-  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
-    \ Code. Pending — xem ghi chú ở Fund Management Company Id."
+  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
+    \ with Fund Management Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Company Id"
   physical_name: "sc_id"
-  description: "FK -> SECURITIESCOMPANY: CTCK nơi người hành nghề làm việc."
+  description: "FK đến Securities Company: CTCK nơi người hành nghề làm việc."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.SecComId"
-  comment: "Pending — FK target: Market Participant Organization.Market Participant\
-    \ Organization Id (chưa thiết kế LLD — nguồn FIMS.SECURITIESCOMPANY). Hash: hash_id('FIMS.SECURITIESCOMPANY',\
-    \ CODE) sau khi Market Participant Organization được thiết kế và xác định cột\
-    \ BK."
+  comment: "FK target: Securities Company.Securities Company Id. Nguồn lưu ID kỹ thuật\
+    \ của SCMS.SC_FIRM_INFO — ETL join SecComId → SCMS.SC_FIRM_INFO.ID để lấy CODE\
+    \ rồi hash_id('SCMS.SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-20 —\
+    \ thay thế placeholder Market Participant Organization/FIMS.SECURITIESCOMPANY\
+    \ trước đây."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -126,11 +133,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.SecComId"
-  comment: "Lookup pair: Market Participant Organization.Market Participant Organization\
-    \ Code. Pending — xem ghi chú ở Securities Company Id."
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
+    \ Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -272,73 +279,52 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Authorized Investor Ids"
-  physical_name: "authorized_investor_ids"
-  description: "Danh sách nhà đầu tư nước ngoài bổ sung trong cùng hợp đồng ủy quyền\
-    \ giao dịch (ngoài Foreign Investor Id chính)."
-  data_domain: "Array<Struct>"
+- attribute_name: "Authorized Investor Id"
+  physical_name: "authorized_investor_id"
+  description: "FK đến Foreign Investor: nhà đầu tư nước ngoài trong bản ghi ủy quyền\
+    \ giao dịch (TRADINGAUTHORIZATIONINVES)."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATIONINVES.InvestorId"
-  comment: "Pure junction TRADINGAUTHORIZATIONINVES → denormalize thành ARRAY. Struct:\
-    \ {investor_id: Surrogate Key; investor_code: Text}. HLD decision: FIMS_HLD_Overview.md\
-    \ mục 7d."
+  comment: "FK target: Foreign Investor.Foreign Investor Id. TRADINGAUTHORIZATIONINVES\
+    \ là quan hệ 1:1 với TRADINGAUTHORIZATION (không phải junction nhiều-nhiều — quyết\
+    \ định Data Modeler 2026-07-20, thay thế quyết định denormalize ARRAY trước đây\
+    \ tại FIMS_HLD_Overview.md mục 7d). Nguồn lưu ID kỹ thuật của INVESTOR — ETL join\
+    \ InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode rồi hash_id('FIMS.INVESTOR',\
+    \ TransactionCode)."
   classification_context: null
   etl_derived_value: null
-  data_type: "array<struct<...>>"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.DateCreated"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Name"
-  physical_name: "created_by_user_nm"
-  description: "Tài khoản người dùng tạo bản ghi."
+  data_type: "string"
+- attribute_name: "Authorized Investor Code"
+  physical_name: "authorized_investor_code"
+  description: "Mã giao dịch NĐT NN (VSDC) trong bản ghi ủy quyền giao dịch (TRADINGAUTHORIZATIONINVES)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.CreatedBy"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
+  - "FIMS.TRADINGAUTHORIZATIONINVES.InvestorId"
+  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Authorized\
+    \ Investor Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối."
-  data_domain: "Timestamp"
+- attribute_name: "Authorized Investor Data Date"
+  physical_name: "authorized_investor_data_dt"
+  description: "Ngày dữ liệu bản ghi ủy quyền NĐT NN (TRADINGAUTHORIZATIONINVES) —\
+    \ dùng cho filter logic incremental extract."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.DateModified"
-  comment: null
+  - "FIMS.TRADINGAUTHORIZATIONINVES.DateCreated"
+  comment: "TRADINGAUTHORIZATIONINVES là bảng Append (chỉ có DateCreated/CreatedBy,\
+    \ không có DateModified/ModifyBy) — DateCreated map vào Data Date theo quyết định\
+    \ cụm trường kỹ thuật FIMS 2026-07-20, thay vì loại bỏ như bảng Update."
   classification_context: null
   etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated By User Name"
-  physical_name: "updated_by_user_nm"
-  description: "Tài khoản người dùng cập nhật lần cuối."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.ModifyBy"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
+  data_type: "date"

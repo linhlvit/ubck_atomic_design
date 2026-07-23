@@ -22,34 +22,6 @@ ldm:
     brd: BRD-SRC-SCMS-SC_FIRM_SENIOR_PERSONNEL
 
 attributes:
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company Senior Personnel.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_CMND'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company Senior Personnel.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_CMND'"
-    etl_derived_value: null
-
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -132,34 +104,6 @@ attributes:
     source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_PLACE
     comment: Gắn với row LEGACY_CMND (ID_NUMBER). Cần xác nhận có áp dụng cho NATIONAL_ID không.
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'LEGACY_CMND'"
-    etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company Senior Personnel.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company Senior Personnel.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_SENIOR_PERSONNEL
-    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
-    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -263,6 +207,62 @@ attributes:
   - name: Issuing Authority Name
     physical_name: issuing_authority_nm
     business_meaning: Nơi cấp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Securities Company Senior Personnel.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
+    comment: "FK target: sc_senior_personnel.sc_senior_personnel_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_SENIOR_PERSONNEL', ID)."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Securities Company Senior Personnel.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.ID
+    comment: "Lookup pair: sc_senior_personnel.sc_senior_personnel_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Alternative Identification Type Code
+    physical_name: alternative_identification_tp_code
+    business_meaning: Loại giấy tờ tùy thân.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: SC_FIRM_SENIOR_PERSONNEL
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột phân biệt loại giấy tờ (CMND/CCCD/Hộ chiếu) — mặc định NATIONAL_ID. Document pending_design.yaml, cần profile dữ liệu thực tế trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SENIOR_PERSONNEL' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Alternative Identification Number
+    physical_name: alternative_identification_nbr
+    business_meaning: Số CMND/CCCD/Hộ chiếu của đại diện giao dịch.
     data_domain: Text
     data_type: string
     nullable: true

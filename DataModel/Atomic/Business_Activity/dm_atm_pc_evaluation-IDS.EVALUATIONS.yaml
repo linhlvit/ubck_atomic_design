@@ -2,9 +2,9 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-public_company_evaluation-IDS.EVALUATIONS
+  id: ATM-pc_evaluation-IDS.EVALUATIONS
   logical_name: Public Company Evaluation
-  physical_name: public_company_evaluation
+  physical_name: pc_evaluation
   layer: Atomic
   version: "1.0"
   status: draft
@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.COMPANY_ID
-    comment: "FK target: Public Company.Public Company Id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến COMPANY_PROFILES."
+    comment: "FK target: public_company.public_company_id. Hash: hash_id('IDS.COMPANY_PROFILES', COMPANY_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh và HLD Tier3 xác nhận đây là FK đến COMPANY_PROFILES."
     classification_context: "Source System Code = 'IDS_EVALUATIONS'"
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.COMPANY_ID
-    comment: "Lookup pair: Public Company.Public Company Code. Pair with Public Company Id."
+    comment: "Lookup pair: public_company.public_company_code. Pair with public_company_id."
     classification_context: "Source System Code = 'IDS_EVALUATIONS'"
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     source_system: IDS
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.APPROVED_BY
-    comment: "FK target: Identity and Access Management User.Identity and Access Management User Id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10) tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa thêm Hash."
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cross-source FK (IDS.LOGINS → IAM.USERS) — Pending: LOGINS.ID NUMBER(10) tự tăng vs IAM.USERS.ID VARCHAR2(36) GUID, chưa xác nhận crosswalk nên chưa thêm Hash."
     classification_context: "Source System Code = 'IDS_EVALUATIONS'"
     etl_derived_value: null
 
@@ -200,7 +200,7 @@ attributes:
     source_system: IDS
     source_table: EVALUATIONS
     source_column: IDS.EVALUATIONS.APPROVED_BY
-    comment: "Lookup pair: Identity and Access Management User.Identity and Access Management User Code. Pair with Approved By User Id. Pending — xem ghi chú ở Id."
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approved By User Id. Pending — xem ghi chú ở Id."
     classification_context: "Source System Code = 'IDS_EVALUATIONS'"
     etl_derived_value: null
 

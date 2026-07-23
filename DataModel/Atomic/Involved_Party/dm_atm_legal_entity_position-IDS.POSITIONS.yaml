@@ -74,7 +74,7 @@ attributes:
     source_system: IDS
     source_table: POSITIONS
     source_column: IDS.POSITIONS.LEGAL_ENTITY_ID
-    comment: "FK target: Legal Entity.Legal Entity Id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
+    comment: "FK target: legal_entity.legal_entity_id. Hash: hash_id('IDS.LEGAL_ENTITIES', LEGAL_ENTITY_ID)."
     classification_context: "Source System Code = 'IDS_POSITIONS'"
     etl_derived_value: null
 
@@ -88,7 +88,7 @@ attributes:
     source_system: IDS
     source_table: POSITIONS
     source_column: IDS.POSITIONS.LEGAL_ENTITY_ID
-    comment: "Lookup pair: Legal Entity.Legal Entity Code. Pair with Legal Entity Id."
+    comment: "Lookup pair: legal_entity.legal_entity_code. Pair with legal_entity_id."
     classification_context: "Source System Code = 'IDS_POSITIONS'"
     etl_derived_value: null
 
@@ -137,8 +137,8 @@ attributes:
   - name: Active Indicator
     physical_name: active_indicator
     business_meaning: "Có trạng thái chức vụ hiện tại (0-Không, 1-Có)."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -151,8 +151,8 @@ attributes:
   - name: Deleted Indicator
     physical_name: deleted_indicator
     business_meaning: "Đánh dấu xóa mềm (1 - Xóa, 0 - Chưa xóa)."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: IDS

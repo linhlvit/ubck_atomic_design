@@ -50,18 +50,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột ID_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
-  data_type: "string"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -73,6 +61,18 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "SOURCE_SYSTEM=SCMS.SC_FIRM_SHAREHOLDER"
   etl_derived_value: "SCMS.SC_FIRM_SHAREHOLDER"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột ID_NUMBER."
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: "NATIONAL_ID"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"

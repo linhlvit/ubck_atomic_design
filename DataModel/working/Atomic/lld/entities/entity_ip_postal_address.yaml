@@ -158,7 +158,18 @@ sources:
 - source_system: "IDS"
   source_table: "AF_PROFILES"
   lld_file: "IDS/lld_IDS_AF_PROFILES_IP_Postal_Address.yaml"
+- source_system: "FIMS"
+  source_table: "INVESTOR"
+  lld_file: "FIMS/lld_FIMS_INVESTOR_IP_Postal_Address.yaml"
+- source_system: "FIMS"
+  source_table: "TRADINGREPRESENTATIVE"
+  lld_file: "FIMS/lld_FIMS_TRADINGREPRESENTATIVE_IP_Postal_Address.yaml"
+- source_system: "KNT"
+  source_table: "TAX_REGISTRATION_INFO"
+  lld_file: "KNT/lld_KNT_TAX_REGISTRATION_INFO_IP_Postal_Address.yaml"
 consolidation_notes:
+- "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Id' — đặt nullable=true"
+- "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Code' — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=HEAD_OFFICE)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=PERMANENT)\
@@ -187,13 +198,25 @@ consolidation_notes:
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Address Type Code' (ctx=IP_ADDR_TYPE=BUSINESS)\
   \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ADDR_TYPE=HEAD_OFFICE)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ADDR_TYPE=HEAD_OFFICE)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ADDR_TYPE=PERMANENT)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ADDR_TYPE=PERMANENT)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ADDR_TYPE=BUSINESS)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ADDR_TYPE=BUSINESS)\
+  \ — đặt nullable=true"
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
   description: "FK đến Securities Company Organization Unit (VPDD CTCK NN — phiên\
     \ bản đăng ký tại VN)."
   data_domain: "Surrogate Key"
-  nullable: false
+  nullable: true
   is_primary_key: false
   comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
     \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS',\
@@ -250,11 +273,14 @@ attributes:
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ID"
     IDS.AF_PROFILES: "IDS.AF_PROFILES.ID"
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company Foreign Representative Office Personnel."
   data_domain: "Text"
-  nullable: false
+  nullable: true
   is_primary_key: false
   comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
     \ Organization Unit Code. Pair with Involved Party Id."
@@ -310,6 +336,9 @@ attributes:
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ID"
     IDS.AF_PROFILES: "IDS.AF_PROFILES.ID"
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -369,6 +398,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: HEAD_OFFICE=Trụ sở chính ngân hàng lưu ký."
@@ -428,6 +460,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ trụ sở chính (số nhà, tên đường)."
@@ -487,6 +522,9 @@ attributes:
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.HEAD_OFFICE_ADDR"
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.Address"
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.HQ_ADDRESS"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: PERMANENT=Địa chỉ thường trú theo hộ khẩu."
@@ -546,6 +584,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ thường trú của người nội bộ liên quan."
@@ -606,6 +647,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ADDRESS"
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Country Id"
   physical_name: "country_id"
   description: "FK đến Geographic Area — quốc gia."
@@ -670,6 +714,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Country Code"
   physical_name: "country_code"
   description: "Mã quốc gia."
@@ -730,6 +777,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area — tỉnh/thành."
@@ -794,6 +844,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành."
@@ -854,6 +907,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area — quận/huyện."
@@ -919,6 +975,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã quận/huyện."
@@ -979,6 +1038,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ — địa chỉ chung, nguồn không phân loại."
@@ -1038,6 +1100,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ đối tượng được kiểm tra (cá nhân và tổ chức)."
@@ -1097,6 +1162,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ADDRESS"
     IDS.AF_PROFILES: "IDS.AF_PROFILES.ADDRESS"
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính)."
@@ -1161,6 +1229,9 @@ attributes:
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.PROVINCE_ID"
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành phố (trụ sở chính)."
@@ -1221,6 +1292,9 @@ attributes:
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.PROVINCE_ID"
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp quận/huyện (cũ)."
@@ -1285,6 +1359,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã quận/huyện."
@@ -1345,6 +1422,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Name"
   physical_name: "district_nm"
   description: "Tên quận/huyện (denormalized để tiện query mà không cần join CAT_DISTRICT)."
@@ -1405,6 +1485,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp phường/xã."
@@ -1468,6 +1551,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã phường/xã."
@@ -1528,6 +1614,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Name"
   physical_name: "ward_nm"
   description: "Tên phường/xã (denormalized để tiện query mà không cần join CAT_WARD)."
@@ -1588,6 +1677,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: BRANCH=Địa chỉ chi nhánh CTCK trong nước."
@@ -1648,6 +1740,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ chi tiết của chi nhánh (số nhà, tên đường, phường/xã)."
@@ -1707,6 +1802,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
@@ -1771,6 +1869,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã Tỉnh/Thành phố."
@@ -1831,6 +1932,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp Quận/Huyện (cũ)."
@@ -1895,6 +1999,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã Quận/Huyện."
@@ -1955,6 +2062,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Name"
   physical_name: "district_nm"
   description: "Tên Quận/Huyện (denormalized text, không có FK riêng)."
@@ -2014,6 +2124,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp Phường/Xã."
@@ -2077,6 +2190,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã Phường/Xã."
@@ -2137,6 +2253,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Name"
   physical_name: "ward_nm"
   description: "Tên Phường/Xã (denormalized text)."
@@ -2196,6 +2315,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: REP_OFFICE=Địa chỉ văn phòng đại diện nội địa."
@@ -2256,6 +2378,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ VPDD nội địa (text, không có FK tỉnh/quận/phường)."
@@ -2315,6 +2440,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
@@ -2379,6 +2507,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã Tỉnh/Thành phố."
@@ -2439,6 +2570,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp Quận/Huyện (cũ)."
@@ -2503,6 +2637,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã Quận/Huyện."
@@ -2563,6 +2700,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp Phường/Xã."
@@ -2626,6 +2766,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã Phường/Xã."
@@ -2686,6 +2829,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: TRANSACTION_OFFICE=Địa chỉ phòng giao dịch."
@@ -2747,6 +2893,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ chi tiết của phòng giao dịch."
@@ -2806,6 +2955,9 @@ attributes:
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.TRADING_OFFICE_ADDR"
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
@@ -2870,6 +3022,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã Tỉnh/Thành phố."
@@ -2930,6 +3085,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp Quận/Huyện (cũ)."
@@ -2994,6 +3152,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã Quận/Huyện."
@@ -3054,6 +3215,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp Phường/Xã."
@@ -3117,6 +3281,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã Phường/Xã."
@@ -3177,6 +3344,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: FOREIGN_REP_OFFICE=Địa điểm VPDD CTCK nước ngoài tại\
@@ -3239,6 +3409,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ VPDD CTCK nước ngoài tại Việt Nam."
@@ -3298,6 +3471,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: PARENT_ADDRESS=Địa chỉ công ty mẹ nước ngoài."
@@ -3357,6 +3533,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ công ty mẹ nước ngoài."
@@ -3416,6 +3595,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: FOREIGN_BRANCH=Địa điểm chi nhánh CTCK nước ngoài tại\
@@ -3478,6 +3660,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ chi nhánh CTCK nước ngoài tại Việt Nam."
@@ -3537,6 +3722,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: CURRENT=Địa chỉ trụ sở chính/văn phòng liên lạc hiện\
@@ -3597,6 +3785,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ hiện tại (nơi ở hiện tại)."
@@ -3656,6 +3847,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: HOME=Địa chỉ cá nhân nhân sự cấp cao."
@@ -3716,6 +3910,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ trụ sở chính/văn phòng của nhân sự cấp cao."
@@ -3775,6 +3972,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: HOUSEHOLD_REGISTRY=Địa chỉ hộ khẩu."
@@ -3834,6 +4034,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ hộ khẩu của cổ đông."
@@ -3893,6 +4096,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: REGISTERED=Địa chỉ đăng ký kinh doanh của tổ chức có\
@@ -3953,6 +4159,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ đăng ký kinh doanh của tổ chức có quan hệ sở hữu với CTCK."
@@ -4012,6 +4221,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ — nơi làm việc."
@@ -4071,6 +4283,9 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ cơ quan/nơi làm việc."
@@ -4130,3 +4345,757 @@ attributes:
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
     IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_ADDRESS_DESC"
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến External Tax Registration (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: true
+  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS.INVESTOR',\
+    \ TransactionCode)."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã External Tax Registration."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
+    \ Party Id."
+  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Trading Representative (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: true
+  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
+    \ ID)."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã Trading Representative."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
+    \ with Involved Party Id."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
+    KNT.TAX_REGISTRATION_INFO: null
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến External Tax Registration (Involved Party)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: true
+  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
+    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Mã External Tax Registration."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
+    \ Pair with Involved Party Id."
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố địa chỉ kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Text denormalized — provinces là reference data set chưa map vào shared\
+    \ Geographic Area trong scope KNT (chưa có lookup FK tường minh)."
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_CODE"
+- attribute_name: "Province Name"
+  physical_name: "province_nm"
+  description: "Tên tỉnh/thành phố kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME"
+- attribute_name: "District Code"
+  physical_name: "district_code"
+  description: "Mã quận/huyện địa chỉ kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Text denormalized — chưa map vào shared Geographic Area trong scope KNT."
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_CODE"
+- attribute_name: "District Name"
+  physical_name: "district_nm"
+  description: "Tên quận/huyện kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME"
+- attribute_name: "Ward Code"
+  physical_name: "ward_code"
+  description: "Mã xã/phường địa chỉ kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Text denormalized — chưa map vào shared Geographic Area trong scope KNT."
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_CODE"
+- attribute_name: "Ward Name"
+  physical_name: "ward_nm"
+  description: "Tên xã/phường địa chỉ kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.UNITS: null
+    NHNCK.ORGANIZATIONS: null
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.EXAMINATION_TEAM_TARGET: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_REP_OFFICE: null
+    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.BANK_MONI: null
+    FMS.AGENCIES: null
+    FMS.BRANCHS: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.INVES: null
+    FMS.AGENCIES_BRA: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.DISTRIBUTOR_LOCATION: null
+    IDS.COMPANY_PROFILES: null
+    IDS.LEGAL_ENTITIES: null
+    IDS.AF_PROFILES: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME"

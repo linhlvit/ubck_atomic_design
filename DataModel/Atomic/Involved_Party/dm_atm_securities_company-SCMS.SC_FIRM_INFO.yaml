@@ -60,7 +60,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.securities_company_id. Self-referencing. Resolve: join SC_FIRM_INFO_ID → SCMS.SC_FIRM_INFO.ID để lấy CODE, rồi hash_id('SCMS.SC_FIRM_INFO', code_cha)."
+    comment: "FK target: securities_company.securities_company_id. Self-referencing. Resolve: join SC_FIRM_INFO_ID → SCMS.SC_FIRM_INFO.ID để lấy CODE, rồi hash_id('SCMS.SC_FIRM_INFO', CODE_CHA)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
     etl_derived_value: null
 
@@ -177,7 +177,7 @@ attributes:
     etl_derived_value: null
 
   - name: Classification Event Type Id
-    physical_name: cl_event_tp_id
+    physical_name: cl_event_type_id
     business_meaning: Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Event Type.
     data_domain: Surrogate Key
     data_type: string
@@ -186,12 +186,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
-    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
     etl_derived_value: null
 
   - name: Classification Event Type Code
-    physical_name: cl_event_tp_code
+    physical_name: cl_event_type_code
     business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Text
     data_type: string
@@ -200,7 +200,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
-    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
+    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with cl_event_type_id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
     etl_derived_value: null
 
@@ -305,8 +305,8 @@ attributes:
   - name: Listed Indicator
     physical_name: listed_indicator
     business_meaning: "Cờ niêm yết: 1=Có niêm yết trên sàn; 0=Không niêm yết."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -459,8 +459,8 @@ attributes:
   - name: Public Company Indicator
     physical_name: pc_indicator
     business_meaning: "Cờ công ty đại chúng: 1=Là công ty đại chúng; 0=Không phải."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -613,8 +613,8 @@ attributes:
   - name: Amendment Declaration Indicator
     physical_name: amendment_declaration_indicator
     business_meaning: "Cờ có khai bổ sung/sửa đổi: 1=Có văn bản sửa đổi; 0=Không có."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
@@ -711,8 +711,8 @@ attributes:
   - name: Synced From Admin Process Indicator
     physical_name: synced_from_admin_process_indicator
     business_meaning: "Cờ đã đồng bộ từ Thủ tục hành chính: 1=Đã đồng bộ; 0=Chưa đồng bộ."
-    data_domain: Boolean
-    data_type: boolean
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS

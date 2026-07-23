@@ -1,6 +1,5 @@
 schema_type: "lld_source_table"
 schema_version: "2.0"
-
 metadata:
   source_system: "ECAT"
   source_table: "WARD_OLD"
@@ -21,14 +20,13 @@ metadata:
   notes: "Thiết kế lại (regenerate) 2026-07-18 sau khi đối chiếu Source/ECAT_Columns.csv\
     \ bản cập nhật (reconcile) — phát hiện cột mới ID_SYNC (loại trừ, kỹ thuật lineage\
     \ BTC sync). Phường/xã/thị trấn cũ (pre-2025) — đáy phân cấp Geographic Area Old,\
-    \ parent = DISTRICT_OLD. Có FK cross-entity Successor Geographic Area Id/Code sang\
-    \ WARD_NEW tương ứng sau sáp nhập 2025 (lateral mapping). Loại bỏ: ID/STABLE_ID/OLD_ID/ID_SYNC\
+    \ parent = DISTRICT_OLD. Có FK cross-entity Successor Geographic Area Id/Code\
+    \ sang WARD_NEW tương ứng sau sáp nhập 2025 (lateral mapping). Loại bỏ: ID/STABLE_ID/OLD_ID/ID_SYNC\
     \ (kỹ thuật, BK dùng CODE), IDX_* (không phải cột thật, xem pending_design.yaml),\
     \ DISTRICT_OLD_VERSION_ID/WARD_NEW_VERSION_ID (cache version kỹ thuật, xem pending_design.yaml).\
     \ CREATED_AT/UPDATED_AT/CREATED_BY_ID/CREATED_BY_NAME/UPDATED_BY_ID/UPDATED_BY_NAME\
     \ map vào audit block chuẩn — FK Staff Id/Code status=pending vì Regulatory Authority\
     \ Staff (ECAT.UBCK_STAFF) là Tier 3, chưa thiết kế."
-
 attributes:
 - attribute_name: "Geographic Area Old Id"
   physical_name: "geographic_area_old_id"
@@ -38,12 +36,11 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('ECAT.WARD_OLD', CODE). BCV: \"Geographic Area\"\
-    \ (Location) — entity riêng Geographic Area Old cho phân cấp lịch sử pre-2025."
+  comment: "PK surrogate. Hash: hash_id('ECAT.WARD_OLD', CODE). BCV: \"Geographic\
+    \ Area\" (Location) — entity riêng Geographic Area Old cho phân cấp lịch sử pre-2025."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã nguồn dữ liệu"
@@ -56,7 +53,6 @@ attributes:
   classification_context: "SOURCE_SYSTEM=ECAT.WARD_OLD"
   etl_derived_value: "ECAT.WARD_OLD"
   data_type: "string"
-
 - attribute_name: "Geographic Area Old Type Code"
   physical_name: "geographic_area_old_tp_code"
   description: "Phân loại vùng địa lý lịch sử — Phường/Xã/Thị trấn cũ"
@@ -69,7 +65,6 @@ attributes:
   classification_context: "GEOGRAPHIC_AREA_OLD_TYPE=WARD_OLD"
   etl_derived_value: "WARD_OLD"
   data_type: "string"
-
 - attribute_name: "Geographic Area Old Code"
   physical_name: "geographic_area_old_code"
   description: "Mã phường/xã cũ nghiệp vụ (do ECAT quản lý). BK duy nhất — Id hash\
@@ -80,13 +75,12 @@ attributes:
   status: "draft"
   source_columns:
   - "ECAT.WARD_OLD.CODE"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn 1\
-    \ trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước\
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (STABLE_ID) — gộp còn\
+    \ 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước\
     \ go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Geographic Area Old Name"
   physical_name: "geographic_area_old_nm"
   description: "Tên phường/xã/thị trấn cũ (tiếng Việt)"
@@ -100,7 +94,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Geographic Area Old English Name"
   physical_name: "geographic_area_old_english_nm"
   description: "Tên phường/xã/thị trấn cũ (tiếng Anh)"
@@ -114,7 +107,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Geographic Area Old Category Code"
   physical_name: "geographic_area_old_category_code"
   description: "Loại đơn vị hành chính cấp phường/xã cũ (Phường/Xã/Thị trấn)"
@@ -128,7 +120,6 @@ attributes:
   classification_context: "GEOGRAPHIC_AREA_WARD_CATEGORY=(source)"
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Parent Geographic Area Old Id"
   physical_name: "parent_geographic_area_old_id"
   description: "FK đến quận/huyện cũ cha (self-ref trong Geographic Area Old)"
@@ -144,7 +135,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Parent Geographic Area Old Code"
   physical_name: "parent_geographic_area_old_code"
   description: "Mã quận/huyện cũ cha"
@@ -159,7 +149,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Successor Geographic Area Id"
   physical_name: "successor_geographic_area_id"
   description: "FK cross-entity sang phường/xã hiện hành tương ứng sau sáp nhập 2025\
@@ -176,7 +165,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Successor Geographic Area Code"
   physical_name: "successor_geographic_area_code"
   description: "Mã phường/xã hiện hành tương ứng — lookup pair với Successor Geographic\
@@ -192,11 +180,10 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Effective Indicator"
   physical_name: "effective_indicator"
   description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -205,26 +192,25 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
-
+  data_type: "int"
 - attribute_name: "Active Indicator"
   physical_name: "active_indicator"
   description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "ECAT.WARD_OLD.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted Indicator."
+  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
+    \ Indicator."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
-
+  data_type: "int"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: false
   is_primary_key: false
   status: "draft"
@@ -233,8 +219,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
-
+  data_type: "int"
 - attribute_name: "Effective Start Date"
   physical_name: "effective_start_dt"
   description: "Ngày bắt đầu hiệu lực"
@@ -248,7 +233,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Effective End Date"
   physical_name: "effective_end_dt"
   description: "Ngày kết thúc hiệu lực"
@@ -262,7 +246,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Version Number"
   physical_name: "version_nbr"
   description: "Số phiên bản bản ghi tại nguồn"
@@ -276,7 +259,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-
 - attribute_name: "Display Label"
   physical_name: "display_label"
   description: "Nhãn hiển thị"
@@ -290,7 +272,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Active Reason"
   physical_name: "active_reason"
   description: "Lý do thay đổi trạng thái sử dụng"
@@ -304,7 +285,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Deleted Reason"
   physical_name: "deleted_reason"
   description: "Lý do xóa"
@@ -318,7 +298,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Created Timestamp"
   physical_name: "created_tms"
   description: "Thời điểm bản ghi được tạo tại nguồn"
@@ -332,7 +311,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Updated Timestamp"
   physical_name: "updated_tms"
   description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
@@ -346,7 +324,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-
 - attribute_name: "Created By Staff Id"
   physical_name: "created_by_staff_id"
   description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
@@ -362,7 +339,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Created By Staff Code"
   physical_name: "created_by_staff_code"
   description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
@@ -377,7 +353,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Created By Staff Name"
   physical_name: "created_by_staff_nm"
   description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
@@ -392,7 +367,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Updated By Staff Id"
   physical_name: "updated_by_staff_id"
   description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
@@ -408,7 +382,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Updated By Staff Code"
   physical_name: "updated_by_staff_code"
   description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
@@ -423,7 +396,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-
 - attribute_name: "Updated By Staff Name"
   physical_name: "updated_by_staff_nm"
   description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"

@@ -61,7 +61,7 @@ attributes:
 - attribute_name: "Applicant Type Indicator"
   physical_name: "applicant_tp_indicator"
   description: "Phân loại bên đăng ký chào bán: tổ chức hay cá nhân."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -71,7 +71,7 @@ attributes:
     \ Legal Entity Id)."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Public Company Id"
   physical_name: "pc_id"
   description: "Id công ty đại chúng đăng ký chào bán (khi APPLICANT_TYPE_FLG = 1)."
@@ -497,7 +497,7 @@ attributes:
 - attribute_name: "Multi Turn Indicator"
   physical_name: "multi_turn_indicator"
   description: "Hồ sơ đăng ký chào bán phát hành có nhiều đợt hay không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -506,11 +506,11 @@ attributes:
   comment: "Encoding nguồn: 1 = Có nhiều đợt, 0 = Không."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Synced From External System Indicator"
   physical_name: "synced_from_external_stm_indicator"
   description: "Đánh dấu hồ sơ được đồng bộ từ hệ thống TTHC hay tạo mới tại IDS."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -519,11 +519,11 @@ attributes:
   comment: "Encoding nguồn: 1 = Đồng bộ từ TTHC, 0 = Tạo mới tại IDS."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Đánh dấu trạng thái xóa mềm."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -532,7 +532,7 @@ attributes:
   comment: "Encoding nguồn: 1 = Đã xóa, 0 = Chưa xóa."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Approver Comment"
   physical_name: "approver_comment"
   description: "Ghi chú của người phê duyệt."

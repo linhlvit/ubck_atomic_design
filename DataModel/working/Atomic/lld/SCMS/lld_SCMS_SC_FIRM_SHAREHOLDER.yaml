@@ -4,7 +4,7 @@ metadata:
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER"
   atomic_entity: "Securities Company Shareholder"
-  entity_physical_name: "securities_company_shareholder"
+  entity_physical_name: "sc_shareholder"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Shareholder"
   table_type: "Relative"
@@ -195,7 +195,7 @@ attributes:
 - attribute_name: "Individual Indicator"
   physical_name: "individual_indicator"
   description: "Cờ là cá nhân: 1=Cá nhân; 0=Tổ chức."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -204,7 +204,7 @@ attributes:
   comment: "NUMBER(1). ETL: 1→true, 0/null→false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Shareholder Name"
   physical_name: "shareholder_nm"
   description: "Họ và tên đầy đủ (cá nhân) hoặc tên đầy đủ (tổ chức) của cổ đông."
@@ -495,7 +495,7 @@ attributes:
 - attribute_name: "Founding Shareholder Indicator"
   physical_name: "founding_shareholder_indicator"
   description: "Cờ là cổ đông sáng lập: 1=Có; 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -504,11 +504,11 @@ attributes:
   comment: "NUMBER(1). ETL: 1→true, 0/null→false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Owner Indicator"
   physical_name: "owner_indicator"
   description: "Cờ là chủ sở hữu."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -517,11 +517,11 @@ attributes:
   comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Party Member Indicator"
   physical_name: "party_member_indicator"
   description: "Cờ là đảng viên."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -530,11 +530,11 @@ attributes:
   comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Legal Entity Representative Indicator"
   physical_name: "legal_entity_representative_indicator"
   description: "Cờ là người đại diện pháp luật."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -543,11 +543,11 @@ attributes:
   comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Company Employee Indicator"
   physical_name: "company_employee_indicator"
   description: "Cờ là nhân viên của CTCK."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -556,11 +556,11 @@ attributes:
   comment: "NUMBER(1). Mô tả gốc BRD trống. ETL: 1→true, 0/null→false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Foreign Investment Indicator"
   physical_name: "foreign_investment_indicator"
   description: "Cờ là vốn đầu tư nước ngoài: 1=Có; 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -569,7 +569,7 @@ attributes:
   comment: "NUMBER(1). ETL: 1→true, 0/null→false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Practitioner Legacy Id"
   physical_name: "practitioner_legacy_id"
   description: "Mã tham chiếu người hành nghề từ hệ thống cũ."

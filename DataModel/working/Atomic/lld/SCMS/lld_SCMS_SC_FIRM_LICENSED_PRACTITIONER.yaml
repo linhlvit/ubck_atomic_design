@@ -468,7 +468,7 @@ attributes:
 - attribute_name: "Synced Indicator"
   physical_name: "synced_indicator"
   description: "Cờ đã đồng bộ với hệ thống NHNCK: 1=Đã sync; 0=Chưa sync."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -477,7 +477,7 @@ attributes:
   comment: "NUMBER(1). Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Sync Timestamp"
   physical_name: "sync_tms"
   description: "Thời điểm đồng bộ với hệ thống NHNCK gần nhất."
@@ -508,7 +508,7 @@ attributes:
   physical_name: "insider_indicator"
   description: "Là người nội bộ của CTCK theo quy định CBTT: 1=Người nội bộ; 0=Không\
     \ phải."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -517,11 +517,11 @@ attributes:
   comment: "NUMBER(10) với giá trị 0/1."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Labor Contract Termination Report Indicator"
   physical_name: "labor_contract_termination_rpt_indicator"
   description: "Đã nộp báo cáo chấm dứt hợp đồng lao động: 1=Đã nộp; 0=Chưa nộp."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -530,11 +530,11 @@ attributes:
   comment: "NUMBER(1)."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Deleted Indicator"
   physical_name: "deleted_indicator"
   description: "Cờ xóa mềm: 1=Đã xóa; 0=Chưa xóa."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -543,7 +543,7 @@ attributes:
   comment: "NUMBER(1). Soft delete — ETL filter trước khi load Atomic."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Report Id"
   physical_name: "rpt_id"
   description: "FK đến biểu mẫu báo cáo liên quan (FORM_REPORT)."

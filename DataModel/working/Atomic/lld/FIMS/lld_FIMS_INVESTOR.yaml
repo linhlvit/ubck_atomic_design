@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -128,7 +128,7 @@ attributes:
   data_type: "date"
 - attribute_name: "Nationality Id"
   physical_name: "nationality_id"
-  description: "FK -> NATIONAL: Quốc gia/quốc tịch."
+  description: "FK đến Geographic Area (quốc tịch)."
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
@@ -212,16 +212,15 @@ attributes:
 - attribute_name: "Investor System Object Type Code"
   physical_name: "investor_stm_object_tp_code"
   description: "Loại đối tượng trong hệ thống (phân biệt giữa các loại NĐT NN)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FIMS.INVESTOR.SysObjectType"
-  comment: "Scheme: FIMS_INVESTOR_SYS_OBJECT_TYPE. [PROPOSE NEW SCHEME] — chưa xuất\
-    \ hiện trong HLD 6d, chưa rõ giá trị cụ thể. Cần profile dữ liệu trước khi liệt\
-    \ kê values."
-  classification_context: "FIMS_INVESTOR_SYS_OBJECT_TYPE"
+  comment: "Không phải Classification Value — map 1:1 nguyên giá trị nguồn (quyết\
+    \ định Data Modeler 2026-07-20). Không tạo classification_context/scheme."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Trading Securities Company Id"
@@ -377,60 +376,6 @@ attributes:
   source_columns:
   - "FIMS.INVESTOR.FileName"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Thời điểm tạo bản ghi."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.INVESTOR.DateCreated"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Created By User Name"
-  physical_name: "created_by_user_nm"
-  description: "Tài khoản người dùng tạo bản ghi."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.INVESTOR.CreatedBy"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Thời điểm cập nhật lần cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.INVESTOR.DateModified"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated By User Name"
-  physical_name: "updated_by_user_nm"
-  description: "Tài khoản người dùng cập nhật lần cuối."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.INVESTOR.ModifyBy"
-  comment: "Denormalized username — không tạo FK vì FIMS.USERS ngoài scope (operational/system\
-    \ data)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

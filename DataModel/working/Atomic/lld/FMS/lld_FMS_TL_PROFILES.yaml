@@ -4,7 +4,7 @@ metadata:
   source_system: "FMS"
   source_table: "TL_PROFILES"
   atomic_entity: "Fund Management Company Employee"
-  entity_physical_name: "fund_management_company_employee"
+  entity_physical_name: "fmc_employee"
   bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
@@ -178,7 +178,7 @@ attributes:
   physical_name: "active_status_flag"
   description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
     \ lực."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -187,7 +187,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Description"
   physical_name: "description"
   description: "Mô tả chi tiết."
@@ -402,7 +402,7 @@ attributes:
 - attribute_name: "Head Office Flag"
   physical_name: "head_office_flag"
   description: "Cờ là trụ sở chính: 1=Trụ sở chính, 0=Chi nhánh/VPĐD."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -411,7 +411,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Record Classification Text"
   physical_name: "record_cl_text"
   description: "Loại/phân loại của bản ghi."
@@ -602,7 +602,7 @@ attributes:
 - attribute_name: "Confirmation Status Flag"
   physical_name: "confirmation_status_flag"
   description: "Trạng thái xác nhận thông tin: 1=Đã xác nhận, 0=Chưa xác nhận."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -611,7 +611,7 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"
 - attribute_name: "Event Type Code"
   physical_name: "event_tp_code"
   description: "FK -> EVENT_TYPE: Loại sự vụ áp dụng."
@@ -656,7 +656,7 @@ attributes:
 - attribute_name: "Certified Practitioner Flag"
   physical_name: "certified_practitioner_flag"
   description: "Cờ có chứng chỉ hành nghề hợp lệ: 1=Có CCHN, 0=Không."
-  data_domain: "Boolean"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -665,4 +665,4 @@ attributes:
   comment: "Giá trị 1 → true; 0 → false."
   classification_context: null
   etl_derived_value: null
-  data_type: "boolean"
+  data_type: "int"

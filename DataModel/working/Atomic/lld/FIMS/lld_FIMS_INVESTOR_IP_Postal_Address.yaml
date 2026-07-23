@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Postal Address"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -47,6 +47,18 @@ attributes:
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=FIMS.INVESTOR"
+  etl_derived_value: "FIMS.INVESTOR"
+  data_type: "string"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ."
@@ -59,18 +71,6 @@ attributes:
     \ hardcode HEAD_OFFICE."
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: "HEAD_OFFICE"
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FIMS.INVESTOR"
-  etl_derived_value: "FIMS.INVESTOR"
   data_type: "string"
 - attribute_name: "Address Value"
   physical_name: "adr_val"

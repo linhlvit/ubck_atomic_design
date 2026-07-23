@@ -2251,13 +2251,6 @@ entries:
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_PUB_COMPANY_REGISTRATION.yaml."
 
   - source_system: "IDS"
-    source_table: "RCOL"
-    source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
-    description: "Audit block created/updated by-at"
-    reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
-    action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_RCOL.yaml."
-
-  - source_system: "IDS"
     source_table: "REP_COLUMN"
     source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
     description: "Audit block created/updated by-at"
@@ -2305,13 +2298,6 @@ entries:
     description: "Audit block created/updated by-at"
     reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
     action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_REPORT_EXTENSIONS.yaml."
-
-  - source_system: "IDS"
-    source_table: "RROW"
-    source_column: "CREATED_DATE, UPDATED_DATE, CREATED_BY, UPDATED_BY"
-    description: "Audit block created/updated by-at"
-    reason: "Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh."
-    action: "Excluded — da xoa Created/Updated Timestamp va Created/Updated By User Id/Code khoi lld_IDS_RROW.yaml."
 
   - source_system: "IDS"
     source_table: "SECURITIES_OFFERING"
@@ -3517,3 +3503,24 @@ entries:
     description: "Cờ xóa mềm: 1=Đã xóa, 0=Đang hoạt động"
     reason: "Cờ soft-delete kỹ thuật — trạng thái bản ghi derive qua ds_rcrd_st (ETL framework), không thiết kế business attribute riêng."
     action: "Không map."
+
+  - source_system: "FIMS"
+    source_table: "INVESTOR"
+    source_column: "Id"
+    description: "Khóa chính của bản ghi (ID số tự tăng)"
+    reason: "PK kỹ thuật nguồn (ID tự tăng) — không map vào Atomic theo quy tắc Bước 3e. Entity dùng TransactionCode làm BK (Foreign Investor Code); Foreign Investor Id hash từ chính TransactionCode, không hash từ Id kỹ thuật."
+    action: "Không map. Loại khỏi lld_FIMS_INVESTOR.yaml (post_check_source_coverage phát hiện 2026-07-21 — mô tả bổ sung, không sửa attribute list của file approved)."
+
+  - source_system: "FIMS"
+    source_table: "SECURITIESACCOUNT"
+    source_column: "Id"
+    description: "Khóa chính của bản ghi (ID số tự tăng)"
+    reason: "PK kỹ thuật nguồn (ID tự tăng) — không map vào Atomic theo quy tắc Bước 3e. Entity Foreign Investor Securities Account dùng cặp FK (Foreign Investor Id + Securities Company Id) làm định danh nghiệp vụ, không có BK riêng của bảng chính."
+    action: "Không map. Loại khỏi lld_FIMS_SECURITIESACCOUNT.yaml (post_check_source_coverage phát hiện 2026-07-21 — mô tả bổ sung, không sửa attribute list của file approved)."
+
+  - source_system: "FIMS"
+    source_table: "TRADINGAUTHORIZATION"
+    source_column: "InvestorIds"
+    description: "Danh sách ID nhà đầu tư liên quan (lưu dạng JSON/CSV)"
+    reason: "Cột denormalized riêng trên chính TRADINGAUTHORIZATION (không phải InvestorId đơn — đã map — cũng không phải TRADINGAUTHORIZATIONINVES — đã map thành Authorized Investor Id/Code). Chưa rõ đây là dữ liệu vestigial trùng lặp với TRADINGAUTHORIZATIONINVES hay danh sách bổ sung có ý nghĩa nghiệp vụ riêng (VD: multi-investor hợp đồng ủy quyền chung)."
+    action: "Không map — cần Data Modeler xác nhận: InvestorIds có phải trường trùng lặp/deprecated so với TRADINGAUTHORIZATIONINVES hay cần thiết kế thành ARRAY<Struct> riêng. File lld_FIMS_TRADINGAUTHORIZATION.yaml đã approved — không tự sửa attribute list khi chưa có xác nhận (post_check_source_coverage phát hiện 2026-07-21)."

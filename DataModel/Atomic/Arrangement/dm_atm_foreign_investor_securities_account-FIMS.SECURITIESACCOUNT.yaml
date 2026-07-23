@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-foreign_investor_securities_account-FIMS.SECURITIESACCOUNT
+  logical_name: Foreign Investor Securities Account
+  physical_name: foreign_investor_securities_account
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Investment Account"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FIMS
+  description: |
+    Tài khoản giao dịch chứng khoán của nhà đầu tư nước ngoài mở tại công ty chứng khoán. Ghi nhận số tài khoản, nơi mở, số lượng và tỷ lệ sở hữu chứng khoán hiện tại (từ CATEGORIESSTOCK — cùng grain Investor × Securities Company). FK đến Foreign Investor và Market Participant Organization (SECURITIESCOMPANY). Table
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-SECURITIESACCOUNT
+
+attributes:
+  - name: Foreign Investor Securities Account Id
+    physical_name: foreign_investor_securities_account_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Investment Account\". Tài khoản chứng khoán của NĐT NN mở tại công ty CK. Hash: hash_id('FIMS.SECURITIESACCOUNT', Account)."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Securities Account Code
+    physical_name: foreign_investor_securities_account_code
+    business_meaning: Số tài khoản chứng khoán. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.Account
+    comment: "BK chính. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: FIMS.SECURITIESACCOUNT
+
+  - name: Foreign Investor Id
+    physical_name: foreign_investor_id
+    business_meaning: "FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.InvesId
+    comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ thuật của INVESTOR — ETL join InvesId → FIMS.INVESTOR.Id để lấy TransactionCode rồi hash_id('FIMS.INVESTOR', TransactionCode)."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Foreign Investor Code
+    physical_name: foreign_investor_code
+    business_meaning: Mã giao dịch NĐT NN (VSDC).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.InvesId
+    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with foreign_investor_id."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: "FK -> SECURITIESCOMPANY: Công ty CK liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.SecId
+    comment: "FK target: securities_company.securities_company_id. Nguồn lưu ID kỹ thuật của SCMS.SC_FIRM_INFO — ETL join SecId → SCMS.SC_FIRM_INFO.ID để lấy CODE rồi hash_id('SCMS.SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-21 — thay thế placeholder Market Participant Organization/FIMS.SECURITIESCOMPANY trước đây (đồng bộ với FIMS.TRADINGAUTHORIZATION.SecComId)."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: Mã công ty CK liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.SecId
+    comment: "Lookup pair: securities_company.securities_company_code. Pair with securities_company_id."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Account Opening Place
+    physical_name: account_opening_place
+    business_meaning: Nơi mở tài khoản (tên công ty CK hoặc VSDC).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.SECURITIESACCOUNT.OpenPlace
+    comment: null
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Current Holding Quantity
+    physical_name: current_holding_quantity
+    business_meaning: Số lượng chứng khoán nắm giữ hiện tại.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.CATEGORIESSTOCK.Quantity
+    comment: "Nguồn: bảng CATEGORIESSTOCK (cùng grain InvesId+SecId với SECURITIESACCOUNT) — gộp theo quyết định Data Modeler 2026-07-19."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null
+
+  - name: Current Ownership Rate
+    physical_name: current_ownership_rate
+    business_meaning: "Tỷ lệ nắm giữ so với tổng số lượng lưu hành (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: SECURITIESACCOUNT
+    source_column: FIMS.CATEGORIESSTOCK.Rate
+    comment: "Nguồn: bảng CATEGORIESSTOCK — gộp theo quyết định Data Modeler 2026-07-19."
+    classification_context: "Source System Code = 'FIMS_SECURITIESACCOUNT'"
+    etl_derived_value: null

@@ -163,7 +163,7 @@ graph TD
 | TLPROJOB | Liên kết TLPROFILES ↔ JOBTYPE (chức vụ của nhân sự) | Market Participant Key Person | Denormalize thành `ARRAY<Classification Value Code>` — job_type_codes. |
 | TLPROSTOCKH | Liên kết TLPROFILES ↔ STOCKEXCHANGE (loại cổ đông) | Market Participant Key Person | Denormalize thành `ARRAY<STRUCT<stock_exchange_id BIGINT, stock_exchange_code STRING>>`. |
 | ANNOUNCEINVES | Liên kết AUTHOANNOUNCE ↔ INVESTOR (NĐT NN ủy quyền) | Info Disclosure Authorization | Denormalize thành `ARRAY<STRUCT<investor_id BIGINT, investor_code STRING>>` trên Info Disclosure Authorization. |
-| TRADINGAUTHORIZATIONINVES | Liên kết TRADINGAUTHORIZATION ↔ INVESTOR (NĐT NN trong ủy quyền GD) | Trading Authorization | Denormalize thành `ARRAY<STRUCT<investor_id BIGINT, investor_code STRING>>` trên Trading Authorization. |
+| TRADINGAUTHORIZATIONINVES | Quan hệ 1:1 với TRADINGAUTHORIZATION (không phải junction nhiều-nhiều — xác nhận Data Modeler 2026-07-20) | Trading Authorization | Map 1:1 thành cặp FK `Authorized Investor Id/Code` trên Trading Authorization (thay thế quyết định denormalize ARRAY trước đây). |
 | RPTPDSHT | Bảng trung gian RPTPERIOD ↔ SHEET (sheet nào thuộc kỳ nào) | Reporting Period | Denormalize thành `ARRAY<STRUCT<sheet_id BIGINT, sheet_code STRING>>` trên Reporting Period. |
 
 ---
@@ -246,7 +246,6 @@ graph TD
 | Audit Log nguồn | TRADINGAUTHORIZATIONHIS | Lịch sử ủy quyền giao dịch | Audit Log nguồn — snapshot lịch sử ủy quyền giao dịch. |
 | Audit Log nguồn | TRADINGAUTHORIZATIONINVESHIS | Lịch sử NĐT NN trong ủy quyền giao dịch | Audit Log nguồn — snapshot lịch sử thành viên ủy quyền giao dịch. |
 | Cascade drop | ANNOUNCEINVES | Danh sách NĐT NN trong ủy quyền CBTT | Cascade drop từ AUTHOANNOUNCE — denormalize thành ARRAY trên Info Disclosure Authorization (xem 7d). |
-| Cascade drop | TRADINGAUTHORIZATIONINVES | Danh sách NĐT NN trong ủy quyền giao dịch | Cascade drop từ TRADINGAUTHORIZATION — denormalize thành ARRAY trên Trading Authorization (xem 7d). |
 | Operational / System | NOTIFICATION | Thông báo trong hệ thống FIMS | Operational/system data — thông báo UI, không phải nghiệp vụ. |
 | Operational / System | DOCUMENT | Tài liệu hệ thống | Operational/system data — lưu trữ tài liệu hạ tầng. |
 | Operational / System | EMAILSENTSYSTEM | Danh sách email trao đổi thông tin | Operational/system data — log giao tiếp email. |

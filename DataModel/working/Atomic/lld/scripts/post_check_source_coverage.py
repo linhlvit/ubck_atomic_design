@@ -205,9 +205,9 @@ def load_atomic_source_columns(filter_source=None, filter_table=None):
             continue
         if filter_source and ss != filter_source:
             continue
-            if filter_table and st != filter_table:
-                continue
-            rows.append((ss, st, c, row.get("atomic_entity", ""), row.get("atomic_attribute", "")))
+        if filter_table and st != filter_table:
+            continue
+        rows.append((ss, st, c, row.get("atomic_entity", ""), row.get("atomic_attribute", "")))
     return rows
 
 

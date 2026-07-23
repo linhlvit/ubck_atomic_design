@@ -1,0 +1,148 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_application_status-NHNCK.APPLICATION_STATUSES
+  logical_name: Classification Application Status
+  physical_name: cl_application_status
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Application Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: NHNCK
+  description: Danh mục trạng thái xử lý hồ sơ đăng ký chứng chỉ hành nghề chứng khoán (NHNCK).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-APPLICATION_STATUSES
+
+attributes:
+  - name: Classification Application Status Id
+    physical_name: cl_application_status_id
+    business_meaning: Id tự sinh (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.ID
+    comment: "PK surrogate. BCV: [Common] Application Status. Hash: hash_id('NHNCK.APPLICATION_STATUSES', ID)."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
+
+  - name: Classification Application Status Code
+    physical_name: cl_application_status_code
+    business_meaning: Mã trạng thái hồ sơ — BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
+    comment: "BK chính. Mô tả nguồn ghi \"Mã trạng thái HTTP phản hồi (200, 201, 400...)\" — có vẻ là mô tả copy-paste chưa đúng ngữ cảnh; xử lý STATUS_CODE là mã trạng thái hồ sơ nghiệp vụ theo đúng mục đích bảng. Cần Data Modeler xác nhận lại với BRD."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: NHNCK.APPLICATION_STATUSES
+
+  - name: Classification Application Status Name
+    physical_name: cl_application_status_nm
+    business_meaning: Tên trạng thái hồ sơ hiển thị trên giao diện.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.STATUS_NAME
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
+
+  - name: Label
+    physical_name: label
+    business_meaning: Nhãn hiển thị ngắn gọn trên badge/tag.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.LABEL
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết trạng thái.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.DESCRIPTION
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
+
+  - name: Sort Order
+    physical_name: sort_order
+    business_meaning: Thứ tự sắp xếp hiển thị (số nhỏ hơn hiển thị trước).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.SORT_ORDER
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
+
+  - name: Active Indicator
+    physical_name: active_indicator
+    business_meaning: Cờ đang kích hoạt/hiệu lực.
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.IS_ACTIVE
+    comment: "Nguồn lưu NUMBER(1): 1=Đang dùng, 0=Vô hiệu."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
+
+  - name: Original Data Indicator
+    physical_name: original_data_indicator
+    business_meaning: Cờ dữ liệu gốc của hệ thống (không được xóa).
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_STATUSES
+    source_column: NHNCK.APPLICATION_STATUSES.IS_ORIGINAL_DATA
+    comment: "Nguồn lưu NUMBER(1): 1=Dữ liệu gốc, 0=Người dùng tạo."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
+    etl_derived_value: null
