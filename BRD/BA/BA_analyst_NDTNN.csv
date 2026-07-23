@@ -1,271 +1,1218 @@
-﻿;STT;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Nguồn chi tiết;Thông tin cần phân tích;Thông tin cần Test;Trạng thái phân tích;Test script verify mapping;Mapping;Cần dữ liệu lịch sử
-;;;Tên chiều/chỉ tiêu/thuộc tính;;Dashboard/báo cáo/DataExplorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: lấy 1: 1 từ nguồn
+﻿;;;;;;;;;;;;;;;Khai thác nguồn;;Review design;;;;;;;;;;;;
+STT;Mã;Dashboard/báo cáo;Thông tin;Mô tả;Nhóm yêu cầu;Phân loại;Đánh giá;Độ chi tiết;Nguồn;Cần phân tích?;Cần test?;DL lịch sử?;Trạng thái mapping;Mapping (nghiệp vụ);Bảng nguồn;Trường nguồn;Điều kiện;Câu lệnh tham khảo;Note;Kết quả Test;Model;DMT;Hoàn thành DEV;Loại dữ liệu;Báo cáo;Mục;Dòng;Cột;Note
+;;;Tên chiều/chỉ tiêu/thuộc tính;;Dashboard/báo cáo/Data Explorer;Chiều/Chỉ tiêu cơ sở/Chỉ tiêu phái sinh;"Dễ: lấy 1: 1 từ nguồn
 TB: có tính toán tổng hợp
 Khó: Có logic phức tạp và lấy nhiều mốc thời gian
-Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;
-1;1;Dashboard/Giao dịch/Thống kê chung;Tỷ lệ tham gia;Tỷ lệ tham gia = (Tổng giá trị mua NĐTNN + Tổng giá trị bán NĐTNN) *100 /Tổng giá trị giao dịch toàn thị trường *2;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;Sổ lệnh;X;X;;;;
-1;2;Dashboard/Giao dịch/Thống kê chung;Tổng giá trị mua của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;Sổ lệnh;X;X;;;;
-1;3;Dashboard/Giao dịch/Thống kê chung;Tổng giá trị bán của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;Sổ lệnh;X;X;;;;
-1;4;Dashboard/Giao dịch/Thống kê chung;Tổng giá trị giao dịch toàn thị trường;;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;Sổ lệnh;X;X;;;;
-1;5;Dashboard/Giao dịch/Thống kê chung;Tăng trưởng NĐT mới;Số lượng mã số giao dịch cấp mới cho NĐTNN (YTD).;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-1;6;Dashboard/Giao dịch/Thống kê chung;Tăng trưởng NĐT mới là cá nhân;Số lượng mã số giao dịch cấp mới cho NĐTNN là cá nhân (YTD).;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-1;7;Dashboard/Giao dịch/Thống kê chung;Tăng trưởng NĐT mới là tổ chức;Số lượng mã số giao dịch cấp mới cho NĐTNN là tổ chức (YTD).;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-2;8;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Giá trị mua/bán ròng;Giá trị mua/bán ròng = Giá trị mua - giá trị bán;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Tháng;MSS;Sổ lệnh;X;X;;;;X
-2;9;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Ngành;;Dashboard;Chiều;Dễ;;IDS - GSĐC;;X;X;;;;X
-2;10;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Mã CK;;Dashboard;Chiều;Dễ;;MSS;;X;X;;;;X
-2;11;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Lũy kế mua/bán ròng;Tính lũy kế mua/bán ròng trong một khoảng thời gian (từ ngày đến ngày theo điều kiện lọc);Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Tháng;MSS;;X;X;;;;X
+Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồi";;;;;;;;;;;;;;;;;;;;;;
+1;1;Dashboard/Giao dịch/Thống kê chung;Tỷ lệ tham gia;Tỷ lệ tham gia = (Tổng giá trị mua NĐTNN + Tổng giá trị bán NĐTNN) *100 /Tổng giá trị giao dịch toàn thị trường *2;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20') -- phía MUA
+[hoặc] Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- TRADE_BOOK_HOSE:
+SELECT ROUND(
+CAST(SUM(CASE WHEN Buy - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END)
++ SUM(CASE WHEN Sell - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END) AS NUMBER)
+/ NULLIF(SUM(Execution_Value)*2,0)*100, 2) AS ty_le_pct
+FROM TRADE_BOOK_HOSE WHERE Trade_Date = :pdate";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+1;2;Dashboard/Giao dịch/Thống kê chung;Tổng giá trị mua của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Buy Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Buy - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00'";"-- TRADE_BOOK_HNX:
+SELECT SUM(Trade_price * Trade_quantity) AS gt_mua
+FROM TRADE_BOOK_HNX
+WHERE Trade_date = :pdate
+AND Buy_Foreign_Investor_Type_Code IN ('10','20')
+
+-- TRADE_BOOK_HOSE:
+SELECT SUM(Execution_Value) AS gt_mua
+FROM TRADE_BOOK_HOSE
+WHERE Trade_Date = :pdate
+AND Buy - Foreigner Investor type
+<> '00'";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+1;3;Dashboard/Giao dịch/Thống kê chung;Tổng giá trị bán của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Sell - Foreigner Investor type <> '00'";"-- TRADE_BOOK_HNX:
+SELECT SUM(Trade_price * Trade_quantity) AS gt_ban
+FROM TRADE_BOOK_HNX
+WHERE Trade_date = :pdate
+AND Sell_Foreign_Investor_Type_Code IN ('10','20')
+
+-- TRADE_BOOK_HOSE:
+SELECT SUM(Execution_Value) AS gt_ban
+FROM TRADE_BOOK_HOSE
+WHERE Trade_Date = :pdate
+AND Sell - Foreigner Investor type
+<> '00'";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+1;4;Dashboard/Giao dịch/Thống kê chung;Tổng giá trị giao dịch toàn thị trường;;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+(không lọc theo NĐT — toàn thị trường)
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+(không lọc theo NĐT — toàn thị trường)";"-- TRADE_BOOK_HOSE:
+SELECT SUM(Execution_Value) AS gt_toan_tt
+FROM TRADE_BOOK_HOSE WHERE Trade_Date = :pdate
+
+-- TRADE_BOOK_HNX:
+SELECT SUM(Trade_price * Trade_quantity) AS gt_toan_tt
+FROM TRADE_BOOK_HNX WHERE Trade_date = :pdate";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+1;5;Dashboard/Giao dịch/Thống kê chung;Tăng trưởng NĐT mới;Số lượng mã số giao dịch cấp mới cho NĐTNN (YTD).;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;Báo cáo;Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng);"count ( cột Mã số giao dịch chứng khoán)
+
+hàng all";;;;;;;Done;Dữ liệu động;Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng);I. Thông tin chung;Tổng;Tổng số lượng tới thời điểm báo cáo;
+1;6;Dashboard/Giao dịch/Thống kê chung;Tăng trưởng NĐT mới là cá nhân;Số lượng mã số giao dịch cấp mới cho NĐTNN là cá nhân (YTD).;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;Báo cáo;Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng);"count ( cột Mã số giao dịch chứng khoán)
+
+hàng cá nhân";;;;;;;Done;Dữ liệu động;Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng);I. Thông tin chung;Cá nhân;Tổng số lượng tới thời điểm báo cáo;
+1;7;Dashboard/Giao dịch/Thống kê chung;Tăng trưởng NĐT mới là tổ chức;Số lượng mã số giao dịch cấp mới cho NĐTNN là tổ chức (YTD).;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;Báo cáo;Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng);"count ( cột Mã số giao dịch chứng khoán)
+
+hàng: tổ chức";;;;;;;Done;Dữ liệu động;Báo cáo PLVI-TT51/2021/TT-BTC (Báo cáo hoạt động cấp mã số GD - do VSDC gửi, kỳ tháng);I. Thông tin chung;Tổ chức;Tổng số lượng tới thời điểm báo cáo;
+2;8;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Giá trị mua/bán ròng;Giá trị mua/bán ròng = Giá trị mua - giá trị bán;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Tháng;MSS;X;X;X;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20') -- phía MUA
+[hoặc] Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- TRADE_BOOK_HOSE:
+SELECT
+SUM(CASE WHEN Buy - Foreigner Investor type <> '00'THEN Execution_Value ELSE 0 END)
+- SUM(CASE WHEN Sell - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END) AS gt_rong
+FROM TRADE_BOOK_HOSE WHERE Trade_Date = :pdate";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;9;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Ngành;;Dashboard;Chiều;Dễ;;IDS - GSĐC;X;X;X;Done;;CATEGORIES;INDUSTRY_NAME;;;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;10;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Mã CK;;Dashboard;Chiều;Dễ;;MSS;X;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Issue Code
+
+TRADE_BOOK_HOSE:
+- Symbol";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20') -- phía MUA
+[hoặc] Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";SELECT DISTINCT Issue Code / Symbol;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;11;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Lũy kế mua ròng;Tính lũy kế mua/bán ròng trong một khoảng thời gian (từ ngày đến ngày theo điều kiện lọc);Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Tháng;MSS;X;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date between :pdate and :pdate1
+and (Buy Foreign Investor Type Code IN ('10','20')
+or Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+where Trade Date between :pdate and :pdate1
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- TRADE_BOOK_HOSE:
+SELECT SUM(CASE WHEN Buy - Foreigner Investor type <> '00'THEN Execution_Value ELSE 0 END)
+- SUM(CASE WHEN Sell - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END) AS luy_ke_rong
+FROM TRADE_BOOK_HOSE WHERE Trade_Date BETWEEN :pdate AND :pdate1";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
 2;13;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Top ngành bán ròng;"Top 5 ngành có giá trị bán ròng lớn nhất.
-Gom nhóm giá trị mua/bán ròng theo mã CK, gom nhóm mã CK theo ngành để lấy top";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;IDS - GSĐC, MSS;;;X;;;;X
+Gom nhóm giá trị mua/bán ròng theo mã CK, gom nhóm mã CK theo ngành để lấy top";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;IDS - GSĐC, MSS;;X;X;Done;;"IDS.CATEGORIES
+
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX";"IDS:
+- CATEGORIES.INDUSTRY_NAME
+
+TRADE_BOOK_HNX:
+- Issue Code
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+GROUP BY CATEGORIES.INDUSTRY_NAME
+
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN 
+GROUP BY CATEGORIES.INDUSTRY_NAME
+";;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
 2;14;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Top ngành mua ròng;"Top 5 ngành có giá trị mua ròng lớn nhất.
-Gom nhóm giá trị mua/bán ròng theo mã CK, gom nhóm mã CK theo ngành để lấy top";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;IDS - GSĐC, MSS;;;X;;;;X
+Gom nhóm giá trị mua/bán ròng theo mã CK, gom nhóm mã CK theo ngành để lấy top";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;IDS - GSĐC, MSS;;X;X;Done;;"IDS.CATEGORIES
+
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX";"IDS:
+- CATEGORIES.INDUSTRY_NAME
+
+TRADE_BOOK_HNX:
+- Issue Code
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date between :pdate and :pdate1
+and (Buy Foreign Investor Type Code IN ('10','20'))
+GROUP BY CATEGORIES.INDUSTRY_NAME
+
+TRADE_BOOK_HOSE:
+where Trade Date between :pdate and :pdate1
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+GROUP BY CATEGORIES.INDUSTRY_NAME
+";;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
 2;15;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Top mã bán ròng;"Top 5 mã cổ phiếu có giá trị bán ròng lớn nhất.
-Gom nhóm giá trị mua/bán ròng theo mã CK";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;MSS;;;X;;;;X
+Gom nhóm giá trị mua/bán ròng theo mã CK";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Issue Code
+- Trade price
+- Trade quantity
+- Buy/Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date between :pdate and :pdate1
+and (Buy Foreign Investor Type Code IN ('10','20')
+or Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+where Trade Date between :pdate and :pdate1
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- TRADE_BOOK_HOSE:
+SELECT Symbol,
+SUM(CASE WHEN Sell - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END)
+- SUM(CASE WHEN Buy - Foreigner Investor type <> '00'THEN Execution_Value ELSE 0 END) AS gt_ban_rong
+FROM TRADE_BOOK_HOSE WHERE Trade_Date BETWEEN :pdate AND :pdate1
+GROUP BY Symbol ORDER BY gt_ban_rong DESC FETCH FIRST 5 ROWS ONLY";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
 2;16;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Top mã mua ròng;"Top 5 mã cổ phiếu có giá trị mua ròng lớn nhất.
-Gom nhóm giá trị mua/bán ròng theo mã CK";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;MSS;;;X;;;;X
-3;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tỷ trọng giao dịch theo ngày;Tỷ trọng = (Tổng giá trị mua + Tổng giá trị bán) *100 /Tổng giá trị giao dịch toàn thị trường *2;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS;;;X;;;;X
-3;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị giao dịch NĐTNN;"Tổng giá trị giao dịch NĐTNN = Tổng giá trị mua của NĐTNN
-+ Tổng giá trị bán của NĐTNN";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS;;;X;;;;X
-3;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị mua của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;Trùng;;MSS;;;X;;;;X
-3;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị bán của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;Trùng;;MSS;;;X;;;;X
-3;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị giao dịch toàn thị trường;Tổng GTGD toàn thị trường = Tổng giá trị GD khớp lệnh + tổng giá trị GD thỏa thuận cổ phiếu, CCQ, trái phiếu trên các sàn giao dịch;Dashboard;Chỉ tiêu phái sinh;Trùng;;MSS;;;X;;;;X
-3;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tỷ trọng TB phiên;"Tính giá trị trung bình trong khoảng thời gian
- Tỷ trọng TB phiên = Tổng tỷ trọng trong khoảng thời gian đã chọn/Số ngày giao dịch thực tế";Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;;X;X;;;;X
-3;21;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tỷ trọng theo ngành;"Tính tỷ trọng trung bình theo nhóm ngành và lấy top 5 cao nhất.
-Gom nhóm Tổng giá trị giao dịch NĐTNN theo mã CK, gom nhóm mã CK theo ngành rồi tính tỷ trọng so với toàn ngành";Dashboard;Chỉ tiêu phái sinh;TB;Ngày;IDS - GSĐC, MSS;;X;X;;;;X
-3;22;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Top mã tỷ trọng cao;Tính tỷ trọng trung bình theo mã cổ phiếu và lấy top 5 cao nhất.Gom nhóm Tổng giá trị giao dịch NĐTNN theo mã CK rồi tính tỷ trọng so với tổng giá trị giao dịch của mã;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;;X;X;;;;X
-4;23;Dashboard/Giám sát dòng vốn/Thống kê dòng vốn;Dòng tiền ròng ;"Dòng tiền ròng = Tổng tiền vào - Tổng tiền ra
-Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)";Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-4;24;Dashboard/Giám sát dòng vốn/Thống kê dòng vốn;Dòng tiền vào;Tổng tiền vào;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-4;25;Dashboard/Giám sát dòng vốn/Thống kê dòng vốn;Dòng tiền ra;Tổng tiền ra;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Dòng vốn ròng;"Dòng vốn ròng = Dòng vốn đầu tư vào - Dòng vốn rút ra
-Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)";Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Loại hình NĐTNN;Loại hình: Cá nhân, Quỹ, Tổ chức khác quỹ;Dashboard;Chiều;Dễ;;FIMS;;X;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Quốc gia;;Dashboard;Chiều;Dễ;;FIMS;;X;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Quỹ;Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Loại hình NĐTNN;FIMS;;;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Cá nhân;Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Loại hình NĐTNN;FIMS;;;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Tổ chức khác quỹ;Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Loại hình NĐTNN;FIMS;;;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 quốc gia vào ròng;Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Quốc gia;FIMS;;;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 quốc gia rút ròng;Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Quốc gia;FIMS;;;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 NĐT vào ròng;Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, NĐT;FIMS;;;X;;;;X
-5;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 NĐT  rút ròng;Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, NĐT;FIMS;;;X;;;;X
-6;;Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN;Dòng tiền ròng;Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng;FIMS;;;X;;;;X
-6;;Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN;Giá trị mua/bán ròng;Giá trị mua bán ròng hàng ngày của nhà đầu tư.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS;;;X;;;;X
-6;;Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN;Điểm đóng cửa chỉ số;Mức điểm của VN-Index tại cuối mỗi ngày.;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MDDS;;;X;;;;X
-7;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục;Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Toàn thị trường;FIMS;;X;X;;;;
-7;;Dashboard/Danh mục/Thống kê danh mục;Loại hình nhà đầu tư;;Dashboard;Chiều;Trùng;;FIMS;;;;;;;
-7;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục của cá nhân;Tổng giá trị danh mục của NĐTNN là cá nhân;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, loại hình NĐT;FIMS;;;;;;;
-7;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục của quỹ;Tổng giá trị danh mục của NĐTNN là quỹ;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, loại hình NĐT;FIMS;;;;;;;
-7;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục của tổ chức khác quỹ;Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, loại hình NĐT;FIMS;;;;;;;
-7;;Dashboard/Danh mục/Thống kê danh mục;Top 5 quốc gia;Top 5 quốc gia có tổng giá trị danh mục lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Quốc gia;FIMS;;X;X;;;;
-7;;Dashboard/Danh mục/Thống kê danh mục;Top 5 NĐT;Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, NĐT;FIMS;;X;X;;;;
-8;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Giá trị tài sản;;Dashboard;Chỉ tiêu phái sinh;TB;Tháng;FIMS;;X;X;;;;
-8;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Loại tài sản;;Dashboard;Chiều;TB;;FIMS;;X;X;;;;
-8;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Cổ phiếu, CCQ niêm yết;Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;;X;;;;
-8;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Trái phiếu;Giá trị tài sản NĐTNN đầu tư vào trái phiếu;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;;X;;;;
-8;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Upcom;Giá trị tài sản NĐTNN đầu tư vào upcom;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;;X;;;;
-8;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác;Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;;X;;;;
-8;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Tiền và tương đương với tiền;Giá trị tài sản NĐTNN là tiền và tương đương với tiền;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;;X;;;;
-9;;Dashboard/Danh mục/Phân ngành của NĐTNN;Nhóm ngành;Lấy theo phân loại nhóm ngành của phân hệ IDS.;Dashboard;Chiều;TB;Tháng;IDS - GSĐC;;X;X;;;;
-9;;Dashboard/Danh mục/Phân ngành của NĐTNN;Tỷ trọng theo ngành;Tỷ trọng theo ngành = Tổng giá trị tài sản NĐTNN theo một nhóm ngành*100/Tổng giá trị tài sản NĐTNN toàn thị trường;Dashboard;Chỉ tiêu phái sinh;TB;Tháng;FIMS;;X;X;;;;
-10;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Tỷ lệ sở hữu (theo mã CK);Thông tin lấy sẵn từ VSDC;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;FIMS;;X;X;;;;
-10;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Room còn lại (theo mã CK);Room còn lại (%) = Room tối đa – Tỷ lệ sở hữu NĐTNN hiện tại;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-10;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Room tối đa;Giới hạn room theo quy định từng mã CK.;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;FIMS;;X;X;;;;
-10;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Danh sách cạn kiệt room;Lấy top 5 mã có room còn lại thấp nhất.;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-10;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Room theo ngành (%);Room theo ngành = Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;;X;X;;;;
-11;;Dashboard/Danh mục/Cảnh báo ngưỡng Room còn lại của NĐTNN;Room còn lại (cổ phiếu);Cảnh báo Room còn lại = 0;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;FIMS;;;X;;;;
-12;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Quốc tịch;Quốc tịch nhà đầu tư nước ngoài;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;;X;X;;;;
-12;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Mã số giao dịch;Mã số giao dịch của nhà đầu tư, là định danh duy nhất của một nhà đầu tư nước ngoài;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;;X;X;;;;
-12;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Ngân hàng lưu ký;Ngân hàng lưu ký nơi nhà đầu tư nước ngoài mở tài khoản giao dịch;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;;X;X;;;;
-12;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Loại hình nhà đầu tư;Phân loại nhà đầu tư là tổ chức, cá nhân, quỹ…;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;;X;X;;;;
-12;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Đại diện giao dịch;Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực);Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;;X;X;;;;
-13;;Dashboard/NĐT 360/Biến động tài sản của NĐTNN;Tổng giá trị danh mục;Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ;Dashboard;Chỉ tiêu cơ sở;Trùng;Tháng, NĐT;FIMS;;;X;;;;
-14;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Ngày quyết định;Ngày ra quyết định xử phạt nhà đầu tư nước ngoài;Dashboard;Chiều;Dễ;NĐT;Thanh tra;;X;X;;;;
-14;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Phân loại;Phân loại hình thức xử lý: bị nhắc nhở, xử phạt hành chính,…;Dashboard;Chiều;Dễ;NĐT;Thanh tra;;X;X;;;;
-14;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Nội dung/ Trích yếu;Tóm tắt nội dung xử phạt;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;;X;X;;;;
-14;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Mức độ;Đánh giá mức độ vi phạm là thấp, trùng bình, cao,…;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;;X;X;;;;
-14;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Trạng thái;Trạng thái xử lý: đã khắc phục, đã nộp phạt,…;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Cổ phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Cổ phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Cổ phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);GT ròng = GT mua - GT bán;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Trái phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Trái phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Trái phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);GT ròng = GT mua - GT bán;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;CCQ - GT NĐTNN mua chứng khoán (triệu VNĐ);Chứng chỉ quỹ;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;CCQ - GT NĐTNN bán chứng khoán (triệu VNĐ);Chứng chỉ quỹ;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;CCQ - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);"Chứng chỉ quỹ
-GT ròng = GT mua - GT bán";Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Tổng - GT NĐTNN mua chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Tổng - GT NĐTNN bán chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Tổng - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);GT ròng = GT mua - GT bán;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;Sổ lệnh;X;X;;;;
-16;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;Tài khoản giao dịch NĐTNN;;Báo cáo;Chiều;Dễ;Ngày, NĐT;MSS;;X;X;;;;
-16;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;Mã CK;;Báo cáo;Chiều;Dễ;Ngày, NĐT;MSS;;X;X;;;;
-16;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;KL mua chứng khoán;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;;X;X;;;;
-16;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;KL bán CK;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;;X;X;;;;
-16;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;GT mua chứng khoán;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;;X;X;;;;
-16;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;GT bán chứng khoán;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;;X;X;;;;
-17;;Data Explorer Dòng vốn ròng của NĐTNN;Tháng;;DataExplorer;Chiều;Trùng;;FIMS;;X;X;;;;
-17;;Data Explorer Dòng vốn ròng của NĐTNN;Quốc gia;Tổng hợp Vốn đầu tư vào ròng/ Vốn đầu tư rút ròng theo Quốc gia;DataExplorer;Chỉ tiêu phái sinh;Trùng;;FIMS;;X;X;;;;
-17;;Data Explorer Dòng vốn ròng của NĐTNN;Nhà đầu tư;Tổng hợp Vốn đầu tư vào ròng/ Vốn đầu tư rút ròng theo nhà đầu tư;DataExplorer;Chỉ tiêu phái sinh;Trùng;;FIMS;;X;X;;;;
-17;;Data Explorer Dòng vốn ròng của NĐTNN;Vốn đầu tư vào ròng;Dòng vốn đầu tư vào ròng của Quốc gia/ nhà đầu tư;DataExplorer;Chỉ tiêu phái sinh;Trùng;;FIMS;;X;X;;;;
-17;;Data Explorer Dòng vốn ròng của NĐTNN;Vốn đầu tư rút ròng;Dòng vốn đầu tư rút ròng của Quốc gia/ nhà đầu tư;DataExplorer;Chỉ tiêu phái sinh;Trùng;;FIMS;;X;X;;;;
-18;;Data Explorer Tổng giá trị danh mục của NĐTNN;Tháng;Chiều thời gian;DataExplorer;Chiều;Trùng;;FIMS;;X;X;;;;
-18;;Data Explorer Tổng giá trị danh mục của NĐTNN;Quốc gia;Tổng hợp giá trị danh mục theo Quốc gia;DataExplorer;Chỉ tiêu phái sinh;Trùng;;FIMS;;X;X;;;;
-18;;Data Explorer Tổng giá trị danh mục của NĐTNN;Tên NĐT;Tổng hợp giá trị danh mục theo NĐTNN;DataExplorer;Chỉ tiêu phái sinh;Trùng;;FIMS;;X;X;;;;
-18;;Data Explorer Tổng giá trị danh mục của NĐTNN;Tổng giá trị danh mục;Tổng giá trị danh mục của NĐTNN;DataExplorer;Chỉ tiêu phái sinh;Trùng;;FIMS;;X;X;;;;
-;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Kỳ báo cáo;Tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên báo cáo;Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Kỳ báo cáo;Tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Tên báo cáo;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Kỳ báo cáo;Tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên báo cáo;Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Loại báo cáo;Định kỳ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Kỳ báo cáo;Tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Tên báo cáo;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Kỳ báo cáo; Nửa tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Tên báo cáo;Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Loại báo cáo;Định kỳ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Kỳ báo cáo;Ngày;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Tên báo cáo;Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Loại báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Tên báo cáo;"Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN
-";DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Tên báo cáo;Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Tên báo cáo;Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Tên báo cáo;Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Tên báo cáo;Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Loại báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Tên báo cáo;Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Kỳ báo cáo;Ngày, Tháng, Năm;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Tên báo cáo;Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC).;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Loại báo cáo;Tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Tên báo cáo;Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Loại báo cáo;Tuần;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Tên báo cáo;Báo cáo danh mục của từng NĐT nước ngoài;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Loại báo cáo;Tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Tên báo cáo;Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Loại báo cáo;Tháng;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Tên báo cáo;Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Loại báo cáo;Quý;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Kỳ báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Mã báo cáo;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Tên báo cáo;Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Mã chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
-;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Tên chỉ tiêu;;DataExplorer;;;;FIMS;;X;X;;;;
+Gom nhóm giá trị mua/bán ròng theo mã CK";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Tháng;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Issue Code
+- Trade price
+- Trade quantity
+- Buy/Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date between :pdate and :pdate1
+and (Buy Foreign Investor Type Code IN ('10','20')
+or Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+where Trade Date between :pdate and :pdate1
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- TRADE_BOOK_HOSE:
+SELECT Symbol,
+SUM(CASE WHEN Buy - Foreigner Investor type <> '00'THEN Execution_Value ELSE 0 END)
+- SUM(CASE WHEN Sell - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END) AS gt_mua_rong
+FROM TRADE_BOOK_HOSE WHERE Trade_Date BETWEEN :pdate AND :pdate1
+GROUP BY Symbol ORDER BY gt_mua_rong DESC FETCH FIRST 5 ROWS ONLY";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tỷ trọng giao dịch theo ngày;Tỷ trọng = (Tổng giá trị mua + Tổng giá trị bán) *100 /Tổng giá trị giao dịch toàn thị trường *2;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20') -- phía MUA
+[hoặc] Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";Tái dùng GT mua (Mã 2) + GT bán (Mã 3) / GT toàn TT (Mã 4) × 2;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị giao dịch NĐTNN;"Tổng giá trị giao dịch NĐTNN = Tổng giá trị mua của NĐTNN 
++ Tổng giá trị bán của NĐTNN";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20') -- phía MUA
+[hoặc] Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";GT_mua (Mã 2) + GT_bán (Mã 3);Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị mua của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;Trùng;;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Buy Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Buy - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+";Tái dùng Mã 2;Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị bán của NĐTNN;;Dashboard;Chỉ tiêu phái sinh;Trùng;;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";Tái dùng Mã 3;Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tổng giá trị giao dịch toàn thị trường;Tổng GTGD toàn thị trường = Tổng giá trị GD khớp lệnh + tổng giá trị GD thỏa thuận cổ phiếu, CCQ, trái phiếu trên các sàn giao dịch;Dashboard;Chỉ tiêu phái sinh;Trùng;;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+(không lọc theo NĐT — toàn thị trường)
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+(không lọc theo NĐT — toàn thị trường)";Tái dùng Mã 4;[S-01] Điều kiện lọc Tổng GT GD toàn TT không nên lọc NĐTNN — phải lấy toàn bộ thị trường;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tỷ trọng TB phiên;"Tính giá trị trung bình trong khoảng thời gian
+Tỷ trọng TB phiên = Tổng tỷ trọng trong khoảng thời gian đã chọn/Số ngày giao dịch thực tế";Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;X;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date between :pdate and :pdate1
+and (Buy Foreign Investor Type Code IN ('10','20')
+or Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+where Trade Date between :pdate and :pdate1
+and (Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN
+)";"AVG(ty_trong_ngay) trong khoảng :pdate - :pdate1
+ty_trong_ngay = (GT_mua_ngay + GT_bán_ngay) / (GT_TT_ngay * 2) * 100";"Tái sử dụng logic từ chỉ tiêu đã mapping ở nhóm trước
+
+cần phải xác nhận lại trường trade date từ sổ lệnh có phải ngày giao dịch thực tế không, hay phải lấy từ sổ khớp";;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;21;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Tỷ trọng theo ngành;"Tính tỷ trọng trung bình theo nhóm ngành và lấy top 5 cao nhất.
+Gom nhóm Tổng giá trị giao dịch NĐTNN theo mã CK, gom nhóm mã CK theo ngành rồi tính tỷ trọng so với toàn ngành";Dashboard;Chỉ tiêu phái sinh;TB;Ngày;IDS - GSĐC, MSS;X;X;X;Done;;"IDS.CATEGORIES
+
+TRADE_BOOK_HOSE / TRADE_BOOK_HNX";"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity";"TRADE_BOOK_HNX:
+where Trade date between :pdate and :pdate1
+and (Buy Foreign Investor Type Code IN ('10','20')
+or Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+where Trade Date between :pdate and :pdate1
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";;;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+2;22;Dashboard/Giao dịch/Tổng giá trị mua/bán ròng của NĐTNN;Top mã tỷ trọng cao;Tính tỷ trọng trung bình theo mã cổ phiếu và lấy top 5 cao nhất.Gom nhóm Tổng giá trị giao dịch NĐTNN theo mã CK rồi tính tỷ trọng so với tổng giá trị giao dịch của mã;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;MSS;X;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Issue Code
+- Trade price
+- Trade quantity
+- Buy/Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20') -- phía MUA
+[hoặc] Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- TRADE_BOOK_HOSE:
+SELECT Symbol,
+ROUND((SUM(CASE WHEN Buy - Foreigner Investor type <> '00'THEN Execution_Value ELSE 0 END)
++ SUM(CASE WHEN Sell - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END))
+/ NULLIF(SUM(Execution_Value)*2,0)*100,2) AS ty_trong_pct
+FROM TRADE_BOOK_HOSE WHERE Trade_Date = :pdate
+GROUP BY Symbol ORDER BY ty_trong_pct DESC FETCH FIRST 5 ROWS ONLY";Cần bảng danh mục ngành từ IDS-GSĐC. Phần MSS đã xác định: trường mã CK để JOIN.;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+3;23;Dashboard/Giám sát dòng vốn/Thống kê dòng vốn;Dòng tiền ròng;"Dòng tiền ròng = Tổng tiền vào - Tổng tiền ra
+Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)";Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;Báo cáo;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);GT dòng vốn vào kỳ báo cáo (+/-) (USD);;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;Tổng = (1)+(2);Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD);Báo cáo tại ngày (lấy ngày cuối tháng)
+3;24;Dashboard/Giám sát dòng vốn/Thống kê dòng vốn;Dòng tiền vào;Tổng tiền vào;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;Báo cáo;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: Tổng GT ngoại tệ đổi sang VND trong kỳ (USD)
+
+dòng: Tổng = (1)+(2)";;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;Tổng = (1)+(2);Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD);
+3;25;Dashboard/Giám sát dòng vốn/Thống kê dòng vốn;Dòng tiền ra;Tổng tiền ra;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;Báo cáo;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: Tổng GT VND đổi ra ngoại tệ và chuyển ra (USD)
+
+dòng: Tổng = (1)+(2)";;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;Tổng = (1)+(2);Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD);
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Dòng vốn ròng;"Dòng vốn ròng = Dòng vốn đầu tư vào - Dòng vốn rút ra
+Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng ngày và nửa tháng, ưu tiên lấy dữ liệu kỳ nửa tháng)";Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;FIMS;X;X;X;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào kỳ báo cáo (+/-) (USD)
+
+dòng: Tổng = (1)+(2)";;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;Tổng = (1)+(2);Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD);join với cụm INVESTOR qua cột MSGD
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Loại hình NĐTNN;;Dashboard;Chiều;Dễ;;FIMS;X;X;X;Done;;"INVESTOR
+INVESTORTYPE";"INVESTOR.InvestorTypeId 
+INVESTORTYPE.Name";;;;;;;Done;Dữ liệu tĩnh;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;;Loại hình đối với tổ chức;Nếu Loại hình có chi tiết thì lấy luôn phân loại theo báo cáo
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Quốc gia;;Dashboard;Chiều;Dễ;;FIMS;X;X;X;Done;;"NATIONAL
+INVESTOR";"INVESTOR.NaId
+NATIONAL.Name";;;;;;;Done;Dữ liệu tĩnh;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;;Quốc tịch;
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Quỹ;Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Quỹ.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Loại hình NĐTNN;FIMS;;X;X;Done;Báo cáo;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào kỳ báo cáo (USD)
+
+hàng: ubset của Tổng (1) A-Tổ chức";;;;;;;Done;Dữ liệu động;;;;;
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Cá nhân;Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Cá nhân.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Loại hình NĐTNN;FIMS;;X;X;Done;Báo cáo;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào kỳ báo cáo (USD)
+
+hàng: Tổng (2) — B-Cá nhân";;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;Tổng (2);Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD);Báo cáo phân loại theo Cá nhân và Tổ chức, Tổ chức phân loại theo cột Loại hình đối với tổ chức
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Tổ chức khác quỹ;Giá trị dòng tiền đầu tư ròng từ các NĐTNN là Tổ chức khác quỹ.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày, Loại hình NĐTNN;FIMS;;X;X;Done;Báo cáo;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào kỳ báo cáo (USD) — cột (3)
+
+hàng: Subset của Tổng (1) A-Tổ chức";;;;;;;Done;Dữ liệu động;;;;;
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 quốc gia vào ròng;Top 5 quốc gia có dòng vốn đầu tư vào ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Quốc gia;FIMS;;X;X;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";GROUP BY quốc tịch, RANK theo SUM cột (3) DESC;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;;Quốc tịch;Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 dương
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 quốc gia rút ròng;Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, Quốc gia;FIMS;;X;X;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";GROUP BY quốc tịch, RANK theo SUM cột (3) ASC (giá trị âm);;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;;Quốc tịch;Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Quốc tịch, lấy top 5 âm nhiều nhất
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 NĐT vào ròng;Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, NĐT;FIMS;;X;X;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";RANK theo cột (3) DESC;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;;Tên nhà đầu tư;Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 dương
+4;;Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN;Top 5 NĐT rút ròng;Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Ngày, NĐT;FIMS;;X;X;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";RANK theo cột (3) ASC;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;;Tên nhà đầu tư;Sum (Giá trị dòng vốn vào trong kỳ báo cáo) theo Tên nhà đầu tư, lấy top 5 âm nhiều nhất
+5;;Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN;Dòng tiền ròng;Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng;FIMS;;X;X;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào kỳ báo cáo (+/-) (USD) — cột (3)
+
+hàng: Tổng = (1)+(2)";;;;;;;Done;Dữ liệu động;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);;Tổng = (1)+(2);Giá trị dòng vốn vào trong kỳ báo cáo (đơn vị USD);
+5;;Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN;Giá trị mua/bán ròng;Giá trị mua bán ròng hàng ngày của nhà đầu tư.;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;MSS;;X;X;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date between :pdate and :pdate1
+and (Buy Foreign Investor Type Code IN ('10','20')
+or Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+where Trade Date between :pdate and :pdate1
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- TRADE_BOOK_HOSE (GROUP BY Trade_Date):
+SELECT Trade_Date,
+SUM(CASE WHEN Buy - Foreigner Investor type <> '00'THEN Execution_Value ELSE 0 END)
+- SUM(CASE WHEN Sell - Foreigner Investor type <> '00' THEN Execution_Value ELSE 0 END) AS gt_rong
+FROM TRADE_BOOK_HOSE WHERE Trade_Date BETWEEN :pdate AND :pdate1
+GROUP BY Trade_Date ORDER BY Trade_Date";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+5;;Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN;Điểm đóng cửa chỉ số;Mức điểm của VN-Index tại cuối mỗi ngày.;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;MDDS;;X;X;Done;;JAD_MARKETINFOR;"""marketIndex"",
+""tradingdate"",
+""indexTime"",
+""marketCode""";;"-- Tham số đầu vào :p_from, :p_to YYYYMMDD 
+WITH params AS ( 
+SELECT 
+TO_DATE(:p_date_from, 'YYYYMMDD') AS from_date, 
+TO_DATE(:p_date_to, 'YYYYMMDD') AS to_date 
+FROM DUAL 
+), 
+filtered AS ( 
+SELECT 
+m.marketId, 
+m.marketCode, 
+m.marketIndex, 
+m.indexTime, 
+m.tradingdate, 
+TO_DATE(m.tradingdate, 'DD/MM/YYYY') AS td_date 
+FROM FSSTRAINING.JAD_JAD_MARKETINFOR m, params p 
+WHERE TO_DATE(m.tradingdate, 'DD/MM/YYYY') BETWEEN p.from_date AND p.to_date 
+AND m.marketId = '10' 
+AND m.marketCode = 'HOSE' 
+), 
+ranked AS ( 
+SELECT 
+f.marketId, 
+f.marketCode, 
+f.marketIndex, 
+f.indexTime, 
+f.tradingdate, 
+ROW_NUMBER() OVER ( 
+PARTITION BY f.marketId, f.marketCode, f.td_date 
+ORDER BY f.indexTime DESC 
+) AS rn 
+FROM filtered f 
+) 
+SELECT 
+tradingdate, 
+marketId, 
+marketCode, 
+marketIndex, 
+indexTime 
+FROM ranked 
+WHERE rn = 1 
+ORDER BY tradingdate, marketId, marketCode;";;;;;Chưa có SQL;Dữ liệu tĩnh;;;;;
+6;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục;Tổng quy mô tài sản mà NĐTNN đang nắm giữ (bao gồm cổ phiếu, trái phiếu và tiền mặt.;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Toàn thị trường;FIMS;X;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tổng giá trị danh mục
+
+hàng: Tổng = (1)+(2)";;"-- Tham số đầu vào :p_from, :p_to YYYYMM
+WITH params AS (
+SELECT
+TO_DATE(:p_from || '01', 'YYYYMMDD') AS from_date,
+LAST_DAY(TO_DATE(:p_to || '01', 'YYYYMMDD')) AS to_date
+FROM DUAL
+),
+-- Lọc toàn bộ dữ liệu trong khoảng tháng truyền vào
+filtered AS (
+SELECT
+m.marketId,
+m.marketCode,
+m.marketIndex,
+m.indexTime,
+m.tradingdate,
+TO_DATE(m.tradingdate, 'DD/MM/YYYY') AS td_date
+FROM JAD_MARKETINFOR m, params p
+WHERE TO_DATE(m.tradingdate, 'DD/MM/YYYY')
+BETWEEN p.from_date AND p.to_date
+),
+-- Xác định ngày giao dịch cuối cùng trong mỗi tháng
+last_trading_day_per_month AS (
+SELECT
+TO_CHAR(td_date, 'YYYYMM') AS yyyymm,
+MAX(td_date) AS last_td_date
+FROM filtered
+GROUP BY TO_CHAR(td_date, 'YYYYMM')
+),
+-- Lấy bản ghi cuối cùng (indexTime MAX) trong ngày cuối tháng, theo từng marketId + marketCode
+ranked AS (
+SELECT
+f.marketId,
+f.marketCode,
+f.marketIndex,
+f.indexTime,
+f.tradingdate,
+l.yyyymm,
+ROW_NUMBER() OVER (
+PARTITION BY f.marketId, f.marketCode, l.yyyymm
+ORDER BY f.indexTime DESC
+) AS rn
+FROM filtered f
+JOIN last_trading_day_per_month l
+ON f.td_date = l.last_td_date
+)
+SELECT
+yyyymm AS period,
+tradingdate,
+marketId,
+marketCode,
+marketIndex,
+indexTime
+FROM ranked
+WHERE rn = 1
+ORDER BY yyyymm, marketId, marketCode;";;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;Tổng= (1)+(2);Tổng giá trị danh mục;
+6;;Dashboard/Danh mục/Thống kê danh mục;Loại hình nhà đầu tư;;Dashboard;Chiều;Trùng;;FIMS;;;;Done;;"INVESTOR 
+INVESTORTYPE";INVESTORTYPE.Name;;;;;;;Done;Dữ liệu tĩnh;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;;Loại hình đối với tổ chức;
+6;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục của cá nhân;Tổng giá trị danh mục của NĐTNN là cá nhân;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, loại hình NĐT;FIMS;;;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tổng giá trị danh mục
+
+hàng: Tổng (2) — B-Cá nhân";;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;Tổng= (2);Tổng giá trị danh mục;
+6;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục của quỹ;Tổng giá trị danh mục của NĐTNN là quỹ;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, loại hình NĐT;FIMS;;;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tổng giá trị danh mục
+
+hàng: Subset Tổng (1) lọc loại Quỹ(lọc Loại hình đối với tổ chức)";;;;;;;Done;Dữ liệu động;;;;;
+6;;Dashboard/Danh mục/Thống kê danh mục;Tổng giá trị danh mục của tổ chức khác quỹ;Tổng giá trị danh mục của NĐTNN là tổ chức khác quỹ;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, loại hình NĐT;FIMS;;;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tổng giá trị danh mục
+
+hàng: Subset Tổng (1) lọc loại khác Quỹ(lọc Loại hình đối với tổ chức)";;;;;;;Done;Dữ liệu động;;;;;
+6;;Dashboard/Danh mục/Thống kê danh mục;Top 5 quốc gia;Top 5 quốc gia có tổng giá trị danh mục lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, Quốc gia;FIMS;X;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tổng giá trị danh mục+ quốc tịch
+hàng: các dòng NĐT";GROUP BY quốc tịch, RANK DESC;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;;"Tổng giá trị danh mục,
+Quốc tịch";Sum (Tổng giá trị danh mục) theo cột Quốc tịch, lấy top 5 lớn nhất
+6;;Dashboard/Danh mục/Thống kê danh mục;Top 5 NĐT;Tên top 5 NĐTNN có tổng giá trị danh mục lớn nhất;Dashboard;Chỉ tiêu phái sinh;TB;Tháng, NĐT;FIMS;X;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tổng giá trị danh mục+ tên KH 
+hàng: các dòng NĐT";RANK DESC theo GTDM;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;;"Tổng giá trị danh mục,
+Tên khách hàng";Sum (Tổng giá trị danh mục) theo cột Tên khách hàng, lấy top 5 lớn nhất
+7;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Giá trị tài sản;;Dashboard;Chỉ tiêu phái sinh;TB;Tháng;FIMS;X;X;;Done;;"CATEGORIESSTOCK
+SECURITIES";"CATEGORIESSTOCK.Quantity
+SECURITIES
+.ClosingPrice";;;;;;;Done;Dữ liệu động;;;;;
+7;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Loại tài sản;;Dashboard;Chiều;TB;;FIMS;X;X;;Done;;RELATEDPROPERTIES;Name;RELATEDPROPERTIES.Deleted=0;;;;;;Done;Dữ liệu động;;;;;
+7;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Cổ phiếu, CCQ niêm yết;Giá trị tài sản NĐTNN đầu tư vào cổ phiếu, CCQ niêm yết;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Cổ phiếu/CCQ >> Cổ phiếu niêm yết, CCQ niêm yết >> Giá trị
+
+hàng: Tổng = (1)+(2)";;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;Tổng= (1)+(2);Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết>>Giá trị;
+7;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Trái phiếu;Giá trị tài sản NĐTNN đầu tư vào trái phiếu;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Trái phiếu
+
+hàng: Tổng = (1)+(2)";;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;Tổng= (1)+(2);Trái phiếu;Sum (Giá trị) của 3 loại trái phiếu
+7;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Upcom;Giá trị tài sản NĐTNN đầu tư vào upcom;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Cổ phiếu/Chứng chỉ quỹ >> Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) >> Giá Trị
+
+hàng: Tổng = (1)+(2)";Lọc theo RELATEDPROPERTIES. Name;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;Tổng= (1)+(2);Cổ phiếu/Chứng chỉ quỹ>>Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom)>>Giá trị;
+7;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác;Giá trị tài sản NĐTNN đầu tư vào giá trị vốn góp, mua cổ phần, quỹ thành viên và chứng khoán khác;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Cổ phiếu/CCQ >> Giá trị vốn góp mua cổ phần, quỹ thành viên và CK khác >> Giá trị
+hàng: Tổng = (1)+(2)";;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;Tổng= (1)+(2);Cổ phiếu/Chứng chỉ quỹ>>Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác>>Giá trị;
+7;;Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN;Tiền và tương đương với tiền;Giá trị tài sản NĐTNN là tiền và tương đương với tiền;Dashboard;Chỉ tiêu phái sinh;Trùng;Tháng, Loại tài sản;FIMS;;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tiền và các khoản tương đương tiền (CCTG...) >> Giá trị
+hàng: Tổng = (1)+(2)";;;Lấy từ báo cáo NHLK;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;Tổng= (1)+(2);Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...)>> Giá trị;
+8;;Dashboard/Danh mục/Phân ngành của NĐTNN;Nhóm ngành;Lấy theo phân loại nhóm ngành của phân hệ IDS.;Dashboard;Chiều;TB;Tháng;IDS - GSĐC;X;X;;Done;;"IDS.COMPANY_PROFILES
+IDS.CATEGORIES";"IDS:
+COMPANY_PROFILES.CATEGORY_L1_ID
+CATEGORIES.INDUSTRY_NAME";;;;;;;Done;Dữ liệu tĩnh;;;;;
+8;;Dashboard/Danh mục/Phân ngành của NĐTNN;Tỷ trọng theo ngành;Tỷ trọng theo ngành = Tổng giá trị tài sản NĐTNN theo một nhóm ngành*100/Tổng giá trị tài sản NĐTNN toàn thị trường;Dashboard;Chỉ tiêu phái sinh;TB;Tháng;FIMS, IDS;X;X;;Done;;"IDS.COMPANY_PROFILES
+IDS.CATEGORIES
+
+CATEGORIESSTOCK
+SECURITIES";"IDS:
+COMPANY_PROFILES.CATEGORY_L1_ID
+CATEGORIES.INDUSTRY_NAME
+
+CATEGORIESSTOCK.Quantity
+SECURITIES
+.ClosingPrice";;;;;;Done;Dữ liệu tĩnh;;;;;;
+9;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Mã CK;;Dashboard;Chỉ tiêu cơ sở;Dễ;;FIMS;;;;Done;;SECURITIES;SecuritiesTypeId;;;;;;;;Dữ liệu động;Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC);;"Các dòng mã CK tại cột ""Mã trong 
+nước""";"Mã trong 
+nước";
+9;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Tỷ lệ sở hữu (theo mã CK);Tỷ lệ sở hữu của NĐTNN với từng mã chứng khoán;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;;BM 67_Quản lý thông tin nhà đầu tư nước ngoài;Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN * 100/ Tổng số cổ phiếu phát hành;;;;;;;Done;Dữ liệu động;Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC);;;Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN * 100/ Tổng số cổ phiếu phát hành;
+9;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Room còn lại (theo mã CK);Giá trị room còn được phép nắm giữ của NĐTNN;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;;BM 67_Quản lý thông tin nhà đầu tư nước ngoài;Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành;;;;;;;Done;Chưa có CSDL - Map biểu mẫu;Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC);;;Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành;
+9;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Room tối đa;Giới hạn room theo quy định từng mã CK.;Dashboard;Chỉ tiêu cơ sở;Dễ;Ngày;FIMS;X;X;;Done;;BM 67_Quản lý thông tin nhà đầu tư nước ngoài;Tỷ lệ sở hữu nước ngoài tối đa (%);;;;;;;Done;Chưa có CSDL - Map biểu mẫu;Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC);;;Tỷ lệ sở hữu nước ngoài tối đa (%);
+9;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Top 5 mã có room còn lại thấp nhất.;Lấy top 5 mã có room còn lại thấp nhất.;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS;X;X;;Done;;BM 67_Quản lý thông tin nhà đầu tư nước ngoài;Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành;;;;;;;Chưa có SQL;Dữ liệu động;Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC);;;Số lượng cố phiếu còn được phép nắm giữ bởi NĐTNN *100 / Tổng số cổ phiếu phát hành;Lấy top 5 nhỏ nhất
+9;;Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM);Room theo ngành (%);Room theo ngành = Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành;Dashboard;Chỉ tiêu phái sinh;TB;Ngày;FIMS, IDS - GSĐC;X;X;;Done;;"IDS.CATEGORIES
+
+BM 67_Quản lý thông tin nhà đầu tư nước ngoài";"IDS:
+- CATEGORIES. INDUSTRY_NAME
+
+Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành";GROUP BY CATEGORIES. INDUSTRY_NAME;;;;;;Chưa có SQL;Dữ liệu động;;;;;
+10;;Dashboard/Danh mục/Cảnh báo ngưỡng Room còn lại của NĐTNN;Room còn lại (cổ phiếu);Những mã cổ phiếu có Room còn lại = 0;Dashboard;Chỉ tiêu phái sinh;Trùng;Ngày;FIMS;;X;;Done;;BM 67_Quản lý thông tin nhà đầu tư nước ngoài;"Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN
+
+Mã trong nước";"Where ""Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN"" = 0";;;;;;Done;Chưa có CSDL - Map biểu mẫu;Quản lý thông tin nhà đầu tư nước ngoài (Báo cáo từ VSDC);;"Các dòng mã CK tại cột ""Mã trong 
+nước""";"Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN
+
+Mã trong nước";"Where ""Số lượng cổ phiếu còn được phép nắm giữ bởi NĐTNN"" = 0"
+11;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Thông tin nhà đầu tư;Tên, MSGD của NĐTNN;Dashboard;Chỉ tiêu cơ sở;Dễ;;FIMS;;;;Done;;INVESTOR;Name;;;;;;;;Dữ liệu tĩnh;;;;;
+11;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Quốc tịch;Quốc tịch nhà đầu tư nước ngoài;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;X;X;;Done;;"NATIONAL
+INVESTOR";NATIONAL.Name;;;;;;;Done;Dữ liệu tĩnh;;;;;
+11;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Mã số giao dịch;Mã số giao dịch của nhà đầu tư, là định danh duy nhất của một nhà đầu tư nước ngoài;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;X;X;;Done;;INVESTOR;INVESTOR.TransactionCode;;;;;;;Done;Dữ liệu tĩnh;;;;;
+11;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Ngân hàng lưu ký;Ngân hàng lưu ký nơi nhà đầu tư nước ngoài mở tài khoản giao dịch;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;X;X;;Done;;"BANKMONI
+INVESTOR";BANKMONI.Name;;;;;;;Done;Dữ liệu tĩnh;;;;;
+11;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Loại hình nhà đầu tư;Phân loại nhà đầu tư là tổ chức, cá nhân, quỹ…;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;X;X;;Done;;"INVESTORTYPE
+INVESTOR";INVESTORTYPE.Name;;;;;;;Done;Dữ liệu tĩnh;;;;;
+11;;Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN;Đại diện giao dịch;Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực);Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;FIMS;X;X;;Done;;"INVESTORTYPE
+INVESTOR";INVESTOR.Director;;;;;;;Done;Dữ liệu tĩnh;;;;;
+12;;Dashboard/NĐT 360/Biến động tài sản của NĐTNN;Thông tin nhà đầu tư;Tên, MSGD của NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;;FIMS;;;;Done;;INVESTOR;Name;;;;;;;;Dữ liệu tĩnh;;;;;
+12;;Dashboard/NĐT 360/Biến động tài sản của NĐTNN;Tổng giá trị danh mục;Tổng giá trị thị trường của tài sản mà nhà đầu tư nước ngoài đang nắm giữ;Dashboard;Chỉ tiêu cơ sở;Trùng;Tháng, NĐT;FIMS;;X;;Done;;"Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân 
+Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC)";"cột: Tổng giá trị danh mục
+hàng: từng NĐT cụ thể";;;;;;;Done;Dữ liệu động;Báo cáo PLIII-TT51/2021/TT-BTC (Báo cáo thống kê danh mục lưu ký NĐTNN - do CTCK và Ngân hàng lưu ký gửi, kỳ tháng);II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;"Các dòng của cột """;Tổng giá trị danh mục;
+13;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Thông tin nhà đầu tư;Tên, MSGD của NĐTNN;Dashboard;Chỉ tiêu cơ sở;Trùng;;Thanh tra;;;;Done;;PENALTY_DECISION_SUBJECT;SUBJECT_NAME;;;;;;;;Dữ liệu tĩnh;;;;;
+13;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Ngày quyết định;Ngày ra quyết định xử phạt nhà đầu tư nước ngoài;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;X;X;;Done;;PENALTY_DECISION;ISSUED_DATE;;;;;;;Done;Dữ liệu tĩnh;;;;;
+13;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Phân loại;Phân loại hình thức xử lý: bị nhắc nhở, xử phạt hành chính,…;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;X;X;;Done;;PENALTY_TYPE;NAME;;;;;;;Done;Dữ liệu tĩnh;;;;;
+13;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Nội dung/ Trích yếu;Tóm tắt nội dung xử phạt;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;X;X;;Done;;PENALTY_DECISION_SUBJECT_BEHAVIOR;DESCRIPTION;;;;;;;Done;Dữ liệu tĩnh;;;;;
+13;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Mức độ;Đánh giá mức độ vi phạm là thấp, trùng bình, cao,…;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;X;X;;Done;;;;Giá trị NULL;;không có trường thông tin xác định mức độ phi phạm ==> lên UAT trao dổi vs HO để loại bỏ trường này;;;;Done;Dữ liệu tĩnh;;;;;
+13;;Dashboard/NĐT 360/Lịch sử tuân thủ của NĐTNN;Trạng thái;Trạng thái xử lý: đã khắc phục, đã nộp phạt,…;Dashboard;Chỉ tiêu cơ sở;Dễ;NĐT;Thanh tra;X;X;;Done;;PENALTY_DECISION;Status;;;;;;;Done;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Cổ phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Buy Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Buy - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('STX','UPX')
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Buy - Foreigner Investor type
+<> '00'";"SUM(Execution_Value) where Buy - Foreigner Investor type <> '00'and Market_ID='STO' (HOSE)
+SUM(Trade_price*Trade_quantity) where Buy_FIT IN ('10','20') and Market_ID IN ('STX','UPX') (HNX)";cần làm rõ xem có sum hay không;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Cổ phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('STX','UPX')
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"SUM(Execution_Value) where Sell - Foreigner Investor type <> '00' and Market_ID='STO' (HOSE)
+SUM(Trade_price*Trade_quantity) where Sell_FIT IN ('10','20') and Market_ID IN ('STX','UPX') (HNX)";cần làm rõ xem có sum hay không;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Cổ phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);GT ròng = GT mua - GT bán;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('STX','UPX')
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+
+---
+TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('STX','UPX')
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";GT_mua_CP - GT_bán_CP (từ 2 query trên);;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Trái phiếu - GT NĐTNN mua chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Buy Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Buy - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('BDX','HCX')
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'BDO'
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA";"SUM(Execution_Value) where Buy - Foreigner Investor type <> '00'and Market_ID='BDO' (HOSE)
+SUM(Trade_price*Trade_quantity) where Buy_FIT IN ('10','20') and Market_ID IN ('BDX','HCX') (HNX)";;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Trái phiếu - GT NĐTNN bán chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('BDX','HCX')
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'BDO'
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"SUM(Execution_Value) where Sell - Foreigner Investor type <> '00' and Market_ID='BDO' (HOSE)
+SUM(Trade_price*Trade_quantity) where Sell_FIT IN ('10','20') and Market_ID IN ('BDX','HCX') (HNX)";;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Trái phiếu - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);GT ròng = GT mua - GT bán;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('BDX','HCX')
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'BDO'
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+---
+TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Market ID IN ('BDX','HCX')
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Market ID = 'BDO'
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";GT_mua_TP - GT_bán_TP;;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;CCQ - GT NĐTNN mua chứng khoán (triệu VNĐ);Chứng chỉ quỹ;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;"TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+JAD_STOCKINFOR";"TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+
+JAD_STOCKINFOR.stocktype";"TRADE_BOOK_HOSE (tham khảo):
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Buy - Invest Type = '7000'
+and JAD_STOCKINFOR.stocktype = '3' and JAD_STOCKINFOR.tradingdate = max(JAD_STOCKINFOR.tradingdate)";SUM(Execution_Value) where Buy - Foreigner Investor type <> '00'and Symbol IN (CCQ list);;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;CCQ - GT NĐTNN bán chứng khoán (triệu VNĐ);Chứng chỉ quỹ;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;"TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+JAD_STOCKINFOR";"TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+
+JAD_STOCKINFOR.stocktype";"[M-01] Cần bổ sung bảng danh mục loại CK để filter CCQ
+
+TRADE_BOOK_HOSE (tham khảo):
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Sell - Invest Type = '7000'
+and JAD_STOCKINFOR.stocktype = '3' and JAD_STOCKINFOR.tradingdate = max(JAD_STOCKINFOR.tradingdate)";SUM(Execution_Value) where Sell - Foreigner Investor type <> '00' and Symbol IN (CCQ list);;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;CCQ - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);"Chứng chỉ quỹ
+GT ròng = GT mua - GT bán";Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;"TRADE_BOOK_HOSE / TRADE_BOOK_HNX
+
+JAD_STOCKINFOR";"TRADE_BOOK_HOSE:
+- Symbol
+- Execution - Value
+- Buy - Invest Type / Sell - Invest Type
+(TRADE_BOOK_HNX: chưa xác định Market ID cho CCQ)";"
+
+TRADE_BOOK_HOSE (tham khảo):
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Buy - Invest Type = '7000'
+and JAD_STOCKINFOR.stocktype = '3' and JAD_STOCKINFOR.tradingdate = max(JAD_STOCKINFOR.tradingdate)
+---
+
+
+TRADE_BOOK_HOSE (tham khảo):
+where Trade Date = :pdate
+and Market ID = 'STO'
+and Sell - Invest Type = '7000'
+and JAD_STOCKINFOR.stocktype = '3' and JAD_STOCKINFOR.tradingdate = max(JAD_STOCKINFOR.tradingdate)";GT_mua_CCQ - GT_bán_CCQ;;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Tổng - GT NĐTNN mua chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Buy Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Buy - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA";"SUM(Execution_Value) where Buy - Foreigner Investor type <> '00'(HOSE)
+SUM(Trade_price*Trade_quantity) where Buy_FIT IN ('10','20') (HNX) — tất cả Market ID";;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Tổng - GT NĐTNN bán chứng khoán (triệu VNĐ);;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+- Sell Foreign Investor Type Code
+
+TRADE_BOOK_HOSE:
+- Execution - Value
+- Sell - Invest Type";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"SUM(Execution_Value) where Sell - Foreigner Investor type <> '00' (HOSE)
+SUM(Trade_price*Trade_quantity) where Sell_FIT IN ('10','20') (HNX) — tất cả Market ID";;;;;;Dữ liệu tĩnh;;;;;
+14;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán;Tổng - GT NĐTNN mua/bán ròng chứng khoán (triệu VNĐ);GT ròng = GT mua - GT bán;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, Loại CK;MSS;X;X;;Done;Sổ lệnh;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price
+- Trade quantity
+=> Giá trị GD = Trade price * Trade quantity
+
+TRADE_BOOK_HOSE:
+- Execution - Value (có sẵn, dùng trực tiếp)";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy Foreign Investor Type Code <> '00'
+---
+TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Sell - Foreigner Investor type <> '00'";GT_mua_Tong - GT_bán_Tong;;;;;;Dữ liệu tĩnh;;;;;
+15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;Tài khoản giao dịch NĐTNN;;Báo cáo;Chiều;Dễ;Ngày, NĐT;MSS;X;X;;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Buy account number
+
+TRADE_BOOK_HOSE:
+- Buy - Acct No";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA";SELECT DISTINCT Buy_account_number / Buy_Acct_No;;;;;;Dữ liệu tĩnh;;;;;
+15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;Mã CK;;Báo cáo;Chiều;Dễ;Ngày, NĐT;MSS;X;X;;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Issue Code
+
+TRADE_BOOK_HOSE:
+- Symbol";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20') -- phía MUA
+[hoặc] Sell Foreign Investor Type Code IN ('10','20') -- phía BÁN
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA
+[hoặc] Sell - Foreigner Investor type
+<> '00' -- phía BÁN";SELECT DISTINCT Issue Code / Symbol;;;;;;Dữ liệu tĩnh;;;;;
+15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;KL mua chứng khoán;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;X;X;;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade quantity (where Buy Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+- Execution - Volume (where Buy - Invest Type = '7000')";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA";"-- HOSE: SUM(Execution_Volume) GROUP BY Buy_Acct_No, Symbol
+-- HNX: SUM(Trade_quantity) GROUP BY Buy_account_number, Issue_Code";;;;;;Dữ liệu tĩnh;;;;;
+15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;KL bán CK;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;X;X;;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade quantity (where Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+- Execution - Volume (where Sell - Invest Type = '7000')";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- HOSE: SUM(Execution_Volume) GROUP BY Sell_Acct_No, Symbol
+-- HNX: SUM(Trade_quantity) GROUP BY Sell_account_number, Issue_Code";;;;;;Dữ liệu tĩnh;;;;;
+15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;GT mua chứng khoán;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;X;X;;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price * Trade quantity (where Buy Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+- Execution - Value (where Buy - Invest Type = '7000')";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Buy Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Buy - Foreigner Investor type
+<> '00' -- phía MUA";"-- HOSE: SUM(Execution_Value) GROUP BY Buy_Acct_No, Symbol
+-- HNX: SUM(Trade_price*Trade_quantity) GROUP BY Buy_account_number, Issue_Code";;;;;;Dữ liệu tĩnh;;;;;
+15;;Báo cáo/Báo cáo thống kê tình hình giao dịch của NĐTNN trên thị trường chứng khoán – biểu chi tiết;GT bán chứng khoán;;Báo cáo;Chỉ tiêu phái sinh;Trùng;Ngày, NĐT;MSS;X;X;;Done;;TRADE_BOOK_HOSE / TRADE_BOOK_HNX;"TRADE_BOOK_HNX:
+- Trade price * Trade quantity (where Sell Foreign Investor Type Code IN ('10','20'))
+
+TRADE_BOOK_HOSE:
+- Execution - Value (where Sell - Invest Type = '7000')";"TRADE_BOOK_HNX:
+where Trade date = :pdate
+and Sell Foreign Investor Type Code IN ('10','20')
+
+TRADE_BOOK_HOSE:
+where Trade Date = :pdate
+and Sell - Foreigner Investor type
+<> '00' -- phía BÁN";"-- HOSE: SUM(Execution_Value) GROUP BY Sell_Acct_No, Symbol
+-- HNX: SUM(Trade_price*Trade_quantity) GROUP BY Sell_account_number, Issue_Code";;;;;;Dữ liệu tĩnh;;;;;
+16;;Data Explorer Dòng vốn ròng của NĐTNN;Tháng;;Data Explorer;Chiều;Trùng;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodValue;;;;;;;;Dữ liệu động;;;;;
+16;;Data Explorer Dòng vốn ròng của NĐTNN;Quốc gia;Tổng hợp Vốn đầu tư vào ròng/ Vốn đầu tư rút ròng theo Quốc gia;Data Explorer;Chỉ tiêu phái sinh;Trùng;;FIMS;X;X;;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";GROUP BY QUỐC TỊCH;;;;;;;Dữ liệu động;;;;;
+16;;Data Explorer Dòng vốn ròng của NĐTNN;Nhà đầu tư;Tổng hợp Vốn đầu tư vào ròng/ Vốn đầu tư rút ròng theo nhà đầu tư;Data Explorer;Chỉ tiêu phái sinh;Trùng;;FIMS;X;X;;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";GROUP BY TÊN NHÀ ĐẦU TƯ;;;;;;;Dữ liệu động;;;;;
+16;;Data Explorer Dòng vốn ròng của NĐTNN;Vốn đầu tư vào ròng;Dòng vốn đầu tư vào ròng của Quốc gia/ nhà đầu tư;Data Explorer;Chỉ tiêu phái sinh;Trùng;;FIMS;X;X;;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";lọc theo RPTVALUES.Code;;;;;;;Dữ liệu động;;;;;
+16;;Data Explorer Dòng vốn ròng của NĐTNN;Vốn đầu tư rút ròng;Dòng vốn đầu tư rút ròng của Quốc gia/ nhà đầu tư;Data Explorer;Chỉ tiêu phái sinh;Trùng;;FIMS;X;X;;Done;;Báo cáo PLIV-TT51/2021/TT-BTC (Báo cáo hoạt động chu chuyển vốn NĐTNN - do Ngân hàng lưu ký gửi, kỳ nửa tháng);"cột: GT dòng vốn vào (3)
+
+hàng: tâts cả";lọc theo RPTVALUES.Code;;;;;;;Dữ liệu động;;;;;
+17;;Data Explorer Tổng giá trị danh mục của NĐTNN;Tháng;Chiều thời gian;Data Explorer;Chiều;Trùng;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodValue;"where tên báo cáo = """"";;;;;;;Dữ liệu động;;;;;
+17;;Data Explorer Tổng giá trị danh mục của NĐTNN;Quốc gia;Tổng hợp giá trị danh mục theo Quốc gia;Data Explorer;Chỉ tiêu phái sinh;Trùng;;FIMS;X;X;;Done;;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC) >> II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;"cột : Tổng giá trị danh mục
+
+hàng: Tổng= (1)+(2)";GROUP BY QUỐC TỊCH;;;;;;;Dữ liệu động;;;;;
+17;;Data Explorer Tổng giá trị danh mục của NĐTNN;Tên NĐT;Tổng hợp giá trị danh mục theo NĐTNN;Data Explorer;Chỉ tiêu phái sinh;Trùng;;FIMS;X;X;;Done;;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC) >> II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;"cột : Tổng giá trị danh mục
+
+hàng: Tổng= (1)+(2)";GROUP BY Tên khách hàng;;;;;;;Dữ liệu động;;;;;
+17;;Data Explorer Tổng giá trị danh mục của NĐTNN;Tổng giá trị danh mục;Tổng giá trị danh mục của NĐTNN;Data Explorer;Chỉ tiêu phái sinh;Trùng;;FIMS;X;X;;Done;;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC) >> II. Báo cáo cơ cấu danh mục theo tỷ trọng đầu tư của tổ chức và cá nhân;"cột : Tổng giá trị danh mục
+
+hàng: Tổng= (1)+(2)";;;;;;;;Dữ liệu động;;;;;
+18;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+18;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Kỳ báo cáo;Tháng;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+18;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+18;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên báo cáo;Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+18;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+18;;Data Explorer/CTQLQ, CN CTQLQ nước ngoài tại VN/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+19;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+19;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Kỳ báo cáo;Tháng;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+19;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+19;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Tên báo cáo;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+19;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+19;;Data Explorer/CTCK/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+20;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+20;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Kỳ báo cáo;Tháng;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+20;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+20;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên báo cáo;Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+20;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+20;;Data Explorer/CTCK/Hoạt động quản lý danh mục đầu tư/chỉ định đầu tư cho nhà đầu tư nước ngoài (PLV-TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+21;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Loại báo cáo;Định kỳ;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+21;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Kỳ báo cáo;Tháng;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+21;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+21;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Tên báo cáo;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+21;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+21;;Data Explorer/Ngân hàng lưu ký/Báo cáo thống kê danh mục lưu ký của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIII-TT51/2011/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+22;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+22;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Kỳ báo cáo;Nửa tháng;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+22;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+22;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Tên báo cáo;Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+22;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+22;;Data Explorer/Ngân hàng lưu ký/Báo cáo hoạt động chu chuyển vốn của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLIV- TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+23;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Loại báo cáo;Định kỳ;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+23;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Kỳ báo cáo;Ngày;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+23;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+23;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Tên báo cáo;Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;;;;;;;;;Dữ liệu động;;;;;
+23;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+23;;Data Explorer/Ngân hàng lưu ký/Báo cáo số liệu hoạt động nhà đầu tư nước ngoài;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+24;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Loại báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+24;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+24;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+24;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Tên báo cáo;"Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN
+";Data Explorer;;;;FIMS;X;X;;Done;;"Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN
+";;;;;;;;;Dữ liệu động;;;;;
+24;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+24;;Data Explorer/Ngân hàng lưu ký/Báo cáo Hoạt động lưu ký chứng khoán của NĐTNN;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+25;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+25;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+25;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+25;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Tên báo cáo;Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Data Explorer;;;;FIMS;X;X;;Done;;Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;;;;;;;;;Dữ liệu động;;;;;
+25;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+25;;Data Explorer/Đại diện CBTT/Giấy chỉ định/ủy quyền thực hiện công bố thông tin của nhà đầu tư nước ngoài hoặc nhóm các nhà đầu tư nước ngoài có liên quan;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+26;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+26;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+26;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+26;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Tên báo cáo;Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+26;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+26;;Data Explorer/Đại diện CBTT/Báo cáo về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng (PLIX- TT96/2020/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+27;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+27;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+27;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+27;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Tên báo cáo;Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+27;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+27;;Data Explorer/Đại diện CBTT/Báo cáo thay đổi về sở hữu của nhóm nhà đầu tư nước ngoài có liên quan là cổ động lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/ chứng chỉ quỹ đóng (PLX- TT96/2020/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+28;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+28;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+28;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+28;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;;;;;;;;;Dữ liệu động;;;;;
+28;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+28;;Data Explorer/Đại diện CBTT/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+29;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+29;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+29;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+29;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;;;;;;;;;Dữ liệu động;;;;;
+29;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+29;;Data Explorer/Đại diện CBTT/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+30;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+30;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+30;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+30;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Tên báo cáo;Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+30;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+30;;Data Explorer/Đại diện CBTT/Cập nhật thay đổi về danh sách nhóm NĐT NN có liên quan (PL II- TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+31;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Loại báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+31;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+31;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+31;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Tên báo cáo;Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+31;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+31;;Data Explorer/Đại diện giao dịch/Báo cáo tình hình hoạt động đầu tư của nhà đầu tư nước ngoài (PL VIII-TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+32;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+32;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+32;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+32;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;;;;;;;;;Dữ liệu động;;;;;
+32;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+32;;Data Explorer/NĐTNN/Báo cáo về ngày trở thành/không còn là cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+33;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+33;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+33;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+33;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên báo cáo;Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;;;;;;;;;Dữ liệu động;;;;;
+33;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+33;;Data Explorer/NĐTNN/Báo cáo về thay đổi sở hữu của cổ đông lớn, nhà đầu tư nắm giữ từ 5% trở lên cổ phiếu/chứng chỉ quỹ đóng;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+34;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+34;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+34;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+34;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Data Explorer;;;;FIMS;X;X;;Done;;Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;;;;;;;;;Dữ liệu động;;;;;
+34;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+34;;Data Explorer/NĐTNN/Thông báo giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+35;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+35;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+35;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+35;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Data Explorer;;;;FIMS;X;X;;Done;;Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;;;;;;;;;Dữ liệu động;;;;;
+35;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+35;;Data Explorer/NĐTNN/Thông báo giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+36;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+36;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+36;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+36;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;;;;;;;;;Dữ liệu động;;;;;
+36;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+36;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch cổ phiếu/chứng chỉ quỹ/chứng quyền có bảo đảm của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+37;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Loại báo cáo;Bất thường;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+37;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+37;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+37;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên báo cáo;Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;;;;;;;;;Dữ liệu động;;;;;
+37;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+37;;Data Explorer/NĐTNN/Báo cáo kết quả giao dịch trái phiếu chuyển đổi, quyền mua cổ phiếu/chứng chỉ quỹ, quyền mua trái phiếu chuyển đổi của người nội bộ và người có liên quan của người nội bộ;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+38;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Loại báo cáo;Định kỳ;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+38;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Kỳ báo cáo;Ngày, Tháng, Năm;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+38;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+38;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Tên báo cáo;Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC).;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC).;;;;;;;;;Dữ liệu động;;;;;
+38;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+38;;Data Explorer/SGDCK/Báo cáo tình hình giao dịch của nhà đầu tư nước ngoài, tổ chức phát hành chứng chỉ lưu ký tại nước ngoài (PLVII- TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+39;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Loại báo cáo;Tháng;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+39;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+39;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+39;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Tên báo cáo;Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);;;;;;;;;Dữ liệu động;;;;;
+39;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+39;;Data Explorer/VSDC/Báo cáo hoạt động cấp mã số giao dịch (PLVI-TT51/2021/TT-BTC);Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+40;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Loại báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;"SELECT 
+ROWNUM AS stt, 
+inv.""Name"" AS ho_ten_ndt, 
+inv.""EName"" AS ho_ten_ndt_en, 
+CASE inv.""ObjectType"" WHEN 1 THEN 'Ca nhan' 
+WHEN 2 THEN 'To chuc' END AS loai_hinh, 
+inv.""TransactionCode"" AS ma_so_giao_dich, 
+nat.""Name"" AS quoc_tich, 
+inv.""Address"" AS dia_chi, 
+tr.""FULLNAME"" AS ten_dai_dien_gd, 
+it.""Name"" AS loai_hinh_ndt_to_chuc, 
+cs.""SecId"" AS ma_chung_khoan, 
+cs.""Quantity"" AS so_luong_so_huu, 
+cs.""Rate"" AS ty_le_so_huu_pct 
+FROM FIMS_NEW.INVESTOR inv 
+LEFT JOIN FIMS_NEW.NATIONAL nat ON nat.""Id"" = inv.""NaId"" AND nat.""Deleted"" = 0 
+LEFT JOIN FIMS_NEW.INVESTORTYPE it ON it.""Id"" = inv.""InvestorTypeId"" AND it.""Deleted"" = 0 
+LEFT JOIN FIMS_NEW.CATEGORIESSTOCK cs ON cs.""InvesId"" = inv.""Id"" AND cs.""Deleted"" = 0 
+LEFT JOIN FIMS_NEW.TRADINGAUTHORIZATION ta ON ta.""InvestorId"" = inv.""Id"" AND ta.""Deleted"" = 0 
+LEFT JOIN FIMS_NEW.TRADINGREPRESENTATIVE tr ON tr.""ID"" = ta.""TradingRepresentativeId"" AND tr.""DELETED"" = 0 
+WHERE inv.""Deleted"" = 0 
+ORDER BY inv.""Id"", cs.""SecId"";";"Báo cáo lấy trực tiếp từ CSDL tập trung
+Phân hệ FIMS kéo dữ liệu về các bảng";;;;;Dữ liệu động;;;;;
+40;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Kỳ báo cáo;Tuần;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;Dữ liệu động;;;;;;
+40;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;Dữ liệu động;;;;;;
+40;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Tên báo cáo;Báo cáo danh mục của từng NĐT nước ngoài;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo danh mục của từng NĐT nước ngoài;;;;;;;;Dữ liệu động;;;;;;
+40;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;Dữ liệu động;;;;;;
+40;;Data Explorer/VSDC/Báo cáo danh mục của từng NĐT nước ngoài;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;Dữ liệu động;;;;;;
+41;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Loại báo cáo;Tháng;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+41;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+41;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+41;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Tên báo cáo;Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;;;;;;;;;Dữ liệu động;;;;;
+41;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+41;;Data Explorer/VSDC/Báo cáo thống kê tình hình nắm giữ chứng khoán của nhà đầu tư nước ngoài;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+42;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Loại báo cáo;Tháng;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+42;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+42;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+42;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Tên báo cáo;Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;;;;;;;;;Dữ liệu động;;;;;
+42;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+42;;Data Explorer/VSDC/Báo cáo thống kê tình hình phát hành chứng khoán ra công chúng, phát hành thêm chứng khoán đã niêm yết/ đăng ký giao dịch;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+43;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Loại báo cáo;Quý;Data Explorer;;;;FIMS;X;X;;Done;;REPORTTYPE;"REPORTTYPE.NAME
+RPTMEMBER.REPORTTypeID";;;;;;;;Dữ liệu động;;;;;
+43;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Kỳ báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.PeriodType;;;;;;;;Dữ liệu động;;;;;
+43;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Mã báo cáo;;Data Explorer;;;;FIMS;X;X;;Done;;RPTMEMBER;RPTMEMBER.RPID;;;;;;;;Dữ liệu động;;;;;
+43;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Tên báo cáo;Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Data Explorer;;;;FIMS;X;X;;Done;;Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;;;;;;;;;Dữ liệu động;;;;;
+43;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Mã chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.MA_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;
+43;;Data Explorer/VSDC/Báo cáo thống kê tình hình chia cổ tức cho nhà đầu tư nước ngoài;Tên chỉ tiêu;;Data Explorer;;;;FIMS;X;X;;Done;;RPT_FIELD_CATALOG;RPT_FIELD_CATALOG.TEN_CHI_TIEU;;;;;;;;Dữ liệu động;;;;;

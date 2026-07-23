@@ -24,7 +24,7 @@
 | YoY | `K_{MODULE}_{N}_YOY` | `K_FMS_1_YOY` |
 
 **Quy tắc khai sinh:**
-- KPI ID được khai sinh **lần đầu** tại Section 2 (bảng KPI trong block READY hoặc PENDING)
+- KPI ID được khai sinh **lần đầu** tại Section 2 (bảng KPI duy nhất của Nhóm, dòng có Trạng thái READY hoặc PENDING)
 - Chỉ sau khi khai sinh trong HLD mới xuất hiện trong Attributes CSV và Detail Mapping CSV
 - ❌ Detail Mapping không tự sinh KPI ID mới — chỉ tham chiếu từ HLD
 
@@ -33,7 +33,7 @@
 - Ghi nhận gap trong Section 4 (Vấn đề mở) nếu cần giải thích
 
 **Khi PENDING → READY:**
-- Giữ nguyên KPI ID đã khai sinh trong block PENDING — không cấp ID mới
+- Giữ nguyên KPI ID đã khai sinh — chỉ đổi cột Trạng thái từ PENDING sang READY trong cùng bảng KPI, không cấp ID mới, không tạo dòng/bảng mới
 
 ---
 
