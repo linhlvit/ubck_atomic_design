@@ -1,0 +1,50 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_public_company_financial_summary_snpst
+  logical_name: Mapping Datamart - Fact Public Company Financial Summary Snapshot
+  physical_name: fct_public_company_financial_summary_snpst
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: fct_public_company_financial_summary_snpst
+  etl_handle: Fact Snapshot
+  description: Tổng hợp tài chính CTDC theo kỳ báo cáo (Số DN, Tỷ lệ nộp BCTC, Số
+    DN báo lãi...) — 1 row / CTDC / kỳ báo cáo (năm × quý). Phục vụ Nhóm 6/9/10/12/14/16
+    + MH4 Nhóm 38-41.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_report_submission
+  alias: pc_re_su
+  select_fields: pc_id, submission_deadline_dt, submission_dt
+  filter: ''
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: public_company_dim_id
+  transformation: pc_re_su.pc_id
+  data_type: string
+  target_attr_name: null
+  description: FK tới Public Company Dimension — resolve qua Public Company Report
+    Submission.Public Company Id.
+- target_column: cdr_dt_dim_id
+  transformation: 'NULL  -- TODO: lookup parse failed'
+  data_type: string
+  target_attr_name: null
+  description: FK tới Calendar Date Dimension — resolve qua Public Company Report
+    Submission.Report Year/Report Quarter (kỳ báo cáo).
+- target_column: submission_deadline_dt
+  transformation: pc_re_su.submission_deadline_dt
+  data_type: date
+  target_attr_name: null
+  description: Số lượng BCTC đến hạn nộp
+- target_column: submission_dt
+  transformation: pc_re_su.submission_dt
+  data_type: date
+  target_attr_name: null
+  description: Số báo cáo BCTC đã nộp
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

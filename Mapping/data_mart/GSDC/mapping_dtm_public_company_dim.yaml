@@ -1,0 +1,75 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-public_company_dim
+  logical_name: Mapping Datamart - Public Company Dimension
+  physical_name: public_company_dim
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: public_company_dim
+  etl_handle: SCD4A
+  description: Chiều công ty đại chúng — SCD2, mã CK/tên DN/sàn/ngành. Dùng chung
+    toàn bộ module GSDC.
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: public_company
+  alias: pu_co
+  select_fields: pc_code, equity_ticker_symbol, pc_nm, equity_listing_exchange_code,
+    business_line_level_1_code, ids_registration_dt, pc_status_code, src_stm_code
+  filter: '1=1 /* TODO: không xác định được etl_pattern cho ''public_company'' — không
+    tìm thấy file trong DataModel/Atomic/, Data Modeler cần bổ sung */ AND src_stm_code
+    = ''IDS_COMPANY_PROFILES'''
+  description: ''
+relationship: []
+mapping_columns:
+- target_column: public_company_dim_id
+  transformation: 'hash_id(''IDS_COMPANY_PROFILES'')  -- TODO: add NK columns'
+  data_type: string
+  target_attr_name: null
+  description: 'Khóa đại diện (surrogate key). Driving Table: Public Company (pu_co).'
+- target_column: public_company_code
+  transformation: pu_co.pc_code
+  data_type: string
+  target_attr_name: null
+  description: Khóa nghiệp vụ — map từ Public Company Code.
+- target_column: equity_ticker_symbol
+  transformation: pu_co.equity_ticker_symbol
+  data_type: string
+  target_attr_name: null
+  description: Mã cổ phiếu.
+- target_column: public_company_nm
+  transformation: pu_co.pc_nm
+  data_type: string
+  target_attr_name: null
+  description: Tên công ty (tiếng Việt).
+- target_column: equity_listing_exchange_code
+  transformation: pu_co.equity_listing_exchange_code
+  data_type: string
+  target_attr_name: null
+  description: Sàn niêm yết.
+- target_column: business_line_level_1_code
+  transformation: pu_co.business_line_level_1_code
+  data_type: string
+  target_attr_name: null
+  description: 'Mã ngành cấp 1. Scheme: IDS_INDUSTRY_CATEGORY.'
+- target_column: ids_registration_dt
+  transformation: pu_co.ids_registration_dt
+  data_type: date
+  target_attr_name: null
+  description: Ngày đăng ký IDS.
+- target_column: public_company_status_code
+  transformation: pu_co.pc_status_code
+  data_type: string
+  target_attr_name: null
+  description: Trạng thái công ty.
+- target_column: src_stm_code
+  transformation: pu_co.src_stm_code
+  data_type: string
+  target_attr_name: null
+  description: Mã hệ thống nguồn dữ liệu.
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

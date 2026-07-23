@@ -1,0 +1,159 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_public_company_risk_score_snpst
+  logical_name: Mapping Datamart - Fact Public Company Risk Score Snapshot
+  physical_name: fct_public_company_risk_score_snpst
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: fct_public_company_risk_score_snpst
+  etl_handle: Fact Snapshot
+  description: Điểm chấm phân loại CTDC tổng hợp (Tuân thủ/Phát hành/Tài chính/Phi
+    TC/Xếp hạng TN/Tổng điểm) — 1 row / CTDC / kỳ đánh giá (SCD4A current state).
+    Phục vụ Nhóm 1 + Nhóm 32 (reuse).
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: public_company_evaluation
+  alias: pu_co_ev
+  select_fields: pc_id, total_score_percentage, evaluation_dt
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr
+  select_fields: pc_evaluation_criterion_id, pc_evaluation_group_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_group
+  alias: pc_ev_gr
+  select_fields: pc_evaluation_group_id
+  filter: ds_rcrd_st = 'ACTIVE' AND pc_evaluation_group_code = 'TUAN_THU' AND src_stm_code
+    = 'IDS_EVALUATION_GROUPS'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_group
+  alias: pc_ev_gr_2
+  select_fields: pc_evaluation_group_id
+  filter: ds_rcrd_st = 'ACTIVE' AND pc_evaluation_group_code = 'PHAT_HANH' AND src_stm_code
+    = 'IDS_EVALUATION_GROUPS'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_group
+  alias: pc_ev_gr_3
+  select_fields: pc_evaluation_group_id
+  filter: ds_rcrd_st = 'ACTIVE' AND pc_evaluation_group_code = 'TAI_CHINH' AND src_stm_code
+    = 'IDS_EVALUATION_GROUPS'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_group
+  alias: pc_ev_gr_4
+  select_fields: pc_evaluation_group_id
+  filter: ds_rcrd_st = 'ACTIVE' AND pc_evaluation_group_code = 'PHI_TAI_CHINH' AND
+    src_stm_code = 'IDS_EVALUATION_GROUPS'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_2
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'PHAT_HANH_TIN_NHIEM' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: cdr_dt_dim
+  alias: cd_dt_di
+  select_fields: cdr_dt_dim_id, cdr_dt_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE'
+  description: ''
+relationship:
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr
+  join_on: pc_ev_cr.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pc_ev_cr
+  join_type: INNER JOIN
+  join_alias: pc_ev_gr
+  join_on: pc_ev_gr.pc_evaluation_group_id = pc_ev_cr.pc_evaluation_group_id
+  description: ''
+- main_alias: pc_ev_cr
+  join_type: INNER JOIN
+  join_alias: pc_ev_gr_2
+  join_on: pc_ev_gr_2.pc_evaluation_group_id = pc_ev_cr.pc_evaluation_group_id
+  description: ''
+- main_alias: pc_ev_cr
+  join_type: INNER JOIN
+  join_alias: pc_ev_gr_3
+  join_on: pc_ev_gr_3.pc_evaluation_group_id = pc_ev_cr.pc_evaluation_group_id
+  description: ''
+- main_alias: pc_ev_cr
+  join_type: INNER JOIN
+  join_alias: pc_ev_gr_4
+  join_on: pc_ev_gr_4.pc_evaluation_group_id = pc_ev_cr.pc_evaluation_group_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_2
+  join_on: pc_ev_cr_2.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: LEFT JOIN
+  join_alias: cd_dt_di
+  join_on: cd_dt_di.cdr_dt_id = pu_co_ev.evaluation_dt
+  description: ''
+mapping_columns:
+- target_column: public_company_dim_id
+  transformation: pu_co_ev.pc_id
+  data_type: string
+  target_attr_name: null
+  description: FK tới Public Company Dimension — resolve qua Public Company Evaluation.Public
+    Company Id.
+- target_column: cdr_dt_dim_id
+  transformation: cd_dt_di.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: null
+  description: FK tới Calendar Date Dimension — resolve qua Public Company Evaluation.Evaluation
+    Date.
+- target_column: total_score_percentage
+  transformation: pu_co_ev.total_score_percentage
+  data_type: decimal(5,2)
+  target_attr_name: null
+  description: Điểm tổng hợp
+- target_column: compliance_score
+  transformation: SUM(pc_evaluation_detail.evaluation_score)
+  data_type: int
+  target_attr_name: null
+  description: Tuân thủ
+- target_column: issuance_score
+  transformation: SUM(pc_evaluation_detail.evaluation_score)
+  data_type: int
+  target_attr_name: null
+  description: Phát hành
+- target_column: financial_score
+  transformation: SUM(pc_evaluation_detail.evaluation_score)
+  data_type: int
+  target_attr_name: null
+  description: Tài chính
+- target_column: non_financial_m_score
+  transformation: SUM(pc_evaluation_detail.evaluation_score)
+  data_type: int
+  target_attr_name: null
+  description: Phi tài chính & M-Score
+- target_column: credit_rating_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Xếp hạng tín nhiệm DN
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

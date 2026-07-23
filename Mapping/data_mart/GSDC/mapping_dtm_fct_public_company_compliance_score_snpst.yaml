@@ -1,0 +1,333 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_public_company_compliance_score_snpst
+  logical_name: Mapping Datamart - Fact Public Company Compliance Score Snapshot
+  physical_name: fct_public_company_compliance_score_snpst
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: fct_public_company_compliance_score_snpst
+  etl_handle: Fact Snapshot
+  description: Điểm chi tiết 15 tiêu chí Tuân thủ + Tổng điểm — 1 row / CTDC / kỳ
+    đánh giá. Phục vụ Nhóm 2 + Nhóm 33 (reuse).
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: public_company_evaluation
+  alias: pu_co_ev
+  select_fields: pc_id, evaluation_dt
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_BCTC' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_2
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_BCTN' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_3
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_BCTHQT' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_4
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_CBTTBT_TDTGD' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_5
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_VP_UBCK' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_6
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_CBTTBT_VPVT' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_7
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_QTCT_DLCT' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_8
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_QTCT_SLDHDCD' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_9
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_QTCT_SLTVDL' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_10
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_QTCT_SLTVKDH' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_11
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_QTCT_TCTV' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_12
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_QTCT_SLTVBKS' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_13
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_BCSDV_BCTDSDV' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_14
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TUAN_THU_BCSDV_TDPASDV' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_15
+  select_fields: pc_evaluation_criterion_id, pc_evaluation_group_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_group
+  alias: pc_ev_gr
+  select_fields: pc_evaluation_group_id
+  filter: ds_rcrd_st = 'ACTIVE' AND pc_evaluation_group_code = 'TUAN_THU' AND src_stm_code
+    = 'IDS_EVALUATION_GROUPS'
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: cdr_dt_dim
+  alias: cd_dt_di
+  select_fields: cdr_dt_dim_id, cdr_dt_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE'
+  description: ''
+relationship:
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr
+  join_on: pc_ev_cr.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_2
+  join_on: pc_ev_cr_2.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_3
+  join_on: pc_ev_cr_3.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_4
+  join_on: pc_ev_cr_4.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_5
+  join_on: pc_ev_cr_5.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_6
+  join_on: pc_ev_cr_6.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_7
+  join_on: pc_ev_cr_7.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_8
+  join_on: pc_ev_cr_8.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_9
+  join_on: pc_ev_cr_9.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_10
+  join_on: pc_ev_cr_10.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_11
+  join_on: pc_ev_cr_11.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_12
+  join_on: pc_ev_cr_12.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_13
+  join_on: pc_ev_cr_13.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_14
+  join_on: pc_ev_cr_14.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_15
+  join_on: pc_ev_cr_15.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pc_ev_cr_15
+  join_type: INNER JOIN
+  join_alias: pc_ev_gr
+  join_on: pc_ev_gr.pc_evaluation_group_id = pc_ev_cr_15.pc_evaluation_group_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: LEFT JOIN
+  join_alias: cd_dt_di
+  join_on: cd_dt_di.cdr_dt_id = pu_co_ev.evaluation_dt
+  description: ''
+mapping_columns:
+- target_column: public_company_dim_id
+  transformation: pu_co_ev.pc_id
+  data_type: string
+  target_attr_name: null
+  description: FK tới Public Company Dimension — resolve qua Public Company Evaluation.Public
+    Company Id.
+- target_column: cdr_dt_dim_id
+  transformation: cd_dt_di.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: null
+  description: FK tới Calendar Date Dimension — resolve qua Public Company Evaluation.Evaluation
+    Date.
+- target_column: disclosure_bctc_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Công bố BCTC
+- target_column: disclosure_bctn_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Công bố BCTN
+- target_column: disclosure_governance_report_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Công bố báo cáo tình hình quản trị
+- target_column: disclosure_ceo_change_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Công bố thông tin Thay đổi TGĐ/CTHĐQT
+- target_column: violation_ubck_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Vi phạm từ UBCKNN
+- target_column: violation_other_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Vi phạm từ các đơn vị khác
+- target_column: charter_regulation_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Điều lệ Công ty và Các Quy chế hoạt động
+- target_column: annual_meeting_count_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Số lượng ĐHĐCĐ thường niên trong 6 tháng đầu năm
+- target_column: independent_board_member_count_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Số lượng thành viên HĐQT độc lập
+- target_column: non_executive_board_member_count_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Số lượng thành viên HĐQT không điều hành
+- target_column: board_member_qualification_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Tư cách thành viên HĐQT/BKS/Kế toán trưởng
+- target_column: supervisory_board_count_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Số lượng thành viên BKS hoặc Ủy ban kiểm toán
+- target_column: capital_use_progress_report_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Báo cáo tiến độ sử dụng vốn
+- target_column: capital_use_plan_change_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Thay đổi phương án sử dụng vốn
+- target_column: total_compliance_score
+  transformation: SUM(pc_evaluation_detail.evaluation_score)
+  data_type: int
+  target_attr_name: null
+  description: Tổng điểm Tuân thủ
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml

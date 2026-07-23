@@ -1,0 +1,261 @@
+schema_type: mapping
+schema_version: '1.0'
+mapping:
+  id: MAP-DTM-fct_public_company_financial_score_snpst
+  logical_name: Mapping Datamart - Fact Public Company Financial Score Snapshot
+  physical_name: fct_public_company_financial_score_snpst
+  dm_ref: null
+  brd_ref: null
+target:
+  namespace: dtm
+  physical_name: fct_public_company_financial_score_snpst
+  etl_handle: Fact Snapshot
+  description: Điểm chi tiết 10 tiêu chí Tài chính + Tổng điểm — 1 row / CTDC / kỳ
+    đánh giá. Phục vụ Nhóm 4 + Nhóm 34 (reuse).
+input:
+- source_type: physical_table
+  namespace: atm
+  table_name: public_company_evaluation
+  alias: pu_co_ev
+  select_fields: pc_id, evaluation_dt
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_YKKT' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_2
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_ROA' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_3
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_DTTHDKD' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_4
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_KNTTHT' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_5
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_EBIT' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_6
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_NO_VON_CSH' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_7
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_VON_CSH' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_8
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_ROE' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_9
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_DTHDTC_LNST' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_10
+  select_fields: pc_evaluation_criterion_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND pc_evaluation_criterion_code
+    = 'TAI_CHINH_DTHD_KHAC_LNST' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_criterion
+  alias: pc_ev_cr_11
+  select_fields: pc_evaluation_criterion_id, pc_evaluation_group_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE' AND src_stm_code = 'IDS_EVALUATION_CRITERIA'
+  description: ''
+- source_type: physical_table
+  namespace: atm
+  table_name: pc_evaluation_group
+  alias: pc_ev_gr
+  select_fields: pc_evaluation_group_id
+  filter: ds_rcrd_st = 'ACTIVE' AND pc_evaluation_group_code = 'TAI_CHINH' AND src_stm_code
+    = 'IDS_EVALUATION_GROUPS'
+  description: ''
+- source_type: physical_table
+  namespace: dtm
+  table_name: cdr_dt_dim
+  alias: cd_dt_di
+  select_fields: cdr_dt_dim_id, cdr_dt_id
+  filter: ds_snpst_dt = {etl_date} AND ds_rcrd_st = 'ACTIVE'
+  description: ''
+relationship:
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr
+  join_on: pc_ev_cr.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_2
+  join_on: pc_ev_cr_2.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_3
+  join_on: pc_ev_cr_3.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_4
+  join_on: pc_ev_cr_4.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_5
+  join_on: pc_ev_cr_5.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_6
+  join_on: pc_ev_cr_6.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_7
+  join_on: pc_ev_cr_7.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_8
+  join_on: pc_ev_cr_8.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_9
+  join_on: pc_ev_cr_9.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_10
+  join_on: pc_ev_cr_10.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: INNER JOIN
+  join_alias: pc_ev_cr_11
+  join_on: pc_ev_cr_11.pc_evaluation_criterion_id = pc_evaluation_detail.pc_evaluation_criterion_id
+  description: ''
+- main_alias: pc_ev_cr_11
+  join_type: INNER JOIN
+  join_alias: pc_ev_gr
+  join_on: pc_ev_gr.pc_evaluation_group_id = pc_ev_cr_11.pc_evaluation_group_id
+  description: ''
+- main_alias: pu_co_ev
+  join_type: LEFT JOIN
+  join_alias: cd_dt_di
+  join_on: cd_dt_di.cdr_dt_id = pu_co_ev.evaluation_dt
+  description: ''
+mapping_columns:
+- target_column: public_company_dim_id
+  transformation: pu_co_ev.pc_id
+  data_type: string
+  target_attr_name: null
+  description: FK tới Public Company Dimension — resolve qua Public Company Evaluation.Public
+    Company Id.
+- target_column: cdr_dt_dim_id
+  transformation: cd_dt_di.cdr_dt_dim_id
+  data_type: string
+  target_attr_name: null
+  description: FK tới Calendar Date Dimension — resolve qua Public Company Evaluation.Evaluation
+    Date.
+- target_column: audit_opinion_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Kiểm toán — Ý kiến kiểm toán
+- target_column: roa_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: ROA
+- target_column: operating_cash_flow_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Dòng tiền từ hoạt động kinh doanh
+- target_column: current_ratio_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Khả năng thanh toán hiện thời
+- target_column: ebit_interest_coverage_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: EBIT / Lãi vay
+- target_column: debt_to_equity_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Nợ / VCSH
+- target_column: equity_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: VCSH
+- target_column: roe_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: ROE
+- target_column: financial_revenue_to_profit_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Doanh thu từ HĐ tài chính / Lợi nhuận sau thuế
+- target_column: other_revenue_to_profit_score
+  transformation: pc_evaluation_detail.evaluation_score
+  data_type: int
+  target_attr_name: null
+  description: Doanh thu từ hoạt động khác / Lợi nhuận sau thuế
+- target_column: total_financial_score
+  transformation: SUM(pc_evaluation_detail.evaluation_score)
+  data_type: int
+  target_attr_name: null
+  description: Tổng điểm — SUM(evaluation_score) filter Group Code = 'TAI_CHINH'.
+final_filter: []
+join_agg_ctes: []
+transformation_rules_ref: Mapping/Rules/transformation_rules.yaml
