@@ -86,12 +86,14 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Market_Index_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Market Index Snapshot | Fact Snapshot | new | Chỉ số thị trường VN-Index/HNX/UPCOM/VN30 | 1 chỉ số (marketCode) × 1 tháng | K_QLKD_88–91 |
+| Fact Market Index Snapshot | Fact Snapshot | new | Chỉ số thị trường VN-Index/HNX/UPCOM/VN30 | 1 chỉ số (market_code) × 1 ngày (bản ghi cuối phiên) | K_QLKD_88–91 |
+| Market Index Dimension | Dimension | new | Mã/loại index/sản phẩm giao dịch/trạng thái phiên. Dùng chung với NDTNN | 1 combo Market Id + Market Code (SCD4A current-state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
 ---
@@ -100,7 +102,7 @@ erDiagram
 
 ### Sub-tab GIÁM SÁT HOẠT ĐỘNG — Nhóm 11/12/14/15/16/17/18 (K_QLKD_59–99) — PENDING
 
-> Toàn bộ dùng chung `Fact Securities Company Financial Structure Snapshot` (xem Nhóm 8/9) — PENDING theo O_QLKD_23. Ngoại lệ K_QLKD_88–91 (Nhóm 16, xem Market Index Snapshot ở trên).
+> Toàn bộ dùng chung `Fact Securities Company Financial Structure Snapshot` (xem Nhóm 8/9) — PENDING theo O_QLKD_23. Ngoại lệ K_QLKD_88–91 (Nhóm 16, xem Fact Market Index Snapshot ở trên).
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|

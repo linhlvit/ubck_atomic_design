@@ -4,289 +4,113 @@
 
 ## Section 1 — Data Lineage: Staging → Atomic → Datamart
 
-### Cụm 1: Thống kê thị trường toàn phần (`Fact Fund Management Company Snapshot`)
+> **Nhóm 1, 2, 6, 7, 8, 9, 10, 11, 12 (Tab TỔNG QUAN CTQLQ + QUỸ ĐẦU TƯ), Nhóm 18, 19, 20, 21, 25 (Tab TỔNG QUAN ĐẠI LÝ PHÂN PHỐI / CN CTQLQ NN), Nhóm 27 (Báo cáo GD nhân viên) hiện PENDING toàn bộ** — BA đánh "Dữ liệu động" cho toàn bộ measure của các Nhóm này, hoặc Atomic nguồn chỉ có ở track `Atomic_LinhLV` (out of date, không phải nguồn chuẩn), hoặc thiếu hẳn Chiều thời gian hợp lệ ở đúng grain (Nhóm 12 — `FMS.FUND_REPORT` chưa có Atomic entity) — theo gating "Loại dữ liệu" nên không thiết kế Cụm Lineage/Star Schema ở giai đoạn này. Xem chi tiết Atomic đã sẵn sàng + lý do pending trong Section 2 của từng Nhóm tương ứng.
 
-Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 1. Fact này là **Market-Level Aggregate Snapshot** — grain = 1 row per tháng, tổng hợp toàn bộ thị trường. Không có FK sang Company Dimension vì không GROUP BY từng CTQLQ. Dimension duy nhất là Calendar Date.
+##### Cụm 1: Danh sách CTQLQ — flat (Tác nghiệp)
 
-> **ETL pattern — No Driving Table (CROSS JOIN scalar subquery):** Fact này không có driving table duy nhất. Mỗi measure aggregate từ 1 Atomic table độc lập, không có join key chung. ETL viết mỗi measure là 1 scalar subquery `CROSS JOIN (SELECT <aggregate> FROM <atomic_table> WHERE ...) AS <alias>` — tất cả CROSS JOIN vào nhau cho ra 1 row per tháng. Xem `etl_logic` từng cột trong Attributes CSV.
-
-```mermaid
-flowchart LR
-    subgraph SRC["Staging"]
-        FMS_SECURITIES["FMS.SECURITIES"]
-        FMS_FUNDS["FMS.FUNDS"]
-        FMS_FORBRCH["FMS.FORBRCH"]
-        FMS_AGENCIES["FMS.AGENCIES"]
-        FMS_RPTVALUES["FMS.RPTVALUES"]
-        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
-    end
-
-    subgraph SIL["Atomic"]
-        Fund_Management_Company["Fund Management Company"]
-        Investment_Fund["Investment Fund"]
-        Foreign_Fund_Management_Organization_Unit["Foreign Fund Management Organization Unit"]
-        Fund_Distribution_Agent["Fund Distribution Agent"]
-        Report_Import_Value["Report Import Value"]
-        Calendar_Date["Calendar Date"]
-    end
-
-    subgraph GOLD["Datamart"]
-        fct_fms_mkt_snpst["Fact Fund Management Company Snapshot"]
-        cdr_dt_dim["Calendar Date Dimension"]
-    end
-
-    FMS_SECURITIES --> Fund_Management_Company
-    FMS_FUNDS --> Investment_Fund
-    FMS_FORBRCH --> Foreign_Fund_Management_Organization_Unit
-    FMS_AGENCIES --> Fund_Distribution_Agent
-    FMS_RPTVALUES --> Report_Import_Value
-    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
-
-    Fund_Management_Company --> fct_fms_mkt_snpst
-    Investment_Fund --> fct_fms_mkt_snpst
-    Foreign_Fund_Management_Organization_Unit --> fct_fms_mkt_snpst
-    Fund_Distribution_Agent --> fct_fms_mkt_snpst
-    Report_Import_Value --> fct_fms_mkt_snpst
-    Calendar_Date --> cdr_dt_dim
-
-    cdr_dt_dim --> fct_fms_mkt_snpst
-```
-
-### Cụm 2: Số liệu hợp đồng UTDM per CTQLQ (`Fact Discretionary Investment Contract Snapshot`)
-
-Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 2. Tất cả KPI từ "Tổng từ các chỉ tiêu BC" (RPTVALUES). KPI tách cá nhân/tổ chức là **phái sinh** = chỉ tiêu tổng × tỷ lệ %, tính tại presentation layer.
-
-```mermaid
-flowchart LR
-    subgraph SRC["Staging"]
-        FMS_RPTMEMBER["FMS.RPTMEMBER"]
-        FMS_RPTVALUES["FMS.RPTVALUES"]
-        FMS_SECURITIES["FMS.SECURITIES"]
-        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
-    end
-
-    subgraph SIL["Atomic"]
-        Member_Periodic_Report["Member Periodic Report"]
-        Report_Import_Value["Report Import Value"]
-        Fund_Management_Company["Fund Management Company"]
-        Calendar_Date["Calendar Date"]
-    end
-
-    subgraph GOLD["Datamart"]
-        fct_utdm_snpst["Fact Discretionary Investment Contract Snapshot"]
-        fnd_mgt_co_dim["Fund Management Company Dimension"]
-        cdr_dt_dim["Calendar Date Dimension"]
-    end
-
-    FMS_RPTMEMBER --> Member_Periodic_Report
-    FMS_RPTVALUES --> Report_Import_Value
-    FMS_SECURITIES --> Fund_Management_Company
-    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
-
-    Member_Periodic_Report --> fct_utdm_snpst
-    Report_Import_Value --> fct_utdm_snpst
-    Fund_Management_Company --> fnd_mgt_co_dim
-    Calendar_Date --> cdr_dt_dim
-
-    fnd_mgt_co_dim --> fct_utdm_snpst
-    cdr_dt_dim --> fct_utdm_snpst
-```
-
-### Cụm 3: Hồ sơ CTQLQ — flat + drill-down (Tác nghiệp)
-
-Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 3. **1 bảng flat chính** (`Fund Management Company Profile`) chứa tất cả chỉ tiêu per CTQLQ. **2 bảng con** (`Fund Management Company Fund List`, `Fund Management Company Contract List`) phục vụ popup drill-down khi bấm vào Số QĐT / Số HĐUTDM — có FK về `Fund_Management_Company_Id`. Cả 3 lấy từ Atomic trực tiếp, không qua Dimension.
+Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 3. Bảng flat `Fund Management Company Profile` — chỉ 2/13 chỉ tiêu READY (Tên công ty, Người đại diện theo pháp luật); 11 chỉ tiêu còn lại PENDING (Dữ liệu động hoặc thiếu Atomic `FMS.SECURITIES_REPORT`). Lấy từ Atomic trực tiếp, không qua Dimension.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         FMS_SECURITIES["FMS.SECURITIES"]
-        FMS_FUNDS["FMS.FUNDS"]
-        FMS_RPTVALUES["FMS.RPTVALUES"]
-        FMS_RANK["FMS.RANK"]
-        FMS_RATINGPD["FMS.RATINGPD"]
-        FMS_INVESACC["FMS.INVESACC"]
-        FMS_INVES["FMS.INVES"]
+        FMS_TLPROFILES["FMS.TL_PROFILES"]
     end
 
     subgraph SIL["Atomic"]
         Fund_Management_Company["Fund Management Company"]
-        Investment_Fund["Investment Fund"]
-        Report_Import_Value["Report Import Value"]
-        Member_Rating["Member Rating"]
-        Member_Rating_Period["Member Rating Period"]
-        Discretionary_Investment_Account["Discretionary Investment Account"]
-        Discretionary_Investment_Investor["Discretionary Investment Investor"]
+        Fund_Management_Company_Employee["Fund Management Company Employee"]
     end
 
     subgraph GOLD["Datamart"]
         fnd_mgt_co_prf["Fund Management Company Profile"]
-        fnd_mgt_co_fnd_lst["Fund Management Company Fund List"]
-        fnd_mgt_co_ctr_lst["Fund Management Company Contract List"]
     end
 
     FMS_SECURITIES --> Fund_Management_Company
-    FMS_FUNDS --> Investment_Fund
-    FMS_RPTVALUES --> Report_Import_Value
-    FMS_RANK --> Member_Rating
-    FMS_RATINGPD --> Member_Rating_Period
-    FMS_INVESACC --> Discretionary_Investment_Account
-    FMS_INVES --> Discretionary_Investment_Investor
+    FMS_TLPROFILES --> Fund_Management_Company_Employee
 
     Fund_Management_Company --> fnd_mgt_co_prf
-    Report_Import_Value --> fnd_mgt_co_prf
-    Member_Rating --> fnd_mgt_co_prf
-    Member_Rating_Period --> fnd_mgt_co_prf
-
-    Fund_Management_Company --> fnd_mgt_co_fnd_lst
-    Investment_Fund --> fnd_mgt_co_fnd_lst
-    Report_Import_Value --> fnd_mgt_co_fnd_lst
-
-    Fund_Management_Company --> fnd_mgt_co_ctr_lst
-    Discretionary_Investment_Account --> fnd_mgt_co_ctr_lst
-    Discretionary_Investment_Investor --> fnd_mgt_co_ctr_lst
+    Fund_Management_Company_Employee --> fnd_mgt_co_prf
 ```
 
 ---
 
-### Cụm 4: NAV quỹ theo kỳ + GDP cross-module (`Fact Investment Fund NAV Snapshot`)
+##### Cụm 2: Chi tiết Quỹ của một CTQLQ (Tác nghiệp)
 
-Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 4 (Biểu đồ Tổng NAV & Tỷ lệ NAV/GDP), Nhóm 5 (Phân bổ tài sản), Nhóm 6 (Sự biến động NAV). NAV per quỹ từ RPTVALUES (FMS). GDP từ `Risk Indicator Value` (QLRR — cross-module). Tỷ lệ NAV/GDP và % phân bổ tài sản là Derived — tính tại presentation layer.
-
-```mermaid
-flowchart LR
-    subgraph SRC["Staging"]
-        FMS_RPTMEMBER["FMS.RPTMEMBER"]
-        FMS_RPTVALUES["FMS.RPTVALUES"]
-        FMS_FUNDS["FMS.FUNDS"]
-        FMS_SECURITIES["FMS.SECURITIES"]
-        QLRR_risk_indicator["QLRR.risk_indicator"]
-        QLRR_risk_indicator_value["QLRR.risk_indicator_value"]
-        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
-    end
-
-    subgraph SIL["Atomic"]
-        Member_Periodic_Report["Member Periodic Report"]
-        Report_Import_Value["Report Import Value"]
-        Investment_Fund["Investment Fund"]
-        Fund_Management_Company["Fund Management Company"]
-        Risk_Indicator["Risk Indicator"]
-        Risk_Indicator_Value["Risk Indicator Value"]
-        Calendar_Date["Calendar Date"]
-    end
-
-    subgraph GOLD["Datamart"]
-        fct_inv_fnd_nav_snpst["Fact Investment Fund NAV Snapshot"]
-        inv_fnd_dim["Investment Fund Dimension"]
-        fnd_mgt_co_dim["Fund Management Company Dimension"]
-        cdr_dt_dim["Calendar Date Dimension"]
-    end
-
-    FMS_RPTMEMBER --> Member_Periodic_Report
-    FMS_RPTVALUES --> Report_Import_Value
-    FMS_FUNDS --> Investment_Fund
-    FMS_SECURITIES --> Fund_Management_Company
-    QLRR_risk_indicator --> Risk_Indicator
-    QLRR_risk_indicator_value --> Risk_Indicator_Value
-    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
-
-    Member_Periodic_Report --> fct_inv_fnd_nav_snpst
-    Report_Import_Value --> fct_inv_fnd_nav_snpst
-    Risk_Indicator --> fct_inv_fnd_nav_snpst
-    Risk_Indicator_Value --> fct_inv_fnd_nav_snpst
-    Investment_Fund --> inv_fnd_dim
-    Fund_Management_Company --> fnd_mgt_co_dim
-    Calendar_Date --> cdr_dt_dim
-
-    inv_fnd_dim --> fct_inv_fnd_nav_snpst
-    fnd_mgt_co_dim --> fct_inv_fnd_nav_snpst
-    cdr_dt_dim --> fct_inv_fnd_nav_snpst
-```
-
-### Cụm 5: Số lượng quỹ theo loại hình (`Fact Investment Fund Count Snapshot`)
-
-Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 7 (Số lượng quỹ ĐTCK). Market-Level Aggregate Snapshot — đếm từ db Atomic, GROUP BY loại hình quỹ. Tương tự pattern Nhóm 1 tab TỔNG QUAN CTQLQ.
+Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 4. Bảng con drill-down `Fund Management Company Fund List` — 2/3 chỉ tiêu READY (Tên quỹ, Loại hình quỹ); Giá trị NAV PENDING (Dữ liệu động).
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         FMS_FUNDS["FMS.FUNDS"]
-        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+        FMS_FUND_TYPE["FMS.FUND_TYPE"]
     end
 
     subgraph SIL["Atomic"]
         Investment_Fund["Investment Fund"]
-        Calendar_Date["Calendar Date"]
+        Classification_Value["Classification Value"]
     end
 
     subgraph GOLD["Datamart"]
-        fct_inv_fnd_cnt_snpst["Fact Investment Fund Count Snapshot"]
-        cdr_dt_dim["Calendar Date Dimension"]
+        fnd_mgt_co_fnd_lst["Fund Management Company Fund List"]
     end
 
     FMS_FUNDS --> Investment_Fund
-    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
+    FMS_FUND_TYPE --> Classification_Value
 
-    Investment_Fund --> fct_inv_fnd_cnt_snpst
-    Calendar_Date --> cdr_dt_dim
-
-    cdr_dt_dim --> fct_inv_fnd_cnt_snpst
+    Investment_Fund --> fnd_mgt_co_fnd_lst
+    Classification_Value --> fnd_mgt_co_fnd_lst
 ```
 
-### Cụm 6: Số CCQ lưu hành per quỹ (`Fact Investment Fund CCQ Snapshot`)
+---
 
-Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 8 (Tăng trưởng CCQ lưu hành). Số CCQ có 3 nguồn khác nhau theo loại quỹ: BC (RPTVALUES) cho quỹ mở/ETF/TV/TTTTT/TP hạ tầng; tính từ db (FundCapital / 10.000) cho quỹ BĐS/TV dạng khác; VSDC cho quỹ đóng (PENDING — xem O_FMS_7).
+##### Cụm 3: Chi tiết hợp đồng UTDM của một CTQLQ (Tác nghiệp)
+
+Phục vụ Tab TỔNG QUAN CTQLQ — Nhóm 5. Bảng con drill-down `Fund Management Company Contract List` — 2/3 chỉ tiêu READY (Mã HĐ, Số TK lưu ký); Giá trị hợp đồng PENDING (Dữ liệu động).
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        FMS_FUNDS["FMS.FUNDS"]
-        FMS_TRANSFERMBF["FMS.TRANSFERMBF"]
-        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+        FMS_INVESACC["FMS.INVES_ACC"]
     end
 
     subgraph SIL["Atomic"]
-        Investment_Fund["Investment Fund"]
-        Investment_Fund_Certificate_Transfer["Investment Fund Certificate Transfer"]
-        Calendar_Date["Calendar Date"]
+        Discretionary_Investment_Account["Discretionary Investment Account"]
     end
 
     subgraph GOLD["Datamart"]
-        fct_inv_fnd_ccq_snpst["Fact Investment Fund CCQ Snapshot"]
-        inv_fnd_dim["Investment Fund Dimension"]
-        cdr_dt_dim["Calendar Date Dimension"]
+        fnd_mgt_co_ctr_lst["Fund Management Company Contract List"]
     end
 
-    FMS_FUNDS --> Investment_Fund
-    FMS_TRANSFERMBF --> Investment_Fund_Certificate_Transfer
-    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
+    FMS_INVESACC --> Discretionary_Investment_Account
 
-    Investment_Fund --> fct_inv_fnd_ccq_snpst
-    Investment_Fund_Certificate_Transfer --> fct_inv_fnd_ccq_snpst
-    Investment_Fund --> inv_fnd_dim
-    Calendar_Date --> cdr_dt_dim
-
-    inv_fnd_dim --> fct_inv_fnd_ccq_snpst
-    cdr_dt_dim --> fct_inv_fnd_ccq_snpst
+    Discretionary_Investment_Account --> fnd_mgt_co_ctr_lst
 ```
 
-### Cụm 7: Danh sách quỹ (Tác nghiệp)
+---
 
-Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 10 (Danh sách các quỹ đầu tư). Bảng flat 1 quỹ × 1 tháng slicer — tổng hợp attributes db + BC. NAV hiện tại và LN YTD từ RPTVALUES (BC). CCQ lưu hành từ BC/db tùy loại quỹ (xem Cụm 6). Lấy từ Atomic trực tiếp — không qua Dimension.
+##### Cụm 4: Danh sách quỹ đầu tư (Tác nghiệp)
+
+Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 13. Bảng flat `Investment Fund Profile` — 8/11 chỉ tiêu READY (Tên quỹ, Phân loại, Công ty quản lý, Ngân hàng giám sát, Số ĐLPP, Số TV BĐD, Số người điều hành); NAV hiện tại/KL CCQ/LN YTD PENDING (Dữ liệu động).
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
         FMS_FUNDS["FMS.FUNDS"]
         FMS_SECURITIES["FMS.SECURITIES"]
-        FMS_RPTMEMBER["FMS.RPTMEMBER"]
-        FMS_RPTVALUES["FMS.RPTVALUES"]
+        FMS_BANKMONI["FMS.BANK_MONI"]
+        FMS_AGENFUNDS["FMS.AGEN_FUNDS"]
+        FMS_REPRESENT["FMS.REPRESENT"]
+        FMS_FUNDTLPRO["FMS.FUND_TL_PRO"]
     end
 
     subgraph SIL["Atomic"]
         Investment_Fund["Investment Fund"]
         Fund_Management_Company["Fund Management Company"]
-        Member_Periodic_Report["Member Periodic Report"]
-        Report_Import_Value["Report Import Value"]
+        Custodian_Bank["Custodian Bank"]
+        Investment_Fund_X_Fund_Distribution_Agent_Relationship["Investment Fund X Fund Distribution Agent Relationship"]
+        Investment_Fund_Representative_Board_Member["Investment Fund Representative Board Member"]
+        Investment_Fund_X_Fund_Management_Company_Employee_Relationship["Investment Fund X Fund Management Company Employee Relationship"]
     end
 
     subgraph GOLD["Datamart"]
@@ -295,90 +119,246 @@ flowchart LR
 
     FMS_FUNDS --> Investment_Fund
     FMS_SECURITIES --> Fund_Management_Company
-    FMS_RPTMEMBER --> Member_Periodic_Report
-    FMS_RPTVALUES --> Report_Import_Value
+    FMS_BANKMONI --> Custodian_Bank
+    FMS_AGENFUNDS --> Investment_Fund_X_Fund_Distribution_Agent_Relationship
+    FMS_REPRESENT --> Investment_Fund_Representative_Board_Member
+    FMS_FUNDTLPRO --> Investment_Fund_X_Fund_Management_Company_Employee_Relationship
 
     Investment_Fund --> inv_fnd_prf
     Fund_Management_Company --> inv_fnd_prf
-    Member_Periodic_Report --> inv_fnd_prf
-    Report_Import_Value --> inv_fnd_prf
+    Custodian_Bank --> inv_fnd_prf
+    Investment_Fund_X_Fund_Distribution_Agent_Relationship --> inv_fnd_prf
+    Investment_Fund_Representative_Board_Member --> inv_fnd_prf
+    Investment_Fund_X_Fund_Management_Company_Employee_Relationship --> inv_fnd_prf
 ```
 
 ---
 
----
+##### Cụm 5a: Drill-down danh sách đại lý phân phối của quỹ (Tác nghiệp)
 
----
-
-### Cụm 8: Pass-through báo cáo BC tất cả loại (`Report Pass-through View`)
-
-Phục vụ Tab DATA EXPLORER — Nhóm 12–16. Toàn bộ 63 pass-through tabs + 19 complex tabs đều đọc từ `Report Import Value` ← FMS.RPTVALUES. Bảng Tác nghiệp dạng flat, 1 row per CTQLQ/Quỹ × biểu mẫu × kỳ × dòng chỉ tiêu. Tab Báo cáo/CTQLQ (Nhóm 11) PENDING — chờ xác nhận cross-module GSGD.
+Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 14. Bảng con drill-down từ Nhóm 13, 1 chỉ tiêu READY.
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        FMS_RPTVALUES["FMS.RPTVALUES"]
-        FMS_RPTMEMBER["FMS.RPTMEMBER"]
-        FMS_SECURITIES["FMS.SECURITIES"]
+        FMS_AGENCIES["FMS.AGENCIES"]
+        FMS_AGENFUNDS["FMS.AGEN_FUNDS"]
+    end
+
+    subgraph SIL["Atomic"]
+        Fund_Distribution_Agent["Fund Distribution Agent"]
+    end
+
+    subgraph GOLD["Datamart"]
+        inv_fnd_dist_agt_lst["Investment Fund Distribution Agent List"]
+    end
+
+    FMS_AGENCIES --> Fund_Distribution_Agent
+    FMS_AGENFUNDS --> Fund_Distribution_Agent
+
+    Fund_Distribution_Agent --> inv_fnd_dist_agt_lst
+```
+
+---
+
+##### Cụm 5b: Drill-down danh sách thành viên ban đại diện của quỹ (Tác nghiệp)
+
+Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 15. Bảng con drill-down từ Nhóm 13, 1 chỉ tiêu READY.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_REPRESENT["FMS.REPRESENT"]
+    end
+
+    subgraph SIL["Atomic"]
+        Investment_Fund_Representative_Board_Member["Investment Fund Representative Board Member"]
+    end
+
+    subgraph GOLD["Datamart"]
+        inv_fnd_rep_brd_mbr_lst["Investment Fund Representative Board Member List"]
+    end
+
+    FMS_REPRESENT --> Investment_Fund_Representative_Board_Member
+
+    Investment_Fund_Representative_Board_Member --> inv_fnd_rep_brd_mbr_lst
+```
+
+---
+
+##### Cụm 5c: Drill-down danh sách người điều hành quỹ (Tác nghiệp)
+
+Phục vụ Tab QUỸ ĐẦU TƯ — Nhóm 16. Bảng con drill-down từ Nhóm 13, 1 chỉ tiêu READY.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_TLPROFILES["FMS.TL_PROFILES"]
+        FMS_FUNDTLPRO["FMS.FUND_TL_PRO"]
+    end
+
+    subgraph SIL["Atomic"]
+        Fund_Management_Company_Employee["Fund Management Company Employee"]
+    end
+
+    subgraph GOLD["Datamart"]
+        inv_fnd_mgr_lst["Investment Fund Manager List"]
+    end
+
+    FMS_TLPROFILES --> Fund_Management_Company_Employee
+    FMS_FUNDTLPRO --> Fund_Management_Company_Employee
+
+    Fund_Management_Company_Employee --> inv_fnd_mgr_lst
+```
+
+---
+
+##### Cụm 7: Thống kê chung Đại lý phân phối (`Fact Fund Distribution Agent Snapshot`)
+
+Phục vụ Tab TỔNG QUAN ĐẠI LÝ PHÂN PHỐI — Nhóm 17. Chỉ 2 measure READY: Chiều Thời gian và Số lượng ĐLPP (COUNT db). Số tài khoản/Giá trị phát hành/mua lại PENDING (Dữ liệu động, BA chưa cung cấp nguồn).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_AGENCIES["FMS.AGENCIES"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+    end
+
+    subgraph SIL["Atomic"]
+        Fund_Distribution_Agent["Fund Distribution Agent"]
+        Calendar_Date["Calendar Date"]
+    end
+
+    subgraph GOLD["Datamart"]
+        fct_fnd_dist_agt_snpst["Fact Fund Distribution Agent Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
+    end
+
+    FMS_AGENCIES --> Fund_Distribution_Agent
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
+
+    Fund_Distribution_Agent --> fct_fnd_dist_agt_snpst
+    Calendar_Date --> cdr_dt_dim
+    cdr_dt_dim --> fct_fnd_dist_agt_snpst
+```
+
+---
+
+##### Cụm 8a: Danh sách Đại lý phân phối (Tác nghiệp)
+
+Phục vụ Tab TỔNG QUAN ĐẠI LÝ PHÂN PHỐI — Nhóm 22. Bảng flat `Fund Distribution Agent Profile` — 6/13 chỉ tiêu READY.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_AGENCIES["FMS.AGENCIES"]
+    end
+
+    subgraph SIL["Atomic"]
+        Fund_Distribution_Agent["Fund Distribution Agent"]
+    end
+
+    subgraph GOLD["Datamart"]
+        fnd_dist_agt_prf["Fund Distribution Agent Profile"]
+    end
+
+    FMS_AGENCIES --> Fund_Distribution_Agent
+
+    Fund_Distribution_Agent --> fnd_dist_agt_prf
+```
+
+---
+
+##### Cụm 8b: Danh sách các Quỹ đang phân phối (Tác nghiệp)
+
+Phục vụ Tab TỔNG QUAN ĐẠI LÝ PHÂN PHỐI — Nhóm 23. Bảng con drill-down `Fund Distribution Agent Fund List` — 1 chỉ tiêu READY.
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_AGENCIES["FMS.AGENCIES"]
+        FMS_AGENFUNDS["FMS.AGEN_FUNDS"]
         FMS_FUNDS["FMS.FUNDS"]
     end
 
     subgraph SIL["Atomic"]
-        Report_Import_Value["Report Import Value"]
-        Member_Periodic_Report["Member Periodic Report"]
-        Fund_Management_Company["Fund Management Company"]
+        Fund_Distribution_Agent["Fund Distribution Agent"]
         Investment_Fund["Investment Fund"]
     end
 
     subgraph GOLD["Datamart"]
-        rpt_pass_thru_view["Report Pass-through View"]
+        fnd_dist_agt_fnd_lst["Fund Distribution Agent Fund List"]
     end
 
-    FMS_RPTVALUES --> Report_Import_Value
-    FMS_RPTMEMBER --> Member_Periodic_Report
-    FMS_SECURITIES --> Fund_Management_Company
+    FMS_AGENCIES --> Fund_Distribution_Agent
+    FMS_AGENFUNDS --> Investment_Fund
     FMS_FUNDS --> Investment_Fund
 
-    Report_Import_Value --> rpt_pass_thru_view
-    Member_Periodic_Report --> rpt_pass_thru_view
-    Fund_Management_Company --> rpt_pass_thru_view
-    Investment_Fund --> rpt_pass_thru_view
+    Fund_Distribution_Agent --> fnd_dist_agt_fnd_lst
+    Investment_Fund --> fnd_dist_agt_fnd_lst
 ```
 
-### Cụm 9: Báo cáo giao dịch nhân viên CTQLQ (Tác nghiệp)
+---
 
-Phục vụ Tab BÁO CÁO / CÔNG TY QLQ — Nhóm 11. Cross-module FMS × GSGD: nhân viên CTQLQ từ `FMS.TLProfiles`, tài khoản GDCK từ `GSGD.investor_account`. Join qua `Identification_Number` (CCCD/Hộ chiếu). K_FMS_68–72 READY. K_FMS_73–77 (sổ lệnh) PENDING — chờ Atomic entity từ VSDC.
+##### Cụm 9a: Thống kê chung CN CTQLQ nước ngoài tại VN (`Fact Foreign Fund Management Organization Unit Snapshot`)
+
+Phục vụ Tab TỔNG QUAN CN CTQLQ NN TẠI VN — Nhóm 24. Fact Market-Level Snapshot — 2 measure READY (Chiều Thời gian, đếm CN).
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        FMS_TLProfiles["FMS.TLProfiles"]
-        FMS_SECURITIES["FMS.SECURITIES"]
-        GSGD_investor_account["GSGD.investor_account"]
+        FMS_FORBRCH["FMS.FOR_BRCH"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
     end
 
     subgraph SIL["Atomic"]
-        Fund_Management_Company_Key_Person["Fund Management Company Key Person"]
-        Involved_Party_Alternative_Identification["Involved Party Alternative Identification"]
-        Fund_Management_Company["Fund Management Company"]
-        Investor_Trading_Account["Investor Trading Account"]
+        Foreign_Fund_Management_Organization_Unit["Foreign Fund Management Organization Unit"]
+        Calendar_Date["Calendar Date"]
     end
 
     subgraph GOLD["Datamart"]
-        fnd_mgt_co_stf_trd_rpt["Fund Management Company Staff Trade Report"]
+        fct_frgn_fnd_mgt_org_unit_snpst["Fact Foreign Fund Management Organization Unit Snapshot"]
+        cdr_dt_dim["Calendar Date Dimension"]
     end
 
-    FMS_TLProfiles --> Fund_Management_Company_Key_Person
-    FMS_TLProfiles --> Involved_Party_Alternative_Identification
-    FMS_SECURITIES --> Fund_Management_Company
-    GSGD_investor_account --> Investor_Trading_Account
+    FMS_FORBRCH --> Foreign_Fund_Management_Organization_Unit
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
-    Fund_Management_Company_Key_Person --> fnd_mgt_co_stf_trd_rpt
-    Involved_Party_Alternative_Identification --> fnd_mgt_co_stf_trd_rpt
-    Fund_Management_Company --> fnd_mgt_co_stf_trd_rpt
-    Investor_Trading_Account --> fnd_mgt_co_stf_trd_rpt
+    Foreign_Fund_Management_Organization_Unit --> fct_frgn_fnd_mgt_org_unit_snpst
+    Calendar_Date --> cdr_dt_dim
+    cdr_dt_dim --> fct_frgn_fnd_mgt_org_unit_snpst
 ```
 
+---
+
+##### Cụm 9b: Danh sách CN CTQLQ nước ngoài tại VN (Tác nghiệp)
+
+Phục vụ Tab TỔNG QUAN CN CTQLQ NN TẠI VN — Nhóm 26. Bảng flat `Foreign Fund Management Organization Unit Profile` — 4/10 chỉ tiêu READY (Tên CN, Giám đốc CN, Số nhân viên CCHN, Chiều Thời gian).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_FORBRCH["FMS.FOR_BRCH"]
+        FMS_STFFGBRCH["FMS.STF_FG_BRCH"]
+    end
+
+    subgraph SIL["Atomic"]
+        Foreign_Fund_Management_Organization_Unit["Foreign Fund Management Organization Unit"]
+        Foreign_Fund_Management_Organization_Unit_Staff["Foreign Fund Management Organization Unit Staff"]
+    end
+
+    subgraph GOLD["Datamart"]
+        frgn_fnd_mgt_org_unit_prf["Foreign Fund Management Organization Unit Profile"]
+    end
+
+    FMS_FORBRCH --> Foreign_Fund_Management_Organization_Unit
+    FMS_STFFGBRCH --> Foreign_Fund_Management_Organization_Unit_Staff
+
+    Foreign_Fund_Management_Organization_Unit --> frgn_fnd_mgt_org_unit_prf
+    Foreign_Fund_Management_Organization_Unit_Staff --> frgn_fnd_mgt_org_unit_prf
+```
+
+---
 
 ## Section 2 — Tổng quan báo cáo
 
@@ -388,257 +368,116 @@ flowchart LR
 
 ---
 
-#### Nhóm 1 — Thống kê chung
+#### Nhóm 1 - Thống kê chung
 
 > Phân loại: **Phân tích**
-> Atomic: `Fund Management Company` ← FMS.SECURITIES — **READY** *(K_FMS_4: COUNT db)*
-> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(K_FMS_1, 8: COUNT db)*
-> Atomic: `Foreign Fund Management Organization Unit` ← FMS.FORBRCH — **READY** *(K_FMS_5, 7: COUNT db)*
-> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — **READY** *(K_FMS_6: COUNT db)*
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(K_FMS_2–3: SUM từ chỉ tiêu BC)*
-> Ghi chú: Fact này là **Market-Level Aggregate Snapshot** — grain = 1 row per tháng, không FK sang Fund Management Company Dimension. Mỗi measure trong Fact là tổng hợp toàn thị trường: K_FMS_1, 4–8 đếm từ Atomic db; K_FMS_2–3 tổng hợp từ RPTVALUES. Không có chiều phân tích theo từng CTQLQ — đây là thiết kế có chủ ý, không phải thiếu Dimension.
-> **ETL pattern — No Driving Table [A]:** Fact không có driving table duy nhất — 5 Atomic tables độc lập, không có join key chung. ETL dùng `CROSS JOIN (SELECT <aggregate> FROM <atomic_table> WHERE ...) AS <alias>` cho từng measure, ghép thành 1 row per tháng. Chi tiết xem `etl_logic` từng cột trong Attributes CSV.
-> **ETL dependency [A]:** Fact có 2 nhóm measures với availability khác nhau. Nhóm db (K_FMS_1, 4–8) sẵn sàng ngay khi tháng kết thúc. Nhóm BC (K_FMS_2–3) phụ thuộc CTQLQ nộp BC qua RPTVALUES — có thể trễ vài tuần. ETL populate db measures trước, BC measures sau khi đủ dữ liệu.
-
-**Mockup:**
-
-| Chỉ tiêu | Giá trị | Nguồn chi tiết (BA) |
-|---|---|---|
-| Quỹ đầu tư CK | 124 quỹ | Count db |
-| Hợp đồng UTDM | 89.521 | Tổng từ chỉ tiêu BC |
-| Tổng AUM quản lý | 839 nghìn tỷ | Tổng từ chỉ tiêu BC |
-| CTQLQ đang HĐ | 43 công ty | Count db |
-| VPĐD QLQ NN | 14 VP | Count db |
-| Đại lý phân phối CCQ | 49 đại lý | Count db |
-| CN CTQLQ NN tại VN | 8 chi nhánh | Count db |
-| Quỹ hưu trí | 12 quỹ | Count db |
-
-**Source:** `Fact Fund Management Company Snapshot` → `Calendar Date Dimension`
+> Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_FMS_1, K_FMS_147: COUNT db — nhưng BA đánh "Dữ liệu động" nên PENDING)*
+> Atomic: `Discretionary Investment Account` ← FMS.INVES_ACC — READY *(K_FMS_2 — BA đánh "Dữ liệu động" nên PENDING)*
+> Atomic: `Fund Management Company` ← FMS.SECURITIES — READY *(K_FMS_4 — BA đánh "Dữ liệu động" nên PENDING)*
+> Atomic: `Foreign Fund Management Organization Unit` ← FMS.FOR_BRCH — READY *(K_FMS_5, K_FMS_148, K_FMS_149, K_FMS_150 — BA đánh "Dữ liệu động" nên PENDING)*
+> Atomic: `Custodian Bank` ← FMS.BANK_MONI — READY *(K_FMS_151 — BA đánh "Dữ liệu động" nên PENDING)*
+> Ghi chú: **Toàn bộ Nhóm PENDING.** Toàn bộ chỉ tiêu cơ sở trong Nhóm này (K_FMS_1–5, K_FMS_147–151) BA đánh **Dữ liệu động** — theo gating "Loại dữ liệu" (xem SKILL.md), Dữ liệu động → PENDING dù Atomic đã sẵn sàng. Chỉ còn lại 1 dòng Chiều "Thời gian" (Dữ liệu tĩnh), nhưng không còn measure nào READY đi kèm để hiển thị → PENDING toàn bộ Nhóm, kể cả Chiều.
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_1 | Quỹ đầu tư chứng khoán | Quỹ | Base | COUNT(Investment Fund) tất cả loại hình, theo tháng chọn |
-| K_FMS_2 | Hợp đồng UTDM | Hợp đồng | Base | SUM Report Import Value mã **180101** (Tổng số HĐ UTĐT đang thực hiện) — tổng toàn TT, theo tháng |
-| K_FMS_3 | Tổng AUM quản lý | Nghìn tỷ VND | Base | SUM Report Import Value chỉ tiêu AUM từ BC tình hình HĐ CTQLQ — tổng toàn TT, theo tháng |
-| K_FMS_4 | CTQLQ đang hoạt động | Công ty | Base | COUNT(Fund Management Company) Life Cycle Status = đang HĐ, theo tháng |
-| K_FMS_5 | VPĐD QLQ nước ngoài tại VN | Văn phòng | Base | COUNT(Foreign Fund Management Organization Unit) loại VPĐD, theo tháng |
-| K_FMS_6 | Đại lý phân phối CCQ | Đại lý | Base | COUNT(Fund Distribution Agent) theo tháng |
-| K_FMS_7 | Chi nhánh CTQLQ NN tại VN | Chi nhánh | Base | COUNT(Foreign Fund Management Organization Unit) loại Chi nhánh, theo tháng |
-| K_FMS_8 | Quỹ hưu trí | Quỹ | Base | COUNT(Investment Fund) loại hình Quỹ hưu trí, theo tháng |
-| K_FMS_9 | Tháng | — | Chiều | Slicer tháng/năm |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_9 | Thời gian | — | Chiều | | **Lý do pending:** Nhóm không còn measure nào READY (toàn bộ đánh Dữ liệu động) nên Chiều không có ý nghĩa hiển thị độc lập. **Atomic cần bổ sung:** không — chờ BA xác nhận lại quy tắc khai thác cho các measure trong Nhóm. **Mart dự kiến:** `Fact Fund Management Company Snapshot` — grain: 1 snapshot toàn thị trường × 1 tháng. | PENDING |
+| K_FMS_1 | Quỹ đầu tư chứng khoán | Quỹ | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT(Investment Fund) theo FUNDS.ID, DELETED=0, ID_DATE. **Atomic cần bổ sung:** không cần bổ sung Atomic (Investment Fund đã READY), chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_2 | Hợp đồng UTDM | Hợp đồng | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT DISTINCT(Discretionary Investment Account.Contract_No), DELETED=0, DATE_REPORT. **Atomic cần bổ sung:** không — chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_3 | Tổng AUM quản lý | Nghìn tỷ VND | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn SUM(FUND_REPORT.TOTAL_PROPERTY), EXCUTION_DATE; FUND_REPORT chưa có LLD Atomic riêng trong `DataModel/working/Atomic/lld/FMS/`. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT` (Fund NAV/Property Report). **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_4 | CTQLQ đang hoạt động | Công ty | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT(Fund Management Company) JOIN STATUS, Type_Sec=2, Item_Name='Hoạt động'. **Atomic cần bổ sung:** không — chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_5 | VPĐD QLQ nước ngoài tại VN | Văn phòng | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT(Foreign Fund Management Organization Unit), Branch_Flag=0. **Atomic cần bổ sung:** không — chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_147 | Số lượng hợp đồng tư vấn đầu tư | Hợp đồng | Cơ sở | | **Lý do pending:** BA chưa cung cấp Bảng nguồn/Trường nguồn (để trống) dù Trạng thái mapping = Done; đồng thời BA đánh Dữ liệu động. **Atomic cần bổ sung:** chưa xác định entity nguồn — chờ BA bổ sung Bảng nguồn. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_148 | VPĐD CTQLQ NN tại VN đang hoạt động | Văn phòng | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT(Foreign Fund Management Organization Unit) JOIN STATUS, Branch_Flag=0, Operation_Status_Code tương ứng 'Hoạt động'. **Atomic cần bổ sung:** không — Foreign Fund Management Organization Unit đã có Operation Status Code (scheme FMS_OPERATION_STATUS), chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_149 | VPĐD CTQLQ NN tại VN đang chờ đóng cửa | Văn phòng | Cơ sở | | **Lý do pending:** Tương tự K_FMS_148, lọc Operation_Status_Code = 'Chờ đóng cửa'. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_150 | VPĐD CTQLQ NN tại VN đã đóng cửa | Văn phòng | Cơ sở | | **Lý do pending:** Tương tự K_FMS_148, lọc Operation_Status_Code = 'Đóng cửa VPĐD'. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
+| K_FMS_151 | Tổng số ngân hàng giám sát | Ngân hàng | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT(Custodian Bank), Type='1'. **Atomic cần bổ sung:** không — chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Fund Management Company Snapshot`. | PENDING |
 
-**Star Schema:**
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-> **ETL note:** Không có driving table — mỗi measure là CROSS JOIN scalar subquery độc lập. Xem Attributes CSV cột `etl_logic` cho từng measure.
-
-```mermaid
-erDiagram
-    Fact_Fund_Management_Company_Snapshot {
-        string Snapshot_Date_Dimension_Id FK
-        int Active_Company_Count
-        int Investment_Fund_Count
-        int Retirement_Fund_Count
-        int Foreign_Org_Unit_Rep_Office_Count
-        int Foreign_Org_Unit_Branch_Count
-        int Distribution_Agent_Count
-        float Total_AUM_Amount
-        int Total_Discretionary_Contract_Count
-    }
-    Calendar_Date_Dimension {
-        string Calendar_Date_Dimension_Id PK
-        date Calendar_Date
-        int Year
-        int Month
-        int Quarter
-        int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
-    }
-
-    Calendar_Date_Dimension ||--o{ Fact_Fund_Management_Company_Snapshot : "Snapshot Date Dimension Id"
-```
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Fund Management Company Snapshot"]
-        G2["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["KPI Cards: Thống kê chung (Nhóm 1)"]
-    end
-    G2 --> G1
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Fund Management Company Snapshot | 1 snapshot toàn thị trường × 1 tháng |
-| Calendar Date Dimension | 1 ngày |
-
----
-
-#### Nhóm 2 — Số liệu hợp đồng ủy thác danh mục
-
-> Phân loại: **Phân tích**
-> Atomic: `Discretionary Investment Account` ← FMS.INVESACC — **READY** *(db: Số lượng HĐ)*
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: Giá trị thị trường UTDM)*
-> Ghi chú: Phụ thuộc O_FMS_1 cho mapping SheetId/TgtId của giá trị UTDM. `Report_Template_Code` và `Reporting_Period_Code` là Degenerate Dimension.
-
-**Mockup:**
-
-| Loại | Số HĐ | Giá trị TT (tỷ) | Tỷ trọng (%) |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| Cá nhân | 1.250 | 12.580 | 65% |
-| Tổ chức | 320 | 6.800 | 35% |
-| **Tổng** | **1.570** | **19.380** | 100% |
-
-**Source:** `Fact Discretionary Investment Contract Snapshot` → `Fund Management Company Dimension`, `Calendar Date Dimension`
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_10 | Tổng số lượng HĐ UTDM | HĐ | Base | COUNT(`Discretionary Investment Account`) toàn thị trường |
-| K_FMS_11 | Số lượng HĐ UTDM cá nhân | HĐ | Base | COUNT WHERE `Investor_Object_Type_Code = Cá nhân` |
-| K_FMS_12 | Số lượng HĐ UTDM tổ chức | HĐ | Base | COUNT WHERE `Investor_Object_Type_Code = Tổ chức` |
-| K_FMS_13 | Tổng GTTT UTDM | Tỷ VND | Base | `Total_Trust_Market_Value` ← RPTVALUES |
-| K_FMS_14 | GTTT UTDM cá nhân | Tỷ VND | Base | `Individual_Trust_Market_Value` ← RPTVALUES |
-| K_FMS_15 | GTTT UTDM tổ chức | Tỷ VND | Base | `Organization_Trust_Market_Value` ← RPTVALUES |
-| K_FMS_16a | % HĐ cá nhân | % | Derived | K_FMS_11 / K_FMS_10 × 100% — presentation layer |
-| K_FMS_16b | % HĐ tổ chức | % | Derived | K_FMS_12 / K_FMS_10 × 100% — presentation layer |
-| K_FMS_16c | % GTTT cá nhân | % | Derived | K_FMS_14 / K_FMS_13 × 100% — presentation layer |
-| K_FMS_16d | % GTTT tổ chức | % | Derived | K_FMS_15 / K_FMS_13 × 100% — presentation layer |
-
-**Star Schema:**
-
-```mermaid
-erDiagram
-    Fact_Discretionary_Investment_Contract_Snapshot {
-        int Report_Date_Dimension_Id FK
-        int Fund_Management_Company_Dimension_Id FK
-        varchar Report_Template_Code
-        varchar Reporting_Period_Code
-        int Total_Contract_Count
-        int Individual_Contract_Count
-        int Organization_Contract_Count
-        float Total_Trust_Market_Value
-        float Individual_Trust_Market_Value
-        float Organization_Trust_Market_Value
-    }
-    Fund_Management_Company_Dimension {
-        string Fund_Management_Company_Dimension_Id PK
-        string Fund_Management_Company_Id
-        string Company_Code
-        string Company_Short_Name
-        string Company_Name
-        string Life_Cycle_Status_Code
-        string Source_System_Code
-    }
-    Calendar_Date_Dimension {
-        string Calendar_Date_Dimension_Id PK
-        date Calendar_Date
-        int Year
-        int Month
-        int Quarter
-        int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
-    }
-
-    Calendar_Date_Dimension ||--o{ Fact_Discretionary_Investment_Contract_Snapshot : "Report Date Dimension Id"
-    Fund_Management_Company_Dimension ||--o{ Fact_Discretionary_Investment_Contract_Snapshot : "Fund Management Company Dimension Id"
-```
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Discretionary Investment Contract Snapshot"]
-        G2["Fund Management Company Dimension"]
-        G3["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Bar chart: Số liệu HĐ UTDM (Nhóm 2)"]
-    end
-    G3 --> G1
-    G2 --> G1
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Discretionary Investment Contract Snapshot | 1 CTQLQ × 1 Report Template × 1 Report Date |
-| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record) |
-| Calendar Date Dimension | 1 ngày |
+| K_FMS_1 | FMSQLQ.FUNDS | Investment Fund | investment_fund |
+| K_FMS_2 | FMSQLQ.INVES_ACC | Discretionary Investment Account | discretionary_investment_account |
+| K_FMS_3 | FMSQLQ.FUND_REPORT | Fund NAV/Property Report *(chưa có LLD)* | TBD |
+| K_FMS_4 | FMSQLQ.SECURITIES, FMSQLQ.STATUS | Fund Management Company | fund_management_company |
+| K_FMS_5, 148, 149, 150 | FMSQLQ.FOR_BRCH, FMSQLQ.STATUS | Foreign Fund Management Organization Unit | foreign_fm_ou |
+| K_FMS_147 | *(BA chưa cung cấp)* | TBD | TBD |
+| K_FMS_151 | FMSQLQ.BANK_MONI | Custodian Bank | custodian_bank |
 
 ---
 
-#### Nhóm 3 — Danh sách các Công ty quản lý quỹ
+#### Nhóm 2 - Số liệu hợp đồng uỷ thác danh mục
+
+> Phân loại: **Phân tích**
+> Atomic: `Discretionary Investment Account` ← FMS.INVES_ACC — READY *(K_FMS_10–K_FMS_16 — BA đánh "Dữ liệu động" nên PENDING)*
+> Ghi chú: **Toàn bộ Nhóm PENDING** — BA đánh "Dữ liệu động" cho cả Chiều "Thời gian" lẫn toàn bộ 6 chỉ tiêu cơ sở của Nhóm này, theo gating "Loại dữ liệu" nên PENDING toàn bộ dù Atomic `Discretionary Investment Account` đã sẵn sàng. Toàn bộ chỉ tiêu (số lượng HĐ, giá trị thị trường) lấy trực tiếp từ INVES_ACC theo Investor Object Type.
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_10a | Thời gian | — | Chiều | | **Lý do pending:** Nhóm không còn measure nào READY (toàn bộ đánh Dữ liệu động). **Atomic cần bổ sung:** không — chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot` — grain: 1 CTQLQ × 1 tháng. | PENDING |
+| K_FMS_10 | Số lượng hợp đồng UTDM cá nhân | HĐ | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT DISTINCT(Discretionary Investment Account.Contract_No) WHERE ID_Type cá nhân. **Atomic cần bổ sung:** không — chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
+| K_FMS_11 | Giá trị thị trường hợp đồng UTDM cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn SUM(Discretionary Investment Account.List_Value) WHERE ID_Type cá nhân. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
+| K_FMS_12 | Số lượng hợp đồng UTDM tổ chức | HĐ | Cơ sở | | **Lý do pending:** Tương tự K_FMS_10, WHERE ID_Type tổ chức. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
+| K_FMS_13 | Giá trị thị trường hợp đồng UTDM tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_11, WHERE ID_Type tổ chức. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
+| K_FMS_14 | Tổng số lượng hợp đồng UTDM | HĐ | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn COUNT DISTINCT(Discretionary Investment Account.Contract_No) toàn thị trường. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
+| K_FMS_15 | Tổng giá trị ủy thác | Tỷ VND | Cơ sở | | **Lý do pending:** BA đánh Dữ liệu động — nguồn SUM(Discretionary Investment Account.List_Value) toàn thị trường. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Discretionary Investment Contract Snapshot`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_10, 11, 12, 13, 14, 15 | FMSQLQ.INVES_ACC | Discretionary Investment Account | discretionary_investment_account |
+
+---
+
+#### Nhóm 3 - Danh sách các Công ty quản lý quỹ
 
 > Phân loại: **Tác nghiệp**
-> Atomic: `Fund Management Company` ← FMS.SECURITIES — **READY** *(db: Tên CT, Vốn ĐL)*
-> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(db: Tên quỹ, NAV)*
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: AUM, CAR, LN, Vốn CSH, NAV)*
-> Atomic: `Member Rating` ← FMS.RANK — **READY** *(db: Xếp loại, CAMEL)*
-> Atomic: `Member Rating Period` ← FMS.RATINGPD — **READY** *(db)*
-> Atomic: `Discretionary Investment Account` ← FMS.INVESACC — **READY** *(db: Số HĐ UTDM)*
-> Ghi chú: [A] Nhóm db measures (Active_Company_Count, Investment_Fund_Count, Total_Discretionary_Contract_Count) có thể populate T-0. [B] BC measures (AUM, CAR, LN, NAV, Vốn CSH) populate sau khi RPTVALUES có dữ liệu — phụ thuộc O_FMS_1. [C] Grain Profile = 1 CTQLQ × 1 tháng slicer — attributes lấy từ Atomic trực tiếp, không qua Dimension. [D] ETL policy: xem kỳ đánh giá gần nhất (Member_Rating_Period_End_Date ≤ tháng slicer).
+> Atomic: `Fund Management Company` ← FMS.SECURITIES — READY *(K_FMS_17: Tên công ty)*
+> Atomic: `Fund Management Company Employee` ← FMS.TL_PROFILES — READY *(K_FMS_152: Người đại diện theo pháp luật)*
+> Ghi chú: **Mix READY/PENDING** — chỉ 2/14 chỉ tiêu BA đánh Dữ liệu tĩnh (Tên công ty, Người đại diện) + Chiều "Thời gian". 11 chỉ tiêu còn lại BA đánh Dữ liệu động → PENDING. Trong đó `Số lượng nhân viên có CCHN`/`AUM`/`Thị phần`/`Lợi nhuận` (nguồn FMSQLQ.SECURITIES_REPORT) **PENDING kép** — vừa Dữ liệu động, vừa chưa có Atomic entity nào cho `FMS.SECURITIES_REPORT`. `CAR (ATTC)` và `Vốn CSH` BA chưa cung cấp Bảng nguồn. 2 bảng con drill-down `Fund Management Company Fund List`/`Fund Management Company Contract List` tách thành Nhóm 4 và Nhóm 5 riêng (xem STT=4, STT=5).
 
 **Mockup:**
 
-**Bảng chính — `Fund Management Company Profile`:**
+| Mã | Tên CT | Người đại diện | Số nhân viên CCHN | Số lượng Quỹ | Xếp loại | CAMEL | Vốn điều lệ | AUM | Thị phần | CAR | Lợi nhuận | Vốn CSH | Số HĐ UTQLDM |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| CT1 | Công ty ABC | Nguyễn Văn A | 12 | 5 | A | 89.5% | 150 | 25.450 | 8.2% | 18.5% | 120.4 | 165 | 350 |
 
-| Mã | Tên CT | AUM (tỷ) | Số QĐT | SL HĐUTDM | CAR | LN (tỷ) | VĐL (tỷ) | Vốn CSH (tỷ) | Thị phần (%) | Xếp loại | CAMEL |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| CT1 | Công ty ABC | 25.450 | 12 | 350 | 18.5% | 120.4 | 150 | 165 | 8.2% | A | 89.5% |
-
-**Mockup — popup "DANH SÁCH QUỸ - CT1":**
-
-| Mã quỹ | Tên quỹ | Loại | NAV (tỷ) |
-|---|---|---|---|
-| QA1 | Quỹ ABC Cổ phần | Quỹ mở | 1.250 |
-
-**Mockup — popup "DANH SÁCH HĐ UTDM - CT1":**
-
-| Số HĐ | Nhà đầu tư | Loại | Giá trị (tỷ) |
-|---|---|---|---|
-| HĐ001 | Nguyễn Văn A | Cá nhân | 25.4 |
-
-**Source:** `Fund Management Company Profile` → `Fund Management Company Fund List`, `Fund Management Company Contract List`
+**Source:** `Fund Management Company Profile`
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_17 | Tên công ty | — | Chiều | `Company_Name` + `Company_Short_Name` ← Fund Management Company |
-| K_FMS_18 | AUM | Tỷ VND | Base | `Total_AUM_Amount` ← RPTVALUES — pending O_FMS_1 |
-| K_FMS_19 | Số lượng quỹ đang quản lý | Quỹ | Base | COUNT(`Investment Fund`) WHERE `Fund_Management_Company_Id` — COUNT db |
-| K_FMS_20 | Số lượng HĐUTDM | HĐ | Base | COUNT(`Discretionary Investment Account`) per CTQLQ — COUNT db |
-| K_FMS_21 | CAR | % | Base | `Rank_Class_Code` (CAR ratio) ← RPTVALUES — pending O_FMS_1 |
-| K_FMS_22 | Lợi nhuận | Tỷ VND | Base | `Net_Profit_Amount` ← RPTVALUES BCTC gần nhất — pending O_FMS_1, O_FMS_4 |
-| K_FMS_23 | Vốn điều lệ | Tỷ VND | Base | `Charter_Capital_Amount` ← FMS.SECURITIES.SecCapital |
-| K_FMS_24 | Vốn CSH | Tỷ VND | Base | `Equity_Amount` ← RPTVALUES BCTC mã 400 — pending O_FMS_4 |
-| K_FMS_25 | Xếp loại | — | Base | `Rank_Class_Code` ← FMS.RANK.RankClass (A/B/C) |
-| K_FMS_26 | CAMEL | % | Base | `Total_Score` ← FMS.RANK.TotalScore |
-| K_FMS_27 | Thị phần AUM | % | Derived | K_FMS_18[CT] / SUM(K_FMS_18) × 100% — presentation layer |
-| K_FMS_28 | Chi tiết quỹ của CTQLQ | — | Base | `Fund_Code`, `Fund_Name`, `Fund_NAV_Amount` ← `Fund Management Company Fund List` |
-| K_FMS_29 | NAV từng quỹ | Tỷ VND | Base | `Fund_NAV_Amount` ← RPTVALUES per quỹ |
-| K_FMS_30 | Chi tiết HĐUTDM | — | Base | `Account_Number`, `Investor_Name`, `Contract_Value` ← `Fund Management Company Contract List` |
-| K_FMS_31 | Giá trị từng HĐ UTDM | Tỷ VND | Base | `Trust_Market_Value` ← RPTVALUES per HĐ |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_17a | Thời gian | — | Chiều | | **Lý do pending:** BA đánh Dữ liệu động cho dòng Thời gian ở Nhóm này — Chiều PENDING dù Nhóm còn 2 measure READY khác (Tên công ty, Người đại diện). **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fund Management Company Profile` — grain: 1 CTQLQ × 1 tháng slicer. | PENDING |
+| K_FMS_17 | Tên công ty | — | Cơ sở | `Company_Name`, `Company_Short_Name` ← Fund Management Company | | READY |
+| K_FMS_152 | Người đại diện theo pháp luật | — | Cơ sở | `Item_Name` ← Fund Management Company Employee (FMS.TL_PROFILES) | | READY |
+| K_FMS_153 | Số lượng nhân viên có CCHN | Người | Cơ sở | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.SECURITIES_REPORT`. **Atomic cần bổ sung:** entity cho `FMS.SECURITIES_REPORT` (Securities Company Periodic Report). **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_154 | Số lượng Quỹ | Quỹ | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn COUNT(Investment Fund) theo Fund_Management_Company_Id. **Atomic cần bổ sung:** không — Investment Fund đã READY, chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_155 | Xếp loại | — | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn `Rank_Index` ← Member Rating (FMS.RANK). **Atomic cần bổ sung:** không — Member Rating đã READY, chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_156 | CAMEL | % | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn `Total_Score_Amount` ← Member Rating. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_157 | Vốn điều lệ | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn `Capital` ← Fund Management Company (FMS.SECURITIES). **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_158 | AUM | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.SECURITIES_REPORT`. **Atomic cần bổ sung:** entity cho `FMS.SECURITIES_REPORT`. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_159 | Thị phần | % | Phái sinh | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.SECURITIES_REPORT`. **Atomic cần bổ sung:** entity cho `FMS.SECURITIES_REPORT`. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_160 | CAR (ATTC) | % | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn/Trường nguồn. **Atomic cần bổ sung:** chưa xác định — chờ BA bổ sung Bảng nguồn. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_161 | Lợi nhuận | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.SECURITIES_REPORT`. **Atomic cần bổ sung:** entity cho `FMS.SECURITIES_REPORT`. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_162 | Vốn CSH | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn/Trường nguồn. **Atomic cần bổ sung:** chưa xác định — chờ BA bổ sung Bảng nguồn. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+| K_FMS_163 | Số lượng hợp đồng UTQLDM | HĐ | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn COUNT(Discretionary Investment Account) per CTQLQ. **Atomic cần bổ sung:** không — Discretionary Investment Account đã READY, chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fund Management Company Profile`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_153, 158, 159, 161 | FMSQLQ.SECURITIES_REPORT | Securities Company Periodic Report *(chưa có LLD)* | TBD |
+| K_FMS_154 | FMSQLQ.FUNDS | Investment Fund | investment_fund |
+| K_FMS_155, 156 | FMSQLQ.RANK | Member Rating | member_rating |
+| K_FMS_157 | FMSQLQ.SECURITIES | Fund Management Company | fund_management_company |
+| K_FMS_160, 162 | *(BA chưa cung cấp)* | TBD | TBD |
+| K_FMS_163 | FMSQLQ.INVES_ACC | Discretionary Investment Account | discretionary_investment_account |
 
 **Schema bảng tác nghiệp — Fund Management Company Profile:**
 
@@ -649,20 +488,55 @@ erDiagram
         string Company_Code
         string Company_Short_Name
         string Company_Name
-        string Life_Cycle_Status_Code
-        string Rank_Class_Code
-        float Total_Score
-        float Charter_Capital_Amount
-        float Equity_Amount
-        float Total_AUM_Amount
-        float Net_Profit_Amount
-        int Investment_Fund_Count
-        int Discretionary_Contract_Count
-        string Report_Period_Code
-        date Rating_Period_End_Date
+        string Legal_Representative_Name
         string Source_System_Code
     }
 ```
+
+> Chỉ 2 cột READY (`Company_Name`/`Company_Short_Name`, `Legal_Representative_Name`) được đưa vào schema — 11 cột còn lại đang PENDING (xem Bảng KPI), sẽ bổ sung vào schema này khi chuyển READY.
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fund Management Company Profile"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_17,152: Danh sách CTQLQ (Nhóm 3)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fund Management Company Profile | Tác nghiệp — bảng flat \| 1 CTQLQ × 1 tháng slicer |
+
+---
+
+#### Nhóm 4 - Chi tiết Quỹ của một CTQLQ
+
+> Phân loại: **Tác nghiệp**
+> Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_FMS_164: Tên quỹ)*
+> Ghi chú: Popup drill-down khi bấm vào Số lượng Quỹ ở Nhóm 3 — FK về `Fund_Management_Company_Id`. Loại hình quỹ là Classification Value (scheme `FMS_FUND_TYPE`) → reuse `cl_dim`, không tạo Dimension riêng. Giá trị NAV BA đánh Dữ liệu động → PENDING.
+
+**Mockup — popup "DANH SÁCH QUỸ":**
+
+| Mã quỹ | Tên quỹ | Loại hình quỹ | NAV (tỷ) |
+|---|---|---|---|
+| QA1 | Quỹ ABC Cổ phần | Quỹ mở | 1.250 |
+
+**Source:** `Fund Management Company Fund List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_164 | Tên quỹ | — | Cơ sở | `Fund_Name` ← Investment Fund (FMS.FUNDS.Item_Name) | | READY |
+| K_FMS_165 | Loại hình quỹ | — | Cơ sở | `Fund_Type_Code` ← Classification Dimension (scheme FMS_FUND_TYPE) | reuse `cl_dim` — xem Lớp 2 Reuse Analysis | READY |
+| K_FMS_166 | Giá trị NAV của từng quỹ của CTQLQ | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn `FUNDS.NAV`. **Atomic cần bổ sung:** không — Investment Fund đã READY, chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fund Management Company Fund List`. | PENDING |
 
 **Schema bảng con — Fund Management Company Fund List:**
 
@@ -672,15 +546,60 @@ erDiagram
         string Fund_Management_Company_Id PK
         string Investment_Fund_Id PK
         string Fund_Code
-        string Fund_Short_Name
         string Fund_Name
         string Fund_Type_Code
-        float Fund_Capital_Amount
-        float Fund_NAV_Amount
-        string Report_Period_Code
         string Source_System_Code
     }
 ```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fund Management Company Fund List"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_164-165: Chi tiết Quỹ của một CTQLQ (Nhóm 4)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fund Management Company Fund List | Tác nghiệp — bảng con drill-down \| 1 quỹ × 1 CTQLQ × 1 tháng slicer |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_166 | FMSQLQ.FUNDS | Investment Fund | investment_fund |
+
+---
+
+#### Nhóm 5 - Chi tiết các hợp đồng UTDM của CTQLQ
+
+> Phân loại: **Tác nghiệp**
+> Atomic: `Discretionary Investment Account` ← FMS.INVES_ACC — READY *(K_FMS_167, K_FMS_168: Mã HĐ, Số TK lưu ký)*
+> Ghi chú: Popup drill-down khi bấm vào Số lượng HĐ UTQLDM ở Nhóm 3 — FK về `Fund_Management_Company_Id`. Giá trị hợp đồng BA đánh Dữ liệu động → PENDING.
+
+**Mockup — popup "DANH SÁCH HĐ UTDM":**
+
+| Mã HĐ | Số TK lưu ký | Giá trị (tỷ) |
+|---|---|---|
+| HĐ001 | 001C123456 | 25.4 |
+
+**Source:** `Fund Management Company Contract List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_167 | Mã số hợp đồng UTQLDM | — | Cơ sở | `Contract_Number` ← Discretionary Investment Account (FMS.INVES_ACC.Contract_No) | | READY |
+| K_FMS_168 | Số tài khoản lưu ký | — | Cơ sở | `Account_Number` ← Discretionary Investment Account (FMS.INVES_ACC.Account) | | READY |
+| K_FMS_169 | Giá trị của từng hợp đồng UTDM của CTQLQ | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn `INVES_ACC.LIST_VALUE`. **Atomic cần bổ sung:** không — Discretionary Investment Account đã READY, chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fund Management Company Contract List`. | PENDING |
 
 **Schema bảng con — Fund Management Company Contract List:**
 
@@ -691,11 +610,6 @@ erDiagram
         string Discretionary_Investment_Account_Id PK
         string Account_Number
         string Contract_Number
-        string Investor_Name
-        string Investor_Object_Type_Code
-        float Trust_Market_Value
-        date Contract_Start_Date
-        string Report_Period_Code
         string Source_System_Code
     }
 ```
@@ -705,579 +619,264 @@ erDiagram
 ```mermaid
 flowchart LR
     subgraph GOLD["Datamart"]
-        G1["Fund Management Company Profile"]
-        G2["Fund Management Company Fund List"]
-        G3["Fund Management Company Contract List"]
+        G1["Fund Management Company Contract List"]
     end
     subgraph RPT["Báo cáo"]
-        R1["Bảng danh sách CTQLQ (Nhóm 3)"]
-        R2["Popup Danh sách quỹ"]
-        R3["Popup Danh sách HĐ UTDM"]
+        R1["K_FMS_167-168: Chi tiết HĐ UTDM của CTQLQ (Nhóm 5)"]
     end
     G1 --> R1
-    G2 --> R2
-    G3 --> R3
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| Fund Management Company Profile | Tác nghiệp — bảng flat chính \| 1 CTQLQ × 1 tháng slicer |
-| Fund Management Company Fund List | Tác nghiệp — bảng con drill-down \| 1 quỹ × 1 tháng slicer |
-| Fund Management Company Contract List | Tác nghiệp — bảng con drill-down \| 1 Discretionary Investment Account active tại tháng slicer |
+| Fund Management Company Contract List | Tác nghiệp — bảng con drill-down \| 1 Discretionary Investment Account × 1 CTQLQ × 1 tháng slicer |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_169 | FMSQLQ.INVES_ACC | Discretionary Investment Account | discretionary_investment_account |
 
 ---
 
-### Tab: QUỬ ĐẦU TƯ
+### Tab: QUỸ ĐẦU TƯ
 
 **Slicer chung:** Tháng/Năm (tháng slicer); một số nhóm có thêm slicer Từ tháng / Đến tháng
 
 ---
 
-#### Nhóm 4 — Biểu đồ Tổng NAV Quỹ và Tỷ lệ NAV/GDP
+#### Nhóm 6 - Thống kê chung của QĐT
 
 > Phân loại: **Phân tích**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: NAV per quỹ)*
-> Atomic: `Risk Indicator Value` ← QLRR.risk_indicator_value — **READY** *(db QLRR: GDP, category = MACRO)*
-> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(db: Fund_Type_Code để phân loại)*
-> Atomic: `Fund Management Company` ← FMS.SECURITIES — **READY**
-> Ghi chú: Cross-module FMS × QLRR. GDP lấy từ `Risk Indicator Value` WHERE `Indicator Set Code = 1 (Trong nước)` AND `Risk Indicator Category Code = MACRO`. Tỷ lệ NAV/GDP và NAV từng loại hình là Derived — tính tại presentation layer. Phụ thuộc O_FMS_1 cho mapping SheetId/TgtId NAV.
-
-**Mockup:**
-
-| Chỉ tiêu | Loại |
-|---|---|
-| NAV/GDP % (line chart) | Derived |
-| Tổng NAV toàn TT (line chart) | Derived (SUM) |
-| NAV từng loại hình quỹ (line chart) | Derived (SUM GROUP BY Fund Type) |
-
-**Source:** `Fact Investment Fund NAV Snapshot` → `Investment Fund Dimension`, `Fund Management Company Dimension`, `Calendar Date Dimension`
+> Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_FMS_170–K_FMS_173 — BA đánh "Dữ liệu động" nên PENDING)*
+> Ghi chú: **Toàn bộ Nhóm PENDING** — BA đánh Dữ liệu động cho cả 4 chỉ tiêu cơ sở (Tổng số QĐT, Số quỹ theo loại hình, Tổng NAV, Tổng NAV theo loại hình). Chiều "Thời gian" tự nó Dữ liệu tĩnh nhưng không còn measure nào READY đi kèm → PENDING toàn bộ Nhóm. Loại hình quỹ là Classification Value (scheme `FMS_FUND_TYPE`).
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_32 | NAV per quỹ | Tỷ VND | Base | `Fund_NAV_Amount` ← RPTVALUES BC per quỹ per kỳ |
-| K_FMS_33 | GDP | Nghìn tỷ VND | Base | `GDP_Value` ← `Risk Indicator Value` QLRR (MACRO) |
-| K_FMS_34 | Tổng NAV toàn thị trường | Tỷ VND | Derived | SUM(K_FMS_32) toàn TT per kỳ — presentation layer |
-| K_FMS_35 | Tổng NAV từng loại hình quỹ | Tỷ VND | Derived | SUM(K_FMS_32) GROUP BY Fund_Type_Code — presentation layer |
-| K_FMS_36 | Loại hình quỹ | — | Chiều | `Fund_Type_Code` ← Investment Fund (FMS.FUNDS) |
-| K_FMS_37 | Tỷ lệ NAV/GDP | % | Derived | K_FMS_34 / K_FMS_33 × 100% — presentation layer |
-
-**Star Schema:**
-
-```mermaid
-erDiagram
-    Fact_Investment_Fund_NAV_Snapshot {
-        int Report_Date_Dimension_Id FK
-        int Investment_Fund_Dimension_Id FK
-        int Fund_Management_Company_Dimension_Id FK
-        varchar Report_Template_Code
-        varchar Reporting_Period_Code
-        float Fund_NAV_Amount
-        float Total_Asset_Amount
-        float Listed_Stock_Amount
-        float Unlisted_Stock_Amount
-        float Bond_Amount
-        float Cash_Amount
-        float Other_Securities_Amount
-        float Other_Asset_Amount
-        varchar GDP_Indicator_Code
-        float GDP_Value
-        varchar VN_Index_Indicator_Code
-        float VN_Index_Value
-        varchar Overnight_Rate_Indicator_Code
-        float Overnight_Rate_Value
-    }
-    Investment_Fund_Dimension {
-        string Investment_Fund_Dimension_Id PK
-        string Investment_Fund_Id
-        string Fund_Code
-        string Fund_Name
-        string Fund_Type_Code
-        string Practice_Status_Code
-        float Fund_Capital_Amount
-        string Source_System_Code
-    }
-    Fund_Management_Company_Dimension {
-        string Fund_Management_Company_Dimension_Id PK
-        string Fund_Management_Company_Id
-        string Company_Code
-        string Company_Short_Name
-        string Company_Name
-        string Life_Cycle_Status_Code
-        string Source_System_Code
-    }
-    Calendar_Date_Dimension {
-        string Calendar_Date_Dimension_Id PK
-        date Calendar_Date
-        int Year
-        int Month
-        int Quarter
-        int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
-    }
-
-    Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_NAV_Snapshot : "Report Date Dimension Id"
-    Investment_Fund_Dimension ||--o{ Fact_Investment_Fund_NAV_Snapshot : "Investment Fund Dimension Id"
-    Fund_Management_Company_Dimension ||--o{ Fact_Investment_Fund_NAV_Snapshot : "Fund Management Company Dimension Id"
-```
-
-> Ghi chú cross-module QLRR (T-1 rule): Dữ liệu QLRR chạy T-1 — ETL join theo kỳ tương ứng `mbr_prd_rpt.day_rpt` (int yyyymmdd, cast sang date khi cần):
-> - **GDP_Value**: `Period_Type_Code = Quý` AND `Period_Year = YEAR(TO_DATE(day_rpt))` AND `Period_Value = QUARTER(TO_DATE(day_rpt))` — lấy kỳ gần nhất có dữ liệu
-> - **VN_Index_Value**: `Period_Type_Code = Ngày` AND `Period_Date = ngày làm việc trước TO_DATE(day_rpt)`
-> - **Overnight_Rate_Value**: `Period_Type_Code = Ngày` AND `Period_Date = ngày làm việc trước TO_DATE(day_rpt)`
-> Các DD `_Indicator_Code` lưu mã chỉ tiêu QLRR để tra cứu khi cần.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund NAV Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Fund Management Company Dimension"]
-        G4["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Line chart: Tổng NAV & NAV/GDP (Nhóm 4)"]
-        R2["Pie chart: Phân bổ tài sản (Nhóm 5)"]
-        R3["Bar+Line: Biến động NAV (Nhóm 6)"]
-    end
-    G4 --> G1
-    G2 --> G1
-    G3 --> G1
-    G1 --> R1
-    G1 --> R2
-    G1 --> R3
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
-| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record) |
-| Calendar Date Dimension | 1 ngày |
-
----
-
-#### Nhóm 5 — Biểu đồ Phân bổ tài sản của Quỹ đầu tư
-
-> Phân loại: **Phân tích**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: giá trị từng loại tài sản)*
-> Ghi chú: Tất cả chỉ tiêu phân bổ tài sản (CP NY, CP chưa NY, TP, Tiền, CK khác, TS khác) là **Derived** = tỷ lệ % = Giá trị loại tài sản / Tổng giá trị tài sản × 100%. Mart lưu giá trị tuyệt đối từng loại tài sản là Base. Tổng và % tính tại presentation layer. Phụ thuộc O_FMS_1 cho mapping SheetId/TgtId từng loại tài sản.
-> Reuse bảng: `Fact Investment Fund NAV Snapshot` — bổ sung các measure tài sản.
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_38 | Tổng giá trị tài sản | Tỷ VND | Base | SUM Report Import Value chỉ tiêu tổng tài sản per quỹ ← RPTVALUES |
-| K_FMS_39 | Giá trị CP niêm yết | Tỷ VND | Base | Report Import Value chỉ tiêu CP niêm yết per quỹ ← RPTVALUES |
-| K_FMS_40 | Giá trị CP chưa niêm yết | Tỷ VND | Base | Report Import Value chỉ tiêu CP chưa NY per quỹ ← RPTVALUES |
-| K_FMS_41 | Giá trị trái phiếu | Tỷ VND | Base | Report Import Value chỉ tiêu trái phiếu per quỹ ← RPTVALUES |
-| K_FMS_42 | Giá trị tiền | Tỷ VND | Base | Report Import Value chỉ tiêu tiền per quỹ ← RPTVALUES |
-| K_FMS_43 | Giá trị CK khác | Tỷ VND | Base | Report Import Value chỉ tiêu CK khác per quỹ ← RPTVALUES |
-| K_FMS_44 | Giá trị tài sản khác | Tỷ VND | Base | Report Import Value chỉ tiêu TS khác per quỹ ← RPTVALUES |
-| K_FMS_45 | Chiều loại hình tài sản | — | Chiều | Phân loại 6 nhóm tài sản — Classification Value |
-| K_FMS_46a | % CP niêm yết | % | Derived | K_FMS_39 / K_FMS_38 × 100% — presentation layer |
-| K_FMS_46b | % CP chưa niêm yết | % | Derived | K_FMS_40 / K_FMS_38 × 100% — presentation layer |
-| K_FMS_46c | % Trái phiếu | % | Derived | K_FMS_41 / K_FMS_38 × 100% — presentation layer |
-| K_FMS_46d | % Tiền | % | Derived | K_FMS_42 / K_FMS_38 × 100% — presentation layer |
-| K_FMS_46e | % CK khác | % | Derived | K_FMS_43 / K_FMS_38 × 100% — presentation layer |
-| K_FMS_46f | % Tài sản khác | % | Derived | K_FMS_44 / K_FMS_38 × 100% — presentation layer |
-
-> Ghi chú thiết kế: K_FMS_38–44 đều lưu trong `Fact Investment Fund NAV Snapshot` (bổ sung measures vào cùng Fact với Nhóm 4). Star Schema và Dimension reuse hoàn toàn từ Nhóm 4.
-
-**Mockup:**
-
-| Loại tài sản | Giá trị (tỷ VND) | Tỷ trọng (%) |
-|---|---|---|
-| Cổ phiếu niêm yết | 450.000 | 65% |
-| Trái phiếu | 120.000 | 17% |
-| Tiền | 80.000 | 11% |
-| CP chưa niêm yết | 30.000 | 4% |
-| CK khác | 15.000 | 2% |
-| Tài sản khác | 7.000 | 1% |
-
-**Source:** `Fact Investment Fund NAV Snapshot` → `Investment Fund Dimension`, `Fund Management Company Dimension`, `Calendar Date Dimension`
-
-**Star Schema:** *(Reuse `Fact Investment Fund NAV Snapshot` — xem Nhóm 4 để biết schema đầy đủ. Nhóm 5 dùng các measure tài sản: `Total_Asset_Amount`, `Listed_Stock_Amount`, `Unlisted_Stock_Amount`, `Bond_Amount`, `Cash_Amount`, `Other_Securities_Amount`, `Other_Asset_Amount`)*
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund NAV Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Pie chart: Phân bổ tài sản (Nhóm 5)"]
-    end
-    G3 --> G1
-    G2 --> G1
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
-| Fund Management Company Dimension | 1 CTQLQ (SCD4A — active record) |
-| Calendar Date Dimension | 1 ngày |
-
----
-
-#### Nhóm 6 — Sự biến động về NAV của các Quỹ ĐTCK
-
-> Phân loại: **Phân tích**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: NAV per quỹ per tháng)*
-> Ghi chú: Reuse `Fact Investment Fund NAV Snapshot`. Tăng trưởng NAV tháng (MoM%) và Trung bình tăng trưởng đều là Derived — tính tại presentation layer từ K_FMS_32.
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_47 | NAV các quỹ ĐTCK theo tháng | Tỷ VND | Base | Reuse K_FMS_32 — SUM(Fund_NAV_Amount) per tháng — presentation layer |
-| K_FMS_48 | Tăng trưởng NAV tháng (MoM%) | % | Derived | (K_FMS_47[T] − K_FMS_47[T−1]) / K_FMS_47[T−1] × 100% — presentation layer |
-| K_FMS_49 | Trung bình tăng trưởng NAV | % | Derived | AVG(K_FMS_48) trong khoảng thời gian chọn — presentation layer |
-
-**Mockup:**
-
-| Tháng | NAV (tỷ VND) | Tăng trưởng (%) |
-|---|---|---|
-| T1/2025 | 820.000 | +2.1% |
-| T2/2025 | 835.000 | +1.8% |
-| T3/2025 | 828.000 | −0.8% |
-
-**Source:** `Fact Investment Fund NAV Snapshot` → `Investment Fund Dimension`, `Calendar Date Dimension`
-
-**Star Schema:** *(Reuse `Fact Investment Fund NAV Snapshot` — xem Nhóm 4 để biết schema đầy đủ. Nhóm 6 chỉ dùng measure `Fund_NAV_Amount` để tính biến động NAV theo tháng)*
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund NAV Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Bar+Line: Biến động NAV theo tháng (Nhóm 6)"]
-    end
-    G3 --> G1
-    G2 --> G1
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
-| Calendar Date Dimension | 1 ngày |
-
----
-
-#### Nhóm 7 — Số lượng quỹ đầu tư chứng khoán
-
-> Phân loại: **Phân tích**
-> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(db: COUNT per Fund_Type_Code)*
-> Ghi chú: Market-Level Aggregate Snapshot theo năm — đếm từ db. COUNT từng loại quỹ là Derived = COUNT WHERE Fund_Type_Code = X — tính tại presentation layer. Grain = 1 snapshot × 1 năm × loại hình được aggregate tại mart (lưu tổng, tách loại ở presentation).
-
-**Mockup:**
-
-| Năm | Tổng quỹ | Quỹ mở | Quỹ TV | ETF | Đóng | BĐS |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| 2018 | 47 | 20 | 10 | 8 | 5 | 4 |
-| 2023 | 124 | 55 | 25 | 20 | 15 | 9 |
+| K_FMS_170a | Thời gian | — | Chiều | | **Lý do pending:** Nhóm không còn measure nào READY. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Investment Fund Count Snapshot` — grain: 1 loại hình quỹ × 1 tháng. | PENDING |
+| K_FMS_170 | Tổng số lượng QĐT | Quỹ | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn COUNT(Investment Fund). **Atomic cần bổ sung:** không — Investment Fund đã READY, chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_171 | Số lượng quỹ theo từng loại hình quỹ | Quỹ | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn COUNT(Investment Fund) GROUP BY Fund_Type_Code. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_172 | Tổng giá trị NAV | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn SUM(Investment Fund.NAV). **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_173 | Tổng giá trị NAV của từng loại hình quỹ | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn SUM(Investment Fund.NAV) GROUP BY Fund_Type_Code. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
 
-**Source:** `Fact Investment Fund Count Snapshot` → `Calendar Date Dimension`
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_50 | Tổng số lượng quỹ | Quỹ | Base | COUNT(Investment Fund) tất cả loại hình, theo năm ← FMS.FUNDS |
-| K_FMS_51 | Loại hình quỹ | — | Chiều | Fund_Type_Code ← Investment Fund |
-| K_FMS_52a | Quỹ mở | Quỹ | Derived | COUNT WHERE Fund_Type_Code = QUY_MO — presentation layer |
-| K_FMS_52b | Quỹ thành viên | Quỹ | Derived | COUNT WHERE Fund_Type_Code = QUY_TV — presentation layer |
-| K_FMS_52c | Quỹ ETF | Quỹ | Derived | COUNT WHERE Fund_Type_Code = QUY_ETF — presentation layer |
-| K_FMS_52d | Quỹ đóng | Quỹ | Derived | COUNT WHERE Fund_Type_Code = QUY_DONG — presentation layer |
-| K_FMS_52e | Quỹ BĐS | Quỹ | Derived | COUNT WHERE Fund_Type_Code = QUY_BDS — presentation layer |
-
-**Star Schema:**
-
-```mermaid
-erDiagram
-    Fact_Investment_Fund_Count_Snapshot {
-        int Snapshot_Date_Dimension_Id FK
-        int Total_Fund_Count
-        int Open_Fund_Count
-        int Member_Fund_Count
-        int ETF_Fund_Count
-        int Closed_Fund_Count
-        int Real_Estate_Fund_Count
-        int Money_Market_Fund_Count
-        int Infrastructure_Bond_Fund_Count
-        int Retirement_Fund_Count
-    }
-    Calendar_Date_Dimension {
-        string Calendar_Date_Dimension_Id PK
-        date Calendar_Date
-        int Year
-        int Month
-        int Quarter
-        int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
-    }
-
-    Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_Count_Snapshot : "Snapshot Date Dimension Id"
-```
-
-> Ghi chú thiết kế: Lưu count từng loại trực tiếp trong Fact (tương tự Fact Fund Management Company Snapshot ở tab TỔNG QUAN). Grain = 1 snapshot × 1 năm — slicer Tháng/Quý/Năm trên dashboard filter qua Calendar Date Dimension.
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund Count Snapshot"]
-        G2["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Bar chart: Số lượng quỹ theo năm (Nhóm 7)"]
-    end
-    G2 --> G1
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Investment Fund Count Snapshot | 1 snapshot toàn thị trường × 1 năm |
-| Calendar Date Dimension | 1 ngày |
-
----
-
-#### Nhóm 8 — Tăng trưởng số lượng CCQ lưu hành
-
-> Phân loại: **Phân tích**
-> Atomic: `Investment Fund Certificate Transfer` ← FMS.TRANSFERMBF — **READY** *(db: Transfer_Quantity, Transfer_Type_Code — nguồn cho tất cả loại quỹ trừ quỹ đóng)*
-> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(db: Fund_Type_Code để phân loại)*
-> Ghi chú: CCQ lưu hành nguồn từ `Investment Fund Certificate Transfer` ← FMS.TRANSFERMBF (xác nhận v1.7). ETL = SUM(`Transfer_Quantity` WHERE `Transfer_Type_Code = MUA`) − SUM(`Transfer_Quantity` WHERE `Transfer_Type_Code = BAN`) per quỹ per snapshot date (T-1). Quỹ đóng PENDING O_FMS_7.
-
-**Mockup:**
-
-| Tháng | Quỹ mở | Quỹ ETF | Quỹ TV | Quỹ BĐS | Quỹ đóng | Quỹ TTTTT |
-|---|---|---|---|---|---|---|
-| T1/2025 | 1.250.000.000 | 320.000.000 | 180.000.000 | 95.000.000 | — | 42.000.000 |
-| T2/2025 | 1.310.000.000 | 335.000.000 | 182.000.000 | 95.000.000 | — | 43.000.000 |
-
-**Source:** `Fact Investment Fund CCQ Snapshot` → `Investment Fund Dimension`, `Calendar Date Dimension`
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_53 | Số lượng CCQ lưu hành | CCQ | Base | SUM(`Transfer_Quantity` MUA) − SUM(`Transfer_Quantity` BÁN) ← `Investment Fund Certificate Transfer` (FMS.TRANSFERMBF) per quỹ per snapshot date |
-| K_FMS_54 | Loại hình quỹ | — | Chiều | Fund_Type_Code ← Investment Fund |
-| K_FMS_55a | CCQ quỹ mở | CCQ | Derived | SUM(K_FMS_53) WHERE Fund_Type_Code = QUY_MO — presentation layer |
-| K_FMS_55b | CCQ quỹ ETF | CCQ | Derived | SUM(K_FMS_53) WHERE Fund_Type_Code = QUY_ETF — presentation layer |
-| K_FMS_55c | CCQ quỹ đóng | CCQ | Derived | Xem O_FMS_7 |
-| K_FMS_55d | CCQ quỹ BĐS | CCQ | Derived | Fund_Capital_Amount / 10.000 per quỹ BĐS — presentation layer |
-| K_FMS_55e | CCQ quỹ thành viên | CCQ | Derived | Fund_Capital_Amount / 10.000 per quỹ TV — presentation layer |
-| K_FMS_55f | CCQ quỹ TTTTT | CCQ | Derived | SUM(K_FMS_53) WHERE Fund_Type_Code = QUY_TTTTT — presentation layer |
-| K_FMS_55g | CCQ quỹ TP hạ tầng | CCQ | Derived | SUM(K_FMS_53) WHERE Fund_Type_Code = QUY_TPHT — presentation layer |
-| K_FMS_55h | CCQ quỹ hưu trí | CCQ | Derived | SUM(K_FMS_53) WHERE Fund_Type_Code = QUY_HUUTRI — presentation layer |
-
-**Star Schema:**
-
-```mermaid
-erDiagram
-    Fact_Investment_Fund_CCQ_Snapshot {
-        int Report_Date_Dimension_Id FK
-        int Investment_Fund_Dimension_Id FK
-        varchar Report_Template_Code
-        varchar Reporting_Period_Code
-        float Outstanding_Unit_Count
-    }
-    Investment_Fund_Dimension {
-        string Investment_Fund_Dimension_Id PK
-        string Investment_Fund_Id
-        string Fund_Code
-        string Fund_Name
-        string Fund_Type_Code
-        string Practice_Status_Code
-        float Fund_Capital_Amount
-        string Source_System_Code
-    }
-    Calendar_Date_Dimension {
-        string Calendar_Date_Dimension_Id PK
-        date Calendar_Date
-        int Year
-        int Month
-        int Quarter
-        int Day_Of_Week
-        boolean Is_Weekend
-        boolean Holiday_Flag
-        string Holiday_Name
-        string Source_System_Code
-    }
-
-    Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : "Report Date Dimension Id"
-    Investment_Fund_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : "Investment Fund Dimension Id"
-```
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund CCQ Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Stacked bar: Tăng trưởng CCQ lưu hành (Nhóm 8)"]
-    end
-    G3 --> G1
-    G2 --> G1
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Investment Fund CCQ Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
-| Calendar Date Dimension | 1 ngày |
-
----
-
-#### Nhóm 9 — Tỷ lệ tăng trưởng NAV/CCQ so với VN-Index và Lãi suất LNH
-
-**Bảng KPI tổng quan Nhóm 9:**
-
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_56 | VN-Index | Điểm | Base | `Risk Indicator Value` WHERE `category_code = STOCK_MARKET` AND `indicator_code = VN-Index` ← QLRR cross-module |
-| K_FMS_57 | NAV/CCQ quỹ mở CP | VND/CCQ | Derived | PENDING — xem O_FMS_10 (phân loại chi tiết) |
-| K_FMS_58 | NAV/CCQ quỹ mở TP | VND/CCQ | Derived | PENDING — xem O_FMS_10 |
-| K_FMS_59 | NAV/CCQ quỹ mở cân bằng | VND/CCQ | Derived | PENDING — xem O_FMS_10 |
-| K_FMS_60 | NAV/CCQ quỹ ETF | VND/CCQ | Derived | `Fund_NAV_Amount`[ETF] / `Outstanding_Unit_Count`[ETF] — join `Fact Investment Fund NAV Snapshot` + `Fact Investment Fund CCQ Snapshot` tại presentation layer |
-| K_FMS_61 | Lãi suất liên ngân hàng qua đêm | %/năm | Base | `Risk Indicator Value` WHERE `category_code = MONETARY` AND `indicator_code = Lãi suất LNH qua đêm` ← QLRR cross-module |
-
-
-##### READY — VN-Index và NAV/CCQ quỹ ETF (K_FMS_56, K_FMS_60)
-
-**KPI liên quan:** K_FMS_56 (VN-Index), K_FMS_60 (NAV/CCQ quỹ ETF)
-
-> Atomic: `Risk Indicator Value` ← QLRR.risk_indicator_value — **READY** *(QLRR cross-module: category = STOCK_MARKET, indicator = VN-Index)*
-> Ghi chú: VN-Index lưu trong `Risk Indicator Value` cùng schema với GDP và Lãi suất LNH — QLRR Source Analysis xác nhận nhóm III.1 Thị trường cổ phiếu (category_code = STOCK_MARKET) bao gồm VN-Index, HNX-Index, VN30, VN100. ETL join theo `Period Date` tương ứng `Report_Date`. BA ghi nguồn "MSS" — thực tế QLRR đồng bộ dữ liệu thị trường từ nguồn này vào `Risk Indicator Value`.
-
-##### PENDING — Phân loại quỹ mở chi tiết (CP/TP/cân bằng)
-
-**KPI liên quan:** K_FMS_57–59 (NAV/CCQ quỹ mở CP, TP, cân bằng)
-
-**Lý do pending:** BA ghi "Loại hình chi tiết quỹ CP, TP, cân bằng chưa thấy có". Atomic `Investment Fund` chỉ có `Fund_Type_Code` (Quỹ mở / ETF / Đóng...) — không có sub-type phân biệt quỹ mở CP/TP/cân bằng. Cần xác nhận trong RPTPERIOD hoặc RPTMEMBER có phân loại này không — xem O_FMS_10.
-
-##### READY — Lãi suất liên ngân hàng qua đêm
-
-**KPI liên quan:** K_FMS_61 (Lãi suất LNH qua đêm)
-
-> Phân loại: **Phân tích**
-> Atomic: `Risk Indicator Value` ← QLRR.risk_indicator_value — **READY** *(QLRR cross-module: category = MONETARY, indicator = Lãi suất LNH qua đêm)*
-> Ghi chú: "GSRR" = QLRR (xác nhận v1.7). Lãi suất LNH qua đêm ← `Risk Indicator Value` WHERE `category_code = MONETARY` ← QLRR.risk_indicator_value. Reuse `Fact Investment Fund NAV Snapshot` — lưu dạng measure DD `Overnight_Rate_Value` cùng với VN-Index.
-
-
-**Mockup:** *(K_FMS_56, 60, 61 READY; K_FMS_57–59 PENDING chờ O_FMS_10)*
-
-| Kỳ | VN-Index (điểm) | NAV/CCQ quỹ ETF (%) | Lãi suất LNH (%/năm) |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| T1/2025 | 1.250 | +4.2% | 4.15% |
-| T2/2025 | 1.180 | −1.8% | 4.10% |
-| T3/2025 | 1.310 | +6.1% | 4.05% |
-
-**Source:** `Fact Investment Fund NAV Snapshot` → `Investment Fund Dimension`, `Calendar Date Dimension`
-*(K_FMS_61 — Lãi suất LNH lấy từ `Risk Indicator Value` QLRR, join theo period tương ứng Report Date)*
-
-**Star Schema:** *(Reuse `Fact Investment Fund NAV Snapshot` — xem Nhóm 4 để biết schema đầy đủ. Nhóm 9 dùng `Fund_NAV_Amount` (K_FMS_32 cho ETF), `VN_Index_Value` (K_FMS_56), `Overnight_Rate_Value` (K_FMS_61). `K_FMS_60` (NAV/CCQ quỹ ETF) = join Fact NAV + Fact CCQ Snapshot tại presentation layer)*
-
-> Ghi chú cross-module (T-1 rule): `VN_Index_Value` và `Overnight_Rate_Value` ETL join theo `Period_Date = ngày làm việc trước TO_DATE(mbr_prd_rpt.day_rpt)`. Xem Nhóm 4 để biết đầy đủ join rule cho cả 3 QLRR measures (GDP/VN-Index/Lãi suất LNH).
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fact Investment Fund NAV Snapshot"]
-        G2["Investment Fund Dimension"]
-        G3["Calendar Date Dimension"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Line chart: NAV/CCQ vs VN-Index vs Lãi suất LNH (Nhóm 9)"]
-    end
-    G3 --> G1
-    G2 --> G1
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fact Investment Fund NAV Snapshot | 1 quỹ × 1 Report Template × 1 Report Date |
-| Investment Fund Dimension | 1 quỹ (SCD4A — active record) |
-| Calendar Date Dimension | 1 ngày |
+| K_FMS_170, 171, 172, 173 | FMSQLQ.FUNDS, FMSQLQ.FUND_TYPE | Investment Fund | investment_fund |
 
 ---
 
-#### Nhóm 10 — Danh sách các quỹ đầu tư
+#### Nhóm 7 - Biểu đồ Tổng NAV Quỹ và Tỷ lệ NAV/GDP
+
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** K_FMS_33 (GDP) BA đánh Dữ liệu tĩnh nhưng Atomic nguồn (`Risk Indicator Value`, QLRR.risk_indicator_value) chỉ tồn tại ở `DataModel/working/Atomic_LinhLV/` — track cá nhân đã lỗi thời (out of date), KHÔNG phải nguồn Atomic chuẩn (chuẩn chỉ gồm `DataModel/Atomic/` và `DataModel/working/Atomic/`) → PENDING, cần Atomic team thiết kế lại trong track chuẩn. Còn lại (Loại hình quỹ, Tổng NAV của quỹ, Tổng NAV từng loại hình, Tỷ lệ NAV/GDP) BA đánh Dữ liệu động → PENDING; nguồn NAV lấy trực tiếp từ `FMS.FUND_REPORT` — `FUND_REPORT` chưa có Atomic entity (giống Nhóm 1/3).
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_38a | Thời gian | — | Chiều | | **Lý do pending:** Không có measure NAV nào READY cùng Fact để ghép cùng Chiều thời gian. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot` — grain: 1 quỹ × 1 tháng. | PENDING |
+| K_FMS_36 | Loại hình quỹ | — | Chiều | | **Lý do pending:** Dữ liệu động — nguồn `Fund_Type_Code` ← Investment Fund/Classification Dimension (scheme FMS_FUND_TYPE). **Atomic cần bổ sung:** không. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_32 | Tổng NAV của quỹ | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT`. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT` (Fund NAV/Property Report). **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_33 | GDP | Nghìn tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu tĩnh nhưng Atomic nguồn (`Risk Indicator Value`, QLRR) chỉ có ở track `Atomic_LinhLV` (out of date, không phải nguồn chuẩn). **Atomic cần bổ sung:** thiết kế lại `Risk Indicator Value` (QLRR) trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/`. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_37 | Tỷ lệ NAV/GDP | % | Phái sinh | | **Lý do pending:** Phụ thuộc K_FMS_32 (PENDING) — K_FMS_32/K_FMS_33 × 100%. **Atomic cần bổ sung:** như K_FMS_32. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_35 | Tổng NAV của từng loại hình quỹ | Tỷ VND | Phái sinh | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT` — SUM(K_FMS_32) GROUP BY Fund_Type_Code. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_36 | FMSQLQ.FUND_TYPE | Classification Value (scheme FMS_FUND_TYPE) | cv |
+| K_FMS_32, 35, 37 | FMSQLQ.FUND_REPORT | Fund NAV/Property Report *(chưa có LLD)* | TBD |
+| K_FMS_33 | SIT_MRMS.RISK_INDICATOR_VALUE | Risk Indicator Value *(có draft ở Atomic_LinhLV — cần thiết kế lại trong track chuẩn)* | rsk_ind_val |
+
+---
+
+#### Nhóm 8 - Biểu đồ Phân bổ tài sản của Quỹ đầu tư
+
+> Phân loại: **Phân tích**
+> Atomic: chưa xác định — Ghi chú
+> Ghi chú: **PENDING toàn bộ.** BA đánh Dữ liệu động cho toàn bộ 6 chỉ tiêu phân bổ tài sản (CP niêm yết, CP chưa niêm yết, TP, Tiền, CK khác, TS khác) và Chiều "Thời gian" — nguồn `FMS.FUND_REPORT`, chưa có Atomic entity. Reuse `Fact Investment Fund NAV Snapshot` (xem Nhóm 7) khi Fact này chuyển READY.
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_38a | Thời gian | — | Chiều | | **Lý do pending:** Reuse từ Nhóm 7 — Fact `Fact Investment Fund NAV Snapshot` chưa có measure nào READY. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_39 | Cổ phiếu niêm yết | Tỷ VND | Phái sinh | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT` (cột PROP_PUBLIC_STOCK). **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT` (Fund NAV/Property Report). **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_40 | Cổ phiếu chưa niêm yết | Tỷ VND | Phái sinh | | **Lý do pending:** Tương tự K_FMS_39, cột PROP_PRIVATE_STOCK. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_41 | Trái phiếu | Tỷ VND | Phái sinh | | **Lý do pending:** Tương tự K_FMS_39, cột PROP_BONDS. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_42 | Tiền | Tỷ VND | Phái sinh | | **Lý do pending:** Tương tự K_FMS_39, cột PROP_MONEY. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_43 | Các loại chứng khoán khác | Tỷ VND | Phái sinh | | **Lý do pending:** Tương tự K_FMS_39, cột PROP_OTHER_STOCK. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_44 | Các tài sản khác | Tỷ VND | Phái sinh | | **Lý do pending:** Tương tự K_FMS_39, cột PROP_OTHER_PROPERTY. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_39, 40, 41, 42, 43, 44 | FMSQLQ.FUND_REPORT | Fund NAV/Property Report *(chưa có LLD)* | TBD |
+
+---
+
+#### Nhóm 9 - Sự biến động về NAV của các Quỹ ĐTCK
+
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** BA đánh Dữ liệu động cho cả Chiều "Thời gian" lẫn NAV của các quỹ, Tăng trưởng NAV từng tháng, Trung bình tăng trưởng NAV — nguồn `FMS.FUND_REPORT`, chưa có Atomic entity. Reuse `Fact Investment Fund NAV Snapshot` (xem Nhóm 7).
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_38a | Thời gian | — | Chiều | | **Lý do pending:** Reuse từ Nhóm 7. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot` — grain: 1 quỹ × 1 tháng. | PENDING |
+| K_FMS_47 | NAV của các quỹ ĐTCK | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT`. Reuse ý nghĩa với K_FMS_32 (Nhóm 7) nhưng cấp ID riêng vì BA liệt kê dòng độc lập ở Nhóm này. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_48 | Tăng trưởng NAV từng tháng | % | Phái sinh | | **Lý do pending:** Phụ thuộc K_FMS_47 (PENDING) — (NAV[T] − NAV[T−1]) / NAV[T−1] × 100%. **Atomic cần bổ sung:** như K_FMS_47. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+| K_FMS_49 | Trung bình tăng trưởng NAV | % | Phái sinh | | **Lý do pending:** Phụ thuộc K_FMS_48 (PENDING) — AVG(K_FMS_48) trong khoảng thời gian chọn. **Atomic cần bổ sung:** như K_FMS_47. **Mart dự kiến:** `Fact Investment Fund NAV Snapshot`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_47, 48, 49 | FMSQLQ.FUND_REPORT | Fund NAV/Property Report *(chưa có LLD)* | TBD |
+
+---
+
+#### Nhóm 10 - Số lượng quỹ đầu tư chứng khoán
+
+> Phân loại: **Phân tích**
+> Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_FMS_51: Loại hình quỹ — Dữ liệu tĩnh)*
+> Ghi chú: **Mix READY/PENDING.** Chiều "Thời gian" và "Loại hình quỹ" BA đánh Dữ liệu tĩnh → READY. 7 chỉ tiêu phái sinh (đếm số quỹ theo từng loại hình) BA đánh Dữ liệu động, nguồn `FMS.FUND_REPORT.FUND_ID` → PENDING toàn bộ vì Fact không còn measure nào READY để hiển thị cùng 2 Chiều.
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_50a | Thời gian | — | Chiều | | **Lý do pending:** Không còn measure nào READY cùng Fact để ghép cùng Chiều. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund Count Snapshot` — grain: 1 loại hình quỹ × 1 tháng. | PENDING |
+| K_FMS_51 | Loại hình quỹ | — | Chiều | | **Lý do pending:** Atomic sẵn sàng (Investment Fund, Classification Dimension scheme FMS_FUND_TYPE) và Dữ liệu tĩnh, nhưng không có measure nào cùng Fact để ghép. **Atomic cần bổ sung:** không — chờ measure READY. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_52a | Quỹ mở | Quỹ | Phái sinh | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT`. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT` (Fund NAV/Property Report). **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_52b | Quỹ thành viên | Quỹ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_52a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_52c | Quỹ ETF | Quỹ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_52a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_52d | Quỹ đóng | Quỹ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_52a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_52e | Quỹ BĐS | Quỹ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_52a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_174 | Quỹ đầu tư công cụ thị trường tiền tệ | Quỹ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_52a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+| K_FMS_175 | Quỹ đầu tư trái phiếu hạ tầng | Quỹ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_52a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund Count Snapshot`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_52a, 52b, 52c, 52d, 52e, 174, 175 | FMSQLQ.FUND_REPORT | Fund NAV/Property Report *(chưa có LLD)* | TBD |
+
+---
+
+#### Nhóm 11 - Tăng trưởng số lượng CCQ lưu hành của các quỹ đầu tư
+
+> Phân loại: **Phân tích**
+> Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_FMS_54: Loại hình quỹ — Dữ liệu tĩnh)*
+> Ghi chú: **PENDING toàn bộ** — tương tự Nhóm 10. Nguồn CCQ lưu hành là `FMS.FUND_REPORT.TOTAL_CCQ` trực tiếp, BA đánh Dữ liệu động cho toàn bộ 6 chỉ tiêu phái sinh (theo loại hình quỹ) → Fact không còn measure nào READY để ghép cùng 2 Chiều (Thời gian, Loại hình quỹ — dù bản thân Loại hình quỹ Dữ liệu tĩnh).
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_53a | Thời gian | — | Chiều | | **Lý do pending:** Không còn measure nào READY cùng Fact. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot` — grain: 1 loại hình quỹ × 1 tháng. | PENDING |
+| K_FMS_54 | Loại hình quỹ | — | Chiều | | **Lý do pending:** Atomic sẵn sàng (Investment Fund) và Dữ liệu tĩnh, nhưng không có measure nào cùng Fact để ghép. **Atomic cần bổ sung:** không — chờ measure READY. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+| K_FMS_55a | Quỹ mở | CCQ | Phái sinh | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT` (cột TOTAL_CCQ). **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+| K_FMS_55b | Quỹ ETF | CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_55a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+| K_FMS_55c | Quỹ đóng | CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_55a — dùng chung nguồn FUND_REPORT.TOTAL_CCQ cho quỹ đóng. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+| K_FMS_55d | Quỹ BĐS | CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_55a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+| K_FMS_55e | Quỹ thành viên | CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_55a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+| K_FMS_176 | Quỹ đầu tư công cụ thị trường tiền tệ | CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_55a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+| K_FMS_177 | Quỹ đầu tư trái phiếu hạ tầng | CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_55a. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund CCQ Snapshot`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_55a, 55b, 55c, 55d, 55e, 176, 177 | FMSQLQ.FUND_REPORT | Fund NAV/Property Report *(chưa có LLD)* | TBD |
+
+---
+
+#### Nhóm 12 - Tỉ lệ tăng trưởng NAV/CCQ một năm theo loại hình quỹ so với VN-Index và Lãi suất liên ngân hàng qua đêm
+
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** Grain của Nhóm này là 1 loại hình quỹ chi tiết × 1 tháng, join theo `FMS.FUND_REPORT.EXCUTION_DATE` — nhưng `FUND_REPORT` hoàn toàn chưa có Atomic entity (giống Nhóm 1/3/7-11). Do đó Chiều "Thời gian" (K_FMS_56a) tự nó cũng PENDING — nguồn `Excution_Date` thuộc bảng chưa có Atomic thì không thể READY. VN-Index (K_FMS_178, nguồn `MDDS.JAD_MARKETINFOR` — track chuẩn, approved) và Lãi suất LNH qua đêm (K_FMS_61, nguồn `Risk Indicator Value` — chỉ có ở track `Atomic_LinhLV`, out of date) đều là measure macro-level cần denormalize theo đúng grain của Fact này, nhưng không có Chiều thời gian hợp lệ ở đúng grain đó để ghép cùng cho tới khi `FUND_REPORT` sẵn sàng — nên PENDING theo luôn, không tách riêng thành 1 Fact khác chỉ để hiển thị 2 measure macro độc lập.
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_56a | Thời gian | — | Chiều | | **Lý do pending:** Nguồn `Excution_Date` thuộc `FMS.FUND_REPORT` — chưa có Atomic entity. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT` (Fund NAV/Property Report). **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot` — grain: 1 loại hình quỹ chi tiết × 1 tháng. | PENDING |
+| K_FMS_178 | VN-Index | Điểm | Cơ sở | | **Lý do pending:** Atomic nguồn (`Market Index Snapshot`, MDDS.JAD_MARKETINFOR) đã sẵn sàng, nhưng không có Chiều thời gian hợp lệ ở đúng grain (loại hình quỹ × tháng) của Fact này để ghép cùng — chờ K_FMS_56a READY. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT` (để có Chiều thời gian join). **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_61 | Lãi suất liên ngân hàng qua đêm | %/năm | Cơ sở | | **Lý do pending:** Dữ liệu tĩnh nhưng Atomic nguồn (`Risk Indicator Value`, QLRR) chỉ có ở track `Atomic_LinhLV` (out of date, không phải nguồn chuẩn); đồng thời cũng chờ K_FMS_56a READY để có Chiều thời gian ghép cùng. **Atomic cần bổ sung:** thiết kế lại `Risk Indicator Value` (QLRR) trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/`; và entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_179 | Loại hình quỹ chi tiết | — | Chiều | | **Lý do pending:** Dữ liệu động — nguồn Classification Value (FMS_FUND_TYPE), nhưng measure NAV/CCQ gắn cùng đang PENDING. **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_180 | NAV/CCQ | VND/CCQ | Cơ sở | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT` (cột NAV_CCQ). **Atomic cần bổ sung:** entity cho `FMS.FUND_REPORT`. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_181 | Tỷ lệ tăng trưởng NAV/CCQ | % | Phái sinh | | **Lý do pending:** Phụ thuộc K_FMS_180 (PENDING). **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_182 | Quỹ mở CP | VND/CCQ | Phái sinh | | **Lý do pending:** Dữ liệu động + chưa có Atomic entity cho `FMS.FUND_REPORT`. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_183 | Quỹ mở TP | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_184 | Quỹ mở cân bằng | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_60 | Quỹ ETF | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182 — nguồn FUND_REPORT.NAV_CCQ trực tiếp. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_185 | Quỹ đóng | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_186 | Quỹ BĐS | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_187 | Quỹ thành viên | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_188 | Quỹ đầu tư công cụ thị trường tiền tệ | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+| K_FMS_189 | Quỹ đầu tư trái phiếu hạ tầng | VND/CCQ | Phái sinh | | **Lý do pending:** Tương tự K_FMS_182. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fact Investment Fund NAV per CCQ Snapshot`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_56a, 179, 180, 181, 182, 183, 184, 60, 185, 186, 187, 188, 189 | FMSQLQ.FUND_REPORT, FMSQLQ.FUND_TYPE | Fund NAV/Property Report *(chưa có LLD)* | TBD |
+| K_FMS_178 | MDDS.JAD_MARKETINFOR | Market Index Snapshot *(đã approved — chờ Chiều thời gian đúng grain)* | market_index_snapshot |
+| K_FMS_61 | SIT_MRMS.RISK_INDICATOR_VALUE | Risk Indicator Value *(có draft ở Atomic_LinhLV — cần thiết kế lại trong track chuẩn)* | rsk_ind_val |
+
+---
+
+#### Nhóm 13 - Danh sách các quỹ đầu tư
 
 > Phân loại: **Tác nghiệp**
-> Atomic: `Investment Fund` ← FMS.FUNDS — **READY** *(db: Tên, Phân loại, CTQLQ)*
-> Atomic: `Fund Management Company` ← FMS.SECURITIES — **READY** *(db: Tên CTQLQ)*
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: NAV, LN gốc — pending O_FMS_1)*
-> Ghi chú: NAV hiện tại (K_FMS_62) là Base lấy từ kỳ BC gần nhất. LN YTD (K_FMS_63) là Derived = SUM(Net_Profit_Amount kỳ BC) trong năm — tính tại presentation layer. KL CCQ lưu hành (K_FMS_64) reuse từ Nhóm 8 — nguồn tùy loại quỹ.
+> Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_FMS_62, 64: Tên quỹ, Phân loại)*
+> Atomic: `Fund Management Company` ← FMS.SECURITIES — READY *(K_FMS_63: Công ty quản lý)*
+> Atomic: `Custodian Bank` ← FMS.BANK_MONI — READY *(K_FMS_190: Ngân hàng giám sát)*
+> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — READY *(K_FMS_191: Số lượng đại lý phân phối)*
+> Atomic: `Investment Fund Representative Board Member` ← FMS.REPRESENT — READY *(K_FMS_192: Số lượng thành viên ban đại diện)*
+> Atomic: `Fund Management Company Employee` ← FMS.TL_PROFILES — READY *(K_FMS_193: Số lượng người điều hành quỹ)*
+> Ghi chú: **Mix READY/PENDING.** 8/11 chỉ tiêu BA đánh Dữ liệu tĩnh → READY (Ngân hàng giám sát, Số lượng ĐLPP, Số lượng thành viên BĐD, Số lượng người điều hành quỹ). 3 chỉ tiêu còn lại (NAV hiện tại, KL CCQ lưu hành, Lợi nhuận YTD) BA đánh Dữ liệu động → PENDING; nguồn NAV/KL CCQ là `FMS.FUNDS.NAV`/`NAV_CCQ` trực tiếp; Lợi nhuận YTD BA chưa cung cấp Bảng nguồn.
 
 **Mockup:**
 
-| Tên quỹ | Công ty quản lý | Phân loại | NAV (tỷ) | LN YTD (tỷ) | KL CCQ lưu hành |
-|---|---|---|---|---|---|
-| Q1 / Quỹ ABC 1 | Công ty ABC 1 | Quỹ mở | 12.580 | 120.4 | 188.481.686 |
-| Q2 / Quỹ ABC 2 | Công ty ABC 2 | Quỹ mở | 4.580 | 150.2 | 289.302.325 |
+| Tên quỹ | Công ty quản lý | Phân loại | NH giám sát | Số ĐLPP | Số TV BĐD | Số người điều hành | NAV (tỷ) | LN YTD (tỷ) | KL CCQ lưu hành |
+|---|---|---|---|---|---|---|---|---|---|
+| Q1 / Quỹ ABC 1 | Công ty ABC 1 | Quỹ mở | NH Vietcombank | 3 | 5 | 2 | 12.580 | 120.4 | 188.481.686 |
 
 **Source:** `Investment Fund Profile`
 
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_62 | Tên quỹ | — | Chiều | Fund_Name + Fund_Short_Name ← Investment Fund (FMS.FUNDS) |
-| K_FMS_63 | Công ty quản lý | — | Chiều | Company_Short_Name ← Fund Management Company (FMS.SECURITIES) |
-| K_FMS_64 | Phân loại quỹ | — | Chiều | Fund_Type_Code ← Investment Fund (FMS.FUNDS) |
-| K_FMS_65 | NAV hiện tại | Tỷ VND | Base | Report Import Value chỉ tiêu NAV per quỹ, kỳ BC gần nhất — pending O_FMS_1 |
-| K_FMS_66 | Lợi nhuận YTD | Tỷ VND | Derived | SUM(Net_Profit_Amount) WHERE năm = năm hiện tại — presentation layer |
-| K_FMS_67 | KL CCQ lưu hành | CCQ | Derived | Reuse K_FMS_53 per quỹ tại tháng slicer — nguồn tùy loại quỹ (xem O_FMS_7) |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_62a | Thời gian | — | Chiều | `Id_Date` ← Investment Fund (FMS.FUNDS) | | READY |
+| K_FMS_62 | Tên quỹ | — | Chiều | `Fund_Name`, `Fund_Short_Name` ← Investment Fund (FMS.FUNDS) | | READY |
+| K_FMS_64 | Phân loại | — | Chiều | `Fund_Type_Code` ← Investment Fund/Classification Dimension (scheme FMS_FUND_TYPE) | reuse `cl_dim` | READY |
+| K_FMS_63 | Công ty quản lý | — | Cơ sở | `Company_Short_Name` ← Fund Management Company (FMS.SECURITIES) | | READY |
+| K_FMS_190 | Ngân hàng giám sát | — | Cơ sở | `Item_Name` ← Custodian Bank (FMS.BANK_MONI) | | READY |
+| K_FMS_191 | Số lượng đại lý phân phối | Đại lý | Cơ sở | COUNT(Fund Distribution Agent) per quỹ, join AGEN_FUNDS | | READY |
+| K_FMS_192 | Số lượng thành viên ban đại diện | Người | Cơ sở | COUNT(Fund Representative) per quỹ | | READY |
+| K_FMS_193 | Số lượng người điều hành quỹ | Người | Cơ sở | COUNT(Fund Management Company Employee) per quỹ | | READY |
+| K_FMS_65 | NAV hiện tại | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động — nguồn `FUNDS.NAV` trực tiếp. **Atomic cần bổ sung:** không — Investment Fund đã READY, chờ BA xác nhận quy tắc khai thác. **Mart dự kiến:** `Investment Fund Profile` — grain: 1 quỹ × 1 tháng slicer. | PENDING |
+| K_FMS_67 | KL CCQ đang lưu hành | CCQ | Phái sinh | | **Lý do pending:** Dữ liệu động — nguồn `FUNDS.NAV`/`FUNDS.NAV_CCQ`. **Atomic cần bổ sung:** không. **Mart dự kiến:** `Investment Fund Profile`. | PENDING |
+| K_FMS_66 | Lợi nhuận YTD | Tỷ VND | Phái sinh | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn/Trường nguồn. **Atomic cần bổ sung:** chưa xác định — chờ BA bổ sung Bảng nguồn. **Mart dự kiến:** `Investment Fund Profile`. | PENDING |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_65, 67 | FMSQLQ.FUNDS | Investment Fund | investment_fund |
+| K_FMS_66 | *(BA chưa cung cấp)* | TBD | TBD |
 
 **Schema bảng tác nghiệp — Investment Fund Profile:**
 
@@ -1290,17 +889,15 @@ erDiagram
         string Fund_Short_Name
         string Fund_Name
         string Fund_Type_Code
-        string Practice_Status_Code
-        float Fund_Capital_Amount
-        string Report_Period_Code
-        float Fund_NAV_Amount
-        float Net_Profit_Amount
-        float Outstanding_Unit_Count
+        string Custodian_Bank_Name
+        int Distribution_Agent_Count
+        int Representative_Count
+        int Employee_Count
         string Source_System_Code
     }
 ```
 
-> Ghi chú source: `Fund_NAV_Amount` và `Net_Profit_Amount` ← Report Import Value (RPTVALUES — BC, pending O_FMS_1). `Outstanding_Unit_Count` ← `Investment Fund Certificate Transfer` (FMS.TRANSFERMBF) per O_FMS_7. Các trường còn lại từ Atomic Investment Fund (db).
+> Chỉ các cột READY được đưa vào schema — `NAV_Amount`/`Outstanding_Unit_Count`/`YTD_Profit_Amount` đang PENDING (xem Bảng KPI), sẽ bổ sung khi chuyển READY.
 
 **Lineage Mart → Báo cáo:**
 
@@ -1310,7 +907,7 @@ flowchart LR
         G1["Investment Fund Profile"]
     end
     subgraph RPT["Báo cáo"]
-        R1["Bảng danh sách các quỹ (Nhóm 10)"]
+        R1["K_FMS_62a,62,64,63,190-193: Danh sách các quỹ đầu tư (Nhóm 13)"]
     end
     G1 --> R1
 ```
@@ -1321,13 +918,166 @@ flowchart LR
 |---|---|
 | Investment Fund Profile | 1 quỹ × 1 tháng slicer |
 
+---
+
+#### Nhóm 14 - Danh sách đại lý phân phối
+
+> Phân loại: **Tác nghiệp**
+> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — READY *(K_FMS_194: Danh sách đại lý phân phối)*
+> Ghi chú: Popup drill-down khi bấm vào Số lượng đại lý phân phối ở Nhóm 13 (K_FMS_191) — FK về `Investment_Fund_Id`, join `Investment Fund X Fund Distribution Agent Relationship` (FMS.AGEN_FUNDS).
+
+**Mockup — popup "DANH SÁCH ĐẠI LÝ PHÂN PHỐI":**
+
+| Tên đại lý phân phối |
+|---|
+| Công ty Chứng khoán XYZ |
+
+**Source:** `Investment Fund Distribution Agent List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_194 | Danh sách đại lý phân phối | — | Cơ sở | `Item_Name` ← Fund Distribution Agent (FMS.AGENCIES), join Investment Fund X Fund Distribution Agent Relationship (FMS.AGEN_FUNDS) | | READY |
+
+**Schema bảng con — Investment Fund Distribution Agent List:**
+
+```mermaid
+erDiagram
+    Investment_Fund_Distribution_Agent_List {
+        string Investment_Fund_Id PK
+        string Fund_Distribution_Agent_Id PK
+        string Fund_Distribution_Agent_Name
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Investment Fund Distribution Agent List"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_194: Danh sách đại lý phân phối (Nhóm 14)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Investment Fund Distribution Agent List | Tác nghiệp — bảng con drill-down \| 1 đại lý phân phối × 1 quỹ |
 
 ---
 
----
+#### Nhóm 15 - Danh sách thành viên ban đại diện
+
+> Phân loại: **Tác nghiệp**
+> Atomic: `Investment Fund Representative Board Member` ← FMS.REPRESENT — READY *(K_FMS_195: Danh sách thành viên ban đại diện)*
+> Ghi chú: Popup drill-down khi bấm vào Số lượng thành viên ban đại diện ở Nhóm 13 (K_FMS_192) — FK về `Investment_Fund_Id`.
+
+**Mockup — popup "DANH SÁCH THÀNH VIÊN BAN ĐẠI DIỆN":**
+
+| Tên thành viên |
+|---|
+| Nguyễn Văn A |
+
+**Source:** `Investment Fund Representative Board Member List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_195 | Danh sách thành viên ban đại diện | — | Cơ sở | `Item_Name` ← Investment Fund Representative Board Member (FMS.REPRESENT) | | READY |
+
+**Schema bảng con — Investment Fund Representative Board Member List:**
+
+```mermaid
+erDiagram
+    Investment_Fund_Representative_Board_Member_List {
+        string Investment_Fund_Id PK
+        string Representative_Board_Member_Id PK
+        string Representative_Board_Member_Name
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Investment Fund Representative Board Member List"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_195: Danh sách thành viên ban đại diện (Nhóm 15)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Investment Fund Representative Board Member List | Tác nghiệp — bảng con drill-down \| 1 thành viên BĐD × 1 quỹ |
 
 ---
 
+#### Nhóm 16 - Danh sách người điều hành quỹ
+
+> Phân loại: **Tác nghiệp**
+> Atomic: `Fund Management Company Employee` ← FMS.TL_PROFILES — READY *(K_FMS_196: Danh sách người điều hành quỹ)*
+> Ghi chú: Popup drill-down khi bấm vào Số lượng người điều hành quỹ ở Nhóm 13 (K_FMS_193) — FK về `Investment_Fund_Id`, join `FMS.FUND_TL_PRO`.
+
+**Mockup — popup "DANH SÁCH NGƯỜI ĐIỀU HÀNH QUỸ":**
+
+| Tên người điều hành |
+|---|
+| Trần Thị B |
+
+**Source:** `Investment Fund Manager List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_196 | Danh sách người điều hành quỹ | — | Cơ sở | `Item_Name` ← Fund Management Company Employee (FMS.TL_PROFILES), join FMS.FUND_TL_PRO | | READY |
+
+**Schema bảng con — Investment Fund Manager List:**
+
+```mermaid
+erDiagram
+    Investment_Fund_Manager_List {
+        string Investment_Fund_Id PK
+        string Fund_Management_Company_Employee_Id PK
+        string Fund_Manager_Name
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Investment Fund Manager List"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_196: Danh sách người điều hành quỹ (Nhóm 16)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Investment Fund Manager List | Tác nghiệp — bảng con drill-down \| 1 người điều hành × 1 quỹ |
+
+---
 
 ### Tab: BÁO CÁO / CÔNG TY QLQ
 
@@ -1335,618 +1085,541 @@ flowchart LR
 
 ---
 
-#### Nhóm 11 — Báo cáo giao dịch nhân viên CTQLQ
+#### Nhóm 27 - Thống kê giao dịch của nhân viên công ty QLQ
 
 > Phân loại: **Tác nghiệp**
-> Atomic: `Fund Management Company Key Person` ← FMS.TLProfiles — **READY** *(db: Nhân viên CTQLQ — Họ tên, CCCD/HC)*
-> Atomic: `Involved Party Alternative Identification` ← FMS.TLProfiles — **READY** *(db: Số CCCD/HC `identn_nbr` ← `FMS.TLProfiles.IdAdd` — join key sang GSGD)*
-> Atomic: `Investor Trading Account` ← GSGD.investor_account — **READY** *(db: Tài khoản GDCK `ivsr_tdg_ac_code`, Trạng thái, Loại NĐT)*
-> Ghi chú: Cross-module FMS × GSGD. Join key: `Involved_Party_Alternative_Identification.Identification_Number` (`Identification_Type_Code = CITIZEN_ID/PASSPORT`) = `Investor_Trading_Account.Identity_Number`. **ETL note:** `FMS.TLProfiles.IdAdd` chứa số CCCD (cột `IdNo` bị đảo tên — chứa nơi cấp). **Mã CTCK:** `Investor Trading Account` không có field riêng — ETL parse từ `Investor_Trading_Account_Code` (4-5 ký tự đầu của mã TK thường là mã CTCK). **Sổ lệnh (K_FMS_71–77):** GSGD không lưu sổ lệnh trong Atomic (đọc từ VSDC qua API) → PENDING — cần Atomic entity từ VSDC hoặc hệ thống nguồn khác.
-
-**Mockup:**
-
-| Họ tên | Số CCCD | TK GDCK | CTCK | Ngày GD | Lệnh | Mã CK | KL | Giá | Tổng GT (VND) |
-|---|---|---|---|---|---|---|---|---|---|
-| Nguyễn Văn A | 012345678901 | 123C456789 | SSI | 15/03/2025 | Mua | VNM | 1.000 | 98.500 | 98.500.000 |
-
-**Source:** `Fund Management Company Staff Trade Report`
+> Atomic: `Fund Management Company Key Person` ← FMS.TL_PROFILES — READY *(K_FMS_70a: Số CCCD/Hộ chiếu)*
+> Ghi chú: **PENDING toàn bộ 8 chỉ tiêu sổ lệnh.** Nguồn sổ lệnh là `OrderTrade.Trade_HOSE`/`Trade_HNX`. Entity logical tương ứng (`Securities Trade` / `scr_trd`) chỉ tồn tại trong `DataModel/working/Atomic_LinhLV/` — track cá nhân đã lỗi thời (out of date), KHÔNG phải nguồn Atomic chuẩn (chuẩn chỉ gồm `DataModel/Atomic/` và `DataModel/working/Atomic/`). Do đó toàn bộ 8 chỉ tiêu liên quan sổ lệnh (Tài khoản GDCK, Mã CTCK, Ngày GD, Phương thức GD, Lệnh mua/bán, Mã CK, Số lượng, Giá, Tổng giá trị) đều PENDING — cần Atomic team thiết kế lại `Securities Trade` (hoặc tương đương) trong track chuẩn trước khi READY. Chỉ Số CCCD/Hộ chiếu (Chiều join key, nguồn FMS.TL_PROFILES) READY.
 
 **Bảng KPI:**
 
-**KPI READY (Atomic FMS + GSGD đủ dữ liệu):**
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_70a | Số CCCD/Hộ chiếu | — | Chiều | `Id_No` ← Fund Management Company Key Person (FMS.TL_PROFILES) | Chiều join key — chờ measure sổ lệnh READY để ghép cùng Fact | READY |
+| K_FMS_198 | Tài khoản giao dịch chứng khoán | — | Cơ sở | | **Lý do pending:** Atomic entity nguồn (`Securities Trade`/`scr_trd`, OrderTrade.Trade_HOSE/Trade_HNX) chỉ có ở track `Atomic_LinhLV` (out of date, không phải nguồn chuẩn). **Atomic cần bổ sung:** thiết kế lại entity cho `OrderTrade.Trade_HOSE`/`Trade_HNX` trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/`. **Mart dự kiến:** `Fund Management Company Staff Trade Report` — grain: 1 lần khớp lệnh × 1 nhân viên CTQLQ. | PENDING |
+| K_FMS_72 | Mã CTCK nơi mở tài khoản | — | Chiều | | **Lý do pending:** Tương tự K_FMS_198. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
+| K_FMS_73 | Ngày giao dịch | — | Chiều | | **Lý do pending:** Tương tự K_FMS_198. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
+| K_FMS_74 | Phương thức giao dịch | — | Cơ sở | | **Lý do pending:** BA đánh Trạng thái mapping = Pending (chưa hoàn thiện phân tích), đồng thời Atomic nguồn chưa có ở track chuẩn. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
+| K_FMS_75 | Lệnh mua/bán | — | Cơ sở | | **Lý do pending:** Tương tự K_FMS_198. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
+| K_FMS_76 | Mã CK | — | Chiều | | **Lý do pending:** Tương tự K_FMS_198. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
+| K_FMS_199 | Số lượng CK | CK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_198. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
+| K_FMS_200 | Giá | VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_198. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
+| K_FMS_201 | Tổng giá trị | VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_198. **Atomic cần bổ sung:** như trên. **Mart dự kiến:** `Fund Management Company Staff Trade Report`. | PENDING |
 
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Atomic Source | Công thức / Ghi chú |
-|---|---|---|---|---|---|
-| K_FMS_68 | Số CCCD/Hộ chiếu nhân viên | — | Chiều | `Involved Party Alternative Identification` ← FMS.TLProfiles | `Identification_Number` (`identn_nbr`) WHERE `Identification_Type_Code = CITIZEN_ID / PASSPORT` — lấy từ `FMS.TLProfiles.IdAdd` |
-| K_FMS_69 | Tài khoản GDCK | — | Base | `Investor Trading Account` ← GSGD | `Investor_Trading_Account_Code` (`ivsr_tdg_ac_code`) — join qua `Identity_Number = Identification_Number` |
-| K_FMS_70 | Họ tên nhân viên | — | Chiều | `Fund Management Company Key Person` ← FMS.TLProfiles | `Full_Name` (`full_nm`) ← `FMS.TLProfiles.FullName` |
-| K_FMS_71 | Chức danh nhân viên | — | Chiều | `Fund Management Company Key Person` ← FMS.TLProfiles | `Job_Type_Code` (`job_tp_code`) ← `FMS.TLProfiles.JobTypeId` — Scheme: FMS_JOB_TYPE |
-| K_FMS_72 | Mã CTCK mở tài khoản | — | Chiều | `Investor Trading Account` ← GSGD | ETL parse từ `Investor_Trading_Account_Code` — 4-5 ký tự đầu thường là mã CTCK. Cần xác nhận với ETL team |
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-**KPI PENDING — sổ lệnh giao dịch (K_FMS_73–77):**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Lý do PENDING |
-|---|---|---|---|---|
-| K_FMS_73 | Ngày giao dịch | — | Chiều | GSGD không lưu sổ lệnh trong Atomic — đọc từ VSDC API. Cần Atomic entity từ VSDC hoặc hệ thống lưu lịch sử lệnh |
-| K_FMS_74 | Phương thức giao dịch | — | Base | Tương tự K_FMS_73 |
-| K_FMS_75 | Lệnh mua/bán | — | Base | Tương tự K_FMS_73 |
-| K_FMS_76 | Mã chứng khoán | — | Chiều | Tương tự K_FMS_73 |
-| K_FMS_77 | Số lượng CK | CK | Base | Tương tự K_FMS_73 |
-
-**Schema bảng tác nghiệp — Fund Management Company Staff Trade Report:**
-
-```mermaid
-erDiagram
-    Fund_Management_Company_Staff_Trade_Report {
-        string Fund_Management_Company_Id PK
-        string Fund_Management_Company_Key_Person_Id PK
-        string Full_Name
-        string Job_Type_Code
-        string Identification_Number
-        string Investor_Trading_Account_Code
-        string Securities_Company_Code
-        string Source_System_Code
-    }
-```
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Fund Management Company Staff Trade Report"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["Báo cáo GD nhân viên CTQLQ (Nhóm 11)"]
-    end
-    G1 --> R1
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Fund Management Company Staff Trade Report | 1 nhân viên CTQLQ × 1 tài khoản GDCK *(grain hiện tại — chờ bổ sung sổ lệnh VSDC để mở rộng thành 1 lệnh × 1 ngày)* |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
+|---|---|---|---|
+| K_FMS_198, 72, 73, 75, 76, 199, 200, 201 | OrderTrade.Trade_HOSE, OrderTrade.Trade_HNX | Securities Trade *(có draft ở Atomic_LinhLV — cần thiết kế lại trong track chuẩn)* | scr_trd |
+| K_FMS_74 | *(BA chưa cung cấp)* | TBD | TBD |
 
 ---
 
 ### Tab: DATA EXPLORER
 
-**Đặc điểm chung:** DataExplorer là **pass-through** — hiển thị trực tiếp nội dung báo cáo BC từ `Report Import Value` ← FMS.RPTVALUES. Người dùng chọn loại báo cáo, kỳ, CTQLQ/quỹ → hệ thống render các dòng chỉ tiêu theo mã báo cáo. Không cần Fact analytics — dùng bảng Tác nghiệp dạng flat.
+**Đặc điểm chung:** DataExplorer là **pass-through** — hiển thị trực tiếp nội dung báo cáo BC từ `Report Import Value` ← FMS.RPTVALUES. Người dùng chọn loại báo cáo, kỳ, CTQLQ/quỹ → hệ thống render các dòng chỉ tiêu theo mã báo cáo.
 
-**Phân nhóm toàn bộ DataExplorer:**
-
-| Nhóm | Nội dung | Số tab | Pattern |
-|---|---|---|---|
-| A | BCTC (Bảng cân đối, KQHĐKD, LCTT, BĐVCSH) | 5 tabs | Pass-through BC BCTC |
-| B | Báo cáo tỷ lệ ATTC (5 phụ lục) | 6 tabs | Pass-through BC ATTC |
-| C | Báo cáo tình hình QLĐMDT (7 phụ lục) | 7 tabs + 1 summary | Pass-through BC UTDM |
-| D | Các báo cáo định kỳ CTQLQ | 6 tabs (6 KPI/tab) | Pass-through BC định kỳ |
-| E | Báo cáo theo loại quỹ (8 loại × 5 BC) | 40 tabs | Pass-through BC quỹ |
-| F | CN, VPĐD, Đại lý, NHGS, NHNCK | 18 tabs | Pass-through BC đặc thù |
-
-**Tổng cộng:** 63 pass-through tabs + 19 complex tabs — **tất cả phục vụ bởi 1 bảng Tác nghiệp duy nhất** `Report Pass-through View`.
-
----
-
-#### Nhóm 12 — DataExplorer BCTC
-
-> Phân loại: **Tác nghiệp**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: BCTC — Bảng cân đối kế toán, KQHĐKD, LCTT trực tiếp, LCTT gián tiếp, Biến động VCSH)*
-> Ghi chú: 5 tabs BCTC (110 + 23 + 36 + 46 + 17 = 232 chỉ tiêu) đều từ cùng Atomic entity. Dùng chung 1 bảng Tác nghiệp `Report Pass-through View` — phân biệt bởi `Report_Template_Code`. Phụ thuộc O_FMS_1 cho mapping SheetId/TgtId.
-
-**Mockup:**
-
-| Mã BC | Tên BC | Kỳ BC | Mã chỉ tiêu | Tên chỉ tiêu | Giá trị |
-|---|---|---|---|---|---|
-| BCTC_CDKT | Bảng cân đối kế toán | Q1/2025 | 100 | Tài sản ngắn hạn | 1.250.000 |
-| BCTC_CDKT | Bảng cân đối kế toán | Q1/2025 | 110 | Tiền và tương đương tiền | 320.000 |
-
-**Source:** `Report Pass-through View`
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_78 | Chỉ tiêu BCTC (tất cả mã) | VND/% | Base | `Report Import Value`.`Cell_Value` per `Report_Template_Code` ∈ {BCTC_CDKT, BCTC_KQHD, BCTC_LCTTT, BCTC_LCTTGT, BCTC_BDVCSH} |
-| K_FMS_79 | Loại báo cáo | — | Chiều | `Report_Template_Code` ← `Report Import Value` |
-| K_FMS_80 | Kỳ báo cáo | — | Chiều | `Reporting_Period_Code` ← `Report Import Value` |
-| K_FMS_81 | Mã chỉ tiêu | — | Chiều | `Row_Code` ← `Report Import Value` |
-| K_FMS_82 | Tên chỉ tiêu | — | Chiều | Lookup từ `Report_Template_Code` + `Row_Code` |
-
-**Schema bảng tác nghiệp — Report Pass-through View:**
-
-```mermaid
-erDiagram
-    Report_Pass_through_View {
-        string Fund_Management_Company_Id PK
-        string Investment_Fund_Id PK
-        string Report_Template_Code PK
-        string Reporting_Period_Code PK
-        string Row_Code PK
-        string Fund_Management_Company_Code
-        string Fund_Management_Company_Name
-        string Investment_Fund_Code
-        string Investment_Fund_Name
-        string Report_Template_Name
-        string Reporting_Period_Label
-        date Report_Date
-        string Row_Name
-        float Cell_Value
-        string Cell_Text_Value
-        string Data_Unit
-        string Source_System_Code
-    }
-```
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Report Pass-through View"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["DataExplorer BCTC (5 tabs)"]
-        R2["DataExplorer ATTC (6 tabs)"]
-        R3["DataExplorer QLĐMDT (8 tabs)"]
-        R4["DataExplorer BC định kỳ (6 tabs)"]
-        R5["DataExplorer BC quỹ (40 tabs)"]
-        R6["DataExplorer CN/VPĐD/Đại lý/NHGS (18 tabs)"]
-    end
-    G1 --> R1
-    G1 --> R2
-    G1 --> R3
-    G1 --> R4
-    G1 --> R5
-    G1 --> R6
-```
-
-**Bảng grain:**
-
-| Tên bảng | Grain |
-|---|---|
-| Report Pass-through View | 1 CTQLQ/Quỹ × 1 mẫu báo cáo × 1 kỳ × 1 dòng chỉ tiêu |
-
----
-
-#### Nhóm 13 — DataExplorer Báo cáo tỷ lệ ATTC
-
-> Phân loại: **Tác nghiệp**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: 5 phụ lục ATTC — BangTinhVonKhaDung_06193, RuiRoThiTruong_06194, RuiRoThanhToan_06196, RuiRoHoatDong_06199, BangTongHop_06013)*
-> Ghi chú: Reuse `Report Pass-through View` — phân biệt bởi `Report_Template_Code` ∈ {06193, 06194, 06196, 06199, 06013}. Phụ thuộc O_FMS_1.
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_83 | Chỉ tiêu ATTC (tất cả mã) | VND/% | Base | `Cell_Value` per `Report_Template_Code` ∈ {06193, 06194, 06196, 06199, 06013} |
-| K_FMS_84 | Phụ lục ATTC | — | Chiều | `Report_Template_Code` — phân biệt 5 phụ lục |
-
-
-**Mockup:** *(Reuse pattern Nhóm 12 — chọn loại BC → kỳ → render dòng chỉ tiêu)*
-
-**Source:** `Report Pass-through View`
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Report Pass-through View"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["DataExplorer Báo cáo ATTC (6 phụ lục) — Nhóm 13"]
-    end
-    G1 --> R1
-```
-
-**Bảng grain:** *(Reuse `Report Pass-through View` — xem Nhóm 12. Grain = 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu)*
-
----
-
-#### Nhóm 14 — DataExplorer Báo cáo QLĐMDT
-
-> Phân loại: **Tác nghiệp**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC: 7 phụ lục QLĐMDT — QLDMDT, THDM_tungKH, TongHopHopDongQLDMDT_06023, HanMuc_DTUT_GianTiepNN, THQLDMDT_GianTiepNN, THHDQLDMDT_GianTiepNN, THHDQLDT_GianTiepNN)*
-> Ghi chú: Reuse `Report Pass-through View`. Tab summary (20 KPI) có KPI tổng hợp UTDM — phần summary thống kê reuse `Fact Discretionary Investment Contract Snapshot`.
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_85 | Chỉ tiêu QLĐMDT (tất cả mã) | VND/% | Base | `Cell_Value` per `Report_Template_Code` ∈ {QLDMDT, THDM_tungKH, TongHop...} |
-| K_FMS_86 | Tổng số HĐUTDM đang thực hiện | HĐ | Base | Reuse K_FMS_10 từ `Fact Discretionary Investment Contract Snapshot` |
-| K_FMS_87 | Tổng GTTT UTDM | Tỷ VND | Base | Reuse K_FMS_12 từ `Fact Discretionary Investment Contract Snapshot` |
-
-> Ghi chú: K_FMS_86, K_FMS_87 là tổng hợp summary — reuse Fact UTDM. Các chỉ tiêu chi tiết per hợp đồng dùng `Report Pass-through View`.
-
-
-**Mockup:** *(Reuse pattern Nhóm 12 — chọn loại BC → kỳ → render dòng chỉ tiêu)*
-
-**Source:** `Report Pass-through View`
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Report Pass-through View"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["DataExplorer Báo cáo QLĐMDT (7 phụ lục) — Nhóm 14"]
-    end
-    G1 --> R1
-```
-
-**Bảng grain:** *(Reuse `Report Pass-through View` — xem Nhóm 12. Grain = 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu)*
-
----
-
-#### Nhóm 15 — DataExplorer Báo cáo định kỳ CTQLQ
-
-> Phân loại: **Tác nghiệp**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC định kỳ: Báo cáo tình hình hoạt động, QTCT, QLRR, RML, HĐĐLPP)*
-> Ghi chú: 6 tabs × 6 KPI pass-through metadata. Reuse `Report Pass-through View` — phân biệt bởi `Report_Template_Code`.
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_88 | Chỉ tiêu BC định kỳ CTQLQ | — | Base | `Cell_Value` per template ∈ {HDHOAT, QTCT, QLRR, RML, HDDLPP, TTNH} |
-
-
-**Mockup:** *(Reuse pattern Nhóm 12 — chọn loại BC → kỳ → render dòng chỉ tiêu)*
-
-**Source:** `Report Pass-through View`
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Report Pass-through View"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["DataExplorer Báo cáo định kỳ CTQLQ (6 loại) — Nhóm 15"]
-    end
-    G1 --> R1
-```
-
-**Bảng grain:** *(Reuse `Report Pass-through View` — xem Nhóm 12. Grain = 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu)*
-
----
-
-#### Nhóm 16 — DataExplorer Báo cáo theo loại quỹ và đơn vị đặc thù
-
-> Phân loại: **Tác nghiệp**
-> Atomic: `Report Import Value` ← FMS.RPTVALUES — **READY** *(BC quỹ: BCTC quỹ, BC HĐĐT, BC TSNAV, BC DMDTKGT; BC CN/VPĐD/Đại lý/NHGS)*
-> Ghi chú: 40 tabs quỹ (8 loại × 5 BC) + 18 tabs đặc thù. Tất cả reuse `Report Pass-through View` — phân biệt bởi `Report_Template_Code` + `Investment_Fund_Id`/`entity_type`.
-
-**Bảng KPI:**
-
-| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức / Ghi chú |
-|---|---|---|---|---|
-| K_FMS_89 | Chỉ tiêu BC quỹ (tất cả loại) | VND/% | Base | `Cell_Value` per `Investment_Fund_Id` × `Report_Template_Code` per loại quỹ |
-| K_FMS_90 | Chỉ tiêu BC CN/VPĐD/Đại lý/NHGS | — | Base | `Cell_Value` per entity × `Report_Template_Code` |
-| K_FMS_91 | Loại quỹ / loại đơn vị | — | Chiều | `Fund_Type_Code` ← `Investment Fund` hoặc entity type |
-
-**Mockup:** *(Reuse pattern Nhóm 12 — chọn loại quỹ → loại BC → kỳ → render chỉ tiêu)*
-
-**Source:** `Report Pass-through View`
-
-**Schema bảng tác nghiệp:** *(Reuse `Report Pass-through View` — xem Nhóm 12)*
-
-**Lineage Mart → Báo cáo:**
-
-```mermaid
-flowchart LR
-    subgraph GOLD["Datamart"]
-        G1["Report Pass-through View"]
-    end
-    subgraph RPT["Báo cáo"]
-        R1["DataExplorer BC quỹ (40 tabs) — Nhóm 16"]
-        R2["DataExplorer BC CN/VPĐD/Đại lý/NHGS (18 tabs) — Nhóm 16"]
-    end
-    G1 --> R1
-    G1 --> R2
-```
-
-**Bảng grain:** *(Reuse `Report Pass-through View` — xem Nhóm 12. Grain = 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu)*
+> **PENDING toàn bộ 63 STT Data Explorer (STT 28–90 theo BA).** Toàn bộ dòng BA thuộc dải STT này đánh **Dữ liệu động** 100% — theo gating "Loại dữ liệu", PENDING dù Atomic nguồn (`Report Import Value` ← FMS.RPTVALUES) đã READY. Xem chi tiết theo từng loại báo cáo ở Tab DATA EXPLORER (Section 2, phần cuối).
 
 ### Tab: TỔNG QUAN ĐẠI LÝ PHÂN PHỐI
 
-#### Nhóm — Danh sách Đại lý phân phối
+#### Nhóm 17 - Thống kê chung
 
-##### PENDING
+> Phân loại: **Phân tích**
+> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — READY *(K_FMS_92: Số lượng Đại lý phân phối)*
+> Ghi chú: **Mix READY/PENDING.** Atomic `Fund Distribution Agent` đã sẵn sàng. K_FMS_92 (Số lượng ĐLPP) BA đánh Dữ liệu tĩnh → READY. K_FMS_93/94/95 (Số tài khoản, Giá trị phát hành/mua lại) BA đánh Dữ liệu động và chưa cung cấp Bảng nguồn → PENDING.
 
-**KPI liên quan:** K_FMS_107 – K_FMS_128
+**Mockup:**
 
-**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+| Chỉ tiêu | Giá trị |
+|---|---|
+| Số lượng Đại lý phân phối | 49 |
 
-**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
+**Source:** `Fact Fund Distribution Agent Snapshot` → `Calendar Date Dimension`
 
-**Mart dự kiến:**
-- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
-- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
+**Bảng KPI:**
 
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_91a | Thời gian | — | Chiều | `Decision_Date` ← Fund Distribution Agent (FMS.AGENCIES) | | READY |
+| K_FMS_92 | Số lượng Đại lý phân phối | Đại lý | Cơ sở | COUNT(Fund Distribution Agent) | | READY |
+| K_FMS_93 | Số tài khoản | TK | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn/Trường nguồn. **Atomic cần bổ sung:** chưa xác định — chờ BA bổ sung Bảng nguồn. **Mart dự kiến:** `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng. | PENDING |
+| K_FMS_94 | Giá trị phát hành | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_93. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Snapshot`. | PENDING |
+| K_FMS_95 | Giá trị mua lại | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_93. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Snapshot`. | PENDING |
 
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Fact_Fund_Distribution_Agent_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Distribution_Agent_Count
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Month
+        int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Fund_Distribution_Agent_Snapshot : "Snapshot Date Dimension Id"
+```
+
+> Chỉ `Distribution_Agent_Count` READY — `Account_Count`/`Issue_Value_Amount`/`Redeem_Value_Amount` đang PENDING, bổ sung khi có nguồn.
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fact Fund Distribution Agent Snapshot"]
+        G2["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_91a,92: Thống kê chung Đại lý phân phối (Nhóm 17)"]
+    end
+    G2 --> G1
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Fund Distribution Agent Snapshot | 1 snapshot toàn thị trường × 1 tháng |
+| Calendar Date Dimension | 1 ngày |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_107 | Tên Đại lý phân phối | Cơ sở | PENDING |
-| K_FMS_108 | Số GP thành lập | Cơ sở | PENDING |
-| K_FMS_109 | Ngày cấp GP thành lập | Cơ sở | PENDING |
-| K_FMS_110 | Địa chỉ | Cơ sở | PENDING |
-| K_FMS_111 | Tình trạng hoạt động | Cơ sở | PENDING |
-| K_FMS_112 | Quỹ đang phân phối | Cơ sở | PENDING |
-| K_FMS_113 | Danh sách các Quỹ đang phân phối | Cơ sở | PENDING |
-| K_FMS_114 | Tài khoản giao dịch | Cơ sở | PENDING |
-| K_FMS_115 | Tài khoản giao dịch (YTD) | Cơ sở | PENDING |
-| K_FMS_116 | Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ - Tổ chức | Cơ sở | PENDING |
-| K_FMS_117 | Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ - Cá nhân | Cơ sở | PENDING |
-| K_FMS_118 | Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ - Nước ngoài | Cơ sở | PENDING |
-| K_FMS_119 | Số tài khoản nắm giữ chứng chỉ chỉ quỹ - Tổ chức | Cơ sở | PENDING |
-| K_FMS_120 | Số tài khoản nắm giữ chứng chỉ chỉ quỹ - Cá nhân | Cơ sở | PENDING |
-| K_FMS_121 | Số tài khoản nắm giữ chứng chỉ chỉ quỹ - Nước ngoài | Cơ sở | PENDING |
-| K_FMS_122 | Giá trị chứng chỉ quỹ - Tổ chức | Cơ sở | PENDING |
-| K_FMS_123 | Giá trị chứng chỉ quỹ - Cá nhân | Cơ sở | PENDING |
-| K_FMS_124 | Giá trị chứng chỉ quỹ - Nước ngoài | Cơ sở | PENDING |
-| K_FMS_125 | Giá trị phát hành (PH) | Cơ sở | PENDING |
-| K_FMS_126 | Giá trị phát hành (PH) (YTD) | Cơ sở | PENDING |
-| K_FMS_127 | Giá trị mua lại (ML) | Cơ sở | PENDING |
-| K_FMS_128 | Thị phần (TP) | Phái sinh | PENDING |
+| K_FMS_93, 94, 95 | *(BA chưa cung cấp)* | TBD | TBD |
 
+---
 
-#### Nhóm — Giao dịch thông qua Đại lý phân phối
+#### Nhóm 18 - Tổng số tài khoản giao dịch chứng chỉ quỹ
 
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** BA đánh Dữ liệu động cho cả 3 chỉ tiêu (Tổ chức, Cá nhân, Nước ngoài) và chưa cung cấp Bảng nguồn/Trường nguồn.
 
-##### PENDING
+**Bảng KPI:**
 
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_96a | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot` — grain: 1 ĐLPP × 1 tháng. | PENDING |
+| K_FMS_96 | Tổ chức | TK | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot`. | PENDING |
+| K_FMS_97 | Cá nhân | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_96. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot`. | PENDING |
+| K_FMS_98 | Nước ngoài | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_96. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Account Snapshot`. | PENDING |
 
-**KPI liên quan:** K_FMS_105 – K_FMS_106
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-
-**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
-
-
-**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
-
-
-**Mart dự kiến:**
-- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
-- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
-
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_105 | Giá trị phát hành (PH) | Cơ sở | PENDING |
-| K_FMS_106 | Giá trị mua lại (ML) | Cơ sở | PENDING |
+| K_FMS_96, 97, 98 | *(BA chưa cung cấp)* | TBD | TBD |
 
+---
 
-#### Nhóm — Giá trị chứng chỉ quỹ
+#### Nhóm 19 - Số tài khoản nắm giữ chứng chỉ quỹ
 
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** BA đánh Dữ liệu động cho cả 3 chỉ tiêu (Tổ chức, Cá nhân, Nước ngoài) và chưa cung cấp Bảng nguồn/Trường nguồn.
 
-##### PENDING
+**Bảng KPI:**
 
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_99a | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot` — grain: 1 ĐLPP × 1 tháng. | PENDING |
+| K_FMS_99 | Tổ chức | TK | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot`. | PENDING |
+| K_FMS_100 | Cá nhân | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_99. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot`. | PENDING |
+| K_FMS_101 | Nước ngoài | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_99. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Holding Snapshot`. | PENDING |
 
-**KPI liên quan:** K_FMS_102 – K_FMS_104
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-
-**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
-
-
-**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
-
-
-**Mart dự kiến:**
-- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
-- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
-
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_102 | Tổ chức | Cơ sở | PENDING |
-| K_FMS_103 | Cá nhân | Cơ sở | PENDING |
-| K_FMS_104 | Nước ngoài | Cơ sở | PENDING |
+| K_FMS_99, 100, 101 | *(BA chưa cung cấp)* | TBD | TBD |
 
+---
 
-#### Nhóm — Số tài khoản nắm giữ chứng chỉ chỉ quỹ
+#### Nhóm 20 - Giá trị chứng chỉ quỹ
 
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** BA đánh Dữ liệu động cho cả 3 chỉ tiêu (Tổ chức, Cá nhân, Nước ngoài) và chưa cung cấp Bảng nguồn/Trường nguồn.
 
-##### PENDING
+**Bảng KPI:**
 
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_102a | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot` — grain: 1 ĐLPP × 1 tháng. | PENDING |
+| K_FMS_102 | Tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot`. | PENDING |
+| K_FMS_103 | Cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_102. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot`. | PENDING |
+| K_FMS_104 | Nước ngoài | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_102. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Certificate Value Snapshot`. | PENDING |
 
-**KPI liên quan:** K_FMS_99 – K_FMS_101
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-
-**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
-
-
-**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
-
-
-**Mart dự kiến:**
-- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
-- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
-
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_99 | Tổ chức | Cơ sở | PENDING |
-| K_FMS_100 | Cá nhân | Cơ sở | PENDING |
-| K_FMS_101 | Nước ngoài | Cơ sở | PENDING |
+| K_FMS_102, 103, 104 | *(BA chưa cung cấp)* | TBD | TBD |
 
+---
 
-#### Nhóm — Thống kê chung
+#### Nhóm 21 - Giao dịch thông qua Đại lý phân phối
 
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** BA đánh Dữ liệu động cho cả 2 chỉ tiêu (Giá trị phát hành, Giá trị mua lại) và chưa cung cấp Bảng nguồn/Trường nguồn.
 
-##### PENDING
+**Bảng KPI:**
 
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_105a | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Transaction Snapshot` — grain: 1 ĐLPP × 1 tháng. | PENDING |
+| K_FMS_105 | Giá trị phát hành (PH) | Tỷ VND | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Transaction Snapshot`. | PENDING |
+| K_FMS_106 | Giá trị mua lại (ML) | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_105. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Fund Distribution Agent Transaction Snapshot`. | PENDING |
 
-**KPI liên quan:** K_FMS_92 – K_FMS_95
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-
-**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
-
-
-**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
-
-
-**Mart dự kiến:**
-- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
-- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
-
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_92 | Số lượng Đại lý phân phối | Cơ sở | PENDING |
-| K_FMS_93 | Số tài khoản | Cơ sở | PENDING |
-| K_FMS_94 | Giá trị phát hành | Cơ sở | PENDING |
-| K_FMS_95 | Giá trị mua lại | Cơ sở | PENDING |
+| K_FMS_105, 106 | *(BA chưa cung cấp)* | TBD | TBD |
 
+---
 
-#### Nhóm — Tổng số tài khoản giao dịch chứng chỉ chỉ quỹ
+#### Nhóm 22 - Danh sách Đại lý phân phối
 
+> Phân loại: **Tác nghiệp**
+> Atomic: `Fund Distribution Agent` ← FMS.AGENCIES — READY *(K_FMS_107–112: Tên, Số GP, Ngày cấp, Địa chỉ, Tình trạng, Quỹ đang PP)*
+> Ghi chú: **Mix READY/PENDING.** 6/13 chỉ tiêu (Tên ĐLPP, Số GP thành lập, Ngày cấp GP, Địa chỉ, Tình trạng hoạt động, Quỹ đang phân phối) BA đánh Dữ liệu tĩnh → READY — Atomic đã sẵn sàng. 7 chỉ tiêu còn lại (tài khoản giao dịch, tài khoản nắm giữ theo Tổ chức/Cá nhân/Nước ngoài, giá trị phát hành/mua lại, thị phần) BA đánh Dữ liệu động và chưa cung cấp Bảng nguồn → PENDING.
 
-##### PENDING
+**Mockup:**
 
+| Tên ĐLPP | Số GP | Ngày cấp GP | Địa chỉ | Tình trạng | Quỹ đang PP |
+|---|---|---|---|---|---|
+| Công ty Chứng khoán XYZ | 123/GP | 01/01/2020 | Hà Nội | Hoạt động | 5 |
 
-**KPI liên quan:** K_FMS_96 – K_FMS_98
+**Source:** `Fund Distribution Agent Profile`
 
+**Bảng KPI:**
 
-**Lý do pending:** Chưa thiết kế Atomic source cho Fund Distribution Agent chi tiết (tài khoản NĐT, giao dịch CCQ)
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_107a | Thời gian | — | Chiều | `Decision_Date` ← Fund Distribution Agent (FMS.AGENCIES) | | READY |
+| K_FMS_107 | Tên Đại lý phân phối | — | Cơ sở | `Item_Name` ← Fund Distribution Agent | | READY |
+| K_FMS_108 | Số GP thành lập | — | Cơ sở | `Decision` ← Fund Distribution Agent | | READY |
+| K_FMS_109 | Ngày cấp GP thành lập | — | Cơ sở | `Decision_Date` ← Fund Distribution Agent | | READY |
+| K_FMS_110 | Địa chỉ | — | Cơ sở | `Address` ← Fund Distribution Agent | | READY |
+| K_FMS_111 | Tình trạng hoạt động | — | Cơ sở | `Active_Date`/`Stop_Date` ← Fund Distribution Agent | | READY |
+| K_FMS_112 | Quỹ đang phân phối | Quỹ | Cơ sở | COUNT(Investment Fund) join Investment Fund X Fund Distribution Agent Relationship (FMS.AGEN_FUNDS) | | READY |
+| K_FMS_114 | Tài khoản giao dịch | TK | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_115 | Tài khoản giao dịch (YTD) | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_116 | Tổng số tài khoản giao dịch CCQ - Tổ chức | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_117 | Tổng số tài khoản giao dịch CCQ - Cá nhân | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_118 | Tổng số tài khoản giao dịch CCQ - Nước ngoài | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_119 | Số tài khoản nắm giữ CCQ - Tổ chức | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_120 | Số tài khoản nắm giữ CCQ - Cá nhân | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_121 | Số tài khoản nắm giữ CCQ - Nước ngoài | TK | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_122 | Giá trị chứng chỉ quỹ - Tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_123 | Giá trị chứng chỉ quỹ - Cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_124 | Giá trị chứng chỉ quỹ - Nước ngoài | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_125 | Giá trị phát hành (PH) | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_126 | Giá trị phát hành (PH) (YTD) | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_127 | Giá trị mua lại (ML) | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_114. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
+| K_FMS_128 | Thị phần (TP) | % | Phái sinh | | **Lý do pending:** Phụ thuộc K_FMS_122-124 (PENDING). **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fund Distribution Agent Profile`. | PENDING |
 
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-**Atomic cần bổ sung:** `Fund Distribution Agent` (FMS.AGENCIES) — cần bổ sung attributes tài khoản và giao dịch CCQ
-
-
-**Mart dự kiến:**
-- `Fact Fund Distribution Agent Snapshot` — grain: 1 ĐLPP × 1 tháng
-- `Fund Distribution Agent Profile` — grain: 1 ĐLPP (tác nghiệp)
-
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_96 | Tổ chức | Cơ sở | PENDING |
-| K_FMS_97 | Cá nhân | Cơ sở | PENDING |
-| K_FMS_98 | Nước ngoài | Cơ sở | PENDING |
+| K_FMS_114–128 | *(BA chưa cung cấp)* | TBD | TBD |
 
+**Schema bảng tác nghiệp — Fund Distribution Agent Profile:**
+
+```mermaid
+erDiagram
+    Fund_Distribution_Agent_Profile {
+        string Fund_Distribution_Agent_Id PK
+        string Agent_Name
+        string License_Number
+        date License_Date
+        string Address
+        string Operation_Status_Code
+        int Distributing_Fund_Count
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fund Distribution Agent Profile"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_107a,107-112: Danh sách Đại lý phân phối (Nhóm 22)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fund Distribution Agent Profile | Tác nghiệp — bảng flat \| 1 ĐLPP × 1 tháng slicer |
+
+---
+
+#### Nhóm 23 - Danh sách các Quỹ đang phân phối
+
+> Phân loại: **Tác nghiệp**
+> Atomic: `Investment Fund` ← FMS.FUNDS — READY *(K_FMS_197: Danh sách các Quỹ đang phân phối)*
+> Ghi chú: Popup drill-down khi bấm vào Quỹ đang phân phối ở Nhóm 22 (K_FMS_112) — FK về `Fund_Distribution_Agent_Id`, join `Investment Fund X Fund Distribution Agent Relationship` (FMS.AGEN_FUNDS).
+
+**Mockup — popup "DANH SÁCH CÁC QUỸ ĐANG PHÂN PHỐI":**
+
+| Tên quỹ |
+|---|
+| Quỹ ABC Cổ phần |
+
+**Source:** `Fund Distribution Agent Fund List`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_197 | Danh sách các Quỹ đang phân phối | — | Cơ sở | `Fund_Name` ← Investment Fund (FMS.FUNDS), join Investment Fund X Fund Distribution Agent Relationship (FMS.AGEN_FUNDS) | | READY |
+
+**Schema bảng con — Fund Distribution Agent Fund List:**
+
+```mermaid
+erDiagram
+    Fund_Distribution_Agent_Fund_List {
+        string Fund_Distribution_Agent_Id PK
+        string Investment_Fund_Id PK
+        string Fund_Name
+        string Source_System_Code
+    }
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fund Distribution Agent Fund List"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_197: Danh sách các Quỹ đang phân phối (Nhóm 23)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fund Distribution Agent Fund List | Tác nghiệp — bảng con drill-down \| 1 quỹ × 1 ĐLPP |
+
+---
 
 ### Tab: TỔNG QUAN CN CTQLQ NN TẠI VN
 
+#### Nhóm 24 - Thống kê chung
 
-#### Nhóm — Danh sách các Chi nhánh CTQLQ nước ngoài tại Việt Nam
+> Phân loại: **Phân tích**
+> Atomic: `Foreign Fund Management Organization Unit` ← FMS.FOR_BRCH — READY *(K_FMS_129: Chi nhánh CTQLQ nước ngoài tại Việt Nam)*
+> Ghi chú: **Mix READY/PENDING.** Atomic đã sẵn sàng. K_FMS_129 (đếm CN, lọc Branch_Flag=1) BA đánh Dữ liệu tĩnh → READY. K_FMS_130/131 (Hợp đồng QLDMĐT, Giá trị hợp đồng) BA đánh Dữ liệu động và chưa cung cấp Bảng nguồn → PENDING.
 
+**Mockup:**
 
-##### PENDING
+| Chỉ tiêu | Giá trị |
+|---|---|
+| Chi nhánh CTQLQ nước ngoài tại VN | 8 |
 
+**Source:** `Fact Foreign Fund Management Organization Unit Snapshot` → `Calendar Date Dimension`
 
-**KPI liên quan:** K_FMS_138 – K_FMS_147
+**Bảng KPI:**
 
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_129a | Thời gian | — | Chiều | `License_Date` ← Foreign Fund Management Organization Unit (FMS.FOR_BRCH) | | READY |
+| K_FMS_129 | Chi nhánh CTQLQ nước ngoài tại Việt Nam | Chi nhánh | Cơ sở | COUNT(Foreign Fund Management Organization Unit) WHERE Branch_Type_Code = Chi nhánh | | READY |
+| K_FMS_130 | Hợp đồng quản lý danh mục đầu tư | HĐ | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng. | PENDING |
+| K_FMS_131 | Giá trị hợp đồng quản lý danh mục đầu tư | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_130. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Snapshot`. | PENDING |
 
-**Lý do pending:** Chưa thiết kế Atomic source cho Foreign Fund Management Organization Unit chi tiết (hợp đồng UTQLDM, nhân viên, tài chính)
+**Star Schema:**
 
+```mermaid
+erDiagram
+    Fact_Foreign_Fund_Management_Organization_Unit_Snapshot {
+        int Snapshot_Date_Dimension_Id FK
+        int Branch_Count
+    }
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Month
+        int Quarter
+        int Day_Of_Week
+        boolean Is_Weekend
+        boolean Holiday_Flag
+        string Holiday_Name
+        string Source_System_Code
+    }
 
-**Atomic cần bổ sung:** `Foreign Fund Management Organization Unit` (FMS.FORBRCH) — cần bổ sung attributes hợp đồng, lợi nhuận, vốn CSH
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Fund_Management_Organization_Unit_Snapshot : "Snapshot Date Dimension Id"
+```
 
+**Lineage Mart → Báo cáo:**
 
-**Mart dự kiến:**
-- `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng
-- `Foreign Fund Management Organization Unit Profile` — grain: 1 CN (tác nghiệp)
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Fact Foreign Fund Management Organization Unit Snapshot"]
+        G2["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_129a,129: Thống kê chung CN CTQLQ NN (Nhóm 24)"]
+    end
+    G2 --> G1
+    G1 --> R1
+```
 
+**Bảng grain:**
 
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên bảng | Grain |
+|---|---|
+| Fact Foreign Fund Management Organization Unit Snapshot | 1 snapshot toàn thị trường × 1 tháng |
+| Calendar Date Dimension | 1 ngày |
+
+**Bảng mapping nguồn (Atomic Placeholder):**
+
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_138 | Tên Chi nhánh CTQLQ nước ngoài tại Việt Nam | Cơ sở | PENDING |
-| K_FMS_139 | CAR (ATTC) | Cơ sở | PENDING |
-| K_FMS_140 | Lợi nhuận (Tỷ đồng) | Cơ sở | PENDING |
-| K_FMS_141 | Vốn CSH | Cơ sở | PENDING |
-| K_FMS_142 | Số lượng hợp đồng UTQLDM | Cơ sở | PENDING |
-| K_FMS_143 | Giám đốc chi nhánh | Cơ sở | PENDING |
-| K_FMS_144 | Số lượng nhân viên có CCHN | Cơ sở | PENDING |
-| K_FMS_145 | Mã hợp đồng UTQLDM | Cơ sở | PENDING |
-| K_FMS_146 | Số tài khoản lưu ký | Cơ sở | PENDING |
-| K_FMS_147 | Giá trị thị trường của từng hợp đồng UTQLDM | Cơ sở | PENDING |
+| K_FMS_130, 131 | *(BA chưa cung cấp)* | TBD | TBD |
 
+---
 
-#### Nhóm — Số liệu hợp đồng uỷ thác danh mục
+#### Nhóm 25 - Số liệu hợp đồng uỷ thác danh mục
 
+> Phân loại: **Phân tích**
+> Ghi chú: **PENDING toàn bộ.** BA đánh Dữ liệu động cho toàn bộ 6 chỉ tiêu (số lượng/giá trị HĐ UTQLDM theo cá nhân/tổ chức, tổng) và chưa cung cấp Bảng nguồn/Trường nguồn.
 
-##### PENDING
+**Bảng KPI:**
 
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_132a | Thời gian | — | Chiều | | **Lý do pending:** Không measure nào READY cùng Fact. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot` — grain: 1 CN × 1 tháng. | PENDING |
+| K_FMS_132 | Số lượng hợp đồng UTQLDM cá nhân | HĐ | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
+| K_FMS_133 | Giá trị thị trường hợp đồng UTQLDM cá nhân | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_132. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
+| K_FMS_134 | Số lượng hợp đồng UTQLDM tổ chức | HĐ | Cơ sở | | **Lý do pending:** Tương tự K_FMS_132. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
+| K_FMS_135 | Giá trị thị trường hợp đồng UTQLDM tổ chức | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_132. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
+| K_FMS_136 | Tổng số lượng hợp đồng UTQLDM | HĐ | Cơ sở | | **Lý do pending:** Tương tự K_FMS_132. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
+| K_FMS_137 | Tổng giá trị ủy thác | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_132. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Fact Foreign Fund Management Organization Unit Contract Snapshot`. | PENDING |
 
-**KPI liên quan:** K_FMS_132 – K_FMS_137
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-
-**Lý do pending:** Chưa thiết kế Atomic source cho Foreign Fund Management Organization Unit chi tiết (hợp đồng UTQLDM, nhân viên, tài chính)
-
-
-**Atomic cần bổ sung:** `Foreign Fund Management Organization Unit` (FMS.FORBRCH) — cần bổ sung attributes hợp đồng, lợi nhuận, vốn CSH
-
-
-**Mart dự kiến:**
-- `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng
-- `Foreign Fund Management Organization Unit Profile` — grain: 1 CN (tác nghiệp)
-
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_132 | Số lượng hợp đồng UTQLDM cá nhân | Cơ sở | PENDING |
-| K_FMS_133 | Giá trị thị trường hợp đồng UTQLDM cá nhân | Cơ sở | PENDING |
-| K_FMS_134 | Số lượng hợp đồng UTQLDM tổ chức | Cơ sở | PENDING |
-| K_FMS_135 | Giá trị thị trường hợp đồng UTQLDM tổ chức | Cơ sở | PENDING |
-| K_FMS_136 | Tổng số lượng hợp đồng UTQLDM | Cơ sở | PENDING |
-| K_FMS_137 | Tổng giá trị ủy thác | Cơ sở | PENDING |
+| K_FMS_132–137 | *(BA chưa cung cấp)* | TBD | TBD |
 
+---
 
-#### Nhóm — Thống kê chung
+#### Nhóm 26 - Danh sách các Chi nhánh CTQLQ nước ngoài tại Việt Nam
 
+> Phân loại: **Tác nghiệp**
+> Atomic: `Foreign Fund Management Organization Unit` ← FMS.FOR_BRCH — READY *(K_FMS_138: Tên Chi nhánh)*
+> Atomic: `Foreign Fund Management Organization Unit Staff` ← FMS.STF_FG_BRCH — READY *(K_FMS_143, K_FMS_144: Giám đốc chi nhánh, Số lượng nhân viên có CCHN)*
+> Ghi chú: **Mix READY/PENDING.** 3/10 chỉ tiêu (Tên CN, Giám đốc chi nhánh, Số nhân viên CCHN) BA đánh Dữ liệu tĩnh → READY — Atomic đã sẵn sàng. 7 chỉ tiêu còn lại (CAR, Lợi nhuận, Vốn CSH, Số/Mã HĐ UTQLDM, Số TK lưu ký, Giá trị HĐ) BA đánh Dữ liệu động và chưa cung cấp Bảng nguồn → PENDING. Riêng "Mã hợp đồng UTQLDM" (K_FMS_145) BA đánh **Trạng thái mapping = Pending** (khác các dòng còn lại = Done) — ghi nhận PENDING kép (chưa Done + Dữ liệu động).
 
-##### PENDING
+**Mockup:**
 
+| Tên CN | Giám đốc CN | Số nhân viên CCHN |
+|---|---|---|
+| CN Công ty ABC tại VN | Nguyễn Văn C | 4 |
 
-**KPI liên quan:** K_FMS_129 – K_FMS_131
+**Source:** `Foreign Fund Management Organization Unit Profile`
 
+**Bảng KPI:**
 
-**Lý do pending:** Chưa thiết kế Atomic source cho Foreign Fund Management Organization Unit chi tiết (hợp đồng UTQLDM, nhân viên, tài chính)
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_FMS_138a | Thời gian | — | Chiều | `License_Date` ← Foreign Fund Management Organization Unit (FMS.FOR_BRCH) | | READY |
+| K_FMS_138 | Tên Chi nhánh CTQLQ nước ngoài tại Việt Nam | — | Cơ sở | `Foreign_Fm_Ou_Full_Nm`, `Short_Name` ← Foreign Fund Management Organization Unit | | READY |
+| K_FMS_143 | Giám đốc chi nhánh | — | Cơ sở | `Item_Name` ← Foreign Fund Management Organization Unit Staff (FMS.STF_FG_BRCH) | | READY |
+| K_FMS_144 | Số lượng nhân viên có CCHN | Người | Cơ sở | COUNT(Foreign Fund Management Organization Unit Staff) | | READY |
+| K_FMS_139 | CAR (ATTC) | % | Cơ sở | | **Lý do pending:** Dữ liệu động; BA chưa cung cấp Bảng nguồn. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
+| K_FMS_140 | Lợi nhuận (Tỷ đồng) | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_139. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
+| K_FMS_141 | Vốn CSH | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_139. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
+| K_FMS_142 | Số lượng hợp đồng UTQLDM | HĐ | Cơ sở | | **Lý do pending:** Tương tự K_FMS_139. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Foreign Fund Management Organization Unit Profile`. | PENDING |
+| K_FMS_145 | Mã hợp đồng UTQLDM | — | Cơ sở | | **Lý do pending:** BA đánh Trạng thái mapping = Pending (chưa Done) + Dữ liệu động. **Atomic cần bổ sung:** chưa xác định — chờ BA hoàn thiện phân tích. **Mart dự kiến:** `Foreign Fund Management Organization Unit Contract List` (bảng con drill-down). | PENDING |
+| K_FMS_146 | Số tài khoản lưu ký | — | Cơ sở | | **Lý do pending:** Tương tự K_FMS_139. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Foreign Fund Management Organization Unit Contract List`. | PENDING |
+| K_FMS_147 | Giá trị thị trường của từng hợp đồng UTQLDM | Tỷ VND | Cơ sở | | **Lý do pending:** Tương tự K_FMS_139. **Atomic cần bổ sung:** chưa xác định. **Mart dự kiến:** `Foreign Fund Management Organization Unit Contract List`. | PENDING |
 
+**Bảng mapping nguồn (Atomic Placeholder):**
 
-**Atomic cần bổ sung:** `Foreign Fund Management Organization Unit` (FMS.FORBRCH) — cần bổ sung attributes hợp đồng, lợi nhuận, vốn CSH
-
-
-**Mart dự kiến:**
-- `Fact Foreign Fund Management Organization Unit Snapshot` — grain: 1 CN × 1 tháng
-- `Foreign Fund Management Organization Unit Profile` — grain: 1 CN (tác nghiệp)
-
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
+| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
 |---|---|---|---|
-| K_FMS_129 | Chi nhánh CTQLQ nước ngoài tại Việt Nam | Cơ sở | PENDING |
-| K_FMS_130 | Hợp đồng quản lý danh mục đầu tư | Cơ sở | PENDING |
-| K_FMS_131 | Giá trị hợp đồng quản lý danh mục đầu tư | Cơ sở | PENDING |
+| K_FMS_139–142, 145–147 | *(BA chưa cung cấp)* | TBD | TBD |
 
+**Schema bảng tác nghiệp — Foreign Fund Management Organization Unit Profile:**
+
+```mermaid
+erDiagram
+    Foreign_Fund_Management_Organization_Unit_Profile {
+        string Foreign_Fund_Management_Organization_Unit_Id PK
+        string Foreign_Fm_Ou_Full_Nm
+        string Short_Name
+        string Director_Name
+        int Certified_Staff_Count
+        string Source_System_Code
+    }
+```
+
+> Chỉ 3 cột READY (`Foreign_Fm_Ou_Full_Nm`/`Short_Name`, `Director_Name`, `Certified_Staff_Count`) được đưa vào schema — 7 cột còn lại đang PENDING.
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        G1["Foreign Fund Management Organization Unit Profile"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["K_FMS_138a,138,143,144: Danh sách CN CTQLQ NN (Nhóm 26)"]
+    end
+    G1 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Foreign Fund Management Organization Unit Profile | Tác nghiệp — bảng flat \| 1 CN × 1 tháng slicer |
+
+---
 
 ### Tab: DATA EXPLORER
 
+**PENDING toàn bộ 63 STT Data Explorer (STT 28–90 theo BA).** Toàn bộ measure thuộc dải STT này BA đánh **Dữ liệu động** 100% — theo gating "Loại dữ liệu", PENDING dù Atomic nguồn (`Report Import Value` ← FMS.RPTVALUES) đã READY.
+
+**Atomic cần bổ sung:** không — Atomic `Report Import Value` đã READY; cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1) khi BA xác nhận lại quy tắc khai thác.
+
+**Mart dự kiến:** `Report Pass-through View` — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu.
+
+Chi tiết từng loại báo cáo dưới đây (7 nhóm nội dung, mỗi KPI ID = 1 dòng/chỉ tiêu báo cáo chi tiết — chưa khai sinh mapping `Row_Code` riêng, hiện gộp theo nhóm báo cáo):
+
+---
 
 #### Nhóm — BCTC-BCLCTT_GianTiep
 
-
-##### PENDING
-
-
 **KPI liên quan:** K_FMS_305 – K_FMS_344
-
-
-**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
-
-
-**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
-
-
-**Mart dự kiến:**
-- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
-
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
@@ -1991,25 +1664,9 @@ flowchart LR
 | K_FMS_343 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Cơ sở | PENDING |
 | K_FMS_344 | Tiền và tương đương tiền cuối kỳ (70 = 50+60+61) | Cơ sở | PENDING |
 
-
 #### Nhóm — BCTC-BCLCTT_TrucTiep
 
-
-##### PENDING
-
-
 **KPI liên quan:** K_FMS_275 – K_FMS_304
-
-
-**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
-
-
-**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
-
-
-**Mart dự kiến:**
-- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
-
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
@@ -2044,25 +1701,9 @@ flowchart LR
 | K_FMS_303 | Ảnh hưởng của thay đổi tỷ giá hối đoái quy đổi ngoại tệ | Cơ sở | PENDING |
 | K_FMS_304 | Tiền và tương đương tiền cuối kỳ (70 = 50+60+61) | Cơ sở | PENDING |
 
-
 #### Nhóm — BCTC-BCTinhHinhBienDongVCSH
 
-
-##### PENDING
-
-
 **KPI liên quan:** K_FMS_345 – K_FMS_355
-
-
-**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
-
-
-**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
-
-
-**Mart dự kiến:**
-- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
-
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
@@ -2078,25 +1719,9 @@ flowchart LR
 | K_FMS_354 | 10. Lợi nhuận chưa phân phối | Cơ sở | PENDING |
 | K_FMS_355 | Cộng | Cơ sở | PENDING |
 
-
 #### Nhóm — BCTC-Báo cáo kết quả hoạt động kinh doanh
 
-
-##### PENDING
-
-
 **KPI liên quan:** K_FMS_258 – K_FMS_274
-
-
-**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
-
-
-**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
-
-
-**Mart dự kiến:**
-- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
-
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
@@ -2118,25 +1743,9 @@ flowchart LR
 | K_FMS_273 | 16. Lợi nhuận sau thuế TNDN (60=50-51-52) | Cơ sở | PENDING |
 | K_FMS_274 | 17. Lãi trên cổ phiếu (*) | Cơ sở | PENDING |
 
-
 #### Nhóm — BCTC-Bảng cân đối kế toán
 
-
-##### PENDING
-
-
 **KPI liên quan:** K_FMS_148 – K_FMS_257
-
-
-**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
-
-
-**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
-
-
-**Mart dự kiến:**
-- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
-
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
@@ -2251,25 +1860,9 @@ flowchart LR
 | K_FMS_256 | 10. Các khoản phải thu của nhà đầu tư ủy thác | Cơ sở | PENDING |
 | K_FMS_257 | 11. Các khoản phải trả của nhà đầu tư ủy thác | Cơ sở | PENDING |
 
-
 #### Nhóm — Báo cáo tỷ lệ an toàn tài chính
 
-
-##### PENDING
-
-
 **KPI liên quan:** K_FMS_792 – K_FMS_947
-
-
-**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
-
-
-**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
-
-
-**Mart dự kiến:**
-- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
-
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
@@ -2430,25 +2023,9 @@ flowchart LR
 | K_FMS_946 | Vốn khả dụng | Cơ sở | PENDING |
 | K_FMS_947 | Tỷ lệ vốn khả dụng tháng (6=5/4) | Cơ sở | PENDING |
 
-
 #### Nhóm — Báo cáo về tình hình quản lý danh mục đầu tư
 
-
-##### PENDING
-
-
 **KPI liên quan:** K_FMS_356 – K_FMS_791
-
-
-**Lý do pending:** Từng mã chỉ tiêu báo cáo chi tiết chưa được khai sinh KPI ID riêng — hiện tại K_FMS_78–91 gộp theo nhóm báo cáo
-
-
-**Atomic cần bổ sung:** `Report Import Value` (FMS.RPTVALUES) — READY, cần mapping `Row_Code` cụ thể per chỉ tiêu (xem O_FMS_1)
-
-
-**Mart dự kiến:**
-- `Report Pass-through View` (đã thiết kế Nhóm 12–16) — grain: 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu
-
 
 | KPI ID | Tên KPI | Tính chất | Trạng thái |
 |---|---|---|---|
@@ -2898,52 +2475,53 @@ graph TB
     classDef operational fill:#ED7D31,color:#fff
 
     DIM_DATE(["Calendar Date Dimension"]):::dim
-    DIM_CO(["Fund Management Company Dimension"]):::dim
-    DIM_FUND(["Investment Fund Dimension"]):::dim
 
-    FACT_MKT(["Fact Fund Management Company Snapshot"]):::fact
-    FACT_UTDM(["Fact Discretionary Investment Contract Snapshot"]):::fact
-    FACT_NAV(["Fact Investment Fund NAV Snapshot"]):::fact
-    FACT_CNT(["Fact Investment Fund Count Snapshot"]):::fact
-    FACT_CCQ(["Fact Investment Fund CCQ Snapshot"]):::fact
+    FACT_DIST(["Fact Fund Distribution Agent Snapshot"]):::fact
+    FACT_FRGN(["Fact Foreign Fund Management Organization Unit Snapshot"]):::fact
 
     OPR_CO_PRF(["Fund Management Company Profile"]):::operational
     OPR_FND_LST(["Fund Management Company Fund List"]):::operational
     OPR_CTR_LST(["Fund Management Company Contract List"]):::operational
     OPR_FUND_PRF(["Investment Fund Profile"]):::operational
-    OPR_RPT_VIEW(["Report Pass-through View"]):::operational
+    OPR_DIST_AGT_LST(["Investment Fund Distribution Agent List"]):::operational
+    OPR_REP_BRD_LST(["Investment Fund Representative Board Member List"]):::operational
+    OPR_MGR_LST(["Investment Fund Manager List"]):::operational
+    OPR_DIST_PRF(["Fund Distribution Agent Profile"]):::operational
+    OPR_DIST_FND_LST(["Fund Distribution Agent Fund List"]):::operational
+    OPR_FRGN_PRF(["Foreign Fund Management Organization Unit Profile"]):::operational
 
-    DIM_DATE --> FACT_MKT
-    DIM_DATE --> FACT_UTDM
-    DIM_DATE --> FACT_NAV
-    DIM_DATE --> FACT_CNT
-    DIM_DATE --> FACT_CCQ
-    DIM_CO --> FACT_UTDM
-    DIM_CO --> FACT_NAV
-    DIM_FUND --> FACT_NAV
-    DIM_FUND --> FACT_CCQ
-    OPR_CO_PRF --> OPR_FND_LST
-    OPR_CO_PRF --> OPR_CTR_LST
+    DIM_DATE --> FACT_DIST
+    DIM_DATE --> FACT_FRGN
+
+    OPR_FUND_PRF --> OPR_DIST_AGT_LST
+    OPR_FUND_PRF --> OPR_REP_BRD_LST
+    OPR_FUND_PRF --> OPR_MGR_LST
+    OPR_DIST_PRF --> OPR_DIST_FND_LST
 ```
 
 **Bảng Phân tích (Star Schema):**
 
 | Bảng | Pattern | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fact Fund Management Company Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 tháng | K_FMS_1–9 | READY — ETL pattern: No Driving Table, CROSS JOIN scalar subquery |
-| Fact Discretionary Investment Contract Snapshot | Periodic Snapshot | 1 CTQLQ × 1 Report Template × 1 Report Date | K_FMS_10–15 (Base), K_FMS_16a–d (Derived) | READY |
-| Fact Investment Fund NAV Snapshot | Periodic Snapshot | 1 quỹ × 1 Report Template × 1 Report Date | K_FMS_32–35, 38–44, 47–49, 56, 61 | READY (pending O_FMS_1) |
-| Fact Investment Fund Count Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 năm | K_FMS_50–52e | READY |
-| Fact Investment Fund CCQ Snapshot | Periodic Snapshot | 1 quỹ × 1 Report Template × 1 Report Date | K_FMS_53–55h | READY / PENDING (quỹ đóng O_FMS_7) |
+| Fact Fund Distribution Agent Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 tháng | K_FMS_91a, 92 (Nhóm 17) | READY (partial — 2/5 chỉ tiêu) |
+| Fact Foreign Fund Management Organization Unit Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 tháng | K_FMS_129a, 129 (Nhóm 24) | READY (partial — 2/4 chỉ tiêu) |
+
+> **Ghi chú quan trọng:** Các Fact sau đây KHÔNG READY và đã loại khỏi Section 3 (xem Section 2 từng Nhóm để biết chi tiết PENDING): `Fact Fund Management Company Snapshot` (Nhóm 1), `Fact Discretionary Investment Contract Snapshot` (Nhóm 2), `Fact Investment Fund NAV Snapshot` (Nhóm 7-9), `Fact Investment Fund Count Snapshot` (Nhóm 10), `Fact Investment Fund CCQ Snapshot` (Nhóm 11), `Fact Investment Fund NAV per CCQ Snapshot` (Nhóm 12 — Chiều thời gian nguồn `FMS.FUND_REPORT` chưa có Atomic entity, nên toàn bộ measure kể cả VN-Index/Lãi suất LNH đều PENDING theo). Bảng Tác nghiệp `Report Pass-through View` (Tab DATA EXPLORER, STT 28-90) cũng PENDING toàn bộ — BA đánh Dữ liệu động 100% dù Atomic `Report Import Value` đã READY.
 
 **Bảng Tác nghiệp (Denormalized):**
 
 | Bảng | Loại | Grain | KPI | Trạng thái |
 |---|---|---|---|---|
-| Fund Management Company Profile | Flat chính | 1 CTQLQ × 1 tháng slicer | K_FMS_17–26 | READY |
-| Fund Management Company Fund List | Bảng con drill-down | 1 quỹ × 1 tháng slicer | K_FMS_28–29 | READY |
-| Fund Management Company Contract List | Bảng con drill-down | 1 Discretionary Investment Account active tại tháng slicer | K_FMS_30–31 | READY |
-| Investment Fund Profile | Flat | 1 quỹ × 1 tháng slicer | K_FMS_62–67 | READY (pending O_FMS_1, O_FMS_7) |
+| Fund Management Company Profile | Flat chính | 1 CTQLQ × 1 tháng slicer | K_FMS_17, 152 (Nhóm 3) | READY (partial — 2/13 chỉ tiêu) |
+| Fund Management Company Fund List | Bảng con drill-down | 1 quỹ × 1 CTQLQ × 1 tháng slicer | K_FMS_164, 165 (Nhóm 4) | READY (partial — 2/3 chỉ tiêu) |
+| Fund Management Company Contract List | Bảng con drill-down | 1 Discretionary Investment Account × 1 CTQLQ × 1 tháng slicer | K_FMS_167, 168 (Nhóm 5) | READY (partial — 2/3 chỉ tiêu) |
+| Investment Fund Profile | Flat | 1 quỹ × 1 tháng slicer | K_FMS_62a, 62, 64, 63, 190–193 (Nhóm 13) | READY (partial — 8/11 chỉ tiêu) |
+| Investment Fund Distribution Agent List | Bảng con drill-down | 1 đại lý phân phối × 1 quỹ | K_FMS_194 (Nhóm 14) | READY |
+| Investment Fund Representative Board Member List | Bảng con drill-down | 1 thành viên BĐD × 1 quỹ | K_FMS_195 (Nhóm 15) | READY |
+| Investment Fund Manager List | Bảng con drill-down | 1 người điều hành × 1 quỹ | K_FMS_196 (Nhóm 16) | READY |
+| Fund Distribution Agent Profile | Flat | 1 ĐLPP × 1 tháng slicer | K_FMS_107a, 107–112 (Nhóm 22) | READY (partial — 7/20 chỉ tiêu) |
+| Fund Distribution Agent Fund List | Bảng con drill-down | 1 quỹ × 1 ĐLPP | K_FMS_197 (Nhóm 23) | READY |
+| Foreign Fund Management Organization Unit Profile | Flat | 1 CN × 1 tháng slicer | K_FMS_138a, 138, 143, 144 (Nhóm 26) | READY (partial — 4/10 chỉ tiêu) |
 
 **Bảng Dimension:**
 
@@ -2952,37 +2530,52 @@ graph TB
 | Dimension | Mô tả | Grain | Nguồn Atomic chính | Conformed |
 |---|---|---|---|---|
 | Calendar Date Dimension | Lịch ngày — năm/quý/tháng/ngày lễ phục vụ slicer | 1 ngày | Calendar Date | Có |
-| Fund Management Company Dimension | CTQLQ — Mã/Tên/Trạng thái | 1 CTQLQ | Fund Management Company | Không |
-| Investment Fund Dimension | Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái | 1 quỹ | Investment Fund | Không |
+
+> **Ghi chú:** `Fund Management Company Dimension` và `Investment Fund Dimension` đã loại khỏi Section 3 vì không còn Fact nào FK tới — các Fact dùng chung 2 Dimension này (Fact Investment Fund NAV Snapshot, Count Snapshot, CCQ Snapshot) đều PENDING toàn bộ.
 
 ---
 
-**Bảng Tác nghiệp (Denormalized) — bổ sung Tab DataExplorer:**
+## Section 4 — Reuse Analysis
 
-| Bảng | Loại | Grain | KPI | Trạng thái |
-|---|---|---|---|---|
-| Report Pass-through View | Flat | 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu | K_FMS_78–91 | READY (pending O_FMS_1) |
-| Fund Management Company Staff Trade Report | Flat | 1 nhân viên × 1 TK GDCK (K_FMS_68–72 READY; K_FMS_73–77 PENDING sổ lệnh VSDC) | K_FMS_68–77 | PARTIAL — xem O_FMS_11 |
+| Datamart Entity | datamart_table | reuse_status | Ghi chú |
+|---|---|---|---|
+| Calendar Date Dimension | cdr_dt_dim | reuse | Conformed Dim toàn hệ thống — dùng chung mọi Fact có chiều thời gian |
+| Classification Dimension | cl_dim | reuse | Dùng cho Loại hình quỹ (scheme FMS_FUND_TYPE) ở Nhóm 4, 7, 10-12 khi cần |
+| Fund Management Company Profile | fnd_mgt_co_prf | new | Module đầu tiên của FMS — chưa có trong datamart_model.yaml |
+| Fund Management Company Fund List | fnd_mgt_co_fnd_lst | new | Bảng con drill-down — Nhóm 4 |
+| Fund Management Company Contract List | fnd_mgt_co_ctr_lst | new | Bảng con drill-down — Nhóm 5 |
+| Fact Investment Fund NAV per CCQ Snapshot | fct_inv_fnd_nav_per_ccq_snpst | new | Nhóm 7-9, 12 — hiện PENDING toàn bộ (Chiều thời gian nguồn `FMS.FUND_REPORT` chưa có Atomic entity), chưa cần bảng thật, giữ ghi nhận cho khi Atomic sẵn sàng |
+| Investment Fund Profile | inv_fnd_prf | new | Module đầu tiên của FMS |
+| Investment Fund Distribution Agent List | inv_fnd_dist_agt_lst | new | Bảng con drill-down mới (Nhóm 14) |
+| Investment Fund Representative Board Member List | inv_fnd_rep_brd_mbr_lst | new | Bảng con drill-down mới (Nhóm 15) |
+| Investment Fund Manager List | inv_fnd_mgr_lst | new | Bảng con drill-down mới (Nhóm 16) |
+| Report Pass-through View | rpt_pass_thru_view | new | Tab DATA EXPLORER (STT 28-90) — hiện PENDING toàn bộ (Dữ liệu động 100%), chưa cần bảng thật, giữ ghi nhận cho khi BA xác nhận quy tắc khai thác |
+| Fact Fund Distribution Agent Snapshot | fct_fnd_dist_agt_snpst | new | Module đầu tiên — Nhóm 17 |
+| Fund Distribution Agent Profile | fnd_dist_agt_prf | new | Module đầu tiên — Nhóm 22 |
+| Fund Distribution Agent Fund List | fnd_dist_agt_fnd_lst | new | Bảng con drill-down mới — Nhóm 23 |
+| Fact Foreign Fund Management Organization Unit Snapshot | fct_frgn_fnd_mgt_org_unit_snpst | new | Module đầu tiên — Nhóm 24 |
+| Foreign Fund Management Organization Unit Profile | frgn_fnd_mgt_org_unit_prf | new | Module đầu tiên — Nhóm 26 |
+| Fund Management Company Staff Trade Report | fnd_mgt_co_stf_trd_rpt | new | Nhóm 27 — hiện PENDING toàn bộ, chưa cần bảng thật (giữ ghi nhận cho khi Atomic Securities Trade sẵn sàng ở track chuẩn) |
+
+> `datamart_model.yaml` hiện chưa có entry cho module FMS (module đầu tiên) — toàn bộ bảng mới đánh `new`, chờ user xác nhận trước khi ghi vào registry ở bước `datamart-lld-design`.
 
 ---
 
-## Section 4 — Vấn đề mở
+## Section 5 — Vấn đề mở
 
-| ID | Vấn đề | Giải quyết / Giả định | KPI liên quan | Trạng thái |
+| ID | Vấn đề | Giả định hiện tại | KPI liên quan | Trạng thái |
 |---|---|---|---|---|
-| O_FMS_1 | RPTVALUES lưu dạng cell value (sheet/ô) — cần xác định mapping đầy đủ report_template_code + row_code cho từng chỉ tiêu BC (AUM, CAR, LN, Vốn CSH, NAV quỹ) | Ánh xạ sơ bộ từ DataExplorer BA: 180101 = Tổng HĐ, 180102/103 = % tổ chức/cá nhân, 180110 = GTTT UTDM. AUM/CAR/LN theo biểu mẫu BC tình hình HĐ CTQLQ — cần ETL team xác nhận SheetId + TgtId | K_FMS_2–3, 10–15, 18, 21–22, 24, 29 | Open |
-| O_FMS_2 | Mapping Xếp loại và CAMEL từ FMS.RANK | **Đóng (v1.3):** Xếp loại = `Rank Class Code` ← `FMS.RANK.RankClass` (A/B/C). CAMEL = `Total Score` ← `FMS.RANK.TotalScore` (%). Rule lấy kỳ: Member Rating Period End Date ≤ tháng chọn, lấy kỳ gần nhất | K_FMS_25, K_FMS_26 | Closed |
-| O_FMS_3 | Vốn điều lệ CTQLQ — xác nhận trường nguồn | **Đóng (v1.3):** Vốn ĐL CTQLQ = `Charter Capital Amount` ← `FMS.SECURITIES.SecCapital`. Phân biệt với vốn quỹ (`Fund Capital Amount` ← `FMS.FUNDS.FundCapital`) | K_FMS_23 | Closed |
-| O_FMS_4 | Vốn CSH — cần xác nhận mapping chỉ tiêu BCTC cụ thể trong RPTVALUES | Giả định map với BCTC mã 400 (B — Vốn chủ sở hữu) trong Bảng cân đối kế toán — cần ETL team xác nhận | K_FMS_24 | Open |
-| O_FMS_5 | Grain Contract List — 1 INVESACC = 1 HĐUTDM? | **Đóng (v1.3):** Xác nhận 1 `Discretionary Investment Account` = 1 HĐUTDM. INVESACC có trường `ContractNo` riêng per account. 1 NĐT (INVES) có thể có nhiều account/HĐ | K_FMS_30–31 | Closed |
-| O_FMS_6 | K_FMS_19/20 dùng BC hay db? | **Đóng (v1.3):** Cả K_FMS_19 (Số quỹ) và K_FMS_20 (Số HĐ UTDM) đổi sang COUNT từ db Atomic. Đảm bảo số đếm trong Profile = số dòng trong bảng con drill-down. K_FMS_20 đếm INVESACC JOIN qua INVES.SecId = CTQLQ | K_FMS_19, K_FMS_20 | Closed |
-| O_FMS_7 | Nhóm 8 — CCQ lưu hành quỹ đóng: BA ghi "Dữ liệu từ VSDC, chưa rõ lưu phân hệ nào" — chưa xác định Atomic entity nguồn | Tạm thời PENDING cho quỹ đóng. Các loại quỹ khác dùng RPTVALUES hoặc FundCapital/10.000 | K_FMS_53, K_FMS_55c | Open |
-| O_FMS_8 | Nhóm 9 — VN-Index: BA ghi nguồn "MSS". Đã khảo sát GSGD và ECAT — không có time-series. Kiểm tra atomic_attributes xác nhận VN-Index nằm trong `Risk Indicator Value` (QLRR) theo QLRR Source Analysis nhóm III.1 (STOCK_MARKET). "MSS" trong BA thực tế là nguồn mà QLRR đồng bộ vào risk_indicator_value. | **Đóng (v1.7):** K_FMS_56 = `Risk Indicator Value` WHERE `category_code = STOCK_MARKET` AND `indicator_code = VN-Index` ← QLRR cross-module. K_FMS_57–59 vẫn PENDING theo O_FMS_10 | K_FMS_56 | Closed |
-| O_FMS_9 | Nhóm 9 — BA ghi nguồn Lãi suất LNH là "GSRR" — cần xác nhận đây có phải là QLRR không | **Đóng (v1.7):** Xác nhận "GSRR" = QLRR. Lãi suất LNH qua đêm ← `Risk Indicator Value` WHERE `category_code = MONETARY` ← QLRR.risk_indicator_value | K_FMS_61 | Closed |
-| O_FMS_10 | Nhóm 9 — Phân loại chi tiết quỹ mở (CP/TP/cân bằng): Atomic `Investment Fund` chỉ có `Fund_Type_Code` cấp 1 (Quỹ mở/ETF...) — không phân biệt quỹ mở CP/TP/cân bằng | Cần khảo sát dữ liệu thực tế trong `FMS.FUNDS.FundType` hoặc biểu mẫu BC để xác nhận có sub-type CP/TP/cân bằng không. K_FMS_57–59 PENDING đến khi có kết quả khảo sát | K_FMS_57–59 | Open |
-| O_FMS_11 | Nhóm 11 — Báo cáo GD nhân viên CTQLQ: Cross-module FMS × GSGD. K_FMS_68–72 READY qua join `FMS.TLProfiles.IdAdd` = `GSGD.investor_account.identity_number`. K_FMS_73–77 (sổ lệnh: ngày GD, phương thức, mua/bán, mã CK, số lượng) PENDING — GSGD không lưu sổ lệnh trong Atomic (đọc từ VSDC API) | Chờ xác nhận Atomic entity sổ lệnh từ VSDC hoặc nguồn khác. K_FMS_70 (mã CTCK): ETL parse từ 4-5 ký tự đầu mã TK — cần xác nhận với ETL team | K_FMS_70, K_FMS_73–77 | Open |
-| O_FMS_12 | Calendar Date Dimension trước đây thiết kế ETL-generated độc lập — đã điều chỉnh map từ Atomic `Calendar Date` (`cdr_dt`). Đổi tên NK `Full Date` → `Calendar Date`, đồng bộ với Atomic. Bỏ `Month Name` (không có trong Atomic, không phục vụ KPI). Bổ sung `Holiday Flag` và `Holiday Name` từ `cdr_dt`. Các thuộc tính phái sinh (Year/Quarter/Month/Day Of Week/Is Weekend) computed từ `cdr_dt.cdr_dt`. | Map PK: `cdr_dt.cdr_dt_id` (int yyyymmdd, direct). NK: `cdr_dt.cdr_dt` (date, direct). Phái sinh: computed từ `cdr_dt.cdr_dt` | Tất cả KPI dùng chiều thời gian | Confirmed |
-| O_FMS_13 | Chiều thời gian trên Fact lấy từ RPT đã điều chỉnh: bỏ reference `rpt_impr_val.rpt_dt` không tồn tại trong Atomic. Path chuẩn: `rpt_impr_val` → `INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id` → lấy `day_rpt` (FMS.RPTMEMBER.DayReport, int yyyymmdd). Filter `rpt_subm_st_code IN ('SUBMITTED','LATE')` loại bản PENDING/CANCELLED. Khi gửi lại: FMS tạo `mbr_prd_rpt` mới, bản cũ CANCELLED — filter đảm bảo không duplicate per kỳ. | Join key `rpt_impr_val.mbr_prd_rpt_id` → `mbr_prd_rpt.mbr_prd_rpt_id` là NOT NULL — INNER JOIN an toàn. | K_FMS_1–3, 10–15, 32–49 | Confirmed |
-| O_FMS_14 | Dimension dùng cơ chế SCD4A — lưu trạng thái current với `ds_rcrd_st = 1` (active) / `0` (inactive). Toàn bộ `lookup_dim` trước đây dùng `BETWEEN eff_dt AND expiry_dt` không áp dụng. `ds_rcrd_st` là trường kỹ thuật ETL framework — không thiết kế trong Datamart schema, không xuất hiện trong erDiagram. Chỉ xuất hiện trong `etl_logic` của Attributes.csv như một filter condition. | Filter `AND <dim>.ds_rcrd_st = 1` thay thế toàn bộ date range trên 4 dòng lookup_dim: dòng 32, 42, 43, 71 trong Attributes.csv | Tất cả FK → Dimension trên Fact tables | Confirmed |
+| O_FMS_1 | RPTVALUES lưu dạng cell value (sheet/ô) — mapping report_template_code + row_code cho các chỉ tiêu BC cũ | Áp dụng cho Tab DATA EXPLORER (STT 28-90) — hiện PENDING toàn bộ (Dữ liệu động 100%). Nhóm 1-27 dùng nguồn db trực tiếp (FUNDS, INVES_ACC, FUND_REPORT) hoặc đánh Dữ liệu động/PENDING, không dùng RPTVALUES | K_FMS_78–91 | Open (chỉ áp dụng Data Explorer, PENDING) |
+| O_FMS_2 | Mapping Xếp loại và CAMEL từ FMS.RANK | K_FMS_155/156 (Nhóm 3) BA đánh Dữ liệu động dù Atomic Member Rating đã sẵn sàng → PENDING theo gating Loại dữ liệu | K_FMS_155, K_FMS_156 | Open (gating) |
+| O_FMS_3 | Vốn điều lệ CTQLQ — xác nhận trường nguồn | K_FMS_157 (Nhóm 3) BA đánh Dữ liệu động → PENDING theo gating | K_FMS_157 | Open (gating) |
+| O_FMS_4 | Vốn CSH — mapping chỉ tiêu BCTC cụ thể | BA không cung cấp Bảng nguồn cho Vốn CSH ở cả Nhóm 3 (K_FMS_162) và Nhóm 26 (K_FMS_141) — cần BA bổ sung nguồn trước khi thiết kế | K_FMS_162, K_FMS_141 | Open |
+| O_FMS_5 | Grain Contract List — 1 INVESACC = 1 HĐUTDM | Áp dụng cho Nhóm 5 | K_FMS_167–169 | Closed |
+| O_FMS_7 | CCQ lưu hành quỹ đóng — nguồn VSDC chưa xác định | Toàn bộ 8 loại hình quỹ (kể cả đóng) dùng cùng nguồn `FMS.FUND_REPORT.TOTAL_CCQ`, nhưng FUND_REPORT chưa có Atomic entity nên PENDING chung, không phân biệt riêng quỹ đóng | K_FMS_55a–55e, 176, 177 (Nhóm 11) | Open |
+| O_FMS_11 | Báo cáo GD nhân viên CTQLQ — cross-module FMS × GSGD, sổ lệnh PENDING (VSDC) | Nguồn sổ lệnh là `OrderTrade.Trade_HOSE`/`Trade_HNX` (entity `Securities Trade`). Entity này chỉ có draft ở `DataModel/working/Atomic_LinhLV/` (track out of date, không phải nguồn chuẩn) — toàn bộ 8 chỉ tiêu sổ lệnh PENDING, cần Atomic team thiết kế lại `Securities Trade` trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/` | K_FMS_198, 72, 73, 74, 75, 76, 199–201 (Nhóm 27) | Open |
+| O_FMS_12 | Calendar Date Dimension map từ Atomic `cdr_dt` | Áp dụng cho tất cả KPI dùng chiều thời gian | Tất cả KPI dùng chiều thời gian | Confirmed |
+| O_FMS_15 | FMS.FUND_REPORT chưa có Atomic entity — ảnh hưởng diện rộng | Nhiều measure (NAV, phân bổ tài sản, CCQ, NAV/CCQ) ở các Nhóm 1, 3, 7, 8, 9, 10, 11, 12, 13 lấy nguồn trực tiếp từ `FMS.FUND_REPORT` — nhưng bảng này hoàn toàn chưa có LLD Atomic. Đây là gap Atomic lớn nhất ảnh hưởng tới phần lớn Nhóm 1-27, cần Atomic team ưu tiên thiết kế `FMS.FUND_REPORT` (đề xuất tên: Fund NAV/Property Report). Riêng Nhóm 12: vì Chiều thời gian (K_FMS_56a) cũng phụ thuộc `FMS.FUND_REPORT.EXCUTION_DATE`, nên các measure macro-level vốn có Atomic sẵn sàng (VN-Index K_FMS_178, Lãi suất LNH K_FMS_61) vẫn PENDING theo do thiếu Chiều thời gian hợp lệ ở đúng grain — không chỉ các measure NAV/CCQ trực tiếp | K_FMS_3, 32, 35, 39–44, 47–49, 52a–52e, 55a–55e, 56a, 60, 61, 65, 67, 170–175, 176, 177, 178, 179, 180–189 | Open |
+| O_FMS_16 | FMS.SECURITIES_REPORT chưa có Atomic entity | Ảnh hưởng Nhóm 3 (Số nhân viên CCHN, AUM, Thị phần, Lợi nhuận) — cần Atomic team thiết kế entity (đề xuất tên: Securities Company Periodic Report) | K_FMS_153, 158, 159, 161 | Open |
+| O_FMS_17 | Nhiều KPI ở Nhóm 17-26 (tài khoản GDCK, tài khoản nắm giữ CCQ, giá trị phát hành/mua lại theo Tổ chức/Cá nhân/Nước ngoài) BA đánh Dữ liệu động nhưng để trống hoàn toàn Bảng nguồn/Trường nguồn | Cần làm việc lại với BA để xác định nguồn dữ liệu thực tế trước khi có thể thiết kế Atomic — hiện chưa đủ thông tin để đề xuất tên entity dự kiến | K_FMS_93–106, 114–128, 130–137, 139–142, 145–147 | Open |
+| O_FMS_18 | Gap KPI_ID lớn trong dải 1-201 (6,7,8,18,21,22,27,29,31,34,45,46,58,59,69,71,77,113) | Theo quy tắc "không re-number khi rút scope" — giữ nguyên gap, không đánh số lại. K_FMS_6/7/8 dời sang Nhóm 17/24 hoặc bị xóa (K_FMS_8 — Quỹ hưu trí, BA không còn yêu cầu) | — | Confirmed (không cần xử lý thêm) |
 
 ---
