@@ -142,7 +142,11 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 5. FACT: qlkd_fct_market_index_snpst_flat
---    cal: JOIN + WHERE cdr_dt = :etl_date
+--    Sửa 2026-07-24 (datamart-review): Fact nguồn `fct_market_index_snpst` nay populate
+--    grain 1 chỉ số × 1 ngày (dùng chung QLKD/NDTNN, trước đây 1 chỉ số × 1 tháng).
+--    QLKD (cần số liệu cuối tháng, K_QLKD_88-91) tự filter đúng ngày cuối tháng của
+--    :etl_month trên Fact grain-ngày này — không còn nhận nguyên mọi ngày trong tháng.
+--    cal: JOIN + WHERE cdr_dt = LAST_DAY(:etl_month)
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_fct_market_index_snpst_flat
@@ -164,7 +168,7 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.market_index_dim idx_dim
     ON idx_dim.market_index_dim_id = f.market_index_dim_id
-WHERE cal.cdr_dt = :etl_date
+WHERE cal.cdr_dt = LAST_DAY(:etl_month)
 ;
 
 

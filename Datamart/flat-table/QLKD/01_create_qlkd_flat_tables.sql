@@ -130,18 +130,19 @@ COMMENT 'Flat table — Fact Securities Company Capital Raising Event × Calenda
 
 -- ============================================================
 -- 5. FACT: qlkd_fct_market_index_snpst_flat
---    Fact Market Index Snapshot (sở hữu QLKD, reuse NDTNN) — grain cuối tháng
+--    Fact Market Index Snapshot (sở hữu QLKD, reuse NDTNN) — grain vật lý nguồn 1 ngày,
+--    flat table QLKD lọc lấy đúng ngày cuối tháng (sửa 2026-07-24, datamart-review)
 --    Joins: Calendar Date × Market Index Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Market Index Snapshot
-    snpst_dt_dim_id                 String                  COMMENT 'FK tháng (bản ghi cuối tháng theo Trading Date)',
+    snpst_dt_dim_id                 String                  COMMENT 'FK ngày (populate lấy đúng ngày cuối tháng)',
     market_index_dim_id             String                  COMMENT 'FK Market Index Dimension',
-    market_index_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ số (bản ghi cuối tháng)',
+    market_index_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ số (bản ghi cuối phiên, ngày cuối tháng)',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'FK tháng (bản ghi cuối tháng theo Trading Date) — từ Calendar Date Dimension',
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày cuối tháng (LAST_DAY) — từ Calendar Date Dimension',
 
     -- From: MARKET INDEX DIMENSION
     market_id                       Nullable(String)        COMMENT 'Mã thị trường — từ Market Index Dimension',

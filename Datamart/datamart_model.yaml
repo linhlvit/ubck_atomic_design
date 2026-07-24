@@ -2054,7 +2054,7 @@ entities:
     module: "QLKD"
     status: "draft"
     reuse_status: "new"
-    description: "Snapshot chỉ số thị trường (VN-Index/HNX/UPCOM/VN30) — grain 1 chỉ số (market_code) x 1 kỳ (QLKD: cuối tháng; NDTNN: cuối ngày). Nguồn Atomic Market Index Snapshot (MDDS.JAD_MARKETINFOR), đã approved. Fact sở hữu bởi QLKD, reuse bởi NDTNN (K_NDTNN_34)."
+    description: "Snapshot chỉ số thị trường (VN-Index/HNX/UPCOM/VN30) — grain 1 chỉ số (market_code) x 1 ngày, dùng chung QLKD + NDTNN. Nguồn Atomic Market Index Snapshot (MDDS.JAD_MARKETINFOR), đã approved. Fact sở hữu bởi QLKD, reuse bởi NDTNN (K_NDTNN_34). Sửa 2026-07-24 (datamart-review): đổi grain từ tháng sang ngày — QLKD (cần số liệu cuối tháng) tự filter/JOIN đúng ngày cuối tháng trên Fact grain-ngày này, xem DTM_QLKD_Detail_Mapping.csv K_QLKD_88-91."
     source_atomic:
       - "market_index_snapshot"
     modules_using:
@@ -2067,7 +2067,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK -> Calendar Date Dimension"
-        description: "FK → Calendar Date Dimension — LOOKUP qua Trading Date (bản ghi cuối kỳ)"
+        description: "FK → Calendar Date Dimension — LOOKUP qua Trading Date (1 dòng/ngày/chỉ số)"
         source_atomic_table: "market_index_snapshot"
         source_atomic_column: "market_index_snapshot.trading_dt"
       - logical_name: "Market Index Dimension Id"
@@ -2085,7 +2085,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Giá trị chỉ số tại bản ghi cuối kỳ (QLKD: cuối tháng; NDTNN: cuối ngày) — lấy Index Time lớn nhất"
+        description: "Giá trị chỉ số tại bản ghi cuối phiên trong ngày (MAX index_time per market_code per ngày)"
         source_atomic_table: "market_index_snapshot"
         source_atomic_column: "market_index_snapshot.market_index_val"
 
@@ -5662,9 +5662,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức — dùng filter K_NDTNN_36 (Nhóm 6)"
+        description: "Loại đối tượng: 1=Cá nhân, 2=Tổ chức"
         source_atomic_table: "foreign_investor"
         source_atomic_column: "foreign_investor.investor_object_tp_code"
+      - logical_name: "Investor Type Code"
+        physical_name: "investor_tp_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "[Bổ sung 2026-07-24, datamart-review] Loại hình NĐT (Cá nhân/Quỹ/Tổ chức khác quỹ), nguồn INVESTORTYPE.Name qua InvestorTypeId — dùng filter K_NDTNN_36/38/39/40 (Nhóm 6). Khác Investor Object Type Code (chỉ 2 giá trị Cá nhân/Tổ chức)."
+        source_atomic_table: "foreign_investor"
+        source_atomic_column: "foreign_investor.investor_tp_code"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
