@@ -235,8 +235,9 @@ Tổng: [N] nhóm | [M] bảng new | [P] bảng partial | [Q] bảng reuse
 **Bước 0 — Đọc reuse_status từ Entities.csv:**
 - `reuse` → bỏ qua hoàn toàn, không sinh file, ghi note: "Bảng [datamart_table] reuse từ master — không thiết kế mới"
 - `new` → thiết kế đầy đủ, sinh file
-- `partial` → đọc `DataModel/datamart_model.yaml` (entry có `id = DTM-{datamart_table}`), lấy `columns` hiện có làm baseline → so sánh delta → **báo cáo human, DỪNG chờ approve** trước khi sinh file
+- `partial` → đọc `DataModel/datamart_model.yaml` (entry có `id = DTM-{datamart_table}`), lấy `columns` hiện có làm baseline + xác định `module` sở hữu gốc → so sánh delta → **báo cáo human, DỪNG chờ approve** trước khi sinh file
   > ❌ **KHÔNG được sinh file partial** khi chưa có xác nhận của human về delta.
+  > ❌ **KHÔNG tạo file `_delta.csv` hay bất kỳ file Attributes nào trong thư mục module đang thiết kế** (`Datamart/lld/{MODULE}/`) khi bảng thuộc sở hữu module khác — cột mới phải sửa TRỰC TIẾP vào file gốc `Datamart/lld/{MODULE_SỞ_HỮU}/DTM_{MODULE_SỞ_HỮU}_{datamart_table}_....csv`. Xem chi tiết [`reference/phase1_attributes.md`](reference/phase1_attributes.md) mục "Quy trình partial".
 
 **Bước 0b — Trình bày danh sách file sẽ sinh cho nhóm N (GATE — chờ human xác nhận trước khi sinh):**
 
@@ -275,6 +276,23 @@ Ghi rõ Driving Table trong `description` của row PK/BK.
 
 **Driving Table khi Fact không có join key chung (No Driving Table):**
 Fact dùng pattern CROSS JOIN scalar subquery (mỗi measure aggregate độc lập từ 1 Atomic table) — không có driving table. Không thêm `src_stm_code` cho loại bảng này.
+
+### Bước 1a — Phạm vi cột Dimension (coverage rule — bắt buộc, thiết kế lần đầu VÀ khi partial)
+
+> **Bài học (module NDTNN, 2026-07-24):** `Public Company Dimension` (dùng chung GSDC/QLCB/NDTNN) ban đầu chỉ chọn 8 cột đủ dùng cho KPI đang thiết kế lúc đó. Sau đó phải quay lại bổ sung 2 lần (7 cột rồi 11 cột) khi rà soát lại entity Atomic gốc — vì cách chọn "đủ dùng cho KPI hiện tại" bỏ sót nhiều attribute mô tả tĩnh có giá trị dùng chung lâu dài cho các module sau. Với Dimension dùng chung nhiều module, thiếu 1 cột không chỉ vá lại 1 lần — mỗi module mới cần thêm lại phải sửa `datamart_attributes.csv` + `datamart_model.yaml` + mọi Detail Mapping đã tham chiếu, tốn công hơn nhiều so với thiết kế đủ ngay từ đầu.
+
+**Quy tắc:** Khi thiết kế Dimension mới (`new`) hoặc mở rộng Dimension đã có (`partial`), đọc **toàn bộ** danh sách attribute của Atomic entity driving table (không dừng ở tập cột cần cho KPI hiện tại) và áp dụng bộ lọc theo **SCD-nature** — bản chất thay đổi chậm/nhanh của chính attribute đó trên Atomic:
+
+| Loại attribute Atomic | Đưa vào Dimension? | Ví dụ |
+|---|---|---|
+| Đặc điểm/hồ sơ mô tả thực thể (tên, mã, loại hình, ngày đăng ký, tỉnh/thành, cờ cấu trúc sở hữu...) | ✅ Có — kéo dư thừa toàn bộ, kể cả khi KPI hiện tại chưa dùng | `pc_nm`, `enterprise_tp_code`, `head_office_province_nm`, `has_parent_company_indicator` |
+| Khóa/liên kết kỹ thuật thuần (PK/FK surrogate nội bộ Atomic không mang ý nghĩa nghiệp vụ độc lập) | ❌ Không | id kỹ thuật không có business meaning riêng |
+| Audit/vận hành thuần (created_by, file_name, upload timestamp, ghi chú xử lý nội bộ) | ❌ Không | `attachment_file_nm`, `specialist_note`, `company_login_username` |
+| Gắn với 1 giao dịch/sự kiện cụ thể, đổi theo phiên/ngày (giá, khối lượng, số dư, trạng thái tại 1 thời điểm snapshot) | ❌ Không — thuộc về Fact/Snapshot, không phải Dimension | giá khớp lệnh, khối lượng giao dịch, số dư tài khoản theo ngày |
+
+❌ Không áp dụng ngược lại cho Fact — Fact vẫn giữ nguyên rule "chỉ giữ cột trace được về KPI" (xem CLAUDE.md `feedback_fact_no_etl_filter_columns`). Coverage rule này CHỈ áp dụng cho Dimension.
+
+**Khi partial (Dimension đã tồn tại từ module khác):** Trước khi chỉ thêm đúng 1-2 cột module hiện tại cần, chủ động rà lại **toàn bộ** attribute còn lại của Atomic driving table theo bảng phân loại trên — đề xuất bổ sung 1 lần đầy đủ, tránh để module sau lại phải mở lại cùng bảng.
 
 ### Bước 1b — Bổ sung `src_stm_code` cho Dimension và Operational
 
@@ -682,7 +700,56 @@ Nếu FAIL → sửa trước khi trình bày.
 - Báo: `✅ TC7 PASS: 0 issue giữa 5 nguồn` hoặc `❌ TC7 FAIL: [danh sách issue theo nguồn]` — phân loại rõ nguồn nào lệch, giá trị nào đúng (anchor = `datamart_attributes.csv`).
 - Nếu FAIL → xác định nguồn đang sai (không phải anchor — anchor luôn đúng vì là nguồn sự thật) → sửa theo Kịch bản C → **đồng thời `grep -rn "tên_cũ" Datamart/hld/DTM_{MODULE}_HLD.md` để rà soát HLD thủ công** (không tự động qua TC7) → chạy lại TC7 → báo kết quả.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 8 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+**TC8 — Tiền tố/hậu tố `datamart_table` khớp `table_type` (bắt buộc dùng Bash tool):**
+
+- Mục đích: TC6 chỉ kiểm tra physical name có đúng thuật toán tách-từ + exceptions của **logical name** không (VD "Practitioner" → `prac`) — không kiểm tra bảng có đúng **tiền tố/hậu tố theo loại bảng** hay không. Bài học thực tế (module QLKD, 2026-07-24): entity `Market Index Snapshot` là Fact (`table_type: "fact"`, có FK Dimension, measure, đúng grain Fact Snapshot) nhưng được đặt tên `market_index_snpst` — thiếu hẳn tiền tố `fct_`, khác biệt với 4/5 Fact khác cùng module QLKD đều có `fct_`. TC6 không bắt được lỗi này vì thuật toán tách-từ của TC6 chỉ áp dụng cho phần logical name sau tiền tố (TC6 coi "Fact" là 1 token thường không có trong `datamart_entity` gốc nếu người thiết kế quên thêm), lỗi lọt qua nhiều vòng review cho tới khi so sánh chéo với 1 Fact khác cùng nguồn Atomic ở module NDTNN mới lộ ra.
+- Quy tắc tiền tố/hậu tố chuẩn theo `table_type` (tra từ `datamart_model.yaml` thực tế, không suy đoán):
+  - `table_type: "fact"` → `datamart_table` PHẢI bắt đầu bằng tiền tố `fct_`.
+  - `table_type: "operational"` → `datamart_table` PHẢI bắt đầu bằng tiền tố `opr_`.
+  - `table_type: "dim"` → `datamart_table` PHẢI kết thúc bằng hậu tố `_dim` (ngoại lệ: `cdr_dt_dim` và `cl_dim` vẫn theo đúng hậu tố này, không phải ngoại lệ thật).
+  - Không áp dụng cho bảng Classification Value dùng chung (`cl_dim`) nếu đã có exception ghi nhận riêng — nhưng mặc định coi là lỗi thật cho tới khi tìm được bằng chứng ngoại lệ cụ thể (cùng nguyên tắc thận trọng như TC6).
+  - **Ngoại lệ — nhóm Fact dạng "report" (quyết định 2026-07-24, module NDTNN `foreign_investor_trading_statistics_rpt`/`foreign_investor_trading_detail_rpt`):** Fact phục vụ báo cáo đóng gói cố định theo kỳ (ETL append-only theo Report Date, không SCD4A, thường denormalize hoàn toàn không FK Dimension) dùng **hậu tố `_rpt`** làm dấu hiệu nhận diện thay cho tiền tố `fct_` — bảng loại này KHÔNG cần (và không nên) có cả tiền tố `fct_` lẫn hậu tố `_rpt` cùng lúc, chỉ `_rpt` là đủ. Áp dụng đồng thời cho `logical_name` — cũng KHÔNG mang tiền tố "Fact" (VD: `"Foreign Investor Trading Statistics Report"`, không phải `"Fact Foreign Investor Trading Statistics Report"`), dù `table_type` đăng ký là `"fact"`. Tiêu chí phân biệt Fact vs Operational khi quyết định table_type: **Fact = append theo thời gian** (mỗi lần ETL chạy thêm dòng cho kỳ mới, không update dòng cũ); **Operational = SCD4A** (giữ current-state, ETL update/replace theo latest) — không dùng "có denormalize hay không" làm tiêu chí phân loại table_type (denormalize là thuộc tính độc lập, áp dụng được cho cả Fact lẫn Operational).
+- Chạy script sau **trên toàn bộ `datamart_model.yaml`** (không chỉ entity vừa thiết kế — vì đây là lỗi loại "thiếu nhất quán với quy ước module", chỉ lộ ra khi so sánh chéo với các entity cùng `table_type` khác, giống cách TC7 phải quét toàn bộ thay vì chỉ file đang sửa):
+  ```bash
+  python3 -c "
+  import re
+
+  with open('Datamart/datamart_model.yaml', encoding='utf-8') as f:
+      content = f.read()
+
+  blocks = re.split(r'\n  - id: ', content)
+  fails = []
+  for b in blocks[1:]:
+      tbl_m = re.search(r'datamart_table: \"([^\"]+)\"', b)
+      tt_m = re.search(r'table_type: \"([^\"]+)\"', b)
+      logical_m = re.search(r'logical_name: \"([^\"]+)\"', b)
+      if not (tbl_m and tt_m):
+          continue
+      table, ttype, logical = tbl_m.group(1), tt_m.group(1), logical_m.group(1) if logical_m else '?'
+      is_report = table.endswith('_rpt')
+      if ttype == 'fact' and is_report:
+          # Nhóm Fact-report: bắt buộc _rpt, cấm cả tiền tố fct_ lẫn logical_name có tiền tố \"Fact\"
+          if table.startswith('fct_'):
+              fails.append((logical, table, ttype, 'Fact-report không được có cả tiền tố fct_ lẫn hậu tố _rpt — chỉ giữ _rpt'))
+          if logical.startswith('Fact '):
+              fails.append((logical, table, ttype, 'Fact-report — logical_name không được mang tiền tố \"Fact\"'))
+      elif ttype == 'fact' and not table.startswith('fct_'):
+          fails.append((logical, table, ttype, 'thiếu tiền tố fct_'))
+      elif ttype == 'operational' and not table.startswith('opr_'):
+          fails.append((logical, table, ttype, 'thiếu tiền tố opr_'))
+      elif ttype == 'dim' and not table.endswith('_dim'):
+          fails.append((logical, table, ttype, 'thiếu hậu tố _dim'))
+
+  print(f'Tổng lỗi: {len(fails)}')
+  for logical, table, ttype, reason in fails:
+      print(f'  ❌ {logical!r} | datamart_table={table!r} | table_type={ttype!r} | {reason}')
+  "
+  ```
+- Báo: `✅ TC8 PASS: 0 mismatch tiền tố/hậu tố` hoặc `❌ TC8 FAIL: [danh sách logical_name | datamart_table | table_type | lý do]`.
+- Nếu FAIL → đổi tên theo Kịch bản C (đồng bộ cả `datamart_attributes.csv`, `datamart_model.yaml`, file Attributes detail, Detail Mapping, SQL Phase 3, HLD.md — dùng `grep -rn "tên_cũ" Datamart/` để tìm hết vị trí cần sửa) → chạy lại TC8 → báo kết quả.
+- **Lưu ý:** nếu entity dùng chung nhiều module (`modules_using` có >1 giá trị), việc đổi tên ảnh hưởng tới mọi module đang reuse — phải rà cả Detail Mapping và HLD của các module khác trong `modules_using`, không chỉ module đang thiết kế.
+
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 9 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
 
 ### Checklist Phase 1
 

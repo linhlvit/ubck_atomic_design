@@ -129,11 +129,11 @@ LEFT JOIN datamart.offering_method_dim om
 
 
 -- ============================================================
--- 5. OPERATIONAL: qlcb_securities_offering_360_profile_flat
+-- 5. OPERATIONAL: qlcb_opr_securities_offering_360_profile_flat
 --    Không JOIN dim, không lọc theo ngày (bảng tác nghiệp)
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlcb_securities_offering_360_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlcb_securities_offering_360_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.qlcb_opr_securities_offering_360_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlcb_opr_securities_offering_360_profile_flat
 SELECT
     o.securities_offering_code,
     o.offering_method_code,
@@ -165,5 +165,5 @@ SELECT
     o.employee_quantity_result,
     o.capital_src,
     o.src_stm_code
-FROM datamart.securities_offering_360_profile o
+FROM datamart.opr_securities_offering_360_profile o
 ;

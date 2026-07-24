@@ -351,9 +351,9 @@ flowchart LR
 
 ---
 
-### Cụm 6b: Diễn biến thị trường (`Market Index Snapshot`) — READY
+### Cụm 6b: Diễn biến thị trường (`Fact Market Index Snapshot`) — READY
 
-Phục vụ Tab GIÁM SÁT — Nhóm 16, K_QLKD_62–65 (chỉ số VN-Index, HNX, UPCOM, VN30). Nguồn xác nhận: `MDDS.JAD_MARKETINFOR` (Atomic entity `Market Index Snapshot`, đã approved 2026-07-03). **Sửa 14/07/2026 (LLD review):** BA ghi tham khảo `FSSTRAINING.PUBLIC_MARKETINFOR` (DB: dwh) — đây là tên gọi khác của cùng nguồn dữ liệu thị trường, đối chiếu Atomic xác nhận entity thực tế là `MDDS.JAD_MARKETINFOR` (field `marketcode`/`marketindex`/`tradingdate`/`indextime` khớp đúng cấu trúc BA mô tả). O_QLKD_8 Closed. `Market Index Snapshot` join với `Fact Securities Company Financial Structure Snapshot` (Cụm 6) qua `Calendar Date Dimension` để tạo biểu đồ combo.
+Phục vụ Tab GIÁM SÁT — Nhóm 16, K_QLKD_88–91 (chỉ số VN-Index, HNX, UPCOM, VN30). Nguồn xác nhận: `MDDS.JAD_MARKETINFOR` (Atomic entity `Market Index Snapshot`, đã approved 2026-07-03). **Sửa 14/07/2026 (LLD review):** BA ghi tham khảo `FSSTRAINING.PUBLIC_MARKETINFOR` (DB: dwh) — đây là tên gọi khác của cùng nguồn dữ liệu thị trường, đối chiếu Atomic xác nhận entity thực tế là `MDDS.JAD_MARKETINFOR` (field `marketcode`/`marketindex`/`tradingdate`/`indextime` khớp đúng cấu trúc BA mô tả). O_QLKD_8 Closed. `Fact Market Index Snapshot` join với `Fact Securities Company Financial Structure Snapshot` (Cụm 6) qua `Calendar Date Dimension` để tạo biểu đồ combo. **Sửa 24/07/2026:** Fact sở hữu bởi QLKD (grain 1 market_code × 1 tháng), reuse bởi NDTNN (K_NDTNN_34, Nhóm 5, grain 1 market_code × 1 ngày) — đã bổ sung FK `Market Index Dimension` (`market_index_dim`, cũng sở hữu QLKD, dùng chung NDTNN) thay cho cột `Market_Code` text trực tiếp trên Fact — xem O_NDTNN_29 (Closed).
 
 ```mermaid
 flowchart LR
@@ -368,17 +368,20 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Market Index Snapshot"]
+        G1["Fact Market Index Snapshot"]
         G2["Calendar Date Dimension"]
+        G3["Market Index Dimension"]
     end
 
     S1 --> SV1
     ECAT_ECAT_29_HolidayInfo --> Calendar_Date
 
     SV1 --> G1
+    SV1 --> G3
     Calendar_Date --> G2
 
     G2 --> G1
+    G3 --> G1
 ```
 
 ---
@@ -449,7 +452,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Securities Company Personnel Profile"]
+        G1["Operational Securities Company Personnel Profile"]
     end
 
     S1 --> SV1
@@ -480,7 +483,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Securities Company Organization Unit Profile"]
+        G1["Operational Securities Company Organization Unit Profile"]
         G2["Securities Company Practitioner Profile"]
     end
 
@@ -557,7 +560,7 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Securities Company Compliance History"]
+        G1["Operational Securities Company Compliance History"]
     end
 
     S1 --> SV1
@@ -575,9 +578,9 @@ flowchart LR
 
 ### Cụm 13: Tra cứu & Mạng lưới cá nhân (Tác nghiệp)
 
-Phục vụ Tab TRA CỨU CÁ NHÂN — Landing page (danh sách cá nhân) + Sub-tab Mạng lưới 360°. `Individual Profile` là bảng Tác nghiệp tổng hợp thông tin định danh cá nhân từ `Securities Company Senior Personnel` (SCMS) và `Securities Practitioner` (NHNCK). `Individual Related Party Network` lưu mạng lưới người liên quan.
+Phục vụ Tab TRA CỨU CÁ NHÂN — Landing page (danh sách cá nhân) + Sub-tab Mạng lưới 360°. `Operational Individual Profile` là bảng Tác nghiệp tổng hợp thông tin định danh cá nhân từ `Securities Company Senior Personnel` (SCMS) và `Securities Practitioner` (NHNCK). `Operational Individual Related Party Network` lưu mạng lưới người liên quan.
 
-> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41a):** Sub-tab Mạng lưới 360° đổi hẳn nguồn — không còn `CTCK_CD_MOI_QUAN_HE`/NHNCK.ProfessionalRelationships/IDS.company_relationship, mà hợp nhất vào 1 bảng self-reference `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (Atomic entity mới `Securities Company Insider Related Person`) — 1 row vừa đại diện người nội bộ vừa có thể self-join ra người liên quan cùng `Securities Company Senior Personnel Id`. `Individual Profile` (landing page tìm kiếm cá nhân) không có BA v4.2 riêng, giữ nguyên thiết kế cũ — gộp làm phần mở đầu của Nhóm 41a (xem Section 2). K_QLKD_205-210 (Nhóm 41a) vẫn READY qua nguồn mới; Chiều thời gian theo Ngày (K_QLKD_203) hạ PENDING — gating dữ liệu động.
+> **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41a):** Sub-tab Mạng lưới 360° đổi hẳn nguồn — không còn `CTCK_CD_MOI_QUAN_HE`/NHNCK.ProfessionalRelationships/IDS.company_relationship, mà hợp nhất vào 1 bảng self-reference `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (Atomic entity mới `Securities Company Insider Related Person`) — 1 row vừa đại diện người nội bộ vừa có thể self-join ra người liên quan cùng `Securities Company Senior Personnel Id`. `Operational Individual Profile` (landing page tìm kiếm cá nhân) không có BA v4.2 riêng, giữ nguyên thiết kế cũ — gộp làm phần mở đầu của Nhóm 41a (xem Section 2). K_QLKD_205-210 (Nhóm 41a) vẫn READY qua nguồn mới; Chiều thời gian theo Ngày (K_QLKD_203) hạ PENDING — gating dữ liệu động.
 
 ```mermaid
 flowchart LR
@@ -597,8 +600,8 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Individual Profile"]
-        G2["Individual Related Party Network"]
+        G1["Operational Individual Profile"]
+        G2["Operational Individual Related Party Network"]
     end
 
     S1 --> SV1
@@ -618,7 +621,7 @@ flowchart LR
 
 ### Cụm 14: Hồ sơ cá nhân — Vai trò DN niêm yết & Tài khoản (Tác nghiệp)
 
-Phục vụ Tab TRA CỨU CÁ NHÂN — Sub-tab Hồ sơ: block Vai trò tại DN niêm yết + block Tài khoản. `Individual Listed Company Role` lưu vai trò + số CP tại từng tổ chức per cá nhân.
+Phục vụ Tab TRA CỨU CÁ NHÂN — Sub-tab Hồ sơ: block Vai trò tại DN niêm yết + block Tài khoản. `Operational Individual Listed Company Role` lưu vai trò + số CP tại từng tổ chức per cá nhân.
 
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify Nhóm 41b):** "Vai trò tại DN niêm yết" đổi nguồn từ IDS sang `SSC_SCMS.SC_FIRM_INSIDER_RELATION` (cùng entity với Cụm 13) — IDS không còn dùng cho use case này. "Tài khoản" đổi tên bảng từ `CTCK_CO_DONG` sang `SSC_SCMS.SC_FIRM_SHAREHOLDER` (Atomic entity `Securities Company Shareholder`, không đổi cấu trúc) — cả 2 vẫn **READY**.
 
@@ -635,8 +638,8 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Individual Listed Company Role"]
-        G2["Individual Trading Account"]
+        G1["Operational Individual Listed Company Role"]
+        G2["Operational Individual Trading Account"]
     end
 
     S1 --> SV1
@@ -669,8 +672,8 @@ flowchart LR
     end
 
     subgraph Datamart["Datamart"]
-        G1["Individual Work History"]
-        G2["Individual Violation History"]
+        G1["Operational Individual Work History"]
+        G2["Operational Individual Violation History"]
     end
 
     S1 --> SV1
@@ -1588,23 +1591,80 @@ flowchart LR
 | Chiều thời gian theo Tháng | SSC_SCMS.MEMBER_REPORT | Member Periodic Report | TBD |
 | Dư nợ margin | SSC_SCMS.MEMBER_REPORT, SSC_SCMS.FORM_REPORT, SSC_SCMS.REPORT_CELL_VALUE | Member Report Indicator Value (mới, xem O_QLKD_23) | TBD |
 
+**Source (K_QLKD_88–91):** `Fact Market Index Snapshot` (`fct_market_index_snpst`) → `Calendar Date Dimension`, `Market Index Dimension`
+
 **Bảng KPI:**
 
-| KPI ID | Tên KPI | Tính chất | Công thức | Trạng thái |
-|---|---|---|---|---|
-| K_QLKD_86 | Chiều thời gian theo Tháng | Chiều | — | PENDING |
-| K_QLKD_87 | Tổng dư nợ margin — toàn TT | Cơ sở | — | PENDING |
-| K_QLKD_88 | Chỉ số VN-Index | Cơ sở | `market_index_val` WHERE `market_code` = 'HOSE' per month (cuối tháng) | READY |
-| K_QLKD_89 | Chỉ số HNX Index | Cơ sở | `market_index_val` WHERE `market_code` = 'HNX' per month | READY |
-| K_QLKD_90 | Chỉ số UPCOM Index | Cơ sở | `market_index_val` WHERE `market_code` = 'UPCOM' per month | READY |
-| K_QLKD_91 | Chỉ số VN30 | Cơ sở | `market_index_val` WHERE `market_code` = '30' per month | READY |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_QLKD_86 | Chiều thời gian theo Tháng | — | Chiều | TBD — chờ Atomic | **Lý do pending:** `Loại dữ liệu = Dữ liệu động`. **Atomic cần bổ sung:** Entity Atomic cho `SSC_SCMS.REPORT_CELL_VALUE` (xem O_QLKD_23). **Mart dự kiến:** `Fact Securities Company Financial Structure Snapshot` — grain 1 CTCK × 1 tháng | PENDING |
+| K_QLKD_87 | Tổng dư nợ margin — toàn TT | Tỷ VNĐ | Cơ sở | TBD — chờ Atomic | **Lý do pending:** `Loại dữ liệu = Dữ liệu động`; nguồn thực tế `MEMBER_REPORT` JOIN `FORM_REPORT` (`REPORT_CODE='BCTHHDKD_TH'`) JOIN `REPORT_CELL_VALUE` (LIKE `'%Giá trị chứng khoán ký quỹ%'`). **Atomic cần bổ sung:** xem O_QLKD_23. **Mart dự kiến:** `Fact Securities Company Financial Structure Snapshot` — grain 1 CTCK × 1 tháng | PENDING |
+| K_QLKD_88 | Chỉ số VN-Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HOSE'` — bản ghi cuối tháng | — | READY |
+| K_QLKD_89 | Chỉ số HNX Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HNX'` — bản ghi cuối tháng | — | READY |
+| K_QLKD_90 | Chỉ số UPCOM Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'UPCOM'` — bản ghi cuối tháng | — | READY |
+| K_QLKD_91 | Chỉ số VN30 | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = '30'` — bản ghi cuối tháng | — | READY |
 
 **Atomic (K_QLKD_88–91):** Không có gap — `Market Index Snapshot` ← `MDDS.JAD_MARKETINFOR` READY (track draft, chưa approved).
 - Grain Atomic: 1 market_code × 1 ngày × 1 index_time
 
 **Mart (K_QLKD_88–91):**
-- `Market Index Snapshot` — grain: 1 chỉ số thị trường (market_code) × 1 tháng (cuối tháng)
+- `Fact Market Index Snapshot` (`fct_market_index_snpst`) — grain QLKD: 1 chỉ số thị trường (market_code) × 1 tháng (cuối tháng). Fact sở hữu bởi QLKD, reuse bởi NDTNN (K_NDTNN_34, grain 1 market_code × 1 ngày).
 - Join với `Fact Securities Company Financial Structure Snapshot` qua `Calendar Date Dimension` để tạo biểu đồ combo
+- Filter market_code qua JOIN `Market Index Dimension` (FK `market_index_dim_id`), không filter trực tiếp cột `market_code` trên Fact
+
+**Star Schema (K_QLKD_88–91):**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : "snpst_dt_dim_id"
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : "market_index_dim_id"
+
+    Calendar_Date_Dimension {
+        string cdr_dt_dim_id PK
+        date cdr_dt
+    }
+
+    Market_Index_Dimension {
+        string market_index_dim_id PK
+        string market_id
+        string market_code
+        string index_tp_code
+        string tsc_product_group_id
+        string market_status_code
+        string Source_System_Code
+    }
+
+    Fact_Market_Index_Snapshot {
+        string snpst_dt_dim_id FK
+        string market_index_dim_id FK
+        decimal market_index_val
+    }
+```
+
+**Bảng grain (K_QLKD_88–91):**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Market Index Snapshot | 1 chỉ số thị trường (market_code) × 1 tháng (cuối tháng) |
+| Calendar Date Dimension | 1 ngày |
+| Market Index Dimension | 1 combo Market Id + Market Code (SCD4A current-state) |
+
+**Lineage Mart → Báo cáo (K_QLKD_88–91):**
+
+```mermaid
+flowchart LR
+    F1["Fact Market Index Snapshot"]
+    D1["Calendar Date Dimension"]
+    D2["Market Index Dimension"]
+
+    subgraph RPT["Báo cáo — Nhóm 16"]
+        R1["K_QLKD_88-91: Tương quan Margin & Diễn biến thị trường"]
+    end
+
+    F1 --> R1
+    D1 --> R1
+    D2 --> R1
+```
 
 ---
 
@@ -2124,7 +2184,7 @@ LỊCH SỬ THAY ĐỔI NHÂN SỰ (timeline):
   15/01/2021 — Bổ nhiệm Phó TGĐ | 15/06/2021 — Bổ sung TV HĐQT | ...
 ```
 
-**Source:** `Securities Company Personnel Profile` (tác nghiệp)
+**Source:** `Operational Securities Company Personnel Profile` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2141,7 +2201,7 @@ LỊCH SỬ THAY ĐỔI NHÂN SỰ (timeline):
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK (latest state) |
+| Operational Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK (latest state) |
 
 ---
 
@@ -2163,7 +2223,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 3 thẻ đếm: CHI NHÁNH: 2 | PHÒNG GIAO DỊCH: 0 | VĂN PHÒNG ĐẠI DIỆN: 1
 ```
 
-**Source:** `Securities Company Organization Unit Profile` (tác nghiệp)
+**Source:** `Operational Securities Company Organization Unit Profile` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2178,7 +2238,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
+| Operational Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
 
 ---
 
@@ -2194,7 +2254,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 **Atomic cần bổ sung:** Bảng con `Securities Company Organization Unit Business Line` (hoặc tương đương) — grain 1 đơn vị (CN/PGD/VPĐD) × 1 nghiệp vụ, nguồn `SSC_SCMS.LNK_SC_FIRM_BUSINESS_LINE` JOIN `CAT_BUSINESS_LINE`. Có thể dùng chung thiết kế với gap Business Lines ở O_QLKD_20 nếu áp dụng pattern chung cho cả CTCK và đơn vị con.
 
-**Mart dự kiến khi Atomic sẵn sàng:** Dùng chung `Securities Company Organization Unit Profile` (Tác nghiệp) với Nhóm 32/34-37, bổ sung cột/join nghiệp vụ.
+**Mart dự kiến khi Atomic sẵn sàng:** Dùng chung `Operational Securities Company Organization Unit Profile` (Tác nghiệp) với Nhóm 32/34-37, bổ sung cột/join nghiệp vụ.
 
 **Bảng mapping nguồn (Atomic Placeholder):**
 
@@ -2231,7 +2291,7 @@ DỊCH VỤ ĐƯỢC CHẤP THUẬN:
 Ký quỹ: 2 | Ứng trước: 1 | Lưu ký: 1
 ```
 
-**Source:** `Securities Company Organization Unit Profile` (tác nghiệp)
+**Source:** `Operational Securities Company Organization Unit Profile` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2247,7 +2307,7 @@ Ký quỹ: 2 | Ứng trước: 1 | Lưu ký: 1
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
+| Operational Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
 
 ---
 
@@ -2266,7 +2326,7 @@ DỊCH VỤ CHỨNG KHOÁN PHÁI SINH:
 Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 ```
 
-**Source:** `Securities Company Organization Unit Profile` (tác nghiệp)
+**Source:** `Operational Securities Company Organization Unit Profile` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2282,7 +2342,7 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
+| Operational Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
 
 ---
 
@@ -2298,7 +2358,7 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 **Atomic cần bổ sung:** Hoàn thiện ETL resolve `Alert Entity Code` khi `Alert Entity Type Code IN (BRANCH, TRANSACTION_OFFICE, REP_OFFICE)` — trỏ tới `Securities Company Organization Unit` tương ứng thay vì `Securities Company`. Cần xác nhận giá trị `ENTITY_TYPE` thực tế (BA ghi "Xác nhận") khớp với `Alert Entity Type Code` hiện tại.
 
-**Mart dự kiến khi Atomic sẵn sàng:** Dùng chung `Securities Company Organization Unit Profile` (Tác nghiệp) với Nhóm 32-35/37.
+**Mart dự kiến khi Atomic sẵn sàng:** Dùng chung `Operational Securities Company Organization Unit Profile` (Tác nghiệp) với Nhóm 32-35/37.
 
 **Bảng mapping nguồn (Atomic Placeholder):**
 
@@ -2328,7 +2388,7 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 **Atomic cần bổ sung:** Bảng con `Securities Company Organization Unit Business Line` (xem Nhóm 33) — dùng để LISTAGG nghiệp vụ per đơn vị trong danh sách.
 
-**Mart dự kiến khi Atomic sẵn sàng:** `Securities Company Organization Unit Profile` (Tác nghiệp) — dùng chung với Nhóm 32/33/34/35/36, bổ sung cột Nghiệp vụ (LISTAGG) khi bảng liên kết sẵn sàng.
+**Mart dự kiến khi Atomic sẵn sàng:** `Operational Securities Company Organization Unit Profile` (Tác nghiệp) — dùng chung với Nhóm 32/33/34/35/36, bổ sung cột Nghiệp vụ (LISTAGG) khi bảng liên kết sẵn sàng.
 
 **Bảng mapping nguồn (Atomic Placeholder):**
 
@@ -2351,7 +2411,7 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
+| Operational Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK |
 
 ---
 
@@ -2367,7 +2427,7 @@ Môi giới PS: 1 | Tư vấn PS: 1 | Tự doanh PS: 1
 
 **Lý do pending (K_QLKD_186, K_QLKD_187):** `Loại dữ liệu = Dữ liệu động` cho Chiều thời gian + Báo cáo YTD — gating độc lập với trạng thái Atomic. Atomic entity nguồn (`Member Periodic Report`) đã READY, không có gap. Chỉ chờ gỡ gating dữ liệu động (giống Nhóm 10).
 
-**Mart:** `Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 39/40. Date-spine `K_QLKD_188` sinh dãy ngày từ `MIN(ISSUED_DATE)` đến SYSDATE, COUNT lũy kế `Issued Date <= ngày` per CTCK.
+**Mart:** `Operational Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 39/40. Date-spine `K_QLKD_188` sinh dãy ngày từ `MIN(ISSUED_DATE)` đến SYSDATE, COUNT lũy kế `Issued Date <= ngày` per CTCK.
 
 **Mockup:**
 ```
@@ -2376,7 +2436,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 [BÁO CÁO YTD: 42/43  97%]   [QĐ XỬ PHẠT: 3 Quyết định]
 ```
 
-**Source:** `Securities Company Compliance History` (tác nghiệp)
+**Source:** `Operational Securities Company Compliance History` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2390,7 +2450,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Compliance History | 1 CTCK × 1 sự kiện (BC nộp hoặc quyết định TT/XP) |
+| Operational Securities Company Compliance History | 1 CTCK × 1 sự kiện (BC nộp hoặc quyết định TT/XP) |
 
 ---
 
@@ -2408,7 +2468,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 **Atomic cần bổ sung:** Không có gap — chỉ chờ gỡ gating dữ liệu động (giống Nhóm 10/38).
 
-**Mart dự kiến khi gỡ gating:** `Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 38/40.
+**Mart dự kiến khi gỡ gating:** `Operational Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 38/40.
 
 **Bảng mapping nguồn (Atomic Placeholder):**
 
@@ -2432,7 +2492,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Compliance History | 1 CTCK × 1 sự kiện (BC nộp hoặc quyết định TT/XP) |
+| Operational Securities Company Compliance History | 1 CTCK × 1 sự kiện (BC nộp hoặc quyết định TT/XP) |
 
 ---
 
@@ -2456,7 +2516,7 @@ Slicer: date picker (31-12-2024) + HIỆN TẠI
 
 **Lý do pending (K_QLKD_195):** `Loại dữ liệu = Dữ liệu động` — BA SQL dùng `SYSDATE` làm điều kiện lọc tạm thời, chưa có logic date-spine/snapshot chính thức theo ngày lựa chọn. Atomic entity nguồn không có gap — chỉ chờ gỡ gating dữ liệu động (giống Nhóm 10/38/39).
 
-**Mart:** `Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 38/39.
+**Mart:** `Operational Securities Company Compliance History` (Tác nghiệp) — dùng chung với Nhóm 38/39.
 
 **Mockup:**
 ```
@@ -2464,7 +2524,7 @@ LỊCH SỬ XỬ PHẠT, THANH TRA, KIỂM TRA:
 Thanh tra định kỳ | 15/05/2023 | QĐ 145/QĐ-XPHC | 20/06/2023 | Vi phạm TLATTV | — | —
 ```
 
-**Source:** `Securities Company Compliance History` (tác nghiệp)
+**Source:** `Operational Securities Company Compliance History` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2483,7 +2543,7 @@ Thanh tra định kỳ | 15/05/2023 | QĐ 145/QĐ-XPHC | 20/06/2023 | Vi phạm 
 
 | Tên bảng | Grain |
 |---|---|
-| Securities Company Compliance History | 1 CTCK × 1 sự kiện (BC nộp hoặc quyết định TT/XP) |
+| Operational Securities Company Compliance History | 1 CTCK × 1 sự kiện (BC nộp hoặc quyết định TT/XP) |
 
 ---
 
@@ -2501,7 +2561,7 @@ Thanh tra định kỳ | 15/05/2023 | QĐ 145/QĐ-XPHC | 20/06/2023 | Vi phạm 
 > Atomic: `Securities Practitioner` ← NHNCK.Professionals — **READY**
 > Atomic: `Securities Practitioner License Certificate Document` ← NHNCK.CertificateRecords — **READY**
 > Atomic: `Securities Company Insider Related Person` ← SSC_SCMS.SC_FIRM_INSIDER_RELATION — **READY**
-> Ghi chú: `Individual Profile` là bảng Tác nghiệp gộp `Securities Company Senior Personnel` (SCMS — người nội bộ) và `Securities Practitioner` (NHNCK — người hành nghề), phục vụ landing page tìm kiếm/chọn 1 cá nhân (entry point trước khi vào Mạng lưới — BA không có dòng riêng cho bước này, gộp làm phần mở đầu của cùng 1 dashboard). ETL merge key = `Involved Party Alternative Identification.Identification Number` (SCMS.SO_CMND) khớp với `Securities Practitioner.Identity Reference Code` (NHNCK.IdentityId) — cùng CMND/CCCD = cùng 1 người → dedup thành 1 row. CCCD hiển thị trên card từ `Involved Party Alternative Identification`. Số GCN hành nghề từ `Securities Practitioner License Certificate Document`.
+> Ghi chú: `Operational Individual Profile` là bảng Tác nghiệp gộp `Securities Company Senior Personnel` (SCMS — người nội bộ) và `Securities Practitioner` (NHNCK — người hành nghề), phục vụ landing page tìm kiếm/chọn 1 cá nhân (entry point trước khi vào Mạng lưới — BA không có dòng riêng cho bước này, gộp làm phần mở đầu của cùng 1 dashboard). ETL merge key = `Involved Party Alternative Identification.Identification Number` (SCMS.SO_CMND) khớp với `Securities Practitioner.Identity Reference Code` (NHNCK.IdentityId) — cùng CMND/CCCD = cùng 1 người → dedup thành 1 row. CCCD hiển thị trên card từ `Involved Party Alternative Identification`. Số GCN hành nghề từ `Securities Practitioner License Certificate Document`.
 >
 > **Cập nhật 13/07/2026 (BA v4.2, re-verify):** BA đổi hẳn nguồn cho phần Mạng lưới — không còn `CTCK_CO_DONG`/`CTCK_CD_MOI_QUAN_HE`/NHNCK.ProfessionalRelationships/IDS.company_relationship, mà hợp nhất toàn bộ vào **1 bảng self-reference duy nhất**: `SSC_SCMS.SC_FIRM_INSIDER_RELATION` — mỗi dòng vừa có thể là "người nội bộ" (gắn `SENIOR_PERSONNEL_ID`) vừa có thể là "người liên quan" của người nội bộ khác (self-join qua `SENIOR_PERSONNEL_ID`, loại trừ chính nó bằng `ID != ID`). Atomic entity tương ứng `Securities Company Insider Related Person` (LLD `lld_SCMS_SC_FIRM_INSIDER_RELATION.yaml`) đã có đủ attribute: `Full Name`, `Date Of Birth`, `Classification Nationality Code` (join `Involved Party Alternative Identification` cho CCCD — `Identification Type Code = 'NATIONAL_ID'`), `Entity Type Code`, `Representative Position`, `Relationship`, `Ownership Ratio`, `Relation Start Date`, `Securities Company Senior Personnel Id` (self-join FK) — **READY** cho toàn bộ 6/7 dòng BA (Tên cá nhân, Vai trò/chức vụ, Người liên quan × 3 attribute, Tỷ lệ sở hữu). Riêng "Chiều thời gian theo Ngày" — BA SQL dùng date-spine từ `MIN(RELATION_START_DATE)` (không phải `SYSDATE` placeholder như Nhóm 40, nhưng vẫn đánh dấu `Loại dữ liệu = Dữ liệu động`) — hạ **PENDING** theo rule gating, độc lập với Atomic (đã READY). IDS không còn dùng cho node DN niêm yết trong sub-tab này — xem Nhóm 41b cho phần vai trò tại tổ chức khác.
 >
@@ -2535,16 +2595,16 @@ PHÁT HIỆN DỰA TRÊN CMND/CCCD & DỮ LIỆU QUẢN TRỊ
 ● NHÂN SỰ CHÍNH  ● NGƯỜI LIÊN QUAN
 ```
 
-**Source:** `Individual Profile` (tác nghiệp) + `Individual Related Party Network` (tác nghiệp)
+**Source:** `Operational Individual Profile` (tác nghiệp) + `Operational Individual Related Party Network` (tác nghiệp)
 
-> **Ghi chú KPI_ID:** BA STT 41 liệt kê riêng từng trường hiển thị trên card (Tên cá nhân, Vai trò/chức vụ, Tỷ lệ sở hữu) — tách từ gộp K_QLKD_109 cũ thành K_QLKD_204-205 + K_QLKD_209 (tỷ lệ sở hữu, cùng nguồn `Individual Related Party Network`). Cấp mới **K_QLKD_203** (Chiều thời gian theo Ngày, date-spine từ `MIN(RELATION_START_DATE)`, `Loại dữ liệu = Dữ liệu động` → PENDING theo rule gating, độc lập Atomic đã READY). K_QLKD_206-208 tách từ gộp K_QLKD_112 cũ (3 attribute "Người có liên quan": tên, mối quan hệ, vai trò/chức vụ) — K_QLKD_112 (đếm số người liên quan) đã xóa, xem ghi chú "Sửa 16/07/2026" trên.
+> **Ghi chú KPI_ID:** BA STT 41 liệt kê riêng từng trường hiển thị trên card (Tên cá nhân, Vai trò/chức vụ, Tỷ lệ sở hữu) — tách từ gộp K_QLKD_109 cũ thành K_QLKD_204-205 + K_QLKD_209 (tỷ lệ sở hữu, cùng nguồn `Operational Individual Related Party Network`). Cấp mới **K_QLKD_203** (Chiều thời gian theo Ngày, date-spine từ `MIN(RELATION_START_DATE)`, `Loại dữ liệu = Dữ liệu động` → PENDING theo rule gating, độc lập Atomic đã READY). K_QLKD_206-208 tách từ gộp K_QLKD_112 cũ (3 attribute "Người có liên quan": tên, mối quan hệ, vai trò/chức vụ) — K_QLKD_112 (đếm số người liên quan) đã xóa, xem ghi chú "Sửa 16/07/2026" trên.
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
-| K_QLKD_204 | Tên cá nhân — per CTCK | Attribute | Cơ sở | Lookup `Individual Profile` WHERE Securities Company Code = filter AND (Full Name LIKE search OR Identification Number = search OR License Certificate Number = search OR Position Name LIKE search): `Full Name` | READY |
-| K_QLKD_205 | Vai trò, chức vụ — per CTCK | Attribute | Cơ sở | `Individual Profile.Position Type Code` (chức vụ). Kèm attribute bổ trợ hiển thị card: `Securities Company Code` (CTCK), `Identification Number` (CCCD), `License Certificate Number` (GCN), `Practice Type Tag` (nghiệp vụ — từ `License Certificate Document.Certificate Type Code`), `INSIDER VERIFIED` flag (ETL-derived: merge thành công SCMS+NHNCK) | READY |
+| K_QLKD_204 | Tên cá nhân — per CTCK | Attribute | Cơ sở | Lookup `Operational Individual Profile` WHERE Securities Company Code = filter AND (Full Name LIKE search OR Identification Number = search OR License Certificate Number = search OR Position Name LIKE search): `Full Name` | READY |
+| K_QLKD_205 | Vai trò, chức vụ — per CTCK | Attribute | Cơ sở | `Operational Individual Profile.Position Type Code` (chức vụ). Kèm attribute bổ trợ hiển thị card: `Securities Company Code` (CTCK), `Identification Number` (CCCD), `License Certificate Number` (GCN), `Practice Type Tag` (nghiệp vụ — từ `License Certificate Document.Certificate Type Code`), `INSIDER VERIFIED` flag (ETL-derived: merge thành công SCMS+NHNCK) | READY |
 | K_QLKD_203 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine từ `MIN(RELATION_START_DATE)` đến `SYSDATE` | PENDING |
 | K_QLKD_206 | Người có liên quan >> Tên người có liên quan | Attribute | Cơ sở | Self-join `Securities Company Insider Related Person` (r) WHERE `r.Securities Company Senior Personnel Id = i.Securities Company Senior Personnel Id` AND `r.Id != i.Id`: `Full Name` | READY |
 | K_QLKD_207 | Người có liên quan >> Mối quan hệ của người có liên quan | Attribute | Cơ sở | Self-join: `Relationship` | READY |
@@ -2555,8 +2615,8 @@ PHÁT HIỆN DỰA TRÊN CMND/CCCD & DỮ LIỆU QUẢN TRỊ
 
 | Tên bảng | Grain |
 |---|---|
-| Individual Profile | 1 cá nhân × 1 CTCK (latest state) |
-| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính |
+| Operational Individual Profile | 1 cá nhân × 1 CTCK (latest state) |
+| Operational Individual Related Party Network | 1 người liên quan × 1 cá nhân chính |
 
 ---
 
@@ -2603,7 +2663,7 @@ TÀI KHOẢN   3
 └──────────────────────────────────────────┘
 ```
 
-**Source:** `Individual Listed Company Role` (tác nghiệp) + `Individual Related Party Network` (tác nghiệp, reuse từ Nhóm 41a) + `Individual Trading Account` (tác nghiệp)
+**Source:** `Operational Individual Listed Company Role` (tác nghiệp) + `Operational Individual Related Party Network` (tác nghiệp, reuse từ Nhóm 41a) + `Operational Individual Trading Account` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2615,7 +2675,7 @@ TÀI KHOẢN   3
 | K_QLKD_207 | Người có liên quan >> Mối quan hệ của người có liên quan | Attribute | Cơ sở | Reuse từ Nhóm 41a — Self-join: `Relationship` |
 | K_QLKD_208 | Người có liên quan >> Vai trò, chức vụ của người có liên quan | Attribute | Cơ sở | Reuse từ Nhóm 41a — Self-join: `Representative Position` (nghề nghiệp/vai trò). Kèm attribute bổ trợ hiển thị card: `Identification Number` (CCCD người liên quan, qua `Involved Party Alternative Identification`), `Shares Count` |
 | K_QLKD_209 | Tỷ lệ sở hữu cổ phần | % | Cơ sở | Reuse từ Nhóm 41a — `Securities Company Insider Related Person.Ownership Ratio` — xem O_QLKD_15 (nguồn SCMS tự khai báo, không phải VSDC chính thức) |
-| K_QLKD_212 | Danh sách tài khoản giao dịch — per cá nhân | Attribute | Cơ sở | Lookup `Individual Trading Account` WHERE Individual Profile Id = selected: Securities Company Code (CTCK), Trading Account Number (số TK), Shareholder Name (chủ TK). Bao gồm cả tài khoản của người liên quan (self-join `Securities Company Insider Related Person` để lấy CCCD, xem Nhóm 41a — Mạng lưới quan hệ 360°) |
+| K_QLKD_212 | Danh sách tài khoản giao dịch — per cá nhân | Attribute | Cơ sở | Lookup `Operational Individual Trading Account` WHERE Operational Individual Profile Id = selected: Securities Company Code (CTCK), Trading Account Number (số TK), Shareholder Name (chủ TK). Bao gồm cả tài khoản của người liên quan (self-join `Securities Company Insider Related Person` để lấy CCCD, xem Nhóm 41a — Mạng lưới quan hệ 360°) |
 
 > **Ghi chú KPI_ID:** K_QLKD_210/211 đổi từ K_QLKD_113/114 cũ — đổi nguồn/công thức sang `Securities Company Insider Related Person`. K_QLKD_206-209 reuse thẳng từ Nhóm 41a — cùng entity `Securities Company Insider Related Person`, cùng self-join, cùng field (Full Name/Relationship/Representative Position/Ownership Ratio) → 1 KPI_ID, 1 câu query, phục vụ cả 2 màn hình (Mạng lưới quan hệ 360° và Mạng lưới người liên quan chi tiết). K_QLKD_212 đổi từ K_QLKD_119 cũ — đổi tên bảng nguồn `Securities Company Shareholder` (SC_FIRM_SHAREHOLDER thay vì CTCK_CO_DONG), mở rộng công thức bao gồm nhánh người liên quan.
 > **Sửa 14/07/2026 (LLD review):** Bỏ điều kiện `Record Status Code = 1` và cột `Life Cycle Status Code` (K_QLKD_211) — entity `Securities Company Insider Related Person` không có attribute `Record Status Code`. Theo xác nhận Data Modeler: pipeline ETL Atomic đã lọc `RECORD_STATUS = 1` (bản ghi active) ngay khi populate lên Atomic — mọi row trong entity mặc định đã là bản ghi hiện hành, không cần filter/derive trạng thái lại ở tầng Datamart.
@@ -2624,9 +2684,9 @@ TÀI KHOẢN   3
 
 | Tên bảng | Grain |
 |---|---|
-| Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân (latest per Identification Number × Securities Company Id) |
-| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính — dùng chung với Nhóm 41a |
-| Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân |
+| Operational Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân (latest per Identification Number × Securities Company Id) |
+| Operational Individual Related Party Network | 1 người liên quan × 1 cá nhân chính — dùng chung với Nhóm 41a |
+| Operational Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân |
 
 ---
 
@@ -2654,14 +2714,14 @@ LỊCH SỬ CÔNG TÁC
 
 > **Ghi chú KPI_ID:** BA STT 41 (dòng "Chiều thời gian theo Ngày") có date-spine `Loại dữ liệu = Dữ liệu động` chưa từng cấp ID — cấp mới **K_QLKD_213** (nguồn `WORK_START_DATE` — khác nguồn Chiều ngày K_QLKD_203 của Nhóm 41a, nên KHÔNG reuse) — hạ **PENDING** theo rule gating, độc lập với K_QLKD_214-217 (đã READY, không có gap Atomic).
 
-**Source:** `Individual Work History` (tác nghiệp)
+**Source:** `Operational Individual Work History` (tác nghiệp)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Trạng thái |
 |---|---|---|---|---|---|
 | K_QLKD_213 | Chiều thời gian theo Ngày | Chiều | Chiều | Date-spine từ `MIN(WORK_START_DATE)` đến `SYSDATE` | PENDING |
-| K_QLKD_214 | Tên công ty công tác | Attribute | Cơ sở | `Individual Work History.Securities Company Code` → lookup tên CTCK | READY |
+| K_QLKD_214 | Tên công ty công tác | Attribute | Cơ sở | `Operational Individual Work History.Securities Company Code` → lookup tên CTCK | READY |
 | K_QLKD_215 | Chức vụ tại công ty | Attribute | Cơ sở | **Sửa 16/07/2026 (LLD review):** `Securities Company Senior Personnel.Position Name` (`position_nm`) — lấy trực tiếp, không cần JOIN `DM_CHUC_VU` (attribute đã có sẵn tên chức vụ trên entity) | READY |
 | K_QLKD_216 | Thời gian làm việc (Từ ngày – Đến ngày) | Attribute | Cơ sở | `Work Start Date` (WORK_START_DATE, xác nhận từ BA v4.2 STT 31 — không còn cần tạm dùng Created Timestamp) → `Resignation Date` (NULL = HIỆN TẠI) — O_QLKD_16 Closed | READY |
 | K_QLKD_217 | Trạng thái công tác | Attribute | Cơ sở | Derive: `Resignation Date IS NULL` → HIỆN TẠI; có `Resignation Date` → QUÁ KHỨ | READY |
@@ -2670,7 +2730,7 @@ LỊCH SỬ CÔNG TÁC
 
 | Tên bảng | Grain |
 |---|---|
-| Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân |
+| Operational Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân |
 
 ---
 
@@ -2697,7 +2757,7 @@ NGÀY QĐ      SỐ QĐ             NỘI DUNG VI PHẠM             HÌNH THỨ
 12/11/2019   BC-0012/CTCK      Vi phạm quy trình mở TK      Đình chỉ HN 3 tháng  HẾT THỜI HẠN
 ```
 
-**Source:** `Individual Violation History` (tác nghiệp)
+**Source:** `Operational Individual Violation History` (tác nghiệp)
 
 **Bảng KPI:**
 
@@ -2714,7 +2774,7 @@ NGÀY QĐ      SỐ QĐ             NỘI DUNG VI PHẠM             HÌNH THỨ
 
 | Tên bảng | Grain |
 |---|---|
-| Individual Violation History | 1 quyết định xử phạt × 1 cá nhân |
+| Operational Individual Violation History | 1 quyết định xử phạt × 1 cá nhân |
 
 ---
 
@@ -2843,16 +2903,16 @@ graph TB
     FACT_CRE["Fact Securities Company Capital Raising Event"]:::fact
 
     OPR_FRH["Securities Company Financial Report History"]:::oper
-    OPR_PRS["Securities Company Personnel Profile"]:::oper
+    OPR_PRS["Operational Securities Company Personnel Profile"]:::oper
     OPR_PRC["Securities Company Practitioner Profile"]:::oper
-    OPR_CPL["Securities Company Compliance History"]:::oper
-    OPR_OU["Securities Company Organization Unit Profile"]:::oper
-    OPR_IP["Individual Profile"]:::oper
-    OPR_TA["Individual Trading Account"]:::oper
-    OPR_RPN["Individual Related Party Network"]:::oper
-    OPR_LCR["Individual Listed Company Role"]:::oper
-    OPR_WH["Individual Work History"]:::oper
-    OPR_VH["Individual Violation History"]:::oper
+    OPR_CPL["Operational Securities Company Compliance History"]:::oper
+    OPR_OU["Operational Securities Company Organization Unit Profile"]:::oper
+    OPR_IP["Operational Individual Profile"]:::oper
+    OPR_TA["Operational Individual Trading Account"]:::oper
+    OPR_RPN["Operational Individual Related Party Network"]:::oper
+    OPR_LCR["Operational Individual Listed Company Role"]:::oper
+    OPR_WH["Operational Individual Work History"]:::oper
+    OPR_VH["Operational Individual Violation History"]:::oper
     OPR_RD["Securities Company Report Data"]:::oper
 
     DIM_DATE --> FACT_ST
@@ -2894,16 +2954,16 @@ graph TB
 | Bảng | Grain | KPI | Trạng thái |
 |---|---|---|---|
 | Securities Company Financial Report History | 1 CTCK × 1 kỳ BC BCTC | K_QLKD_130–141 (Nhóm 26/27) | **PENDING** (xem O_QLKD_23) |
-| Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK | K_QLKD_155–160 (Nhóm 31) | READY |
+| Operational Securities Company Personnel Profile | 1 nhân sự cao cấp × 1 CTCK | K_QLKD_155–160 (Nhóm 31) | READY |
 | Securities Company Practitioner Profile | 1 người HN × 1 CTCK | K_QLKD_142–154 (Nhóm 28/29/30) | **PENDING** (xem O_QLKD_23 — đổi nguồn từ Securities Practitioner/NHNCK sang REPORT_CELL_VALUE) |
-| Securities Company Compliance History | 1 CTCK × 1 sự kiện | K_QLKD_188, 197–203 READY; K_QLKD_186–187, 190–196 **PENDING** (Nhóm 38/39/40 — gating dữ liệu động) | **Partial READY** |
-| Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK | K_QLKD_161–164, 171–178, 182–183, 185–186 READY; K_QLKD_165–169, 179–181, 184 **PENDING** (Nhóm 33/36/37 — xem O_QLKD_20/O_QLKD_7) | **Partial READY** — Nhóm 33/36/37 PENDING |
-| Individual Profile | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_204–205 (Nhóm 41a) | READY |
-| Individual Related Party Network | 1 người liên quan × 1 cá nhân chính | K_QLKD_203, 206–210 (Nhóm 41a), reuse ở Nhóm 41b | READY, trừ K_QLKD_203 (Chiều ngày) **PENDING** |
-| Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_210–211 (Nhóm 41b) | READY |
-| Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_212 (Nhóm 41b) | READY |
-| Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_214–217 (Nhóm 41c) | READY, trừ K_QLKD_213 (Chiều ngày) **PENDING** |
-| Individual Violation History | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_219–223 (Nhóm 41d) | READY, trừ K_QLKD_218 (Chiều ngày) **PENDING** |
+| Operational Securities Company Compliance History | 1 CTCK × 1 sự kiện | K_QLKD_188, 197–203 READY; K_QLKD_186–187, 190–196 **PENDING** (Nhóm 38/39/40 — gating dữ liệu động) | **Partial READY** |
+| Operational Securities Company Organization Unit Profile | 1 đơn vị × 1 CTCK | K_QLKD_161–164, 171–178, 182–183, 185–186 READY; K_QLKD_165–169, 179–181, 184 **PENDING** (Nhóm 33/36/37 — xem O_QLKD_20/O_QLKD_7) | **Partial READY** — Nhóm 33/36/37 PENDING |
+| Operational Individual Profile | 1 cá nhân × 1 CTCK (latest state) | K_QLKD_204–205 (Nhóm 41a) | READY |
+| Operational Individual Related Party Network | 1 người liên quan × 1 cá nhân chính | K_QLKD_203, 206–210 (Nhóm 41a), reuse ở Nhóm 41b | READY, trừ K_QLKD_203 (Chiều ngày) **PENDING** |
+| Operational Individual Listed Company Role | 1 vai trò × 1 CTCK × 1 cá nhân | K_QLKD_210–211 (Nhóm 41b) | READY |
+| Operational Individual Trading Account | 1 tài khoản giao dịch × 1 CTCK × 1 cá nhân | K_QLKD_212 (Nhóm 41b) | READY |
+| Operational Individual Work History | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_214–217 (Nhóm 41c) | READY, trừ K_QLKD_213 (Chiều ngày) **PENDING** |
+| Operational Individual Violation History | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_219–223 (Nhóm 41d) | READY, trừ K_QLKD_218 (Chiều ngày) **PENDING** |
 | Securities Company Report Data | 1 chỉ tiêu × 1 kỳ báo cáo × 1 CTCK × 1 biểu mẫu | STT 42–145 (Nhóm 42-145, dải KPI_ID riêng — xem lưu ý phạm vi ở Nhóm 42-145) | **PENDING** (xem O_QLKD_23) |
 
 **Bảng Dimension:**
@@ -2937,20 +2997,21 @@ graph TB
 | Fact Securities Company Service Registration | fct_sc_svc_reg (mới) | new | Chưa có trong master |
 | Fact Securities Company License Condition Snapshot | fct_sc_license_cond_snpst (mới) | new | Chưa có trong master |
 | Fact Securities Company Capital Raising Event | fct_sc_cap_raising_evt (mới) | new | Chưa có trong master |
-| Market Index Snapshot | mkt_index_snpst (mới) | new | Chưa có trong master |
+| Fact Market Index Snapshot | fct_market_index_snpst (mới) | new | Sở hữu QLKD, reuse bởi NDTNN (K_NDTNN_34) |
+| Market Index Dimension | market_index_dim (mới) | new | Sở hữu QLKD (chuyển từ NDTNN 24/07/2026 để cùng module với Fact `fct_market_index_snpst`), reuse bởi NDTNN — xem O_NDTNN_29 |
 | Fact Securities Company Financial Structure Snapshot | fct_sc_fin_struct_snpst (mới) | new | Toàn bộ PENDING (O_QLKD_23) — thiết kế placeholder |
 | Fact Securities Company Report Compliance Snapshot | fct_sc_rpt_compl_snpst (mới) | new | PENDING (gating dữ liệu động) — thiết kế placeholder |
 | Securities Company Financial Report History | opr_sc_fin_rpt_hist (mới) | new | PENDING (O_QLKD_23) — thiết kế placeholder |
-| Securities Company Personnel Profile | opr_sc_personnel_profile (mới) | new | Chưa có trong master |
+| Operational Securities Company Personnel Profile | opr_securities_company_personnel_profile (mới) | new | Chưa có trong master |
 | Securities Company Practitioner Profile | opr_sc_prac_profile (mới) | new | Partial READY/PENDING theo Nhóm — thiết kế đầy đủ, đánh dấu PENDING ở cột KPI |
-| Securities Company Compliance History | opr_sc_compl_hist (mới) | new | Partial READY/PENDING theo Nhóm |
-| Securities Company Organization Unit Profile | opr_sc_org_unit_profile (mới) | new | Partial READY/PENDING theo Nhóm |
-| Individual Profile | opr_indv_profile (mới) | new | Chưa có trong master |
-| Individual Related Party Network | opr_indv_rel_p_network (mới) | new | Chưa có trong master |
-| Individual Listed Company Role | opr_indv_lst_co_role (mới) | new | Chưa có trong master |
-| Individual Trading Account | opr_indv_trd_account (mới) | new | Chưa có trong master |
-| Individual Work History | opr_indv_work_hist (mới) | new | Chưa có trong master |
-| Individual Violation History | opr_indv_vln_hist (mới) | new | Chưa có trong master |
+| Operational Securities Company Compliance History | opr_securities_company_compliance_hist (mới) | new | Partial READY/PENDING theo Nhóm |
+| Operational Securities Company Organization Unit Profile | opr_securities_company_organization_unit_profile (mới) | new | Partial READY/PENDING theo Nhóm |
+| Operational Individual Profile | opr_individual_profile (mới) | new | Chưa có trong master |
+| Operational Individual Related Party Network | opr_individual_related_party_network (mới) | new | Chưa có trong master |
+| Operational Individual Listed Company Role | opr_individual_listed_company_role (mới) | new | Chưa có trong master |
+| Operational Individual Trading Account | opr_individual_trading_account (mới) | new | Chưa có trong master |
+| Operational Individual Work History | opr_individual_work_hist (mới) | new | Chưa có trong master |
+| Operational Individual Violation History | opr_individual_violation_hist (mới) | new | Chưa có trong master |
 | Securities Company Report Data | opr_sc_rpt_data (mới) | new | Toàn bộ PENDING (O_QLKD_23) — thiết kế placeholder |
 
 ---

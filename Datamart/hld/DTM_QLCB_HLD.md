@@ -163,7 +163,7 @@ flowchart LR
 
 ---
 
-### Cụm 2: Chi tiết đợt chào bán (Bảng Tác nghiệp — Securities Offering 360 Profile)
+### Cụm 2: Chi tiết đợt chào bán (Bảng Tác nghiệp — Operational Securities Offering 360 Profile)
 
 Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 4 (bảng chi tiết số lượng CK chào bán & phát hành) và Tab CHÀO BÁN VÀ PHÁT HÀNH — Nhóm 7–10 (tra cứu chi tiết đợt chào bán theo 4 nhóm chỉ số). Bảng tác nghiệp nhận dữ liệu trực tiếp từ Atomic, không qua Dimension.
 
@@ -184,7 +184,7 @@ flowchart LR
     end
 
     subgraph GOLD["Datamart"]
-        securities_offering_360_profile["Securities Offering 360 Profile"]
+        opr_securities_offering_360_profile["Operational Securities Offering 360 Profile"]
     end
 
     IDS_SECURITIES_OFFERING --> Public_Company_Securities_Offering
@@ -192,10 +192,10 @@ flowchart LR
     IDS_SECURITIES_OFFERING_RESULT --> Public_Company_Securities_Offering_Result
     IDS_COMPANY_PROFILES --> Public_Company
 
-    Public_Company_Securities_Offering --> securities_offering_360_profile
-    Public_Company_Securities_Offering_Plan --> securities_offering_360_profile
-    Public_Company_Securities_Offering_Result --> securities_offering_360_profile
-    Public_Company --> securities_offering_360_profile
+    Public_Company_Securities_Offering --> opr_securities_offering_360_profile
+    Public_Company_Securities_Offering_Plan --> opr_securities_offering_360_profile
+    Public_Company_Securities_Offering_Result --> opr_securities_offering_360_profile
+    Public_Company --> opr_securities_offering_360_profile
 ```
 
 ---
@@ -574,7 +574,7 @@ flowchart LR
 | ABC | Công ty ABC | Công chúng | — | — | — | — | 10,000,000 | 9,500,000 | 500 | 475 | 95% |
 | DEF | Công ty DEF | Riêng lẻ | — | — | — | — | 5,000,000 | 5,000,000 | 250 | 250 | 100% |
 
-**Source:** `Securities Offering 360 Profile` — lookup theo đợt chào bán / công ty
+**Source:** `Operational Securities Offering 360 Profile` — lookup theo đợt chào bán / công ty
 
 **Bảng KPI:**
 
@@ -595,7 +595,7 @@ flowchart LR
 
 > **Ghi chú K_QLCB_23–26:** 4 cột tổ chức có sẵn trực tiếp trên bảng cha `Public Company Securities Offering`, `etl_logic_type = direct`.
 
-> **Ghi chú grain:** `Securities Offering 360 Profile` join tự nhiên theo `offering_method_code` — `Public Company Securities Offering Plan` (1 row/loại hình kế hoạch) LEFT JOIN `Public Company Securities Offering Result` (1 row/loại hình kết quả) theo `(pc_securities_offering_id, offering_method_code)`. K_QLCB_27 lấy từ bảng cha Offering (`total_registered_quantity`, tổng toàn hồ sơ — không GROUP BY loại hình theo đúng BA SQL). K_QLCB_28 lấy trực tiếp từ Result (không cần SUM vì Result Quantity đã snapshot per-loại-hình sẵn).
+> **Ghi chú grain:** `Operational Securities Offering 360 Profile` join tự nhiên theo `offering_method_code` — `Public Company Securities Offering Plan` (1 row/loại hình kế hoạch) LEFT JOIN `Public Company Securities Offering Result` (1 row/loại hình kết quả) theo `(pc_securities_offering_id, offering_method_code)`. K_QLCB_27 lấy từ bảng cha Offering (`total_registered_quantity`, tổng toàn hồ sơ — không GROUP BY loại hình theo đúng BA SQL). K_QLCB_28 lấy trực tiếp từ Result (không cần SUM vì Result Quantity đã snapshot per-loại-hình sẵn).
 
 **Schema bảng tác nghiệp:**
 
@@ -635,13 +635,13 @@ erDiagram
     }
 ```
 
-> **Ghi chú Phase 2 — Key labels cho `Securities Offering 360 Profile`:**
+> **Ghi chú Phase 2 — Key labels cho `Operational Securities Offering 360 Profile`:**
 > - `Securities_Offering_Code` → `key = BK` — Business key đợt chào bán (`Public Company Securities Offering.pc_securities_offering_code`), ETL debug anchor
 > - `Offering_Method_Code` → `key = BK` — Business key component 2 (từ Plan), cùng với `Securities_Offering_Code` tạo thành Composite BK định nghĩa grain (1 row = 1 đợt × 1 loại hình)
 > - Mermaid không hỗ trợ label `BK` trong erDiagram — chỉ ghi trong Attributes CSV cột `key`
 > - Không có surrogate PK riêng cho 360 Profile — dùng Composite BK thay thế
 >
-> **Cột dùng ở Nhóm 7/9/10 (mọi cột dùng ở bất kỳ Nhóm nào của `Securities Offering 360 Profile` phải xuất hiện đủ trong erDiagram này):**
+> **Cột dùng ở Nhóm 7/9/10 (mọi cột dùng ở bất kỳ Nhóm nào của `Operational Securities Offering 360 Profile` phải xuất hiện đủ trong erDiagram này):**
 > - `Processor_User_Name_Snapshot` (nguồn bảng cha Offering `processor_user_nm_snpst`) — dùng ở Nhóm 7 (K_QLCB_44)
 > - `Total_Registered_Quantity` (nguồn bảng cha Offering `total_registered_quantity`) — dùng ở Nhóm 4 (K_QLCB_27) và Nhóm 9 (K_QLCB_54) — Nhóm 4 sửa lại theo BA (trước đó sai map vào Plan snapshot) khi review cross-check phát hiện gap
 > - `Offering_Price` (nguồn Plan `offering_price`), `Employee_Quantity` (nguồn Plan `employee_quantity`), `Swap_Target` (nguồn Plan `swap_target`) — dùng ở Nhóm 9 (K_QLCB_55, 57, 58)
@@ -659,7 +659,7 @@ flowchart LR
         SV2["Public Company"]
     end
     subgraph Datamart["Datamart"]
-        G1["Securities Offering 360 Profile"]
+        G1["Operational Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
         R4["Tab CHAO BAN PHAT HANH - Nhom 4 - K_QLCB_20-31"]
@@ -675,7 +675,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (Plan LEFT JOIN Result theo `offering_method_code`). Composite BK: (Securities Offering Code, Offering Method Code) |
+| `Operational Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (Plan LEFT JOIN Result theo `offering_method_code`). Composite BK: (Securities Offering Code, Offering Method Code) |
 
 ---
 
@@ -858,7 +858,7 @@ flowchart LR
 
 **Slicer chung:** Sàn (dropdown), Ngành nghề (dropdown), Khoảng thời gian (Từ ngày — Đến ngày)
 
-> **Ghi chú thiết kế:** Data Explorer là màn hình tra cứu chi tiết từng đợt chào bán, cho phép người dùng chọn tổ hợp chỉ số (checkbox) từ 4 nhóm rồi hiển thị bảng kết quả. Đây là use case Tác nghiệp — lookup n đợt chào bán theo điều kiện lọc. Tab này **reuse** `Securities Offering 360 Profile` đã thiết kế ở Nhóm 4 Tab CHÀO BÁN PHÁT HÀNH, mở rộng thêm các attribute chi tiết theo từng hình thức phát hành. Không cần thêm Fact hay Dim mới.
+> **Ghi chú thiết kế:** Data Explorer là màn hình tra cứu chi tiết từng đợt chào bán, cho phép người dùng chọn tổ hợp chỉ số (checkbox) từ 4 nhóm rồi hiển thị bảng kết quả. Đây là use case Tác nghiệp — lookup n đợt chào bán theo điều kiện lọc. Tab này **reuse** `Operational Securities Offering 360 Profile` đã thiết kế ở Nhóm 4 Tab CHÀO BÁN PHÁT HÀNH, mở rộng thêm các attribute chi tiết theo từng hình thức phát hành. Không cần thêm Fact hay Dim mới.
 
 ---
 
@@ -875,7 +875,7 @@ flowchart LR
 | VIC | VinGroup | HOSE | Bất động sản | 24/03/2026 | Nguyễn Văn A | Cổ phiếu |
 | VCB | Vietcombank | UPCOM | Ngân hàng | 24/03/2026 | Trần Thị B | Cổ phiếu |
 
-**Source:** `Securities Offering 360 Profile`
+**Source:** `Operational Securities Offering 360 Profile`
 
 **Bảng KPI:**
 
@@ -888,14 +888,14 @@ flowchart LR
 | K_QLCB_47 | Sàn | Text | Attribute | `Public Company.equity_listing_exchange_code` | Scheme: IDS_EQUITY_LISTING_EXCH |
 | K_QLCB_48 | Loại chứng khoán | Text | Attribute | `Public Company.securities_tp_code` — IDS.COMPANY_PROFILES.SECURITIES_TYPE_CD | Scheme: IDS_ISSUANCE_SECURITY_TYPE |
 
-**Schema bảng tác nghiệp:** Kế thừa `Securities Offering 360 Profile` — bổ sung cột `Processor_User_Name_Snapshot`, `Securities_Type_Code` (xem erDiagram Nhóm 4).
+**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung cột `Processor_User_Name_Snapshot`, `Securities_Type_Code` (xem erDiagram Nhóm 4).
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Securities Offering 360 Profile"]
+        G1["Operational Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
         R7["Tab CHAO BAN VA PHAT HANH - Nhom 7 - K_QLCB_43-48"]
@@ -907,7 +907,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
+| `Operational Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
 
 ---
 
@@ -923,7 +923,7 @@ flowchart LR
 | 12/GCN-UBCK | 15/01/2026 | 14/CV-UBCK | 14/01/2026 | Công chúng |
 | 08/GCN-UBCK | 10/02/2026 | 07/CV-UBCK | 09/02/2026 | Riêng lẻ |
 
-**Source:** `Securities Offering 360 Profile`
+**Source:** `Operational Securities Offering 360 Profile`
 
 **Bảng KPI:**
 
@@ -933,16 +933,16 @@ flowchart LR
 | K_QLCB_50 | Ngày cấp giấy chứng nhận | Ngày | Attribute | `Public Company Securities Offering.certificate_dt` — IDS.SECURITIES_OFFERING.CERTIFICATE_DATE |
 | K_QLCB_51 | Số công văn gửi công ty | Text | Attribute | `Public Company Securities Offering.official_letter_nbr` — IDS.SECURITIES_OFFERING.OFFICIAL_LETTER_NO |
 | K_QLCB_52 | Ngày công văn | Ngày | Attribute | `Public Company Securities Offering.official_letter_dt` — IDS.SECURITIES_OFFERING.OFFICIAL_LETTER_DATE |
-| K_QLCB_53 | Hình thức phát hành | Text | Attribute | `Securities Offering 360 Profile.Offering_Method_Code` — từ `Public Company Securities Offering Plan.offering_method_code`; composite BK component 2 |
+| K_QLCB_53 | Hình thức phát hành | Text | Attribute | `Operational Securities Offering 360 Profile.Offering_Method_Code` — từ `Public Company Securities Offering Plan.offering_method_code`; composite BK component 2 |
 
-**Schema bảng tác nghiệp:** Kế thừa `Securities Offering 360 Profile`.
+**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Securities Offering 360 Profile"]
+        G1["Operational Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
         R8["Tab CHAO BAN VA PHAT HANH - Nhom 8 - K_QLCB_49-53"]
@@ -954,7 +954,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
+| `Operational Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
 
 ---
 
@@ -971,7 +971,7 @@ flowchart LR
 |---|---|---|---|---|---|
 | 10,000,000 | 15,000 đ | 150 tỷ | 500 | CBNV công ty | Bổ sung vốn lưu động |
 
-**Source:** `Securities Offering 360 Profile`
+**Source:** `Operational Securities Offering 360 Profile`
 
 **Bảng KPI:**
 
@@ -984,14 +984,14 @@ flowchart LR
 | K_QLCB_58 | Đối tượng | Text | Attribute | `Public Company Securities Offering Plan.swap_target` — IDS.SECURITIES_OFFERING_PLAN.SWAP_TARGET |
 | K_QLCB_59 | Mục đích sử dụng vốn | Text | Attribute | `Public Company Securities Offering.capital_usage_plan` — bảng cha, IDS.SECURITIES_OFFERING.CAPITAL_USAGE_PLAN |
 
-**Schema bảng tác nghiệp:** Kế thừa `Securities Offering 360 Profile` — bổ sung 3 cột `Offering_Price`, `Employee_Quantity`, `Swap_Target` (xem erDiagram Nhóm 4).
+**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Offering_Price`, `Employee_Quantity`, `Swap_Target` (xem erDiagram Nhóm 4).
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Securities Offering 360 Profile"]
+        G1["Operational Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
         R9["Tab CHAO BAN VA PHAT HANH - Nhom 9 - K_QLCB_54-59"]
@@ -1003,7 +1003,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
+| `Operational Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
 
 ---
 
@@ -1018,7 +1018,7 @@ flowchart LR
 |---|---|---|---|---|
 | 9,800,000 | 15,000 đ | 147 tỷ | 490 | CBNV công ty |
 
-**Source:** `Securities Offering 360 Profile`
+**Source:** `Operational Securities Offering 360 Profile`
 
 **Bảng KPI:**
 
@@ -1030,14 +1030,14 @@ flowchart LR
 | K_QLCB_63 | Số lượng người lao động (TT) | Người | Attribute | `Public Company Securities Offering Result.employee_quantity` — IDS.SECURITIES_OFFERING_RESULT.EMPLOYEE_QTY |
 | K_QLCB_64 | Đối tượng (thực tế) | Text | Attribute | `Public Company Securities Offering Result.capital_src` — IDS.SECURITIES_OFFERING_RESULT.CAPITAL_SOURCE (field khác Plan, không phải `swap_target`) |
 
-**Schema bảng tác nghiệp:** Kế thừa `Securities Offering 360 Profile` — bổ sung 3 cột `Actual_Offering_Price`, `Employee_Quantity_Result`, `Capital_Source`.
+**Schema bảng tác nghiệp:** Kế thừa `Operational Securities Offering 360 Profile` — bổ sung 3 cột `Actual_Offering_Price`, `Employee_Quantity_Result`, `Capital_Source`.
 
 **Lineage Mart → Báo cáo:**
 
 ```mermaid
 flowchart LR
     subgraph Datamart["Datamart"]
-        G1["Securities Offering 360 Profile"]
+        G1["Operational Securities Offering 360 Profile"]
     end
     subgraph RPT["Báo cáo"]
         R10["Tab CHAO BAN VA PHAT HANH - Nhom 10 - K_QLCB_60-64"]
@@ -1049,7 +1049,7 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| `Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
+| `Operational Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (kế thừa Nhóm 4) |
 
 ---
 
@@ -1070,7 +1070,7 @@ graph TB
     FACT_RESULT["Fact Securities Offering Result"]:::fact
     FACT_APP["Fact Securities Offering Application"]:::fact
 
-    OPR_OFF["Securities Offering 360 Profile"]:::oper
+    OPR_OFF["Operational Securities Offering 360 Profile"]:::oper
 
     DIM_DATE --> FACT_OFF
     DIM_COMPANY --> FACT_OFF
@@ -1100,7 +1100,7 @@ graph TB
 
 | Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính |
 |---|---|---|---|
-| Securities Offering 360 Profile | Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình, gồm thông tin tổ chức liên quan (Nhóm 4, 7-10) | 1 đợt chào bán × 1 loại hình | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result / Public Company |
+| Operational Securities Offering 360 Profile | Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình, gồm thông tin tổ chức liên quan (Nhóm 4, 7-10) | 1 đợt chào bán × 1 loại hình | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result / Public Company |
 
 ### Bảng Dimension
 
@@ -1125,7 +1125,7 @@ graph TB
 | Fact Securities Offering Plan | fct_securities_offering_plan (đề xuất) | new | Chưa có Fact nào cùng grain/nguồn `pc_securities_offering_plan` |
 | Fact Securities Offering Result | fct_securities_offering_result (đề xuất) | new | Chưa có Fact nào cùng grain/nguồn `pc_securities_offering_result` |
 | Fact Securities Offering Application | fct_securities_offering_application (đề xuất) | new | Chưa có Fact nào cùng grain hồ sơ đăng ký IDS |
-| Securities Offering 360 Profile | securities_offering_360_profile (đề xuất) | new | Bảng tác nghiệp, chưa có tương đương trong registry |
+| Operational Securities Offering 360 Profile | opr_securities_offering_360_profile (đề xuất) | new | Bảng tác nghiệp, chưa có tương đương trong registry |
 
 ---
 

@@ -2,250 +2,147 @@
 
 ---
 
-## Tab GIAO DỊCH
-
-### Nhóm 1 — KPI Cards: Tăng trưởng NĐT mới
+### Nhóm 1 — KPI Cards tổng quan (Box 1 READY)
 
 #### Star schema
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Registration : "Registration Date Dimension Id"
-    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Registration : "Investor Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : " "
 ```
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Registration | Event đăng ký MSGD | 1 row = 1 NĐT NN đăng ký mã giao dịch (event) | K_NDTNN_5–7, 5_YOY |
-| Foreign Investor Dimension | NĐT — thông tin định danh (SCD2) | 1 row = 1 NĐT NN (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Snapshot giá trị mua/bán NĐTNN theo mã CK và toàn thị trường | 1 row = 1 mã CK × 1 ngày | K_NDTNN_1-4 |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 
 ---
 
-## Tab GIÁM SÁT DÒNG VỐN
-
-### Nhóm 3 — KPI Cards: Dòng tiền vào / ra / ròng
+### Nhóm 2 — Tổng giá trị mua/bán ròng của NĐTNN
 
 #### Star schema
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Report Date Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : " "
+    Securities_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : " "
+    Public_Company_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : " "
 ```
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Capital Flow | Event vào/ra vốn — phân biệt chiều bằng Event Type Code | 1 row = 1 sự kiện IN/OUT × 1 NĐT × 1 ngày báo cáo | K_NDTNN_23–25 |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Giá trị mua/bán ròng, Top ngành/mã | 1 row = 1 mã CK × 1 ngày | K_NDTNN_8-17,158-159 (+ reuse 1-4,19) |
+| Securities Dimension | Dimension | new | Danh mục mã chứng khoán | 1 row / mã CK (SCD4A) | — |
+| Public Company Dimension | Dimension | partial | Công ty đại chúng + nhóm ngành — bảng dùng chung GSDC/QLCB, NDTNN chỉ thêm 1 cột delta (Classification Business Line Name) | 1 row / công ty đại chúng (SCD2) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 
 ---
 
-### Nhóm 5 — Dòng vốn đầu tư gián tiếp nước ngoài
+### Nhóm 5 — Tương quan Net Flow & VN-Index
 
 #### Star schema
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Report Date Dimension Id"
-    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Investor Dimension Id"
-    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Country Dimension Id"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Foreign_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
 ```
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Capital Flow | Event vào/ra vốn — Group By loại hình / quốc gia | 1 row = 1 sự kiện IN/OUT × 1 NĐT × 1 ngày báo cáo | K_NDTNN_26–33 |
-| Foreign Investor Dimension | NĐT — Investor Object Type Code (SCD2) | 1 row = 1 NĐT NN (SCD2) | — |
-| Geographic Area Dimension | Quốc gia / quốc tịch (SCD2) | 1 row = 1 quốc gia (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Securities Foreign Trading Snapshot | Fact Snapshot | reuse | Giá trị mua/bán ròng (reuse Nhóm 2) | 1 row = 1 mã CK × 1 ngày | K_NDTNN_33 |
+| Fact Market Index Snapshot | Fact Snapshot | new | Điểm đóng cửa chỉ số VN-Index | 1 row = 1 chỉ số × 1 ngày | K_NDTNN_34 |
+| Market Index Dimension | Dimension | new | Danh mục chỉ số thị trường | 1 row / combo Market_Id+Market_Code (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 
 ---
 
-## Tab DANH MỤC
-
-### Nhóm 6 — Tổng giá trị danh mục
+### Nhóm 11 — Hồ sơ định danh
 
 #### Star schema
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
-    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Investor Dimension Id"
-    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Country Dimension Id"
-```
+*Không có relationship line — bảng tác nghiệp, không qua Fact/Dimension*
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Portfolio Snapshot | Periodic snapshot danh mục NĐTNN | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_34–39 |
-| Foreign Investor Dimension | NĐT — Investor Object Type Code (SCD2) | 1 row = 1 NĐT NN (SCD2) | — |
-| Geographic Area Dimension | Quốc gia / quốc tịch (SCD2) | 1 row = 1 quốc gia (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Foreign Investor 360 Profile | Operational | new | Hồ sơ định danh 360° của NĐTNN | 1 row = 1 NĐT NN (trạng thái mới nhất) | K_NDTNN_58-63 |
 
 ---
 
-### Nhóm 7 — Cơ cấu danh mục theo loại hình tài sản
+### Nhóm 12 — Biến động tài sản (K_NDTNN_64 READY)
 
 #### Star schema
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
-    Asset_Category_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Asset Category Dimension Id"
-```
+*Không có relationship line — reuse trực tiếp Foreign Investor Dimension, không qua Fact*
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Portfolio Snapshot | Periodic snapshot danh mục — filter theo loại tài sản | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_40–44 |
-| Asset Category Dimension | Loại hình tài sản — 5 giá trị (SCD2) | 1 row = 1 loại tài sản (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Foreign Investor Dimension | Dimension | new | Thông tin định danh NĐT nước ngoài | 1 row / NĐT NN (SCD4A current-state) | K_NDTNN_64 |
 
 ---
 
-### Nhóm 8 — Bản đồ nhiệt phân ngành
-
-> **Ghi chú:** `Industry Category Dimension` là ETL-derived Conformed Dimension — ETL extract từ `Public Company.Industry Category Level1 Code` (IDS). Không có Atomic entity riêng cho danh mục ngành.
+### Nhóm 13 — Lịch sử tuân thủ
 
 #### Star schema
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
-    Industry_Category_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Industry Category Dimension Id"
-```
+*Không có relationship line — bảng tác nghiệp, không qua Fact/Dimension*
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Portfolio Snapshot | Periodic snapshot danh mục — Group By ngành | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_51 |
-| Industry Category Dimension | Nhóm ngành — ETL-derived từ Public Company (IDS) (SCD2) | 1 row = 1 nhóm ngành (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Investor Compliance History | Operational | new | Lịch sử tuân thủ và xử phạt của NĐTNN | 1 row = 1 hành vi vi phạm × 1 đối tượng bị xử phạt | K_NDTNN_66-69,71 (K_NDTNN_70 Out-of-scope) |
 
 ---
 
-### Nhóm 9 — ROOM sở hữu NĐTNN
+### Nhóm 14 — Báo cáo thống kê tình hình giao dịch NĐTNN theo loại chứng khoán
 
 #### Star schema
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Ownership_Snapshot : "Snapshot Date Dimension Id"
-    Public_Company_Dimension ||--o{ Fact_Foreign_Ownership_Snapshot : "Public Company Dimension Id"
-```
+*Không có relationship line — bảng tác nghiệp, ETL populate độc lập (Securities Dimension chỉ dùng nội bộ ETL filter dòng FUND_CERT, không phải FK)*
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Ownership Snapshot | Periodic snapshot ROOM — ETL pre-aggregate SUM(Ownership Rate) từ FIMS.CATEGORIESSTOCK, join IDS.foreign_owner_limit | 1 row = 1 mã CK × 1 ngày snapshot (ETL pre-agg từ nhiều NĐT) | K_NDTNN_45–49 |
-| Public Company Dimension | Công ty đại chúng — Stock Code + Industry Category (SCD2) | 1 row = 1 công ty đại chúng (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Foreign Investor Trading Statistics Report | Fact (report) | new | Báo cáo thống kê GT mua/bán/ròng NĐTNN theo 4 nhóm loại CK | 1 row = 1 ngày × 1 Security_Type_Group (STOCK/BOND/FUND_CERT/TOTAL) | K_NDTNN_72-83 |
 
 ---
 
-## Tab NĐTNN 360
-
-### Danh sách tìm kiếm + Hồ sơ định danh (Sub-tab A)
-
-> **Ghi chú:** `Foreign Investor 360 Profile` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Foreign Investor` + `Custodian Bank`, không join qua Dimension.
+### Nhóm 15 — Báo cáo thống kê tình hình giao dịch NĐTNN – biểu chi tiết
 
 #### Star schema
 
-*Không có relationship line — bảng tác nghiệp*
+*Không có relationship line — bảng tác nghiệp, denormalize hoàn toàn*
 
 #### Bảng entity
 
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Foreign Investor 360 Profile | Hồ sơ 360° NĐT — latest state. Atomic: Foreign Investor + Custodian Bank | 1 row = 1 NĐT NN (trạng thái mới nhất) | K_NDTNN_L1–L4, P1–P5 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Foreign Investor Trading Detail Report | Fact (report) | new | Báo cáo chi tiết giao dịch NĐTNN theo tài khoản | 1 row = 1 ngày × 1 Account_Number × 1 Symbol × 1 bên (Buy/Sell) | K_NDTNN_84-89 |
 
 ---
 
-### Sub-tab B — Biến động tài sản
+## Bảng PENDING (không thiết kế trong Phase 2)
 
-#### Star schema
+Các bảng dưới đây 100% KPI/Nhóm dùng đều PENDING (Gap Atomic hoặc chờ nguồn) — không đưa vào Entities.csv, chờ Data Modeler xác nhận nguồn trước khi thiết kế lại LLD.
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
-    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Investor Dimension Id"
-```
-
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Portfolio Snapshot | Periodic snapshot danh mục — filter per NĐT | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_A1–A2 |
-| Foreign Investor Dimension | NĐT (SCD2) | 1 row = 1 NĐT NN (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
-
----
-
-### Sub-tab C — Lịch sử tuân thủ
-
-> **Ghi chú:** `Investor Compliance History` là bảng tác nghiệp — lấy trực tiếp từ Atomic `Surveillance Enforcement Case` + `Surveillance Enforcement Decision`, không join qua Dimension.
-
-#### Star schema
-
-*Không có relationship line — bảng tác nghiệp*
-
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Investor Compliance History | Lịch sử tuân thủ — 1 row per quyết định xử phạt. Atomic: Surveillance Enforcement Case + Decision | 1 row = 1 quyết định xử phạt / văn bản xử lý của 1 NĐT | K_NDTNN_C1–C5 |
-
----
-
-## Tab DATA EXPLORER
-
-### Nhóm 11 — Data Explorer Aggregate (Reuse)
-
-> Không tạo bảng Datamart mới — reuse `Fact Foreign Investor Capital Flow` và `Fact Foreign Investor Portfolio Snapshot` với chiều GROUP BY linh hoạt theo lựa chọn người dùng.
-
-#### Star schema
-
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Report Date Dimension Id"
-    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Investor Dimension Id"
-    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Capital_Flow : "Country Dimension Id"
-    Calendar_Date_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Snapshot Date Dimension Id"
-    Foreign_Investor_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Investor Dimension Id"
-    Geographic_Area_Dimension ||--o{ Fact_Foreign_Investor_Portfolio_Snapshot : "Country Dimension Id"
-```
-
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| Fact Foreign Investor Capital Flow | Reuse — GROUP BY Tháng / Quốc gia / NĐT linh hoạt | 1 row = 1 sự kiện IN/OUT × 1 NĐT × 1 ngày | K_NDTNN_DE1 |
-| Fact Foreign Investor Portfolio Snapshot | Reuse — GROUP BY Tháng / Quốc gia / Tên NĐT linh hoạt | 1 row = 1 NĐT × 1 mã tài sản × 1 tháng | K_NDTNN_DE2 |
-| Foreign Investor Dimension | NĐT (SCD2) | 1 row = 1 NĐT NN (SCD2) | — |
-| Geographic Area Dimension | Quốc gia (SCD2) | 1 row = 1 quốc gia (SCD2) | — |
-| Calendar Date Dimension | Lịch ngày | 1 row = 1 ngày | — |
-
----
-
-### Nhóm 12 — Data Explorer Pass-through TT51
-
-> **Ghi chú:** `NDTNN Regulatory Report Store` là bảng tác nghiệp dạng Generic Store — lấy trực tiếp từ Atomic `Member Regulatory Report` + `Member Report Value` + `Report Template`. Thiết kế 1 bảng cho 26 mẫu biểu TT51/2021 thay vì 26 bảng riêng, vì tất cả đều có cùng cấu trúc 6 trường hiển thị.
-
-#### Star schema
-
-*Không có relationship line — bảng tác nghiệp*
-
-#### Bảng entity
-
-| Datamart entity | Description | Grain | KPI |
-|---|---|---|---|
-| NDTNN Regulatory Report Store | Generic store 26 mẫu biểu TT51/2021. Atomic: Member Regulatory Report + Member Report Value + Report Template | 1 row = 1 lần nộp báo cáo × 1 chỉ tiêu (Cell Code) | K_NDTNN_DE3–DE8 |
+| Datamart Entity | Lý do PENDING | Issue |
+|---|---|---|
+| Fact Foreign Investor Registration Report (tên tạm) | Nguồn báo cáo PLVI-TT51 — cần xác nhận Report Code trong generic store TT51 | O_NDTNN_1, Cụm 1b |
+| Fact Foreign Investor Capital Flow Report (tên tạm) | Nguồn báo cáo PLIV-TT51 — cần xác nhận Report Code | O_NDTNN_16, Cụm 5a |
+| Fact Foreign Investor Portfolio Value Report (tên tạm) | Nguồn báo cáo PLIII-TT51 — cần xác nhận Report Code Mục II | O_NDTNN_21, Cụm 3a |
+| Fact Public Company Foreign Ownership Snapshot (tên tạm) | BA yêu cầu nguồn báo cáo thủ công BM67 VSDC (chưa số hoá), không dùng entity IDS/FIMS đã có | O_NDTNN_22, Cụm 6 |
+| NDTNN Regulatory Report Store | 100% Dữ liệu động (Nhóm 18-43) — cần xác nhận 26 Report Code riêng biệt | O_NDTNN_25, O_NDTNN_27, Cụm 7 |
+| Fact Foreign Investor Portfolio Snapshot (grain 1 NĐT × 1 mã CK, Nhóm 8) | Thiếu measure giá đóng cửa chứng khoán trong FIMS/IDS — K_NDTNN_50 (Chiều) cũng chuyển PENDING vì đứng độc lập không measure | O_NDTNN_12, O_NDTNN_21 |

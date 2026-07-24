@@ -141,32 +141,38 @@ WHERE cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 5. FACT: qlkd_market_index_snpst_flat
+-- 5. FACT: qlkd_fct_market_index_snpst_flat
 --    cal: JOIN + WHERE cdr_dt = :etl_date
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_market_index_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_market_index_snpst_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_fct_market_index_snpst_flat
 SELECT
     -- From: FACT Market Index Snapshot
     f.snpst_dt_dim_id,
-    f.market_code,
+    f.market_index_dim_id,
     f.market_index_val,
 
     -- From: CALENDAR DATE DIMENSION
-    cal.cdr_dt                      AS cdr_dt
+    cal.cdr_dt                      AS cdr_dt,
 
-FROM datamart.market_index_snpst f
+    -- From: MARKET INDEX DIMENSION
+    idx_dim.market_id               AS market_id,
+    idx_dim.market_code             AS market_code
+
+FROM datamart.fct_market_index_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.market_index_dim idx_dim
+    ON idx_dim.market_index_dim_id = f.market_index_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
 
 
 -- ============================================================
--- 6. OPERATIONAL: qlkd_securities_company_personnel_profile_flat
+-- 6. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_securities_company_personnel_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_securities_company_personnel_profile_flat
 SELECT
     -- From: OPERATIONAL Securities Company Personnel Profile
     o.sc_senior_personnel_code,
@@ -181,15 +187,15 @@ SELECT
     o.personnel_status_code,
     o.src_stm_code
 
-FROM datamart.securities_company_personnel_profile o
+FROM datamart.opr_securities_company_personnel_profile o
 ;
 
 
 -- ============================================================
--- 7. OPERATIONAL: qlkd_securities_company_organization_unit_profile_flat
+-- 7. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_securities_company_organization_unit_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_securities_company_organization_unit_profile_flat
 SELECT
     -- From: OPERATIONAL Securities Company Organization Unit Profile
     o.sc_ou_code,
@@ -202,15 +208,15 @@ SELECT
     o.cl_firm_status_code,
     o.src_stm_code
 
-FROM datamart.securities_company_organization_unit_profile o
+FROM datamart.opr_securities_company_organization_unit_profile o
 ;
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlkd_securities_company_compliance_hist_flat
+-- 8. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_securities_company_compliance_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_securities_company_compliance_hist_flat
 SELECT
     -- From: OPERATIONAL Securities Company Compliance History
     o.pd_code,
@@ -225,15 +231,15 @@ SELECT
     o.sc_code,
     o.src_stm_code
 
-FROM datamart.securities_company_compliance_hist o
+FROM datamart.opr_securities_company_compliance_hist o
 ;
 
 
 -- ============================================================
--- 9. OPERATIONAL: qlkd_individual_profile_flat
+-- 9. OPERATIONAL: qlkd_opr_individual_profile_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_individual_profile_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_individual_profile_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_individual_profile_flat
 SELECT
     -- From: OPERATIONAL Individual Profile
     o.sc_senior_personnel_code,
@@ -244,15 +250,15 @@ SELECT
     o.license_certificate_nbr,
     o.src_stm_code
 
-FROM datamart.individual_profile o
+FROM datamart.opr_individual_profile o
 ;
 
 
 -- ============================================================
--- 10. OPERATIONAL: qlkd_individual_related_party_network_flat
+-- 10. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_individual_related_party_network_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_individual_related_party_network_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_related_party_network_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_individual_related_party_network_flat
 SELECT
     -- From: OPERATIONAL Individual Related Party Network
     o.sc_insider_related_person_code,
@@ -265,15 +271,15 @@ SELECT
     o.ownership_ratio,
     o.src_stm_code
 
-FROM datamart.individual_related_party_network o
+FROM datamart.opr_individual_related_party_network o
 ;
 
 
 -- ============================================================
--- 11. OPERATIONAL: qlkd_individual_listed_company_role_flat
+-- 11. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_individual_listed_company_role_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_individual_listed_company_role_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_listed_company_role_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_individual_listed_company_role_flat
 SELECT
     -- From: OPERATIONAL Individual Listed Company Role
     o.sc_insider_related_person_code,
@@ -283,15 +289,15 @@ SELECT
     o.shares_count,
     o.src_stm_code
 
-FROM datamart.individual_listed_company_role o
+FROM datamart.opr_individual_listed_company_role o
 ;
 
 
 -- ============================================================
--- 12. OPERATIONAL: qlkd_individual_trading_account_flat
+-- 12. OPERATIONAL: qlkd_opr_individual_trading_account_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_individual_trading_account_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_individual_trading_account_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_trading_account_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_individual_trading_account_flat
 SELECT
     -- From: OPERATIONAL Individual Trading Account
     o.sc_shareholder_code,
@@ -300,15 +306,15 @@ SELECT
     o.shareholder_nm,
     o.src_stm_code
 
-FROM datamart.individual_trading_account o
+FROM datamart.opr_individual_trading_account o
 ;
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlkd_individual_work_hist_flat
+-- 13. OPERATIONAL: qlkd_opr_individual_work_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_individual_work_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_individual_work_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_individual_work_hist_flat
 SELECT
     -- From: OPERATIONAL Individual Work History
     o.sc_senior_personnel_code,
@@ -319,15 +325,15 @@ SELECT
     o.employment_status_code,
     o.src_stm_code
 
-FROM datamart.individual_work_hist o
+FROM datamart.opr_individual_work_hist o
 ;
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlkd_individual_violation_hist_flat
+-- 14. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlkd_individual_violation_hist_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_individual_violation_hist_flat
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_individual_violation_hist_flat
 SELECT
     -- From: OPERATIONAL Individual Violation History
     o.pd_code,
@@ -339,6 +345,6 @@ SELECT
     o.decision_status_code,
     o.src_stm_code
 
-FROM datamart.individual_violation_hist o
+FROM datamart.opr_individual_violation_hist o
 ;
 

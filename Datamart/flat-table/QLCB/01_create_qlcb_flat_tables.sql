@@ -147,12 +147,12 @@ COMMENT 'Flat table — Fact Securities Offering Application × Calendar Date Di
 
 
 -- ============================================================
--- 5. OPERATIONAL: qlcb_securities_offering_360_profile_flat
+-- 5. OPERATIONAL: qlcb_opr_securities_offering_360_profile_flat
 --    Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình
 --    Grain: 1 đợt chào bán × 1 loại hình
 --    Không JOIN dim, không lọc theo ngày (bảng tác nghiệp)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlcb_securities_offering_360_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Securities Offering 360 Profile
     securities_offering_code            String                  COMMENT 'Composite BK component 1 — BK đợt chào bán',

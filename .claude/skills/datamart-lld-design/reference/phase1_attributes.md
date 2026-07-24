@@ -39,25 +39,31 @@ Ví dụ: `scr_prac_conduct_vln` → manifest → entity YAML → `classificatio
 | `new` | Sinh file đầy đủ theo naming rule |
 | `partial` | Sinh file đầy đủ (toàn bộ cột bảng) — xem quy trình partial bên dưới |
 
-### Quy trình partial — thêm nguồn mới vào bảng đã có
+### Quy trình partial — thêm cột mới vào bảng đã có (dùng chung nhiều module)
+
+> **Nguyên tắc cốt lõi — bắt buộc:** Bảng `partial` là 1 bảng vật lý DUY NHẤT được module gốc sở hữu và các module khác reuse. Cột mới phát sinh khi mở rộng bảng đó (dù module nào yêu cầu) phải được thêm **trực tiếp vào đúng file Attributes gốc của module sở hữu** (`Datamart/lld/{MODULE_SỞ_HỮU}/DTM_{MODULE_SỞ_HỮU}_{datamart_table}_{src}.csv`) — **KHÔNG** tạo file `_delta.csv` hay bất kỳ file Attributes nào riêng trong thư mục của module đang reuse (`Datamart/lld/{MODULE_REUSE}/`). Module sở hữu xác định qua field `module` (không phải `modules_using`) trong entry `datamart_model.yaml` tương ứng.
+>
+> **Lý do (bài học module NDTNN, 2026-07-24):** Khi NDTNN cần mở rộng `Public Company Dimension` (bảng gốc thuộc module GSDC), lần đầu đã tạo `Datamart/lld/NDTNN/DTM_NDTNN_public_company_dim_..._delta.csv` — sai vì file này ngụ ý các cột đó do NDTNN yêu cầu/sở hữu, trong khi phần lớn là mở rộng coverage chung áp dụng cho mọi module dùng bảng. Gây nhầm lẫn về nguồn gốc/quyền sở hữu cột khi audit sau này, và tạo file rác nằm sai vị trí. Phải dọn lại: merge nội dung vào đúng file gốc `Datamart/lld/GSDC/DTM_GSDC_public_company_dim_....csv`, xóa file trong thư mục NDTNN.
 
 Khi `reuse_status = partial`:
 1. Đọc master `datamart_attributes.csv` — lấy tất cả cột hiện tại của `datamart_table` đó
-2. So sánh cột hiện có (master) với cột cần thiết kế cho nguồn mới
-3. Nếu có cột mới (delta) → **báo cáo human**:
+2. Tra `datamart_model.yaml` xác định `module` sở hữu gốc (không phải module đang thiết kế)
+3. So sánh cột hiện có (master) với cột cần thiết kế cho nguồn mới
+4. Nếu có cột mới (delta) → **báo cáo human**:
 
 ```
-Bảng [datamart_table] hiện có X cột từ nguồn [src cũ].
-Nguồn mới [src mới] cần thêm Y cột: [col_a, col_b, ...].
+Bảng [datamart_table] hiện có X cột, sở hữu bởi module [MODULE_SỞ_HỮU] (file: Datamart/lld/[MODULE_SỞ_HỮU]/DTM_..._[datamart_table]_[src cũ].csv).
+Module [MODULE_ĐANG_THIẾT_KẾ] cần thêm Y cột: [col_a, col_b, ...].
 
 Đề xuất:
-  - Cập nhật file nguồn cũ DTM_..._[src cũ].csv để map thêm Y cột (nếu có dữ liệu từ nguồn cũ)
-  - Sinh file mới DTM_..._[src mới].csv với đầy đủ X+Y cột
+  - Sửa TRỰC TIẾP vào file gốc DTM_[MODULE_SỞ_HỮU]_..._[src cũ].csv để thêm Y cột (append vào cuối, không tạo file mới)
+  - KHÔNG tạo file DTM_[MODULE_ĐANG_THIẾT_KẾ]_..._delta.csv trong thư mục module đang thiết kế
 
 → Xin phê duyệt trước khi tiến hành
 ```
 
-4. Sau human approve → **mọi file nguồn của bảng này phải chứa đầy đủ số cột hiện tại** (không có file nào thiếu cột so với schema bảng)
+5. Sau human approve → sửa trực tiếp file gốc của module sở hữu, **mọi cột phải nằm chung 1 file** (không có file nào thiếu cột so với schema bảng, không tách file theo module yêu cầu)
+6. Ngoại lệ duy nhất được tạo file riêng trong thư mục module đang thiết kế: khi nguồn dữ liệu (`src_stm_code`) thực sự khác nguồn cũ — lúc đó là multi-source thật (xem quy tắc multi-source ở Bước 1b SKILL.md), không phải trường hợp cùng nguồn Atomic chỉ thêm cột.
 
 ### Merge vào master datamart_attributes.csv
 

@@ -129,32 +129,36 @@ COMMENT 'Flat table — Fact Securities Company Capital Raising Event × Calenda
 
 
 -- ============================================================
--- 5. FACT: qlkd_market_index_snpst_flat
---    Market Index Snapshot
---    Joins: Calendar Date
+-- 5. FACT: qlkd_fct_market_index_snpst_flat
+--    Fact Market Index Snapshot (sở hữu QLKD, reuse NDTNN) — grain cuối tháng
+--    Joins: Calendar Date × Market Index Dimension
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_market_index_snpst_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Market Index Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK tháng (bản ghi cuối tháng theo Trading Date)',
-    market_code                     String                  COMMENT 'Mã sàn/chỉ số (HOSE/HNX/UPCOM/30)',
+    market_index_dim_id             String                  COMMENT 'FK Market Index Dimension',
     market_index_val                Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ số (bản ghi cuối tháng)',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'FK tháng (bản ghi cuối tháng theo Trading Date) — từ Calendar Date Dimension'
+    cdr_dt                          Nullable(Date)          COMMENT 'FK tháng (bản ghi cuối tháng theo Trading Date) — từ Calendar Date Dimension',
+
+    -- From: MARKET INDEX DIMENSION
+    market_id                       Nullable(String)        COMMENT 'Mã thị trường — từ Market Index Dimension',
+    market_code                     Nullable(String)        COMMENT 'Mã sàn/chỉ số (HOSE/HNX/UPCOM/30) — từ Market Index Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), market_code)
-COMMENT 'Flat table — Market Index Snapshot × Calendar Date'
+ORDER BY (assumeNotNull(cdr_dt), market_index_dim_id)
+COMMENT 'Flat table — Fact Market Index Snapshot × Calendar Date × Market Index Dimension'
 ;
 
 
 -- ============================================================
--- 6. OPERATIONAL: qlkd_securities_company_personnel_profile_flat
---    Securities Company Personnel Profile
+-- 6. OPERATIONAL: qlkd_opr_securities_company_personnel_profile_flat
+--    Operational Securities Company Personnel Profile
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Securities Company Personnel Profile
     sc_senior_personnel_code        String                  COMMENT 'PK — mã nhân sự cao cấp (Bảng Tác nghiệp)',
@@ -172,15 +176,15 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_personnel_profile_fl
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(work_start_dt))
 ORDER BY (assumeNotNull(work_start_dt), sc_senior_personnel_code)
-COMMENT 'Flat table — Securities Company Personnel Profile'
+COMMENT 'Flat table — Operational Securities Company Personnel Profile'
 ;
 
 
 -- ============================================================
--- 7. OPERATIONAL: qlkd_securities_company_organization_unit_profile_flat
---    Securities Company Organization Unit Profile
+-- 7. OPERATIONAL: qlkd_opr_securities_company_organization_unit_profile_flat
+--    Operational Securities Company Organization Unit Profile
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Securities Company Organization Unit Profile
     sc_ou_code                      String                  COMMENT 'PK — mã đơn vị (Bảng Tác nghiệp)',
@@ -196,15 +200,15 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_organization_unit_pr
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
 ORDER BY (assumeNotNull(decision_dt), sc_ou_code)
-COMMENT 'Flat table — Securities Company Organization Unit Profile'
+COMMENT 'Flat table — Operational Securities Company Organization Unit Profile'
 ;
 
 
 -- ============================================================
--- 8. OPERATIONAL: qlkd_securities_company_compliance_hist_flat
---    Securities Company Compliance History
+-- 8. OPERATIONAL: qlkd_opr_securities_company_compliance_hist_flat
+--    Operational Securities Company Compliance History
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Securities Company Compliance History
     pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt (Bảng Tác nghiệp). Bộ Admin Penalty Decision dùng sc_administrative_pd_code làm PK riêng.',
@@ -222,15 +226,15 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_securities_company_compliance_hist_flat
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
 ORDER BY (assumeNotNull(issued_dt), pd_code)
-COMMENT 'Flat table — Securities Company Compliance History'
+COMMENT 'Flat table — Operational Securities Company Compliance History'
 ;
 
 
 -- ============================================================
--- 9. OPERATIONAL: qlkd_individual_profile_flat
---    Individual Profile
+-- 9. OPERATIONAL: qlkd_opr_individual_profile_flat
+--    Operational Individual Profile
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_profile_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Profile
     sc_senior_personnel_code        String                  COMMENT 'PK — mã cá nhân (Bảng Tác nghiệp)',
@@ -244,15 +248,15 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_profile_flat ON CLUSTER 'my_
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (sc_senior_personnel_code)
-COMMENT 'Flat table — Individual Profile'
+COMMENT 'Flat table — Operational Individual Profile'
 ;
 
 
 -- ============================================================
--- 10. OPERATIONAL: qlkd_individual_related_party_network_flat
---    Individual Related Party Network
+-- 10. OPERATIONAL: qlkd_opr_individual_related_party_network_flat
+--    Operational Individual Related Party Network
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_related_party_network_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_related_party_network_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Related Party Network
     sc_insider_related_person_code  String                  COMMENT 'PK — mã người liên quan (self-join)',
@@ -268,19 +272,19 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_related_party_network_flat O
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (sc_insider_related_person_code)
-COMMENT 'Flat table — Individual Related Party Network'
+COMMENT 'Flat table — Operational Individual Related Party Network'
 ;
 
 
 -- ============================================================
--- 11. OPERATIONAL: qlkd_individual_listed_company_role_flat
---    Individual Listed Company Role
+-- 11. OPERATIONAL: qlkd_opr_individual_listed_company_role_flat
+--    Operational Individual Listed Company Role
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_listed_company_role_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_listed_company_role_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Listed Company Role
     sc_insider_related_person_code  String                  COMMENT 'PK — mã vai trò tại tổ chức (Bảng Tác nghiệp)',
-    sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã cá nhân — join key với Individual Profile',
+    sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã cá nhân — join key với Operational Individual Profile',
     sc_code                         Nullable(String)        COMMENT 'Mã tổ chức (CTCK)',
     representative_position         Nullable(String)        COMMENT 'Vai trò tại tổ chức',
     shares_count                    Nullable(Int64)         COMMENT 'Số cổ phần nắm giữ',
@@ -289,15 +293,15 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_listed_company_role_flat ON 
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (sc_insider_related_person_code)
-COMMENT 'Flat table — Individual Listed Company Role'
+COMMENT 'Flat table — Operational Individual Listed Company Role'
 ;
 
 
 -- ============================================================
--- 12. OPERATIONAL: qlkd_individual_trading_account_flat
---    Individual Trading Account
+-- 12. OPERATIONAL: qlkd_opr_individual_trading_account_flat
+--    Operational Individual Trading Account
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_trading_account_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_trading_account_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Trading Account
     sc_shareholder_code             String                  COMMENT 'PK — mã cổ đông/chủ TK (Bảng Tác nghiệp)',
@@ -309,15 +313,15 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_trading_account_flat ON CLUS
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (sc_shareholder_code)
-COMMENT 'Flat table — Individual Trading Account'
+COMMENT 'Flat table — Operational Individual Trading Account'
 ;
 
 
 -- ============================================================
--- 13. OPERATIONAL: qlkd_individual_work_hist_flat
---    Individual Work History
+-- 13. OPERATIONAL: qlkd_opr_individual_work_hist_flat
+--    Operational Individual Work History
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_work_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Work History
     sc_senior_personnel_code        String                  COMMENT 'PK — mã lần bổ nhiệm (Bảng Tác nghiệp)',
@@ -331,19 +335,19 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_work_hist_flat ON CLUSTER 'm
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(work_start_dt))
 ORDER BY (assumeNotNull(work_start_dt), sc_senior_personnel_code)
-COMMENT 'Flat table — Individual Work History'
+COMMENT 'Flat table — Operational Individual Work History'
 ;
 
 
 -- ============================================================
--- 14. OPERATIONAL: qlkd_individual_violation_hist_flat
---    Individual Violation History
+-- 14. OPERATIONAL: qlkd_opr_individual_violation_hist_flat
+--    Operational Individual Violation History
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_violation_hist_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Violation History
     pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt cá nhân (Bảng Tác nghiệp)',
-    identification_nbr              Nullable(String)        COMMENT 'Số định danh cá nhân bị xử phạt — merge key với Individual Profile',
+    identification_nbr              Nullable(String)        COMMENT 'Số định danh cá nhân bị xử phạt — merge key với Operational Individual Profile',
     decision_nbr                    Nullable(String)        COMMENT 'Số quyết định xử phạt',
     issued_dt                       Nullable(Date)          COMMENT 'Ngày ban hành quyết định xử phạt',
     violation_behavior_nm           Nullable(String)        COMMENT 'Nội dung vi phạm',
@@ -354,6 +358,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_individual_violation_hist_flat ON CLUST
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
 ORDER BY (assumeNotNull(issued_dt), pd_code)
-COMMENT 'Flat table — Individual Violation History'
+COMMENT 'Flat table — Operational Individual Violation History'
 ;
 
