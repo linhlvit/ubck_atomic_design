@@ -18,11 +18,12 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Alt Identification của Securities Company Foreign Branch. ETL tạo tối\
-    \ đa 4 rows per chi nhánh nước ngoài (skip nếu id_nbr NULL): Row 1 OPERATION_LICENSE\
+    \ đa 4 rows per chi nhánh nước ngoài (skip nếu number NULL): Row 1 OPERATION_LICENSE\
     \ (LICENSE_NUMBER + LICENSE_DATE); Row 2 ENTERPRISE_CODE (ENTERPRISE_CODE — không\
-    \ có ngày/nơi); Row 3 TAX_CODE (TAX_CODE — không có ngày/nơi); Row 4 BIZ_REG_CERT\
-    \ (BUSINESS_REG_CERT + BUSINESS_REG_CERT_DATE). Lưu ý: BUSINESS_REG_CERT nguồn\
-    \ lưu cả số lẫn nội dung giấy (cần ETL làm sạch)."
+    \ có ngày/nơi); Row 3 TAX_ID (TAX_CODE — không có ngày/nơi); Row 4 BUSINESS_LICENSE\
+    \ (BUSINESS_REG_CERT + BUSINESS_REG_CERT_DATE). Mỗi loại là 1 block riêng — KHÔNG\
+    \ dùng pivot gộp chung 1 attribute (sửa 2026-07-24). Lưu ý: BUSINESS_REG_CERT\
+    \ nguồn lưu cả số lẫn nội dung giấy (cần ETL làm sạch)."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -66,49 +67,128 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh tổ chức: OPERATION_LICENSE=Giấy phép hoạt động\
-    \ tại Việt Nam; ENTERPRISE_CODE=Mã số doanh nghiệp; TAX_CODE=Mã số thuế; BIZ_REG_CERT=Giấy\
-    \ chứng nhận đăng ký doanh nghiệp."
+  description: "Loại giấy tờ định danh — giấy phép hoạt động tại Việt Nam."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot: LICENSE_NUMBER→OPERATION_LICENSE; ENTERPRISE_CODE→ENTERPRISE_CODE;\
-    \ TAX_CODE→TAX_CODE; BUSINESS_REG_CERT→BIZ_REG_CERT."
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATION_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  etl_derived_value: "OPERATION_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số giấy tờ định danh của chi nhánh nước ngoài theo từng loại."
+  description: "Số giấy phép hoạt động tại Việt Nam."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_NUMBER"
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH.ENTERPRISE_CODE"
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH.TAX_CODE"
-  - "SCMS.SC_FIRM_FOREIGN_BRANCH.BUSINESS_REG_CERT"
-  comment: "ETL pivot: LICENSE_NUMBER→row OPERATION_LICENSE; ENTERPRISE_CODE→row ENTERPRISE_CODE;\
-    \ TAX_CODE→row TAX_CODE; BUSINESS_REG_CERT→row BIZ_REG_CERT. Lưu ý BUSINESS_REG_CERT\
-    \ (mô tả BRD trống) — cần xác nhận là số giấy chứng nhận."
-  classification_context: null
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
-  description: "Ngày cấp giấy tờ (áp dụng cho OPERATION_LICENSE và BIZ_REG_CERT)."
+  description: "Ngày cấp giấy phép hoạt động tại Việt Nam."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_DATE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh — mã số doanh nghiệp."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ENTERPRISE_CODE."
+  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
+  etl_derived_value: "ENTERPRISE_CODE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Mã số doanh nghiệp của chi nhánh nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.ENTERPRISE_CODE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh — mã số thuế."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
+  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+  etl_derived_value: "TAX_ID"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Mã số thuế của chi nhánh nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.TAX_CODE"
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh — giấy chứng nhận đăng ký doanh nghiệp."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: "BUSINESS_LICENSE"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số giấy chứng nhận đăng ký doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.SC_FIRM_FOREIGN_BRANCH.BUSINESS_REG_CERT"
+  comment: "Mô tả gốc BRD trống — cần xác nhận là số giấy chứng nhận (nguồn có thể\
+    \ lưu cả số lẫn nội dung giấy, cần ETL làm sạch)."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy chứng nhận đăng ký doanh nghiệp."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
   - "SCMS.SC_FIRM_FOREIGN_BRANCH.BUSINESS_REG_CERT_DATE"
-  comment: "ETL pivot: LICENSE_DATE→row OPERATION_LICENSE; BUSINESS_REG_CERT_DATE→row\
-    \ BIZ_REG_CERT. NULL cho ENTERPRISE_CODE và TAX_CODE."
-  classification_context: null
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "date"

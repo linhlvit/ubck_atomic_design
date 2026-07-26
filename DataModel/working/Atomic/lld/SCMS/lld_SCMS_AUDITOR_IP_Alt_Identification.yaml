@@ -18,8 +18,9 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Alt Identification của Audit Firm Auditor. 1 row per kiểm toán viên —\
-    \ CERTIFICATE_NUMBER → type AUDITOR_CERT (chứng chỉ hành nghề kiểm toán được UBCKNN\
-    \ cấp phép). ISSUE_DATE → issue_dt. Không có ISSUE_PLACE trong nguồn AUDITOR."
+    \ CERTIFICATE_NUMBER → type PRACTITIONER_LICENSE (chứng chỉ hành nghề kiểm toán\
+    \ được UBCKNN cấp phép). ISSUE_DATE → issue_dt. Không có ISSUE_PLACE trong nguồn\
+    \ AUDITOR."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -63,15 +64,16 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ: AUDITOR_CERT=Chứng chỉ hành nghề kiểm toán."
+  description: "Loại giấy tờ: PRACTITIONER_LICENSE=Chứng chỉ hành nghề kiểm toán."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode AUDITOR_CERT — chỉ có 1 cột CERTIFICATE_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERT"
-  etl_derived_value: "AUDITOR_CERT"
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode PRACTITIONER_LICENSE — chỉ có 1 cột\
+    \ CERTIFICATE_NUMBER."
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: "PRACTITIONER_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"

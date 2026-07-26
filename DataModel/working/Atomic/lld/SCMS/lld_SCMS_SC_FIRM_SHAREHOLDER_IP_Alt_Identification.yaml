@@ -18,8 +18,9 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Alt Identification của Securities Company Shareholder. 1 row per cổ đông\
-    \ — ID_NUMBER (NVARCHAR2 250) → type NATIONAL_ID (CCCD/CMND/Hộ chiếu). Issue Date/Issue\
-    \ Place đã map tại entity chính. Format đồng bộ theo chuẩn NHNCK."
+    \ — ID_NUMBER (NVARCHAR2 250) → type LEGACY_NATIONAL_ID (BRD: \"Số CMND (định\
+    \ danh cũ)\" — không phải CCCD/Hộ chiếu hiện hành). Issue Date/Issue Place đã\
+    \ map tại entity chính. Format đồng bộ theo chuẩn NHNCK."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -64,19 +65,20 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu."
+  description: "Loại giấy tờ tùy thân: LEGACY_NATIONAL_ID=CMND (định danh cũ)."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột ID_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode LEGACY_NATIONAL_ID — chỉ có 1 cột\
+    \ ID_NUMBER, BRD mô tả \"Số CMND (định danh cũ)\"."
+  classification_context: "IP_ALT_ID_TYPE=LEGACY_NATIONAL_ID"
+  etl_derived_value: "LEGACY_NATIONAL_ID"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
+  description: "Số CMND (định danh cũ)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -84,6 +86,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER.ID_NUMBER"
   comment: "NVARCHAR2(250)."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=LEGACY_NATIONAL_ID"
   etl_derived_value: null
   data_type: "string"

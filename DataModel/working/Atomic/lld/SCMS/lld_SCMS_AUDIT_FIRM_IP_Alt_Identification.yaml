@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Alt Identification của Audit Firm. 1 row per công ty kiểm toán — BUSINESS_LICENSE_NUMBER\
-    \ → type BUSINESS_LICENSE (giấy phép thành lập và hoạt động do UBCKNN cấp). BUSINESS_LICENSE_DATE\
+    \ → type OPERATION_LICENSE (giấy phép thành lập và hoạt động do UBCKNN cấp). BUSINESS_LICENSE_DATE\
     \ → issue_dt. BUSINESS_LICENSE_ISSUER → issue_plc (tên cơ quan cấp, mặc định UBCKNN)."
 attributes:
 - attribute_name: "Involved Party Id"
@@ -62,15 +62,18 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ: BUSINESS_LICENSE=Giấy phép kinh doanh/thành lập."
+  description: "Loại giấy tờ: OPERATION_LICENSE=Giấy phép thành lập và hoạt động do\
+    \ UBCKNN cấp."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode BUSINESS_LICENSE — chỉ có 1 cột BUSINESS_LICENSE_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: "BUSINESS_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode OPERATION_LICENSE — chỉ có 1 cột\
+    \ BUSINESS_LICENSE_NUMBER, ý nghĩa là giấy phép thành lập và hoạt động chuyên\
+    \ ngành do UBCKNN cấp (không phải giấy phép kinh doanh thông thường)."
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  etl_derived_value: "OPERATION_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
