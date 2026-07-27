@@ -2,7 +2,9 @@
 
 > **Nguồn:** Hệ thống GSGD — Phần hệ giám sát giao dịch chứng khoán (Oracle)
 >
-> **Phạm vi task này:** Chỉ 15 bảng theo yêu cầu — INVESTOR_ACCOUNT, INVESTOR_ACCOUNT_EXTEND_INFO, ACCOUNT_AUTHORIZATION (gộp vào 1 Atomic entity **Account Investor**); ACCOUNT_FINANCIAL_SERVICE, ACCOUNT_GROUP, ACCOUNT_GROUP_MEMBER, ACCOUNT_RELATIONSHIP, COMPANY_EVENT, SECURITIES_GROUP, SECURITIES_GROUP_MEMBER, CASE_FILE, CASE_FILE_SECURITIES_CODE, CASE_ATTACH_FILE, CASE_FILE_WORKFLOW, CASE_APPROVAL_STEP (thiết kế tham khảo sát theo `DataModel/working/Atomic_LinhLV/`). Các bảng GSGD khác (ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT*, CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình...) **ngoài phạm vi task này** — chưa đánh giá scope, để dành cho lần thiết kế Tier tiếp theo.
+> **Phạm vi task này:** Chỉ 14 bảng theo yêu cầu — INVESTOR_ACCOUNT, INVESTOR_ACCOUNT_EXTENDED_INFO (gộp vào 1 Atomic entity **Account Investor**); ACCOUNT_FINANCIAL_SERVICE, ACCOUNT_GROUP, ACCOUNT_GROUP_MEMBER, ACCOUNT_RELATIONSHIP, COMPANY_EVENT, SECURITIES_GROUP, SECURITIES_GROUP_MEMBER, CASE_FILE, CASE_FILE_SECURITIES_CODE, CASE_ATTACH_FILE, CASE_FILE_WORKFLOW, CASE_APPROVAL_STEP (thiết kế tham khảo sát theo `DataModel/working/Atomic_LinhLV/`). Các bảng GSGD khác (ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT*, CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình...) **ngoài phạm vi task này** — chưa đánh giá scope, để dành cho lần thiết kế Tier tiếp theo.
+>
+> **Cập nhật (2026-07-23):** `ACCOUNT_AUTHORIZATION` loại khỏi danh sách 15 bảng ban đầu (nay còn 14) — đối chiếu `Source/DDL UAT/TMS_UAT_schema.txt` xác nhận bảng này **không tồn tại** trong CSDL thật; `AUTHORIZED_PERSON_NAME`/`AUTHORIZATION_DATE` đã là 2 cột phẳng sẵn có trên `INVESTOR_ACCOUNT`. Đồng thời reconcile `INVESTOR_ACCOUNT` bổ sung các cột IDENTITY_NUMBER, INVESTOR_TYPE, ACCOUNT_STATUS, DOMESTIC_FOREIGN_FLAG, NATIONALITY, ACCOUNT_NAME, OPEN_DATE, CLOSE_DATE, LAST_MODIFIED_DATE, VERSION (thiếu sót khảo sát trước đó). Xem `GSGD_HLD_Tier1.md` mục 6f T1-01/T1-03/T1-06/T1-07.
 >
 > **File chi tiết theo tầng:**
 > - [GSGD_HLD_Tier1.md](GSGD_HLD_Tier1.md) — Account Investor, Listed Company Corporate Event, Securities Watchlist Group, Market Surveillance Case
@@ -15,9 +17,8 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Arrangement | [Arrangement] Trading Account Arrangement | Trading Account Arrangement | INVESTOR_ACCOUNT | Update | Thông tin tài khoản nhà đầu tư (từ VSDC) | Account Investor | Fundamental | Trading Account Arrangement — khớp 1 tài khoản giao dịch chứng khoán NĐT. |
-| 1 | Arrangement | [Arrangement] Trading Account Arrangement | Trading Account Arrangement | INVESTOR_ACCOUNT_EXTEND_INFO | Update | Thông tin mở rộng tài khoản (liên hệ/ngân hàng) | Account Investor | Fundamental | Cùng Atomic entity Account Investor — join 1-1 qua ACCOUNT_CODE, denormalized (grain không phải Involved Party). |
-| 1 | Arrangement | [Arrangement] Trading Account Arrangement | Trading Account Arrangement | ACCOUNT_AUTHORIZATION | Update | Thông tin ủy quyền giao dịch trên tài khoản | Account Investor | Fundamental | Term riêng là [Communication] Authorization nhưng gộp theo yêu cầu thiết kế — denormalize ARRAY<STRUCT> "Authorized Persons". |
+| 1 | Arrangement | [Arrangement] Trading Account Arrangement | Trading Account Arrangement | INVESTOR_ACCOUNT | Update | Thông tin tài khoản nhà đầu tư (từ VSDC) | Account Investor | Fundamental | Trading Account Arrangement — khớp 1 tài khoản giao dịch chứng khoán NĐT. IDENTITY_NUMBER dùng FK sang Individual (nguồn NHNCK.IDENTITY_INFO_C06S) qua hash_id. |
+| 1 | Arrangement | [Arrangement] Trading Account Arrangement | Trading Account Arrangement | INVESTOR_ACCOUNT_EXTENDED_INFO | Update | Thông tin mở rộng tài khoản (liên hệ/ngân hàng) | Account Investor | Fundamental | Cùng Atomic entity Account Investor — join 1-1 qua ACCOUNT_CODE, denormalized (grain không phải Involved Party). |
 | 1 | Business Activity | [Business Activity] Corporate Action | Corporate Action | COMPANY_EVENT | Append | Sự kiện tổ chức niêm yết ảnh hưởng giá tham chiếu | Listed Company Corporate Event | Fact Append | Corporate Action — sửa so với thiết kế tham khảo (trước đây dùng `[Event]` rỗng). |
 | 1 | Group | [Group] Portfolio | Portfolio | SECURITIES_GROUP | Update | Nhóm chứng khoán do Ban GSTT tự quản lý | Securities Watchlist Group | Fundamental | Portfolio — giữ nguyên theo thiết kế tham khảo. |
 | 1 | Business Activity | [Business Activity] Audit Investigation | Audit Investigation | CASE_FILE | Append | Vụ việc giám sát giao dịch chứng khoán bất thường | Market Surveillance Case | Fundamental | Audit Investigation — giữ nguyên theo thiết kế tham khảo. |
@@ -30,7 +31,7 @@
 | 3 | Group | [Group] Group Involved Party Member | Group Involved Party Member | ACCOUNT_GROUP_MEMBER | Update | Quan hệ thành viên giữa tài khoản và nhóm giám sát | Account Investor Group Member | Fundamental | Group Involved Party Member — sửa tên Term so với thiết kế tham khảo. |
 | 3 | Business Activity | [Business Activity] Audit Investigation | Audit Investigation | ACCOUNT_RELATIONSHIP | Update | Mối quan hệ giữa 2 tài khoản NĐT trong giám sát | Account Investor Relationship | Relative | Audit Investigation — sửa Core Object (Arrangement → Business Activity) và đổi tên entity để nhất quán Domain Prefix "Account Investor". |
 
-**Tổng: 12 Atomic entities** (4 Tier 1, 6 Tier 2, 2 Tier 3), từ 14/15 bảng nguồn phạm vi task (1 bảng — SECURITIES_GROUP_MEMBER — denormalize thành ARRAY, xem 7d, không tạo entity riêng).
+**Tổng: 12 Atomic entities** (4 Tier 1, 6 Tier 2, 2 Tier 3), từ 13/14 bảng nguồn phạm vi task (1 bảng — SECURITIES_GROUP_MEMBER — denormalize thành ARRAY, xem 7d, không tạo entity riêng). `ACCOUNT_AUTHORIZATION` loại khỏi phạm vi task (không tồn tại trong DDL UAT thật, xem cập nhật 2026-07-23 ở đầu file).
 *(0 shared entity extend source_table trong phạm vi task này.)*
 
 ---
@@ -81,8 +82,9 @@ graph TD
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
 | INVESTOR_ACCOUNT.APPROVAL_STATUS / COMPANY_EVENT.APPROVAL_STATUS / ACCOUNT_GROUP.APPROVAL_STATUS | Trạng thái phê duyệt | Classification Value | Scheme: `GSGD_APPROVAL_STATUS` (dùng chung 3 bảng, cần profile riêng nếu value set khác nhau). |
-| INVESTOR_ACCOUNT.DATA_SOURCE | Nguồn dữ liệu chính (VSDC/CTCK) | Classification Value | Scheme: `GSGD_DATA_SOURCE`. |
-| INVESTOR_ACCOUNT.MARGIN_SERVICE_ENABLED / ADVANCE_PAYMENT_SERVICE_ENABLED / ACCOUNT_AUTHORIZATION_ENABLED | Cờ dịch vụ tài chính đăng ký | Classification Value | Scheme: `GSGD_SERVICE_ENABLED_FLAG`. Cần profile kiểu dữ liệu thực tế (VARCHAR2(200) — chưa rõ Y/N hay text). |
+| INVESTOR_ACCOUNT.INVESTOR_TYPE | Loại hình nhà đầu tư (1=Cá nhân, 2=Tổ chức) | Classification Value | Scheme: `GSGD_INVESTOR_TYPE`. |
+| INVESTOR_ACCOUNT.ACCOUNT_STATUS | Trạng thái tài khoản (0=Đóng, 1=Mở) | Classification Value | Scheme: `GSGD_INVESTOR_ACCOUNT_STATUS` (khác `GSGD_ACCOUNT_STATUS` — scheme đó dùng cho ACCOUNT_GROUP_MEMBER.STATUS, ý nghĩa khác). |
+| INVESTOR_ACCOUNT.DOMESTIC_FOREIGN_FLAG | Trong nước/Nước ngoài (0=Trong nước, 1=Nước ngoài) | Classification Value | Scheme: `GSGD_DOMESTIC_FOREIGN_FLAG`. Cân nhắc Data Domain Indicator thay vì Classification Value — quyết định tại LLD. |
 | COMPANY_EVENT.EVENT_TYPE | Loại sự kiện tổ chức niêm yết | Classification Value | Scheme: `GSGD_COMPANY_EVENT_TYPE`. |
 | SECURITIES_GROUP.GROUP_TYPE | Loại nhóm chứng khoán | Classification Value | Scheme: `GSGD_SECURITIES_GROUP_TYPE`. |
 | SECURITIES_GROUP.STATUS | Trạng thái nhóm chứng khoán | Classification Value | Scheme: `GSGD_GROUP_STATUS`. Cần profile giá trị thực tế. |
@@ -112,9 +114,9 @@ graph TD
 
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
-| 1 | 1 | Cấu trúc `INVESTOR_ACCOUNT` hiện tại không còn các cột INVESTOR_TYPE, ACCOUNT_STATUS, DOMESTIC_FOREIGN_FLAG, NATIONALITY, IDENTITY_NUMBER, IDENTITY_ISSUE_DATE/PLACE từng có trong thiết kế tham khảo Atomic_LinhLV. | Account Investor thiết kế lại đúng theo cấu trúc BRD hiện tại — không giữ thuộc tính đã bị loại khỏi nguồn. Cần BA xác nhận đây là thay đổi schema thật. |
+| 1 | 1 | ~~Cấu trúc `INVESTOR_ACCOUNT` hiện tại không còn các cột INVESTOR_TYPE, ACCOUNT_STATUS, DOMESTIC_FOREIGN_FLAG, NATIONALITY, IDENTITY_NUMBER, IDENTITY_ISSUE_DATE/PLACE từng có trong thiết kế tham khảo Atomic_LinhLV.~~ | **RESOLVED (2026-07-23):** DDL UAT thật xác nhận các cột này tồn tại — BRD khảo sát cũ thiếu sót, đã reconcile. Xem `GSGD_HLD_Tier1.md` 6f T1-01. |
 | 2 | 1 | `MARGIN_SERVICE_ENABLED`/`ADVANCE_PAYMENT_SERVICE_ENABLED`/`ACCOUNT_AUTHORIZATION_ENABLED` đổi kiểu dữ liệu nguồn sang VARCHAR2(200 CHAR) thay vì NUMBER/Boolean như thiết kế tham khảo. | Cần profile giá trị thực tế trước khi chốt Data Domain ở LLD. |
-| 3 | 1 | `ACCOUNT_AUTHORIZATION` không có unique constraint rõ ràng trên ACCOUNT_ID — 1 tài khoản có thể có nhiều bản ghi ủy quyền không? | Nếu 1-N: giữ ARRAY<STRUCT> "Authorized Persons". Nếu 1-1: có thể rút gọn thành field phẳng. |
+| 3 | 1 | ~~`ACCOUNT_AUTHORIZATION` không có unique constraint rõ ràng trên ACCOUNT_ID — 1 tài khoản có thể có nhiều bản ghi ủy quyền không?~~ | **RESOLVED (2026-07-23):** Bảng `ACCOUNT_AUTHORIZATION` không tồn tại trong DDL UAT thật — `AUTHORIZED_PERSON_NAME`/`AUTHORIZATION_DATE` là 2 field phẳng trên chính INVESTOR_ACCOUNT (1-1, không phải 1-N). Loại bỏ thiết kế ARRAY<STRUCT>. Xem `GSGD_HLD_Tier1.md` 6f T1-03. |
 | 4 | 1 | Cross-check Change Mode ↔ Table Type: `CASE_FILE` = Append nhưng Table Type = Fundamental/SCD4A. | Cần xác nhận business rule ETL (drop&reload hay update thật tại nguồn) trước khi LLD. |
 | 5 | 2 | `ACCOUNT_GROUP` có thêm SECURITIES_CODE_ID/STOCK_CODE/CASE_FILE_ID/RELATION_TYPE_ID/CHARACTERISTIC/CONTACT_PERSON_ACCOUNT/APPROVAL_STATUS so với thiết kế tham khảo — ý nghĩa nghiệp vụ của mã CK gắn trên 1 nhóm tài khoản là gì? | Tạm denormalize SECURITIES_CODE_ID/STOCK_CODE thành field Text pending dependency. Cần BA xác nhận. |
 | 6 | 2 | Cross-check Change Mode ↔ Table Type: `CASE_ATTACH_FILE` = Append nhưng Table Type = Fundamental/SCD4A. | Cần xác nhận file đính kèm có bị sửa/xóa hay chỉ thêm mới — nếu chỉ thêm mới nên đổi Fact Append ở LLD. |
@@ -124,12 +126,21 @@ graph TD
 | 10 | 3 | `ACCOUNT_GROUP_MEMBER.STATUS` — giá trị thực tế là gì? Không còn cơ sở đối chiếu với account_status cũ (đã bị loại khỏi INVESTOR_ACCOUNT, xem #1). | Đăng ký scheme `GSGD_ACCOUNT_STATUS` với `values: []`, profile khi LLD. |
 | 11 | 3 | `ACCOUNT_RELATIONSHIP.TRANSACTION_REVIEW_ID` trỏ bảng `TRANSACTION_REVIEW` — ngoài phạm vi 15 bảng của task này. | Denormalize thành field Text pending dependency, không tạo FK entity. |
 | 12 | 2, 3 | Table Type `Fundamental`/SCD4A cho entity chỉ FK 1 cha rõ ràng (Account Investor Financial Service, Account Investor Group Member) — theo cây quyết định chuẩn thường là `Relative`/SCD2. | Giữ nguyên theo thiết kế tham khảo đã approved (mỗi entity có surrogate key + business code riêng, được xem là đối tượng độc lập). Đề xuất xác nhận lại khi LLD nếu cần thống nhất. |
+| 13 | 1 | `INVESTOR_ACCOUNT.LEGAL_REPRESENTATIVE`/`PHONE_NUMBER`/`EMAIL`/`BANK_ACCOUNT_*` trùng lặp với các cột cùng tên trên `INVESTOR_ACCOUNT_EXTENDED_INFO` (xác nhận qua DDL UAT thật). | Dùng `INVESTOR_ACCOUNT_EXTENDED_INFO` làm nguồn map chính. Cần BA/DBA xác nhận bảng nào là write-of-record trước khi ETL production. Xem `GSGD_HLD_Tier1.md` 6f T1-06. |
+| 14 | 1 | Quyết định thiết kế: `INVESTOR_ACCOUNT.IDENTITY_NUMBER` FK liên source-system sang Atomic entity `Individual` (nguồn NHNCK.IDENTITY_INFO_C06S) qua `hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)`. | Forward reference — `Individual` mới có quyết định HLD (NHNCK, 2026-07-23), chưa có LLD/manifest entry. Khi NHNCK thiết kế LLD Individual, bắt buộc dùng IDENTITY_NUMBER làm Individual Code. Xem `GSGD_HLD_Tier1.md` 6f T1-07. |
+| 15 | 1 | Quyết định thiết kế (2026-07-23): `INVESTOR_ACCOUNT.NATIONALITY` đổi từ Classification Value sang FK liên source-system sang `Geographic Area` (nguồn ECAT.COUNTRY, `Geographic Area Type Code = COUNTRY`) qua `hash_id('ECAT.COUNTRY', CODE)`. | Nguồn NATIONALITY là text tự do — cần ETL crosswalk sang `ECAT.COUNTRY.CODE` trước khi hash. Bỏ scheme `GSGD_NATIONALITY`. Xem `GSGD_HLD_Tier1.md` 6f T1-08. |
+| 16 | 1 | Quyết định thiết kế (2026-07-23): `MARGIN_SERVICE_ENABLED`/`ADVANCE_PAYMENT_SERVICE_ENABLED`/`ACCOUNT_AUTHORIZATION_ENABLED`/`DATA_SOURCE` đổi từ Classification Value sang map 1:1 (Text). | Bỏ scheme `GSGD_SERVICE_ENABLED_FLAG`/`GSGD_DATA_SOURCE`. Xem `GSGD_HLD_Tier1.md` 6f T1-09. |
+| 17 | 1 | Quyết định thiết kế (2026-07-23): Bỏ `Created Timestamp`/`Updated Timestamp` (CREATED_AT/UPDATED_AT) khỏi Account Investor — coi là trường kỹ thuật ở nguồn. | Mốc thời gian thay đổi nghiệp vụ dùng `Last Modified Timestamp` (LAST_MODIFIED_DATE). Xem `GSGD_HLD_Tier1.md` 6f T1-10. |
 
 ---
 
 #### 7f. Bảng ngoài scope
 
-Không có bảng nào trong 15 bảng phạm vi task này rơi vào nhóm ngoài scope — toàn bộ đều trở thành Atomic entity (12 entity) hoặc denormalize vào entity khác (SECURITIES_GROUP_MEMBER, xem 7d).
+| Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
+|---|---|---|---|
+| Khảo sát sai | ACCOUNT_AUTHORIZATION | Thông tin ủy quyền giao dịch trên tài khoản (theo khảo sát cũ) | Không tồn tại trong DDL UAT thực tế (schema UAT_TMS) — dữ liệu khảo sát nguồn lỗi thời/sai sót, đã reconcile 2026-07-23. Nghiệp vụ ủy quyền đã nằm sẵn trên INVESTOR_ACCOUNT.AUTHORIZED_PERSON_NAME/AUTHORIZATION_DATE. |
+
+Ngoài `ACCOUNT_AUTHORIZATION`, các bảng còn lại trong 14 bảng phạm vi task đều trở thành Atomic entity (12 entity) hoặc denormalize vào entity khác (SECURITIES_GROUP_MEMBER, xem 7d).
 
 *(Các bảng GSGD khác ngoài 15 bảng phạm vi task — ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT*, CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình... — chưa được đánh giá scope trong lần thiết kế này.)*
 
@@ -141,9 +152,9 @@ Không có bảng nào trong 15 bảng phạm vi task này rơi vào nhóm ngoà
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
 ### 1. Account Investor
-**Tier:** 1 | **Source:** `INVESTOR_ACCOUNT, INVESTOR_ACCOUNT_EXTEND_INFO, ACCOUNT_AUTHORIZATION` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fundamental
+**Tier:** 1 | **Source:** `INVESTOR_ACCOUNT, INVESTOR_ACCOUNT_EXTENDED_INFO` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** Account Investor
-**Description:** Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD (nguồn gốc VSDC). Gộp thông tin cơ bản, thông tin mở rộng liên hệ/ngân hàng và danh sách người được ủy quyền giao dịch (denormalize ARRAY) vào 1 entity duy nhất theo yêu cầu thiết kế.
+**Description:** Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD (nguồn gốc VSDC). Gộp thông tin cơ bản (định danh, loại hình NĐT, trạng thái, người/ngày nhận ủy quyền) và thông tin mở rộng liên hệ/ngân hàng vào 1 entity duy nhất. Số CCCD (Identity Number) FK sang Individual (nguồn NHNCK.IDENTITY_INFO_C06S); Quốc tịch (Nationality) FK sang Geographic Area (nguồn ECAT.COUNTRY).
 
 ### 2. Account Investor Financial Service
 **Tier:** 2 | **Source:** `ACCOUNT_FINANCIAL_SERVICE` | **BCV Concept:** [Arrangement] Account Facility Arrangement | **BCO:** Arrangement | **Table Type:** Fundamental

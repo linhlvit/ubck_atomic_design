@@ -17,8 +17,6 @@ brd_entries:
       scope_reason: null
       table: INVESTOR_ACCOUNT
       related_tables:
-        - table: ACCOUNT_AUTHORIZATION
-          relation: "1-N — Thông tin ủy quyền tài khoản"
         - table: ACCOUNT_FINANCIAL_SERVICE
           relation: "1-N — Dịch vụ tài chính của tài khoản"
         - table: ACCOUNT_GROUP_MEMBER
@@ -27,7 +25,7 @@ brd_entries:
           relation: "1-N — Mối quan hệ giữa các tài khoản"
         - table: SUSPICIOUS_ACCOUNT
           relation: "1-N — Tài khoản nghi vấn"
-      notes: "Atomic entity: Investor Trading Account — nguồn gốc từ VSDC; nhiều cột enum (APPROVAL_STATUS, MARGIN_SERVICE_ENABLED...) cần định nghĩa Classification Value khi LLD"
+      notes: "Atomic entity: Investor Trading Account — nguồn gốc từ VSDC; nhiều cột enum (APPROVAL_STATUS, MARGIN_SERVICE_ENABLED, ACCOUNT_STATUS, DOMESTIC_FOREIGN_FLAG, INVESTOR_TYPE...) cần định nghĩa Classification Value khi LLD. Cột IDENTITY_NUMBER dùng làm FK sang Individual (nguồn NHNCK.IDENTITY_INFO_C06S) qua hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER). Cột LEGAL_REPRESENTATIVE/PHONE_NUMBER/EMAIL/BANK_ACCOUNT_* trùng lặp với INVESTOR_ACCOUNT_EXTENDED_INFO (cùng tên) — cần xác nhận bảng master trước LLD. ACCOUNT_AUTHORIZATION đã loại khỏi related_tables — bảng không tồn tại trong DDL UAT thực tế, xem BRD-SRC-GSGD-ACCOUNT_AUTHORIZATION."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:
@@ -35,8 +33,8 @@ brd_entries:
         filter_logic: null
         filter_note: null
 
-  - brd_id: BRD-SRC-GSGD-INVESTOR_ACCOUNT_EXTEND_INFO
-    brd_name: "Design Atomic từ nguồn GSGD bảng INVESTOR_ACCOUNT_EXTEND_INFO"
+  - brd_id: BRD-SRC-GSGD-INVESTOR_ACCOUNT_EXTENDED_INFO
+    brd_name: "Design Atomic từ nguồn GSGD bảng INVESTOR_ACCOUNT_EXTENDED_INFO"
     type: Theo Source
     ba_email: huy.pham@fssc.com.vn
     steward_email: username@ubck.com.vn
@@ -45,7 +43,7 @@ brd_entries:
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
       scope_status: in_scope
       scope_reason: null
-      table: INVESTOR_ACCOUNT_EXTEND_INFO
+      table: INVESTOR_ACCOUNT_EXTENDED_INFO
       related_tables: null
       notes: "Atomic entity: Investor Trading Account Extended Info — thông tin liên hệ/ngân hàng bổ sung, quan hệ 1-1 với Investor Trading Account (join qua ACCOUNT_CODE)"
       data_volume_hint: null
@@ -102,13 +100,13 @@ brd_entries:
     content:
       table_meaning: "Thông tin ủy quyền tài khoản"
       functional_group: "UID1.1 Quản lý tài khoản nhà đầu tư"
-      scope_status: in_scope
-      scope_reason: null
+      scope_status: out_of_scope
+      scope_reason: "Bảng không tồn tại trong DDL UAT thực tế (schema UAT_TMS, xem Source/DDL UAT/TMS_UAT_schema.txt) — nghiệp vụ ủy quyền đã nằm sẵn trên INVESTOR_ACCOUNT.AUTHORIZED_PERSON_NAME/AUTHORIZATION_DATE. Dữ liệu khảo sát cũ (GSGD_Columns.csv/BRD) là lỗi thời — đã reconcile 2026-07-23."
       table: ACCOUNT_AUTHORIZATION
       related_tables:
         - table: INVESTOR_ACCOUNT
-          relation: "FK cha — Thông tin tài khoản nhà đầu tư"
-      notes: "Atomic entity: Investor Trading Account Authorization"
+          relation: "FK cha — Thông tin tài khoản nhà đầu tư (lịch sử khảo sát cũ, bảng đã ngoài scope)"
+      notes: "Atomic entity: Investor Trading Account Authorization — KHÔNG THIẾT KẾ, bảng không tồn tại trong CSDL thật."
       data_volume_hint: null
       refresh_frequency: null
       ingestion:

@@ -2,14 +2,14 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "GSGD"
-  source_table: "INVESTOR_ACCOUNT, INVESTOR_ACCOUNT_EXTEND_INFO"
+  source_table: "INVESTOR_ACCOUNT, INVESTOR_ACCOUNT_EXTENDED_INFO"
   atomic_entity: "Account Investor"
   entity_physical_name: "account_investor"
   bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Trading Account Arrangement"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Gộp INVESTOR_ACCOUNT (core) + INVESTOR_ACCOUNT_EXTEND_INFO (liên hệ/ngân\
+  notes: "Gộp INVESTOR_ACCOUNT (core) + INVESTOR_ACCOUNT_EXTENDED_INFO (liên hệ/ngân\
     \ hàng, join 1-1 qua ACCOUNT_CODE). ACCOUNT_AUTHORIZATION loại khỏi scope — không\
     \ tồn tại trong DDL UAT thực tế (Source/DDL UAT/TMS_UAT_schema.txt); AUTHORIZED_PERSON_NAME/AUTHORIZATION_DATE\
     \ là 2 field phẳng sẵn có trên INVESTOR_ACCOUNT. Identity Number FK cross-source-system\
@@ -121,20 +121,35 @@ attributes:
   classification_context: "GSGD_INVESTOR_TYPE"
   etl_derived_value: "1=Cá nhân;2=Tổ chức"
   data_type: "string"
-- attribute_name: "Nationality Code"
-  physical_name: "nationality_code"
-  description: "Quốc tịch."
-  data_domain: "Classification Value"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "Quốc tịch — FK đến Geographic Area (ECAT)."
+  data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "GSGD.INVESTOR_ACCOUNT.NATIONALITY"
-  comment: "Scheme: GSGD_NATIONALITY. Nguồn lưu text tự do (VARCHAR2(100 CHAR)) —\
-    \ chưa rõ có ràng buộc theo danh mục quốc gia chuẩn hay nhập tự do. Cần profile\
-    \ giá trị thực tế trước go-live; có thể phải đổi Data Domain sang Text nếu không\
-    \ phải danh mục cố định (xem GSGD_HLD_Tier1.md 6d)."
-  classification_context: "GSGD_NATIONALITY"
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY') | Nguồn NATIONALITY là text tự do, không có bảng danh mục nội bộ\
+    \ GSGD để crosswalk — hash trực tiếp hash_id('ECAT.COUNTRY', NATIONALITY) từ giá\
+    \ trị text này. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "GSGD.INVESTOR_ACCOUNT.NATIONALITY"
+  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT.COUNTRY).\
+    \ Pair with Nationality Id."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Date Of Birth"
@@ -241,9 +256,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "GSGD.INVESTOR_ACCOUNT_EXTEND_INFO.LEGAL_REPRESENTATIVE"
-  comment: "Map từ INVESTOR_ACCOUNT_EXTEND_INFO (nguồn chính). Cột cùng tên tồn tại\
-    \ trùng lặp trên INVESTOR_ACCOUNT — document pending_design (xem GSGD_HLD_Tier1.md\
+  - "GSGD.INVESTOR_ACCOUNT_EXTENDED_INFO.LEGAL_REPRESENTATIVE"
+  comment: "Map từ INVESTOR_ACCOUNT_EXTENDED_INFO (nguồn chính). Cột cùng tên tồn\
+    \ tại trùng lặp trên INVESTOR_ACCOUNT — document pending_design (xem GSGD_HLD_Tier1.md\
     \ 6f T1-06)."
   classification_context: null
   etl_derived_value: null
@@ -256,9 +271,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "GSGD.INVESTOR_ACCOUNT_EXTEND_INFO.PHONE_NUMBER"
-  comment: "Map từ INVESTOR_ACCOUNT_EXTEND_INFO (nguồn chính). Trùng lặp với cột cùng\
-    \ tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
+  - "GSGD.INVESTOR_ACCOUNT_EXTENDED_INFO.PHONE_NUMBER"
+  comment: "Map từ INVESTOR_ACCOUNT_EXTENDED_INFO (nguồn chính). Trùng lặp với cột\
+    \ cùng tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -270,9 +285,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "GSGD.INVESTOR_ACCOUNT_EXTEND_INFO.EMAIL"
-  comment: "Map từ INVESTOR_ACCOUNT_EXTEND_INFO (nguồn chính). Trùng lặp với cột cùng\
-    \ tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
+  - "GSGD.INVESTOR_ACCOUNT_EXTENDED_INFO.EMAIL"
+  comment: "Map từ INVESTOR_ACCOUNT_EXTENDED_INFO (nguồn chính). Trùng lặp với cột\
+    \ cùng tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -284,9 +299,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "GSGD.INVESTOR_ACCOUNT_EXTEND_INFO.BANK_ACCOUNT_HOLDER_NAME"
-  comment: "Map từ INVESTOR_ACCOUNT_EXTEND_INFO (nguồn chính). Trùng lặp với cột cùng\
-    \ tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
+  - "GSGD.INVESTOR_ACCOUNT_EXTENDED_INFO.BANK_ACCOUNT_HOLDER_NAME"
+  comment: "Map từ INVESTOR_ACCOUNT_EXTENDED_INFO (nguồn chính). Trùng lặp với cột\
+    \ cùng tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -298,9 +313,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "GSGD.INVESTOR_ACCOUNT_EXTEND_INFO.BANK_ACCOUNT_NUMBER"
-  comment: "Map từ INVESTOR_ACCOUNT_EXTEND_INFO (nguồn chính). Trùng lặp với cột cùng\
-    \ tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
+  - "GSGD.INVESTOR_ACCOUNT_EXTENDED_INFO.BANK_ACCOUNT_NUMBER"
+  comment: "Map từ INVESTOR_ACCOUNT_EXTENDED_INFO (nguồn chính). Trùng lặp với cột\
+    \ cùng tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -312,9 +327,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "GSGD.INVESTOR_ACCOUNT_EXTEND_INFO.BANK_ACCOUNT_NAME"
-  comment: "Map từ INVESTOR_ACCOUNT_EXTEND_INFO (nguồn chính). Trùng lặp với cột cùng\
-    \ tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
+  - "GSGD.INVESTOR_ACCOUNT_EXTENDED_INFO.BANK_ACCOUNT_NAME"
+  comment: "Map từ INVESTOR_ACCOUNT_EXTENDED_INFO (nguồn chính). Trùng lặp với cột\
+    \ cùng tên trên INVESTOR_ACCOUNT — xem 6f T1-06."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -373,49 +388,49 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Margin Service Enabled Code"
-  physical_name: "margin_service_enabled_code"
+- attribute_name: "Margin Service Enabled"
+  physical_name: "margin_service_enabled"
   description: "Dịch vụ TC sử dụng - Ký quỹ."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "GSGD.INVESTOR_ACCOUNT.MARGIN_SERVICE_ENABLED"
-  comment: "Scheme: GSGD_SERVICE_ENABLED_FLAG. Nguồn lưu VARCHAR2(800) — chưa rõ giá\
-    \ trị Y/N hay text mô tả. Cần profile trước khi chốt (xem GSGD_HLD_Tier1.md 6f\
-    \ T1-02). Liên quan Account Investor Financial Service (Tier 2, ACCOUNT_FINANCIAL_SERVICE)\
-    \ — ghi nhận chi tiết hơn cùng nghiệp vụ dịch vụ tài chính."
-  classification_context: "GSGD_SERVICE_ENABLED_FLAG"
+  comment: "Map 1:1 theo yêu cầu Data Modeler (2026-07-23) — không dùng Classification\
+    \ Value, giữ nguyên giá trị text gốc VARCHAR2(800). Liên quan Account Investor\
+    \ Financial Service (Tier 2, ACCOUNT_FINANCIAL_SERVICE) — ghi nhận chi tiết hơn\
+    \ cùng nghiệp vụ dịch vụ tài chính."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Advance Payment Service Enabled Code"
-  physical_name: "advance_payment_service_enabled_code"
+- attribute_name: "Advance Payment Service Enabled"
+  physical_name: "advance_payment_service_enabled"
   description: "Dịch vụ TC sử dụng - Ứng trước tiền bán."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "GSGD.INVESTOR_ACCOUNT.ADVANCE_PAYMENT_SERVICE_ENABLED"
-  comment: "Scheme: GSGD_SERVICE_ENABLED_FLAG. Nguồn lưu VARCHAR2(800) — chưa rõ giá\
-    \ trị Y/N hay text mô tả. Cần profile (xem 6f T1-02)."
-  classification_context: "GSGD_SERVICE_ENABLED_FLAG"
+  comment: "Map 1:1 theo yêu cầu Data Modeler (2026-07-23) — không dùng Classification\
+    \ Value, giữ nguyên giá trị text gốc VARCHAR2(800)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Authorization Service Enabled Code"
-  physical_name: "authorization_service_enabled_code"
+- attribute_name: "Authorization Service Enabled"
+  physical_name: "authorization_service_enabled"
   description: "Dịch vụ TC sử dụng - Hợp đồng tài chính khác."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "GSGD.INVESTOR_ACCOUNT.ACCOUNT_AUTHORIZATION_ENABLED"
-  comment: "Scheme: GSGD_SERVICE_ENABLED_FLAG. Đổi tên attribute tránh nhầm với bảng\
-    \ ACCOUNT_AUTHORIZATION (đã ngoài scope — xem 6f T1-03). Nguồn lưu VARCHAR2(800)\
-    \ — cần profile (xem 6f T1-02)."
-  classification_context: "GSGD_SERVICE_ENABLED_FLAG"
+  comment: "Map 1:1 theo yêu cầu Data Modeler (2026-07-23) — không dùng Classification\
+    \ Value, giữ nguyên giá trị text gốc VARCHAR2(800). Đổi tên attribute tránh nhầm\
+    \ với bảng ACCOUNT_AUTHORIZATION (đã ngoài scope — xem 6f T1-03)."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Authorized Person Name"
@@ -456,47 +471,22 @@ attributes:
   - "GSGD.INVESTOR_ACCOUNT.APPROVAL_STATUS"
   comment: "Scheme: GSGD_APPROVAL_STATUS (dùng chung với Listed Company Corporate\
     \ Event, Account Investor Group — cần profile riêng nếu value set khác nhau).\
-    \ Map từ INVESTOR_ACCOUNT (nguồn chính) — INVESTOR_ACCOUNT_EXTEND_INFO có cột\
+    \ Map từ INVESTOR_ACCOUNT (nguồn chính) — INVESTOR_ACCOUNT_EXTENDED_INFO có cột\
     \ trùng tên, document pending_design."
   classification_context: "GSGD_APPROVAL_STATUS"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Data Source Code"
-  physical_name: "data_src_code"
+- attribute_name: "Data Source"
+  physical_name: "data_src"
   description: "Nguồn dữ liệu chính: VSDC, CTCK."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "GSGD.INVESTOR_ACCOUNT.DATA_SOURCE"
-  comment: "Scheme: GSGD_DATA_SOURCE."
-  classification_context: "GSGD_DATA_SOURCE"
-  etl_derived_value: "VSDC;CTCK"
+  comment: "Map 1:1 theo yêu cầu Data Modeler (2026-07-23) — không dùng Classification\
+    \ Value, giữ nguyên giá trị text gốc từ nguồn (VSDC/CTCK)."
+  classification_context: null
+  etl_derived_value: null
   data_type: "string"
-- attribute_name: "Created Timestamp"
-  physical_name: "created_tms"
-  description: "Ngày tạo."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "GSGD.INVESTOR_ACCOUNT.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Updated Timestamp"
-  physical_name: "updated_tms"
-  description: "Ngày sửa cuối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "GSGD.INVESTOR_ACCOUNT.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
