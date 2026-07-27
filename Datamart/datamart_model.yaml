@@ -2442,7 +2442,7 @@ entities:
     module: "QLKD"
     status: "draft"
     reuse_status: "new"
-    description: "Lịch sử tuân thủ & vi phạm CTCK — quyết định xử phạt hành chính, thanh tra/kiểm tra. Grain 1 CTCK x 1 sự kiện. Multi-source tách bộ (Admin Penalty Decision/Inspection/Examination) — 3 file LLD riêng. Chỉ giữ KPI READY (K_QLKD_188, 197-203) — không có Periodic Report (Nhóm 38/39 phần PENDING gating dữ liệu động). Nguồn Atomic track draft chưa approved."
+    description: "Lịch sử tuân thủ & vi phạm CTCK — quyết định xử phạt hành chính, thanh tra/kiểm tra. Grain 1 CTCK x 1 sự kiện. Multi-source tách bộ (Admin Penalty Decision/Inspection/Examination) — 3 file LLD riêng, UNION về 1 schema cột đích thống nhất (PK chung compliance_event_code). Chỉ giữ KPI READY (K_QLKD_188, 197-203) — không có Periodic Report (Nhóm 38/39 phần PENDING gating dữ liệu động). Nguồn Atomic track draft chưa approved. GAP: sc_code cho nhánh Inspection/Examination chưa có FK surrogate chính thức, chỉ text-match qua Inspection/Examination Team Target.target_reference_id."
     source_atomic:
       - "sc_administrative_penalty_decision"
       - "penalty_decision_subject"
@@ -2457,15 +2457,15 @@ entities:
     modules_using:
       - "QLKD"
     columns:
-      - logical_name: "Penalty Decision Code"
-        physical_name: "pd_code"
+      - logical_name: "Compliance Event Code"
+        physical_name: "compliance_event_code"
         data_domain: "Text"
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã quyết định xử phạt (Bảng Tác nghiệp). Bộ Admin Penalty Decision dùng sc_administrative_pd_code làm PK riêng."
+        description: "PK — mã sự kiện tuân thủ (Bảng Tác nghiệp), thống nhất tên cột PK cho cả 3 nhánh UNION. Nguồn: sc_administrative_penalty_decision.sc_administrative_pd_code (Admin Penalty) hoặc penalty_decision_subject.pd_code (Inspection/Examination)."
         source_atomic_table: "penalty_decision_subject"
-        source_atomic_column: "penalty_decision_subject.pd_code"
+        source_atomic_column: "penalty_decision_subject.pd_code / sc_administrative_penalty_decision.sc_administrative_pd_code"
       - logical_name: "Event Type Code"
         physical_name: "event_tp_code"
         data_domain: "Text"
@@ -2542,11 +2542,11 @@ entities:
         physical_name: "sc_code"
         data_domain: "Text"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: ""
-        description: "Mã CTCK — chỉ có ở bộ Admin Penalty Decision"
+        description: "Mã CTCK. Bộ Admin Penalty Decision: direct (nullable=false tại nguồn). Bộ Inspection/Examination: GAP — chưa có FK surrogate chính thức, chỉ text-match qua Team Target.target_reference_id, có thể NULL nếu không khớp."
         source_atomic_table: "sc_administrative_penalty_decision"
-        source_atomic_column: "sc_administrative_penalty_decision.sc_code"
+        source_atomic_column: "sc_administrative_penalty_decision.sc_code / inspection_team_target.target_reference_id / examination_team_target.target_reference_id"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"

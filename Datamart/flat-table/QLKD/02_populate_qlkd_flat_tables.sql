@@ -223,7 +223,7 @@ TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_compliance_hist_fl
 INSERT INTO datamart.qlkd_opr_securities_company_compliance_hist_flat
 SELECT
     -- From: OPERATIONAL Securities Company Compliance History
-    o.pd_code,
+    o.compliance_event_code,
     o.event_tp_code,
     o.form_tp_code,
     o.insp_decision_dt,

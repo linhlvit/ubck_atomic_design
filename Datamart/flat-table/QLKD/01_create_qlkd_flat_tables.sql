@@ -212,21 +212,21 @@ COMMENT 'Flat table — Operational Securities Company Organization Unit Profile
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Securities Company Compliance History
-    pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt (Bảng Tác nghiệp). Bộ Admin Penalty Decision dùng sc_administrative_pd_code làm PK riêng.',
+    compliance_event_code           String                  COMMENT 'PK — mã sự kiện tuân thủ (Bảng Tác nghiệp), thống nhất cho cả 3 nhánh UNION (Admin Penalty/Inspection/Examination)',
     event_tp_code                   String                  COMMENT 'Loại sự kiện tuân thủ (ADMIN_PENALTY_DECISION/INSPECTION/EXAMINATION) — ETL hardcode theo bộ',
-    form_tp_code                    Nullable(String)        COMMENT 'Loại thanh tra/kiểm tra (PERIODIC/UNSCHEDULED) — JOIN qua Team Target text match',
-    insp_decision_dt                Nullable(Date)          COMMENT 'Ngày ban hành quyết định thanh tra/kiểm tra',
+    form_tp_code                    Nullable(String)        COMMENT 'Loại thanh tra/kiểm tra (PERIODIC/UNSCHEDULED) — JOIN qua Team Target text match. NULL cho bộ Admin Penalty Decision.',
+    insp_decision_dt                Nullable(Date)          COMMENT 'Ngày ban hành quyết định thanh tra/kiểm tra. NULL cho bộ Admin Penalty Decision.',
     decision_nbr                    Nullable(String)        COMMENT 'Số quyết định xử phạt',
     issued_dt                       Nullable(Date)          COMMENT 'Ngày ban hành quyết định xử phạt',
-    violation_behavior_nm           Nullable(String)        COMMENT 'Hành vi vi phạm',
-    supplementary_penalty_nm        Nullable(String)        COMMENT 'Hình thức xử phạt bổ sung (nếu có)',
-    remedial_measure_nm             Nullable(String)        COMMENT 'Biện pháp khắc phục (nếu có)',
-    sc_code                         String                  COMMENT 'Mã CTCK — chỉ có ở bộ Admin Penalty Decision',
+    violation_behavior_nm           Nullable(String)        COMMENT 'Hành vi vi phạm. NULL cho bộ Admin Penalty Decision.',
+    supplementary_penalty_nm        Nullable(String)        COMMENT 'Hình thức xử phạt bổ sung (nếu có). NULL cho bộ Admin Penalty Decision.',
+    remedial_measure_nm             Nullable(String)        COMMENT 'Biện pháp khắc phục (nếu có). NULL cho bộ Admin Penalty Decision.',
+    sc_code                         Nullable(String)        COMMENT 'Mã CTCK. Bộ Admin Penalty Decision: direct. Bộ Inspection/Examination: GAP — text-match qua Team Target.target_reference_id, chưa có FK surrogate chính thức, có thể NULL.',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
-ORDER BY (assumeNotNull(issued_dt), pd_code)
+ORDER BY (assumeNotNull(issued_dt), compliance_event_code)
 COMMENT 'Flat table — Operational Securities Company Compliance History'
 ;
 
