@@ -1,4 +1,6 @@
-# DATAMART FMS — Phase 2b: Entity Relationships
+# DATAMART QLQ — Phase 2b: Entity Relationships
+
+> **Lưu ý:** File draft này thuộc Phase 2b cũ, cấu trúc Nhóm (1-16) và dải KPI_ID không còn khớp với `DTM_QLQ_HLD.md` hiện tại (đã trải qua nhiều lần tách Cụm, xóa/thêm KPI, renumber toàn diện sang K_QLQ_1–981). Giữ nguyên nội dung tạm thời — chỉ đổi tên file/prefix K_FMS→K_QLQ — sẽ được gen lại khi HLD được chốt (2026-07-24).
 
 ## Nhóm 1 — Thống kê chung (Fact Fund Management Company Snapshot)
 
@@ -9,7 +11,7 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fact Fund Management Company Snapshot | Thống kê TT — COUNT db + AUM BC | 1 snapshot toàn TT × 1 tháng | K_FMS_1–9 |
+| Fact Fund Management Company Snapshot | Thống kê TT — COUNT db + AUM BC | 1 snapshot toàn TT × 1 tháng | K_QLQ_1–9 |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
 
 ---
@@ -24,7 +26,7 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fact Discretionary Investment Contract Snapshot | Số lượng + GTTT UTDM per CTQLQ per kỳ BC | 1 CTQLQ × 1 Report Template × 1 Report Date | K_FMS_10–16 |
+| Fact Discretionary Investment Contract Snapshot | Số lượng + GTTT UTDM per CTQLQ per kỳ BC | 1 CTQLQ × 1 Report Template × 1 Report Date | K_QLQ_10–16 |
 | Fund Management Company Dimension | CTQLQ (SCD4A) | 1 CTQLQ | — |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
 
@@ -36,9 +38,9 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic, không qua Dimension.
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fund Management Company Profile | Hồ sơ CTQLQ latest | 1 CTQLQ × 1 tháng slicer | K_FMS_17–31 |
-| Fund Management Company Fund List | Drill-down danh sách quỹ per CTQLQ | 1 quỹ × 1 tháng slicer | K_FMS_28–29 |
-| Fund Management Company Contract List | Drill-down danh sách HĐ UTDM per CTQLQ | 1 Discretionary Investment Account active | K_FMS_30–31 |
+| Fund Management Company Profile | Hồ sơ CTQLQ latest | 1 CTQLQ × 1 tháng slicer | K_QLQ_17–31 |
+| Fund Management Company Fund List | Drill-down danh sách quỹ per CTQLQ | 1 quỹ × 1 tháng slicer | K_QLQ_28–29 |
+| Fund Management Company Contract List | Drill-down danh sách HĐ UTDM per CTQLQ | 1 Discretionary Investment Account active | K_QLQ_30–31 |
 
 ---
 
@@ -53,7 +55,7 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fact Investment Fund NAV Snapshot | NAV + phân bổ TS + QLRR cross-module | 1 quỹ × 1 BC Template × 1 Report Date | K_FMS_32–37, 38–44, 47–49, 56, 61 |
+| Fact Investment Fund NAV Snapshot | NAV + phân bổ TS + QLRR cross-module | 1 quỹ × 1 BC Template × 1 Report Date | K_QLQ_32–37, 38–44, 47–49, 56, 61 |
 | Investment Fund Dimension | Quỹ (SCD4A) | 1 quỹ | — |
 | Fund Management Company Dimension | CTQLQ (SCD4A) | 1 CTQLQ | — |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
@@ -69,7 +71,7 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fact Investment Fund Count Snapshot | Đếm quỹ theo loại hình — Market Level | 1 snapshot toàn TT × 1 năm | K_FMS_50–55 |
+| Fact Investment Fund Count Snapshot | Đếm quỹ theo loại hình — Market Level | 1 snapshot toàn TT × 1 năm | K_QLQ_50–55 |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
 
 ---
@@ -84,7 +86,7 @@ erDiagram
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fact Investment Fund CCQ Snapshot | CCQ lưu hành tích lũy per quỹ per tháng ← TRANSFERMBF | 1 quỹ × 1 snapshot tháng | K_FMS_53 |
+| Fact Investment Fund CCQ Snapshot | CCQ lưu hành tích lũy per quỹ per tháng ← TRANSFERMBF | 1 quỹ × 1 snapshot tháng | K_QLQ_53 |
 | Investment Fund Dimension | Quỹ (SCD4A) | 1 quỹ | — |
 | Calendar Date Dimension | Lịch ngày | 1 ngày | — |
 
@@ -96,7 +98,7 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic.
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Investment Fund Profile | Hồ sơ quỹ latest | 1 quỹ × 1 tháng slicer | K_FMS_62–67 |
+| Investment Fund Profile | Hồ sơ quỹ latest | 1 quỹ × 1 tháng slicer | K_QLQ_62–67 |
 
 ---
 
@@ -106,7 +108,7 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic RPTVALUES.
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Report Pass-through View | Pass-through BC — render dòng chỉ tiêu theo mẫu BC | 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu | K_FMS_78–91 |
+| Report Pass-through View | Pass-through BC — render dòng chỉ tiêu theo mẫu BC | 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu | K_QLQ_78–91 |
 
 ---
 
@@ -116,5 +118,5 @@ Bảng tác nghiệp — cross-module FMS × GSGD.
 
 | Datamart entity | Description | Grain | KPI |
 |---|---|---|---|
-| Fund Management Company Staff Trade Report | Báo cáo GD nhân viên CTQLQ — K_FMS_68–72 READY, K_FMS_73–77 PENDING sổ lệnh VSDC | 1 nhân viên × 1 TK GDCK | K_FMS_68–77 |
+| Fund Management Company Staff Trade Report | Báo cáo GD nhân viên CTQLQ — K_QLQ_68–72 READY, K_QLQ_73–77 PENDING sổ lệnh VSDC | 1 nhân viên × 1 TK GDCK | K_QLQ_68–77 |
 

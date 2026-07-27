@@ -700,7 +700,7 @@ erDiagram
 
 #### 3.3.2.3 Bảng Investment Fund Dimension (ivsm_fnd_dim)
 
-*Mô tả bảng:* Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái/VĐL (SCD2) ← FMS.FUNDS. PENDING O_FMS_10 cho Fund Type Code
+*Mô tả bảng:* Quỹ đầu tư — Mã/Tên/Loại hình/Trạng thái/VĐL (SCD2) ← FMS.FUNDS. PENDING O_QLQ_10 cho Fund Type Code
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -720,7 +720,7 @@ erDiagram
 
 #### 3.3.3.1 Bảng Fact Fund Management Company Snapshot (fct_fnd_mgt_co_snpst)
 
-*Mô tả bảng:* Thống kê thị trường — grain 1 snapshot toàn TT × 1 tháng. COUNT db + AUM BC (PENDING O_FMS_1)
+*Mô tả bảng:* Thống kê thị trường — grain 1 snapshot toàn TT × 1 tháng. COUNT db + AUM BC (PENDING O_QLQ_1)
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -735,12 +735,12 @@ erDiagram
 | 5 | frgn_ou_rep_ofc_cnt | int | X |  |  |  | COUNT VPĐD CTQLQ nước ngoài tại VN | FMS | FMS.FORBRCH | frgn_fnd_mgt_ou_id | CROSS JOIN (SELECT COUNT(frgn_fnd_mgt_ou.frgn_fnd_mgt_ou_id) AS frgn_ou_rep_ofc_cnt FROM frgn_fnd_mgt_ou WHERE frgn_fnd_mgt_ou.practice_st_code = 'ACTIVE' AND ARRAY_CONTAINS(frgn_fnd_mgt_ou.bsn_tp_codes, 'VPDD')) AS cte_vpdd |
 | 6 | frgn_ou_brch_cnt | int | X |  |  |  | COUNT Chi nhánh CTQLQ nước ngoài tại VN | FMS | FMS.FORBRCH | frgn_fnd_mgt_ou_id | CROSS JOIN (SELECT COUNT(frgn_fnd_mgt_ou.frgn_fnd_mgt_ou_id) AS frgn_ou_brch_cnt FROM frgn_fnd_mgt_ou WHERE frgn_fnd_mgt_ou.practice_st_code = 'ACTIVE' AND ARRAY_CONTAINS(frgn_fnd_mgt_ou.bsn_tp_codes, 'CHI_NHANH')) AS cte_brch |
 | 7 | dstr_agnt_cnt | int | X |  |  |  | COUNT đại lý phân phối CCQ tại tháng snapshot | FMS | FMS.AGENCIES | fnd_dstr_agnt_id | CROSS JOIN (SELECT COUNT(fnd_dstr_agnt.fnd_dstr_agnt_id) AS dstr_agnt_cnt FROM fnd_dstr_agnt WHERE fnd_dstr_agnt.practice_st_code = 'ACTIVE') AS cte_agnt |
-| 8 | tot_aum_amt | decimal(23,2) | X |  |  |  | Tổng AUM toàn thị trường từ BC RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS decimal)) WHERE rpt_impr_val.rpt_id = slicer_report_template AND rpt_impr_val.rpt_shet_id = slicer_sheet AND rpt_impr_val.rpt_trgt_id = 'AUM_ROW' |
-| 9 | tot_dscr_ctr_cnt | int | X |  |  |  | Tổng số HĐ UTDM toàn thị trường từ BC RPTVALUES mã 180101 — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180101' |
+| 8 | tot_aum_amt | decimal(23,2) | X |  |  |  | Tổng AUM toàn thị trường từ BC RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS decimal)) WHERE rpt_impr_val.rpt_id = slicer_report_template AND rpt_impr_val.rpt_shet_id = slicer_sheet AND rpt_impr_val.rpt_trgt_id = 'AUM_ROW' |
+| 9 | tot_dscr_ctr_cnt | int | X |  |  |  | Tổng số HĐ UTDM toàn thị trường từ BC RPTVALUES mã 180101 — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180101' |
 
 #### 3.3.3.2 Bảng Fact Discretionary Investment Contract Snapshot (fct_dscr_ivsm_ctr_snpst)
 
-*Mô tả bảng:* UTDM CTQLQ — grain 1 CTQLQ × 1 Report Template × 1 Report Date. Tất cả measures PENDING O_FMS_1
+*Mô tả bảng:* UTDM CTQLQ — grain 1 CTQLQ × 1 Report Template × 1 Report Date. Tất cả measures PENDING O_QLQ_1
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -752,16 +752,16 @@ erDiagram
 | 2 | fnd_mgt_co_dim_id | string |  |  | F |  | FK CTQLQ — lookup qua NK co_code, active record | FMS | FMS.RPTVALUES | SecId | INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id AND mbr_prd_rpt.rpt_subm_st_code IN ('SUBMITTED','LATE') → LOOKUP fnd_mgt_co_dim ON fnd_mgt_co_dim.co_code = rpt_impr_val.fnd_mgt_co_code AND fnd_mgt_co_dim.ds_rcrd_st = 1 |
 | 3 | rpt_tpl_code | string |  |  |  |  | Mã biểu mẫu BC — Degenerate Dimension | FMS | FMS.RPTVALUES | RptId | rpt_impr_val.rpt_id |
 | 4 | rpt_prd_code | string |  |  |  |  | Mã kỳ báo cáo — Degenerate Dimension | FMS | FMS.RPTVALUES | PrdId | rpt_impr_val.rpt_prd_code |
-| 5 | tot_ctr_cnt | int | X |  |  |  | Tổng số HĐ UTDM per CTQLQ per kỳ từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180101' |
-| 6 | ind_ctr_cnt | int | X |  |  |  | Số HĐ UTDM cá nhân per CTQLQ per kỳ — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180102' |
-| 7 | org_ctr_cnt | int | X |  |  |  | Số HĐ UTDM tổ chức per CTQLQ per kỳ — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180103' |
-| 8 | tot_trst_mkt_val | decimal(23,2) | X |  |  |  | Tổng GTTT UTDM per CTQLQ per kỳ từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS decimal)) WHERE rpt_impr_val.rpt_trgt_id = '180110' |
-| 9 | ind_trst_mkt_val | decimal(23,2) | X |  |  |  | GTTT UTDM cá nhân per CTQLQ per kỳ — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 10 | org_trst_mkt_val | decimal(23,2) | X |  |  |  | GTTT UTDM tổ chức per CTQLQ per kỳ — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
+| 5 | tot_ctr_cnt | int | X |  |  |  | Tổng số HĐ UTDM per CTQLQ per kỳ từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180101' |
+| 6 | ind_ctr_cnt | int | X |  |  |  | Số HĐ UTDM cá nhân per CTQLQ per kỳ — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180102' |
+| 7 | org_ctr_cnt | int | X |  |  |  | Số HĐ UTDM tổ chức per CTQLQ per kỳ — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS int)) WHERE rpt_impr_val.rpt_trgt_id = '180103' |
+| 8 | tot_trst_mkt_val | decimal(23,2) | X |  |  |  | Tổng GTTT UTDM per CTQLQ per kỳ từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values | SUM(CAST(rpt_impr_val.val AS decimal)) WHERE rpt_impr_val.rpt_trgt_id = '180110' |
+| 9 | ind_trst_mkt_val | decimal(23,2) | X |  |  |  | GTTT UTDM cá nhân per CTQLQ per kỳ — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 10 | org_trst_mkt_val | decimal(23,2) | X |  |  |  | GTTT UTDM tổ chức per CTQLQ per kỳ — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
 
 #### 3.3.3.3 Bảng Fact Investment Fund NAV Snapshot (fct_ivsm_fnd_nav_snpst)
 
-*Mô tả bảng:* NAV + phân bổ tài sản + cross-module QLRR — grain 1 quỹ × 1 BC. Measures PENDING O_FMS_1
+*Mô tả bảng:* NAV + phân bổ tài sản + cross-module QLRR — grain 1 quỹ × 1 BC. Measures PENDING O_QLQ_1
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -774,14 +774,14 @@ erDiagram
 | 3 | fnd_mgt_co_dim_id | string |  |  | F |  | FK CTQLQ — lookup qua NK co_code, active record | FMS | FMS.RPTVALUES | SecId | INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id AND mbr_prd_rpt.rpt_subm_st_code IN ('SUBMITTED','LATE') → LOOKUP fnd_mgt_co_dim ON fnd_mgt_co_dim.co_code = rpt_impr_val.fnd_mgt_co_code AND fnd_mgt_co_dim.ds_rcrd_st = 1 |
 | 4 | rpt_tpl_code | string |  |  |  |  | Mã biểu mẫu BC — Degenerate Dimension | FMS | FMS.RPTVALUES | RptId | rpt_impr_val.rpt_id |
 | 5 | rpt_prd_code | string |  |  |  |  | Mã kỳ báo cáo — Degenerate Dimension | FMS | FMS.RPTVALUES | PrdId | rpt_impr_val.rpt_prd_code |
-| 6 | fnd_nav_amt | decimal(23,2) | X |  |  |  | NAV per quỹ per kỳ từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values | CAST(rpt_impr_val.val AS decimal) |
-| 7 | tot_ast_amt | decimal(23,2) | X |  |  |  | Tổng giá trị tài sản per quỹ per kỳ — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 8 | listd_stk_amt | decimal(23,2) | X |  |  |  | Giá trị CP niêm yết — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 9 | unlistd_stk_amt | decimal(23,2) | X |  |  |  | Giá trị CP chưa niêm yết — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 10 | bond_amt | decimal(23,2) | X |  |  |  | Giá trị trái phiếu — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 11 | cash_amt | decimal(23,2) | X |  |  |  | Giá trị tiền — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 12 | othr_scr_amt | decimal(23,2) | X |  |  |  | Giá trị CK khác — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 13 | othr_ast_amt | decimal(23,2) | X |  |  |  | Giá trị tài sản khác — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
+| 6 | fnd_nav_amt | decimal(23,2) | X |  |  |  | NAV per quỹ per kỳ từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values | CAST(rpt_impr_val.val AS decimal) |
+| 7 | tot_ast_amt | decimal(23,2) | X |  |  |  | Tổng giá trị tài sản per quỹ per kỳ — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 8 | listd_stk_amt | decimal(23,2) | X |  |  |  | Giá trị CP niêm yết — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 9 | unlistd_stk_amt | decimal(23,2) | X |  |  |  | Giá trị CP chưa niêm yết — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 10 | bond_amt | decimal(23,2) | X |  |  |  | Giá trị trái phiếu — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 11 | cash_amt | decimal(23,2) | X |  |  |  | Giá trị tiền — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 12 | othr_scr_amt | decimal(23,2) | X |  |  |  | Giá trị CK khác — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 13 | othr_ast_amt | decimal(23,2) | X |  |  |  | Giá trị tài sản khác — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
 | 14 | gdp_ind_code | string |  |  |  |  | Mã chỉ tiêu QLRR GDP — Degenerate Dimension để tra cứu |  |  |  | ETL sinh tự động |
 | 15 | gdp_val | decimal(23,2) | X |  |  |  | GDP kỳ quý từ QLRR.risk_indicator_value (category=MACRO) — T-1: Period_Type=Quý AND Period_Year=YEAR(rpt_dt) AND Period_Value=QUARTER(rpt_dt) | QLRR | QLRR.risk_indicator_value | value | INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id AND mbr_prd_rpt.rpt_subm_st_code IN ('SUBMITTED','LATE') → INNER JOIN rsk_ind_val AS gdp ON gdp.rsk_ind_code = 'GDP' AND gdp.prd_tp_code = '3' AND gdp.prd_yr = YEAR(TO_DATE(CAST(mbr_prd_rpt.day_rpt AS string), 'yyyyMMdd')) AND gdp.prd_val = QUARTER(TO_DATE(CAST(mbr_prd_rpt.day_rpt AS string), 'yyyyMMdd')) → CAST(gdp.val AS decimal) |
 | 16 | vn_idx_ind_code | string |  |  |  |  | Mã chỉ tiêu QLRR VN-Index — Degenerate Dimension để tra cứu |  |  |  | ETL sinh tự động |
@@ -791,7 +791,7 @@ erDiagram
 
 #### 3.3.3.4 Bảng Fact Investment Fund Count Snapshot (fct_ivsm_fnd_cnt_snpst)
 
-*Mô tả bảng:* Đếm quỹ theo loại hình — grain 1 snapshot toàn TT × 1 năm. Sub-type counts PENDING O_FMS_10
+*Mô tả bảng:* Đếm quỹ theo loại hình — grain 1 snapshot toàn TT × 1 năm. Sub-type counts PENDING O_QLQ_10
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -812,7 +812,7 @@ erDiagram
 
 #### 3.3.3.5 Bảng Fact Investment Fund CCQ Snapshot (fct_ivsm_fnd_ccq_snpst)
 
-*Mô tả bảng:* CCQ lưu hành per quỹ — grain 1 quỹ × 1 snapshot tháng ← FMS.TRANSFERMBF tích lũy. PENDING O_FMS_7 cho quỹ đóng
+*Mô tả bảng:* CCQ lưu hành per quỹ — grain 1 quỹ × 1 snapshot tháng ← FMS.TRANSFERMBF tích lũy. PENDING O_QLQ_7 cho quỹ đóng
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -830,7 +830,7 @@ erDiagram
 
 #### 3.3.4.1 Bảng Fund Management Company Profile (fnd_mgt_co_prfl)
 
-*Mô tả bảng:* Hồ sơ CTQLQ — latest state per CTQLQ. AUM/Vốn CSH/LN PENDING O_FMS_1, O_FMS_4
+*Mô tả bảng:* Hồ sơ CTQLQ — latest state per CTQLQ. AUM/Vốn CSH/LN PENDING O_QLQ_1, O_QLQ_4
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -846,9 +846,9 @@ erDiagram
 | 6 | charter_cptl_amt | decimal(23,2) | X |  |  |  | Vốn điều lệ CTQLQ (VNĐ) ← FMS.SECURITIES.SecCapital | FMS | FMS.SECURITIES | SecCapital | fnd_mgt_co.charter_cptl_amt |
 | 7 | ivsm_fnd_cnt | int | X |  |  |  | Số quỹ thuộc CTQLQ — LEFT JOIN ivsm_fnd qua fnd_mgt_co_id (1-N) | FMS | FMS.FUNDS | ivsm_fnd_id | LEFT JOIN ivsm_fnd ON ivsm_fnd.fnd_mgt_co_id = fnd_mgt_co.fnd_mgt_co_id → COUNT(ivsm_fnd.ivsm_fnd_id) |
 | 8 | dscr_ctr_cnt | int | X |  |  |  | Số HĐ UTDM thuộc CTQLQ — multi-hop: fnd_mgt_co → dscr_ivsm_ivsr → dscr_ivsm_ac (1-N-N) | FMS | FMS.INVESACC | dscr_ivsm_ac_id | LEFT JOIN dscr_ivsm_ivsr ON dscr_ivsm_ivsr.fnd_mgt_co_id = fnd_mgt_co.fnd_mgt_co_id → LEFT JOIN dscr_ivsm_ac ON dscr_ivsm_ac.dscr_ivsm_ivsr_id = dscr_ivsm_ivsr.dscr_ivsm_ivsr_id → COUNT(dscr_ivsm_ac.dscr_ivsm_ac_id) |
-| 9 | tot_aum_amt | decimal(23,2) | X |  |  |  | AUM per CTQLQ từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 10 | net_prft_amt | decimal(23,2) | X |  |  |  | Lợi nhuận per CTQLQ từ RPTVALUES BCTC — pending O_FMS_1 + O_FMS_4 | FMS | FMS.RPTVALUES | Values |  |
-| 11 | eqty_amt | decimal(23,2) | X |  |  |  | Vốn CSH per CTQLQ từ RPTVALUES mã 400 — pending O_FMS_4 | FMS | FMS.RPTVALUES | Values |  |
+| 9 | tot_aum_amt | decimal(23,2) | X |  |  |  | AUM per CTQLQ từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 10 | net_prft_amt | decimal(23,2) | X |  |  |  | Lợi nhuận per CTQLQ từ RPTVALUES BCTC — pending O_QLQ_1 + O_QLQ_4 | FMS | FMS.RPTVALUES | Values |  |
+| 11 | eqty_amt | decimal(23,2) | X |  |  |  | Vốn CSH per CTQLQ từ RPTVALUES mã 400 — pending O_QLQ_4 | FMS | FMS.RPTVALUES | Values |  |
 | 12 | rank_clss_code | string | X |  |  |  | Xếp loại CAMEL A/B/C — kỳ đánh giá gần nhất ≤ tháng slicer | FMS | FMS.RANK | RankClass | LEFT JOIN mbr_rtg ON mbr_rtg.fnd_mgt_co_id = fnd_mgt_co.fnd_mgt_co_id → INNER JOIN mbr_rtg_prd ON mbr_rtg_prd.mbr_rtg_prd_id = mbr_rtg.mbr_rtg_prd_id AND mbr_rtg_prd.rtg_prd_end_dt <= slicer_dt → mbr_rtg.rank_clss_code (ORDER BY mbr_rtg_prd.rtg_prd_end_dt DESC LIMIT 1) |
 | 13 | tot_scor | decimal(5,2) | X |  |  |  | Điểm CAMEL — kỳ đánh giá gần nhất ≤ tháng slicer | FMS | FMS.RANK | TotalScore | LEFT JOIN mbr_rtg ON mbr_rtg.fnd_mgt_co_id = fnd_mgt_co.fnd_mgt_co_id → INNER JOIN mbr_rtg_prd ON mbr_rtg_prd.mbr_rtg_prd_id = mbr_rtg.mbr_rtg_prd_id AND mbr_rtg_prd.rtg_prd_end_dt <= slicer_dt → mbr_rtg.tot_scor (ORDER BY mbr_rtg_prd.rtg_prd_end_dt DESC LIMIT 1) |
 | 14 | rpt_prd_code | string | X |  |  |  | Mã kỳ BC dùng làm tham chiếu slicer (từ RPTVALUES) | FMS | FMS.RPTMEMBER | DayReport | LEFT JOIN rpt_impr_val ON rpt_impr_val.fnd_mgt_co_id = fnd_mgt_co.fnd_mgt_co_id → INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id AND mbr_prd_rpt.rpt_subm_st_code IN ('SUBMITTED','LATE') → rpt_impr_val.rpt_prd_code ORDER BY mbr_prd_rpt.day_rpt DESC LIMIT 1 |
@@ -856,7 +856,7 @@ erDiagram
 
 #### 3.3.4.2 Bảng Fund Management Company Fund List (fnd_mgt_co_fnd_lst)
 
-*Mô tả bảng:* Bảng con drill-down danh sách quỹ per CTQLQ. NAV PENDING O_FMS_1
+*Mô tả bảng:* Bảng con drill-down danh sách quỹ per CTQLQ. NAV PENDING O_QLQ_1
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -871,7 +871,7 @@ erDiagram
 | 5 | fnd_nm | string |  |  |  |  | Tên đầy đủ quỹ đầu tư | FMS | FMS.FUNDS | FundName | ivsm_fnd.ivsm_fnd_nm |
 | 6 | fnd_tp_code | string | X |  |  |  | Loại hình quỹ — scheme: FMS_FUND_TYPE | FMS | FMS.FUNDS | FundType | ivsm_fnd.fnd_tp_code |
 | 7 | fnd_cptl_amt | decimal(23,2) | X |  |  |  | Vốn điều lệ quỹ (VNĐ) ← FMS.FUNDS.FundCapital | FMS | FMS.FUNDS | FundCapital | ivsm_fnd.fnd_cptl_amt |
-| 8 | fnd_nav_amt | decimal(23,2) | X |  |  |  | NAV quỹ kỳ BC gần nhất từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
+| 8 | fnd_nav_amt | decimal(23,2) | X |  |  |  | NAV quỹ kỳ BC gần nhất từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
 | 9 | rpt_prd_code | string | X |  |  |  | Mã kỳ BC tương ứng NAV | FMS | FMS.RPTMEMBER | DayReport | LEFT JOIN rpt_impr_val ON rpt_impr_val.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id → INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id AND mbr_prd_rpt.rpt_subm_st_code IN ('SUBMITTED','LATE') → rpt_impr_val.rpt_prd_code ORDER BY mbr_prd_rpt.day_rpt DESC LIMIT 1 |
 
 #### 3.3.4.3 Bảng Fund Management Company Contract List (fnd_mgt_co_ctr_lst)
@@ -891,13 +891,13 @@ erDiagram
 | 5 | ctr_nbr | string | X |  |  |  | Số HĐ UTDM ← FMS.INVESACC.ContractNo | FMS | FMS.INVESACC | ContractNo | dscr_ivsm_ac.ctr_nbr |
 | 6 | ivsr_nm | string |  |  |  |  | Tên nhà đầu tư ← FMS.INVES.Name | FMS | FMS.INVES | Name | INNER JOIN dscr_ivsm_ivsr ON dscr_ivsm_ivsr.dscr_ivsm_ivsr_id = dscr_ivsm_ac.dscr_ivsm_ivsr_id → dscr_ivsm_ivsr.ivsr_nm |
 | 7 | ivsr_obj_tp_code | string | X |  |  |  | Loại NĐT (cá nhân/tổ chức) — scheme: FMS_STOCKHOLDER_TYPE | FMS | FMS.INVES | StoId | INNER JOIN dscr_ivsm_ivsr ON dscr_ivsm_ivsr.dscr_ivsm_ivsr_id = dscr_ivsm_ac.dscr_ivsm_ivsr_id → dscr_ivsm_ivsr.stockholder_tp_code |
-| 8 | trst_mkt_val | decimal(23,2) | X |  |  |  | Giá trị TT HĐ UTDM từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
+| 8 | trst_mkt_val | decimal(23,2) | X |  |  |  | Giá trị TT HĐ UTDM từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
 | 9 | ctr_strt_dt | date | X |  |  |  | Ngày bắt đầu HĐ UTDM ← FMS.INVESACC.DateReport (proxy) | FMS | FMS.INVESACC | DateReport | dscr_ivsm_ac.rpt_dt |
 | 10 | rpt_prd_code | string | X |  |  |  | Mã kỳ BC tương ứng GTTT | FMS | FMS.RPTMEMBER | DayReport | INNER JOIN dscr_ivsm_ivsr ON dscr_ivsm_ivsr.dscr_ivsm_ivsr_id = dscr_ivsm_ac.dscr_ivsm_ivsr_id → LEFT JOIN rpt_impr_val ON rpt_impr_val.fnd_mgt_co_id = dscr_ivsm_ivsr.fnd_mgt_co_id → INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id AND mbr_prd_rpt.rpt_subm_st_code IN ('SUBMITTED','LATE') → rpt_impr_val.rpt_prd_code ORDER BY mbr_prd_rpt.day_rpt DESC LIMIT 1 |
 
 #### 3.3.4.4 Bảng Investment Fund Profile (ivsm_fnd_prfl)
 
-*Mô tả bảng:* Hồ sơ quỹ — latest state per quỹ. NAV/LN PENDING O_FMS_1
+*Mô tả bảng:* Hồ sơ quỹ — latest state per quỹ. NAV/LN PENDING O_QLQ_1
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -914,13 +914,13 @@ erDiagram
 | 7 | practice_st_code | string | X |  |  |  | Trạng thái hoạt động quỹ — scheme: FMS_OPERATION_STATUS | FMS | FMS.FUNDS | Status | ivsm_fnd.practice_st_code |
 | 8 | fnd_cptl_amt | decimal(23,2) | X |  |  |  | Vốn điều lệ quỹ (VNĐ) | FMS | FMS.FUNDS | FundCapital | ivsm_fnd.fnd_cptl_amt |
 | 9 | rpt_prd_code | string | X |  |  |  | Mã kỳ BC gần nhất | FMS | FMS.RPTMEMBER | DayReport | LEFT JOIN rpt_impr_val ON rpt_impr_val.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id → INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id AND mbr_prd_rpt.rpt_subm_st_code IN ('SUBMITTED','LATE') → rpt_impr_val.rpt_prd_code ORDER BY mbr_prd_rpt.day_rpt DESC LIMIT 1 |
-| 10 | fnd_nav_amt | decimal(23,2) | X |  |  |  | NAV quỹ kỳ BC gần nhất từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 11 | net_prft_amt | decimal(23,2) | X |  |  |  | LN gốc từ RPTVALUES — pending O_FMS_1 | FMS | FMS.RPTVALUES | Values |  |
-| 12 | outst_unit_cnt | decimal(23,2) | X |  |  |  | KL CCQ lưu hành — reuse từ Investment Fund Certificate Transfer (O_FMS_7) |  | ivsm_fnd_ctf_tfr | tfr_qty / tfr_tp_code | SUM(ivsm_fnd_ctf_tfr.tfr_qty) WHERE ivsm_fnd_ctf_tfr.tfr_tp_code = 'MUA' AND ivsm_fnd_ctf_tfr.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id - SUM(ivsm_fnd_ctf_tfr.tfr_qty) WHERE ivsm_fnd_ctf_tfr.tfr_tp_code = 'BAN' AND ivsm_fnd_ctf_tfr.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id |
+| 10 | fnd_nav_amt | decimal(23,2) | X |  |  |  | NAV quỹ kỳ BC gần nhất từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 11 | net_prft_amt | decimal(23,2) | X |  |  |  | LN gốc từ RPTVALUES — pending O_QLQ_1 | FMS | FMS.RPTVALUES | Values |  |
+| 12 | outst_unit_cnt | decimal(23,2) | X |  |  |  | KL CCQ lưu hành — reuse từ Investment Fund Certificate Transfer (O_QLQ_7) |  | ivsm_fnd_ctf_tfr | tfr_qty / tfr_tp_code | SUM(ivsm_fnd_ctf_tfr.tfr_qty) WHERE ivsm_fnd_ctf_tfr.tfr_tp_code = 'MUA' AND ivsm_fnd_ctf_tfr.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id - SUM(ivsm_fnd_ctf_tfr.tfr_qty) WHERE ivsm_fnd_ctf_tfr.tfr_tp_code = 'BAN' AND ivsm_fnd_ctf_tfr.ivsm_fnd_id = ivsm_fnd.ivsm_fnd_id |
 
 #### 3.3.4.5 Bảng Fund Management Company Staff Trade Report (fnd_mgt_co_stf_trd_rpt)
 
-*Mô tả bảng:* Báo cáo GD nhân viên CTQLQ — K_FMS_68–72 READY. K_FMS_73–77 sổ lệnh PENDING O_FMS_11 (GSGD không có Silver)
+*Mô tả bảng:* Báo cáo GD nhân viên CTQLQ — K_QLQ_68–72 READY. K_QLQ_73–77 sổ lệnh PENDING O_QLQ_11 (GSGD không có Silver)
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -936,15 +936,15 @@ erDiagram
 | 6 | identn_nbr | string | X |  |  |  | Số CCCD/HC nhân viên — join key sang GSGD ← FMS.TLProfiles.IdAdd | NHNCK | NHNCK.Professionals | IdentityId | LEFT JOIN ip_alt_identn ON ip_alt_identn.ip_id = fnd_mgt_co_key_psn.fnd_mgt_co_key_psn_id AND ip_alt_identn.identn_tp_code IN ('CITIZEN_ID','PASSPORT') → ip_alt_identn.identn_nbr |
 | 7 | ivsr_tdg_ac_code | string | X |  |  |  | Mã TK GDCK ← GSGD.investor_account.account_code — join qua identity_number = identn_nbr | GSGD | GSGD.investor_account | account_code | LEFT JOIN ip_alt_identn ON ip_alt_identn.ip_id = fnd_mgt_co_key_psn.fnd_mgt_co_key_psn_id AND ip_alt_identn.identn_tp_code IN ('CITIZEN_ID','PASSPORT') → LEFT JOIN ivsr_tdg_ac ON ivsr_tdg_ac.id_nbr = ip_alt_identn.identn_nbr → ivsr_tdg_ac.ivsr_tdg_ac_code |
 | 8 | scr_co_code | string | X |  |  |  | Mã CTCK — ETL parse từ 4–5 ký tự đầu Investor_Trading_Account_Code — cần xác nhận ETL team | GSGD | GSGD.investor_account | account_code | LEFT JOIN ip_alt_identn ON ip_alt_identn.ip_id = fnd_mgt_co_key_psn.fnd_mgt_co_key_psn_id AND ip_alt_identn.identn_tp_code IN ('CITIZEN_ID','PASSPORT') → LEFT JOIN ivsr_tdg_ac ON ivsr_tdg_ac.id_nbr = ip_alt_identn.identn_nbr → LEFT(ivsr_tdg_ac.ivsr_tdg_ac_code, 4) |
-| 9 | txn_dt | date | X |  |  |  | Ngày giao dịch — PENDING O_FMS_11 (VSDC) |  |  |  | ETL sinh tự động |
-| 10 | txn_mthd_code | string | X |  |  |  | Phương thức giao dịch — PENDING O_FMS_11 |  |  |  | ETL sinh tự động |
-| 11 | ord_side_code | string | X |  |  |  | Lệnh mua/bán — PENDING O_FMS_11 |  |  |  | ETL sinh tự động |
-| 12 | scr_code | string | X |  |  |  | Mã chứng khoán — PENDING O_FMS_11 |  |  |  | ETL sinh tự động |
-| 13 | ord_qty | int | X |  |  |  | Số lượng CK — PENDING O_FMS_11 |  |  |  | ETL sinh tự động |
+| 9 | txn_dt | date | X |  |  |  | Ngày giao dịch — PENDING O_QLQ_11 (VSDC) |  |  |  | ETL sinh tự động |
+| 10 | txn_mthd_code | string | X |  |  |  | Phương thức giao dịch — PENDING O_QLQ_11 |  |  |  | ETL sinh tự động |
+| 11 | ord_side_code | string | X |  |  |  | Lệnh mua/bán — PENDING O_QLQ_11 |  |  |  | ETL sinh tự động |
+| 12 | scr_code | string | X |  |  |  | Mã chứng khoán — PENDING O_QLQ_11 |  |  |  | ETL sinh tự động |
+| 13 | ord_qty | int | X |  |  |  | Số lượng CK — PENDING O_QLQ_11 |  |  |  | ETL sinh tự động |
 
 #### 3.3.4.6 Bảng Report Pass-through View (rpt_pass_thru_view)
 
-*Mô tả bảng:* Pass-through báo cáo — grain 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu. Row Name PENDING O_FMS_1
+*Mô tả bảng:* Pass-through báo cáo — grain 1 CTQLQ/Quỹ × 1 mẫu BC × 1 kỳ × 1 dòng chỉ tiêu. Row Name PENDING O_QLQ_1
 *Đường dẫn trên kho dữ liệu:*
 *Các trường Partition:*
 *Thời gian lưu trữ:*
@@ -964,7 +964,7 @@ erDiagram
 | 10 | rpt_tpl_nm | string | X |  |  |  | Tên biểu mẫu BC — lookup từ Member Periodic Report | FMS | FMS.RPTMEMBER | RptName | INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id → mbr_prd_rpt.rpt_nm |
 | 11 | rpt_prd_lbl | string | X |  |  |  | Nhãn kỳ BC hiển thị — hiện lấy yr_val (năm). Cần BA xác nhận: có cần bổ sung prd_val + prd_tp_code để tạo label đầy đủ (vd: "T3/2025") không | FMS | FMS.RPTMEMBER | YearValue | INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id → mbr_prd_rpt.yr_val |
 | 12 | rpt_dt | date | X |  |  |  | Ngày nộp BC — từ Member Periodic Report | FMS | FMS.RPTMEMBER | rpt_dt | INNER JOIN mbr_prd_rpt ON mbr_prd_rpt.mbr_prd_rpt_id = rpt_impr_val.mbr_prd_rpt_id → mbr_prd_rpt.rpt_dt |
-| 13 | row_nm | string | X |  |  |  | Tên dòng chỉ tiêu — pending O_FMS_1 (lookup từ mapping sheet/template) |  |  |  | ETL sinh tự động |
+| 13 | row_nm | string | X |  |  |  | Tên dòng chỉ tiêu — pending O_QLQ_1 (lookup từ mapping sheet/template) |  |  |  | ETL sinh tự động |
 | 14 | cell_val | decimal(23,2) | X |  |  |  | Giá trị chỉ tiêu (numeric) ← FMS.RPTVALUES.Values | FMS | FMS.RPTVALUES | Values | CAST(rpt_impr_val.val AS decimal) |
 | 15 | cell_txt_val | string | X |  |  |  | Giá trị chỉ tiêu dạng text (nguyên bản) ← FMS.RPTVALUES.Values | FMS | FMS.RPTVALUES | Values | rpt_impr_val.val |
 | 16 | data_unit | string | X |  |  |  | Đơn vị dữ liệu ← FMS.RPTVALUES.FormatDataType | FMS | FMS.RPTVALUES | FormatDataType | rpt_impr_val.fmt_data_tp_code |
