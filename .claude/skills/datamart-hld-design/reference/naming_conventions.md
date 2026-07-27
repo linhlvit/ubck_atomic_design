@@ -7,11 +7,23 @@
 | Fact Event | `Fact <Subject> <Event>` | `Fact Foreign Investor Registration` |
 | Fact Snapshot | `Fact <Subject> <Object> Snapshot` | `Fact Foreign Investor Portfolio Snapshot` |
 | Dimension | `<Entity> Dimension` | `Foreign Investor Dimension` |
-| Tác nghiệp | `<Subject> <Pattern>` (tiếng Anh) | `Foreign Investor 360 Profile` |
+| Tác nghiệp | `Operational <Subject> <Pattern>` (tiếng Anh) | `Operational Foreign Investor 360 Profile` |
+| Fact dạng report (xem ngoại lệ bên dưới) | `<Subject> <...> Report` (KHÔNG mang tiền tố "Fact") | `Foreign Investor Trading Statistics Report` |
 
 ❌ Không prefix `flat_`.
 ❌ Không mô tả storage hoặc tần suất trong tên bảng (VD: `Daily_Snapshot`, `Monthly_Report`).
 ❌ Không dùng tên module trong tên bảng (VD: `NDTNN_Foreign_Investor_Dimension`).
+
+**Đối chiếu logical name ↔ physical name theo `table_type` (bắt buộc đặt tên logical đúng ngay từ HLD — tránh phải đổi ngược ở LLD):**
+
+| `table_type` | Physical name (LLD) | Logical name (HLD) tương ứng | Ghi chú |
+|---|---|---|---|
+| `fact` | tiền tố `fct_` | mang tiền tố **"Fact"** | mặc định |
+| `dim` | hậu tố `_dim` | hậu tố **"Dimension"** | |
+| `operational` | tiền tố `opr_` | mang tiền tố **"Operational"** | nhất quán với "Fact ..."/"... Dimension" — đặt tên logical `Operational <Subject> <Pattern>` ngay từ HLD (VD: `Operational Foreign Investor 360 Profile`); LLD chỉ cần lowercase + áp physical naming rule để ra `opr_...`, không phải tự suy luận tiền tố một chiều |
+| `fact` (biến thể **report**) | hậu tố `_rpt` (KHÔNG kèm tiền tố `fct_`) | mang hậu tố **"Report"**, **không mang tiền tố "Fact"** | xem điều kiện nhận diện bên dưới |
+
+**Khi nào dùng biến thể Fact-report (hậu tố `_rpt`):** Bảng phục vụ báo cáo đóng gói cố định theo kỳ — ETL append-only theo Report Date, không SCD4A, thường denormalize hoàn toàn, không có FK Dimension. Nếu Nhóm/KPI đang thiết kế khớp mô tả này, đặt tên logical ngay từ Section 2/3 theo dạng `<Subject> ... Report` (KHÔNG `Fact <Subject> ... Report`) để LLD chỉ cần áp `_rpt`, không phải đổi tên logical đã duyệt. Tiêu chí phân biệt Fact vs Operational khi chọn `table_type`: **Fact = append theo thời gian** (mỗi lần ETL chạy thêm dòng cho kỳ mới); **Operational = SCD4A** (giữ current-state, update/replace theo latest) — không dùng "có denormalize hay không" làm tiêu chí.
 
 ---
 

@@ -35,21 +35,33 @@ description: |
 
 - [ ] `Datamart/hld/DTM_{MODULE}_HLD.md` tồn tại và đã được user duyệt
 - [ ] `Datamart/hld/DTM_{MODULE}_Entities.csv` tồn tại và đã được user duyệt (có cột `reuse_status`)
-- [ ] `DataModel/Atomic/dm_manifest.yaml` tồn tại — **entry point tra cứu Atomic entities đã approved**
+- [ ] `DataModel/Atomic/dm_manifest.yaml` tồn tại — **entry point tra cứu Atomic entities, Nguồn 1 (ưu tiên cao nhất)**
+- [ ] `DataModel/working/Atomic/lld/manifest.yaml` tồn tại — **entry point tra cứu Atomic entities draft, Nguồn 2 (chỉ tra khi Nguồn 1 không có entry)**
 - [ ] `DataModel/datamart_model.yaml` tồn tại — registry schema cross-module (có thể rỗng nếu module đầu tiên)
 - [ ] `Datamart/lld/datamart_attributes.csv` tồn tại (có thể rỗng nếu module đầu tiên)
 - [ ] `BRD/BA/BA_analyst_{MODULE}.csv` tồn tại (cần cho Phase 2)
 - [ ] `DataModel/working/Atomic/lld/classification_schemes.yaml` tồn tại (cần khi map từ danh mục CV)
 
 > **QUYẾT ĐỊNH CỨNG:** Claude KHÔNG được đoán `source_entity` hay `source_attribute`.
-> Mọi mapping phải tra cứu trực tiếp từ entity YAML files trong `DataModel/Atomic/`.
+> Mọi mapping phải tra cứu trực tiếp từ entity YAML files, theo đúng thứ tự ưu tiên 2 nguồn dưới đây.
 >
-> **Quy trình tra cứu Atomic:**
-> 1. Mở `dm_manifest.yaml` → tìm entry có `physical_name` khớp `atomic_table` đang cần
-> 2. Đọc `subfolder` + `file_name` → mở file `DataModel/Atomic/{subfolder}/{file_name}`
-> 3. Lấy `ldm.physical_name` = `atomic_table`, `attribute.physical_name` = `atomic_column`
-> 4. **Nhiều source table cùng `physical_name`:** đọc TẤT CẢ entry cùng `physical_name` — không dừng ở entry đầu
-> 5. **`src_stm_code` value:** trích từ `classification_context` của attribute `Source System Code` — format `"Source System Code = 'VALUE'"` → value = `VALUE`
+> **❌ TUYỆT ĐỐI CẤM dùng `DataModel/working/Atomic_LinhLV/`** — track cũ đã revert, out of date. Dù cấu trúc thư mục giống hệt `DataModel/Atomic/` (cùng BCV folder: Arrangement/Common/Event/...), entity ở đây KHÔNG được coi là nguồn hợp lệ dưới bất kỳ hình thức nào — kể cả khi không tìm thấy entity đó ở 2 nguồn hợp lệ bên dưới, vẫn phải kết luận PENDING, không fallback sang `Atomic_LinhLV`.
+>
+> **Quy trình tra cứu Atomic — 2 nguồn theo thứ tự ưu tiên:**
+>
+> | Ưu tiên | Nguồn | Manifest | Schema manifest |
+> |---|---|---|---|
+> | **1** | `DataModel/Atomic/` | `DataModel/Atomic/dm_manifest.yaml` | `dm_manifest` — field `subfolder`/`file_name`/`physical_name`/`status` |
+> | **2** | `DataModel/working/Atomic/` | `DataModel/working/Atomic/lld/manifest.yaml` | `lld_manifest` — field `source_system`/`source_table`/`atomic_entity`/`lld_file`/`design_status` |
+>
+> 1. Mở `DataModel/Atomic/dm_manifest.yaml` → tìm entry có `physical_name` khớp `atomic_table` đang cần.
+>    - Có entry (bất kể `status: approved` hay `draft`) → dùng Nguồn 1, đọc `subfolder` + `file_name` → mở file `DataModel/Atomic/{subfolder}/{file_name}`.
+>    - Lấy `ldm.physical_name` = `atomic_table`, `attribute.physical_name` = `atomic_column`.
+> 2. Không có entry ở Nguồn 1 → mở `DataModel/working/Atomic/lld/manifest.yaml` → tìm entry khớp `atomic_entity`/`source_table` → có entry → mở file `DataModel/working/Atomic/lld/{source_system}/{lld_file}` để lấy attribute tương ứng.
+> 3. Không có entry ở cả 2 nguồn → Atomic PENDING, không suy diễn.
+> 4. **Trùng ở cả 2 nguồn** (entity vừa có ở Nguồn 1 vừa còn bản draft cũ ở Nguồn 2) → luôn dùng Nguồn 1, bỏ qua Nguồn 2.
+> 5. **Nhiều source table cùng `physical_name`/`atomic_entity`:** đọc TẤT CẢ entry cùng tên — không dừng ở entry đầu.
+> 6. **`src_stm_code` value:** trích từ `classification_context` của attribute `Source System Code` — format `"Source System Code = 'VALUE'"` → value = `VALUE`.
 
 ---
 

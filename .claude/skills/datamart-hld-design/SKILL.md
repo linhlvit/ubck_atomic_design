@@ -35,8 +35,11 @@ description: |
 
 - [ ] `BRD/BA/BA_analyst_{MODULE}.csv` tồn tại
 - [ ] Screenshot báo cáo đã được upload
-- [ ] `DataModel/Atomic/dm_manifest.yaml` tồn tại — entry point tra cứu Atomic entities đã approved
+- [ ] `DataModel/Atomic/dm_manifest.yaml` tồn tại — entry point tra cứu Atomic entities (Nguồn 1, ưu tiên cao nhất)
+- [ ] `DataModel/working/Atomic/lld/manifest.yaml` tồn tại — entry point tra cứu Atomic entities draft (Nguồn 2, chỉ tra khi Nguồn 1 không có)
 - [ ] `DataModel/datamart_model.yaml` tồn tại — registry schema cross-module (có thể rỗng `entities: []` nếu module đầu tiên)
+
+> **Cấm dùng `DataModel/working/Atomic_LinhLV/`** — track cũ đã revert, out of date. Xem chi tiết thứ tự ưu tiên 2 nguồn ở Bước 1 mục 3.
 
 ---
 
@@ -81,15 +84,26 @@ Phase 2:  Sau khi Phase 1 duyệt → đọc Section 3 + Section 4 HLD → xuấ
 
 2. **Screenshot** — xác định scope boundary (tab, nhóm, loại thông tin hiển thị)
 
-3. **dm_manifest.yaml** (`DataModel/Atomic/dm_manifest.yaml`) — xác định Atomic entity nào READY / PENDING
-   - Entry tồn tại trong manifest với `status: approved` → READY
-   - Không có entry tương ứng → PENDING
-   - Nếu tên nguồn trong BA không tìm thấy → tra [`reference/source_alias_mapping.md`](reference/source_alias_mapping.md) trước khi kết luận PENDING
-   - Mỗi `physical_name` có thể có nhiều entry (nhiều source table) — tra tất cả entry cùng `physical_name`, không dừng ở entry đầu tiên
-   - **Cấm gán READY cho 1 entity chỉ vì "nghe quen"/đã dùng ở nhóm khác trong cùng module** — mọi entity dùng làm nguồn PHẢI có bằng chứng grep trực tiếp: `grep -rl "{physical_name}" DataModel/Atomic/**/*.yaml` hoặc entry `status: approved` trong `dm_manifest.yaml`. Không tìm thấy = PENDING, kể cả khi tên entity trùng khớp hợp lý với khái niệm nghiệp vụ (VD: đã có nhiều lần thiết kế giả định tồn tại 1 entity EAV kiểu "Member Report Indicator Value" cho báo cáo định kỳ CTCK, nhưng entity đó chưa từng có LLD approved trong track hiện hành — chỉ tồn tại ở track cũ đã revert).
+3. **Tra cứu Atomic — 2 nguồn theo thứ tự ưu tiên (BẮT BUỘC theo đúng thứ tự này):**
+
+   | Ưu tiên | Nguồn | Manifest | Coi là |
+   |---|---|---|---|
+   | **1 — luôn tra trước** | `DataModel/Atomic/` | `DataModel/Atomic/dm_manifest.yaml` | READY |
+   | **2 — chỉ tra khi Nguồn 1 không có entry** | `DataModel/working/Atomic/` | `DataModel/working/Atomic/lld/manifest.yaml` | READY (draft đang hoàn thiện, nhưng vẫn dùng được cho Datamart) |
+
+   - **Bước a:** Mở `DataModel/Atomic/dm_manifest.yaml` → tìm entry `physical_name` khớp. Có entry (bất kể `status: approved` hay `draft`) → **READY**, dùng nguồn này, KHÔNG cần tra tiếp Nguồn 2.
+   - **Bước b:** Không có entry ở Nguồn 1 → tra `DataModel/working/Atomic/lld/manifest.yaml` (schema `lld_manifest`, field `source_system`/`source_table`/`atomic_entity`/`lld_file`) tìm entry khớp `atomic_entity`/`source_table` → có entry → **READY**, mở file `DataModel/working/Atomic/lld/{source_system}/{lld_file}`.
+   - Không có entry ở cả 2 nguồn → **PENDING**.
+   - Nếu tên nguồn trong BA không tìm thấy ở Nguồn 1 → tra [`reference/source_alias_mapping.md`](reference/source_alias_mapping.md) trước khi thử Nguồn 2 hoặc kết luận PENDING.
+   - Mỗi `physical_name`/`atomic_entity` có thể có nhiều entry (nhiều source table) — tra tất cả entry cùng tên, không dừng ở entry đầu tiên.
+   - Khi cùng 1 entity/physical_name xuất hiện ở CẢ 2 nguồn (VD: đã approved ở `DataModel/Atomic/` nhưng vẫn còn bản draft cũ ở `working/Atomic/`) → **luôn ưu tiên `DataModel/Atomic/`**, bỏ qua bản draft.
+   - **❌ TUYỆT ĐỐI KHÔNG dùng `DataModel/working/Atomic_LinhLV/`** — đây là track cũ đã revert, out of date. Dù cấu trúc thư mục giống hệt `DataModel/Atomic/` (cùng BCV folder), entity ở đây KHÔNG được coi là READY dưới bất kỳ hình thức nào, kể cả khi không tìm thấy entity đó ở 2 nguồn hợp lệ trên — trường hợp đó vẫn kết luận PENDING.
+   - **Cấm gán READY cho 1 entity chỉ vì "nghe quen"/đã dùng ở nhóm khác trong cùng module** — mọi entity dùng làm nguồn PHẢI có bằng chứng grep trực tiếp: `grep -rl "{physical_name}" DataModel/Atomic/**/*.yaml DataModel/working/Atomic/lld/**/*.yaml` (loại trừ `Atomic_LinhLV`) hoặc entry trong 1 trong 2 manifest trên. Không tìm thấy = PENDING, kể cả khi tên entity trùng khớp hợp lý với khái niệm nghiệp vụ (VD: đã có nhiều lần thiết kế giả định tồn tại 1 entity EAV kiểu "Member Report Indicator Value" cho báo cáo định kỳ CTCK, nhưng entity đó chưa từng có LLD approved trong track hiện hành — chỉ tồn tại ở track cũ đã revert `Atomic_LinhLV`).
    - Khi 1 Nhóm định dùng lại đúng entity nguồn đã xác nhận READY ở Nhóm trước (cùng module) — vẫn phải tự chạy lại bước grep/tra manifest cho Nhóm này, không suy diễn "đã xác nhận rồi thì chắc vẫn đúng". BA có thể đổi nguồn giữa các Nhóm dùng chung khái niệm nghiệp vụ.
 
-4. **Entity YAML files** (`DataModel/Atomic/{BCV_Folder}/dm_atm_{physical_name}-{SOURCE}.{TABLE}.yaml`) — xác nhận tên entity/attribute khi cần (không đoán). Đọc `ldm.physical_name` = `atomic_table`, `attribute.physical_name` = `atomic_column`.
+4. **Entity YAML files** — xác nhận tên entity/attribute khi cần (không đoán):
+   - Nguồn 1: `DataModel/Atomic/{BCV_Folder}/dm_atm_{physical_name}-{SOURCE}.{TABLE}.yaml` — đọc `ldm.physical_name` = `atomic_table`, `attribute.physical_name` = `atomic_column`.
+   - Nguồn 2 (chỉ khi không có ở Nguồn 1): `DataModel/working/Atomic/lld/{SOURCE}/lld_{SOURCE}_{TABLE}.yaml`.
 
 5. **HLD hiện tại** (nếu có) — append thêm, không viết lại
 
@@ -349,7 +363,7 @@ Chạy các kiểm tra sau (Python/grep) trên toàn file `DTM_{MODULE}_HLD.md` 
 6. **Node ID Staging không chứa dấu chấm** (`\w+\.\w+\[` trong node ID là lỗi parse mermaid).
 7. **Code fence cân bằng:** đếm số dòng ` ``` ` trong toàn file — phải là số chẵn.
 8. **KPI_ID liên tục, không trùng lặp:** trích toàn bộ `K_{MODULE}_\d+`, kiểm tra dải số liên tục từ 1 đến max, không có ID nào xuất hiện ở ≥2 dòng bảng KPI khác nhau (trừ dòng ghi chú "Reuse từ Nhóm X" — đó là tham chiếu, không phải khai sinh trùng).
-9. **Mọi node Atomic dùng làm nguồn Dimension/Fact có tồn tại thật trong `DataModel/Atomic/` hoặc `DataModel/working/Atomic/`** — không suy diễn theo tên nghe hợp lý (VD: "Classification Value" — nếu module không có entity Atomic nào tên này, không được vẽ node đó dù nghe đúng khái niệm nghiệp vụ; xem case thực tế QLCB `Offering Method Dimension` — code nằm trực tiếp trên `Public Company Securities Offering Plan.offering_method_code`, không có bảng CV riêng).
+9. **Mọi node Atomic dùng làm nguồn Dimension/Fact có tồn tại thật trong `DataModel/Atomic/` (ưu tiên 1) hoặc `DataModel/working/Atomic/` (ưu tiên 2)** — **KHÔNG bao gồm `DataModel/working/Atomic_LinhLV/`** (out of date, cấm dùng dù entity tồn tại ở đó). Không suy diễn theo tên nghe hợp lý (VD: "Classification Value" — nếu module không có entity Atomic nào tên này ở 2 nguồn hợp lệ, không được vẽ node đó dù nghe đúng khái niệm nghiệp vụ; xem case thực tế QLCB `Offering Method Dimension` — code nằm trực tiếp trên `Public Company Securities Offering Plan.offering_method_code`, không có bảng CV riêng).
 
 Nếu phát hiện lỗi ở bất kỳ mục nào trên — sửa ngay trong file, chạy lại kiểm tra đến khi sạch, rồi mới tiếp tục tới GATE bên dưới.
 

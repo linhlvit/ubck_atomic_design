@@ -2,7 +2,7 @@
 -- GSDC Flat Tables — POPULATE
 -- Module: Giám sát Công ty Đại chúng (GSDC)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 6 fact + 0 operational
+-- 5 bảng: 5 fact + 0 operational
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
 -- ============================================================
 
@@ -34,7 +34,7 @@ SELECT
     pc_dim.business_line_level_1_code   AS business_line_level_1_code,
     pc_dim.ids_registration_dt          AS ids_registration_dt,
     pc_dim.public_company_status_code               AS public_company_status_code
-FROM datamart.gsdc_fct_public_company_risk_score_snpst f
+FROM datamart.fct_public_company_risk_score_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
@@ -79,7 +79,7 @@ SELECT
     pc_dim.business_line_level_1_code   AS business_line_level_1_code,
     pc_dim.ids_registration_dt          AS ids_registration_dt,
     pc_dim.public_company_status_code               AS public_company_status_code
-FROM datamart.gsdc_fct_public_company_compliance_score_snpst f
+FROM datamart.fct_public_company_compliance_score_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
@@ -117,7 +117,7 @@ SELECT
     pc_dim.business_line_level_1_code   AS business_line_level_1_code,
     pc_dim.ids_registration_dt          AS ids_registration_dt,
     pc_dim.public_company_status_code               AS public_company_status_code
-FROM datamart.gsdc_fct_public_company_issuance_score_snpst f
+FROM datamart.fct_public_company_issuance_score_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
@@ -158,7 +158,7 @@ SELECT
     pc_dim.business_line_level_1_code   AS business_line_level_1_code,
     pc_dim.ids_registration_dt          AS ids_registration_dt,
     pc_dim.public_company_status_code               AS public_company_status_code
-FROM datamart.gsdc_fct_public_company_financial_score_snpst f
+FROM datamart.fct_public_company_financial_score_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim
@@ -191,39 +191,7 @@ SELECT
     pc_dim.business_line_level_1_code   AS business_line_level_1_code,
     pc_dim.ids_registration_dt          AS ids_registration_dt,
     pc_dim.public_company_status_code               AS public_company_status_code
-FROM datamart.gsdc_fct_public_company_nonfinancial_score_snpst f
-JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
-LEFT JOIN datamart.public_company_dim pc_dim
-    ON pc_dim.public_company_dim_id = f.public_company_dim_id
-WHERE cal.cdr_dt = :etl_date
-;
-
-
--- ============================================================
--- 6. FACT: gsdc_fct_public_company_financial_summary_snpst_flat
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.gsdc_fct_public_company_financial_summary_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.gsdc_fct_public_company_financial_summary_snpst_flat
-SELECT
-    -- From: FACT Public Company Financial Summary Snapshot
-    f.public_company_dim_id,
-    f.cdr_dt_dim_id,
-    f.submission_deadline_dt,
-    f.submission_dt,
-
-    -- From: CALENDAR DATE DIMENSION
-    cal.cdr_dt                          AS cdr_dt,
-
-    -- From: PUBLIC COMPANY DIMENSION
-    pc_dim.public_company_code                       AS public_company_code,
-    pc_dim.equity_ticker_symbol         AS equity_ticker_symbol,
-    pc_dim.public_company_nm                        AS public_company_nm,
-    pc_dim.equity_listing_exchange_code AS equity_listing_exchange_code,
-    pc_dim.business_line_level_1_code   AS business_line_level_1_code,
-    pc_dim.ids_registration_dt          AS ids_registration_dt,
-    pc_dim.public_company_status_code               AS public_company_status_code
-FROM datamart.gsdc_fct_public_company_financial_summary_snpst f
+FROM datamart.fct_public_company_nonfinancial_score_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.cdr_dt_dim_id
 LEFT JOIN datamart.public_company_dim pc_dim

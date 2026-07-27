@@ -12,7 +12,8 @@ description: |
                   Datamart/lld/datamart_attributes.csv (summary) hoặc Datamart/lld/{MODULE}/*.csv (detail) +
                   DTM_{MODULE}_Detail_Mapping.csv +
                   Datamart/datamart_model.yaml (registry schema cross-module — review Lớp 4) +
-                  DataModel/Atomic/**/*.yaml (nguồn approved Atomic — tra cứu khi review Lớp 2)
+                  DataModel/Atomic/**/*.yaml (Nguồn 1, ưu tiên cao nhất — tra cứu khi review Lớp 2) +
+                  DataModel/working/Atomic/lld/**/*.yaml (Nguồn 2, chỉ tra khi Nguồn 1 không có — KHÔNG bao gồm DataModel/working/Atomic_LinhLV/, out of date, cấm dùng)
 ---
 
 # Skill: Review Cross-check Datamart
@@ -309,12 +310,14 @@ HLD | [OK / GAP] | Mô tả vấn đề nếu có
 ```
 Bước A: Đọc BA — xác định tên bảng nguồn và tên trường
          VD: "NHNCK.CERTIFICATE_RECORDS, cột CERTIFICATE_NUMBER"
-Bước B: Tra approved YAML trong DataModel/Atomic/ — tìm YAML có source khớp bảng BA
-         Nguồn approved: DataModel/Atomic/**/*.yaml (toàn bộ thư mục, tất cả subdirectory)
+Bước B: Tra Atomic YAML theo thứ tự ưu tiên 2 nguồn — tìm YAML có source khớp bảng BA
+         Nguồn 1 (ưu tiên cao nhất): DataModel/Atomic/**/*.yaml (toàn bộ thư mục, tất cả subdirectory)
+         Nguồn 2 (chỉ tra khi Nguồn 1 không có): DataModel/working/Atomic/lld/**/*.yaml
+         ❌ KHÔNG tra DataModel/working/Atomic_LinhLV/ — track cũ đã revert, out of date, cấm dùng dưới mọi hình thức
          Ngoại lệ: entity cv (Classification Value) — dùng trực tiếp, không cần YAML
-         Cách tìm: grep "NHNCK.CERTIFICATE_RECORDS" DataModel/Atomic/**/*.yaml
+         Cách tìm: grep "NHNCK.CERTIFICATE_RECORDS" DataModel/Atomic/**/*.yaml DataModel/working/Atomic/lld/**/*.yaml
          → Lấy physical_name (atomic_table) + tên cột (physical_name trong columns)
-         → Nếu không tìm thấy YAML nào → Gap Atomic (ghi nhận, không phải lỗi LLD)
+         → Nếu không tìm thấy YAML nào ở cả 2 nguồn hợp lệ → Gap Atomic (ghi nhận, không phải lỗi LLD)
 Bước C: Kiểm tra Attributes — atomic_table + atomic_column trong Attributes có khớp Bước B?
          → Không khớp (tên bảng cũ, tên cột cũ) → 🔴 Critical (map sai Atomic entity/column)
 Bước D: Kiểm tra etl_logic — filter condition trong etl_logic có phản ánh đúng điều kiện lọc BA mô tả?
@@ -579,16 +582,24 @@ Một nhóm BA có thể dùng nhiều Fact/Dim. Review Attributes phải bao ph
 ### Khi BA ghi nguồn trực tiếp (không qua Atomic)
 
 BA hay ghi công thức dạng `NHNCK.CERTIFICATE_RECORDS.FIELD` hoặc `IDS.data.field` thay vì tên Atomic.
-Cần tìm Atomic entity/column tương ứng bằng cách grep trong `DataModel/Atomic/`:
+Cần tìm Atomic entity/column tương ứng bằng cách grep, theo đúng thứ tự ưu tiên 2 nguồn:
 
 ```bash
 grep -rl "CERTIFICATE_RECORDS" DataModel/Atomic/
+# Không có ở Nguồn 1 → thử Nguồn 2:
+grep -rl "CERTIFICATE_RECORDS" DataModel/working/Atomic/lld/
 # → tìm được YAML → đọc physical_name của entity và column tương ứng
 ```
 
-Nguồn approved duy nhất: `DataModel/Atomic/` (toàn bộ thư mục, tất cả subdirectory).
+| Ưu tiên | Nguồn |
+|---|---|
+| 1 (luôn tra trước) | `DataModel/Atomic/` (toàn bộ thư mục, tất cả subdirectory) |
+| 2 (chỉ tra khi Nguồn 1 không có) | `DataModel/working/Atomic/lld/` |
+
+❌ **Không bao giờ tra `DataModel/working/Atomic_LinhLV/`** — track cũ đã revert, out of date. Entity ở đây không được coi là nguồn hợp lệ dù cấu trúc thư mục giống hệt `DataModel/Atomic/`.
+
 Entity `cv` (Classification Value) là ngoại lệ — dùng trực tiếp, không có YAML.
-Nếu không tìm thấy YAML nào → ghi nhận là gap Atomic (cần bổ sung Atomic trước khi thiết kế Datamart).
+Nếu không tìm thấy YAML nào ở cả 2 nguồn hợp lệ → ghi nhận là gap Atomic (cần bổ sung Atomic trước khi thiết kế Datamart).
 
 ### Flatten hoàn toàn xuống Atomic — không tham chiếu cột mart trong etl_logic
 
@@ -633,9 +644,11 @@ Dấu hiệu để nghi ngờ (không phải để bỏ qua, mà để soi kỹ 
 - Tên cột "nghe rất hợp lý" cho 1 entity nhưng bạn chưa từng thấy nó trong YAML khi review case khác cùng entity (VD: entity Violation "chắc phải có" Type/Status, nhưng thực tế YAML chỉ ghi nhận field khi source thật có)
 - `etl_logic` chỉ có 1 dòng `direct` từ `atomic_table.column`, không có JOIN nào khác để verify chéo
 
-**Bước bắt buộc:** với mỗi Fact/Operational table đang review lần đầu (hoặc đã lâu chưa review), mở YAML approved của **driving entity** và **đếm số attribute thật**:
+**Bước bắt buộc:** với mỗi Fact/Operational table đang review lần đầu (hoặc đã lâu chưa review), mở YAML của **driving entity** (Nguồn 1 `DataModel/Atomic/` trước, chỉ fallback Nguồn 2 `DataModel/working/Atomic/lld/` nếu không có ở Nguồn 1 — không bao giờ dùng `Atomic_LinhLV`) và **đếm số attribute thật**:
 ```bash
 grep -c "^  - name:" DataModel/Atomic/**/dm_atm_{entity}-*.yaml
+# nếu không tìm thấy, fallback:
+grep -c "^  - name:" DataModel/working/Atomic/lld/**/lld_*{entity}*.yaml
 ```
 Rồi liệt kê toàn bộ `physical_name` trong YAML, đối chiếu 1-1 với `atomic_column` mà Attributes đang tham chiếu cho entity đó. Bất kỳ `atomic_column` nào trong Attributes không xuất hiện trong danh sách physical_name thật → 🔴 Critical, dù cột đó đang báo READY — chuyển ngay về PENDING, không chờ báo cáo chạy sai mới phát hiện.
 

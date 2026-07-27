@@ -2,7 +2,7 @@
 -- GSDC Flat Tables — CREATE
 -- Module: Giám sát Công ty Đại chúng (GSDC)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 6 fact + 0 operational
+-- 5 bảng: 5 fact + 0 operational
 -- ============================================================
 
 
@@ -196,36 +196,4 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), public_company_dim_id)
 COMMENT 'Flat table — Fact Public Company Non-Financial Score Snapshot × Calendar Date Dimension × Public Company Dimension'
-;
-
-
--- ============================================================
--- 6. FACT: gsdc_fct_public_company_financial_summary_snpst_flat
---    Snapshot tổng hợp tài chính CTDC theo kỳ báo cáo — 1 row / CTDC / kỳ báo cáo (năm × quý)
---    Joins: Calendar Date (cdr_dt_dim_id JOIN) × Public Company Dimension
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_summary_snpst_flat ON CLUSTER 'my_cluster'
-(
-    -- From: FACT Public Company Financial Summary Snapshot
-    public_company_dim_id                      String              COMMENT 'FK → Public Company Dimension',
-    cdr_dt_dim_id                       String              COMMENT 'FK → Calendar Date Dimension (kỳ báo cáo)',
-    submission_deadline_dt              Nullable(Date)      COMMENT 'Ngày hạn nộp BCTC',
-    submission_dt                       Nullable(Date)      COMMENT 'Ngày nộp BCTC',
-
-    -- From: CALENDAR DATE DIMENSION
-    cdr_dt                           Nullable(Date)      COMMENT 'Kỳ báo cáo — từ Calendar Date Dimension',
-
-    -- From: PUBLIC COMPANY DIMENSION
-    public_company_code                          Nullable(String)    COMMENT 'Mã CTDC — từ Public Company Dimension',
-    equity_ticker_symbol            Nullable(String)    COMMENT 'Mã CK doanh nghiệp — từ Public Company Dimension',
-    public_company_nm                            Nullable(String)    COMMENT 'Tên doanh nghiệp — từ Public Company Dimension',
-    equity_listing_exchange_code    Nullable(String)    COMMENT 'Sàn niêm yết — từ Public Company Dimension',
-    business_line_level_1_code      Nullable(String)    COMMENT 'Ngành kinh tế — từ Public Company Dimension',
-    ids_registration_dt             Nullable(Date)       COMMENT 'Ngày đăng ký IDS — từ Public Company Dimension',
-    public_company_status_code                  Nullable(String)    COMMENT 'Trạng thái CTDC — từ Public Company Dimension'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), public_company_dim_id)
-COMMENT 'Flat table — Fact Public Company Financial Summary Snapshot × Calendar Date Dimension × Public Company Dimension'
 ;
