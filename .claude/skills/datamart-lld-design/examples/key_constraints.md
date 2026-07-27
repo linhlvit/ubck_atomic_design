@@ -170,3 +170,27 @@ Vấn đề: dùng lẫn 2 token khác nhau (NK/BK) cho cùng 1 khái niệm —
 ✅ Fix (sau khi gộp NK+BK thành BK): nhất quán 1 token
 key = "BK", description = "BK — mã hồ sơ đoàn thanh tra..."
 ```
+
+### Vi phạm 7 — PK ghi literal "Generated" vào etl_logic và 4 cột source thay vì để trống
+
+```
+❌ Sai (phát hiện thực tế 2026-07-27 — 3 file: foreign_investor_dim, securities_dim, market_index_dim,
+cả bản gốc lẫn master datamart_attributes.csv):
+"Market Index Dimension","market_index_dim","Market Index Dimension Id","market_index_dim_id","false",
+"Surrogate Key","string","PK","PK — Driving: market_index_snapshot",
+"Generated","direct","Generated","Generated","Generated","Generated"
+                ↑etl_logic  ↑etl_logic_type   ↑source_entity ↑atomic_table ↑source_attribute ↑atomic_column
+
+Vấn đề: PK là surrogate key sinh mới, không map từ Atomic — không có "giá trị SQL" nào cho etl_logic,
+và không có atomic_table/source_attribute/atomic_column nào cả. Ghi literal "Generated" vào 5/6 ô này
+(kể cả etl_logic_type bị ghi sai thành "direct") là sai định dạng — dù ý nghĩa "đây là PK generated"
+không sai, nhưng không khớp convention đã dùng nhất quán ở nơi khác trong cùng dự án.
+
+✅ Đúng (khớp Inspection Team Dimension, Securities Practitioner Dimension đã làm đúng từ đầu):
+"Market Index Dimension","market_index_dim","Market Index Dimension Id","market_index_dim_id","false",
+"Surrogate Key","string","PK","PK — Driving: market_index_snapshot",
+"","Generated","Generated","","",""
+     ↑etl_logic TRỐNG  ↑etl_logic_type=Generated  ↑source_entity=Generated  ↑3 cột sau TRỐNG
+```
+
+**Quy tắc:** Chỉ 2 ô được điền cho dòng PK: `etl_logic_type = Generated` và `source_entity = Generated`. Mọi ô còn lại liên quan tới "lấy giá trị/cột nguồn từ đâu" (`etl_logic`, `atomic_table`, `source_attribute`, `atomic_column`) phải để trống — vì PK không có nguồn Atomic nào cả.
