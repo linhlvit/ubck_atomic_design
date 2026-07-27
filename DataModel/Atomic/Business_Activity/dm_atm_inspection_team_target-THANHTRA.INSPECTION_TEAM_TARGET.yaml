@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: INSPECTION_TEAM_TARGET
     source_column: THANHTRA.INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID
-    comment: "FK target: inspection_team.inspection_team_id. Hash: hash_id('THANHTRA.INSPECTION_TEAM', INSPECTION_TEAM_ID)."
+    comment: "FK target: inspection_team.inspection_team_id. Cần ETL crosswalk sang THANHTRA.INSPECTION_TEAM: INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID = INSPECTION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.INSPECTION_TEAM', CODE) | Trước đây hash trực tiếp theo INSPECTION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'THANHTRA_INSPECTION_TEAM_TARGET'"
     etl_derived_value: null
 

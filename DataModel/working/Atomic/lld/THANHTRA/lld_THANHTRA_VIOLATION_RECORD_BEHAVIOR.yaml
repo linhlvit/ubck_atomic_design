@@ -93,8 +93,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID"
-  comment: "FK target: Violation Behavior.Violation Behavior Id. Hash: hash_id('THANHTRA.VIOLATION_BEHAVIOR',\
-    \ VIOLATION_BEHAVIOR_ID)."
+  comment: "FK target: violation_behavior.violation_behavior_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_BEHAVIOR: VIOLATION_RECORD_BEHAVIOR.VIOLATION_BEHAVIOR_ID = VIOLATION_BEHAVIOR.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_BEHAVIOR', CODE) | Trước đây hash trực tiếp theo VIOLATION_BEHAVIOR_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

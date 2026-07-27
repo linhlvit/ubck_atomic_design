@@ -19,7 +19,8 @@ metadata:
   approved_at: null
   notes: "Quyết định xử phạt VPHC. Grain: 1 dòng = 1 quyết định. FK→VIOLATION_CASE\
     \ (T3). Ghi nhận T4-01: dùng parent [Event] vì không có term Judicial Event cho\
-    \ hành chính."
+    \ hành chính. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Violation\
+    \ Case Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Penalty Decision Id"
   physical_name: "pd_id"
@@ -67,8 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION.VIOLATION_CASE_ID"
-  comment: "FK target: Violation Case.Violation Case Id. Hash: hash_id('THANHTRA.VIOLATION_CASE',\
-    \ VIOLATION_CASE_ID)."
+  comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: PENALTY_DECISION.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

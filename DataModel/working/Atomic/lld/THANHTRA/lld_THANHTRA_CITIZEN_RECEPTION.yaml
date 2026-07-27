@@ -202,8 +202,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.CITIZEN_RECEPTION.PETITION_ID"
-  comment: "FK target: Petition.Petition Id. Hash: hash_id('THANHTRA.PETITION', PETITION_ID).\
-    \ Nullable — không phải buổi tiếp nào cũng có đơn thư."
+  comment: "FK target: petition.petition_id. Cần ETL crosswalk sang THANHTRA.PETITION: CITIZEN_RECEPTION.PETITION_ID = PETITION.ID để xác nhận CODE sau đó hash_id('THANHTRA.PETITION', CODE) | Trước đây hash trực tiếp theo PETITION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. Nullable — không phải buổi tiếp nào cũng có đơn thư."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

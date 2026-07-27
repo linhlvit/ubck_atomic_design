@@ -19,7 +19,9 @@ metadata:
   approved_at: null
   notes: "Chi tiết hành vi vi phạm của từng đối tượng trong quyết định xử phạt. FK\
     \ đến 3 entities: PENALTY_DECISION_SUBJECT (T5), VIOLATION_BEHAVIOR (T2), PENALTY_TYPE\
-    \ (T1) — cross-tier FK bình thường."
+    \ (T1) — cross-tier FK bình thường. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
+    \ FK Violation Behavior Id và FK Penalty Type Id — trước đây hash trực tiếp theo\
+    \ ID kỹ thuật thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Penalty Decision Subject Behavior Id"
   physical_name: "pd_subject_behavior_id"
@@ -95,8 +97,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID"
-  comment: "FK target: Violation Behavior.Violation Behavior Id. Hash: hash_id('THANHTRA.VIOLATION_BEHAVIOR',\
-    \ VIOLATION_BEHAVIOR_ID)."
+  comment: "FK target: violation_behavior.violation_behavior_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_BEHAVIOR: PENALTY_DECISION_SUBJECT_BEHAVIOR.VIOLATION_BEHAVIOR_ID = VIOLATION_BEHAVIOR.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_BEHAVIOR', CODE) | Trước đây hash trực tiếp theo VIOLATION_BEHAVIOR_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -123,8 +124,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID"
-  comment: "FK target: Penalty Type.Penalty Type Id. Hash: hash_id('THANHTRA.PENALTY_TYPE',\
-    \ PENALTY_TYPE_ID)."
+  comment: "FK target: penalty_type.penalty_tp_id. Cần ETL crosswalk sang THANHTRA.PENALTY_TYPE: PENALTY_DECISION_SUBJECT_BEHAVIOR.PENALTY_TYPE_ID = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA.PENALTY_TYPE', CODE) | Trước đây hash trực tiếp theo PENALTY_TYPE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

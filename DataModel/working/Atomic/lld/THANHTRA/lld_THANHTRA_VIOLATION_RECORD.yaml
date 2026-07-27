@@ -67,8 +67,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.INSPECTION_TEAM_ID"
-  comment: "FK target: Inspection Team.Inspection Team Id. Hash: hash_id('THANHTRA.INSPECTION_TEAM',\
-    \ INSPECTION_TEAM_ID). FK suy luận — không formal FK trong BRD."
+  comment: "FK target: inspection_team.inspection_team_id. Cần ETL crosswalk sang THANHTRA.INSPECTION_TEAM: VIOLATION_RECORD.INSPECTION_TEAM_ID = INSPECTION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.INSPECTION_TEAM', CODE) | Trước đây hash trực tiếp theo INSPECTION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. FK suy luận — không formal FK trong BRD."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -95,8 +94,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VIOLATION_RECORD.EXAMINATION_TEAM_ID"
-  comment: "FK target: Examination Team.Examination Team Id. Hash: hash_id('THANHTRA.EXAMINATION_TEAM',\
-    \ EXAMINATION_TEAM_ID). FK suy luận — không formal FK trong BRD."
+  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: VIOLATION_RECORD.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. FK suy luận — không formal FK trong BRD."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

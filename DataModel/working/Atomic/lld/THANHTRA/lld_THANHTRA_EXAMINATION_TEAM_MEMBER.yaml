@@ -65,8 +65,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_MEMBER.EXAMINATION_TEAM_ID"
-  comment: "FK target: Examination Team.Examination Team Id. Hash: hash_id('THANHTRA.EXAMINATION_TEAM',\
-    \ EXAMINATION_TEAM_ID)."
+  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_TEAM_MEMBER.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

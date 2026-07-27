@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: EXAMINATION_TEAM_TARGET
     source_column: THANHTRA.EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID
-    comment: "FK target: examination_team.examination_team_id. Hash: hash_id('THANHTRA.EXAMINATION_TEAM', EXAMINATION_TEAM_ID)."
+    comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
     etl_derived_value: null
 
@@ -131,6 +131,20 @@ attributes:
     source_table: EXAMINATION_TEAM_TARGET
     source_column: THANHTRA.EXAMINATION_TEAM_TARGET.TARGET_NAME
     comment: null
+    classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
+    etl_derived_value: null
+
+  - name: Target Address
+    physical_name: target_adr
+    business_meaning: Địa chỉ đối tượng được kiểm tra (cá nhân và tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: EXAMINATION_TEAM_TARGET
+    source_column: THANHTRA.EXAMINATION_TEAM_TARGET.ADDRESS
+    comment: "Denormalized — Examination Team Target là Business Activity, không phải Involved Party, nên không tách IP Postal Address (rule Bước 4 skill atomic-lld-design)."
     classification_context: "Source System Code = 'THANHTRA_EXAMINATION_TEAM_TARGET'"
     etl_derived_value: null
 

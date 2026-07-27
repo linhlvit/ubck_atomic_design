@@ -18,7 +18,8 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Danh sách đối tượng được thanh tra trong đoàn cụ thể. FK→Inspection Team\
-    \ (T2)."
+    \ (T2). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Inspection Team\
+    \ Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Inspection Team Target Id"
   physical_name: "inspection_team_target_id"
@@ -66,8 +67,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID"
-  comment: "FK target: Inspection Team.Inspection Team Id. Hash: hash_id('THANHTRA.INSPECTION_TEAM',\
-    \ INSPECTION_TEAM_ID)."
+  comment: "FK target: inspection_team.inspection_team_id. Cần ETL crosswalk sang THANHTRA.INSPECTION_TEAM: INSPECTION_TEAM_TARGET.INSPECTION_TEAM_ID = INSPECTION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.INSPECTION_TEAM', CODE) | Trước đây hash trực tiếp theo INSPECTION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

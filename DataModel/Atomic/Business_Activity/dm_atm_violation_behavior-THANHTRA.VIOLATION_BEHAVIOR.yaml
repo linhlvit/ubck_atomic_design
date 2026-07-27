@@ -102,7 +102,7 @@ attributes:
     source_system: THANHTRA
     source_table: VIOLATION_BEHAVIOR
     source_column: THANHTRA.VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID
-    comment: "FK target: penalty_type.penalty_type_id. Hash: hash_id('THANHTRA.PENALTY_TYPE', PRIMARY_PENALTY_TYPE_ID). Capture từ junction PENALTY_TYPE_VIOLATION_BEHAVIOR (out_of_scope) qua trường trực tiếp."
+    comment: "FK target: penalty_type.penalty_tp_id. Cần ETL crosswalk sang THANHTRA.PENALTY_TYPE: VIOLATION_BEHAVIOR.PRIMARY_PENALTY_TYPE_ID = PENALTY_TYPE.ID để xác nhận CODE sau đó hash_id('THANHTRA.PENALTY_TYPE', CODE) | Trước đây hash trực tiếp theo PRIMARY_PENALTY_TYPE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. Capture từ junction PENALTY_TYPE_VIOLATION_BEHAVIOR (out_of_scope) qua trường trực tiếp."
     classification_context: "Source System Code = 'THANHTRA_VIOLATION_BEHAVIOR'"
     etl_derived_value: null
 

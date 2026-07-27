@@ -18,7 +18,12 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Danh sách đối tượng được kiểm tra trong đoàn cụ thể. FK→Examination Team\
-    \ (T2). Có thêm nhiều cột nhận dạng đối tượng hơn so với INSPECTION_TEAM_TARGET."
+    \ (T2). Có thêm nhiều cột nhận dạng đối tượng hơn so với INSPECTION_TEAM_TARGET.\
+    \ Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Examination Team Id —\
+    \ trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích. Hạ về\
+    \ draft lại (2026-07-27) để gộp lại field ADDRESS — trước đây tách sai thành\
+    \ shared entity IP Postal Address dù grain của entity này là Business Activity,\
+    \ không phải Involved Party (vi phạm rule Bước 4 skill atomic-lld-design)."
 attributes:
 - attribute_name: "Examination Team Target Id"
   physical_name: "examination_team_target_id"
@@ -66,8 +71,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID"
-  comment: "FK target: Examination Team.Examination Team Id. Hash: hash_id('THANHTRA.EXAMINATION_TEAM',\
-    \ EXAMINATION_TEAM_ID)."
+  comment: "FK target: examination_team.examination_team_id. Cần ETL crosswalk sang THANHTRA.EXAMINATION_TEAM: EXAMINATION_TEAM_TARGET.EXAMINATION_TEAM_ID = EXAMINATION_TEAM.ID để xác nhận CODE sau đó hash_id('THANHTRA.EXAMINATION_TEAM', CODE) | Trước đây hash trực tiếp theo EXAMINATION_TEAM_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -124,6 +128,20 @@ attributes:
   source_columns:
   - "THANHTRA.EXAMINATION_TEAM_TARGET.TARGET_NAME"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Target Address"
+  physical_name: "target_adr"
+  description: "Địa chỉ đối tượng được kiểm tra (cá nhân và tổ chức)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.EXAMINATION_TEAM_TARGET.ADDRESS"
+  comment: "Denormalized — Examination Team Target là Business Activity, không phải\
+    \ Involved Party, nên không tách IP Postal Address (rule Bước 4 skill atomic-lld-design)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

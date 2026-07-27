@@ -17,7 +17,10 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Hạ về draft (2026-07-27) để gộp lại field SUBJECT_ADDRESS và SUBJECT_TAX_CODE\
+    \ — trước đây tách sai thành shared entity IP Postal Address / IP Alt Identification\
+    \ dù grain của entity này là Event, không phải Involved Party (vi phạm rule Bước\
+    \ 4 skill atomic-lld-design)."
 attributes:
 - attribute_name: "Penalty Decision Subject Id"
   physical_name: "pd_subject_id"
@@ -121,6 +124,34 @@ attributes:
   source_columns:
   - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_ID_NUMBER"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Address"
+  physical_name: "subject_adr"
+  description: "Địa chỉ cư trú/trụ sở đối tượng bị xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_ADDRESS"
+  comment: "Denormalized — Penalty Decision Subject là Event, không phải Involved\
+    \ Party, nên không tách IP Postal Address (rule Bước 4 skill atomic-lld-design)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Subject Tax Code"
+  physical_name: "subject_tax_code"
+  description: "Mã số thuế của đối tượng bị xử phạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_TAX_CODE"
+  comment: "Denormalized — Penalty Decision Subject là Event, không phải Involved\
+    \ Party, nên không tách IP Alt Identification (rule Bước 4 skill atomic-lld-design)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

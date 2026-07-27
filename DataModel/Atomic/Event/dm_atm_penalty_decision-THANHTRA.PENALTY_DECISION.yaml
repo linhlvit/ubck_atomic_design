@@ -74,7 +74,7 @@ attributes:
     source_system: THANHTRA
     source_table: PENALTY_DECISION
     source_column: THANHTRA.PENALTY_DECISION.VIOLATION_CASE_ID
-    comment: "FK target: violation_case.violation_case_id. Hash: hash_id('THANHTRA.VIOLATION_CASE', VIOLATION_CASE_ID)."
+    comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: PENALTY_DECISION.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'THANHTRA_PENALTY_DECISION'"
     etl_derived_value: null
 

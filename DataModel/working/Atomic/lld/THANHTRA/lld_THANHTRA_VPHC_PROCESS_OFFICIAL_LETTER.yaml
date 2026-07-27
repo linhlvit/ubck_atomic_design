@@ -82,8 +82,7 @@ attributes:
   status: "draft"
   source_columns:
   - "THANHTRA.VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_CASE_ID"
-  comment: "FK target: Violation Case.Violation Case Id. Hash: hash_id('THANHTRA.VIOLATION_CASE',\
-    \ VIOLATION_CASE_ID). Nullable."
+  comment: "FK target: violation_case.violation_case_id. Cần ETL crosswalk sang THANHTRA.VIOLATION_CASE: VPHC_PROCESS_OFFICIAL_LETTER.VIOLATION_CASE_ID = VIOLATION_CASE.ID để xác nhận CODE sau đó hash_id('THANHTRA.VIOLATION_CASE', CODE) | Trước đây hash trực tiếp theo VIOLATION_CASE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27. Nullable."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
