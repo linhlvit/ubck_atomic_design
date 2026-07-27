@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-KNT-TAX_REG_REPRESENTATIVE
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến External Tax Registration Representative (Involved Party).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
+    comment: "FK target: et_registration_representative.et_registration_representative_id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã External Tax Registration Representative.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REG_REPRESENTATIVE
+    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
+    comment: "Lookup pair: et_registration_representative.et_registration_representative_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -75,7 +103,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.ID
     comment: "FK target: et_registration_representative.et_registration_representative_id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -89,7 +117,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.ID
     comment: "Lookup pair: et_registration_representative.et_registration_representative_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -145,7 +173,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.ID
     comment: "FK target: et_registration_representative.et_registration_representative_id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -159,7 +187,7 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.ID
     comment: "Lookup pair: et_registration_representative.et_registration_representative_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -201,33 +229,5 @@ attributes:
     source_table: TAX_REG_REPRESENTATIVE
     source_column: KNT.TAX_REG_REPRESENTATIVE.PHONE
     comment: null
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến External Tax Registration Representative (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: KNT
-    source_table: TAX_REG_REPRESENTATIVE
-    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
-    comment: "FK target: et_registration_representative.et_registration_representative_id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã External Tax Registration Representative.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REG_REPRESENTATIVE
-    source_column: KNT.TAX_REG_REPRESENTATIVE.ID
-    comment: "Lookup pair: et_registration_representative.et_registration_representative_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'KNT_TAX_REG_REPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null

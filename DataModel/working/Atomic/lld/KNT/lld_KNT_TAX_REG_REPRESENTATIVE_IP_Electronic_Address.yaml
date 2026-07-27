@@ -30,7 +30,7 @@ attributes:
   - "KNT.TAX_REG_REPRESENTATIVE.ID"
   comment: "FK target: External Tax Registration Representative.External Tax Registration\
     \ Representative Id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
@@ -44,7 +44,7 @@ attributes:
   - "KNT.TAX_REG_REPRESENTATIVE.ID"
   comment: "Lookup pair: External Tax Registration Representative.External Tax Registration\
     \ Representative Code. Pair with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source System Code"
@@ -84,46 +84,6 @@ attributes:
   classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_REG_REPRESENTATIVE.ID"
-  comment: "FK target: External Tax Registration Representative.External Tax Registration\
-    \ Representative Id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration Representative."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_REG_REPRESENTATIVE.ID"
-  comment: "Lookup pair: External Tax Registration Representative.External Tax Registration\
-    \ Representative Code. Pair with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=KNT.TAX_REG_REPRESENTATIVE"
-  etl_derived_value: "KNT.TAX_REG_REPRESENTATIVE"
-  data_type: "string"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — fax."
@@ -148,46 +108,6 @@ attributes:
   comment: null
   classification_context: "IP_ELEC_ADDR_TYPE=FAX"
   etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_REG_REPRESENTATIVE.ID"
-  comment: "FK target: External Tax Registration Representative.External Tax Registration\
-    \ Representative Id. Hash: hash_id('KNT.TAX_REG_REPRESENTATIVE', ID)."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration Representative."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_REG_REPRESENTATIVE.ID"
-  comment: "Lookup pair: External Tax Registration Representative.External Tax Registration\
-    \ Representative Code. Pair with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=KNT.TAX_REG_REPRESENTATIVE"
-  etl_derived_value: "KNT.TAX_REG_REPRESENTATIVE"
   data_type: "string"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"

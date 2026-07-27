@@ -30,7 +30,7 @@ attributes:
   - "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
   comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
     \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
@@ -44,7 +44,7 @@ attributes:
   - "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
   comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
     \ Pair with Involved Party Id."
-  classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source System Code"
@@ -84,46 +84,6 @@ attributes:
   classification_context: "IP_ADDR_TYPE=HEAD_OFFICE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-  classification_context: "IP_ADDR_TYPE=BUSINESS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
-    \ Pair with Involved Party Id."
-  classification_context: "IP_ADDR_TYPE=BUSINESS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=KNT.TAX_REGISTRATION_INFO"
-  etl_derived_value: "KNT.TAX_REGISTRATION_INFO"
-  data_type: "string"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ."
@@ -149,6 +109,19 @@ attributes:
   classification_context: "IP_ADDR_TYPE=BUSINESS"
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Province Name"
+  physical_name: "province_nm"
+  description: "Tên tỉnh/thành phố kinh doanh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=BUSINESS"
+  etl_derived_value: null
+  data_type: "string"
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành phố địa chỉ kinh doanh."
@@ -163,15 +136,15 @@ attributes:
   classification_context: "IP_ADDR_TYPE=BUSINESS"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Province Name"
-  physical_name: "province_nm"
-  description: "Tên tỉnh/thành phố kinh doanh."
+- attribute_name: "District Name"
+  physical_name: "district_nm"
+  description: "Tên quận/huyện kinh doanh."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME"
+  - "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME"
   comment: null
   classification_context: "IP_ADDR_TYPE=BUSINESS"
   etl_derived_value: null
@@ -189,15 +162,15 @@ attributes:
   classification_context: "IP_ADDR_TYPE=BUSINESS"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "District Name"
-  physical_name: "district_nm"
-  description: "Tên quận/huyện kinh doanh."
+- attribute_name: "Ward Name"
+  physical_name: "ward_nm"
+  description: "Tên xã/phường địa chỉ kinh doanh."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME"
+  - "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME"
   comment: null
   classification_context: "IP_ADDR_TYPE=BUSINESS"
   etl_derived_value: null
@@ -212,19 +185,6 @@ attributes:
   source_columns:
   - "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_CODE"
   comment: "Text denormalized — chưa map vào shared Geographic Area trong scope KNT."
-  classification_context: "IP_ADDR_TYPE=BUSINESS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Ward Name"
-  physical_name: "ward_nm"
-  description: "Tên xã/phường địa chỉ kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME"
-  comment: null
   classification_context: "IP_ADDR_TYPE=BUSINESS"
   etl_derived_value: null
   data_type: "string"

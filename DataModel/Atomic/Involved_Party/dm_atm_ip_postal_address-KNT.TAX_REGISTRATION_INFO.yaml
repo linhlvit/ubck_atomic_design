@@ -64,31 +64,17 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
 
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến External Tax Registration (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã External Tax Registration.
+  - name: Province Name
+    physical_name: province_nm
+    business_meaning: Tên tỉnh/thành phố kinh doanh.
     data_domain: Text
     data_type: string
-    nullable: false
+    nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: "Lookup pair: et_registration.et_registration_code. Pair with Involved Party Id."
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME
+    comment: null
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
 
@@ -106,16 +92,16 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
 
-  - name: Province Name
-    physical_name: province_nm
-    business_meaning: Tên tỉnh/thành phố kinh doanh.
+  - name: District Name
+    physical_name: district_nm
+    business_meaning: Tên quận/huyện kinh doanh.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_PROVINCE_NAME
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME
     comment: null
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
@@ -134,16 +120,16 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
 
-  - name: District Name
-    physical_name: district_nm
-    business_meaning: Tên quận/huyện kinh doanh.
+  - name: Ward Name
+    physical_name: ward_nm
+    business_meaning: Tên xã/phường địa chỉ kinh doanh.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_DISTRICT_NAME
+    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME
     comment: null
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
@@ -159,20 +145,6 @@ attributes:
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_CODE
     comment: Text denormalized — chưa map vào shared Geographic Area trong scope KNT.
-    classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
-    etl_derived_value: null
-
-  - name: Ward Name
-    physical_name: ward_nm
-    business_meaning: Tên xã/phường địa chỉ kinh doanh.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_REGISTRATION_INFO
-    source_column: KNT.TAX_REGISTRATION_INFO.BUSINESS_WARD_NAME
-    comment: null
     classification_context: "Source System Code = 'KNT_TAX_REGISTRATION_INFO' | Address Type Code = 'BUSINESS'"
     etl_derived_value: null
 
