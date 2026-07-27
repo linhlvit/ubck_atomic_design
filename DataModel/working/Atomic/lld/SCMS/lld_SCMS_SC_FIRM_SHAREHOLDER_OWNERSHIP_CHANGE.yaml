@@ -24,7 +24,9 @@ metadata:
     \ (TANG_VON/GIAM_VON/CHUYEN_NHUONG/TANG_VON_DIEU_LE). NGAY_HIEU_LUC (DATE): null\
     \ desc = 'Ngày hiệu lực' của thay đổi. DATA_SOURCE → SCMS_DATA_SOURCE. ATTACHMENT_PATH:\
     \ reference path. Audit: chỉ CREATED_AT + CREATED_BY pair (Fact Append — không\
-    \ có LAST_MODIFIED)."
+    \ có LAST_MODIFIED). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities\
+    \ Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) thay\
+    \ vì CODE của bảng đích."
 attributes:
 - attribute_name: "Securities Company Shareholder Ownership Change Id"
   physical_name: "sc_shareholder_ownership_change_id"
@@ -94,8 +96,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID"
-  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
-    \ SC_FIRM_INFO_ID). NUMBER(19)."
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác\
+    \ nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | NUMBER(19). Trước đây\
+    \ hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng\
+    \ main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

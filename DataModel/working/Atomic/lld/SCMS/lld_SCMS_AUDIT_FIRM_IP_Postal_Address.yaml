@@ -30,8 +30,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.AUDIT_FIRM.ID"
-  comment: "FK target: Audit Firm.Audit Firm Id. Shared entity — không có PK surrogate\
-    \ riêng. Hash: hash_id('SCMS.AUDIT_FIRM', ID)."
+  comment: "FK target: audit_firm.af_id. Shared entity — không có PK surrogate riêng.\
+    \ Cần ETL crosswalk sang SCMS.AUDIT_FIRM: AUDIT_FIRM.ID = AUDIT_FIRM.ID để xác\
+    \ nhận CODE sau đó hash_id('SCMS.AUDIT_FIRM', CODE) | Trước đây hash trực tiếp\
+    \ theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã\
+    \ sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

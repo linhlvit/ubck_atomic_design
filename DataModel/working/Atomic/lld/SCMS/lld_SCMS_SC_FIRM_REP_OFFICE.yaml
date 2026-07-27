@@ -22,7 +22,9 @@ metadata:
     \ nhận có trùng không). SO_QUYET_DINH/NGAY_QUYET_DINH là cột quyết định tên cũ\
     \ (Vietnamese) — map vào Decision Number/Decision Date; DECISION_NUMBER/DECISION_DATE\
     \ là cột tên mới. FORM_DATA_JSON loại khỏi scope. ADDRESS/PHONE/FAX → shared entities\
-    \ (IP Postal + IP Electronic). SC_FIRM_REP_OFFICE_ID là self-ref FK."
+    \ (IP Postal + IP Electronic). SC_FIRM_REP_OFFICE_ID là self-ref FK. Hạ về draft\
+    \ (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company Id — trước đây\
+    \ hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Securities Company Organization Unit Id"
   physical_name: "sc_ou_id"
@@ -84,8 +86,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID"
-  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
-    \ SC_FIRM_INFO_ID)."
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ SC_FIRM_REP_OFFICE.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó\
+    \ hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
+    \ crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

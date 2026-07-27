@@ -88,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
-    comment: "FK target: sc_alert_indicator.sc_alert_indicator_id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
+    comment: "FK target: sc_alert_indicator.sc_alert_indicator_id. Cần ETL crosswalk sang SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID để xác nhận ALERT_CODE sau đó hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE) | Trước đây hash trực tiếp theo ALERT_INDICATOR_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ ALERT_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -144,7 +144,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
-    comment: "FK target: sc_alert_indicator_condition.sc_alert_indicator_condition_id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION', ALERT_CONDITION_ID)."
+    comment: "FK target: Securities Company Alert Indicator Condition.Securities Company Alert Indicator Condition Id. Hash: hash_id('SCMS.ALERT_INDICATOR_CONDITION', ALERT_CONDITION_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -158,7 +158,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_CONDITION_ID
-    comment: "Lookup pair: sc_alert_indicator_condition.sc_alert_indicator_condition_code. Pair with sc_alert_indicator_condition_id."
+    comment: "Lookup pair: Securities Company Alert Indicator Condition.Securities Company Alert Indicator Condition Code. Pair with Securities Company Alert Indicator Condition Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -172,7 +172,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID
-    comment: "FK target: sc_alert_run.sc_alert_run_id. Hash: hash_id('SCMS.ALERT_RUN', ALERT_RUN_ID). Resolved 2026-07-12 — ALERT_RUN đã được đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml)."
+    comment: "FK target: sc_alert_run.sc_alert_run_id. Cần ETL crosswalk sang SCMS.ALERT_RUN: SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID = ALERT_RUN.ID để xác nhận RUN_ID sau đó hash_id('SCMS.ALERT_RUN', RUN_ID) | Resolved 2026-07-12 — ALERT_RUN đã được đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml). Trước đây hash trực tiếp theo ALERT_RUN_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ RUN_ID) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 
@@ -186,7 +186,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ALERT_VIOLATION
     source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID
-    comment: "Lookup pair: sc_alert_run.sc_alert_run_code. Pair with sc_alert_run_id."
+    comment: "Lookup pair: Securities Company Alert Run.Securities Company Alert Run Code. Pair with Securities Company Alert Run Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
     etl_derived_value: null
 

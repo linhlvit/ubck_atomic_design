@@ -74,13 +74,13 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: null
-    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PERMANENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: Country Code
     physical_name: country_code
-    business_meaning: Mã quốc gia.
+    business_meaning: Mã quốc gia địa chỉ thường trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
@@ -88,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: null
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id."
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id. // Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup, không tạo FK Geographic Area."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
@@ -108,7 +108,7 @@ attributes:
 
   - name: Province Code
     physical_name: province_code
-    business_meaning: Mã tỉnh/thành.
+    business_meaning: Mã tỉnh/thành phố địa chỉ thường trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: null
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id."
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id. // Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
@@ -136,7 +136,7 @@ attributes:
 
   - name: District Code
     physical_name: district_code
-    business_meaning: Mã quận/huyện.
+    business_meaning: Mã quận/huyện địa chỉ thường trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
@@ -144,7 +144,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_RELATED_PERSON
     source_column: null
-    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
+    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id. // Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_RELATED_PERSON' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 

@@ -74,7 +74,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_ADMIN_SANCTION
     source_column: SCMS.SC_FIRM_ADMIN_SANCTION.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_ADMIN_SANCTION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_ADMIN_SANCTION'"
     etl_derived_value: null
 

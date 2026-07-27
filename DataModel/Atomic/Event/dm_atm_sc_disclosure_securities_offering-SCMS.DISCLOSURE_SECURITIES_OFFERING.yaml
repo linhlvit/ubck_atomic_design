@@ -74,7 +74,7 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: DISCLOSURE_SECURITIES_OFFERING.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
     etl_derived_value: null
 
@@ -93,7 +93,7 @@ attributes:
     etl_derived_value: null
 
   - name: Classification Event Type Id
-    physical_name: cl_event_type_id
+    physical_name: cl_event_tp_id
     business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Surrogate Key
     data_type: string
@@ -102,12 +102,12 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
-    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
     etl_derived_value: null
 
   - name: Classification Event Type Code
-    physical_name: cl_event_type_code
+    physical_name: cl_event_tp_code
     business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Text
     data_type: string
@@ -116,7 +116,7 @@ attributes:
     source_system: SCMS
     source_table: DISCLOSURE_SECURITIES_OFFERING
     source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
-    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with cl_event_type_id."
+    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
     classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING'"
     etl_derived_value: null
 

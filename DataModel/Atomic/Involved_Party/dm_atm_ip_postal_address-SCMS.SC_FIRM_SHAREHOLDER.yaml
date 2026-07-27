@@ -50,6 +50,90 @@ attributes:
     classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Address Type Code = 'CURRENT'"
     etl_derived_value: CURRENT
 
+  - name: Country Id
+    physical_name: country_id
+    business_meaning: FK đến Geographic Area — quốc gia địa chỉ tạm trú hiện tại.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Bổ sung 2026-07-24. FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.CURRENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Country Code
+    physical_name: country_code
+    business_meaning: Mã quốc gia địa chỉ tạm trú (theo C06).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id. // Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: province_id
+    business_meaning: FK đến Geographic Area — tỉnh/thành địa chỉ tạm trú.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Bổ sung 2026-07-24. FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Resolve bằng lookup giá trị đối chiếu ECAT.PROVINCE_NEW.CODE hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã tỉnh/thành phố địa chỉ tạm trú (theo C06).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id. // Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: District Id
+    physical_name: district_id
+    business_meaning: FK đến Geographic Area — quận/huyện địa chỉ tạm trú.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Bổ sung 2026-07-24. FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — xem District Id khối PERMANENT ở trên). Resolve bằng lookup giá trị đối chiếu ECAT.DISTRICT_OLD.CODE hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
+  - name: District Code
+    physical_name: district_code
+    business_meaning: Mã quận/huyện địa chỉ tạm trú (theo C06).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_SHAREHOLDER
+    source_column: null
+    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET). Pair with District Id. // Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER' | Address Type Code = 'CURRENT'"
+    etl_derived_value: null
+
   - name: Address Value
     physical_name: adr_val
     business_meaning: Địa chỉ hiện tại của cổ đông.

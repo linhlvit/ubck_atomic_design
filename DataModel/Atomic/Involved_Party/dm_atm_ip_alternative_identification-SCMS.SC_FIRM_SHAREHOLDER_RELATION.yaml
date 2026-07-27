@@ -33,7 +33,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_CMND'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
     etl_derived_value: SCMS.SC_FIRM_SHAREHOLDER_RELATION
 
   - name: Previous Identification Number
@@ -47,12 +47,12 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: null
     comment: Lưu lại để tra cứu lịch sử giấy tờ.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_CMND'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
     etl_derived_value: null
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: "Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ (ID_NUMBER)."
+    business_meaning: "Loại giấy tờ tùy thân: LEGACY_NATIONAL_ID=CMND cũ (ID_NUMBER)."
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -60,9 +60,9 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode LEGACY_CMND — chỉ có 1 cột ID_NUMBER (CMND legacy). Chuỗi NVARCHAR2(10) — giá trị ngắn, có thể là số hoặc ký hiệu viết tắt."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_CMND'"
-    etl_derived_value: LEGACY_CMND
+    comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode LEGACY_NATIONAL_ID — chỉ có 1 cột ID_NUMBER (CMND legacy). Chuỗi NVARCHAR2(10) — giá trị ngắn, có thể là số hoặc ký hiệu viết tắt."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
+    etl_derived_value: LEGACY_NATIONAL_ID
 
   - name: Identification Number
     physical_name: identification_nbr
@@ -75,7 +75,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ID_NUMBER
     comment: NVARCHAR2(30) — số CMND legacy. Tên cột gốc ID_NUMBER.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_CMND'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
     etl_derived_value: null
 
   - name: Identification Issue Date
@@ -89,7 +89,7 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ISSUE_DATE
     comment: DATE.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_CMND'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
     etl_derived_value: null
 
   - name: Identification Issue Place
@@ -103,5 +103,5 @@ attributes:
     source_table: SC_FIRM_SHAREHOLDER_RELATION
     source_column: SCMS.SC_FIRM_SHAREHOLDER_RELATION.ISSUE_PLACE
     comment: NVARCHAR2(250).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_CMND'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_SHAREHOLDER_RELATION' | Identification Type Code = 'LEGACY_NATIONAL_ID'"
     etl_derived_value: null

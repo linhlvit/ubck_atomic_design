@@ -24,7 +24,10 @@ metadata:
     \ pending vì không có trong HLD scope. ALERT_RUN_ID: resolved 2026-07-12 — FK\
     \ đến Securities Company Alert Run (xem lld_SCMS_ALERT_RUN.yaml). CONDITION là\
     \ chuỗi logic expression từ hệ thống — lưu dạng Text. Audit: CREATED_AT + CREATED_BY;\
-    \ không có LAST_MODIFIED_BY/AT."
+    \ không có LAST_MODIFIED_BY/AT. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
+    \ trên 3 FK (Securities Company Id, Securities Company Alert Indicator Id, Securities\
+    \ Company Alert Run Id) — trước đây hash trực tiếp theo ID kỹ thuật thay vì Code\
+    \ của bảng đích."
 attributes:
 - attribute_name: "Securities Company Alert Violation Id"
   physical_name: "sc_alert_violation_id"
@@ -93,8 +96,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
-  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
-    \ SC_FIRM_INFO_ID)."
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
+    \ đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
+    \ crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -121,8 +127,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
-  comment: "FK target: Securities Company Alert Indicator.Securities Company Alert\
-    \ Indicator Id. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_INDICATOR_ID)."
+  comment: "FK target: sc_alert_indicator.sc_alert_indicator_id. Cần ETL crosswalk\
+    \ sang SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
+    \ để xác nhận ALERT_CODE sau đó hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE) |\
+    \ Trước đây hash trực tiếp theo ALERT_INDICATOR_ID (ID kỹ thuật) gây sai lệch\
+    \ với Id của bảng main (hash từ ALERT_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -179,9 +188,12 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID"
-  comment: "FK target: Securities Company Alert Run.Securities Company Alert Run Id.\
-    \ Hash: hash_id('SCMS.ALERT_RUN', ALERT_RUN_ID). Resolved 2026-07-12 — ALERT_RUN\
-    \ đã được đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml)."
+  comment: "FK target: sc_alert_run.sc_alert_run_id. Cần ETL crosswalk sang SCMS.ALERT_RUN:\
+    \ SC_FIRM_ALERT_VIOLATION.ALERT_RUN_ID = ALERT_RUN.ID để xác nhận RUN_ID sau đó\
+    \ hash_id('SCMS.ALERT_RUN', RUN_ID) | Resolved 2026-07-12 — ALERT_RUN đã được\
+    \ đưa vào scope HLD/LLD SCMS (xem lld_SCMS_ALERT_RUN.yaml). Trước đây hash trực\
+    \ tiếp theo ALERT_RUN_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
+    \ từ RUN_ID) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -33,22 +33,8 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: SCMS.SC_FIRM_INFO
-
-  - name: Identification Type Code
-    physical_name: identification_tp_code
-    business_meaning: "Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép thành lập và hoạt động (UBCKNN); ESTABLISHMENT_LICENSE=Giấy phép thành lập; TAX_CODE=Mã số thuế; ENTERPRISE_CODE=Mã số doanh nghiệp; CERTIFICATE=Số chứng nhận (generic); CUSTODIAN_CERT=Chứng nhận lưu ký; CUSTODIAN_MEMBER_CERT=Chứng nhận thành viên lưu ký."
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. ETL pivot 7 loại: BUSINESS_LICENSE_NUMBER→OPERATION_LICENSE; FOUNDATION_LICENSE_NUMBER→ESTABLISHMENT_LICENSE; TAX_CODE→TAX_CODE; ENTERPRISE_CODE→ENTERPRISE_CODE; CERTIFICATE_NUMBER→CERTIFICATE; CUSTODIAN_CERT_NUMBER→CUSTODIAN_CERT; CUSTODIAN_MEMBER_CERT_NUMBER→CUSTODIAN_MEMBER_CERT."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
 
   - name: Previous Identification Number
     physical_name: previous_identification_nbr
@@ -61,137 +47,39 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: null
     comment: Lưu lại để tra cứu lịch sử giấy tờ.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh — giấy phép thành lập.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE — tách biệt với giấy phép thành lập+hoạt động UBCKNN (OPERATION_LICENSE) ở trên."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: BUSINESS_LICENSE
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Số giấy tờ định danh của CTCK theo từng loại.
+    business_meaning: Số giấy phép thành lập.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "ETL pivot: BUSINESS_LICENSE_NUMBER→OPERATION_LICENSE; FOUNDATION_LICENSE_NUMBER→ESTABLISHMENT_LICENSE; TAX_CODE→TAX_CODE; ENTERPRISE_CODE→ENTERPRISE_CODE; CERTIFICATE_NUMBER→CERTIFICATE; CUSTODIAN_CERT_NUMBER→CUSTODIAN_CERT; CUSTODIAN_MEMBER_CERT_NUMBER→CUSTODIAN_MEMBER_CERT."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
+    source_column: SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
   - name: Identification Issue Date
     physical_name: identification_issue_dt
-    business_meaning: Ngày cấp giấy tờ (áp dụng cho các loại có ngày cấp).
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "ETL pivot: BUSINESS_LICENSE_DATE→OPERATION_LICENSE; FOUNDATION_LICENSE_DATE→ESTABLISHMENT_LICENSE; CUSTODIAN_CERT_DATE→CUSTODIAN_CERT; CUSTODIAN_MEMBER_CERT_DATE→CUSTODIAN_MEMBER_CERT. NULL cho TAX_CODE, ENTERPRISE_CODE, CERTIFICATE."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Identification Issue Place
-    physical_name: identification_issue_place
-    business_meaning: Cơ quan/nơi cấp giấy tờ (áp dụng cho OPERATION_LICENSE và ESTABLISHMENT_LICENSE).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "ETL pivot: BUSINESS_LICENSE_ISSUER→OPERATION_LICENSE; FOUNDATION_LICENSE_ISSUER→ESTABLISHMENT_LICENSE. NULL cho TAX_CODE, ENTERPRISE_CODE, CERTIFICATE, CUSTODIAN_CERT, CUSTODIAN_MEMBER_CERT."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Issue Date
-    physical_name: issue_dt
-    business_meaning: Ngày cấp.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Issuing Authority Name
-    physical_name: issuing_authority_nm
-    business_meaning: Nơi cấp.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Securities Company.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "FK target: securities_company.securities_company_id. Shared entity. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Securities Company.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Alternative Identification Type Code
-    physical_name: alternative_identification_tp_code
-    business_meaning: "Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân, Giấy phép/Mã số DN với NĐT tổ chức)."
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. (source) — type xác định tại ETL dựa theo ObjectType (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE), không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận loại giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ chiếu). // Scheme: IP_ALT_ID_TYPE. (source) — tái sử dụng scheme dùng chung dự án. Expression mapping: 1010=NATIONAL_ID;2080=CITIZEN_ID;1020=PASSPORT."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Alternative Identification Number
-    physical_name: alternative_identification_nbr
-    business_meaning: Số CMND/CCCD/Hộ chiếu/Giấy phép.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_INFO
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
-    etl_derived_value: null
-
-  - name: Alternative Identification Issue Date
-    physical_name: alternative_identification_issue_dt
     business_meaning: Ngày cấp giấy phép thành lập.
     data_domain: Date
     data_type: date
@@ -199,14 +87,434 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: null
+    source_column: SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_DATE
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'BUSINESS_LICENSE'"
     etl_derived_value: null
 
-  - name: Alternative Identification Issue Place
-    physical_name: alternative_identification_issue_place
-    business_meaning: Nơi cấp giấy tờ định danh.
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Cơ quan cấp giấy phép thành lập.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_ISSUER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'BUSINESS_LICENSE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CERTIFICATE'"
+    etl_derived_value: SCMS.SC_FIRM_INFO
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CERTIFICATE'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh — chứng nhận generic (chưa rõ loại).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CERTIFICATE — CERTIFICATE_NUMBER chưa rõ là loại chứng nhận gì, cần Data Modeler profile lại dữ liệu thực tế trước go-live."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CERTIFICATE'"
+    etl_derived_value: CERTIFICATE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: "Số chứng nhận (generic, chưa rõ loại)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CERTIFICATE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CERTIFICATE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_CERT'"
+    etl_derived_value: SCMS.SC_FIRM_INFO
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_CERT'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh — chứng nhận lưu ký.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_CERT."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_CERT'"
+    etl_derived_value: CUSTODIAN_CERT
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số chứng nhận lưu ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_CERT'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp chứng nhận lưu ký.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_CERT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_MEMBER_CERT'"
+    etl_derived_value: SCMS.SC_FIRM_INFO
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_MEMBER_CERT'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh — chứng nhận thành viên lưu ký.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_MEMBER_CERT."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_MEMBER_CERT'"
+    etl_derived_value: CUSTODIAN_MEMBER_CERT
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số chứng nhận thành viên lưu ký.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_MEMBER_CERT'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp chứng nhận thành viên lưu ký.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'CUSTODIAN_MEMBER_CERT'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'ENTERPRISE_CODE'"
+    etl_derived_value: SCMS.SC_FIRM_INFO
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'ENTERPRISE_CODE'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh — mã số doanh nghiệp.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ENTERPRISE_CODE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'ENTERPRISE_CODE'"
+    etl_derived_value: ENTERPRISE_CODE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Mã số doanh nghiệp của CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.ENTERPRISE_CODE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'ENTERPRISE_CODE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'OPERATION_LICENSE'"
+    etl_derived_value: SCMS.SC_FIRM_INFO
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'OPERATION_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh — giấy phép thành lập và hoạt động (UBCKNN).
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATION_LICENSE."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'OPERATION_LICENSE'"
+    etl_derived_value: OPERATION_LICENSE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số giấy phép thành lập và hoạt động do UBCKNN cấp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_NUMBER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'OPERATION_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp giấy phép thành lập và hoạt động.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_DATE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'OPERATION_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Cơ quan cấp giấy phép thành lập và hoạt động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_ISSUER
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'OPERATION_LICENSE'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'TAX_ID'"
+    etl_derived_value: SCMS.SC_FIRM_INFO
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'TAX_ID'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh — mã số thuế.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode TAX_ID."
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'TAX_ID'"
+    etl_derived_value: TAX_ID
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Mã số thuế của CTCK.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: SCMS.SC_FIRM_INFO.TAX_CODE
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'TAX_ID'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp mã số thuế.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: SC_FIRM_INFO
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'TAX_ID'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Nơi cấp mã số thuế.
     data_domain: Text
     data_type: string
     nullable: true
@@ -215,5 +523,5 @@ attributes:
     source_table: SC_FIRM_INFO
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = '(SOURCE)'"
+    classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO' | Identification Type Code = 'TAX_ID'"
     etl_derived_value: null

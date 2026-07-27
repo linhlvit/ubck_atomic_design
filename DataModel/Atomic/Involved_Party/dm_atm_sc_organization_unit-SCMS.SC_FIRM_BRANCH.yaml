@@ -88,7 +88,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_BRANCH
     source_column: SCMS.SC_FIRM_BRANCH.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.securities_company_id. Hash: hash_id('SCMS.SC_FIRM_INFO', SC_FIRM_INFO_ID)."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_BRANCH.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
     etl_derived_value: null
 
@@ -443,7 +443,7 @@ attributes:
     etl_derived_value: null
 
   - name: Classification Event Type Id
-    physical_name: cl_event_type_id
+    physical_name: cl_event_tp_id
     business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Surrogate Key
     data_type: string
@@ -452,12 +452,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_BRANCH
     source_column: null
-    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
     etl_derived_value: null
 
   - name: Classification Event Type Code
-    physical_name: cl_event_type_code
+    physical_name: cl_event_tp_code
     business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Text
     data_type: string
@@ -466,7 +466,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_BRANCH
     source_column: null
-    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with cl_event_type_id."
+    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
     etl_derived_value: null
 
@@ -607,229 +607,5 @@ attributes:
     source_table: SC_FIRM_BRANCH
     source_column: null
     comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Classification Nationality Id
-    physical_name: cl_nationality_id
-    business_meaning: FK đến quốc tịch của tổ chức VPDD.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: "FK target: cl_nationality.cl_nationality_id. Hash: hash_id('SCMS.CAT_NATIONALITY', NATIONALITY_ID)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Classification Nationality Code
-    physical_name: cl_nationality_code
-    business_meaning: Mã quốc tịch của tổ chức VPDD.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: "Lookup pair: cl_nationality.cl_nationality_code. Pair with cl_nationality_id."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Operation Term Years
-    physical_name: operation_term_years
-    business_meaning: Thời hạn hoạt động (số năm).
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Nguồn lưu NUMBER(2).
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Amendment Declaration Indicator
-    physical_name: amendment_declaration_indicator
-    business_meaning: "Cờ có khai bổ sung/sửa đổi: 1=Có; 0=Không."
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: NUMBER(1) — ETL convert sang boolean.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Amendment Document Number
-    physical_name: amendment_document_nbr
-    business_meaning: Số văn bản sửa đổi.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Amendment Effective Date
-    physical_name: amendment_effective_dt
-    business_meaning: Ngày hiệu lực văn bản sửa đổi.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Amendment Document File Path
-    physical_name: amendment_document_file_path
-    business_meaning: Đường dẫn file văn bản sửa đổi.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Parent Company Name
-    physical_name: parent_company_nm
-    business_meaning: Tên công ty mẹ nước ngoài.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Parent Company License Number
-    physical_name: parent_company_license_nbr
-    business_meaning: Số giấy phép hoạt động của công ty mẹ nước ngoài.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Parent Company License Date
-    physical_name: parent_company_license_dt
-    business_meaning: Ngày cấp giấy phép của công ty mẹ nước ngoài.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Parent Company Headquarters Address
-    physical_name: parent_company_headquarters_adr
-    business_meaning: Địa chỉ trụ sở chính của công ty mẹ nước ngoài.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Mô tả gốc BRD trống.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Country Name
-    physical_name: country_nm
-    business_meaning: Tên quốc gia nơi công ty mẹ đặt trụ sở.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: Mô tả gốc BRD trống. Lưu text — không có FK đến Country entity trong scope SCMS.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Reporting Enabled Indicator
-    physical_name: reporting_enabled_indicator
-    business_meaning: "Cờ kích hoạt báo cáo định kỳ: 1=Có; 0=Không."
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: NUMBER(1) — ETL convert sang boolean.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Synced From Admin Process Indicator
-    physical_name: synced_from_admin_process_indicator
-    business_meaning: "Cờ đồng bộ từ thủ tục hành chính: 1=Đồng bộ từ TTHC; 0=Nhập tay."
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: NUMBER(1) — ETL convert sang boolean.
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Document Type Code
-    physical_name: document_tp_code
-    business_meaning: "Loại văn bản/giấy phép: GP=Giấy phép; QD=Quyết định; CV=Công văn; TT=Thông tư."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: "Scheme: SCMS_DOCUMENT_TYPE. Nguồn lưu NVARCHAR2(30)."
-    classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
-    etl_derived_value: null
-
-  - name: Change Reason
-    physical_name: change_reason
-    business_meaning: Lý do thay đổi hồ sơ.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_BRANCH
-    source_column: null
-    comment: null
     classification_context: "Source System Code = 'SCMS_SC_FIRM_BRANCH'"
     etl_derived_value: null

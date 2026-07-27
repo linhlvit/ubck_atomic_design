@@ -177,7 +177,7 @@ attributes:
     etl_derived_value: null
 
   - name: Classification Event Type Id
-    physical_name: cl_event_type_id
+    physical_name: cl_event_tp_id
     business_meaning: Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Event Type.
     data_domain: Surrogate Key
     data_type: string
@@ -186,12 +186,12 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
-    comment: "FK target: cl_event_type.cl_event_type_id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: Classification Event Type.Classification Event Type Id. Hash: hash_id('SCMS.CAT_EVENT_TYPE', EVENT_TYPE_ID)."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
     etl_derived_value: null
 
   - name: Classification Event Type Code
-    physical_name: cl_event_type_code
+    physical_name: cl_event_tp_code
     business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
     data_domain: Text
     data_type: string
@@ -200,7 +200,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
-    comment: "Lookup pair: cl_event_type.cl_event_type_code. Pair with cl_event_type_id."
+    comment: "Lookup pair: Classification Event Type.Classification Event Type Code. Pair with Classification Event Type Id."
     classification_context: "Source System Code = 'SCMS_SC_FIRM_INFO'"
     etl_derived_value: null
 

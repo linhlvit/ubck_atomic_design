@@ -26,7 +26,9 @@ metadata:
     \ — cùng nghĩa; (3) STATUTORY_REPRESENTATIVE có thể trùng LEGAL_REPRESENTATIVE;\
     \ (4) START_DATE/END_DATE có thể trùng WORK_START_DATE/DISMISSAL_DATE — cần xác\
     \ nhận team; (5) POSITION_ID dạng NVARCHAR2 — có thể là code thay vì ID; (6) POSITION_IDS\
-    \ (CLOB) — có thể là JSON array nhiều chức vụ."
+    \ (CLOB) — có thể là JSON array nhiều chức vụ. Hạ về draft (2026-07-27) để sửa\
+    \ lỗi hash-mismatch FK Securities Company Id — trước đây hash trực tiếp theo\
+    \ SC_FIRM_INFO_ID (ID kỹ thuật) thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Securities Company Senior Personnel Id"
   physical_name: "sc_senior_personnel_id"
@@ -75,8 +77,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_INFO_ID"
-  comment: "FK target: Securities Company.Securities Company Id. Hash: hash_id('SCMS.SC_FIRM_INFO',\
-    \ SC_FIRM_INFO_ID)."
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ SC_FIRM_SENIOR_PERSONNEL.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
+    \ sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
+    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
+    \ crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

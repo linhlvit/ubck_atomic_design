@@ -21,7 +21,9 @@ metadata:
     \ trụ sở chính (HEAD_OFFICE). SC_FIRM_INFO có PROVINCE_ID (FK CAT_PROVINCE), DISTRICT_ID\
     \ (FK CAT_DISTRICT), WARD_ID (FK CAT_WARD) → map về Geographic Area FK pairs (Province/District/Ward\
     \ Id + Code). District/Ward Name denormalized thêm để tiện query không cần join\
-    \ CAT_DISTRICT/CAT_WARD. Format đồng bộ theo chuẩn NHNCK."
+    \ CAT_DISTRICT/CAT_WARD. Format đồng bộ theo chuẩn NHNCK. Hạ về draft (2026-07-27)\
+    \ để sửa lỗi hash-mismatch FK Involved Party Id — trước đây hash trực tiếp theo\
+    \ ID kỹ thuật thay vì CODE của bảng đích."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -32,8 +34,11 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_INFO.ID"
-  comment: "FK target: Securities Company.Securities Company Id. Shared entity — không\
-    \ có PK surrogate riêng. Hash: hash_id('SCMS.SC_FIRM_INFO', ID)."
+  comment: "FK target: securities_company.sc_id. Shared entity — không có PK surrogate\
+    \ riêng. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.ID = SC_FIRM_INFO.ID\
+    \ để xác nhận CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash\
+    \ trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ\
+    \ CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
