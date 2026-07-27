@@ -5,13 +5,13 @@
 
 **File chi tiết theo tầng:**
 - [IDS_HLD_Tier1.md](IDS_HLD_Tier1.md) — Public Company, Legal Entity, Audit Firm, Disclosure Form Definition, Financial Report Catalog, Periodic Report Form, Public Company Evaluation Group, Public Company Evaluation Period, Classification Business Line (shared với ECAT)
-- [IDS_HLD_Tier2.md](IDS_HLD_Tier2.md) — Con của Public Company (Legal Representative, State Capital, FOL, Inspection, Penalty, Capital actions, Share Statistics, Listing History, Registration, Report Extension, Report Submission, Evaluation, Bond Evaluation), con của Legal Entity (Alt ID, Position, Trading Account, Relationship, Stock Control), Company Shareholding, Company Entity Role, Securities Offering, con của Audit Firm (Approval, Legal Rep, Auditor Profile, Status History, Inspection, Sanction), con của Form templates (RROW/RCOL/REP_ROW/REP_COLUMN), Violation Template, Evaluation Criterion, Disclosure Notification; Shared Entities (IP Postal/Electronic Address, IP Alt Identification)
+- [IDS_HLD_Tier2.md](IDS_HLD_Tier2.md) — Con của Public Company (Legal Representative, State Capital, FOL, Inspection, Penalty, Capital actions, Share Statistics, Listing History, Registration, Report Extension, Evaluation, Bond Evaluation), con của Legal Entity (Alt ID, Position, Trading Account, Relationship, Stock Control), Company Shareholding, Company Entity Role, Securities Offering, con của Audit Firm (Approval, Legal Rep, Auditor Profile, Status History, Inspection, Sanction), con của Form templates (RROW/RCOL/REP_ROW/REP_COLUMN), Violation Template, Evaluation Criterion, Disclosure Notification; Shared Entities (IP Postal/Electronic Address, IP Alt Identification)
 - [IDS_HLD_Tier3.md](IDS_HLD_Tier3.md) — Audit Firm enforcement (Warning, Suspension, Technical Audit), Auditor Status History, Violation Reports, Disclosure Notification Recipient, Violation Penalty Config
 - [IDS_HLD_Tier4.md](IDS_HLD_Tier4.md) — Securities Offering Plan, Securities Offering Result, Public Company Evaluation Detail
 
 ---
 
-**Tổng: 61 Atomic entities** (9 Tier 1, 32 Tier 2, 17 Tier 3, 3 Tier 4)
+**Tổng: 60 Atomic entities** (9 Tier 1, 32 Tier 2, 16 Tier 3, 3 Tier 4)
 *(Trong đó: 4 shared entities (Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification, Classification Business Line) extend source_table IDS — không tạo mới; Involved Party Alternative Identification mở rộng thêm nguồn IDENTITY sau khi gộp entity Legal Entity Alternative Identification; Classification Business Line extend nguồn ECAT)*
 
 ---
@@ -72,7 +72,6 @@
 | T3 | Business Activity | [Business Activity] Enforcement Action | Business Activity | `AF_SUSPENSION` | Append | Đình chỉ hoạt động của công ty kiểm toán hoặc kiểm toán viên (TARGET_TYPE_CD phân biệt). | Audit Firm Suspension | Fact Append | (1) [Business Activity] Enforcement Action — đình chỉ là hành động chế tài. (2) FK → AF_PROFILES + AF_AUDITOR_PROFILES (nullable) + AF_INSPECTION (nullable). (3) Chọn [Business Activity] Enforcement Action. |
 | T3 | Business Activity | [Business Activity] Inspection | Business Activity | `AF_TECHNICAL_AUDIT` | Append | Kết quả kiểm tra hồ sơ kiểm toán trong một đợt kiểm tra: kết quả, hành động xử lý, nội dung vi phạm. | Audit Firm Technical Audit | Fact Append | (1) [Business Activity] Inspection — kiểm tra hồ sơ kiểm toán là sub-activity của đợt kiểm tra. (2) FK → AF_PROFILES + AF_INSPECTION. (3) Chọn [Business Activity] Inspection. |
 | T3 | Business Activity | [Business Activity] Status History | Business Activity | `AF_AUDITOR_STATUS_HISTORY` | Append | Lịch sử thay đổi trạng thái của kiểm toán viên: loại sự kiện, ngày hiệu lực, lý do. | Audit Firm Auditor Status History | Fact Append | (1) [Business Activity] Status History — chuỗi sự kiện thay đổi trạng thái. (2) FK → AF_AUDITOR_PROFILES. (3) Chọn [Business Activity] Status History. |
-| T3 | Documentation | [Documentation] Filing | Documentation | `COMPANY_DATA` | Append | Lần nộp báo cáo/tin CBTT của CTĐC đã phê duyệt (filter NEWS_STATUS_CD = APPROVED). | Public Company Report Submission | Fact Append | (1) [Documentation] Filing — hồ sơ/báo cáo nộp chính thức. (2) FK → COMPANY_PROFILES + FORMS. Filter APPROVED only. (3) Chọn [Documentation] Filing. |
 | T3 | Business Activity | [Business Activity] Business Activity | Business Activity | `SECURITIES_OFFERING` | Update | Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân (APPLICANT_TYPE_FLG phân biệt). | Public Company Securities Offering | Fundamental | (1) [Business Activity] Business Activity — phát hành CK là hoạt động kinh doanh quan trọng. (2) FK → COMPANY_PROFILES (nullable) hoặc LEGAL_ENTITIES (nullable), loại trừ nhau theo APPLICANT_TYPE_FLG. (3) Chọn [Business Activity] Business Activity. |
 | T3 | Business Activity | [Business Activity] Evaluation | Business Activity | `EVALUATIONS` | Update | Đánh giá/xếp hạng CTĐC theo kỳ: tổng điểm, ngày đánh giá, loại đánh giá (A/B/C), trạng thái. | Public Company Evaluation | Fundamental | (1) [Business Activity] Evaluation — hoạt động đánh giá xếp hạng. (2) FK → COMPANY_PROFILES + EVALUATION_PERIODS. (3) Chọn [Business Activity] Evaluation. |
 | T3 | Business Activity | [Business Activity] Business Activity | Business Activity | `VIOLATION_REPORT`, `HTE_VIOLATION_REPORT` | Update | Theo dõi vi phạm nộp báo cáo định kỳ của CTĐC: hạn nộp, ngày nộp thực tế, trạng thái. Bao gồm cả theo dõi vi phạm nộp báo cáo qua module HTE (nguồn HTE_VIOLATION_REPORT). | Public Company Violation Report | Fundamental | (1) [Business Activity] Business Activity — theo dõi tuân thủ báo cáo. (2) FK → COMPANY_PROFILES + FORMS + VIOLATION_TEMPLATES. (3) Chọn [Business Activity] Business Activity. |
@@ -137,7 +136,6 @@ erDiagram
     Audit_Firm_Suspension { string audt_firm_susp_id PK }
     Audit_Firm_Technical_Audit { string audt_firm_tec_aud_id PK }
     Audit_Firm_Auditor_Status_History { string audtr_st_his_id PK }
-    Public_Company_Report_Submission { string pblc_co_rpt_subm_id PK }
     Public_Company_Securities_Offering { string scrt_ofr_id PK }
     Public_Company_Evaluation { string pblc_co_eval_id PK }
     Public_Company_Bond_Evaluation { string pblc_co_bnd_eval_id PK }
@@ -189,7 +187,6 @@ erDiagram
     Audit_Firm_Inspection ||--o{ Audit_Firm_Technical_Audit : ""
     Disclosure_Form_Definition ||--o{ Disclosure_Notification : ""
     Disclosure_Form_Definition ||--o{ Disclosure_Form_Definition_Violation_Template : ""
-    Disclosure_Form_Definition ||--o{ Public_Company_Report_Submission : ""
     Disclosure_Form_Definition ||--o{ Public_Company_Violation_Report : ""
     Public_Company_Evaluation_Group ||--o{ Public_Company_Evaluation_Criterion : ""
     Legal_Entity ||--o{ Legal_Entity_Position : ""
@@ -205,7 +202,6 @@ erDiagram
     Public_Company ||--o{ Public_Company_Evaluation : ""
     Public_Company_Evaluation_Period ||--o{ Public_Company_Evaluation : ""
     Public_Company ||--o{ Public_Company_Bond_Evaluation : ""
-    Public_Company ||--o{ Public_Company_Report_Submission : ""
     Public_Company ||--o{ Public_Company_Violation_Report : ""
     Disclosure_Form_Definition_Violation_Template ||--o{ Public_Company_Violation_Report : ""
     Disclosure_Form_Definition_Violation_Template ||--o{ Public_Company_Violation_Penalty_Config : ""
@@ -244,6 +240,8 @@ erDiagram
 | 10 | T1 | `CATEGORIES` đảo ngược quyết định T1-06 cũ (Classification Value `IDS_INDUSTRY_CATEGORY`) → promote thành Atomic entity `Classification IDS Business Line`, Table Type = Relative, theo yêu cầu tường minh của Data Modeler — tương tự pattern `Classification ECAT Business Line` (self-referencing 2 cấp qua `PARENT_ID`, Common→Relative thay vì Common→Classification mặc định). Đã xóa dòng `CATEGORIES` khỏi mục 7c. | **Superseded bởi #11 (2026-07-14)** — xem #11. |
 | 11 | T1 | Đảo ngược quyết định #10: `CATEGORIES` KHÔNG thiết kế thành Atomic entity nữa, theo quyết định tường minh của Data Modeler (2026-07-14). IDS không dùng chung entity `Classification Business Line` (ECAT) vì khác nguồn dữ liệu, cũng không giữ entity riêng. `IDS.CATEGORIES` quay lại là Classification Value scheme `IDS_INDUSTRY_CATEGORY` (un-deprecated) — thêm lại dòng vào mục 7c. `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` quay lại 1 trường Code mỗi cấp, không còn cặp FK Id+Code. | **Superseded bởi #12 (2026-07-17)** — xem #12. |
 | 12 | T1 | Đảo ngược quyết định #11: `CATEGORIES` promote lại thành Atomic entity — lần này là **shared entity** với `Classification Business Line` đã có từ ECAT, không tạo entity riêng như #10 từng làm. Theo yêu cầu tường minh của Data Modeler (2026-07-17): `IDS.CATEGORIES` và `ECAT.BUSINESS_LINE_LEVEL_1/2` là cùng 1 concept nghiệp vụ (danh mục ngành nghề 2 cấp, self-referencing) → gộp vào cùng dòng `atomic_entities.yaml`, bổ sung `source_table: IDS.CATEGORIES`. Scheme `IDS_INDUSTRY_CATEGORY` deprecated lại; `COMPANY_PROFILES.CATEGORY_L1_ID`/`CATEGORY_L2_ID` chuyển sang cặp FK Id+Code đến `Classification Business Line` (thực hiện ở LLD). | Đã xử lý ở mục 7a/7b/7c Overview này + `IDS_HLD_Tier1.md` T1-13 + `atomic_entities.yaml`. LLD (`lld_IDS_CATEGORIES.yaml`, cập nhật `lld_IDS_COMPANY_PROFILES.yaml`, `manifest.yaml`) — chưa thực hiện, thuộc phạm vi `atomic-lld-design`. |
+| 13 | T3 | `COMPANY_DATA` (`Public Company Report Submission`) đổi Table Type theo yêu cầu tường minh Data Modeler (2026-07-23): `Fact Append` → `Fundamental`. Đồng thời phát hiện + sửa lỗi dữ liệu: cột Source Table Change Mode ghi nhầm `Append`, thực tế `brd_IDS.yaml` (`BRD-SRC-IDS-COMPANY_DATA`) ghi `Update` — sửa lại khớp BRD. Sau khi sửa, cặp (Update, Fundamental) là combo bình thường, không phát sinh cảnh báo crosswalk. | **Superseded bởi #14 (2026-07-24)** — xem #14. |
+| 14 | T3 | `COMPANY_DATA` (`Public Company Report Submission`) — đảo ngược toàn bộ quyết định #13: theo yêu cầu tường minh Data Modeler (2026-07-24), **bỏ hoàn toàn thiết kế Atomic** cho bảng này (không chỉ đổi Table Type). Mirror pattern đã áp dụng cho bảng `IDS.DATA` (2026-07-14). | Đã xử lý: xóa entity khỏi mục 7a + Entities (renumber #52-61 → #51-60) + 7b + `atomic_entities.yaml` + `manifest.yaml`; xóa file `lld_IDS_COMPANY_DATA.yaml` + `DataModel/Atomic/Documentation/dm_atm_pc_report_submission-IDS.COMPANY_DATA.yaml`; gỡ `Public Company Report Submission` khỏi `used_in_entities` của scheme `IDS_NEWS_TYPE`; thêm dòng 7f; `brd_IDS.yaml` scope_status → `out_of_scope`. |
 
 #### 7f. Bảng ngoài scope
 
@@ -274,6 +272,7 @@ erDiagram
 | Reference Data | `DATA_TYPES` | Danh mục kiểu dữ liệu của trường trong form BCTC. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
 | Reference Data | `HOLIDAY_CALENDAR` | Danh mục ngày lễ/nghỉ. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
 | Fact Data | `DATA` | Giá trị số liệu từng ô trong báo cáo tài chính của CTĐC theo kỳ. | Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-14) — trước đây thiết kế thành entity `Public Company Financial Report Value` (T2), nay bỏ hoàn toàn HLD + LLD. Xem `pending_design.yaml`. |
+| Fact Data | `COMPANY_DATA` | Lần nộp báo cáo/tin CBTT của CTĐC. | Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-24) — trước đây thiết kế thành entity `Public Company Report Submission` (T3), nay bỏ hoàn toàn HLD + LLD. |
 | Form Metadata | `FIELDS` | Định nghĩa field trong form CBTT. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
 | Form Metadata | `FORM_FIELDS` | Mapping field vào form CBTT. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
 | Form Metadata | `FORM_FIELD_HISTORY` | Lịch sử thay đổi field trong form. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
@@ -539,57 +538,52 @@ erDiagram
 **Domain Prefix:** Public Company Evaluation
 **Description:** Kết quả đánh giá/xếp hạng tổng thể của một CTĐC trong một kỳ đánh giá: tổng điểm, loại xếp hạng (A/B/C), trạng thái phê duyệt.
 
-### 51. Public Company Report Submission
-**Tier:** 3 | **Source:** `COMPANY_DATA` | **BCV Concept:** [Documentation] Filing | **BCO:** Documentation | **Table Type:** Fact Append
-**Domain Prefix:** Public Company
-**Description:** Lần nộp báo cáo/tin CBTT chính thức của CTĐC đã được phê duyệt (filter NEWS_STATUS_CD = APPROVED): liên kết CTĐC với form CBTT và ngày nộp.
-
-### 52. Public Company Securities Offering
+### 51. Public Company Securities Offering
 **Tier:** 3 | **Source:** `SECURITIES_OFFERING` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân: số đăng ký, chứng nhận, tổng số lượng đăng ký. APPLICANT_TYPE_FLG phân biệt tổ chức và cá nhân.
 
-### 53. Public Company Shareholding
+### 52. Public Company Shareholding
 **Tier:** 3 | **Source:** `COMPANY_SHAREHOLDING` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Cổ đông của CTĐC và thông tin sở hữu: số lượng cổ phần, tỷ lệ sở hữu, phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan).
 
-### 54. Public Company Violation Penalty Config
+### 53. Public Company Violation Penalty Config
 **Tier:** 3 | **Source:** `VIOLATION_PENALTY_CONFIG` | **BCV Concept:** [Condition] Compliance Rule | **BCO:** Condition | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm nộp báo cáo: số ngày quá hạn (cố định/tối thiểu/tối đa), mã khoản quy định, hình thức xử phạt, thời gian hiệu lực.
 
-### 55. Public Company Violation Report
+### 54. Public Company Violation Report
 **Tier:** 3 | **Source:** `VIOLATION_REPORT`, `HTE_VIOLATION_REPORT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Theo dõi vi phạm nộp báo cáo CBTT định kỳ của CTĐC: hạn nộp, ngày nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Bao gồm cả theo dõi vi phạm nộp báo cáo qua module HTE (nguồn HTE_VIOLATION_REPORT).
 
-### 56. Stock Control
+### 55. Stock Control
 **Tier:** 3 | **Source:** `STOCK_CONTROLS` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** (none)
 **Description:** Chứng khoán của cổ đông bị đưa vào diện kiểm soát/hạn chế chuyển nhượng: mã CK, loại hạn chế, thời gian hiệu lực.
 
-### 57. Stock Holder Relationship
+### 56. Stock Holder Relationship
 **Tier:** 3 | **Source:** `HOLDER_RELATIONSHIP` | **BCV Concept:** [Involved Party] Involved Party Relationship | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** Stock Holder
 **Description:** Quan hệ giữa các cổ đông/người liên quan: vợ-chồng, cha-con, ủy quyền, sở hữu chéo — 2 FK tự tham chiếu đến Legal Entity.
 
-### 58. Stock Holder Trading Account
+### 57. Stock Holder Trading Account
 **Tier:** 3 | **Source:** `ACCOUNT_NUMBERS` | **BCV Concept:** [Arrangement] Account | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** Stock Holder
 **Description:** Tài khoản giao dịch chứng khoán của cổ đông mở tại công ty chứng khoán: số tài khoản, mã CTCK, cờ tài khoản chính.
 
-### 59. Public Company Evaluation Detail
+### 58. Public Company Evaluation Detail
 **Tier:** 4 | **Source:** `EVALUATION_DETAILS` | **BCV Concept:** [Business Activity] Evaluation | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Chi tiết điểm từng chỉ tiêu trong kết quả đánh giá CTĐC: kết quả định tính, điểm số, cờ đánh giá — grain 1 chỉ tiêu × 1 kỳ đánh giá × 1 công ty.
 
-### 60. Public Company Securities Offering Plan
+### 59. Public Company Securities Offering Plan
 **Tier:** 4 | **Source:** `SECURITIES_OFFERING_PLAN` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Kế hoạch chi tiết chào bán chứng khoán: phương thức phân phối, loại CK, số lượng, giá chào bán, thời gian chào bán, điều kiện đặc thù theo loại CK.
 
-### 61. Public Company Securities Offering Result
+### 60. Public Company Securities Offering Result
 **Tier:** 4 | **Source:** `SECURITIES_OFFERING_RESULT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Kết quả thực tế chào bán chứng khoán: số lượng thành công, giá thực tế, tổng giá trị huy động, phân chia trong nước/nước ngoài, chi phí phát hành.

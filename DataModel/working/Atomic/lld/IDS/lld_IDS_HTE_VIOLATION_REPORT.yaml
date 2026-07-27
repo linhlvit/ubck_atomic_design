@@ -103,8 +103,12 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID"
-  comment: "FK target: Disclosure Form Definition Violation Template.Disclosure Form\
-    \ Definition Violation Template Id. Hash: hash_id('IDS.VIOLATION_TEMPLATES', VIOLATION_TEMPLATE_ID)."
+  comment: "FK target: disclosure_form_definition_violation_template.disclosure_form_definition_violation_template_id.\
+    \ Cần ETL crosswalk sang IDS.VIOLATION_TEMPLATES: HTE_VIOLATION_REPORT.VIOLATION_TEMPLATE_ID\
+    \ = VIOLATION_TEMPLATES.ID để xác nhận VIOLATION_CD sau đó hash_id('IDS.VIOLATION_TEMPLATES',\
+    \ VIOLATION_CD) | Trước đây hash trực tiếp theo VIOLATION_TEMPLATE_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ VIOLATION_CD) — đã sửa sang crosswalk\
+    \ 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

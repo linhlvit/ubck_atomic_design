@@ -102,7 +102,7 @@ attributes:
     source_system: IDS
     source_table: EVALUATION_DETAILS
     source_column: IDS.EVALUATION_DETAILS.CRITERION_ID
-    comment: "FK target: pc_evaluation_criterion.pc_evaluation_criterion_id. Hash: hash_id('IDS.EVALUATION_CRITERIA', CRITERION_ID). Nguồn không có fk_note tường minh nhưng ngữ cảnh detail-table xác nhận đây là FK đến EVALUATION_CRITERIA."
+    comment: "FK target: pc_evaluation_criterion.pc_evaluation_criterion_id. Cần ETL crosswalk sang IDS.EVALUATION_CRITERIA: EVALUATION_DETAILS.CRITERION_ID = EVALUATION_CRITERIA.ID để xác nhận CRITERION_CD sau đó hash_id('IDS.EVALUATION_CRITERIA', CRITERION_CD) | Trước đây hash trực tiếp theo CRITERION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CRITERION_CD) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'IDS_EVALUATION_DETAILS'"
     etl_derived_value: null
 

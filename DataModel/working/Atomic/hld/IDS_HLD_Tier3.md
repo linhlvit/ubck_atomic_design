@@ -156,15 +156,6 @@ erDiagram
         int ID PK
     }
 
-    COMPANY_DATA {
-        int ID PK
-        int COMPANY_PROFILE_ID FK
-        int FORM_ID FK
-        string NEWS_STATUS_CD
-        date SUBMITTED_DATE
-        date APPROVED_DATE
-    }
-
     SECURITIES_OFFERING {
         int ID PK
         int COMPANY_PROFILE_ID FK
@@ -237,8 +228,6 @@ erDiagram
     AF_AUDITOR_PROFILES ||--o| AF_SUSPENSION : "AF_AUDITOR_PROFILE_ID (nullable)"
     AF_INSPECTION ||--o| AF_SUSPENSION : "AF_INSPECTION_ID (nullable)"
     AF_AUDITOR_PROFILES ||--o{ AF_AUDITOR_STATUS_HISTORY : "AF_AUDITOR_PROFILE_ID"
-    COMPANY_PROFILES ||--o{ COMPANY_DATA : "COMPANY_PROFILE_ID"
-    FORMS ||--o{ COMPANY_DATA : "FORM_ID"
     COMPANY_PROFILES ||--o| SECURITIES_OFFERING : "COMPANY_PROFILE_ID (nullable)"
     LEGAL_ENTITIES ||--o| SECURITIES_OFFERING : "LEGAL_ENTITY_ID (nullable)"
     COMPANY_PROFILES ||--o{ EVALUATIONS : "COMPANY_ID"
@@ -388,14 +377,6 @@ erDiagram
         string rsn
     }
 
-    Public_Company_Report_Submission {
-        string pblc_co_rpt_subm_id PK
-        string pblc_co_id FK
-        string dscl_form_defn_id FK
-        string news_tp_code
-        date subm_dt
-        date aprv_dt
-    }
 
     Securities_Offering {
         string scrt_ofr_id PK
@@ -471,8 +452,6 @@ erDiagram
     Audit_Firm ||--o{ Audit_Firm_Suspension : "audt_firm_id"
     Auditor_Profile ||--o| Audit_Firm_Suspension : "audtr_prfl_id (nullable)"
     Auditor_Profile ||--o{ Auditor_Status_History : "audtr_prfl_id"
-    Public_Company ||--o{ Public_Company_Report_Submission : "pblc_co_id"
-    Disclosure_Form_Definition ||--o{ Public_Company_Report_Submission : "dscl_form_defn_id"
     Public_Company ||--o| Securities_Offering : "pblc_co_id (nullable)"
     Legal_Entity ||--o| Securities_Offering : "lgl_enty_id (nullable)"
     Public_Company ||--o{ Public_Company_Evaluation : "pblc_co_id"
@@ -504,7 +483,6 @@ erDiagram
 | `AF_SANCTIONS.SANCTION_AUTHORITY_CD` | Cơ quan xử phạt | `IDS_SANCTION_AUTHORITY` | source_table | Values load từ `LOOKUP_VALUES` |
 | `EVALUATIONS.TYPE` | Loại đánh giá xếp hạng (A/B/C) | `IDS_EVALUATION_TYPE` | etl_derived | Values lấy trực tiếp từ cột nguồn |
 | `SECURITIES_OFFERING.ADMINISTRATIVE_PROC_CD` | Thủ tục hành chính chào bán | `IDS_SO_ADMINISTRATIVE_PROC` | source_table | Values từ LOOKUP_VALUES (LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE') |
-| `COMPANY_DATA.NEWS_TYPE_CD` | Loại tin CBTT | `IDS_NEWS_TYPE` | source_table | Scheme dùng chung với Disclosure Form Definition |
 
 ---
 
@@ -523,4 +501,4 @@ erDiagram
 | T3-03 | `NOTIFICATIONS` FK → FORMS (T1) → thực ra là Tier 2. Hiện đặt Tier 3 nhầm. Điều chỉnh về Tier 2? | Cần điều chỉnh — NOTIFICATIONS.FORM_ID → FORMS (T1) nên NOTIFICATIONS là Tier 2 Fact Append. Cũng cần xem `NOTIFICATIONS_DTL` (FK → NOTIFICATIONS) sẽ là Tier 3. |
 | T3-04 | `SECURITIES_OFFERING` FK loại trừ nhau: COMPANY_PROFILE_ID (cho tổ chức) hoặc LEGAL_ENTITY_ID (cho cá nhân). Pattern này tương tự AF_APPROVAL. ETL cần dùng APPLICANT_TYPE_FLG để xác định. | Xác nhận — giữ 2 FK nullable trên Atomic entity `Securities Offering`. ETL dùng APPLICANT_TYPE_FLG. |
 | T3-05 | `VIOLATION_REPORT` và `HTE_VIOLATION_REPORT` có cấu trúc gần như giống nhau — xem xét gộp thành 1 entity `Public Company Violation Report` với classification phân biệt module. | Cần xác nhận với người thiết kế — nếu dữ liệu không overlap và không cần join chéo → giữ 2 entity riêng đơn giản hơn. Nếu cần aggregate → gộp với MODULE_TYPE_CD. |
-| T3-06 | `Public Company Report Submission` filter NEWS_STATUS_CD = 'APPROVED' — bản ghi PENDING/REJECTED không lên Atomic. Xác nhận scope filter. | Xác nhận — chỉ APPROVED lên Atomic. Phù hợp với mục đích phân tích CBTT đã chính thức. |
+| T3-06 | `COMPANY_DATA` (`Public Company Report Submission`) — Data Modeler quyết định (2026-07-24) bỏ hoàn toàn thiết kế Atomic cho bảng này. | **Superseded — không còn áp dụng.** Xem `IDS_HLD_Overview.md` 7e #14. |

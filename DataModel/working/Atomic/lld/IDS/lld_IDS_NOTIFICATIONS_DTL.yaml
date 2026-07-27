@@ -68,8 +68,11 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.NOTIFICATIONS_DTL.NOTIFICATIONS_ID"
-  comment: "FK target: Disclosure Notification.Disclosure Notification Id. Hash: hash_id('IDS.NOTIFICATIONS',\
-    \ NOTIFICATIONS_ID)."
+  comment: "FK target: disclosure_notification.disclosure_notification_id. Cần ETL\
+    \ crosswalk sang IDS.NOTIFICATIONS: NOTIFICATIONS_DTL.NOTIFICATIONS_ID = NOTIFICATIONS.ID\
+    \ để xác nhận NOTI_CD sau đó hash_id('IDS.NOTIFICATIONS', NOTI_CD) | Trước đây\
+    \ hash trực tiếp theo NOTIFICATIONS_ID (ID kỹ thuật) gây sai lệch với Id của bảng\
+    \ main (hash từ NOTI_CD) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
