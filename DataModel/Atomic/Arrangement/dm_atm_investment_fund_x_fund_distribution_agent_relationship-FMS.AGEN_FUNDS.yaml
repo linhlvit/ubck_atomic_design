@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-investment_fund_x_fund_distribution_agent_relationship-FMS.AGEN_FUNDS
+  logical_name: Investment Fund X Fund Distribution Agent Relationship
+  physical_name: investment_fund_x_fund_distribution_agent_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Investment Fund"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư. Đảo ngược quyết định denormalize ARRAY cũ trên Investment Fund. FK đến Investment Fund + Fund Distribution Agent.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-AGEN_FUNDS
+
+attributes:
+  - name: Investment Fund X Fund Distribution Agent Relationship Id
+    physical_name: investment_fund_x_fund_distribution_agent_rltnp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: AGEN_FUNDS
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\" (tạm dùng). Quan hệ đại lý phân phối CCQ được ủy quyền cho quỹ đầu tư."
+    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    etl_derived_value: null
+
+  - name: Investment Fund X Fund Distribution Agent Relationship Code
+    physical_name: investment_fund_x_fund_distribution_agent_rltnp_code
+    business_meaning: Mã quan hệ — composite AGENCY_ID+FUND_ID (bảng nguồn không có PK/mã nghiệp vụ riêng).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGEN_FUNDS
+    source_column: null
+    comment: "BK composite: AGENCY_ID || '|' || FUND_ID. Không có PK/code kỹ thuật riêng trên bảng nguồn."
+    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGEN_FUNDS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    etl_derived_value: FMS.AGEN_FUNDS
+
+  - name: Investment Fund Id
+    physical_name: investment_fund_id
+    business_meaning: "FK -> FUNDS: Quỹ đầu tư liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGEN_FUNDS
+    source_column: FMS.AGEN_FUNDS.FUND_ID
+    comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID)."
+    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: investment_fund_code
+    business_meaning: Mã quỹ đầu tư liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGEN_FUNDS
+    source_column: FMS.AGEN_FUNDS.FUND_ID
+    comment: "Lookup pair: investment_fund.investment_fund_code. Pair with investment_fund_id."
+    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Id
+    physical_name: fund_distribution_agent_id
+    business_meaning: "FK -> AGENCIES: Đại lý phân phối liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGEN_FUNDS
+    source_column: FMS.AGEN_FUNDS.AGENCY_ID
+    comment: "FK target: fund_distribution_agent.fund_distribution_agent_id. Hash: hash_id('FMS.AGENCIES', AGENCY_ID)."
+    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    etl_derived_value: null
+
+  - name: Fund Distribution Agent Code
+    physical_name: fund_distribution_agent_code
+    business_meaning: Mã đại lý phân phối liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: AGEN_FUNDS
+    source_column: FMS.AGEN_FUNDS.AGENCY_ID
+    comment: "Lookup pair: fund_distribution_agent.fund_distribution_agent_code. Pair with fund_distribution_agent_id."
+    classification_context: "Source System Code = 'FMS_AGEN_FUNDS'"
+    etl_derived_value: null

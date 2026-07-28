@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Portfolio Fund Management Company"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -20,7 +20,9 @@ metadata:
   notes: "Tách IP Postal Address + IP Electronic Address + IP Alt Identification (xem\
     \ lld_FMS_SECURITIES_IP_*.yaml). Cột SEC_ID (tự tham chiếu SECURITIES, trùng ý\
     \ nghĩa với PAR_ID), PUBLIC_ID, FILE_NAME, FILE_DATA, DATA_MIGRATION, ID_DB_OLD,\
-    \ DELETED, CREATED_BY, MODIFY_BY document trong pending_design.yaml."
+    \ DELETED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. REG_NO (Registration\
+    \ Number) đẩy ra IP Alt Identification (IP_ALT_ID_TYPE=BUSINESS_LICENSE) thay\
+    \ vì denormalized trên entity chính — theo yêu cầu Data Modeler (2026-07-24)."
 attributes:
 - attribute_name: "Fund Management Company Id"
   physical_name: "fmc_id"
@@ -249,8 +251,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Listing Market Code"
-  physical_name: "listing_market_code"
+- attribute_name: "Market Code"
+  physical_name: "market_code"
   description: "Sàn giao dịch: 1=HOSE, 2=HNX, 3=UPCOM."
   data_domain: "Classification Value"
   nullable: true
@@ -637,20 +639,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Registration Number"
-  physical_name: "registration_nbr"
-  description: "Số đăng ký kinh doanh của chi nhánh/VPĐD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.SECURITIES.REG_NO"
-  comment: "Mô tả nguồn ghi 'chi nhánh/VPĐD' dù cột thuộc SECURITIES (công ty QLQ)\
-    \ — giữ nguyên mô tả gốc, cần xác nhận nghiệp vụ."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Company Type Code"
   physical_name: "company_tp_code"
   description: "FK -> COMPANY_TYPE: Loại hình công ty QLQ."
@@ -660,9 +648,10 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.CT_ID"
-  comment: "Scheme: FMS_COMPANY_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d —\
-    \ bổ sung classification_schemes.yaml. Nguồn CT_ID là UUID FK — ETL resolve sang\
-    \ mã COMPANY_TYPE tương ứng."
+  comment: "Scheme: FMS_COMPANY_TYPE. FMS.COMPANY_TYPE là reference data set (chỉ\
+    \ Code/Name, không có instance data riêng) — theo quyết định Data Modeler (2026-07-24),\
+    \ đẩy vào Classification Value, không thiết kế thành Atomic entity riêng. Nguồn\
+    \ CT_ID là UUID FK — ETL resolve sang mã COMPANY_TYPE tương ứng."
   classification_context: "FMS_COMPANY_TYPE"
   etl_derived_value: null
   data_type: "string"

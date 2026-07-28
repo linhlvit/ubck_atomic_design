@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Individual Employment Status"
   table_type: "Fundamental"
   group: "T3"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -114,25 +114,24 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.REPRESENT.NAT_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Nguồn Geographic Area đã\
-    \ chuyển sang ECAT (FMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị:\
-    \ đối chiếu mã/tên quốc gia NAT_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE)\
-    \ hoặc Name, không còn hash_id() trực tiếp theo FMS.NATIONAL. Cần crosswalk nếu\
-    \ FMS không cùng chuẩn mã với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: REPRESENT.NAT_ID = NATIONAL.ID\
+    \ để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value\
+    \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Nationality Code"
   physical_name: "nationality_code"
-  description: "Mã quốc gia/quốc tịch."
+  description: "Mã quốc gia/quốc tịch (SNAME từ FMS.NATIONAL)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.REPRESENT.NAT_ID"
-  comment: "Lookup pair: Geographic Area.Geographic Area Code (nguồn ECAT). Pair with\
-    \ Nationality Id."
+  comment: "Lookup pair: Geographic Area.Geographic Area Code. Pair with Nationality\
+    \ Id. Giá trị lấy từ SNAME (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

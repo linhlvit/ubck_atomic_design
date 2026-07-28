@@ -9,7 +9,7 @@ metadata:
   bcv_concept: "[Involved Party] Organization"
   table_type: "Fundamental"
   group: "T1"
-  design_status: "draft"
+  design_status: "approved"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -210,14 +210,14 @@ attributes:
 - attribute_name: "Registered Fund Certificate Count"
   physical_name: "registered_fund_certificate_count"
   description: "Số lượng quỹ đầu tư đăng ký hoạt động phân phối CCQ tại đại lý này."
-  data_domain: "Small Counter"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.AGENCIES.NUMBER_REG_FUND_CER"
-  comment: "Nguồn lưu dạng string (NVARCHAR2) — ETL cần cast/parse sang số nguyên.\
-    \ Cần validate không có giá trị non-numeric."
+  comment: "Nguồn lưu dạng string (NVARCHAR2) — theo xác nhận Data Modeler, giữ nguyên\
+    \ domain Text, không cast sang số nguyên."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"

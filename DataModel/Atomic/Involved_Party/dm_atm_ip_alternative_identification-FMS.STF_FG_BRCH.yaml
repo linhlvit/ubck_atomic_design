@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_alternative_identification-FMS.STF_FG_BRCH
+  logical_name: Involved Party Alternative Identification
+  physical_name: ip_alternative_identification
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-STF_FG_BRCH
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: FMS.STF_FG_BRCH
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ định danh.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại giấy tờ."
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: NATIONAL_ID
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số CMND/CCCD/Hộ chiếu của nhân sự.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.ID_CODE
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp CMND/CCCD/Hộ chiếu.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.DATE_CODE
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Identification Issue Place
+    physical_name: identification_issue_place
+    business_meaning: Nơi cấp CMND/CCCD/Hộ chiếu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.ISSUED_CODE
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Foreign Fund Management Organization Unit Staff.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.ID
+    comment: "FK target: foreign_fm_ou_staff.foreign_fm_ou_staff_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('FMS.STF_FG_BRCH', ID)."
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã nhân sự VPĐD/CN QLQ nước ngoài.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.ID
+    comment: "Lookup pair: foreign_fm_ou_staff.foreign_fm_ou_staff_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'NATIONAL_ID'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: FMS.STF_FG_BRCH
+
+  - name: Previous Identification Number
+    physical_name: previous_identification_nbr
+    business_meaning: Số CMND cũ (trước khi đổi sang CCCD).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: null
+    comment: Lưu lại để tra cứu lịch sử giấy tờ.
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Type Code
+    physical_name: identification_tp_code
+    business_meaning: Loại giấy tờ — chứng chỉ hành nghề.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: null
+    comment: "Scheme: IP_ALT_ID_TYPE. Hardcode PRACTITIONER_LICENSE — tái sử dụng value đã có (\"Chứng chỉ hành nghề (CCHN)\"), không tạo value mới. [MỚI 2026-07-19] Đẩy ra từ lld_FMS_STF_FG_BRCH.yaml theo yêu cầu Data Modeler."
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: PRACTITIONER_LICENSE
+
+  - name: Identification Number
+    physical_name: identification_nbr
+    business_meaning: Số chứng chỉ hành nghề của nhân sự chi nhánh/VPĐD.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.PRACTICE_CERT_NO
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: null
+
+  - name: Identification Issue Date
+    physical_name: identification_issue_dt
+    business_meaning: Ngày cấp chứng chỉ hành nghề.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STF_FG_BRCH
+    source_column: FMS.STF_FG_BRCH.PRACTICE_CERT_ISSUE_DATE
+    comment: null
+    classification_context: "Source System Code = 'FMS_STF_FG_BRCH' | Identification Type Code = 'PRACTITIONER_LICENSE'"
+    etl_derived_value: null

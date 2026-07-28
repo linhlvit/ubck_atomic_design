@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-investment_fund_x_fund_management_company_employee_relationship-FMS.FUND_TL_PRO
+  logical_name: Investment Fund X Fund Management Company Employee Relationship
+  physical_name: investment_fund_x_fund_management_company_employee_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Investment Fund"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Quan hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến quỹ đầu tư. FK đến Investment Fund + Fund Management Company Employee.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FUND_TL_PRO
+
+attributes:
+  - name: Investment Fund X Fund Management Company Employee Relationship Id
+    physical_name: investment_fund_x_fmc_employee_rltnp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: FUND_TL_PRO
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Investment Fund\" (tạm dùng). Quan hệ gán người hành nghề (nhân sự chủ chốt CTQLQ) liên quan đến quỹ đầu tư."
+    classification_context: "Source System Code = 'FMS_FUND_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Investment Fund X Fund Management Company Employee Relationship Code
+    physical_name: investment_fund_x_fmc_employee_rltnp_code
+    business_meaning: Mã quan hệ — composite FUND_ID+TLPR_ID (bảng nguồn không có PK/mã nghiệp vụ riêng).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TL_PRO
+    source_column: null
+    comment: "BK composite: FUND_ID || '|' || TLPR_ID. Không có PK/code kỹ thuật riêng trên bảng nguồn."
+    classification_context: "Source System Code = 'FMS_FUND_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TL_PRO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_FUND_TL_PRO'"
+    etl_derived_value: FMS.FUND_TL_PRO
+
+  - name: Investment Fund Id
+    physical_name: investment_fund_id
+    business_meaning: "FK -> FUNDS: Quỹ đầu tư liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TL_PRO
+    source_column: FMS.FUND_TL_PRO.FUND_ID
+    comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS.FUNDS', FUND_ID)."
+    classification_context: "Source System Code = 'FMS_FUND_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Investment Fund Code
+    physical_name: investment_fund_code
+    business_meaning: Mã quỹ đầu tư liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TL_PRO
+    source_column: FMS.FUND_TL_PRO.FUND_ID
+    comment: "Lookup pair: investment_fund.investment_fund_code. Pair with investment_fund_id."
+    classification_context: "Source System Code = 'FMS_FUND_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Employee Id
+    physical_name: fmc_employee_id
+    business_meaning: "FK -> TL_PROFILES: Người hành nghề liên quan đến quỹ."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TL_PRO
+    source_column: FMS.FUND_TL_PRO.TLPR_ID
+    comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES', TLPR_ID)."
+    classification_context: "Source System Code = 'FMS_FUND_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Employee Code
+    physical_name: fmc_employee_code
+    business_meaning: Mã người hành nghề liên quan đến quỹ.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FUND_TL_PRO
+    source_column: FMS.FUND_TL_PRO.TLPR_ID
+    comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with fmc_employee_id."
+    classification_context: "Source System Code = 'FMS_FUND_TL_PRO'"
+    etl_derived_value: null

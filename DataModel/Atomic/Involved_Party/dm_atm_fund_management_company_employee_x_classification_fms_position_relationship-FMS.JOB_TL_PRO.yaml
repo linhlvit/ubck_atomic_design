@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fund_management_company_employee_x_classification_fms_position_relationship-FMS.JOB_TL_PRO
+  logical_name: Fund Management Company Employee X Classification FMS Position Relationship
+  physical_name: fund_management_company_employee_x_classification_fms_position_relationship
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty QLQ (1 nhân sự có thể giữ nhiều chức danh). FK đến Fund Management Company Employee + Classification FMS Position.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-JOB_TL_PRO
+
+attributes:
+  - name: Fund Management Company Employee X Classification FMS Position Relationship Id
+    physical_name: fmc_employee_x_cl_fms_position_rltnp_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: JOB_TL_PRO
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Individual Employment Status\" (tạm dùng). Quan hệ gán chức danh/vị trí công việc cho nhân sự chủ chốt công ty QLQ."
+    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Employee X Classification FMS Position Relationship Code
+    physical_name: fmc_employee_x_cl_fms_position_rltnp_code
+    business_meaning: Mã quan hệ — composite JOB_ID+TLPRO_ID (bảng nguồn không có PK/mã nghiệp vụ riêng).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOB_TL_PRO
+    source_column: null
+    comment: "BK composite: JOB_ID || '|' || TLPRO_ID. Không có PK/code kỹ thuật riêng trên bảng nguồn."
+    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOB_TL_PRO
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM."
+    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    etl_derived_value: FMS.JOB_TL_PRO
+
+  - name: Fund Management Company Employee Id
+    physical_name: fmc_employee_id
+    business_meaning: "FK -> TL_PROFILES: Người hành nghề được gán chức danh."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOB_TL_PRO
+    source_column: FMS.JOB_TL_PRO.TLPRO_ID
+    comment: "FK target: fmc_employee.fmc_employee_id. Hash: hash_id('FMS.TL_PROFILES', TLPRO_ID)."
+    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Fund Management Company Employee Code
+    physical_name: fmc_employee_code
+    business_meaning: Mã người hành nghề được gán chức danh.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOB_TL_PRO
+    source_column: FMS.JOB_TL_PRO.TLPRO_ID
+    comment: "Lookup pair: fmc_employee.fmc_employee_code. Pair with fmc_employee_id."
+    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Classification FMS Position Id
+    physical_name: cl_fms_position_id
+    business_meaning: "FK -> JOBS: Chức danh/vị trí công việc được gán."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOB_TL_PRO
+    source_column: FMS.JOB_TL_PRO.JOB_ID
+    comment: "FK target: cl_fms_position.cl_fms_position_id. Hash: hash_id('FMS.JOBS', JOB_ID)."
+    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    etl_derived_value: null
+
+  - name: Classification FMS Position Code
+    physical_name: cl_fms_position_code
+    business_meaning: Mã chức danh/vị trí công việc được gán.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: JOB_TL_PRO
+    source_column: FMS.JOB_TL_PRO.JOB_ID
+    comment: "Lookup pair: cl_fms_position.cl_fms_position_code. Pair with cl_fms_position_id."
+    classification_context: "Source System Code = 'FMS_JOB_TL_PRO'"
+    etl_derived_value: null

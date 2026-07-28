@@ -130,7 +130,7 @@ attributes:
     source_system: FMS
     source_table: INSIDER
     source_column: FMS.INSIDER.NAT_ID
-    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (FMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NAT_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo FMS.NATIONAL. Cần crosswalk nếu FMS không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: INSIDER.NAT_ID = NATIONAL.ID để xác nhận SNAME sau đó hash_id('ECAT.COUNTRY', SNAME) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'FMS_INSIDER'"
     etl_derived_value: null
 

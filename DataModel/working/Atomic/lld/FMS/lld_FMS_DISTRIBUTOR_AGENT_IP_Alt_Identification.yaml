@@ -62,15 +62,15 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ — giấy phép hoạt động."
+  description: "Loại giấy tờ — giấy phép kinh doanh."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATING_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
-  etl_derived_value: "OPERATING_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: "BUSINESS_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -82,7 +82,7 @@ attributes:
   source_columns:
   - "FMS.DISTRIBUTOR_AGENT.BUSINESS_LICENSE_NO"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -95,7 +95,7 @@ attributes:
   source_columns:
   - "FMS.DISTRIBUTOR_AGENT.LICENSE_ISSUE_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
@@ -108,7 +108,7 @@ attributes:
   source_columns:
   - "FMS.DISTRIBUTOR_AGENT.LICENSE_ISSUED_BY"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Type Code"
@@ -138,16 +138,16 @@ attributes:
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ — GCN đăng ký hoạt động phân phối CCQ."
+  description: "Loại giấy tờ — GCN đăng ký hoạt động phân phối CCQ (giấy phép thành\
+    \ lập và hoạt động chuyên ngành do UBCKNN cấp)."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode DISTRIBUTION_CERTIFICATE. [PROPOSE NEW\
-    \ VALUE] chưa có trong IP_ALT_ID_TYPE — bổ sung classification_schemes.yaml."
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
-  etl_derived_value: "DISTRIBUTION_CERTIFICATE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATION_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
+  etl_derived_value: "OPERATION_LICENSE"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -159,7 +159,7 @@ attributes:
   source_columns:
   - "FMS.DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_NO"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -172,7 +172,7 @@ attributes:
   source_columns:
   - "FMS.DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "date"
 - attribute_name: "Identification Issue Place"
@@ -185,6 +185,6 @@ attributes:
   source_columns:
   - "FMS.DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_ISSUED_BY"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: null
   data_type: "string"

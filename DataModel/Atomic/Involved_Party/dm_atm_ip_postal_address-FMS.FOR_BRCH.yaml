@@ -1,0 +1,107 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-FMS.FOR_BRCH
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-FOR_BRCH
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'FOREIGN_BRANCH'"
+    etl_derived_value: FMS.FOR_BRCH
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — trụ sở VPĐD/CN nước ngoài.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'FOREIGN_BRANCH'"
+    etl_derived_value: FOREIGN_BRANCH
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ trụ sở.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.ADDRESS
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'FOREIGN_BRANCH'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'PARENT_ADDRESS'"
+    etl_derived_value: FMS.FOR_BRCH
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — công ty mẹ nước ngoài.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: null
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'PARENT_ADDRESS'"
+    etl_derived_value: PARENT_ADDRESS
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ công ty mẹ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: FOR_BRCH
+    source_column: FMS.FOR_BRCH.PARENT_ADDRESS
+    comment: null
+    classification_context: "Source System Code = 'FMS_FOR_BRCH' | Address Type Code = 'PARENT_ADDRESS'"
+    etl_derived_value: null
