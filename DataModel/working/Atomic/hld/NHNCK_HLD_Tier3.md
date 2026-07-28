@@ -1,7 +1,7 @@
 # NHNCK — HLD Tier 3: Phụ thuộc Tier 2
 
 > **Phụ thuộc Tier 1:** Securities Practitioner License Decision Document, Regulatory Authority Officer, Securities Organization Reference
-> **Phụ thuộc Tier 2:** Securities Practitioner, Securities Practitioner Professional Training Class, Securities Practitioner Qualification Examination Assessment
+> **Phụ thuộc Tier 2:** Securities Practitioner, Securities Practitioner Professional Training Class, Securities Practitioner Qualification Examination Assessment, Securities Practitioner Post Certification Training Course
 >
 > **Thiết kế theo:** [NHNCK_HLD_Overview.md](NHNCK_HLD_Overview.md)
 
@@ -20,6 +20,7 @@
 | Business Activity | [Business Activity] Business Activity | Business Activity | SPECIALIZATION_COURSE_DETAILS | Update | Chi tiết người tham gia khóa học chuyên môn và kết quả | Securities Practitioner Professional Training Class Enrollment | Fundamental | Business Activity — cấu trúc trường: FK đến SPECIALIZATION_COURSES (Tier 2), FK đến PROFESSIONALS (Tier 2), EXAM_SCORE, RESULT, RECORD_STATUS. Entity ghi nhận đăng ký + kết quả, có lifecycle riêng. |
 | Communication | [Communication] Assessment | Assessment | EXAM_DETAILS | Update | Kết quả thi sát hạch của từng thí sinh trong từng đợt thi | Securities Practitioner Qualification Examination Assessment Result | Fundamental | Assessment — cấu trúc trường: FK đến EXAM_SESSIONS (Tier 2), FK đến PROFESSIONALS (Tier 2), FK đến APPLICATIONS (Tier 3 — nullable), LAW_SCORE, LAW_RESULT, SPECIALIZATION_SCORE, SPECIALIZATION_RESULT, RESULT. |
 | Condition | [Condition] Financial Charge | Financial Charge | EXAM_SESSION_FEES | Update | Biểu phí thi quy định cho từng loại chứng chỉ trong từng đợt thi | Securities Practitioner Qualification Examination Assessment Fee | Fundamental | Financial Charge — *"Identifies a Condition that is a charge for a service."* Phân biệt với License Application Fee (Transaction) — đây là biểu phí quy định, không phải phí thực tế thu từng thí sinh. Cấu trúc trường: FK đến EXAM_SESSIONS (Tier 2), CERTIFICATE_ID (type), FEE_EXAM, FEE_APPEAL. |
+| Business Activity | [Business Activity] Business Activity | Business Activity | POST_CERT_TRAINING_RESULTS | Update | Kết quả tham gia khóa bồi dưỡng sau cấp CCHN của người hành nghề (số giờ đào tạo, kết quả phân loại) | Securities Practitioner Post Certification Training Result | Fundamental | (1) Term candidate: cùng lý do POST_CERT_TRAINING_COURSES (Tier 2) — không có BCV term riêng, dùng catch-all `[Business Activity] Business Activity` theo yêu cầu Data Modeler (2026-07-24), mirror pattern `Training Class Enrollment` (SPECIALIZATION_COURSE_DETAILS). (2) Cấu trúc trường: FK đến PROFESSIONALS (Tier 2), FK đến POST_CERT_TRAINING_COURSES (Tier 2), START_DATE, END_DATE, TRAINING_HOURS, RESULT_STATUS, CLASSIFICATION_RESULT, NOTE. (3) Chọn Fundamental theo yêu cầu Data Modeler. **Lưu ý:** mô tả cột trong `brd_NHNCK.yaml` còn "TBD" — RESULT_STATUS/CLASSIFICATION_RESULT tạm coi là Classification Value chờ BA xác nhận giá trị cụ thể (xem 6d). |
 
 ---
 
@@ -40,10 +41,12 @@ graph LR
     SPECIALIZATION_COURSE_DETAILS["**SPECIALIZATION_COURSE_DETAILS**\nĐăng ký khóa học"]:::src
     EXAM_DETAILS["**EXAM_DETAILS**\nKết quả thi"]:::src
     EXAM_SESSION_FEES["**EXAM_SESSION_FEES**\nBiểu phí thi"]:::src
+    POST_CERT_TRAINING_RESULTS["**POST_CERT_TRAINING_RESULTS**\nKết quả bồi dưỡng sau cấp CCHN"]:::src
 
     PROFESSIONALS["**PROFESSIONALS** (Tier 2)"]:::outscope
     EXAM_SESSIONS["**EXAM_SESSIONS** (Tier 2)"]:::outscope
     SPECIALIZATION_COURSES["**SPECIALIZATION_COURSES** (Tier 2)"]:::outscope
+    POST_CERT_TRAINING_COURSES["**POST_CERT_TRAINING_COURSES** (Tier 2)"]:::outscope
     DECISIONS["**DECISIONS** (Tier 1)"]:::outscope
     ORGANIZATIONS["**ORGANIZATIONS** (Tier 1)"]:::outscope
     USERS["**USERS** (Tier 1)"]:::outscope
@@ -71,6 +74,8 @@ graph LR
     EXAM_DETAILS -->|"PROFESSIONAL_ID"| PROFESSIONALS
     EXAM_DETAILS -->|"APPLICATION_ID (nullable)"| APPLICATIONS
     EXAM_SESSION_FEES -->|"EXAM_SESSION_ID"| EXAM_SESSIONS
+    POST_CERT_TRAINING_RESULTS -->|"PROFESSIONAL_ID"| PROFESSIONALS
+    POST_CERT_TRAINING_RESULTS -->|"TRAINING_COURSE_ID"| POST_CERT_TRAINING_COURSES
 ```
 
 ---
@@ -92,10 +97,12 @@ graph TD
     ENROLL["**Training Class Enrollment**\n[Business Activity] Business Activity\nSPECIALIZATION_COURSE_DETAILS"]:::atomic
     EXAMRES["**Examination Assessment Result**\n[Communication] Assessment\nEXAM_DETAILS"]:::atomic
     EXAMFEE["**Examination Assessment Fee**\n[Condition] Financial Charge\nEXAM_SESSION_FEES"]:::atomic
+    PCTRESULT["**Post Certification\nTraining Result**\n[Business Activity] Business Activity\nPOST_CERT_TRAINING_RESULTS"]:::atomic
 
     PRAC["**Securities Practitioner** (Tier 2)"]:::outscope
     TRAINCLASS["**Professional Training Class** (Tier 2)"]:::outscope
     EXAM["**Qualification Examination Assessment** (Tier 2)"]:::outscope
+    PCTCOURSE["**Post Certification Training Course** (Tier 2)"]:::outscope
     DECISION["**License Decision Document** (Tier 1)"]:::outscope
     OFFICER["**Regulatory Authority Officer** (Tier 1)"]:::outscope
     SECORG["**Securities Organization Reference** (Tier 1)"]:::outscope
@@ -125,13 +132,18 @@ graph TD
     EXAMRES -->|"Practitioner FK"| PRAC
     EXAMRES -->|"License Application FK (nullable)"| APP
     EXAMFEE -->|"Examination Assessment FK"| EXAM
+    PCTRESULT -->|"Practitioner FK"| PRAC
+    PCTRESULT -->|"Training Course FK"| PCTCOURSE
 ```
 
 ---
 
 ## 6d. Danh mục & Tham chiếu
 
-Không có bảng mới nào trong Tier 3 thuộc dạng Classification Value — đã liệt kê đầy đủ ở Tier 1.
+| Source Table | Mô tả | Scheme Code | source_type | Ghi chú |
+|---|---|---|---|---|
+| `POST_CERT_TRAINING_RESULTS.RESULT_STATUS` | Trạng thái kết quả bồi dưỡng (Đạt/Không đạt — suy đoán từ NUMBER(1,0)) | `NHNCK_POST_CERT_TRAINING_RESULT_STATUS` | modeler_defined | Mô tả cột trong BRD còn TBD — giá trị cụ thể chờ BA xác nhận. |
+| `POST_CERT_TRAINING_RESULTS.CLASSIFICATION_RESULT` | Phân loại kết quả bồi dưỡng (VD: Giỏi/Khá/Trung bình — suy đoán) | `NHNCK_POST_CERT_TRAINING_CLASSIFICATION` | modeler_defined | Mô tả cột trong BRD còn TBD — giá trị cụ thể chờ BA xác nhận. |
 
 ---
 
@@ -147,3 +159,4 @@ Không có bảng nào trong Tier 3 chưa đủ thông tin cột.
 |---|---|---|
 | 1 | `APPLICATIONS.CERTIFICATE_RECORD_ID` và `PREVIOUS_CERTIFICATE_RECORD_ID` — cả 2 đều nullable? | **Xác nhận: đúng, cả 2 đều nullable.** Hồ sơ mới chưa có CCHN → nullable là đúng thiết kế. |
 | 2 | `EXAM_DETAILS.APPLICATION_ID` — có trường hợp thí sinh thi không có hồ sơ đăng ký không? | **Xác nhận: không.** APPLICATION_ID luôn có về mặt nghiệp vụ. Giữ nullable về kỹ thuật để tương thích nguồn; ETL không load dòng thiếu APPLICATION_ID. |
+| 3 | `POST_CERT_TRAINING_RESULTS` — toàn bộ mô tả cột trong `brd_NHNCK.yaml` còn "TBD - cần bổ sung mô tả" (bảng mới phát hiện qua đối chiếu DDL UAT 2026-07-15). HLD thiết kế dựa trên tên cột (START_DATE/END_DATE/TRAINING_HOURS/RESULT_STATUS/CLASSIFICATION_RESULT/NOTE). | **Khuyến nghị BA bổ sung mô tả cột trước khi làm LLD attribute-level** — RESULT_STATUS/CLASSIFICATION_RESULT tạm đăng ký Classification Value rỗng (xem 6d), cần giá trị cụ thể để hoàn thiện attribute mapping. |

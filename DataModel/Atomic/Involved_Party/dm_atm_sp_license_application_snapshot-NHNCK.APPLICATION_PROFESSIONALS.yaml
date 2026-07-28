@@ -74,7 +74,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.APPLICATION_ID
-    comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK.APPLICATIONS', APPLICATION_ID)."
+    comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_PROFESSIONALS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK.APPLICATIONS', APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -158,7 +158,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.NATIONALITY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NATIONALITY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: APPLICATION_PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -480,7 +480,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia PERMANENT_COUNTRY_ID với Geographic Area Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: APPLICATION_PROFESSIONALS.PERMANENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -564,7 +564,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia CURRENT_COUNTRY_ID với Geographic Area Business Code (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: APPLICATION_PROFESSIONALS.CURRENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -635,5 +635,19 @@ attributes:
     source_table: APPLICATION_PROFESSIONALS
     source_column: NHNCK.APPLICATION_PROFESSIONALS.CURRENT_DISTRICT_ID
     comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem Snapshot Current District Id). Pair with Snapshot Current District Id."
+    classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Snapshot Avatar File Path
+    physical_name: snpst_avatar_file_path
+    business_meaning: Đường dẫn/URL ảnh đại diện (denormalized snapshot tại thời điểm nộp hồ sơ)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATION_PROFESSIONALS
+    source_column: NHNCK.APPLICATION_PROFESSIONALS.AVATAR
+    comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Mirror pattern Avatar File Path trên Securities Practitioner (NHNCK.PROFESSIONALS)."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_PROFESSIONALS'"
     etl_derived_value: null

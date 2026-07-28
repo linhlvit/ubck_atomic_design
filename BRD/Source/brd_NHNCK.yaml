@@ -1061,7 +1061,7 @@ brd_entries:
   content:
     table_meaning: Lịch sử trạng thái chứng chỉ hành nghề
     functional_group: UID05 Quản lý chứng chỉ hành nghề
-    scope_status: out_of_scope
+    scope_status: in_scope
     scope_reason: null
     table: CERTIFICATE_RECORD_STATUS_HISTORIES
     related_tables:
@@ -1069,11 +1069,14 @@ brd_entries:
       relation: FK cha — Chứng chỉ hành nghề được cấp
     - table: DECISIONS
       relation: FK cha — Danh mục các quyết định hành chính
-    notes: null
+    notes: Data Modeler xác nhận (2026-07-24) đưa vào scope Atomic dạng Fact Append —
+      bảng có cột OLD_STATUS/NEW_STATUS tường minh. Đồng thời sửa data_change_mode
+      Update → Append (khảo sát cũ ghi nhầm — bảng lưu 1 dòng/1 lần đổi trạng thái,
+      insert-only).
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
       filter_note: null
 - brd_id: BRD-SRC-NHNCK-CERTIFICATE_RECORD_LOGS
@@ -2311,8 +2314,8 @@ brd_entries:
   steward_email: username@ubck.com.vn
   content:
     table_meaning: Kết quả tham gia khóa đào tạo sau cấp CCHN của người hành nghề (số giờ đào tạo, kết quả phân loại)
-    functional_group: TBD - cần xác định nhóm chức năng
-    scope_status: pending
+    functional_group: UID10 Đào tạo sau chứng chỉ hành nghề
+    scope_status: in_scope
     scope_reason: null
     table: POST_CERT_TRAINING_RESULTS
     related_tables:
@@ -2320,7 +2323,11 @@ brd_entries:
       relation: FK cha — Người hành nghề tham gia đào tạo
     - table: POST_CERT_TRAINING_COURSES
       relation: FK cha — Khóa đào tạo sau cấp CCHN
-    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu. Cần xác nhận ý nghĩa nghiệp vụ và nhóm chức năng trước khi đưa vào scope Atomic.
+    notes: Bảng mới phát hiện qua đối chiếu DDL UAT ngày 2026-07-15, chưa có trong khảo sát ban đầu.
+      Data Modeler xác nhận (2026-07-24) đưa vào scope Atomic — functional_group suy luận
+      theo bảng cha POST_CERT_TRAINING_COURSES (cùng nhóm UID10). Mô tả cột trong BRD còn
+      "TBD - cần bổ sung mô tả" — HLD thiết kế dựa trên tên cột, khuyến nghị BA bổ sung mô
+      tả trước khi làm LLD attribute-level.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:

@@ -17,7 +17,13 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo\
+    \ chính sách Data Modeler (2026-07-07: không thiết kế RECORD_TYPE/RECORD_STATUS\
+    \ trên bất kỳ bảng NHNCK nào), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem\
+    \ pending_design.yaml (cập nhật lại source_column 2026-07-24). Hạ về draft (2026-07-27)\
+    \ để sửa lỗi hash-mismatch FK \"Securities Practitioner License Certificate Type\
+    \ Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) thay vì Code\
+    \ của bảng đích (CERTIFICATE_CODE)."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Document Id"
   physical_name: "sp_license_certificate_document_id"
@@ -78,9 +84,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_ID"
-  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
-    \ CERTIFICATE_ID)."
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
+    \ Cần ETL crosswalk sang NHNCK.CERTIFICATES: CERTIFICATE_RECORDS.CERTIFICATE_ID\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật)\
+    \ gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang\
+    \ crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

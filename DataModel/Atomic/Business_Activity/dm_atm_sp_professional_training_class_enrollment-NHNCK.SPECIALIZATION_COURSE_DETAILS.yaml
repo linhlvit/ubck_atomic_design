@@ -74,7 +74,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
-    comment: "FK target: sp_professional_training_class.sp_professional_training_class_id. Hash: hash_id('NHNCK.SPECIALIZATION_COURSES', SPECIALIZATION_COURSE_ID)."
+    comment: "FK target: sp_professional_training_class.sp_professional_training_class_id. Cần ETL crosswalk sang NHNCK.SPECIALIZATION_COURSES: SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.SPECIALIZATION_COURSES', COURSE_CODE) | Trước đây hash trực tiếp theo SPECIALIZATION_COURSE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk 2026-07-27."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 
@@ -200,7 +200,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATION_COURSE_DETAILS
     source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Snapshot tại thời điểm đăng ký. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia PERMANENT_COUNTRY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: SPECIALIZATION_COURSE_DETAILS.PERMANENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Snapshot tại thời điểm đăng ký. Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATION_COURSE_DETAILS'"
     etl_derived_value: null
 

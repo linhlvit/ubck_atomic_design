@@ -1,0 +1,191 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  atomic_entity: "Involved Party Postal Address"
+  entity_physical_name: "ip_postal_address"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nguồn có 2 loại địa chỉ: PERMANENT (thường trú) và CURRENT (tạm trú). Country/Province/District\
+    \ Code là dữ liệu tích hợp C06 (API ngoài) — Classification Value no_lookup, không\
+    \ tạo FK Geographic Area (xem reference/shared_entity_schemas.md)."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Individual."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
+  comment: "FK target: Individual.Individual Id. Shared entity — không có PK surrogate\
+    \ riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Số CMND/CCCD/Hộ chiếu của người hành nghề."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
+  comment: "Lookup pair: Individual.Individual Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=NHNCK.IDENTITY_INFO_C06S"
+  etl_derived_value: "NHNCK.IDENTITY_INFO_C06S"
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — thường trú."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE. Nguồn có 2 loại địa chỉ: PERMANENT và CURRENT."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: "PERMANENT"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ chi tiết thường trú (số nhà, đường, phường/xã theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.PERMANENT_DETAIL"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Country Code"
+  physical_name: "country_code"
+  description: "Mã quốc gia địa chỉ thường trú (theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.PERMANENT_COUNTRY_CODE"
+  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup, không tạo\
+    \ FK Geographic Area."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố địa chỉ thường trú (theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.PERMANENT_PROVINCE_CODE"
+  comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "District Code"
+  physical_name: "district_code"
+  description: "Mã quận/huyện địa chỉ thường trú (theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.PERMANENT_DISTRICT_CODE"
+  comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — tạm trú."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ADDR_TYPE."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: "CURRENT"
+  data_type: "string"
+- attribute_name: "Address Value"
+  physical_name: "adr_val"
+  description: "Địa chỉ chi tiết tạm trú (theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.CURRENT_DETAIL"
+  comment: null
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Country Code"
+  physical_name: "country_code"
+  description: "Mã quốc gia địa chỉ tạm trú (theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.CURRENT_COUNTRY_CODE"
+  comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành phố địa chỉ tạm trú (theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.CURRENT_PROVINCE_CODE"
+  comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "District Code"
+  physical_name: "district_code"
+  description: "Mã quận/huyện địa chỉ tạm trú (theo C06)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.CURRENT_DISTRICT_CODE"
+  comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"

@@ -22,7 +22,9 @@ metadata:
     \ Nâng cấp từ Classification Value (scheme APPLICATION_STATUS/NHNCK_APPLICATION_STATUS)\
     \ lên entity thật — xem NHNCK_HLD_Overview.md 7e #9. CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY\
     \ loại khỏi thiết kế — theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml,\
-    \ lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending."
+    \ lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending. Hạ về draft (2026-07-27)\
+    \ để sửa lỗi hash sai: PK entity từng hash trực tiếp từ ID kỹ thuật thay vì STATUS_CODE\
+    \ (Code thật của entity) — xem comment attribute Id."
 attributes:
 - attribute_name: "Classification Application Status Id"
   physical_name: "cl_application_status_id"
@@ -34,7 +36,9 @@ attributes:
   source_columns:
   - "NHNCK.APPLICATION_STATUSES.ID"
   comment: "PK surrogate. BCV: [Common] Application Status. Hash: hash_id('NHNCK.APPLICATION_STATUSES',\
-    \ ID)."
+    \ STATUS_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với chính\
+    \ Code (STATUS_CODE) của entity — gây mismatch cho mọi FK downstream tham chiếu\
+    \ entity này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

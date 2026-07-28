@@ -183,3 +183,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Violation Status Code"
+  physical_name: "violation_status_code"
+  description: "Trạng thái bản ghi vi phạm: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VIOLATIONS.STATUS"
+  comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Violation Type Code"
+  physical_name: "violation_tp_code"
+  description: "Loại/phân loại của bản ghi vi phạm."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.VIOLATIONS.TYPE"
+  comment: "Scheme: VIOLATION_TYPE. Nguồn lưu dạng NUMBER — ETL convert sang string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt kê đủ giá trị."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

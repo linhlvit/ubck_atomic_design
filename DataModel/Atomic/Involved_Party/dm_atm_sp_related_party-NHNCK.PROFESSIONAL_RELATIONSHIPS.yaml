@@ -200,7 +200,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONAL_RELATIONSHIPS
     source_column: NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONAL_RELATIONSHIPS.COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONAL_RELATIONSHIPS'"
     etl_derived_value: null
 

@@ -2,7 +2,7 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-ip_postal_address-NHNCK.PROFESSIONALS
+  id: ATM-ip_postal_address-NHNCK.IDENTITY_INFO_C06S
   logical_name: Involved Party Postal Address
   physical_name: ip_postal_address
   layer: Atomic
@@ -19,7 +19,7 @@ ldm:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-NHNCK-PROFESSIONALS
+    brd: BRD-SRC-NHNCK-IDENTITY_INFO_C06S
 
 attributes:
   - name: Source System Code
@@ -30,11 +30,11 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
+    source_table: IDENTITY_INFO_C06S
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
-    etl_derived_value: NHNCK.PROFESSIONALS
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
+    etl_derived_value: NHNCK.IDENTITY_INFO_C06S
 
   - name: Address Type Code
     physical_name: adr_tp_code
@@ -44,10 +44,10 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
+    source_table: IDENTITY_INFO_C06S
     source_column: null
-    comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Scheme: IP_ADDR_TYPE. Nguồn có 2 loại địa chỉ: PERMANENT và CURRENT (trước đây chỉ thiết kế PERMANENT)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    comment: "Scheme: IP_ADDR_TYPE."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: CURRENT
 
   - name: Country Id
@@ -58,24 +58,24 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID
+    source_table: IDENTITY_INFO_C06S
+    source_column: null
     comment: "Bổ sung 2026-07-24. FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.CURRENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: Country Code
     physical_name: country_code
-    business_meaning: Mã quốc gia địa chỉ tạm trú.
+    business_meaning: Mã quốc gia địa chỉ tạm trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID
-    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.CURRENT_COUNTRY_CODE
+    comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: Province Id
@@ -86,24 +86,24 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID
+    source_table: IDENTITY_INFO_C06S
+    source_column: null
     comment: "Bổ sung 2026-07-24. FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Resolve bằng lookup giá trị đối chiếu ECAT.PROVINCE_NEW.CODE hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: Province Code
     physical_name: province_code
-    business_meaning: Mã tỉnh/thành địa chỉ tạm trú.
+    business_meaning: Mã tỉnh/thành phố địa chỉ tạm trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID
-    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.CURRENT_PROVINCE_CODE
+    comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: District Id
@@ -114,24 +114,24 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.CURRENT_DISTRICT_ID
+    source_table: IDENTITY_INFO_C06S
+    source_column: null
     comment: "Bổ sung 2026-07-24. FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — xem District Id khối PERMANENT ở trên). Resolve bằng lookup giá trị đối chiếu ECAT.DISTRICT_OLD.CODE hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: District Code
     physical_name: district_code
-    business_meaning: Mã quận/huyện địa chỉ tạm trú.
+    business_meaning: Mã quận/huyện địa chỉ tạm trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.CURRENT_DISTRICT_ID
-    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET). Pair with District Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.CURRENT_DISTRICT_CODE
+    comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: Address Value
@@ -142,10 +142,10 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: null
-    comment: Không có cột địa lý (Province/District/Ward) trong BRD. // NVARCHAR2(500). Không có Province/District/Ward FK.
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'CURRENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.CURRENT_DETAIL
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'CURRENT'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -156,38 +156,38 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
+    source_table: IDENTITY_INFO_C06S
     source_column: null
     comment: null
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
-    etl_derived_value: NHNCK.PROFESSIONALS
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: NHNCK.IDENTITY_INFO_C06S
 
   - name: Address Type Code
     physical_name: adr_tp_code
-    business_meaning: Loại địa chỉ.
+    business_meaning: Loại địa chỉ — thường trú.
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
+    source_table: IDENTITY_INFO_C06S
     source_column: null
-    comment: "Scheme: IP_ADDR_TYPE. Nguồn NHNCK chỉ có địa chỉ thường trú (PERMANENT_ADDRESS)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    comment: "Scheme: IP_ADDR_TYPE. Nguồn có 2 loại địa chỉ: PERMANENT và CURRENT."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: PERMANENT
 
   - name: Address Value
     physical_name: adr_val
-    business_meaning: Giá trị địa chỉ.
+    business_meaning: "Địa chỉ chi tiết thường trú (số nhà, đường, phường/xã theo C06)."
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: null
-    comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.PROFESSIONALS.ADDRESS khi PERMANENT_ADDRESS null. ETL xử lý logic này. (2026-07-24: đăng ký lại ADDRESS vào source_columns — post_check_source_coverage phát hiện cột này chưa được ghi nhận dù đã map qua fallback comment.)"
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.PERMANENT_DETAIL
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: Country Id
@@ -198,24 +198,24 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID
+    source_table: IDENTITY_INFO_C06S
+    source_column: null
     comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PERMANENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: Country Code
     physical_name: country_code
-    business_meaning: Mã quốc gia.
+    business_meaning: Mã quốc gia địa chỉ thường trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.PERMANENT_COUNTRY_CODE
+    comment: "Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup, không tạo FK Geographic Area."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: Province Id
@@ -226,24 +226,24 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID
+    source_table: IDENTITY_INFO_C06S
+    source_column: null
     comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: Province Code
     physical_name: province_code
-    business_meaning: Mã tỉnh/thành.
+    business_meaning: Mã tỉnh/thành phố địa chỉ thường trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID
-    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.PERMANENT_PROVINCE_CODE
+    comment: "Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: District Id
@@ -254,50 +254,50 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID
+    source_table: IDENTITY_INFO_C06S
+    source_column: null
     comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: District Code
     physical_name: district_code
-    business_meaning: Mã quận/huyện.
+    business_meaning: Mã quận/huyện địa chỉ thường trú (theo C06).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID
-    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.PERMANENT_DISTRICT_CODE
+    comment: "Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: Involved Party Id
     physical_name: ip_id
-    business_meaning: FK đến Securities Practitioner.
+    business_meaning: FK đến Individual.
     data_domain: Surrogate Key
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.ID
-    comment: "FK target: securities_practitioner.securities_practitioner_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.PROFESSIONALS', ID)."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
+    comment: "FK target: individual.individual_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null
 
   - name: Involved Party Code
     physical_name: ip_code
-    business_meaning: Mã người hành nghề.
+    business_meaning: Số CMND/CCCD/Hộ chiếu của người hành nghề.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
-    source_table: PROFESSIONALS
-    source_column: NHNCK.PROFESSIONALS.ID
-    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Address Type Code = 'PERMANENT'"
+    source_table: IDENTITY_INFO_C06S
+    source_column: NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER
+    comment: "Lookup pair: individual.individual_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'NHNCK_IDENTITY_INFO_C06S' | Address Type Code = 'PERMANENT'"
     etl_derived_value: null

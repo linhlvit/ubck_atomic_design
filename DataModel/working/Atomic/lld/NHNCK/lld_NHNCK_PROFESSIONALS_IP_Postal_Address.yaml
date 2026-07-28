@@ -17,7 +17,9 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Hạ về draft (2026-07-24) để bổ sung khối địa chỉ tạm trú (CURRENT_COUNTRY_ID/PROVINCE_ID/DISTRICT_ID\
+    \ — phát hiện qua post_check_source_coverage.py, trước đây chỉ thiết kế PERMANENT)\
+    \ và đăng ký lại ADDRESS (fallback) vào source_columns của Address Value."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -80,8 +82,11 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.PERMANENT_ADDRESS"
+  - "NHNCK.PROFESSIONALS.ADDRESS"
   comment: "ETL primary: PERMANENT_ADDRESS. Fallback NHNCK.PROFESSIONALS.ADDRESS khi\
-    \ PERMANENT_ADDRESS null. ETL xử lý logic này."
+    \ PERMANENT_ADDRESS null. ETL xử lý logic này. (2026-07-24: đăng ký lại ADDRESS\
+    \ vào source_columns — post_check_source_coverage phát hiện cột này chưa được\
+    \ ghi nhận dù đã map qua fallback comment.)"
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
@@ -94,12 +99,10 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Nguồn Geographic Area đã\
-    \ chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá\
-    \ trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.PERMANENT_COUNTRY_ID với\
-    \ Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
-    \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
-    \ với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PERMANENT_COUNTRY_ID\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
   etl_derived_value: null
   data_type: "string"
@@ -180,5 +183,107 @@ attributes:
   comment: "Lookup pair: Geographic Area Old.Geographic Area Old Code (nguồn ECAT\
     \ — ĐỔI TARGET, xem District Id). Pair with District Id."
   classification_context: "IP_ADDR_TYPE=PERMANENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Address Type Code"
+  physical_name: "adr_tp_code"
+  description: "Loại địa chỉ — tạm trú."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Scheme: IP_ADDR_TYPE.\
+    \ Nguồn có 2 loại địa chỉ: PERMANENT và CURRENT (trước đây chỉ thiết kế PERMANENT)."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: "CURRENT"
+  data_type: "string"
+- attribute_name: "Country Id"
+  physical_name: "country_id"
+  description: "FK đến Geographic Area — quốc gia địa chỉ tạm trú hiện tại."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID"
+  comment: "Bổ sung 2026-07-24. FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.CURRENT_COUNTRY_ID\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Country Code"
+  physical_name: "country_code"
+  description: "Mã quốc gia địa chỉ tạm trú."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.CURRENT_COUNTRY_ID"
+  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area.Geographic Area Code\
+    \ (nguồn ECAT). Pair with Country Id."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Id"
+  physical_name: "province_id"
+  description: "FK đến Geographic Area — tỉnh/thành địa chỉ tạm trú."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID"
+  comment: "Bổ sung 2026-07-24. FK target: Geographic Area.Geographic Area Id. Geographic\
+    \ Area Type Code = PROVINCE. Resolve bằng lookup giá trị đối chiếu ECAT.PROVINCE_NEW.CODE\
+    \ hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Province Code"
+  physical_name: "province_code"
+  description: "Mã tỉnh/thành địa chỉ tạm trú."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.CURRENT_PROVINCE_ID"
+  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area.Geographic Area Code\
+    \ (nguồn ECAT). Pair with Province Id."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "District Id"
+  physical_name: "district_id"
+  description: "FK đến Geographic Area — quận/huyện địa chỉ tạm trú."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.CURRENT_DISTRICT_ID"
+  comment: "Bổ sung 2026-07-24. FK target: Geographic Area Old.Geographic Area Old\
+    \ Id (ĐỔI TARGET — xem District Id khối PERMANENT ở trên). Resolve bằng lookup\
+    \ giá trị đối chiếu ECAT.DISTRICT_OLD.CODE hoặc Name. Cần crosswalk nếu NHNCK\
+    \ không cùng chuẩn mã với ECAT."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "District Code"
+  physical_name: "district_code"
+  description: "Mã quận/huyện địa chỉ tạm trú."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.CURRENT_DISTRICT_ID"
+  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area Old.Geographic Area Old\
+    \ Code (nguồn ECAT — ĐỔI TARGET). Pair with District Id."
+  classification_context: "IP_ADDR_TYPE=CURRENT"
   etl_derived_value: null
   data_type: "string"

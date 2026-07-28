@@ -1,0 +1,90 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "POST_CERT_TRAINING_COURSES"
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  entity_physical_name: "sp_post_certification_training_course"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: "Fundamental"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "BCO Business Activity theo yêu cầu tường minh Data Modeler (2026-07-24)\
+    \ — không có BCV term riêng cho 'training class/course' dưới Business Activity\
+    \ trong knowledge/terms.csv (chỉ có [Event] Training Course, đã dùng cho SPECIALIZATION_COURSES).\
+    \ Xem NHNCK_HLD_Overview.md 7e #12. STATUS (nguồn) không map — áp dụng chính sách\
+    \ Data Modeler (2026-07-07): không thiết kế Atomic attribute cho field kỹ thuật\
+    \ chung RECORD_STATUS/STATUS trên bất kỳ bảng NHNCK nào (kể cả bảng mới). Xem\
+    \ pending_design.yaml."
+attributes:
+- attribute_name: "Securities Practitioner Post Certification Training Course Id"
+  physical_name: "sp_post_certification_training_course_id"
+  description: "Id tự sinh (surrogate key)"
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: [Business Activity] Business Activity."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Practitioner Post Certification Training Course Code"
+  physical_name: "sp_post_certification_training_course_code"
+  description: "Mã khóa học/lớp học. BK duy nhất của entity"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_CODE"
+  comment: "BK chính."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu"
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=NHNCK.POST_CERT_TRAINING_COURSES"
+  etl_derived_value: "NHNCK.POST_CERT_TRAINING_COURSES"
+  data_type: "string"
+- attribute_name: "Training Course Name"
+  physical_name: "training_course_nm"
+  description: "Tên khóa học/lớp học"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.POST_CERT_TRAINING_COURSES.COURSE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Training Class Code"
+  physical_name: "training_class_code"
+  description: "Mã lớp học (định danh lớp cụ thể trong khóa)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.POST_CERT_TRAINING_COURSES.CLASS_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

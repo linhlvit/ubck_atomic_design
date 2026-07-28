@@ -31,7 +31,7 @@ attributes:
     source_system: NHNCK
     source_table: SPECIALIZATIONS
     source_column: NHNCK.SPECIALIZATIONS.ID
-    comment: "PK surrogate. BCV: [Common] Specialization. Hash: hash_id('NHNCK.SPECIALIZATIONS', ID)."
+    comment: "PK surrogate. BCV: [Common] Specialization. Hash: hash_id('NHNCK.SPECIALIZATIONS', SPECIALIZATION_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (SPECIALIZATION_CODE) của entity — gây mismatch cho FK downstream tham chiếu entity này."
     classification_context: "Source System Code = 'NHNCK_SPECIALIZATIONS'"
     etl_derived_value: null
 

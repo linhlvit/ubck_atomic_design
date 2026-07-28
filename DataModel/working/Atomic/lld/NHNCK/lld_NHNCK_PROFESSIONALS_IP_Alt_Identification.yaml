@@ -63,15 +63,17 @@ attributes:
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh."
   data_domain: "Classification Value"
-  nullable: false
+  nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.IDENTITY_TYPE"
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=NATIONAL_ID, 2=CITIZEN_ID,\
-    \ 3=PASSPORT."
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: "1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT"
+  comment: "PENDING — Data Modeler sẽ profile dữ liệu thực tế của IDENTITY_TYPE trước\
+    \ khi xác nhận mapping ETL sang scheme IP_ALT_ID_TYPE. Tạm thời KHÔNG derive giá\
+    \ trị (mapping 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT trước đây chưa được xác nhận,\
+    \ tạm gỡ)."
+  classification_context: null
+  etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"

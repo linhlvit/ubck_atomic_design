@@ -228,7 +228,7 @@ attributes:
     source_system: NHNCK
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.NATIONALITY_ID
-    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.NATIONALITY_ID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null
 
@@ -355,5 +355,145 @@ attributes:
     source_table: PROFESSIONALS
     source_column: NHNCK.PROFESSIONALS.PLACE_OF_BIRTH
     comment: null
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Avatar File Path
+    physical_name: avatar_file_path
+    business_meaning: Đường dẫn/URL ảnh đại diện của người hành nghề
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.AVATAR
+    comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện)."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Place of Birth Country Id
+    physical_name: place_of_birth_country_id
+    business_meaning: FK đến Geographic Area — quốc gia nơi sinh
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID
+    comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Place of Birth Country Code
+    physical_name: place_of_birth_country_code
+    business_meaning: Mã quốc gia nơi sinh (denormalized)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID
+    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Place of Birth Country Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Place of Birth Province Id
+    physical_name: place_of_birth_province_id
+    business_meaning: FK đến Geographic Area — tỉnh/thành phố nơi sinh
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID
+    comment: "Bổ sung 2026-07-24. FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Place of Birth Province Code
+    physical_name: place_of_birth_province_code
+    business_meaning: Mã tỉnh/thành phố nơi sinh (denormalized)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID
+    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Place of Birth Province Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Place of Birth District Id
+    physical_name: place_of_birth_district_id
+    business_meaning: FK đến Geographic Area — quận/huyện nơi sinh
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID
+    comment: "Bổ sung 2026-07-24. FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành post-sáp nhập 2025; ECAT chỉ còn lưu ở Geographic Area Old, Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Place of Birth District Code
+    physical_name: place_of_birth_district_code
+    business_meaning: Mã quận/huyện nơi sinh (denormalized)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID
+    comment: "Bổ sung 2026-07-24. Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem Place of Birth District Id). Pair with Place of Birth District Id."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: SSO Sync Status Code
+    physical_name: sso_sync_status_code
+    business_meaning: "0=chưa chuyển SSO, 1=đã chuyển SSO"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.SSO_SYNCED
+    comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Scheme: NHNCK_SSO_SYNC_STATUS."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Identity and Access Management User Id
+    physical_name: identity_and_access_management_user_id
+    business_meaning: UUID user trên IAM (provisioning SSO)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.SSO_USER_ID
+    comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Pending — đây rất có thể chính là crosswalk key đang chờ xác nhận giữa NHNCK và IAM.USERS (xem ghi chú pending ở Assignee Officer/Updated By Officer các entity khác trong NHNCK). Chưa hash: chờ xác nhận NHNCK.PROFESSIONALS.SSO_USER_ID có khớp định dạng/giá trị với IAM.USERS.ID (UUID) không, và lld_IAM_USERS.yaml lên approved."
+    classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
+    etl_derived_value: null
+
+  - name: Identity and Access Management User Code
+    physical_name: identity_and_access_management_user_code
+    business_meaning: Mã user IAM (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: PROFESSIONALS
+    source_column: NHNCK.PROFESSIONALS.SSO_USER_ID
+    comment: "Bổ sung 2026-07-24. Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pending — xem ghi chú ở Identity and Access Management User Id."
     classification_context: "Source System Code = 'NHNCK_PROFESSIONALS'"
     etl_derived_value: null

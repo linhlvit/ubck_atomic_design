@@ -26,7 +26,10 @@ metadata:
     \ EXAM_DETAILS, EXAM_SESSION_FEES, ORGANIZATION_REPORTS). Hạ lại design_status\
     \ approved → draft (2026-07-13): đổi pattern Id+Code+Unique Key → Id+Code (bỏ\
     \ Unique Key, Code nay = CERTIFICATE_CODE thay vì ID) — cần review/approve lại.\
-    \ Các file downstream tham chiếu Code cũ (ID-based) cần rà soát riêng."
+    \ Các file downstream tham chiếu Code cũ (ID-based) cần rà soát riêng. STATUS\
+    \ (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính sách\
+    \ Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem\
+    \ pending_design.yaml (cập nhật lại source_column 2026-07-24)."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Type Id"
   physical_name: "sp_license_certificate_type_id"

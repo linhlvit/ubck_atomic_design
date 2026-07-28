@@ -25,7 +25,9 @@ metadata:
     \ ý nghĩa với IS_ACTIVE (cả hai đều 1=hoạt động/0=không hoạt động), giữ IS_ACTIVE\
     \ làm chuẩn (đổi tên từ ACTIVE theo DDL UAT 2026-07-15). CREATED_AT/UPDATED_AT/CREATED_BY/UPDATED_BY\
     \ loại khỏi thiết kế — theo đúng quy ước NHNCK (xem lld_NHNCK_CERTIFICATES.yaml,\
-    \ lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending."
+    \ lld_NHNCK_PROFESSIONALS.yaml), không giữ dạng pending. Hạ về draft (2026-07-27)\
+    \ để sửa lỗi hash sai: PK entity từng hash trực tiếp từ ID kỹ thuật thay vì DOCUMENT_CODE\
+    \ (Code thật của entity) — xem comment attribute Id."
 attributes:
 - attribute_name: "Classification Document Id"
   physical_name: "cl_document_id"
@@ -37,7 +39,9 @@ attributes:
   source_columns:
   - "NHNCK.DOCUMENTS.ID"
   comment: "PK surrogate. BCV: [Common] Document. Hash: hash_id('NHNCK.DOCUMENTS',\
-    \ ID)."
+    \ DOCUMENT_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với\
+    \ chính Code (DOCUMENT_CODE) của entity — gây mismatch cho FK downstream tham\
+    \ chiếu entity này."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

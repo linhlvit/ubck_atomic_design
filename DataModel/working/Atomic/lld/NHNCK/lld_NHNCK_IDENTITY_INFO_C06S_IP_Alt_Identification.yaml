@@ -1,0 +1,91 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  atomic_entity: "Involved Party Alternative Identification"
+  entity_physical_name: "ip_alternative_identification"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "Shared Entity"
+  table_type: "Fundamental"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Nguồn không có cột phân biệt loại giấy tờ (không giống PROFESSIONALS.IDENTITY_TYPE)\
+    \ — dùng default IP_ALT_ID_TYPE=NATIONAL_ID theo quy tắc 'Trường hợp đặc biệt'\
+    \ (reference/shared_entity_schemas.md). Xem pending_design.yaml. Identification\
+    \ Number trùng giá trị với Individual Code (BK) — vẫn tách theo quy tắc Bước 4\
+    \ (grain = Involved Party)."
+attributes:
+- attribute_name: "Involved Party Id"
+  physical_name: "ip_id"
+  description: "FK đến Individual."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
+  comment: "FK target: Individual.Individual Id. Shared entity — không có PK surrogate\
+    \ riêng. Hash: hash_id('NHNCK.IDENTITY_INFO_C06S', IDENTITY_NUMBER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Involved Party Code"
+  physical_name: "ip_code"
+  description: "Số CMND/CCCD/Hộ chiếu của người hành nghề."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
+  comment: "Lookup pair: Individual.Individual Code. Pair with Involved Party Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: "SOURCE_SYSTEM=NHNCK.IDENTITY_INFO_C06S"
+  etl_derived_value: "NHNCK.IDENTITY_INFO_C06S"
+  data_type: "string"
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột type — default NATIONAL_ID\
+    \ theo quy tắc 'Trường hợp đặc biệt'. Xem pending_design.yaml."
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: "NATIONAL_ID"
+  data_type: "string"
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số CMND/CCCD/Hộ chiếu của người hành nghề."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
+  comment: "BK của shared entity cùng với Involved Party Id + Identification Type\
+    \ Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

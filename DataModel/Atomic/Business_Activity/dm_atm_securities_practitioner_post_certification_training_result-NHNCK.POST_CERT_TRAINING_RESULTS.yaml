@@ -1,0 +1,205 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-securities_practitioner_post_certification_training_result-NHNCK.POST_CERT_TRAINING_RESULTS
+  logical_name: Securities Practitioner Post Certification Training Result
+  physical_name: securities_practitioner_post_certification_training_result
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Business Activity
+  bcv_concept: "[Business Activity] Business Activity"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: NHNCK
+  description: |
+    Kết quả tham gia khóa bồi dưỡng sau cấp CCHN của người hành nghề. FK đến Post Certification Training Course và Practitioner.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-NHNCK-POST_CERT_TRAINING_RESULTS
+
+attributes:
+  - name: Securities Practitioner Post Certification Training Result Id
+    physical_name: sp_post_certification_training_result_id
+    business_meaning: Id tự sinh (surrogate key)
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: null
+    comment: "PK surrogate. BCV: [Business Activity] Business Activity."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Post Certification Training Result Code
+    physical_name: sp_post_certification_training_result_code
+    business_meaning: Mã định danh (BK từ PK nguồn — nguồn không có cột mã nghiệp vụ riêng)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.ID
+    comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã nguồn dữ liệu
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: NHNCK.POST_CERT_TRAINING_RESULTS
+
+  - name: Securities Practitioner Id
+    physical_name: sp_id
+    business_meaning: FK đến người hành nghề tham gia đào tạo
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID
+    comment: "FK target: securities_practitioner.securities_practitioner_id. Hash: hash_id('NHNCK.PROFESSIONALS', PROFESSIONAL_ID)."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Code
+    physical_name: sp_code
+    business_meaning: Mã người hành nghề (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.PROFESSIONAL_ID
+    comment: "Lookup pair: securities_practitioner.securities_practitioner_code. Pair with securities_practitioner_id."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Post Certification Training Course Id
+    physical_name: sp_post_certification_training_course_id
+    business_meaning: FK đến khóa bồi dưỡng sau cấp CCHN
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID
+    comment: "FK target: sp_post_certification_training_course.sp_post_certification_training_course_id. Cần ETL crosswalk sang NHNCK.POST_CERT_TRAINING_COURSES: POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID = POST_CERT_TRAINING_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.POST_CERT_TRAINING_COURSES', COURSE_CODE) | Trước đây hash trực tiếp theo TRAINING_COURSE_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk 2026-07-27."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Securities Practitioner Post Certification Training Course Code
+    physical_name: sp_post_certification_training_course_code
+    business_meaning: Mã khóa bồi dưỡng (denormalized lookup)
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_COURSE_ID
+    comment: "Lookup pair: securities_practitioner_post_certification_training_course.securities_practitioner_post_certification_training_course_code. Pair with securities_practitioner_post_certification_training_course_id."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Training Start Date
+    physical_name: training_start_dt
+    business_meaning: Ngày bắt đầu tham gia khóa bồi dưỡng
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.START_DATE
+    comment: Mô tả cột nguồn còn TBD — suy luận từ tên cột.
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Training End Date
+    physical_name: training_end_dt
+    business_meaning: Ngày kết thúc tham gia khóa bồi dưỡng
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.END_DATE
+    comment: Mô tả cột nguồn còn TBD — suy luận từ tên cột.
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Training Hours
+    physical_name: training_hours
+    business_meaning: Số giờ đào tạo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.TRAINING_HOURS
+    comment: Mô tả cột nguồn còn TBD — suy luận từ tên cột.
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Training Result Status Code
+    physical_name: training_result_status_code
+    business_meaning: "Trạng thái kết quả khóa bồi dưỡng (Đạt/Không đạt — suy đoán từ NUMBER(1,0))"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS
+    comment: "Scheme: NHNCK_POST_CERT_TRAINING_RESULT_STATUS. Mô tả cột nguồn còn TBD — cần BA xác nhận giá trị cụ thể trước khi hoàn thiện ETL mapping."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Training Classification Result Code
+    physical_name: training_cl_result_code
+    business_meaning: "Phân loại kết quả khóa bồi dưỡng (VD: Giỏi/Khá/Trung bình — suy đoán)"
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.CLASSIFICATION_RESULT
+    comment: "Scheme: NHNCK_POST_CERT_TRAINING_CLASSIFICATION. Nguồn lưu NVARCHAR2(510) — mô tả cột còn TBD, cần BA xác nhận giá trị cụ thể."
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null
+
+  - name: Note
+    physical_name: note
+    business_meaning: Ghi chú
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: POST_CERT_TRAINING_RESULTS
+    source_column: NHNCK.POST_CERT_TRAINING_RESULTS.NOTE
+    comment: null
+    classification_context: "Source System Code = 'NHNCK_POST_CERT_TRAINING_RESULTS'"
+    etl_derived_value: null

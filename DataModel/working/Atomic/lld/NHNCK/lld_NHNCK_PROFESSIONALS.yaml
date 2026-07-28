@@ -17,7 +17,19 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Hạ về draft (2026-07-24) để bổ sung các trường nghiệp vụ chưa thiết kế (phát\
+    \ hiện qua post_check_source_coverage.py): AVATAR, PLACE_OF_BIRTH_COUNTRY/PROVINCE/DISTRICT_ID,\
+    \ SSO_SYNCED, SSO_USER_ID. CURRENT_COUNTRY/PROVINCE/DISTRICT_ID bổ sung vào lld_NHNCK_PROFESSIONALS_IP_Postal_Address.yaml\
+    \ (khối địa chỉ tạm trú, mirror pattern Individual/IDENTITY_INFO_C06S). STATUS\
+    \ KHÔNG map — cùng field với RECORD_STATUS đã loại trừ theo chính sách Data Modeler\
+    \ (2026-07-07), chỉ đổi tên qua DDL UAT remap 2026-07-15/20 — xem pending_design.yaml.\
+    \ USERNAME/PASSWORD KHÔNG map — dữ liệu xác thực, không thiết kế Atomic (xem pending_design.yaml).\
+    \ IDENTITY_NUMBER/IDENTITY_ISSUE_DATE/IDENTITY_ISSUE_PLACE/IDENTITY_TYPE/PERMANENT_ADDRESS/ADDRESS\
+    \ ĐÃ map đúng (xem lld_NHNCK_PROFESSIONALS_IP_Alt_Identification.yaml / _IP_Postal_Address.yaml)\
+    \ — post_check_source_coverage.py báo sai \"chưa map\" do 2 lỗi công cụ đã biết\
+    \ trong aggregate_atomic.py (dedup context rỗng cho shared entity dùng chung tên\
+    \ với source khác có addr_type; và source_columns nhiều giá trị bị nối chuỗi thay\
+    \ vì tách dòng riêng) — không phải gap thiết kế thật, không cần sửa LLD."
 attributes:
 - attribute_name: "Securities Practitioner Id"
   physical_name: "sp_id"
@@ -214,12 +226,10 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.PROFESSIONALS.NATIONALITY_ID"
-  comment: "FK target: Geographic Area.Geographic Area Id. Geographic Area Type Code\
-    \ = COUNTRY. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.COUNTRIES ngừng\
-    \ thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NHNCK.PROFESSIONALS.NATIONALITY_ID\
-    \ với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id()\
-    \ trực tiếp theo NHNCK.COUNTRIES. Cần crosswalk nếu NHNCK không cùng chuẩn mã\
-    \ với ECAT."
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -339,6 +349,159 @@ attributes:
   source_columns:
   - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Avatar File Path"
+  physical_name: "avatar_file_path"
+  description: "Đường dẫn/URL ảnh đại diện của người hành nghề"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.AVATAR"
+  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Place of Birth Country Id"
+  physical_name: "place_of_birth_country_id"
+  description: "FK đến Geographic Area — quốc gia nơi sinh"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID"
+  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). FK target:\
+    \ geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần\
+    \ ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID\
+    \ = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE)\
+    \ | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Place of Birth Country Code"
+  physical_name: "place_of_birth_country_code"
+  description: "Mã quốc gia nơi sinh (denormalized)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_COUNTRY_ID"
+  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area.Geographic Area Code\
+    \ (nguồn ECAT). Pair with Place of Birth Country Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Place of Birth Province Id"
+  physical_name: "place_of_birth_province_id"
+  description: "FK đến Geographic Area — tỉnh/thành phố nơi sinh"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID"
+  comment: "Bổ sung 2026-07-24. FK target: Geographic Area.Geographic Area Id. Geographic\
+    \ Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT — resolve\
+    \ bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành với Geographic Area Unique\
+    \ Key (ECAT.PROVINCE_NEW.CODE) hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn\
+    \ mã với ECAT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Place of Birth Province Code"
+  physical_name: "place_of_birth_province_code"
+  description: "Mã tỉnh/thành phố nơi sinh (denormalized)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_PROVINCE_ID"
+  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area.Geographic Area Code\
+    \ (nguồn ECAT). Pair with Place of Birth Province Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Place of Birth District Id"
+  physical_name: "place_of_birth_district_id"
+  description: "FK đến Geographic Area — quận/huyện nơi sinh"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID"
+  comment: "Bổ sung 2026-07-24. FK target: Geographic Area Old.Geographic Area Old\
+    \ Id (ĐỔI TARGET — cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành\
+    \ post-sáp nhập 2025; ECAT chỉ còn lưu ở Geographic Area Old, Geographic Area\
+    \ Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên\
+    \ quận/huyện với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc\
+    \ Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Place of Birth District Code"
+  physical_name: "place_of_birth_district_code"
+  description: "Mã quận/huyện nơi sinh (denormalized)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.PLACE_OF_BIRTH_DISTRICT_ID"
+  comment: "Bổ sung 2026-07-24. Lookup pair: Geographic Area Old.Geographic Area Old\
+    \ Code (nguồn ECAT — ĐỔI TARGET, xem Place of Birth District Id). Pair with Place\
+    \ of Birth District Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "SSO Sync Status Code"
+  physical_name: "sso_sync_status_code"
+  description: "0=chưa chuyển SSO, 1=đã chuyển SSO"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.SSO_SYNCED"
+  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Scheme: NHNCK_SSO_SYNC_STATUS."
+  classification_context: "NHNCK_SSO_SYNC_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identity and Access Management User Id"
+  physical_name: "identity_and_access_management_user_id"
+  description: "UUID user trên IAM (provisioning SSO)"
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.SSO_USER_ID"
+  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Pending — đây\
+    \ rất có thể chính là crosswalk key đang chờ xác nhận giữa NHNCK và IAM.USERS\
+    \ (xem ghi chú pending ở Assignee Officer/Updated By Officer các entity khác trong\
+    \ NHNCK). Chưa hash: chờ xác nhận NHNCK.PROFESSIONALS.SSO_USER_ID có khớp định\
+    \ dạng/giá trị với IAM.USERS.ID (UUID) không, và lld_IAM_USERS.yaml lên approved."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Identity and Access Management User Code"
+  physical_name: "identity_and_access_management_user_code"
+  description: "Mã user IAM (denormalized lookup)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.PROFESSIONALS.SSO_USER_ID"
+  comment: "Bổ sung 2026-07-24. Lookup pair: Identity and Access Management User.Identity\
+    \ and Access Management User Code. Pending — xem ghi chú ở Identity and Access\
+    \ Management User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

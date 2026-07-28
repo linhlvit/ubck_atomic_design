@@ -17,7 +17,12 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo\
+    \ chính sách Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap 2026-07-15/20.\
+    \ Xem pending_design.yaml (cập nhật lại source_column 2026-07-24). Hạ về draft\
+    \ (2026-07-27) để sửa lỗi hash-mismatch FK \"Parent Regulatory Authority Organization\
+    \ Unit Id\" (self-reference) — trước đây hash trực tiếp theo PARENT_ID (ID kỹ\
+    \ thuật) thay vì Code của bảng đích (UNIT_CODE)."
 attributes:
 - attribute_name: "Regulatory Authority Organization Unit Id"
   physical_name: "ra_ou_id"
@@ -103,8 +108,10 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.UNITS.PARENT_ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Hash: hash_id('NHNCK.UNITS', PARENT_ID)."
+  comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
+    \ UNITS.PARENT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS',\
+    \ UNIT_CODE) | Trước đây hash trực tiếp theo PARENT_ID (ID kỹ thuật) gây sai\
+    \ lệch với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

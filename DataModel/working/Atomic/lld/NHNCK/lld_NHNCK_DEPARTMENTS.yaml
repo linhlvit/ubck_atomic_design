@@ -17,7 +17,10 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Hạ về draft (2026-07-24) để bổ sung External Catalog Reference Code (ECATALOG_ID,\
+    \ mô tả nguồn còn TBD — cần BA xác nhận ý nghĩa) — phát hiện qua post_check_source_coverage.py.\
+    \ STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính\
+    \ sách Data Modeler (2026-07-07), chỉ đổi tên qua DDL UAT remap. Xem pending_design.yaml."
 attributes:
 - attribute_name: "Regulatory Authority Organization Unit Id"
   physical_name: "ra_ou_id"
@@ -103,9 +106,11 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.DEPARTMENTS.UNIT_ID"
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Parent là Unit không phải Department. Hash: hash_id('NHNCK.UNITS',\
-    \ UNIT_ID)."
+  comment: "FK target: ra_organization_unit.ra_ou_id. Cần ETL crosswalk sang NHNCK.UNITS:\
+    \ DEPARTMENTS.UNIT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK.UNITS',\
+    \ UNIT_CODE) | Trước đây hash trực tiếp theo UNIT_ID (ID kỹ thuật) gây sai lệch\
+    \ với Id của bảng main (hash từ UNIT_CODE) — đã sửa sang crosswalk 2026-07-27.\
+    \ Parent là Unit không phải Department."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -150,3 +155,19 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "External Catalog Reference Code"
+  physical_name: "external_catalog_reference_code"
+  description: "TBD - cần bổ sung mô tả"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "pending"
+  source_columns:
+  - "NHNCK.DEPARTMENTS.ECATALOG_ID"
+  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Mô tả nguồn\
+    \ còn TBD trong BRD — tên cột gợi ý mã tham chiếu tới danh mục/hệ thống ngoài\
+    \ (VD: danh mục đơn vị hành chính chuẩn quốc gia). Cần BA xác nhận ý nghĩa nghiệp\
+    \ vụ chính xác trước khi hoàn thiện thiết kế (đổi domain/FK nếu cần)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

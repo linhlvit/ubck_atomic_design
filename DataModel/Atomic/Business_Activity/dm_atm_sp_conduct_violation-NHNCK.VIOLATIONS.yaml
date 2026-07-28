@@ -189,3 +189,31 @@ attributes:
     comment: null
     classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
     etl_derived_value: null
+
+  - name: Violation Status Code
+    physical_name: violation_status_code
+    business_meaning: "Trạng thái bản ghi vi phạm: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VIOLATIONS
+    source_column: NHNCK.VIOLATIONS.STATUS
+    comment: "Scheme: VIOLATION_STATUS. Nguồn lưu dạng NUMBER — ETL convert sang string."
+    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    etl_derived_value: null
+
+  - name: Violation Type Code
+    physical_name: violation_tp_code
+    business_meaning: Loại/phân loại của bản ghi vi phạm.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: VIOLATIONS
+    source_column: NHNCK.VIOLATIONS.TYPE
+    comment: "Scheme: VIOLATION_TYPE. Nguồn lưu dạng NUMBER — ETL convert sang string. Giá trị scheme chưa xác định — cần profile dữ liệu thực tế để liệt kê đủ giá trị."
+    classification_context: "Source System Code = 'NHNCK_VIOLATIONS'"
+    etl_derived_value: null

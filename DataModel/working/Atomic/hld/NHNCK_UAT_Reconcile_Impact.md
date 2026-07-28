@@ -36,7 +36,7 @@
 | `lld_NHNCK_DOCUMENTS.yaml` | draft | Active Indicator | `ACTIVE` → `IS_ACTIVE` |
 | `lld_NHNCK_DOCUMENTS.yaml` | draft | Original Data Indicator | `ORIGINAL_DATA` → `IS_ORIGINAL_DATA` |
 | `lld_NHNCK_EXAM_SESSIONS.yaml` | **approved** | Assessment Name | `ITEM_NAME` → `NAME` |
-| `lld_NHNCK_EXAM_SESSIONS.yaml` | **approved** | Report Year | `REPORT_YEAR` — **chưa xác định được tên mới** (xem mục 3) |
+| `lld_NHNCK_EXAM_SESSIONS.yaml` | **approved** | Report Year | `REPORT_YEAR` → `YEAR` (đã xác nhận, 2026-07-28) |
 | `lld_NHNCK_SPECIALIZATIONS.yaml` | draft | Active Indicator | `ACTIVE` → `IS_ACTIVE` |
 | `lld_NHNCK_SPECIALIZATIONS.yaml` | draft | Original Data Indicator | `ORIGINAL_DATA` → `IS_ORIGINAL_DATA` |
 
@@ -53,15 +53,15 @@
 
 **Lưu ý riêng**: 3 dòng NVARCHAR2 giãn ×~4 lần (DECISIONS) không khớp tỷ lệ CHAR/BYTE kỳ vọng (×2 cho NVARCHAR2/NCHAR) — đây là phát hiện ngoài phạm vi trao đổi ban đầu (chỉ có EXAM_DATE_TO được xác nhận trước). Cần Data Modeler xác nhận đây là do cột thực sự được mở rộng trên UAT hay do khác biệt charset/tool đo đạc.
 
-## 3. Chưa xử lý được — cần Data Modeler xác nhận thủ công
+## 3. Đã xử lý (2026-07-28) — 7 cột rename xác nhận
 
-7 cột có tên cũ trong tài liệu nhưng không khớp DDL UAT và không đủ độ tin cậy để tự động đổi tên (xem chi tiết trong `NHNCK_Reconcile_Issues.csv`):
+7 cột có tên cũ trong tài liệu nhưng không khớp DDL UAT — đã xác nhận toàn bộ là **rename** (không phải xóa hẳn), đã xóa dòng cột cũ + hoàn thiện mô tả cột mới trong `NHNCK_Columns.csv` + `BRD/Source/NHNCK/*.yaml` (xem `NHNCK_Reconcile_Issues.csv` để biết chi tiết từng dòng):
 
-- `EXAM_SESSIONS.REPORT_YEAR` — nghi ngờ tương ứng với `YEAR` trong DDL (đã xuất hiện là "cột mới"), **ảnh hưởng trực tiếp tới `lld_NHNCK_EXAM_SESSIONS.yaml` (approved)**, attribute "Report Year" — cần xác nhận sớm.
-- `NOTIFICATIONS.READ_FLAG` — nghi ngờ tương ứng `IS_READ`. Không có LLD tương ứng (chưa thiết kế), không ảnh hưởng LLD hiện tại.
-- `NOTIFICATION_CONFIGURATIONS.EMAIL_ENABLED / NOTI_ENABLED / SMS_ENABLED` — nghi ngờ tương ứng `IS_EMAIL / IS_NOTI / IS_SMS`. Không có LLD tương ứng.
-- `ORGANIZATION_REPORT_YEARLYS.REPORT_YEAR` — nghi ngờ tương ứng `YEAR`. Không có LLD tương ứng.
-- `PERMISSIONS.MENU_FLAG` — nghi ngờ tương ứng `IS_MENU`. Không có LLD tương ứng.
+- `EXAM_SESSIONS.REPORT_YEAR → YEAR` — **ảnh hưởng trực tiếp tới `lld_NHNCK_EXAM_SESSIONS.yaml` (approved)**, attribute "Report Year": đã cập nhật `source_columns` chỉ còn `YEAR`, gỡ hedge/draft, khôi phục `design_status: approved`. Đã đồng bộ `entity_scr_prac_qualf_exam_ases.yaml`, `atomic_attributes.yaml` (regenerate), 2 file Mapping ETL (`mapping_atm_scr_prac_qualf_exam_ases-NHNCK.EXAM_SESSIONS.yaml`, `mapping_stg_nhnck_exam_sessions.yaml`), và mô tả trường trong `NHNCK_HLD_Tier2.md`.
+- `NOTIFICATIONS.READ_FLAG → IS_READ` — không có LLD tương ứng, chỉ cần dọn CSV/BRD.
+- `NOTIFICATION_CONFIGURATIONS.EMAIL_ENABLED / NOTI_ENABLED / SMS_ENABLED → IS_EMAIL / IS_NOTI / IS_SMS` — không có LLD tương ứng, chỉ cần dọn CSV/BRD.
+- `ORGANIZATION_REPORT_YEARLYS.REPORT_YEAR → YEAR` — không có LLD tương ứng, chỉ cần dọn CSV/BRD.
+- `PERMISSIONS.MENU_FLAG → IS_MENU` — không có LLD tương ứng, chỉ cần dọn CSV/BRD.
 
 ## 4. Quan sát khác (không cần hành động ngay)
 
@@ -72,7 +72,7 @@
 
 ## 5. Việc cần làm tiếp theo (đề xuất thứ tự ưu tiên)
 
-1. Xác nhận rename `EXAM_SESSIONS.REPORT_YEAR → YEAR` (ảnh hưởng entity đã approved).
+1. ~~Xác nhận rename `EXAM_SESSIONS.REPORT_YEAR → YEAR`~~ — **Đã xử lý (2026-07-28)**, xem mục 3.
 2. Cập nhật ghi chú mapping cột đổi tên trong `lld_NHNCK_DECISIONS.yaml` (Active Flag) và `lld_NHNCK_EXAM_SESSIONS.yaml` (Assessment Name) — 2 entity đã approved.
 3. Xác nhận 3 trường hợp NVARCHAR2 giãn độ dài bất thường trong `lld_NHNCK_DECISIONS.yaml`.
 4. Xác nhận đổi `data_domain`/`data_type` cho attribute "Exam End Date" trong `lld_NHNCK_SPECIALIZATION_COURSES.yaml` (Text → Date).

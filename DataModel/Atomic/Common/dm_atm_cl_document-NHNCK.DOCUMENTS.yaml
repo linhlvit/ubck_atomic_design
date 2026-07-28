@@ -32,7 +32,7 @@ attributes:
     source_system: NHNCK
     source_table: DOCUMENTS
     source_column: NHNCK.DOCUMENTS.ID
-    comment: "PK surrogate. BCV: [Common] Document. Hash: hash_id('NHNCK.DOCUMENTS', ID)."
+    comment: "PK surrogate. BCV: [Common] Document. Hash: hash_id('NHNCK.DOCUMENTS', DOCUMENT_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (DOCUMENT_CODE) của entity — gây mismatch cho FK downstream tham chiếu entity này."
     classification_context: "Source System Code = 'NHNCK_DOCUMENTS'"
     etl_derived_value: null
 

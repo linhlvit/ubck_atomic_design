@@ -31,7 +31,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_STATUSES
     source_column: NHNCK.APPLICATION_STATUSES.ID
-    comment: "PK surrogate. BCV: [Common] Application Status. Hash: hash_id('NHNCK.APPLICATION_STATUSES', ID)."
+    comment: "PK surrogate. BCV: [Common] Application Status. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_CODE). Sửa 2026-07-27: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (STATUS_CODE) của entity — gây mismatch cho mọi FK downstream tham chiếu entity này."
     classification_context: "Source System Code = 'NHNCK_APPLICATION_STATUSES'"
     etl_derived_value: null
 

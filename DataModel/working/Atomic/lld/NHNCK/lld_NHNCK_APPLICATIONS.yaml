@@ -17,9 +17,11 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "design_status quay lại draft (2026-07-09) để thêm FK Classification Application\
-    \ Status Id — xem lý do ở attribute Classification Application Status Id/Code.\
-    \ Cần review/approve lại."
+  notes: "Hạ về draft (2026-07-24) để bổ sung Public Service Portal Content Item Code\
+    \ (MCDT_CONTENT_ITEM_ID) — gap thật do post_check_source_coverage phát hiện. STATUS_ID\
+    \ đã map đúng (FK Classification Application Status, không thuộc nhóm RECORD_STATUS/STATUS\
+    \ generic bị loại trừ). ID không map — xem pending_design.yaml (PK kỹ thuật, BK\
+    \ dùng Application Code). Cần review/approve lại."
 attributes:
 - attribute_name: "Securities Practitioner License Application Id"
   physical_name: "sp_license_application_id"
@@ -81,10 +83,13 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.STATUS_ID"
-  comment: "FK target: Classification Application Status.Classification Application\
-    \ Status Id. Hash: hash_id('NHNCK.APPLICATION_STATUSES', STATUS_ID). Thêm 2026-07-09\
-    \ khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code, scheme NHNCK_APPLICATION_STATUS\
-    \ đã deprecate)."
+  comment: "FK target: cl_application_status.cl_application_status_id. Cần ETL crosswalk\
+    \ sang NHNCK.APPLICATION_STATUSES: APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID\
+    \ để xác nhận STATUS_CODE sau đó hash_id('NHNCK.APPLICATION_STATUSES', STATUS_CODE)\
+    \ | Trước đây hash trực tiếp theo STATUS_ID (ID kỹ thuật) gây sai lệch với Id\
+    \ của bảng main (hash từ STATUS_CODE) — đã sửa sang crosswalk 2026-07-27. Thêm\
+    \ 2026-07-09 khi APPLICATION_STATUSES lên entity thật (trước đó chỉ có Code,\
+    \ scheme NHNCK_APPLICATION_STATUS đã deprecate)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -124,9 +129,11 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.CERTIFICATE_ID"
-  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
-    \ CERTIFICATE_ID)."
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
+    \ Cần ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.CERTIFICATE_ID = CERTIFICATES.ID\
+    \ để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES', CERTIFICATE_CODE)\
+    \ | Trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) gây sai lệch với\
+    \ Id của bảng main (hash từ CERTIFICATE_CODE) — đã sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -258,9 +265,12 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATIONS.PREVIOUS_CERTIFICATE_ID"
-  comment: "FK target: Securities Practitioner License Certificate Type.Securities\
-    \ Practitioner License Certificate Type Id. Hash: hash_id('NHNCK.CERTIFICATES',\
-    \ PREVIOUS_CERTIFICATE_ID)."
+  comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id.\
+    \ Cần ETL crosswalk sang NHNCK.CERTIFICATES: APPLICATIONS.PREVIOUS_CERTIFICATE_ID\
+    \ = CERTIFICATES.ID để xác nhận CERTIFICATE_CODE sau đó hash_id('NHNCK.CERTIFICATES',\
+    \ CERTIFICATE_CODE) | Trước đây hash trực tiếp theo PREVIOUS_CERTIFICATE_ID (ID\
+    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ CERTIFICATE_CODE) — đã\
+    \ sửa sang crosswalk 2026-07-27."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -587,6 +597,21 @@ attributes:
   - "NHNCK.APPLICATIONS.INFO_VERIFY_ID"
   comment: "Lookup pair: Identity and Access Management User.Identity and Access Management\
     \ User Code. Pending — xem ghi chú ở Info Verify Officer Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Service Portal Content Item Code"
+  physical_name: "public_service_portal_content_item_code"
+  description: "ContentItemId hồ sơ TTHC trên DVC (MCĐT)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.APPLICATIONS.MCDT_CONTENT_ITEM_ID"
+  comment: "Bổ sung 2026-07-24 (post_check_source_coverage phát hiện). Mirror pattern\
+    \ Public Service Portal Code (MCDT_CODE) trên Classification Document/Classification\
+    \ Specialization — mã đồng bộ với Cổng Dịch vụ công quốc gia."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
