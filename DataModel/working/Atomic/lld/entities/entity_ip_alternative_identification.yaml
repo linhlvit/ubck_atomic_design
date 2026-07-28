@@ -54,9 +54,6 @@ sources:
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
   lld_file: "SCMS/lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL_IP_Alt_Identification.yaml"
 - source_system: "SCMS"
-  source_table: "CUSTODIAN_BANK"
-  lld_file: "SCMS/lld_SCMS_CUSTODIAN_BANK_IP_Alt_Identification.yaml"
-- source_system: "SCMS"
   source_table: "SC_FIRM_SENIOR_PERSONNEL"
   lld_file: "SCMS/lld_SCMS_SC_FIRM_SENIOR_PERSONNEL_IP_Alt_Identification.yaml"
 - source_system: "SCMS"
@@ -141,9 +138,6 @@ sources:
   source_table: "COMPANY_PROFILES"
   lld_file: "IDS/lld_IDS_COMPANY_PROFILES_IP_Alt_Identification.yaml"
 - source_system: "IDS"
-  source_table: "AF_PROFILES"
-  lld_file: "IDS/lld_IDS_AF_PROFILES_IP_Alt_Identification.yaml"
-- source_system: "IDS"
   source_table: "AF_LEGAL_REPRESENTATIVE"
   lld_file: "IDS/lld_IDS_AF_LEGAL_REPRESENTATIVE_IP_Alt_Identification.yaml"
 - source_system: "IDS"
@@ -161,45 +155,40 @@ sources:
 - source_system: "KNT"
   source_table: "TAX_REG_REPRESENTATIVE"
   lld_file: "KNT/lld_KNT_TAX_REG_REPRESENTATIVE_IP_Alt_Identification.yaml"
+- source_system: "NHNCK"
+  source_table: "IDENTITY_INFO_C06S"
+  lld_file: "NHNCK/lld_NHNCK_IDENTITY_INFO_C06S_IP_Alt_Identification.yaml"
 consolidation_notes:
 - "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Id' — đặt nullable=true"
 - "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Code' — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=CITIZEN_ID)\
+- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=NATIONAL_ID)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=TAX_ID)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=BUSINESS_LICENSE)\
-  \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=OPERATION_LICENSE)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=AUDITOR_CERT)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=NATIONAL_ID)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=LEGACY_CMND)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=ENTERPRISE_CODE)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=OPERATING_LICENSE)\
+- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=BUSINESS_LICENSE)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=CERTIFICATE)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=CUSTODIAN_CERT)\
+  \ — đặt nullable=true"
+- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERT)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=PRACTITIONER_LICENSE)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=BUSINESS_ELIGIBILITY_LICENSE)\
+- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Identification Type Code' (ctx=IP_ALT_ID_TYPE=LEGACY_NATIONAL_ID)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Involved Party Id' (ctx=IP_ALT_ID_TYPE=(source))\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Involved Party Code' (ctx=IP_ALT_ID_TYPE=(source))\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Alternative Identification Type Code'\
-  \ (ctx=IP_ALT_ID_TYPE=(source)) — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Involved Party Id' (ctx=IP_ALT_ID_TYPE=NATIONAL_ID)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Involved Party Code' (ctx=IP_ALT_ID_TYPE=NATIONAL_ID)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Alternative Identification Type Code'\
-  \ (ctx=IP_ALT_ID_TYPE=NATIONAL_ID) — đặt nullable=true"
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -227,7 +216,6 @@ attributes:
     SCMS.AUDITOR: "SCMS.AUDITOR.ID"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.ID"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID"
@@ -256,13 +244,13 @@ attributes:
     FMS.INSDER_RELA: "FMS.INSDER_RELA.ID"
     FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID"
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
     IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.ID"
     IDS.IDENTITY: "IDS.IDENTITY.LEGAL_ENTITY_ID"
     IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.ID"
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company Foreign Representative Office Personnel."
@@ -288,7 +276,6 @@ attributes:
     SCMS.AUDITOR: "SCMS.AUDITOR.ID"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.ID"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID"
@@ -317,13 +304,13 @@ attributes:
     FMS.INSDER_RELA: "FMS.INSDER_RELA.ID"
     FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID"
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.AUDIT_FIRM_CD"
     IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.ID"
     IDS.IDENTITY: "IDS.IDENTITY.LEGAL_ENTITY_ID"
     IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.ID"
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -348,7 +335,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -377,26 +363,25 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép thành lập và hoạt\
-    \ động (UBCKNN); ESTABLISHMENT_LICENSE=Giấy phép thành lập; TAX_CODE=Mã số thuế;\
-    \ ENTERPRISE_CODE=Mã số doanh nghiệp; CERTIFICATE=Số chứng nhận (generic); CUSTODIAN_CERT=Chứng\
-    \ nhận lưu ký; CUSTODIAN_MEMBER_CERT=Chứng nhận thành viên lưu ký."
+  description: "Loại giấy tờ định danh."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL map từ NUMBER: 1=NATIONAL_ID, 2=CITIZEN_ID,\
-    \ 3=PASSPORT."
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: "1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT"
+  comment: "PENDING — Data Modeler sẽ profile dữ liệu thực tế của IDENTITY_TYPE trước\
+    \ khi xác nhận mapping ETL sang scheme IP_ALT_ID_TYPE. Tạm thời KHÔNG derive giá\
+    \ trị (mapping 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT trước đây chưa được xác nhận,\
+    \ tạm gỡ)."
+  classification_context: null
+  etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.IDENTITY_TYPE"
     IAM.USERS: null
@@ -412,7 +397,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -426,7 +410,7 @@ attributes:
     FMS.FOR_BRCH: null
     FMS.TL_PROFILES: null
     FMS.FUNDS: null
-    FMS.INVES: "FMS.INVES.ID_TYPE"
+    FMS.INVES: null
     FMS.STF_FG_BRCH: null
     FMS.REPRESENT: null
     FMS.MB_FUND: null
@@ -441,16 +425,16 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_TYPE_CD"
+    IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số giấy tờ định danh của chi nhánh nước ngoài theo từng loại."
+  description: "Số giấy phép kinh doanh của văn phòng đại diện trong nước."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -463,17 +447,16 @@ attributes:
     IAM.USERS: "IAM.IAM.USERS.CITIZEN_ID_NUMBER"
     THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_NUMBER"
-    SCMS.BANK: "SCMS.BANK.ENTERPRISE_CODE"
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_NUMBER"
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.LICENSE_NUMBER"
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.OFFICE_BUSINESS_LICENSE"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.LICENSE_NUMBER"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_NUMBER"
-    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_NUMBER"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.AUDITOR: "SCMS.AUDITOR.CERTIFICATE_NUMBER"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.ESTABLISHMENT_LICENSE"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -502,16 +485,16 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.BUSINESS_REG_NO"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.BUSINESS_REG_NO"
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: "NHNCK.IDENTITY_INFO_C06S.IDENTITY_NUMBER"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
-  description: "Ngày cấp giấy tờ (áp dụng cho OPERATION_LICENSE và BIZ_REG_CERT)."
+  description: "Ngày cấp giấy phép thành lập và hoạt động."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
@@ -523,17 +506,16 @@ attributes:
     IAM.USERS: null
     THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_DATE"
-    SCMS.BANK: "SCMS.BANK.LICENSE_ISSUE_DATE"
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_DATE"
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.LICENSE_DATE"
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: "SCMS.SC_FIRM_DOMESTIC_REP_OFFICE.OFFICE_LICENSE_DATE"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.LICENSE_DATE"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_DATE"
-    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_DATE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.AUDITOR: "SCMS.AUDITOR.ISSUE_DATE"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.LICENSE_ISSUE_DATE"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -562,16 +544,16 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
-  description: "Cơ quan/nơi cấp giấy tờ (áp dụng cho OPERATION_LICENSE và ESTABLISHMENT_LICENSE)."
+  description: "Tên cơ quan cấp giấy phép (mặc định: UBCKNN)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -583,17 +565,16 @@ attributes:
     IAM.USERS: null
     THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: "SCMS.AUDIT_FIRM.BUSINESS_LICENSE_ISSUER"
-    SCMS.BANK: "SCMS.BANK.LICENSE_ISSUER"
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_ISSUER"
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_ISSUER"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.ISSUE_PLACE"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -622,13 +603,13 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Previous Identification Number"
   physical_name: "previous_identification_nbr"
   description: "Số CMND cũ (trước khi đổi sang CCCD)."
@@ -653,7 +634,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -682,23 +662,24 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh — căn cước công dân."
+  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu (cá nhân) hoặc\
+    \ Mã số doanh nghiệp (tổ chức — theo ENTITY_TYPE)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CITIZEN_ID vì nguồn chỉ có cột CITIZEN_ID_NUMBER\
-    \ không có cột type."
-  classification_context: "IP_ALT_ID_TYPE=CITIZEN_ID"
-  etl_derived_value: "CITIZEN_ID"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID vì nguồn chỉ có cột CITIZEN_ID_NUMBER\
+    \ không có cột type — không phân biệt được CMND/CCCD/hộ chiếu."
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: "NATIONAL_ID"
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
@@ -714,7 +695,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -743,13 +723,13 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh — mã số thuế."
@@ -774,7 +754,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -803,13 +782,13 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Mã số thuế của đối tượng bị xử phạt."
@@ -824,17 +803,16 @@ attributes:
     IAM.USERS: null
     THANHTRA.PENALTY_DECISION_SUBJECT: "THANHTRA.PENALTY_DECISION_SUBJECT.SUBJECT_TAX_CODE"
     SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
+    SCMS.BANK: "SCMS.BANK.TAX_CODE"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.TAX_CODE"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.TAX_CODE"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.TAX_CODE"
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -844,10 +822,10 @@ attributes:
     SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
     SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
     SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
+    FMS.SECURITIES: "FMS.SECURITIES.ID_NO"
     FMS.FOR_BRCH: "FMS.FOR_BRCH.TAX_CODE"
     FMS.TL_PROFILES: null
-    FMS.FUNDS: null
+    FMS.FUNDS: "FMS.FUNDS.ID_NO"
     FMS.INVES: null
     FMS.STF_FG_BRCH: null
     FMS.REPRESENT: null
@@ -863,81 +841,23 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ: BUSINESS_LICENSE=Giấy phép kinh doanh/thành lập."
+  description: "Loại giấy tờ — GCN đăng ký hoạt động phân phối CCQ (giấy phép thành\
+    \ lập và hoạt động chuyên ngành do UBCKNN cấp)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode BUSINESS_LICENSE — chỉ có 1 cột BUSINESS_LICENSE_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
-  etl_derived_value: "BUSINESS_LICENSE"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ định danh: OPERATION_LICENSE=Giấy phép kinh doanh của\
-    \ văn phòng."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode OPERATION_LICENSE."
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode OPERATION_LICENSE — chỉ có 1 cột\
+    \ BUSINESS_LICENSE_NUMBER, ý nghĩa là giấy phép thành lập và hoạt động chuyên\
+    \ ngành do UBCKNN cấp (không phải giấy phép kinh doanh thông thường)."
   classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: "OPERATION_LICENSE"
   source_mappings:
@@ -955,7 +875,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -984,563 +903,20 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ: AUDITOR_CERT=Chứng chỉ hành nghề kiểm toán."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode AUDITOR_CERT — chỉ có 1 cột CERTIFICATE_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=AUDITOR_CERT"
-  etl_derived_value: "AUDITOR_CERT"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu (cá nhân) hoặc\
-    \ Mã số doanh nghiệp (tổ chức — theo ENTITY_TYPE)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ NATIONAL_ID."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.NATIONAL_ID"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.NATIONAL_ID"
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
-    SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID_NUMBER"
-    SCMS.SC_FIRM_INSIDER_RELATION: "SCMS.SC_FIRM_INSIDER_RELATION.NATIONAL_ID"
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: "SCMS.SC_FIRM_RELATED_PERSON.IDENTIFICATION_NUMBER"
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.IDENTIFICATION_NUMBER"
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_NO"
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ID_CODE"
-    FMS.REPRESENT: "FMS.REPRESENT.ID_NO"
-    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
-    FMS.INSIDER: "FMS.INSIDER.ID_NO"
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_NO"
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_NO"
-    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_NO"
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.IDENTITY_NO"
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp CMND/CCCD/Hộ chiếu."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID_ISSUED_DATE"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID_ISSUED_DATE"
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_DATE"
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.DATE_CODE"
-    FMS.REPRESENT: "FMS.REPRESENT.ID_DATE"
-    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
-    FMS.INSIDER: "FMS.INSIDER.ID_DATE"
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_DATE"
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_DATE"
-    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_DATE"
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Nơi cấp CMND/CCCD/Hộ chiếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ISSUE_PLACE"
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ISSUE_PLACE"
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_ADD"
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ISSUED_CODE"
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: "FMS.INSIDER.ID_ADD"
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_PLACE"
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_PLACE"
-    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_PLACE"
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ tùy thân: LEGACY_CMND=CMND cũ từ hệ thống legacy."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ ID_NUMBER."
-  classification_context: "IP_ALT_ID_TYPE=LEGACY_CMND"
-  etl_derived_value: "LEGACY_CMND"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số CMND cũ (hệ thống legacy)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=LEGACY_CMND"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID_NUMBER"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.SOCMT"
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp CMND cũ."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: "Gắn với row LEGACY_CMND (ID_NUMBER). NATIONAL_ID (mới) không có Issue\
-    \ Date riêng trong nguồn — cần xác nhận."
-  classification_context: "IP_ALT_ID_TYPE=LEGACY_CMND"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_DATE"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Nơi cấp CMND cũ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Gắn với row LEGACY_CMND (ID_NUMBER). Cần xác nhận có áp dụng cho NATIONAL_ID\
-    \ không."
-  classification_context: "IP_ALT_ID_TYPE=LEGACY_CMND"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_PLACE"
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh: ENTERPRISE_CODE=Mã số doanh nghiệp."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode ENTERPRISE_CODE."
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode ENTERPRISE_CODE."
   classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
   etl_derived_value: "ENTERPRISE_CODE"
   source_mappings:
@@ -1558,7 +934,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1587,16 +962,16 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+  description: "Mã số doanh nghiệp của chi nhánh nước ngoài."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -1608,197 +983,16 @@ attributes:
     IAM.USERS: null
     THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
+    SCMS.BANK: "SCMS.BANK.ENTERPRISE_CODE"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ENTERPRISE_CODE"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.ENTERPRISE_CODE"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ENTERPRISE_CODE"
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: "FMS.SECURITIES.ID_NO"
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: "FMS.FUNDS.ID_NO"
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp CMND/CCCD/Hộ chiếu."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: "FMS.SECURITIES.ID_DATE"
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: "FMS.FUNDS.ID_DATE"
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Nơi cấp CMND/CCCD/Hộ chiếu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=ENTERPRISE_CODE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: "FMS.SECURITIES.ID_ADD"
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ — giấy phép hoạt động."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode OPERATING_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
-  etl_derived_value: "OPERATING_LICENSE"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1827,38 +1021,37 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số giấy phép kinh doanh/GCN đăng ký doanh nghiệp."
+  description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
     THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
+    SCMS.BANK: "SCMS.BANK.OPERATION_LICENSE_NUMBER"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_NUMBER"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.LICENSE_NUMBER"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_NUMBER"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_NUMBER"
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1877,48 +1070,47 @@ attributes:
     FMS.REPRESENT: null
     FMS.MB_FUND: null
     FMS.INSIDER: null
-    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
-    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
-    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.BUSINESS_LICENSE_NO"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_NO"
     FMS.BANK_EMPLOY: null
     FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.BUSINESS_LICENSE_NO"
-    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
-  description: "Ngày cấp giấy phép thành lập doanh nghiệp."
+  description: "Ngày cấp GCN đăng ký hoạt động phân phối CCQ."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
     THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
+    SCMS.BANK: "SCMS.BANK.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_DATE"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.LICENSE_DATE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_DATE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.LICENSE_DATE"
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1937,609 +1129,6 @@ attributes:
     FMS.REPRESENT: null
     FMS.MB_FUND: null
     FMS.INSIDER: null
-    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
-    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
-    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.LICENSE_ISSUE_DATE"
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.LICENSE_ISSUE_DATE"
-    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: "FMS.INVES.ID_NO"
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_NO"
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp CMND/CCCD/Hộ chiếu."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: "FMS.INVES.ID_DATE"
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Nơi cấp giấy tờ định danh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: "FMS.INVES.ID_PLACE"
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ — chứng chỉ hành nghề."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode PRACTITIONER_LICENSE — tái sử dụng value\
-    \ đã có (\"Chứng chỉ hành nghề (CCHN)\"), không tạo value mới. [MỚI 2026-07-19]\
-    \ Đẩy ra từ lld_FMS_STF_FG_BRCH.yaml theo yêu cầu Data Modeler."
-  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
-  etl_derived_value: "PRACTITIONER_LICENSE"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số chứng chỉ hành nghề của nhân sự chi nhánh/VPĐD."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.PRACTICE_CERT_NO"
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp chứng chỉ hành nghề."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.PRACTICE_CERT_ISSUE_DATE"
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Cơ quan cấp giấy phép thành lập."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=OPERATING_LICENSE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
-    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
-    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.LICENSE_ISSUED_BY"
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.LICENSE_ISSUED_BY"
-    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Type Code"
-  physical_name: "identification_tp_code"
-  description: "Loại giấy tờ — GCN đăng ký hoạt động phân phối CCQ."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode DISTRIBUTION_CERTIFICATE. [PROPOSE NEW\
-    \ VALUE] chưa có trong IP_ALT_ID_TYPE — bổ sung classification_schemes.yaml."
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
-  etl_derived_value: "DISTRIBUTION_CERTIFICATE"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Number"
-  physical_name: "identification_nbr"
-  description: "Số GCN đăng ký hoạt động phân phối chứng chỉ quỹ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_NO"
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Identification Issue Date"
-  physical_name: "identification_issue_dt"
-  description: "Ngày cấp GCN đăng ký hoạt động phân phối CCQ."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
     FMS.PENSION_AGENT: null
     FMS.PENSION_PROVIDER: null
     FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE"
@@ -2550,13 +1139,13 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Cơ quan cấp GCN đăng ký hoạt động phân phối CCQ."
@@ -2564,24 +1153,23 @@ attributes:
   nullable: true
   is_primary_key: false
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=DISTRIBUTION_CERTIFICATE"
+  classification_context: "IP_ALT_ID_TYPE=OPERATION_LICENSE"
   etl_derived_value: null
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
     THANHTRA.PENALTY_DECISION_SUBJECT: null
     SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
+    SCMS.BANK: "SCMS.BANK.LICENSE_ISSUER"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LICENSE_ISSUER"
     SCMS.SC_FIRM_BRANCH: null
     SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.BUSINESS_LICENSE_ISSUER"
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2610,22 +1198,23 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
-  description: "Loại giấy tờ — giấy chứng nhận đủ điều kiện kinh doanh."
+  description: "Loại giấy tờ định danh: BUSINESS_LICENSE=Giấy phép kinh doanh của\
+    \ văn phòng."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_ELIGIBILITY_LICENSE."
-  classification_context: "IP_ALT_ID_TYPE=BUSINESS_ELIGIBILITY_LICENSE"
-  etl_derived_value: "BUSINESS_ELIGIBILITY_LICENSE"
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode BUSINESS_LICENSE."
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: "BUSINESS_LICENSE"
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
@@ -2641,7 +1230,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2670,82 +1258,201 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Issue Date"
-  physical_name: "issue_dt"
-  description: "Ngày cấp."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_ISSUED_DATE"
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Issuing Authority Name"
-  physical_name: "issuing_authority_nm"
-  description: "Nơi cấp."
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số giấy phép kinh doanh/GCN đăng ký doanh nghiệp."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
   etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: "SCMS.BANK.BUSINESS_REG_CERT_NUMBER"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_NUMBER"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_BUSINESS_LICENSE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.BUSINESS_REG_CERT"
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: "FMS.SECURITIES.REG_NO"
+    FMS.FOR_BRCH: "FMS.FOR_BRCH.REG_NO"
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.BUSINESS_LICENSE_NO"
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy phép hoạt động của văn phòng tại VN."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: "SCMS.BANK.BUSINESS_REG_CERT_DATE"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_DATE"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_DATE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.BUSINESS_REG_CERT_DATE"
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.LICENSE_ISSUE_DATE"
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Cơ quan cấp giấy phép hoạt động của văn phòng tại VN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=BUSINESS_LICENSE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_ISSUER"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN.OFFICE_LICENSE_ISSUER"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.DISTRIBUTOR_AGENT: "FMS.DISTRIBUTOR_AGENT.LICENSE_ISSUED_BY"
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: "FMS.OTHER_AGENT.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh — chứng nhận generic (chưa rõ loại)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CERTIFICATE — CERTIFICATE_NUMBER chưa\
+    \ rõ là loại chứng nhận gì, cần Data Modeler profile lại dữ liệu thực tế trước\
+    \ go-live."
+  classification_context: "IP_ALT_ID_TYPE=CERTIFICATE"
+  etl_derived_value: "CERTIFICATE"
   source_mappings:
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
@@ -2761,7 +1468,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2790,16 +1496,548 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_ISSUED_PLACE"
+    IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Issue Date"
-  physical_name: "issue_dt"
-  description: "Ngày cấp."
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số chứng nhận (generic, chưa rõ loại)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=CERTIFICATE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CERTIFICATE_NUMBER"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh — chứng nhận lưu ký."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_CERT."
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_CERT"
+  etl_derived_value: "CUSTODIAN_CERT"
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số chứng nhận lưu ký."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_CERT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_NUMBER"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp chứng nhận lưu ký."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_CERT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_CERT_DATE"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ định danh — chứng nhận thành viên lưu ký."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode CUSTODIAN_MEMBER_CERT."
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERT"
+  etl_derived_value: "CUSTODIAN_MEMBER_CERT"
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số chứng nhận thành viên lưu ký."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_NUMBER"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp chứng nhận thành viên lưu ký."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=CUSTODIAN_MEMBER_CERT"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CERT_DATE"
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ: PRACTITIONER_LICENSE=Chứng chỉ hành nghề kiểm toán."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL hardcode PRACTITIONER_LICENSE — chỉ có 1 cột\
+    \ CERTIFICATE_NUMBER."
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: "PRACTITIONER_LICENSE"
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.NATIONAL_ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.NATIONAL_ID"
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: "SCMS.SC_FIRM_INSIDER_RELATION.NATIONAL_ID"
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: "SCMS.SC_FIRM_RELATED_PERSON.IDENTIFICATION_NUMBER"
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION.IDENTIFICATION_NUMBER"
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_NO"
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ID_CODE"
+    FMS.REPRESENT: "FMS.REPRESENT.ID_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.INSIDER: "FMS.INSIDER.ID_NO"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_NO"
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_NO"
+    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_NO"
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.IDENTITY_NO"
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.IDENTITY_NO"
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.IDNO"
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp CMND/CCCD/Hộ chiếu."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
@@ -2819,9 +2057,8 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID_ISSUED_DATE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID_ISSUED_DATE"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2833,33 +2070,33 @@ attributes:
     SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
     FMS.SECURITIES: null
     FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
+    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_DATE"
     FMS.FUNDS: null
     FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
+    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.DATE_CODE"
+    FMS.REPRESENT: "FMS.REPRESENT.ID_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.INSIDER: "FMS.INSIDER.ID_DATE"
     FMS.PENSION_AGENT: null
     FMS.PENSION_PROVIDER: null
     FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_DATE"
     FMS.OTHER_AGENT: null
     FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
+    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_DATE"
+    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_DATE"
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.ISSUE_DATE"
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Issuing Authority Name"
-  physical_name: "issuing_authority_nm"
-  description: "Nơi cấp."
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp CMND/CCCD/Hộ chiếu."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -2879,9 +2116,67 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ISSUE_PLACE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ISSUE_PLACE"
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: "FMS.TL_PROFILES.ID_ADD"
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.ISSUED_CODE"
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: "FMS.INSIDER.ID_ADD"
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: "FMS.TL_PRO_RELA.ID_PLACE"
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: "FMS.INSDER_RELA.ID_PLACE"
+    FMS.INSDER_RPRST: "FMS.INSDER_RPRST.ID_PLACE"
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.ISSUE_PLACE"
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ tùy thân: LEGACY_NATIONAL_ID=CMND (định danh cũ)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ ID_NUMBER."
+  classification_context: "IP_ALT_ID_TYPE=LEGACY_NATIONAL_ID"
+  etl_derived_value: "LEGACY_NATIONAL_ID"
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2910,13 +2205,665 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.ISSUE_PLACE"
+    IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số CMND (định danh cũ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=LEGACY_NATIONAL_ID"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID_NUMBER"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID_NUMBER"
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp CMND cũ."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Gắn với row LEGACY_NATIONAL_ID (ID_NUMBER). NATIONAL_ID (mới) không có\
+    \ Issue Date riêng trong nguồn — cần xác nhận."
+  classification_context: "IP_ALT_ID_TYPE=LEGACY_NATIONAL_ID"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp CMND cũ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Gắn với row LEGACY_NATIONAL_ID (ID_NUMBER). Cần xác nhận có áp dụng cho\
+    \ NATIONAL_ID không."
+  classification_context: "IP_ALT_ID_TYPE=LEGACY_NATIONAL_ID"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ISSUE_PLACE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp mã số thuế."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: "FMS.SECURITIES.ID_DATE"
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: "FMS.FUNDS.ID_DATE"
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp mã số thuế."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=TAX_ID"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: "FMS.SECURITIES.ID_ADD"
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Type Code"
+  physical_name: "identification_tp_code"
+  description: "Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân,\
+    \ Giấy phép/Mã số DN với NĐT tổ chức)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "Scheme: IP_ALT_ID_TYPE. (source) — type lấy động từ nguồn. ETL map: 1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT;4=ENTERPRISE_CODE."
+  classification_context: "IP_ALT_ID_TYPE=(source)"
+  etl_derived_value: "1=NATIONAL_ID;2=CITIZEN_ID;3=PASSPORT;4=ENTERPRISE_CODE"
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: "FMS.INVES.ID_TYPE"
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_TYPE_CD"
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.ObjectType"
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE"
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=(source)"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: "FMS.INVES.ID_NO"
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_NO"
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.IdNo"
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_NUMBER"
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp giấy phép thành lập."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=(source)"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: "FMS.INVES.ID_DATE"
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_ISSUED_DATE"
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.IdDate"
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ISSUE_DATE"
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Place"
+  physical_name: "identification_issue_place"
+  description: "Nơi cấp giấy tờ định danh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=(source)"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: "FMS.INVES.ID_PLACE"
+    FMS.STF_FG_BRCH: null
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: "IDS.IDENTITY.IDENTITY_ISSUED_PLACE"
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.IdAdd"
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Number"
+  physical_name: "identification_nbr"
+  description: "Số chứng chỉ hành nghề của nhân sự chi nhánh/VPĐD."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.PRACTICE_CERT_NO"
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
+- attribute_name: "Identification Issue Date"
+  physical_name: "identification_issue_dt"
+  description: "Ngày cấp chứng chỉ hành nghề."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: "IP_ALT_ID_TYPE=PRACTITIONER_LICENSE"
+  etl_derived_value: null
+  source_mappings:
+    NHNCK.PROFESSIONALS: null
+    IAM.USERS: null
+    THANHTRA.PENALTY_DECISION_SUBJECT: null
+    SCMS.AUDIT_FIRM: null
+    SCMS.BANK: null
+    SCMS.SC_FIRM_INFO: null
+    SCMS.SC_FIRM_BRANCH: null
+    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+    SCMS.AUDITOR: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
+    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
+    SCMS.SC_FIRM_SHAREHOLDER: null
+    SCMS.SC_FIRM_INSIDER_RELATION: null
+    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
+    SCMS.SC_FIRM_RELATED_PERSON: null
+    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
+    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
+    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
+    FMS.SECURITIES: null
+    FMS.FOR_BRCH: null
+    FMS.TL_PROFILES: null
+    FMS.FUNDS: null
+    FMS.INVES: null
+    FMS.STF_FG_BRCH: "FMS.STF_FG_BRCH.PRACTICE_CERT_ISSUE_DATE"
+    FMS.REPRESENT: null
+    FMS.MB_FUND: null
+    FMS.INSIDER: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.DISTRIBUTOR_AGENT: null
+    FMS.BANK_EMPLOY: null
+    FMS.TL_PRO_RELA: null
+    FMS.OTHER_AGENT: null
+    FMS.TRANSFER_AGENT: null
+    FMS.INSDER_RELA: null
+    FMS.INSDER_RPRST: null
+    IDS.COMPANY_PROFILES: null
+    IDS.AF_LEGAL_REPRESENTATIVE: null
+    IDS.IDENTITY: null
+    IDS.LEGAL_REPRESENTATIVE: null
+    FIMS.INVESTOR: null
+    FIMS.TRADINGREPRESENTATIVE: null
+    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
   description: "FK đến External Tax Registration Representative (Involved Party)."
@@ -2942,7 +2889,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2971,13 +2917,13 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã External Tax Registration Representative."
@@ -3003,7 +2949,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -3032,257 +2977,13 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
-- attribute_name: "Alternative Identification Type Code"
-  physical_name: "alternative_identification_tp_code"
-  description: "Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân,\
-    \ Giấy phép/Mã số DN với NĐT tổ chức)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: true
-  comment: "Scheme: IP_ALT_ID_TYPE. (source) — type xác định tại ETL dựa theo ObjectType\
-    \ (1=cá nhân → NATIONAL_ID/CITIZEN_ID/PASSPORT, 2=tổ chức → ENTERPRISE_CODE),\
-    \ không có cột type riêng biệt trong nguồn. Cần profile dữ liệu để xác nhận loại\
-    \ giấy tờ thực tế của NĐT cá nhân (nguồn không phân biệt CMND cũ/CCCD/Hộ chiếu)."
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.ObjectType"
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_TYPE"
-- attribute_name: "Alternative Identification Number"
-  physical_name: "alternative_identification_nbr"
-  description: "Số CMND/CCCD/Hộ chiếu/Giấy phép."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.IdNo"
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID_DOCUMENT_NUMBER"
-- attribute_name: "Alternative Identification Issue Date"
-  physical_name: "alternative_identification_issue_dt"
-  description: "Ngày cấp giấy phép thành lập."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.IdDate"
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ISSUE_DATE"
-- attribute_name: "Alternative Identification Issue Place"
-  physical_name: "alternative_identification_issue_place"
-  description: "Nơi cấp giấy tờ định danh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=(source)"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.IdAdd"
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
   description: "FK đến Trading Representative (Involved Party)."
@@ -3308,7 +3009,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -3337,13 +3037,13 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
     KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Trading Representative."
@@ -3369,7 +3069,6 @@ attributes:
     SCMS.AUDITOR: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -3398,132 +3097,10 @@ attributes:
     FMS.INSDER_RELA: null
     FMS.INSDER_RPRST: null
     IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.IDENTITY: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
     KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Alternative Identification Type Code"
-  physical_name: "alternative_identification_tp_code"
-  description: "Loại giấy tờ tùy thân."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: true
-  comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột phân biệt loại giấy tờ (CMND/CCCD/Hộ\
-    \ chiếu) — mặc định NATIONAL_ID. Document pending_design.yaml, cần profile dữ\
-    \ liệu thực tế trước go-live."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Alternative Identification Number"
-  physical_name: "alternative_identification_nbr"
-  description: "Số CMND/CCCD/Hộ chiếu của đại diện giao dịch."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    THANHTRA.PENALTY_DECISION_SUBJECT: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_DOMESTIC_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.AUDITOR: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_OWNERSHIP_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE: null
-    SCMS.SC_FIRM_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.FUNDS: null
-    FMS.INVES: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.MB_FUND: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.BANK_EMPLOY: null
-    FMS.TL_PRO_RELA: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.INSDER_RELA: null
-    FMS.INSDER_RPRST: null
-    IDS.COMPANY_PROFILES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.IDENTITY: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.IDNO"
-    KNT.TAX_REG_REPRESENTATIVE: null
+    NHNCK.IDENTITY_INFO_C06S: null

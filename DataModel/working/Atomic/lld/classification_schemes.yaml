@@ -67,8 +67,14 @@ schemes:
     source_table: "NHNCK.CertificateRecords.Status"
     used_in_entities:
       - "License Certificate Document"
-      - "Certificate Document Status History (From/To)"
-    values: []
+      - "Securities Practitioner License Certificate Status Change History"
+    values:
+      - "0=Chưa sử dụng"
+      - "1=Đang sử dụng"
+      - "2=Thu hồi có cấp lại"
+      - "3=Thu hồi không cấp lại"
+      - "4=Đã hủy"
+      - "5=Hết hiệu lực"
 
   - scheme_code: "LICENSE_CERTIFICATE_CONVERSION_STATUS"
     name: "Trạng thái chuyển đổi chứng chỉ (Giấy/Điện tử)"
@@ -290,8 +296,18 @@ schemes:
       - code: "BUSINESS_ELIGIBILITY_LICENSE"
         name: "Giấy chứng nhận đủ điều kiện kinh doanh — bổ sung khi thiết kế IDS.AF_PROFILES"
         source_table: null
+      - code: "CERTIFICATE"
+        name: "Số chứng nhận (generic — chưa xác định rõ loại chứng nhận cụ thể, cần\
+          \ profile lại nguồn SCMS.SC_FIRM_INFO.CERTIFICATE_NUMBER)"
+        source_table: null
       - code: "CITIZEN_ID"
         name: "CCCD"
+        source_table: null
+      - code: "CUSTODIAN_CERT"
+        name: "Chứng nhận lưu ký"
+        source_table: null
+      - code: "CUSTODIAN_MEMBER_CERT"
+        name: "Chứng nhận thành viên lưu ký"
         source_table: null
       - code: "DISTRIBUTION_CERTIFICATE"
         name: "Giấy chứng nhận đăng ký hoạt động phân phối chứng chỉ quỹ — bổ sung khi thiết kế FMS.DISTRIBUTOR_AGENT"
@@ -302,7 +318,7 @@ schemes:
       - code: "ESTABLISHMENT_DECISION"
         name: "Quyết định thành lập"
         source_table: null
-      - code: "LEGACY_CMND"
+      - code: "LEGACY_NATIONAL_ID"
         name: "CMND cũ (hệ thống legacy, trước khi đổi sang CCCD/NATIONAL_ID)"
         source_table: null
       - code: "NATIONAL_ID"
@@ -310,6 +326,9 @@ schemes:
         source_table: null
       - code: "OPERATING_LICENSE"
         name: "Giấy phép đăng ký/hoạt động (GPDC/GPHĐ)"
+        source_table: null
+      - code: "OPERATION_LICENSE"
+        name: "Giấy phép thành lập và hoạt động do UBCKNN cấp"
         source_table: null
       - code: "PASSPORT"
         name: "Hộ chiếu"
@@ -1404,11 +1423,25 @@ schemes:
     deprecated_reason: "Gộp vào scheme 'EXAM_RESULT' (2026-07-09) — cùng domain giá trị (-1 Không thi/0 Không đạt/1 Đạt) với EXAM_SCORE_RESULT và EXAMINATION_RESULT. Entity tiêu thụ đổi classification_context sang EXAM_RESULT."
 
   - scheme_code: "VIOLATION_STATUS"
-    name: "Trạng thái vi phạm (Hiệu lực/Không hiệu lực) — cần xác nhận từ data"
-    source_type: "modeler_defined"
-    source_table: "NHNCK.Violations.Status"
+    name: "Trạng thái vi phạm (Hiệu lực/Không hiệu lực)"
+    source_type: "source_table"
+    source_table: "NHNCK.VIOLATIONS.STATUS"
     used_in_entities:
-      - "Conduct Violation"
+      - "Securities Practitioner Conduct Violation"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Không hoạt động"
+        source_value: "0"
+
+  - scheme_code: "VIOLATION_TYPE"
+    name: "Loại/phân loại vi phạm — cần xác nhận từ data"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.VIOLATIONS.TYPE"
+    used_in_entities:
+      - "Securities Practitioner Conduct Violation"
     values: []
 
   - scheme_code: "WORK_STATUS_ORGANIZATION"
@@ -3265,7 +3298,6 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Disclosure Notification"
-      - "Public Company Report Submission"
     values: []
 
   - scheme_code: "IDS_SUB_NEWS_TYPE"
@@ -3401,7 +3433,6 @@ schemes:
     source_table: "IDS.lookup_values"
     used_in_entities:
       - "Disclosure Notification"
-      - "Public Company Report Submission"
     values: []
 
   - scheme_code: "IDS_NOTIFICATION_SEND_SCHEDULE"
@@ -4273,11 +4304,11 @@ schemes:
       - "Classification Business Line"
     values:
       - code: "LEVEL_1"
-        name: "Ngành nghề cấp 1 — từ ECAT.BUSINESS_LINE_LEVEL_1 / IDS.CATEGORIES (PARENT_ID IS NULL)"
-        source_table: "ECAT.BUSINESS_LINE_LEVEL_1, IDS.CATEGORIES"
+        name: "Ngành nghề cấp 1 — từ ECAT.BUSINESS_LINE_LEVEL_1"
+        source_table: "ECAT.BUSINESS_LINE_LEVEL_1"
       - code: "LEVEL_2"
-        name: "Ngành nghề cấp 2 — từ ECAT.BUSINESS_LINE_LEVEL_2 / IDS.CATEGORIES (PARENT_ID IS NOT NULL)"
-        source_table: "ECAT.BUSINESS_LINE_LEVEL_2, IDS.CATEGORIES"
+        name: "Ngành nghề cấp 2 — từ ECAT.BUSINESS_LINE_LEVEL_2"
+        source_table: "ECAT.BUSINESS_LINE_LEVEL_2"
 
   - scheme_code: "GEOGRAPHIC_AREA_OLD_TYPE"
     name: null
@@ -4315,27 +4346,33 @@ schemes:
       - "Account Investor Group"
     values: []
 
-  - scheme_code: "GSGD_DATA_SOURCE"
-    name: "Nguồn dữ liệu chính của tài khoản — GSGD"
+  - scheme_code: "GSGD_INVESTOR_TYPE"
+    name: "Loại hình nhà đầu tư — GSGD"
     source_type: "source_table"
-    source_table: "GSGD.INVESTOR_ACCOUNT.DATA_SOURCE"
+    source_table: "GSGD.INVESTOR_ACCOUNT.INVESTOR_TYPE"
     used_in_entities:
       - "Account Investor"
     values:
-      - code: "VSDC"
-        label: "Trung tâm Lưu ký Chứng khoán"
-        source_value: "VSDC"
-      - code: "CTCK"
-        label: "Công ty Chứng khoán"
-        source_value: "CTCK"
+      - code: "1"
+        label: "Cá nhân"
+        source_value: "1"
+      - code: "2"
+        label: "Tổ chức"
+        source_value: "2"
 
-  - scheme_code: "GSGD_SERVICE_ENABLED_FLAG"
-    name: "Cờ dịch vụ tài chính đăng ký trên tài khoản — GSGD (cần profile, data type nguồn VARCHAR2(200))"
-    source_type: "modeler_defined"
-    source_table: "GSGD.INVESTOR_ACCOUNT.MARGIN_SERVICE_ENABLED, GSGD.INVESTOR_ACCOUNT.ADVANCE_PAYMENT_SERVICE_ENABLED, GSGD.INVESTOR_ACCOUNT.ACCOUNT_AUTHORIZATION_ENABLED"
+  - scheme_code: "GSGD_INVESTOR_ACCOUNT_STATUS"
+    name: "Trạng thái tài khoản nhà đầu tư (Đóng/Mở) — GSGD (khác GSGD_ACCOUNT_STATUS — scheme đó dùng cho Account Investor Group Member)"
+    source_type: "source_table"
+    source_table: "GSGD.INVESTOR_ACCOUNT.ACCOUNT_STATUS"
     used_in_entities:
       - "Account Investor"
-    values: []
+    values:
+      - code: "0"
+        label: "Đóng"
+        source_value: "0"
+      - code: "1"
+        label: "Mở"
+        source_value: "1"
 
   - scheme_code: "GSGD_COMPANY_EVENT_TYPE"
     name: "Loại sự kiện tổ chức niêm yết — GSGD (cần profile, cột free text)"
@@ -5122,20 +5159,6 @@ schemes:
       - "Public Company Evaluation"
     values: []
 
-  - scheme_code: "IDS_LANGUAGE"
-    name: "Mã ngôn ngữ bản tin CBTT — IDS"
-    source_type: "modeler_defined"
-    source_table: "IDS.COMPANY_DATA.LANGUAGE_CD"
-    used_in_entities:
-      - "Public Company Report Submission"
-    values:
-      - code: "VI"
-        label: "Tiếng Việt"
-        source_value: "VI"
-      - code: "EN"
-        label: "Tiếng Anh"
-        source_value: "EN"
-
   - scheme_code: "IDS_SO_ADMINISTRATIVE_PROC"
     name: "Thủ tục hành chính chào bán/phát hành chứng khoán — IDS"
     source_type: "source_table"
@@ -5539,3 +5562,63 @@ schemes:
     deprecated: true
     deprecated_reason: "Field liên quan (Decision Type Code) đã revert về Text theo\
       \ quyết định Data Modeler 2026-07-20."
+
+  - scheme_code: "NHNCK_POST_CERT_TRAINING_RESULT_STATUS"
+    name: "Trạng thái kết quả khóa bồi dưỡng sau cấp CCHN (Đạt/Không đạt — cần xác nhận từ BA)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS"
+    used_in_entities:
+      - "Securities Practitioner Post Certification Training Result"
+    values: []
+
+  - scheme_code: "NHNCK_POST_CERT_TRAINING_CLASSIFICATION"
+    name: "Phân loại kết quả khóa bồi dưỡng sau cấp CCHN (VD: Giỏi/Khá/Trung bình — cần xác nhận từ BA)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.POST_CERT_TRAINING_RESULTS.CLASSIFICATION_RESULT"
+    used_in_entities:
+      - "Securities Practitioner Post Certification Training Result"
+    values: []
+
+  - scheme_code: "NHNCK_C06_COUNTRY"
+    name: "Mã quốc gia từ dữ liệu tích hợp C06 (no_lookup — API ngoài, không có bảng\
+      \ danh mục nội bộ trong scope NHNCK)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.IDENTITY_INFO_C06S.COUNTRY_CODE"
+    used_in_entities:
+      - "Individual"
+      - "Involved Party Postal Address"
+    values: []
+
+  - scheme_code: "NHNCK_C06_PROVINCE"
+    name: "Mã tỉnh/thành từ dữ liệu tích hợp C06 (no_lookup — API ngoài, không có bảng\
+      \ danh mục nội bộ trong scope NHNCK)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.IDENTITY_INFO_C06S.PERMANENT_PROVINCE_CODE"
+    used_in_entities:
+      - "Individual"
+      - "Involved Party Postal Address"
+    values: []
+
+  - scheme_code: "NHNCK_C06_DISTRICT"
+    name: "Mã quận/huyện từ dữ liệu tích hợp C06 (no_lookup — API ngoài, không có bảng\
+      \ danh mục nội bộ trong scope NHNCK)"
+    source_type: "modeler_defined"
+    source_table: "NHNCK.IDENTITY_INFO_C06S.PERMANENT_DISTRICT_CODE"
+    used_in_entities:
+      - "Individual"
+      - "Involved Party Postal Address"
+    values: []
+
+  - scheme_code: "NHNCK_SSO_SYNC_STATUS"
+    name: "Trạng thái đồng bộ tài khoản sang SSO/IAM: 0=chưa chuyển, 1=đã chuyển"
+    source_type: "etl_derived"
+    source_table: "NHNCK.PROFESSIONALS.SSO_SYNCED"
+    used_in_entities:
+      - "Securities Practitioner"
+    values:
+      - code: "SYNCED"
+        name: "Đã chuyển SSO"
+        source_value: "1"
+      - code: "NOT_SYNCED"
+        name: "Chưa chuyển SSO"
+        source_value: "0"

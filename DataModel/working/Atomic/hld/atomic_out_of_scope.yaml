@@ -922,6 +922,13 @@ entries:
   description: Lịch sử thay đổi phiên bản biểu mẫu báo cáo tổng hợp đầu ra
   group: Xử lý luồng khác
   reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
+- source_system: GSGD
+  source_table: ACCOUNT_AUTHORIZATION
+  description: Thông tin ủy quyền giao dịch trên tài khoản (theo khảo sát cũ)
+  group: Khảo sát sai
+  reason: Không tồn tại trong DDL UAT thực tế (schema UAT_TMS) — dữ liệu khảo sát
+    nguồn lỗi thời/sai sót, đã reconcile 2026-07-23. Nghiệp vụ ủy quyền đã nằm sẵn
+    trên INVESTOR_ACCOUNT.AUTHORIZED_PERSON_NAME/AUTHORIZATION_DATE.
 - source_system: IDS
   source_table: '`COMPANY_CHANGE_ROLE_HIS`'
   description: Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn.
@@ -935,6 +942,20 @@ entries:
   group: Audit Log nguồn
   reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
     kiện nghiệp vụ
+- source_system: IDS
+  source_table: '`COMPANY_DATA`'
+  description: Lần nộp báo cáo/tin CBTT của CTĐC.
+  group: Fact Data
+  reason: Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-24)
+    — trước đây thiết kế thành entity `Public Company Report Submission` (T3), nay
+    bỏ hoàn toàn HLD + LLD.
+- source_system: IDS
+  source_table: '`DATA`'
+  description: Giá trị số liệu từng ô trong báo cáo tài chính của CTĐC theo kỳ.
+  group: Fact Data
+  reason: Loại khỏi scope theo quyết định tường minh của Data Modeler (2026-07-14)
+    — trước đây thiết kế thành entity `Public Company Financial Report Value` (T2),
+    nay bỏ hoàn toàn HLD + LLD. Xem `pending_design.yaml`.
 - source_system: IDS
   source_table: '`DATA_VALUES`'
   description: Bảng giá trị tham chiếu cho field trong form.
@@ -1218,21 +1239,6 @@ entries:
   reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
     tra cứu qua mã tham chiếu (2026-07-10).
 - source_system: NHNCK
-  source_table: IDENTITY_INFO_C06S
-  description: Lịch sử xác thực danh tính người hành nghề với hệ thống C06 (Bộ Công
-    An)
-  group: Isolated
-  reason: Isolated entity — không có file per-table đầy đủ, cột PROFESSIONAL_ID chỉ
-    là suy luận từ tên bảng; thiếu thông tin cấu trúc cột để thiết kế entity. Đánh
-    giá lại khi có nhu cầu khai thác.
-- source_system: NHNCK
-  source_table: POST_CERT_TRAINING_COURSES
-  description: Danh mục khóa học bồi dưỡng kiến thức định kỳ sau cấp CCHN
-  group: Isolated
-  reason: Isolated entity — không có bảng đăng ký/enrollment liên quan trong scope;
-    chỉ là danh mục tham chiếu không có giá trị phân tích độc lập tại thời điểm thiết
-    kế.
-- source_system: NHNCK
   source_table: PROVINCES
   description: Danh mục tỉnh/thành phố trực thuộc trung ương
   group: Isolated
@@ -1265,12 +1271,6 @@ entries:
   description: Nhật ký hoạt động trên chứng chỉ hành nghề
   group: Source Process Log
   reason: Audit log nguồn — không phải sự kiện nghiệp vụ tường minh.
-- source_system: NHNCK
-  source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
-  description: Lịch sử thay đổi trạng thái chứng chỉ hành nghề
-  group: Source Process Log
-  reason: Audit log nguồn — trạng thái lifecycle nằm trên CERTIFICATE_RECORDS; log
-    nguồn không cần thiết trên Atomic.
 - source_system: NHNCK
   source_table: VERIFY_APPLICATION_STATUSES
   description: Bước xác minh hồ sơ tại từng cấp phê duyệt
@@ -2010,3 +2010,17 @@ entries:
   description: Lịch sử migration schema database
   group: Operational / System
   reason: Operational/system data — database maintenance
+- source_system: IDS
+  source_table: AF_PROFILES
+  description: Hồ sơ công ty kiểm toán (Audit Firm)
+  group: Loại theo quyết định Data Modeler
+  reason: Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế,
+    không map bất kỳ entity nào (bao gồm Audit Firm, IP Postal Address, IP Electronic
+    Address, IP Alt Identification).
+- source_system: SCMS
+  source_table: CUSTODIAN_BANK
+  description: Ngân hàng lưu ký
+  group: Loại theo quyết định Data Modeler
+  reason: Quyết định Data Modeler (2026-07-24) — bỏ hoàn toàn khỏi phạm vi thiết kế,
+    không map bất kỳ entity nào (bao gồm Securities Company Custodian Bank, IP Postal
+    Address, IP Electronic Address, IP Alt Identification).

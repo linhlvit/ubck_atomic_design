@@ -131,9 +131,19 @@ Dùng Data Domain phù hợp nhất với **ý nghĩa nghiệp vụ** của attr
 - Ý nghĩa là tiền tệ → `Currency Amount`, dù nguồn lưu `varchar`
 - Ý nghĩa là lãi suất → `Interest Rate`; tỷ giá → `Exchange Rate`; phần trăm → `Percentage`
 - Ý nghĩa là ngày (không có giờ) → `Date`; ngày + giờ → `Timestamp`
-- Ý nghĩa là cờ True/False → `Boolean`; số đếm/version → `Small Counter`
+- Số đếm/version → `Small Counter`
 - Ý nghĩa là mã phân loại → `Classification Value`; FK surrogate → `Surrogate Key`
 - Không thuộc các loại trên → `Text`
+
+**`Boolean` vs `Classification Value` cho cột cờ/trạng thái nguồn dạng số:** KHÔNG mặc định dùng
+`Boolean` cho mọi cờ True/False. Đối chiếu domain đã chọn với **data type nguồn** (đây là ngoại lệ
+so với nguyên tắc "ưu tiên ngữ nghĩa" ở trên):
+- Nguồn là kiểu boolean/bit thật (`BIT`, `BOOLEAN`) không kèm mã nghiệp vụ → `Boolean`.
+- Nguồn là `NUMBER`/mã số có ý nghĩa nghiệp vụ gắn với từng giá trị cụ thể (kể cả chỉ 2 giá trị,
+  VD `STATUS: 1=Đang hoạt động, 0=Không hoạt động`) → `Classification Value`, đăng ký scheme, dù
+  bản chất là cờ 2 trạng thái. Lý do: nhất quán với các trường cùng hình dạng đã thiết kế trong dự án
+  (`STATUS_WORK`, `STATUS_ACCOUNT`, `GENDER`... đều là `NUMBER` 2 giá trị nhưng dùng `Classification
+  Value`, không dùng `Boolean`) — tránh 2 domain khác nhau cho cùng 1 hình dạng dữ liệu nguồn.
 
 Nếu ý nghĩa nghiệp vụ không ánh xạ được vào bất kỳ Data Domain hiện có nào → **đề xuất Data Domain mới** kèm định nghĩa và data type vật lý dự kiến, ghi vào comment với tag `[PROPOSE NEW DOMAIN]` để reviewer xem xét bổ sung vào `reference/data_domains.md`.
 
@@ -300,6 +310,63 @@ Phân biệt **Id** (FK constraint thực sự) vs **Code** (denormalized lookup
   - Shared entity: `"FK target: Securities Organization Reference.Securities Organization Reference Id. Shared entity. Hash: hash_id('NHNCK.ORGANIZATIONS', ID)."`
   - Always null: `"FK target: Geographic Area.Geographic Area Id. NULL vì COUNTRIES không có parent."`
 
+  **FK cần crosswalk sang bảng danh mục nguồn để lấy Code (không hash trực tiếp theo ID kỹ
+  thuật):** Áp dụng khi cột FK nguồn lưu ID kỹ thuật nội bộ của 1 bảng danh mục/lookup — trong
+  cùng phân hệ (join nội bộ, xác định chắc chắn) hoặc khác phân hệ (crosswalk sang danh mục
+  chuẩn hóa như ECAT, value set có thể chưa khớp 100%) — nên ETL phải join qua bảng đó trước để
+  lấy Code, rồi mới `hash_id()` theo Code đó, thay vì hash trực tiếp theo ID kỹ thuật của FK. Đây
+  là lỗi thường gặp: bảng main hash surrogate Id của chính nó từ Code (đúng theo Bước 3e), nhưng
+  bảng con lại hash FK trỏ tới main bằng chính giá trị ID kỹ thuật thay vì Code — khiến 2 giá trị
+  hash không bao giờ khớp nhau.
+
+  Cú pháp:
+  ```
+  FK target: {target_entity_physical_name}.{target_attribute_physical_name} ({filter_attribute_physical_name} = {FILTER_VALUE}, nếu cần lọc). Cần ETL crosswalk sang {SOURCE_SYSTEM}.{LOOKUP_TABLE}: {SOURCE_TABLE}.{FK_COLUMN} = {LOOKUP_TABLE}.{LOOKUP_PK_COLUMN} để xác nhận {CODE_COLUMN} sau đó hash_id('{TARGET_SOURCE_SYSTEM}.{TARGET_TABLE}', {CODE_COLUMN}) | {notes khác, ví dụ cảnh báo cần profile dữ liệu}
+  ```
+
+  - `{SOURCE_SYSTEM}.{LOOKUP_TABLE}`, `{SOURCE_TABLE}.{FK_COLUMN}`, `{LOOKUP_PK_COLUMN}`,
+    `{CODE_COLUMN}` giữ nguyên tên vật lý nguồn (viết hoa/snake theo CSDL gốc — không đổi).
+    `{FILTER_VALUE}` viết theo chuẩn SQL literal, bọc dấu nháy đơn: `'COUNTRY'`.
+  - **Casing — ngoại lệ có chủ đích:** phần `FK target: {entity}.{attribute}` và điều kiện lọc
+    dùng **physical_name viết thường** (VD `geographic_area.geographic_area_id`) — khác với
+    `FK target:` Title Case dùng cho case "FK bình thường"/"Shared entity" ở trên. Không áp dụng
+    lùi cho các FK không cần crosswalk.
+  - Dấu `|` ngăn cách phần **format chuẩn hóa** (`FK target: ...` đến hết `hash_id(...)`) với phần
+    **free-text notes** phía sau (cảnh báo profile dữ liệu, ghi chú lịch sử fix, snapshot...). Nếu
+    không có note nào thêm thì bỏ luôn dấu `|`.
+  - **Crosswalk khác phân hệ, value set chưa chắc khớp** (VD Geographic Area/COUNTRY qua ECAT):
+    bắt buộc thêm cảnh báo sau `|`: `"Chưa xác nhận value set khớp danh mục {TARGET} — cần
+    profile dữ liệu trước go-live."`
+  - **Crosswalk cùng phân hệ, join theo PK kỹ thuật thật** (VD bảng con trong cùng source hash
+    nhầm theo FK ID thay vì Code của bảng cha): không cần cảnh báo profile (không có rủi ro sai
+    lệch chuẩn mã) — có thể ghi note lịch sử fix thay thế, VD: `"Trước đây hash trực tiếp theo
+    {FK_COLUMN} (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ {CODE_COLUMN}) — đã sửa
+    sang crosswalk {ngày}."`
+  - Trường hợp đặc biệt — nguồn **không có bảng danh mục nội bộ** để crosswalk (free-text, ví dụ
+    GSGD `NATIONALITY`): bỏ mệnh đề "Cần ETL crosswalk sang..." (không có bảng để join), mô tả
+    đối chiếu trực tiếp giá trị text với Code của entity đích, vẫn giữ `hash_id(...)` và cảnh báo
+    profile dữ liệu nếu cross-system.
+
+  Ví dụ (crosswalk khác phân hệ, NHNCK.PROFESSIONALS.NATIONALITY_ID → Geographic Area, Type Code
+  = COUNTRY):
+  `"FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL
+  crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.NATIONALITY_ID = COUNTRIES.ID để xác nhận
+  COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh
+  mục ECAT — cần profile dữ liệu trước go-live."`
+
+  Ví dụ (crosswalk cùng phân hệ, sửa lỗi hash-mismatch):
+  `"FK target: sp_professional_training_class.sp_professional_training_class_id. Cần ETL
+  crosswalk sang NHNCK.SPECIALIZATION_COURSES: SPECIALIZATION_COURSE_DETAILS.SPECIALIZATION_COURSE_ID
+  = SPECIALIZATION_COURSES.ID để xác nhận COURSE_CODE sau đó hash_id('NHNCK.SPECIALIZATION_COURSES',
+  COURSE_CODE) | Trước đây hash trực tiếp theo SPECIALIZATION_COURSE_ID (ID kỹ thuật) gây sai
+  lệch với Id của bảng main (hash từ COURSE_CODE) — đã sửa sang crosswalk 2026-07-27."`
+
+  **Vòng đời comment — sau khi Data Modeler xác nhận** (profile dữ liệu xong, value set khớp danh
+  mục đích, không còn rủi ro crosswalk): bỏ hẳn mệnh đề cảnh báo + dấu `|`, thu gọn về dạng Hash
+  comment chuẩn (case "FK bình thường" ở trên) — nhưng vẫn giữ **physical_name viết thường** cho
+  phần `FK target:` (không quay lại Title Case, đây là tiếp nối của cùng 1 rule):
+  `"FK target: {entity}.{attribute} ({điều kiện lọc nếu có}). Hash: hash_id('{TARGET_SRC}.{TARGET_TABLE}', {CODE_COLUMN})."`
+
 - **Code** — denormalized lookup (KHÔNG phải FK constraint, chỉ là copy giá trị business key cho tiện query):
   `Lookup pair: {Atomic Entity Name}.{Atomic Entity Name} Code. Pair with {Id field name}. {notes}`
   → `atomic-gen-docs` KHÔNG đưa Code vào bảng Constraint. Chỉ Id mới sinh constraint.
@@ -340,6 +407,7 @@ Trước khi xuất file:
 - [ ] **Domain mới:** Nếu có attribute dùng tag `[PROPOSE NEW DOMAIN]` → đã tách thành điểm cần xác nhận riêng để reviewer quyết định bổ sung vào `reference/data_domains.md`?
 - [ ] **FK comment** (xem Bước 5): Id ghi `FK target: ...`, Code ghi `Lookup pair: ... Pair with {Id field}` — KHÔNG ghi `FK target:` cho cả Id+Code. Currency Code (Classification Value pattern, không có Id) ghi `FK target:`.
 - [ ] **FK hash comment** (xem Bước 5): Mọi FK Id có `source_columns` không rỗng → comment phải có `Hash: hash_id('SRC.TARGET_TABLE', COL).` (FK_SOURCE tra từ `Source/{SOURCE}_Columns.csv`). FK với `source_columns: []` → không thêm hash, ghi lý do NULL.
+- [ ] **FK cần crosswalk qua bảng danh mục** (xem Bước 5): Nếu `COL` dùng trong `hash_id()` là ID kỹ thuật của bảng đích chứ không phải Code thật (đối chiếu `"{Entity} Code"` attribute của chính entity đích) → phải dùng cú pháp `FK target: {entity}.{attribute} (...). Cần ETL crosswalk sang ...` (physical_name viết thường), KHÔNG hash trực tiếp theo ID kỹ thuật.
 - [ ] **Audit block** (xem Bước 3k): Bảng nguồn có `CREATED_AT / CREATED_BY / UPDATED_AT / UPDATED_BY` → đủ 6 attribute chuẩn. Comment FK target dùng **tên attribute đầy đủ** (có prefix entity). Self-reference vẫn có cặp Id + Code.
 - [ ] **Technical bundle** (xem Bước 2c): Nếu bảng nguồn có đủ 9 cột audit/soft-delete/optimistic-locking chuẩn (`STATUS, DELETED, CREATED_AT, UPDATED_AT, CREATED_BY_ID, CREATED_BY_NAME, UPDATED_BY_ID, UPDATED_BY_NAME, VERSION`) → đã loại trừ và ghi 9 dòng `pending_design.yaml` chưa? Nếu chỉ có một phần → đã ghi "Điểm cần xác nhận" trong HLD Tier chưa?
 - [ ] **ID + CODE pattern** (xem Bước 3e): PK kỹ thuật nguồn (`ID`) loại khỏi model — mã nghiệp vụ (`CODE`) map vào `{Entity} Code` duy nhất (không đặt tên generic như `Organization Code`, không còn `{Entity} Unique Key`), và Id hash từ chính `{Entity} Code`?
@@ -594,8 +662,10 @@ python DataModel/validate_dm_yaml.py --source {SOURCE}
 
 ### Bước 11 — Consolidate (Phase 5)
 
+**KHÔNG dùng `--source`** — flag này **destructively truncate** `dm_manifest.yaml` xuống chỉ còn rows của source đó (đã tái diễn 3 lần: ThanhTra 2 lần + KNT 2026-07-27). Luôn chạy không kèm flag để rebuild toàn bộ manifest từ tất cả source:
+
 ```bash
-python DataModel/gen_summary_and_model.py --source {SOURCE}
+python DataModel/gen_summary_and_model.py
 ```
 
 Output:
@@ -616,7 +686,7 @@ Output:
 | 3b — Consolidation (nếu cần) | `DataModel/working/Atomic/lld/scripts/validate_lld_yaml.py --entities` | **Failed: 0**, `consolidation_status: approved` |
 | 4 — Generate YAML | `generate_dm_yaml.py --source {SOURCE}` | Số file đúng; 0 file thiếu `layer: Atomic` |
 | 4b — Validate YAML | `validate_dm_yaml.py --source {SOURCE}` | **Failed: 0** |
-| 5 — Consolidate | `gen_summary_and_model.py --source {SOURCE}` | `dm_manifest.yaml` đúng N dòng; `atomic_model.yaml` parse được |
+| 5 — Consolidate | `gen_summary_and_model.py` (KHÔNG `--source` — xem Bước 11) | `dm_manifest.yaml` đủ N dòng của TẤT CẢ source; `atomic_model.yaml` parse được |
 
 ---
 

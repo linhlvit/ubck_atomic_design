@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-ip_postal_address-IAM.USERS
+  logical_name: Involved Party Postal Address
+  physical_name: ip_postal_address
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Involved Party
+  bcv_concept: Shared Entity
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IAM
+  description: |
+    Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IAM-USERS
+
+attributes:
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: IAM.USERS
+
+  - name: Address Type Code
+    physical_name: adr_tp_code
+    business_meaning: Loại địa chỉ — thường trú.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "Scheme: IP_ADDR_TYPE. Nguồn chỉ có 1 cột ADDRESS không phân loại — hardcode PERMANENT."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: PERMANENT
+
+  - name: Address Value
+    physical_name: adr_val
+    business_meaning: Địa chỉ người dùng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.ADDRESS
+    comment: null
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Country Id
+    physical_name: country_id
+    business_meaning: FK đến Geographic Area — quốc gia.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang NHNCK.COUNTRIES: PROFESSIONALS.PERMANENT_COUNTRY_ID = COUNTRIES.ID để xác nhận COUNTRY_CODE sau đó hash_id('ECAT.COUNTRY', COUNTRY_CODE) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Country Code
+    physical_name: country_code
+    business_meaning: Mã quốc gia địa chỉ thường trú (theo C06).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Country Id. // Scheme: NHNCK_C06_COUNTRY. Dữ liệu tích hợp C06 — no_lookup, không tạo FK Geographic Area."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Province Id
+    physical_name: province_id
+    business_meaning: FK đến Geographic Area — tỉnh/thành.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "FK target: geographic_area.geographic_area_id. Geographic Area Type Code = PROVINCE. Nguồn Geographic Area đã chuyển sang ECAT (NHNCK.PROVINCES ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên tỉnh/thành NHNCK.PROFESSIONALS.PERMANENT_PROVINCE_ID với Geographic Area Unique Key (ECAT.PROVINCE_NEW.CODE) hoặc Name, không còn hash_id() trực tiếp theo NHNCK.PROVINCES. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Province Code
+    physical_name: province_code
+    business_meaning: Mã tỉnh/thành phố địa chỉ thường trú (theo C06).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with Province Id. // Scheme: NHNCK_C06_PROVINCE. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: District Id
+    physical_name: district_id
+    business_meaning: FK đến Geographic Area — quận/huyện.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "FK target: geographic_area_old.geographic_area_old_id (ĐỔI TARGET — không còn Geographic Area). Cấp quận/huyện đã bị loại bỏ trong cấu trúc địa giới hiện hành (post-sáp nhập 2025); ECAT chỉ còn lưu ở Geographic Area Old (Geographic Area Old Type Code = DISTRICT_OLD). Resolve bằng lookup giá trị: đối chiếu mã/tên quận/huyện NHNCK.PROFESSIONALS.PERMANENT_DISTRICT_ID với Geographic Area Old Unique Key (ECAT.DISTRICT_OLD.CODE) hoặc Name. Cần crosswalk nếu NHNCK không cùng chuẩn mã với ECAT."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: District Code
+    physical_name: district_code
+    business_meaning: Mã quận/huyện địa chỉ thường trú (theo C06).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "Lookup pair: geographic_area_old.geographic_area_old_code (nguồn ECAT — ĐỔI TARGET, xem District Id). Pair with District Id. // Scheme: NHNCK_C06_DISTRICT. Dữ liệu tích hợp C06 — no_lookup."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Identity and Access Management User.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.ID
+    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Shared entity — không có PK surrogate riêng. Hash: hash_id('IAM.USERS', ID)."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã người dùng IAM.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.ID
+    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'IAM_USERS' | Address Type Code = 'PERMANENT'"
+    etl_derived_value: null
