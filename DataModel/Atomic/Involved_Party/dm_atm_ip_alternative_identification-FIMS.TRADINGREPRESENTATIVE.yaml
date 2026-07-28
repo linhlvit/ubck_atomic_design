@@ -52,29 +52,29 @@ attributes:
 
   - name: Identification Type Code
     physical_name: identification_tp_code
-    business_meaning: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu (cá nhân) hoặc Mã số doanh nghiệp (tổ chức — theo ENTITY_TYPE)."
+    business_meaning: Loại giấy tờ tùy thân.
     data_domain: Classification Value
     data_type: string
     nullable: false
-    is_primary_key: false
+    is_primary_key: true
     source_system: FIMS
     source_table: TRADINGREPRESENTATIVE
     source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. ETL tạo row từ NATIONAL_ID. // Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột ID_NUMBER. // Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột NATIONAL_ID. // Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột IDENTIFICATION_NUMBER. Cần xác nhận: khi ENTITY_TYPE=TO_CHUC thì loại giấy tờ có nên là mã khác (VD: TAX_ID) không? // Scheme: IP_ALT_ID_TYPE. ETL hardcode NATIONAL_ID — chỉ có 1 cột IDENTIFICATION_NUMBER. Cần xác nhận: khi INDIVIDUAL=0 (tổ chức) thì type có nên là mã khác (VD: TAX_ID) không? // Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại giấy tờ. Cần profile data nguồn để xác định loại giấy tờ thực tế. // Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID theo mặc định trường hợp nguồn không phân biệt loại giấy tờ (xem shared_entity_schemas.md). Pending — cần Data Modeler xác nhận loại giấy tờ thực tế. // Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID theo mặc định trường hợp nguồn không phân biệt loại giấy tờ (xem shared_entity_schemas.md). Pending — cần Data Modeler xác nhận loại giấy tờ thực tế (CMND/CCCD/Hộ chiếu)."
+    comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột phân biệt loại giấy tờ (CMND/CCCD/Hộ chiếu) — mặc định NATIONAL_ID. Document pending_design.yaml, cần profile dữ liệu thực tế trước go-live."
     classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
+    etl_derived_value: NATIONAL_ID
 
   - name: Identification Number
     physical_name: identification_nbr
-    business_meaning: Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu).
+    business_meaning: Số CMND/CCCD/Hộ chiếu của đại diện giao dịch.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FIMS
     source_table: TRADINGREPRESENTATIVE
-    source_column: null
-    comment: "Không có Issue Date/Place riêng trong nguồn cho NATIONAL_ID — cần xác nhận. // VARCHAR2(50). // NVARCHAR2(250). // VARCHAR2 — cần xác nhận length. // VARCHAR2 — cần profile length. Mô tả gốc BRD trống. // VARCHAR2 — cần profile length. Mô tả gốc BRD: 'Số CMND/Căn cước công dân/Giấy phép đăng ký kinh doanh'."
+    source_column: FIMS.TRADINGREPRESENTATIVE.IDNO
+    comment: null
     classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Identification Type Code = 'NATIONAL_ID'"
     etl_derived_value: null
 
@@ -95,34 +95,6 @@ attributes:
   - name: Identification Issue Place
     physical_name: identification_issue_place
     business_meaning: Nơi cấp CMND/CCCD/Hộ chiếu.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: TRADINGREPRESENTATIVE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Issue Date
-    physical_name: issue_dt
-    business_meaning: Ngày cấp.
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: TRADINGREPRESENTATIVE
-    source_column: null
-    comment: null
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Issuing Authority Name
-    physical_name: issuing_authority_nm
-    business_meaning: Nơi cấp.
     data_domain: Text
     data_type: string
     nullable: true
@@ -159,33 +131,5 @@ attributes:
     source_table: TRADINGREPRESENTATIVE
     source_column: FIMS.TRADINGREPRESENTATIVE.ID
     comment: "Lookup pair: trading_representative.trading_representative_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: null
-
-  - name: Alternative Identification Type Code
-    physical_name: alternative_identification_tp_code
-    business_meaning: Loại giấy tờ tùy thân.
-    data_domain: Classification Value
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: FIMS
-    source_table: TRADINGREPRESENTATIVE
-    source_column: null
-    comment: "Scheme: IP_ALT_ID_TYPE. Nguồn không có cột phân biệt loại giấy tờ (CMND/CCCD/Hộ chiếu) — mặc định NATIONAL_ID. Document pending_design.yaml, cần profile dữ liệu thực tế trước go-live."
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Identification Type Code = 'NATIONAL_ID'"
-    etl_derived_value: NATIONAL_ID
-
-  - name: Alternative Identification Number
-    physical_name: alternative_identification_nbr
-    business_meaning: Số CMND/CCCD/Hộ chiếu của đại diện giao dịch.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: FIMS
-    source_table: TRADINGREPRESENTATIVE
-    source_column: FIMS.TRADINGREPRESENTATIVE.IDNO
-    comment: null
     classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Identification Type Code = 'NATIONAL_ID'"
     etl_derived_value: null

@@ -116,7 +116,7 @@ attributes:
     source_system: FIMS
     source_table: TRADINGREPRESENTATIVE
     source_column: FIMS.TRADINGREPRESENTATIVE.NAID
-    comment: "FK target: geographic_area.geographic_area_id. Nguồn Geographic Area đã chuyển sang ECAT (FIMS.NATIONAL ngừng thiết kế) — resolve bằng lookup giá trị: đối chiếu mã/tên quốc gia NAID với Geographic Area Unique Key (ECAT.COUNTRY.CODE) hoặc Name, không còn hash_id() trực tiếp theo FIMS.NATIONAL. Cần crosswalk nếu FIMS không cùng chuẩn mã với ECAT."
+    comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: TRADINGREPRESENTATIVE.NAID = NATIONAL.Id để xác nhận SName sau đó hash_id('ECAT.COUNTRY', SName) | Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
     classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE'"
     etl_derived_value: null
 

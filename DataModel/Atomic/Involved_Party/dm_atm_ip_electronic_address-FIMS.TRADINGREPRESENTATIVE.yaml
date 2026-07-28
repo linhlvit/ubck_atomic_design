@@ -22,6 +22,34 @@ ldm:
     brd: BRD-SRC-FIMS-TRADINGREPRESENTATIVE
 
 attributes:
+  - name: Involved Party Id
+    physical_name: ip_id
+    business_meaning: FK đến Trading Representative (Involved Party).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.ID
+    comment: "FK target: trading_representative.trading_representative_id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE', ID)."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
+  - name: Involved Party Code
+    physical_name: ip_code
+    business_meaning: Mã Trading Representative.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: TRADINGREPRESENTATIVE
+    source_column: FIMS.TRADINGREPRESENTATIVE.ID
+    comment: "Lookup pair: trading_representative.trading_representative_code. Pair with Involved Party Id."
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    etl_derived_value: null
+
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning: Mã hệ thống nguồn dữ liệu.
@@ -75,7 +103,7 @@ attributes:
     source_table: TRADINGREPRESENTATIVE
     source_column: FIMS.TRADINGREPRESENTATIVE.ID
     comment: "FK target: trading_representative.trading_representative_id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -89,7 +117,7 @@ attributes:
     source_table: TRADINGREPRESENTATIVE
     source_column: FIMS.TRADINGREPRESENTATIVE.ID
     comment: "Lookup pair: trading_representative.trading_representative_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'EMAIL'"
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -145,7 +173,7 @@ attributes:
     source_table: TRADINGREPRESENTATIVE
     source_column: FIMS.TRADINGREPRESENTATIVE.ID
     comment: "FK target: trading_representative.trading_representative_id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
 
   - name: Involved Party Code
@@ -159,7 +187,7 @@ attributes:
     source_table: TRADINGREPRESENTATIVE
     source_column: FIMS.TRADINGREPRESENTATIVE.ID
     comment: "Lookup pair: trading_representative.trading_representative_code. Pair with Involved Party Id."
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'FAX'"
+    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null
 
   - name: Source System Code
@@ -201,33 +229,5 @@ attributes:
     source_table: TRADINGREPRESENTATIVE
     source_column: FIMS.TRADINGREPRESENTATIVE.TELEPHONE
     comment: null
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Id
-    physical_name: ip_id
-    business_meaning: FK đến Trading Representative (Involved Party).
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: false
-    is_primary_key: true
-    source_system: FIMS
-    source_table: TRADINGREPRESENTATIVE
-    source_column: FIMS.TRADINGREPRESENTATIVE.ID
-    comment: "FK target: trading_representative.trading_representative_id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE', ID)."
-    classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
-    etl_derived_value: null
-
-  - name: Involved Party Code
-    physical_name: ip_code
-    business_meaning: Mã Trading Representative.
-    data_domain: Text
-    data_type: string
-    nullable: false
-    is_primary_key: false
-    source_system: FIMS
-    source_table: TRADINGREPRESENTATIVE
-    source_column: FIMS.TRADINGREPRESENTATIVE.ID
-    comment: "Lookup pair: trading_representative.trading_representative_code. Pair with Involved Party Id."
     classification_context: "Source System Code = 'FIMS_TRADINGREPRESENTATIVE' | Electronic Address Type Code = 'PHONE'"
     etl_derived_value: null

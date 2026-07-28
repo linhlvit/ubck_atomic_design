@@ -30,7 +30,7 @@ attributes:
   - "FIMS.TRADINGREPRESENTATIVE.ID"
   comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
     \ ID)."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
@@ -44,7 +44,7 @@ attributes:
   - "FIMS.TRADINGREPRESENTATIVE.ID"
   comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
     \ with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Source System Code"
@@ -84,46 +84,6 @@ attributes:
   classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến Trading Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.ID"
-  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
-    \ ID)."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã Trading Representative."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.ID"
-  comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
-    \ with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FIMS.TRADINGREPRESENTATIVE"
-  etl_derived_value: "FIMS.TRADINGREPRESENTATIVE"
-  data_type: "string"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — email."
@@ -148,46 +108,6 @@ attributes:
   comment: null
   classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
   etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến Trading Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.ID"
-  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS.TRADINGREPRESENTATIVE',\
-    \ ID)."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã Trading Representative."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGREPRESENTATIVE.ID"
-  comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
-    \ with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Source System Code"
-  physical_name: "src_stm_code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  status: "draft"
-  source_columns: []
-  comment: "Scheme: SOURCE_SYSTEM."
-  classification_context: "SOURCE_SYSTEM=FIMS.TRADINGREPRESENTATIVE"
-  etl_derived_value: "FIMS.TRADINGREPRESENTATIVE"
   data_type: "string"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
