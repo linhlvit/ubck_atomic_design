@@ -42,7 +42,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.ID"
+  - "IAM.USERS.ID"
   comment: "BK chính. PK nguồn dạng UUIDv7."
   classification_context: null
   etl_derived_value: null
@@ -67,7 +67,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.FULL_NAME"
+  - "IAM.USERS.FULL_NAME"
   comment: "BCV: Full Name (Involved Party)."
   classification_context: null
   etl_derived_value: null
@@ -80,7 +80,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.USERNAME"
+  - "IAM.USERS.USERNAME"
   comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
   classification_context: null
   etl_derived_value: null
@@ -93,7 +93,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.DATE_OF_BIRTH"
+  - "IAM.USERS.DATE_OF_BIRTH"
   comment: "BCV: Date Of Birth (Individual). Nguồn: Oracle DATE."
   classification_context: null
   etl_derived_value: null
@@ -106,7 +106,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.GENDER"
+  - "IAM.USERS.GENDER"
   comment: "Scheme: IAM_GENDER. Nguồn NUMBER(1): 1=MALE, 2=FEMALE, 3=OTHER — ETL map\
     \ sang string code. Nguồn lưu dạng số — ETL cần convert sang string."
   classification_context: "IAM_GENDER"
@@ -120,7 +120,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.USER_TYPE"
+  - "IAM.USERS.USER_TYPE"
   comment: "Scheme: IAM_USER_TYPE. Nguồn NUMBER(1) — cần profile values từ team IAM.\
     \ Nguồn lưu dạng số — ETL cần convert sang string code."
   classification_context: "IAM_USER_TYPE"
@@ -134,7 +134,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.USER_SUB_TYPE"
+  - "IAM.USERS.USER_SUB_TYPE"
   comment: "Scheme: IAM_USER_SUB_TYPE. Nguồn VARCHAR50 — lấy distinct values từ USERS.USER_SUB_TYPE."
   classification_context: "IAM_USER_SUB_TYPE"
   etl_derived_value: null
@@ -147,7 +147,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.IS_SUPER_ADMIN"
+  - "IAM.USERS.IS_SUPER_ADMIN"
   comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag Yes/No. Nguồn\
     \ NUMBER(1)."
   classification_context: null
@@ -161,7 +161,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.KEY_CLOAK_ID"
+  - "IAM.USERS.KEY_CLOAK_ID"
   comment: "BCV: không có term riêng. Giữ lại để trace cross-system — xem T1-05 HLD."
   classification_context: null
   etl_derived_value: null
@@ -174,7 +174,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.ORGANIZATION_CODE"
+  - "IAM.USERS.ORGANIZATION_CODE"
   comment: "Denormalized text — chưa xác nhận FK đến bảng tổ chức nào (xem T1-04 HLD).\
     \ Giữ dạng Text cho đến khi xác nhận cross-source FK."
   classification_context: null
@@ -188,7 +188,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.ORGANIZATION_NAME"
+  - "IAM.USERS.ORGANIZATION_NAME"
   comment: "Denormalized text — cặp với Organization Code."
   classification_context: null
   etl_derived_value: null
@@ -201,7 +201,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.DEPARTMENT_ID"
+  - "IAM.USERS.DEPARTMENT_ID"
   comment: "Nguồn VARCHAR2(36) — chưa có FK constraint rõ. Giữ dạng Text; nếu xác\
     \ nhận FK đến bảng entity → đổi sang Surrogate Key và tạo cặp Id+Code (xem T1-01\
     \ HLD)."
@@ -216,7 +216,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.POSTION_ID"
+  - "IAM.USERS.POSTION_ID"
   comment: "Nguồn VARCHAR2(36). Tên cột nguồn có typo 'POSTION_ID'. Chưa có FK constraint\
     \ rõ — giữ dạng Text (xem T1-01 HLD)."
   classification_context: null
@@ -230,7 +230,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.STOCK_CODE"
+  - "IAM.USERS.STOCK_CODE"
   comment: "BCV: không có term riêng. VARCHAR2(3) — mã CK 3 ký tự của tổ chức nơi\
     \ người dùng làm việc."
   classification_context: null
@@ -244,7 +244,7 @@ attributes:
   is_primary_key: false
   status: "pending"
   source_columns:
-  - "IAM.IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
+  - "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
   comment: "FK target: Securities Practitioner License Certificate Type.Securities\
     \ Practitioner License Certificate Type Id. Cross-source FK (IAM → NHNCK), trả\
     \ lời T1-02 HLD. Pending — nguồn IAM lưu VARCHAR2(36) dạng GUID, trong khi NHNCK.CERTIFICATES.ID\
@@ -261,7 +261,7 @@ attributes:
   is_primary_key: false
   status: "pending"
   source_columns:
-  - "IAM.IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
+  - "IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID"
   comment: "Lookup pair: Securities Practitioner License Certificate Type.Securities\
     \ Practitioner License Certificate Type Code. Pair with Practice Certificate Type\
     \ Id. Pending — xem ghi chú ở Id."
@@ -276,7 +276,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.AVATAR_PATH"
+  - "IAM.USERS.AVATAR_PATH"
   comment: "BCV: không có term riêng. Lưu đường dẫn file ảnh đại diện."
   classification_context: null
   etl_derived_value: null
@@ -289,7 +289,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.STATUS_REASON"
+  - "IAM.USERS.STATUS_REASON"
   comment: "BCV: không có term riêng. Mô tả lý do trạng thái hiện tại (STATUS đã loại\
     \ khỏi scope)."
   classification_context: null
@@ -303,7 +303,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.COUNT_LOGIN_FALSE"
+  - "IAM.USERS.COUNT_LOGIN_FALSE"
   comment: "BCV: không có term riêng. Nguồn NUMBER(1) — đếm số lần login fail, domain\
     \ Small Counter phù hợp."
   classification_context: null
@@ -317,7 +317,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.EXPIRE_LOCK_USER"
+  - "IAM.USERS.EXPIRE_LOCK_USER"
   comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
   classification_context: null
   etl_derived_value: null
@@ -330,7 +330,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.LAST_LOGIN"
+  - "IAM.USERS.LAST_LOGIN"
   comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
   classification_context: null
   etl_derived_value: null
@@ -343,7 +343,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.REPRESENTATIVE_NAME"
+  - "IAM.USERS.REPRESENTATIVE_NAME"
   comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD (người đại diện có phải\
     \ Involved Party độc lập không)."
   classification_context: null
@@ -357,7 +357,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.REPRESENTATIVE_CITIZEN_ID"
+  - "IAM.USERS.REPRESENTATIVE_CITIZEN_ID"
   comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
   classification_context: null
   etl_derived_value: null
@@ -370,7 +370,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.REPRESENTATIVE_PHONE"
+  - "IAM.USERS.REPRESENTATIVE_PHONE"
   comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
   classification_context: null
   etl_derived_value: null
@@ -383,7 +383,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.REPRESENTATIVE_EMAIL"
+  - "IAM.USERS.REPRESENTATIVE_EMAIL"
   comment: "Tên cột nguồn có typo 'REPRESENTATIVE _EMAIL' (dấu cách thừa) — ETL cần\
     \ dùng tên thực tế trên DB. Denormalized — giữ đến khi xác nhận T1-03 HLD."
   classification_context: null
@@ -397,7 +397,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "IAM.IAM.USERS.REPRESENTATIVE_POSITION_ID"
+  - "IAM.USERS.REPRESENTATIVE_POSITION_ID"
   comment: "Denormalized VARCHAR2(255) — giữ dạng Text đến khi xác nhận T1-03 HLD."
   classification_context: null
   etl_derived_value: null

@@ -1,0 +1,415 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-identity_and_access_management_user-IAM.USERS
+  logical_name: Identity and Access Management User
+  physical_name: identity_and_access_management_user
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Individual"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: IAM
+  description: |
+    Người dùng hệ thống IAM — thể nhân (cán bộ UBCK, cán bộ CTCK, chuyên gia) có tài khoản đăng nhập hệ thống nghiệp vụ, tích hợp Keycloak. Lưu thông tin danh tính, tổ chức, chứng chỉ hành nghề và người đại diện.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IAM-USERS
+
+attributes:
+  - name: Identity and Access Management User Id
+    physical_name: identity_and_access_management_user_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "PK surrogate. BCV: [Involved Party] Individual. Domain prefix 'Identity and Access Management User' theo HLD IAM Tier 1."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Identity and Access Management User Code
+    physical_name: identity_and_access_management_user_code
+    business_meaning: Khóa chính (UUIDv7). BK của entity — map từ PK bảng nguồn.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.ID
+    comment: BK chính. PK nguồn dạng UUIDv7.
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: IAM.USERS
+
+  - name: Full Name
+    physical_name: full_nm
+    business_meaning: Tên đầy đủ người dùng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.FULL_NAME
+    comment: "BCV: Full Name (Involved Party)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Username
+    physical_name: username
+    business_meaning: Username đăng nhập hệ thống.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.USERNAME
+    comment: "BCV: không có term riêng — đặt tên theo nghĩa kỹ thuật IAM."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Date Of Birth
+    physical_name: dt_of_birth
+    business_meaning: Ngày sinh.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.DATE_OF_BIRTH
+    comment: "BCV: Date Of Birth (Individual). Nguồn: Oracle DATE."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Individual Gender Code
+    physical_name: individual_gender_code
+    business_meaning: "Giới tính (1: Nam, 2: Nữ, 3: Khác)."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.GENDER
+    comment: "Scheme: IAM_GENDER. Nguồn NUMBER(1): 1=MALE, 2=FEMALE, 3=OTHER — ETL map sang string code. Nguồn lưu dạng số — ETL cần convert sang string."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Involved Party Type Code
+    physical_name: ip_tp_code
+    business_meaning: Loại người dùng.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.USER_TYPE
+    comment: "Scheme: IAM_USER_TYPE. Nguồn NUMBER(1) — cần profile values từ team IAM. Nguồn lưu dạng số — ETL cần convert sang string code."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Involved Party Sub Type Code
+    physical_name: ip_sub_tp_code
+    business_meaning: Phân loại người dùng.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.USER_SUB_TYPE
+    comment: "Scheme: IAM_USER_SUB_TYPE. Nguồn VARCHAR50 — lấy distinct values từ USERS.USER_SUB_TYPE."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Super Admin Indicator
+    physical_name: super_admin_indicator
+    business_meaning: "Super admin flag (1: Yes, 0: No)."
+    data_domain: Indicator
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.IS_SUPER_ADMIN
+    comment: "BCV: không có term riêng — dùng Indicator vì chỉ là flag Yes/No. Nguồn NUMBER(1)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Keycloak Id
+    physical_name: keycloak_id
+    business_meaning: Keycloak user ID — định danh người dùng trên hệ thống IAM Keycloak.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.KEY_CLOAK_ID
+    comment: "BCV: không có term riêng. Giữ lại để trace cross-system — xem T1-05 HLD."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Organization Code
+    physical_name: organization_code
+    business_meaning: Mã tổ chức người dùng thuộc về.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.ORGANIZATION_CODE
+    comment: "Denormalized text — chưa xác nhận FK đến bảng tổ chức nào (xem T1-04 HLD). Giữ dạng Text cho đến khi xác nhận cross-source FK."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Organization Name
+    physical_name: organization_nm
+    business_meaning: Tên tổ chức người dùng thuộc về.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.ORGANIZATION_NAME
+    comment: Denormalized text — cặp với Organization Code.
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Department Id
+    physical_name: department_id
+    business_meaning: Phòng ban người dùng thuộc về — chưa xác định FK target.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.DEPARTMENT_ID
+    comment: "Nguồn VARCHAR2(36) — chưa có FK constraint rõ. Giữ dạng Text; nếu xác nhận FK đến bảng entity → đổi sang Surrogate Key và tạo cặp Id+Code (xem T1-01 HLD)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Position Id
+    physical_name: position_id
+    business_meaning: Chức vụ người dùng — chưa xác định FK target.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.POSTION_ID
+    comment: "Nguồn VARCHAR2(36). Tên cột nguồn có typo 'POSTION_ID'. Chưa có FK constraint rõ — giữ dạng Text (xem T1-01 HLD)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Stock Code
+    physical_name: stock_code
+    business_meaning: Mã chứng khoán (mã giao dịch của tổ chức).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.STOCK_CODE
+    comment: "BCV: không có term riêng. VARCHAR2(3) — mã CK 3 ký tự của tổ chức nơi người dùng làm việc."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Practice Certificate Type Id
+    physical_name: practice_certificate_tp_id
+    business_meaning: Chứng chỉ hành nghề — loại chứng chỉ của người dùng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID
+    comment: "FK target: sp_license_certificate_type.sp_license_certificate_type_id. Cross-source FK (IAM → NHNCK), trả lời T1-02 HLD. Pending — nguồn IAM lưu VARCHAR2(36) dạng GUID, trong khi NHNCK.CERTIFICATES.ID là NUMBER tự tăng; chưa xác nhận join key giá trị thực tế giữa 2 hệ thống nên chưa thêm Hash."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Practice Certificate Type Code
+    physical_name: practice_certificate_tp_code
+    business_meaning: Mã loại chứng chỉ hành nghề (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.PRACTICE_CERTIFICATE_TYPE_ID
+    comment: "Lookup pair: sp_license_certificate_type.sp_license_certificate_type_code. Pair with Practice Certificate Type Id. Pending — xem ghi chú ở Id."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Avatar Path
+    physical_name: avatar_path
+    business_meaning: Đường dẫn avatar của người dùng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.AVATAR_PATH
+    comment: "BCV: không có term riêng. Lưu đường dẫn file ảnh đại diện."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Status Reason
+    physical_name: status_reason
+    business_meaning: Lý do trạng thái người dùng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.STATUS_REASON
+    comment: "BCV: không có term riêng. Mô tả lý do trạng thái hiện tại (STATUS đã loại khỏi scope)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Login Failure Count
+    physical_name: login_failure_count
+    business_meaning: Số lần đăng nhập thất bại.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.COUNT_LOGIN_FALSE
+    comment: "BCV: không có term riêng. Nguồn NUMBER(1) — đếm số lần login fail, domain Small Counter phù hợp."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Lock Expiry Timestamp
+    physical_name: lock_expiry_tms
+    business_meaning: Thời gian hết khóa tài khoản.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.EXPIRE_LOCK_USER
+    comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Last Login Timestamp
+    physical_name: last_login_tms
+    business_meaning: Lần đăng nhập cuối cùng.
+    data_domain: Timestamp
+    data_type: timestamp
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.LAST_LOGIN
+    comment: "BCV: không có term riêng. Nguồn TIMESTAMP(6)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Representative Name
+    physical_name: representative_nm
+    business_meaning: Tên người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.REPRESENTATIVE_NAME
+    comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD (người đại diện có phải Involved Party độc lập không)."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Representative Citizen Id Number
+    physical_name: representative_citizen_id_nbr
+    business_meaning: Số căn cước người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.REPRESENTATIVE_CITIZEN_ID
+    comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Representative Phone
+    physical_name: representative_phone
+    business_meaning: Số điện thoại người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.REPRESENTATIVE_PHONE
+    comment: "Denormalized — giữ đến khi xác nhận T1-03 HLD."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Representative Email
+    physical_name: representative_email
+    business_meaning: Email người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.REPRESENTATIVE_EMAIL
+    comment: "Tên cột nguồn có typo 'REPRESENTATIVE _EMAIL' (dấu cách thừa) — ETL cần dùng tên thực tế trên DB. Denormalized — giữ đến khi xác nhận T1-03 HLD."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null
+
+  - name: Representative Position Id
+    physical_name: representative_position_id
+    business_meaning: Chức vụ người đại diện.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IAM
+    source_table: USERS
+    source_column: IAM.USERS.REPRESENTATIVE_POSITION_ID
+    comment: "Denormalized VARCHAR2(255) — giữ dạng Text đến khi xác nhận T1-03 HLD."
+    classification_context: "Source System Code = 'IAM_USERS'"
+    etl_derived_value: null

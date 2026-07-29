@@ -18,6 +18,8 @@ Danh sách group dùng trong cột "Nhóm" của mục 7f HLD Overview. Group nh
 | `Chưa có cột` | Chưa có thông tin cột nguồn |
 | `UI metadata` | Cấu hình hiển thị UI |
 | `Xử lý luồng khác` | Dữ liệu đã được thiết kế/xử lý ở một luồng ETL/nghiệp vụ khác ngoài Atomic — không thiết kế lại tại đây |
+| `Fact Data` | Bảng fact nghiệp vụ đã có/đang có thiết kế Atomic nhưng bị loại khỏi scope theo quyết định tường minh của Data Modeler (không thuộc nhóm kỹ thuật nào ở trên) |
+| `Khảo sát sai` | Bảng có trong khảo sát nguồn (CSV/BRD) nhưng không tồn tại trong DDL/schema thực tế khi đối chiếu lại — dữ liệu khảo sát lỗi thời/sai sót |
 
 ## Quy tắc bổ sung group mới
 
@@ -35,3 +37,4 @@ Group mới phải bổ sung vào file này trước khi dùng trong HLD Overvie
 | Snapshot nguồn (IsBefore + blob) | `Snapshot nguồn — không phải entity nghiệp vụ Atomic` |
 | Cascade từ bảng đã drop | `Cascade drop từ [anchor_table]` |
 | Đã xử lý ở luồng khác | `Đã được xử lý ở luồng ETL/nghiệp vụ khác — không thiết kế lại trên Atomic` |
+| Bảng không tồn tại trong DDL thực tế | `Không tồn tại trong DDL UAT thực tế (schema [SCHEMA]) — dữ liệu khảo sát nguồn lỗi thời/sai sót, đã reconcile [ngày]` |

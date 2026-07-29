@@ -11,8 +11,8 @@ Schema shared entity cố định toàn dự án. Bảng nguồn nào map vào s
 | Nguồn | `Source System Code` | Classification Value |
 | Loại giấy tờ | `Identification Type Code` | Classification Value |
 | Số giấy tờ | `Identification Number` | Text |
-| Ngày cấp | `Issue Date` | Date |
-| Nơi cấp | `Issuing Authority Name` | Text |
+| Ngày cấp | `Identification Issue Date` | Date |
+| Nơi cấp | `Identification Issue Place` | Text |
 
 **Trường hợp đặc biệt:** Nguồn có `identity_no` nhưng không có cột type phân biệt → dùng `IP_ALT_ID_TYPE=NATIONAL_ID` làm default. Document trong `pending_design.yaml` (`reason="Nguồn không phân biệt loại giấy tờ"`, `action="Cần profile data nguồn để xác định loại giấy tờ thực tế"`) và thêm 1 điểm xác nhận vào HLD Tier tương ứng.
 
@@ -59,7 +59,7 @@ Comment vẫn ghi `FK target: Geographic Area.Geographic Area Id` cho trường 
 | Loại kênh | `Electronic Address Type Code` | Classification Value |
 | Giá trị | `Electronic Address Value` | Text |
 
-> Mỗi loại kênh (PHONE, FAX, EMAIL, WEBSITE, EMAIL_DISCLOSURE...) là 1 cặp `Electronic Address Type Code` + `Electronic Address Value` riêng trong file.
+> Mỗi loại kênh (PHONE, FAX, EMAIL, WEBSITE, EMAIL_DISCLOSURE...) là 1 cặp `Electronic Address Type Code` + `Electronic Address Value` riêng trong file. `Involved Party Id` / `Involved Party Code` / `Source System Code` chỉ xuất hiện **đúng 1 lần** trong file (header dùng chung) — KHÔNG lặp lại 3 trường này cho mỗi kênh liên lạc.
 
 ## Quy tắc `classification_context` — BẮT BUỘC
 

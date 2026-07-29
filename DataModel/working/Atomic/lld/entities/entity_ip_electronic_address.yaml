@@ -54,9 +54,6 @@ sources:
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
   lld_file: "SCMS/lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL_IP_Electronic_Address.yaml"
 - source_system: "SCMS"
-  source_table: "CUSTODIAN_BANK"
-  lld_file: "SCMS/lld_SCMS_CUSTODIAN_BANK_IP_Electronic_Address.yaml"
-- source_system: "SCMS"
   source_table: "SC_FIRM_SENIOR_PERSONNEL"
   lld_file: "SCMS/lld_SCMS_SC_FIRM_SENIOR_PERSONNEL_IP_Electronic_Address.yaml"
 - source_system: "SCMS"
@@ -132,9 +129,6 @@ sources:
   source_table: "LEGAL_ENTITIES"
   lld_file: "IDS/lld_IDS_LEGAL_ENTITIES_IP_Electronic_Address.yaml"
 - source_system: "IDS"
-  source_table: "AF_PROFILES"
-  lld_file: "IDS/lld_IDS_AF_PROFILES_IP_Electronic_Address.yaml"
-- source_system: "IDS"
   source_table: "AF_LEGAL_REPRESENTATIVE"
   lld_file: "IDS/lld_IDS_AF_LEGAL_REPRESENTATIVE_IP_Electronic_Address.yaml"
 - source_system: "IDS"
@@ -153,8 +147,6 @@ sources:
   source_table: "TAX_REG_REPRESENTATIVE"
   lld_file: "KNT/lld_KNT_TAX_REG_REPRESENTATIVE_IP_Electronic_Address.yaml"
 consolidation_notes:
-- "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Id' — đặt nullable=true"
-- "⚠️ FIMS.INVESTOR: thiếu attribute 'Involved Party Code' — đặt nullable=true"
 - "⚠️ IAM.USERS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=PHONE)\
   \ — đặt nullable=true"
 - "⚠️ SCMS.SC_FIRM_REP_OFFICE: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=EMAIL)\
@@ -171,37 +163,9 @@ consolidation_notes:
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=EMAIL_PERSONAL)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ELEC_ADDR_TYPE=PHONE)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ELEC_ADDR_TYPE=PHONE)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ELEC_ADDR_TYPE=FAX)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ELEC_ADDR_TYPE=FAX)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ELEC_ADDR_TYPE=EMAIL)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ELEC_ADDR_TYPE=EMAIL)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ELEC_ADDR_TYPE=WEBSITE)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ELEC_ADDR_TYPE=WEBSITE)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ELEC_ADDR_TYPE=PHONE_BUSINESS)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ELEC_ADDR_TYPE=PHONE_BUSINESS)\
-  \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=PHONE_BUSINESS)\
   \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS)\
-  \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Id' (ctx=IP_ELEC_ADDR_TYPE=FAX_BUSINESS)\
-  \ — đặt nullable=true"
-- "⚠️ NHNCK.UNITS: thiếu attribute 'Involved Party Code' (ctx=IP_ELEC_ADDR_TYPE=FAX_BUSINESS)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.UNITS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=FAX_BUSINESS)\
   \ — đặt nullable=true"
@@ -210,11 +174,14 @@ attributes:
   physical_name: "ip_id"
   description: "FK đến Securities Company Major Shareholder Relation (Involved Party)."
   data_domain: "Surrogate Key"
-  nullable: true
+  nullable: false
   is_primary_key: false
-  comment: "FK target: Regulatory Authority Organization Unit.Regulatory Authority\
-    \ Organization Unit Id. Shared entity — không có PK surrogate riêng. Hash: hash_id('NHNCK.UNITS',\
-    \ ID)."
+  comment: "FK target: ra_organization_unit.ra_ou_id. Shared entity — không có PK\
+    \ surrogate riêng. Nguồn IP Electronic Address chính là NHNCK.UNITS (cùng dòng\
+    \ dữ liệu với Regulatory Authority Organization Unit, không cần crosswalk qua\
+    \ bảng khác) nên chỉ cần đổi cơ sở hash: hash_id('NHNCK.UNITS', UNIT_CODE) | Trước\
+    \ đây hash trực tiếp theo ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
+    \ từ UNIT_CODE) — đã sửa 2026-07-27."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -232,7 +199,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.ID"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID"
@@ -258,18 +224,17 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: "FMS.DISTRIBUTOR_PERSONNEL.ID"
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ID"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.ID"
     IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.ID"
     IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.ID"
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
+    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
+    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company Foreign Representative Office Personnel."
   data_domain: "Text"
-  nullable: true
+  nullable: false
   is_primary_key: false
   comment: "Lookup pair: Regulatory Authority Organization Unit.Regulatory Authority\
     \ Organization Unit Code. Pair with Involved Party Id."
@@ -290,7 +255,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.ID"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.ID"
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.ID"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.ID"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.ID"
@@ -316,13 +280,12 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: "FMS.DISTRIBUTOR_PERSONNEL.ID"
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.ID"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.ID"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.ID"
     IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.ID"
     IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.ID"
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
+    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
+    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
+    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
+    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -347,7 +310,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -373,7 +335,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -404,7 +365,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -430,7 +390,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -461,7 +420,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.PHONE"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.PHONE"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.PHONE"
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.PHONE"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.PHONE"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DIENTHOAI"
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.PHONE"
@@ -487,7 +445,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: "FMS.DISTRIBUTOR_PERSONNEL.PHONE"
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.PHONE_NO"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.PHONE_NO"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.PHONE_NO"
     IDS.AF_LEGAL_REPRESENTATIVE: "IDS.AF_LEGAL_REPRESENTATIVE.PHONE_NO"
     IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.PHONE_NO"
     FIMS.INVESTOR: "FIMS.INVESTOR.Telephone"
@@ -518,7 +475,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -544,7 +500,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -575,7 +530,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.EMAIL"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.EMAIL"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL.EMAIL"
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.EMAIL"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.EMAIL"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.EMAIL"
     SCMS.SC_FIRM_SHAREHOLDER: "SCMS.SC_FIRM_SHAREHOLDER.EMAIL"
@@ -601,7 +555,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: "IDS.LEGAL_REPRESENTATIVE.EMAIL"
     FIMS.INVESTOR: "FIMS.INVESTOR.Email"
@@ -632,7 +585,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -658,7 +610,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -689,7 +640,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.FAX"
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.FAX"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.FAX"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -715,7 +665,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.FAX_NO"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.FAX_NO"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.FAX_NO"
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: "FIMS.INVESTOR.Fax"
@@ -746,7 +695,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -772,7 +720,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -804,7 +751,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.DIDONG"
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -830,7 +776,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -861,7 +806,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -887,7 +831,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -918,7 +861,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: "SCMS.CUSTODIAN_BANK.WEBSITE"
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -944,7 +886,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: "IDS.COMPANY_PROFILES.WEBSITE"
     IDS.LEGAL_ENTITIES: "IDS.LEGAL_ENTITIES.WEBSITE"
-    IDS.AF_PROFILES: "IDS.AF_PROFILES.WEBSITE"
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: "FIMS.INVESTOR.Website"
@@ -975,7 +916,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1001,7 +941,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -1032,7 +971,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1058,7 +996,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -1089,7 +1026,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1115,7 +1051,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -1146,7 +1081,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL.DISCLOSURE_EMAIL"
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: "SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_EMAIL"
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1172,7 +1106,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -1204,7 +1137,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1230,7 +1162,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -1261,7 +1192,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1287,592 +1217,11 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS.INVESTOR',\
-    \ TransactionCode)."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration Representative."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
-    \ Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS.INVESTOR',\
-    \ TransactionCode)."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration Representative."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
-    \ Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration Representative (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS.INVESTOR',\
-    \ TransactionCode)."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration Representative."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
-    \ Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: "FIMS.TRADINGREPRESENTATIVE.ID"
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: "KNT.TAX_REG_REPRESENTATIVE.ID"
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến Foreign Investor (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Hash: hash_id('FIMS.INVESTOR',\
-    \ TransactionCode)."
-  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã Foreign Investor."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Involved\
-    \ Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=WEBSITE"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: "FIMS.INVESTOR.TransactionCode"
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: null
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
-    \ Pair with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=PHONE_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
     KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
@@ -1898,7 +1247,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1924,7 +1272,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -1955,7 +1302,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -1981,128 +1327,11 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_PHONE"
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
-    \ Pair with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=EMAIL_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
     KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
@@ -2128,7 +1357,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2154,7 +1382,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -2185,7 +1412,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2211,128 +1437,11 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
     FIMS.TRADINGREPRESENTATIVE: null
     KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.BUSINESS_EMAIL"
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Id"
-  physical_name: "ip_id"
-  description: "FK đến External Tax Registration (Involved Party)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: true
-  comment: "FK target: External Tax Registration.External Tax Registration Id. Hash:\
-    \ hash_id('KNT.TAX_REGISTRATION_INFO', TAX_CODE)."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-    KNT.TAX_REG_REPRESENTATIVE: null
-- attribute_name: "Involved Party Code"
-  physical_name: "ip_code"
-  description: "Mã External Tax Registration."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Lookup pair: External Tax Registration.External Tax Registration Code.\
-    \ Pair with Involved Party Id."
-  classification_context: "IP_ELEC_ADDR_TYPE=FAX_BUSINESS"
-  etl_derived_value: null
-  source_mappings:
-    NHNCK.UNITS: null
-    NHNCK.ORGANIZATIONS: null
-    NHNCK.PROFESSIONALS: null
-    IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
-    SCMS.BANK: null
-    SCMS.SC_FIRM_INFO: null
-    SCMS.SC_FIRM_BRANCH: null
-    SCMS.SC_FIRM_REP_OFFICE: null
-    SCMS.SC_FIRM_TRANSACTION_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH: null
-    SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
-    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
-    SCMS.SC_FIRM_SENIOR_PERSONNEL: null
-    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
-    SCMS.SC_FIRM_SHAREHOLDER: null
-    SCMS.SC_FIRM_INSIDER_RELATION: null
-    SCMS.SC_FIRM_RELATED_PERSON: null
-    SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION: null
-    FMS.SECURITIES: null
-    FMS.BANK_MONI: null
-    FMS.AGENCIES: null
-    FMS.BRANCHS: null
-    FMS.FOR_BRCH: null
-    FMS.TL_PROFILES: null
-    FMS.AGENCIES_BRA: null
-    FMS.STF_FG_BRCH: null
-    FMS.REPRESENT: null
-    FMS.INSIDER: null
-    FMS.PENSION_AGENT: null
-    FMS.PENSION_PROVIDER: null
-    FMS.DISTRIBUTOR_AGENT: null
-    FMS.OTHER_AGENT: null
-    FMS.TRANSFER_AGENT: null
-    FMS.DISTRIBUTOR_LOCATION: null
-    FMS.DISTRIBUTOR_PERSONNEL: null
-    IDS.COMPANY_PROFILES: null
-    IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
-    IDS.AF_LEGAL_REPRESENTATIVE: null
-    IDS.LEGAL_REPRESENTATIVE: null
-    FIMS.INVESTOR: null
-    FIMS.TRADINGREPRESENTATIVE: null
-    KNT.TAX_REGISTRATION_INFO: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
     KNT.TAX_REG_REPRESENTATIVE: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
@@ -2358,7 +1467,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2384,7 +1492,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null
@@ -2415,7 +1522,6 @@ attributes:
     SCMS.SC_FIRM_FOREIGN_BRANCH: null
     SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL: null
     SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL: null
-    SCMS.CUSTODIAN_BANK: null
     SCMS.SC_FIRM_SENIOR_PERSONNEL: null
     SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
     SCMS.SC_FIRM_SHAREHOLDER: null
@@ -2441,7 +1547,6 @@ attributes:
     FMS.DISTRIBUTOR_PERSONNEL: null
     IDS.COMPANY_PROFILES: null
     IDS.LEGAL_ENTITIES: null
-    IDS.AF_PROFILES: null
     IDS.AF_LEGAL_REPRESENTATIVE: null
     IDS.LEGAL_REPRESENTATIVE: null
     FIMS.INVESTOR: null

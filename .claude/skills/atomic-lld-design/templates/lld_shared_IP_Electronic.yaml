@@ -2,8 +2,9 @@ schema_type: lld_source_table
 schema_version: "2.0"
 
 # Template: Involved Party Electronic Address
-# Mỗi loại kênh liên lạc (PHONE, FAX, EMAIL, WEBSITE) = 1 block attributes riêng
-# với classification_context IP_ELEC_ADDR_TYPE={TYPE}
+# Involved Party Id/Code + Source System Code chỉ xuất hiện 1 lần (header dùng chung).
+# Mỗi loại kênh liên lạc (PHONE, FAX, EMAIL, WEBSITE) = 1 block Type Code + Value riêng
+# với classification_context IP_ELEC_ADDR_TYPE={TYPE}. KHÔNG lặp lại header cho từng kênh.
 
 metadata:
   source_system: {SOURCE}
@@ -25,7 +26,7 @@ metadata:
   notes: ""
 
 attributes:
-  # ══ CONTEXT: PHONE ══════════════════════════════════════════════════
+  # ══ HEADER (xuất hiện đúng 1 lần — KHÔNG lặp lại theo từng kênh) ═════
   - attribute_name: Involved Party Id
     physical_name: ip_id
     description: "FK đến {Parent Entity} (Involved Party)."
@@ -36,7 +37,7 @@ attributes:
     source_columns:
       - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
     comment: "FK target: {Parent Entity}.{Parent Entity} Id."
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    classification_context: null
     etl_derived_value: null
 
   - attribute_name: Involved Party Code
@@ -49,20 +50,8 @@ attributes:
     source_columns:
       - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
     comment: "Lookup pair: {Parent Entity}.{Parent Entity} Code. Pair with Involved Party Id."
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    classification_context: null
     etl_derived_value: null
-
-  - attribute_name: Electronic Address Type Code
-    physical_name: elec_addr_type_code
-    description: "Loại kênh liên lạc — điện thoại."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "Scheme: IP_ELEC_ADDR_TYPE."
-    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
-    etl_derived_value: "PHONE"
 
   - attribute_name: Source System Code
     physical_name: src_stm_code
@@ -75,6 +64,19 @@ attributes:
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM={SOURCE}.{TABLE}"
     etl_derived_value: "{SOURCE}.{TABLE}"
+
+  # ══ CONTEXT: PHONE ══════════════════════════════════════════════════
+  - attribute_name: Electronic Address Type Code
+    physical_name: elec_addr_type_code
+    description: "Loại kênh liên lạc — điện thoại."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "Scheme: IP_ELEC_ADDR_TYPE."
+    classification_context: "IP_ELEC_ADDR_TYPE=PHONE"
+    etl_derived_value: "PHONE"
 
   - attribute_name: Electronic Address Value
     physical_name: elec_addr_val
@@ -90,38 +92,12 @@ attributes:
     etl_derived_value: null
 
   # ══ CONTEXT: FAX (nếu nguồn có) ════════════════════════════════════
-  # - attribute_name: Involved Party Id
-  #   physical_name: ip_id
+  # - attribute_name: Electronic Address Type Code
+  #   physical_name: elec_addr_type_code
   #   ...
   #   classification_context: "IP_ELEC_ADDR_TYPE=FAX"
 
   # ══ CONTEXT: EMAIL ══════════════════════════════════════════════════
-  - attribute_name: Involved Party Id
-    physical_name: ip_id
-    description: "FK đến {Parent Entity} (Involved Party)."
-    data_domain: Surrogate Key
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns:
-      - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
-    comment: "FK target: {Parent Entity}.{Parent Entity} Id."
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: null
-
-  - attribute_name: Involved Party Code
-    physical_name: ip_code
-    description: "Mã {Parent Entity}."
-    data_domain: Text
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns:
-      - "{SOURCE}.{schema}.{TABLE}.{PK_COLUMN}"
-    comment: "Lookup pair: {Parent Entity}.{Parent Entity} Code. Pair with Involved Party Id."
-    classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
-    etl_derived_value: null
-
   - attribute_name: Electronic Address Type Code
     physical_name: elec_addr_type_code
     description: "Loại kênh liên lạc — email."
@@ -133,18 +109,6 @@ attributes:
     comment: "Scheme: IP_ELEC_ADDR_TYPE."
     classification_context: "IP_ELEC_ADDR_TYPE=EMAIL"
     etl_derived_value: "EMAIL"
-
-  - attribute_name: Source System Code
-    physical_name: src_stm_code
-    description: "Mã hệ thống nguồn dữ liệu."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: false
-    status: draft
-    source_columns: []
-    comment: "Scheme: SOURCE_SYSTEM."
-    classification_context: "SOURCE_SYSTEM={SOURCE}.{TABLE}"
-    etl_derived_value: "{SOURCE}.{TABLE}"
 
   - attribute_name: Electronic Address Value
     physical_name: elec_addr_val

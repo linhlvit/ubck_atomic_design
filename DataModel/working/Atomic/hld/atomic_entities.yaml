@@ -429,6 +429,37 @@ entities:
   status: "approved"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
+  atomic_entity: "Securities Practitioner Post Certification Training Course"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_post_certification_training_course"
+  description: "Danh mục khóa học/lớp bồi dưỡng kiến thức định kỳ sau cấp CCHN. Master\
+    \ entity khóa bồi dưỡng, không FK đến bảng nghiệp vụ nào."
+  source_table: "NHNCK.POST_CERT_TRAINING_COURSES"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  atomic_entity: "Securities Practitioner Post Certification Training Result"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_post_certification_training_result"
+  description: "Kết quả tham gia khóa bồi dưỡng sau cấp CCHN của người hành nghề.\
+    \ FK đến Post Certification Training Course và Practitioner."
+  source_table: "NHNCK.POST_CERT_TRAINING_RESULTS"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  atomic_entity: "Securities Practitioner Professional Training Class"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Practitioner"
+  entity_physical_name: "sp_professional_training_class"
+  description: "Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán.\
+    \ Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và\
+    \ địa điểm thi."
+  source_table: "NHNCK.SPECIALIZATION_COURSES"
+  status: "approved"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
   atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
   table_type: "Fundamental"
   domain_prefix: "Securities Practitioner Professional Training Class"
@@ -779,16 +810,6 @@ entities:
   source_table: "THANHTRA.INSPECTION_CONCLUSION_REMEDIAL"
   status: "draft"
 - bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Filing"
-  atomic_entity: "Public Company Report Submission"
-  table_type: "Fact Append"
-  domain_prefix: "Public Company"
-  entity_physical_name: "pc_report_submission"
-  description: "Lần nộp báo cáo/tin CBTT chính thức của CTĐC đã được phê duyệt (filter\
-    \ NEWS_STATUS_CD = APPROVED): liên kết CTĐC với form CBTT và ngày nộp."
-  source_table: "IDS.COMPANY_DATA"
-  status: "draft"
-- bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Legal Decision"
   atomic_entity: "Securities Company Administrative Penalty Decision"
   table_type: "Fundamental"
@@ -855,6 +876,17 @@ entities:
     \ hồi/hủy). FK đến Practitioner."
   source_table: "NHNCK.CERTIFICATE_RECORDS"
   status: "approved"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Gov. Registration Document"
+  atomic_entity: "Securities Practitioner License Certificate Status Change History"
+  table_type: "Fact Append"
+  domain_prefix: "Securities Practitioner License"
+  entity_physical_name: "sp_license_certificate_status_change_history"
+  description: "Lịch sử thay đổi trạng thái CCHN (cấp/thu hồi/hủy/hết hiệu lực). Mỗi\
+    \ dòng = 1 lần thay đổi trạng thái insert-only. FK đến License Certificate Document\
+    \ và Decision."
+  source_table: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES"
+  status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
   atomic_entity: "Securities Practitioner License Certificate Type"
@@ -1034,17 +1066,6 @@ entities:
     \ insert-only. Ghi nhận số cổ phần và tỷ lệ sở hữu trước/sau thay đổi."
   source_table: "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE"
   status: "draft"
-- bcv_core_object: "Event"
-  bcv_concept: "[Event] Training Course"
-  atomic_entity: "Securities Practitioner Professional Training Class"
-  table_type: "Fundamental"
-  domain_prefix: "Securities Practitioner"
-  entity_physical_name: "sp_professional_training_class"
-  description: "Khóa học chuyên môn bổ sung kiến thức cho người hành nghề chứng khoán.\
-    \ Master entity của khóa học — ghi nhận mã, tên, loại chuyên môn, thời gian và\
-    \ địa điểm thi."
-  source_table: "NHNCK.SPECIALIZATION_COURSES"
-  status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
   atomic_entity: "Custodian Bank"
@@ -1237,6 +1258,16 @@ entities:
   source_table: "FMS.BRANCHS"
   status: "draft"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Individual"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "individual"
+  description: "Thể nhân độc lập được UBCKNN quản lý qua xác thực danh tính với C06\
+    \ (CSDL quốc gia về dân cư). Master entity, KHÔNG FK đến Securities Practitioner."
+  source_table: "NHNCK.IDENTITY_INFO_C06S"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Funds"
   atomic_entity: "Investment Fund"
   table_type: "Fundamental"
@@ -1267,19 +1298,19 @@ entities:
   description: "Lưu trữ các giấy tờ định danh thay thế của Involved Party (CMND/CCCD/Hộ\
     \ chiếu/Giấy phép kinh doanh/Chứng chỉ hành nghề). Mỗi dòng = 1 loại giấy tờ từ\
     \ 1 nguồn."
-  source_table: "NHNCK.PROFESSIONALS, IAM.USERS, THANHTRA.PENALTY_DECISION_SUBJECT,\
-    \ SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE,\
-    \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH,\
-    \ SCMS.AUDITOR, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
-    \ SCMS.CUSTODIAN_BANK, SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER,\
-    \ SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_OWNERSHIP_RELATION,\
-    \ SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE,\
+  source_table: "NHNCK.PROFESSIONALS, IAM.USERS, SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO,\
+    \ SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE,\
+    \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.AUDITOR,\
+    \ SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
+    \ SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER, SCMS.SC_FIRM_SHAREHOLDER,\
+    \ SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_OWNERSHIP_RELATION, SCMS.SC_FIRM_RELATED_PERSON,\
+    \ SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, SCMS.SC_FIRM_SHAREHOLDER_REPRESENTATIVE,\
     \ SCMS.SC_FIRM_SHAREHOLDER_RELATION, FMS.SECURITIES, FMS.FOR_BRCH, FMS.TL_PROFILES,\
     \ FMS.FUNDS, FMS.INVES, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.MB_FUND, FMS.INSIDER,\
     \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.BANK_EMPLOY,\
     \ FMS.TL_PRO_RELA, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.INSDER_RPRST,\
-    \ IDS.COMPANY_PROFILES, IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.IDENTITY,\
-    \ IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REG_REPRESENTATIVE"
+    \ IDS.COMPANY_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE, IDS.IDENTITY, IDS.LEGAL_REPRESENTATIVE,\
+    \ FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REG_REPRESENTATIVE, NHNCK.IDENTITY_INFO_C06S"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1293,15 +1324,14 @@ entities:
     \ SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE,\
     \ SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_BRANCH,\
     \ SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL, SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL,\
-    \ SCMS.CUSTODIAN_BANK, SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER,\
-    \ SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_RELATED_PERSON,\
-    \ SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES,\
-    \ FMS.BRANCHS, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.AGENCIES_BRA, FMS.STF_FG_BRCH,\
-    \ FMS.REPRESENT, FMS.INSIDER, FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT,\
-    \ FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.DISTRIBUTOR_LOCATION, FMS.DISTRIBUTOR_PERSONNEL,\
-    \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, IDS.AF_LEGAL_REPRESENTATIVE,\
-    \ IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE, KNT.TAX_REGISTRATION_INFO,\
-    \ KNT.TAX_REG_REPRESENTATIVE"
+    \ SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER, SCMS.SC_FIRM_SHAREHOLDER,\
+    \ SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION,\
+    \ FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES, FMS.BRANCHS, FMS.FOR_BRCH, FMS.TL_PROFILES,\
+    \ FMS.AGENCIES_BRA, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.PENSION_AGENT,\
+    \ FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.OTHER_AGENT, FMS.TRANSFER_AGENT,\
+    \ FMS.DISTRIBUTOR_LOCATION, FMS.DISTRIBUTOR_PERSONNEL, IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES,\
+    \ IDS.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE,\
+    \ KNT.TAX_REGISTRATION_INFO, KNT.TAX_REG_REPRESENTATIVE"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1312,19 +1342,18 @@ entities:
   description: "Lưu trữ các địa chỉ bưu chính của Involved Party (trụ sở/kinh doanh/thường\
     \ trú/nơi ở hiện tại). Mỗi dòng = 1 loại địa chỉ từ 1 nguồn."
   source_table: "NHNCK.UNITS, NHNCK.ORGANIZATIONS, NHNCK.PROFESSIONALS, IAM.USERS,\
-    \ THANHTRA.EXAMINATION_TEAM_TARGET, THANHTRA.PENALTY_DECISION_SUBJECT, SCMS.AUDIT_FIRM,\
-    \ SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE,\
+    \ SCMS.AUDIT_FIRM, SCMS.BANK, SCMS.SC_FIRM_INFO, SCMS.SC_FIRM_BRANCH, SCMS.SC_FIRM_REP_OFFICE,\
     \ SCMS.SC_FIRM_TRANSACTION_OFFICE, SCMS.SC_FIRM_DOMESTIC_REP_OFFICE, SCMS.SC_FIRM_FOREIGN_REP_OFFICE,\
     \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_VN, SCMS.SC_FIRM_FOREIGN_BRANCH, SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL,\
-    \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL, SCMS.CUSTODIAN_BANK, SCMS.SC_FIRM_SENIOR_PERSONNEL,\
-    \ SCMS.SC_FIRM_LICENSED_PRACTITIONER, SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION,\
-    \ SCMS.SC_FIRM_OWNERSHIP_RELATION, SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION,\
-    \ FMS.SECURITIES, FMS.BANK_MONI, FMS.AGENCIES, FMS.BRANCHS, FMS.FOR_BRCH, FMS.TL_PROFILES,\
-    \ FMS.INVES, FMS.AGENCIES_BRA, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.MB_FUND, FMS.INSIDER,\
+    \ SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL, SCMS.SC_FIRM_SENIOR_PERSONNEL, SCMS.SC_FIRM_LICENSED_PRACTITIONER,\
+    \ SCMS.SC_FIRM_SHAREHOLDER, SCMS.SC_FIRM_INSIDER_RELATION, SCMS.SC_FIRM_OWNERSHIP_RELATION,\
+    \ SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, FMS.SECURITIES,\
+    \ FMS.BANK_MONI, FMS.AGENCIES, FMS.BRANCHS, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.INVES,\
+    \ FMS.AGENCIES_BRA, FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.MB_FUND, FMS.INSIDER,\
     \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.DISTRIBUTOR_AGENT, FMS.TL_PRO_RELA,\
     \ FMS.OTHER_AGENT, FMS.TRANSFER_AGENT, FMS.INSDER_RELA, FMS.DISTRIBUTOR_LOCATION,\
-    \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, IDS.AF_PROFILES, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE,\
-    \ KNT.TAX_REGISTRATION_INFO"
+    \ IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES, FIMS.INVESTOR, FIMS.TRADINGREPRESENTATIVE,\
+    \ KNT.TAX_REGISTRATION_INFO, NHNCK.IDENTITY_INFO_C06S"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual Employment Status"
@@ -1692,13 +1721,25 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
+  atomic_entity: "Account Investor"
+  table_type: ""
+  domain_prefix: "Account Investor"
+  entity_physical_name: ""
+  description: "Tài khoản giao dịch chứng khoán của nhà đầu tư trong hệ thống GSGD\
+    \ (nguồn gốc VSDC). Gộp thông tin cơ bản (định danh, loại hình NĐT, trạng thái,\
+    \ người/ngày nhận ủy quyền) và thông tin mở rộng liên hệ/ngân hàng vào 1 entity\
+    \ duy nhất. Số CCCD (Identity Numb"
+  source_table: "GSGD.INVESTOR_ACCOUNT"
+  status: "draft"
+- bcv_core_object: ""
+  bcv_concept: ""
   atomic_entity: "Audit Firm"
   table_type: ""
-  domain_prefix: "Audit Firm"
-  entity_physical_name: "audit_firm"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Công ty kiểm toán được UBCKNN chấp thuận thực hiện kiểm toán báo cáo\
     \ tài chính của CTCK. Ghi nhận mã, tên, số GPĐKKD và trạng thái hoạt động."
-  source_table: "SCMS.AUDIT_FIRM, IDS.AF_PROFILES"
+  source_table: "SCMS.AUDIT_FIRM"
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
@@ -1826,7 +1867,7 @@ entities:
     \ entity) theo quyết định tường minh Data Modeler (2026-07-17) — IDS.CATEGORIES\
     \ và ECAT.BUSINESS_LINE_LEVEL_1/2 xác nhận cùng 1 concept nghiệp vụ, xem IDS_HLD_Tier1.md\
     \ T1-13 / IDS_HLD_Overview.md mục 7e #12."
-  source_table: "ECAT.BUSINESS_LINE_LEVEL_1, ECAT.BUSINESS_LINE_LEVEL_2, IDS.CATEGORIES"
+  source_table: "ECAT.BUSINESS_LINE_LEVEL_1, ECAT.BUSINESS_LINE_LEVEL_2"
   status: "draft"
 - bcv_core_object: "Common"
   bcv_concept: "[Common] Business Line"
@@ -1860,7 +1901,7 @@ entities:
   atomic_entity: "Classification Event Type"
   table_type: ""
   domain_prefix: "Classification"
-  entity_physical_name: "cl_event_type"
+  entity_physical_name: ""
   description: "Danh mục loại sự kiện/sự vụ nghiệp vụ (thành lập, điều chỉnh vốn,\
     \ đổi tên...) làm cơ sở xác định nghĩa vụ báo cáo/CBTT của CTCK. Nâng cấp từ Classification\
     \ Value (scheme SCMS_EVENT_TYPE) lên entity thật. Table Type = Relative (khác\
@@ -2005,10 +2046,10 @@ entities:
     \ cho template số liệu."
   source_table: "IDS.REPORT_CATALOG"
   status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Identity and Access Management User"
-  table_type: ""
+  table_type: "Fundamental"
   domain_prefix: ""
   entity_physical_name: "identity_and_access_management_user"
   description: "Người dùng hệ thống IAM — thể nhân (cán bộ UBCK, cán bộ CTCK, chuyên\
@@ -2303,8 +2344,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Alert Financial Indicator"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_alert_financial_indicator"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Chỉ tiêu tài chính dùng trong hệ thống cảnh báo giám sát CTCK. Danh\
     \ mục master định nghĩa tên, công thức tính và loại kỳ theo dõi cho từng chỉ tiêu\
     \ tài chính ngưỡng cảnh báo."
@@ -2314,8 +2355,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Alert Indicator Condition"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_alert_indicator_condition"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Điều kiện kích hoạt cảnh báo cho từng chỉ tiêu cảnh báo. Ghi nhận\
     \ biểu thức logic, ngưỡng giá trị, toán tử so sánh và thời hạn hiệu lực của quy\
     \ tắc."
@@ -2325,8 +2366,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Alert Run"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_alert_run"
+  domain_prefix: "Securities Company Alert"
+  entity_physical_name: ""
   description: "Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho\
     \ 1 chỉ tiêu cảnh báo. Mỗi dòng = 1 lần thực thi insert-only, ghi nhận chỉ tiêu\
     \ được kiểm tra, phạm vi dữ liệu quét, thời gian bắt đầu/kết thúc, trạng thái\
@@ -2338,7 +2379,7 @@ entities:
   atomic_entity: "Securities Company Business Transaction Relationship"
   table_type: ""
   domain_prefix: "Securities Company"
-  entity_physical_name: "sc_business_transaction_relationship"
+  entity_physical_name: ""
   description: "Ghi nhận CTCK được cấp phép hoạt động nghiệp vụ kinh doanh chứng khoán\
     \ nào (FK Securities Company + Classification Business Transaction), kèm trạng\
     \ thái liên kết (RECORD_STATUS). BCV Concept `[Event] Party Registration` — cùng\
@@ -2349,8 +2390,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Complaint Petition"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_complaint_petition"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Đơn khiếu nại, tố cáo, kiến nghị hoặc phản ánh liên quan đến CTCK\
     \ được UBCKNN tiếp nhận và xử lý. Ghi nhận loại đơn, người gửi, ngày tiếp nhận\
     \ và kết quả giải quyết."
@@ -2358,20 +2399,10 @@ entities:
   status: "draft"
 - bcv_core_object: ""
   bcv_concept: ""
-  atomic_entity: "Securities Company Custodian Bank"
-  table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_custodian_bank"
-  description: "Thỏa thuận lưu ký/thanh toán giữa CTCK và ngân hàng được chỉ định.\
-    \ Ghi nhận loại dịch vụ, ngày ký kết và trạng thái hiệu lực của thỏa thuận."
-  source_table: "SCMS.CUSTODIAN_BANK"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
   atomic_entity: "Securities Company Disclosure Report"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_disclosure_report"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Báo cáo công bố thông tin (CBTT) của CTCK gửi lên UBCKNN theo quy\
     \ định pháp luật. Ghi nhận loại CBTT, tóm tắt nội dung, ngày nộp và trạng thái\
     \ phê duyệt."
@@ -2381,8 +2412,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Disclosure Shareholder"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_disclosure_shareholder"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: ""
   source_table: "SCMS.DISCLOSURE_SHAREHOLDER"
   status: "draft"
@@ -2390,8 +2421,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Foreign Branch"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_foreign_branch"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Chi nhánh của CTCK nước ngoài được cấp phép hoạt động tại Việt Nam.\
     \ Ghi nhận thông tin công ty mẹ, quốc tịch, vốn được cấp, số giấy phép và trạng\
     \ thái pháp lý."
@@ -2401,8 +2432,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Foreign Branch Periodic Report"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_foreign_branch_periodic_report"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Báo cáo định kỳ do chi nhánh CTCK nước ngoài nộp lên UBCKNN. Ghi nhận\
     \ kỳ, năm, hạn nộp theo quy định, ngày nộp thực tế và trạng thái xử lý."
   source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
@@ -2411,8 +2442,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Foreign Branch Personnel"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_foreign_branch_personnel"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: ""
   source_table: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL"
   status: "draft"
@@ -2420,8 +2451,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Foreign Representative Office Periodic Report"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_foreign_representative_office_periodic_report"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Báo cáo định kỳ do VPĐD CTCK nước ngoài nộp lên UBCKNN. Ghi nhận kỳ,\
     \ năm, hạn nộp, ngày nộp thực tế và trạng thái xử lý."
   source_table: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
@@ -2430,8 +2461,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Foreign Representative Office Personnel"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_foreign_representative_office_personnel"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: ""
   source_table: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL"
   status: "draft"
@@ -2440,7 +2471,7 @@ entities:
   atomic_entity: "Securities Company Form Report"
   table_type: ""
   domain_prefix: "Securities Company"
-  entity_physical_name: "sc_form_report"
+  entity_physical_name: ""
   description: "Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/Chi\
     \ nhánh/VPĐD phải nộp UBCKNN — căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con.\
     \ Đảo ngược quyết định loại-scope trước đây (form metadata). BCV Concept là term\
@@ -2451,8 +2482,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Inspection Schedule"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_inspection_schedule"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Lịch kiểm tra hoặc thanh tra CTCK do UBCKNN thực hiện. Ghi nhận hình\
     \ thức (định kỳ/đột xuất), ngày dự kiến, số quyết định, thành phần đoàn và kết\
     \ luận kiểm tra."
@@ -2462,8 +2493,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Licensed Service"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_licensed_service"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Dịch vụ chứng khoán được UBCKNN cấp phép cho CTCK — văn bản/ngày đăng\
     \ ký, văn bản/ngày chấm dứt (nếu có), trạng thái hiệu lực. Khác dữ liệu với LNK_SC_FIRM_SERVICE\
     \ (giấy phép hiện hành) — xem 7e-04."
@@ -2473,8 +2504,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Major Shareholder Relation"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_major_shareholder_relation"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Quan hệ cổ đông lớn (sở hữu từ 5% trở lên) của CTCK. Ghi nhận tên\
     \ cổ đông lớn, tỷ lệ sở hữu và ngày đạt ngưỡng cổ đông lớn."
   source_table: "SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION"
@@ -2483,8 +2514,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Ownership Relation"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_ownership_relation"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Quan hệ sở hữu của CTCK với các tổ chức khác (công ty mẹ, công ty\
     \ con, liên kết). Ghi nhận loại quan hệ và tỷ lệ sở hữu theo từng mối liên kết."
   source_table: "SCMS.SC_FIRM_OWNERSHIP_RELATION"
@@ -2493,8 +2524,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Practitioner"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_practitioner"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Người hành nghề chứng khoán đang công tác tại CTCK. Shared entity\
     \ extend source_table vào Securities Practitioner từ NHNCK. Ghi nhận số CCHN,\
     \ loại CCHN, ngày bổ nhiệm và đơn vị công tác."
@@ -2504,8 +2535,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Practitioner Business Transaction Relationship"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_practitioner_business_transaction_relationship"
+  domain_prefix: "Securities Company Practitioner"
+  entity_physical_name: ""
   description: "Ghi nhận người hành nghề chứng khoán (Securities Company Practitioner)\
     \ được phép thực hiện nghiệp vụ kinh doanh chứng khoán nào (FK Securities Company\
     \ Practitioner + Classification Business Transaction). Bảng nguồn chỉ có 2 cột\
@@ -2516,8 +2547,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Profile Change"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_profile_change"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Sự kiện thay đổi thông tin hồ sơ của CTCK hoặc đơn vị trực thuộc.\
     \ Mỗi dòng = 1 lần thay đổi insert-only với đối tượng thay đổi, giá trị trước/sau\
     \ và số văn bản chấp thuận."
@@ -2527,8 +2558,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Report Violation"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_report_violation"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Vi phạm phát hiện từ kết quả kiểm tra báo cáo CTCK (không phải từ\
     \ hệ thống cảnh báo tự động). Mỗi dòng = 1 vi phạm insert-only với loại vi phạm\
     \ và mức độ."
@@ -2538,8 +2569,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Risk Indicator"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_risk_indicator"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Chỉ tiêu đánh giá rủi ro CTCK theo phương pháp CAMEL. Danh mục master\
     \ định nghĩa tên, nhóm, trọng số, công thức tính và loại kỳ đánh giá cho từng\
     \ chỉ tiêu."
@@ -2549,8 +2580,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Risk Indicator Group"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_risk_indicator_group"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Nhóm chỉ tiêu đánh giá rủi ro CTCK theo phương pháp CAMEL (C=Vốn,\
     \ A=Tài sản, M=Quản lý, E=Thu nhập, L=Thanh khoản). Ghi nhận mã nhóm, tên và trọng\
     \ số nhóm."
@@ -2560,8 +2591,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Risk Indicator Scoring Scale"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_risk_indicator_scoring_scale"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Thang điểm đánh giá rủi ro quy định cho từng chỉ tiêu rủi ro. Định\
     \ nghĩa các mức điểm theo khoảng giá trị (min/max) và điều kiện áp dụng từng mức."
   source_table: "SCMS.RISK_SCORING_SCALE"
@@ -2570,8 +2601,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Risk Reporting Period"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_risk_reporting_period"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Kỳ đánh giá rủi ro CTCK (quý hoặc năm). Ghi nhận mã kỳ, giá trị kỳ\
     \ (VD: 2024-Q1), ngày bắt đầu, ngày kết thúc và loại kỳ đánh giá."
   source_table: "SCMS.RISK_REPORTING_PERIOD"
@@ -2580,8 +2611,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Risk Scoring Detail"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_risk_scoring_detail"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Chi tiết điểm rủi ro từng chỉ tiêu cho từng CTCK theo từng kỳ đánh\
     \ giá. Grain: 1 chỉ tiêu × 1 CTCK × 1 kỳ. Ghi nhận điểm, giá trị thực tế và thang\
     \ điểm áp dụng."
@@ -2591,8 +2622,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Risk Summary"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_risk_summary"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Tổng hợp điểm rủi ro của CTCK theo kỳ đánh giá. Grain: 1 CTCK × 1\
     \ kỳ. Ghi nhận tổng điểm CAMEL, xếp hạng rủi ro và ngày tính điểm."
   source_table: "SCMS.RISK_SUMMARY"
@@ -2601,8 +2632,8 @@ entities:
   bcv_concept: ""
   atomic_entity: "Securities Company Shareholder Transfer"
   table_type: ""
-  domain_prefix: "Securities Company"
-  entity_physical_name: "sc_shareholder_transfer"
+  domain_prefix: ""
+  entity_physical_name: ""
   description: "Giao dịch chuyển nhượng cổ phần giữa hai cổ đông CTCK. Mỗi dòng =\
     \ 1 giao dịch insert-only. Ghi nhận bên chuyển nhượng, bên nhận, số cổ phần và\
     \ ngày thực hiện."

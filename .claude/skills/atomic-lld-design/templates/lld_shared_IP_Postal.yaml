@@ -52,19 +52,6 @@ attributes:
     classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
     etl_derived_value: null
 
-  # ── ADDRESS TYPE ────────────────────────────────────────────────────
-  - attribute_name: Address Type Code
-    physical_name: addr_type_code
-    description: "Loại địa chỉ."
-    data_domain: Classification Value
-    nullable: false
-    is_primary_key: true
-    status: draft
-    source_columns: []
-    comment: "Scheme: IP_ADDR_TYPE."
-    classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
-    etl_derived_value: "{ADDRESS_TYPE}"
-
   # ── SOURCE SYSTEM CODE ──────────────────────────────────────────────
   - attribute_name: Source System Code
     physical_name: src_stm_code
@@ -77,6 +64,19 @@ attributes:
     comment: "Scheme: SOURCE_SYSTEM."
     classification_context: "SOURCE_SYSTEM={SOURCE}.{TABLE}"
     etl_derived_value: "{SOURCE}.{TABLE}"
+
+  # ── ADDRESS TYPE ────────────────────────────────────────────────────
+  - attribute_name: Address Type Code
+    physical_name: addr_type_code
+    description: "Loại địa chỉ."
+    data_domain: Classification Value
+    nullable: false
+    is_primary_key: true
+    status: draft
+    source_columns: []
+    comment: "Scheme: IP_ADDR_TYPE."
+    classification_context: "IP_ADDR_TYPE={ADDRESS_TYPE}"
+    etl_derived_value: "{ADDRESS_TYPE}"
 
   # ── ADDRESS FIELDS ───────────────────────────────────────────────────
   # Điền các trường địa chỉ có trong nguồn, theo reference/shared_entity_schemas.md
